@@ -2,6 +2,7 @@ package com.thingslink.gateway.filter;
 
 import com.thingslink.common.core.enums.BizCode;
 import com.thingslink.common.core.utils.WebFluxUtil;
+import lombok.Getter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class BlackListUrlFilter extends AbstractGatewayFilterFactory<BlackListUr
 
             String url = exchange.getRequest().getURI().getPath();
             if (config.matchBlacklist(url)) {
-                return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.FORBID);
+                return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.FORBID, "黑名单请求");
             }
 
             return chain.filter(exchange);
@@ -35,16 +36,13 @@ public class BlackListUrlFilter extends AbstractGatewayFilterFactory<BlackListUr
     }
 
     public static class Config {
+        @Getter
         private List<String> blacklistUrl;
 
-        private List<Pattern> blacklistUrlPattern = new ArrayList<>();
+        private final List<Pattern> blacklistUrlPattern = new ArrayList<>();
 
         public boolean matchBlacklist(String url) {
             return !blacklistUrlPattern.isEmpty() && blacklistUrlPattern.stream().anyMatch(p -> p.matcher(url).find());
-        }
-
-        public List<String> getBlacklistUrl() {
-            return blacklistUrl;
         }
 
         public void setBlacklistUrl(List<String> blacklistUrl) {

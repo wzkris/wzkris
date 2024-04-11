@@ -16,8 +16,10 @@
 
 package com.thingslink.auth.oauth2.handler;
 
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.thingslink.auth.listening.event.UserLoginEvent;
 import com.thingslink.common.core.domain.Result;
+import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.model.AbstractUser;
@@ -34,6 +36,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessTokenResponseMapConverter;
@@ -71,12 +74,15 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                                         Authentication authentication) throws IOException {
         // 拿到返回的token
         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
+        // 设置登录上下文，以便调用时通过鉴权
+        SecurityContextHolder.getContext().setAuthentication(accessTokenAuthentication);
 
         Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
         if (!CollectionUtils.isEmpty(additionalParameters)) {
             // 拿到追加的用户信息，发布登录事件
             AbstractUser userInfo = (AbstractUser) additionalParameters.get(Principal.class.getName());
-            SpringUtil.publishEvent(new UserLoginEvent(userInfo, request));
+            SpringUtil.publishEvent(new UserLoginEvent(userInfo, ServletUtil.getClientIP(request),
+                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
 
             // 移除用户信息，否则会返回给前端
             additionalParameters.remove(Principal.class.getName());

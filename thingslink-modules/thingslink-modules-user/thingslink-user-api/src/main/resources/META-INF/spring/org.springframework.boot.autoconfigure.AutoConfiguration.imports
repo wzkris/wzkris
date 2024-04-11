@@ -1,0 +1,3 @@
+com.thingslink.user.api.fallback.RemoteCustomerApiFallback
+com.thingslink.user.api.fallback.RemoteOAuth2ClientApiFallback
+com.thingslink.user.api.fallback.RemoteSysUserApiFallback

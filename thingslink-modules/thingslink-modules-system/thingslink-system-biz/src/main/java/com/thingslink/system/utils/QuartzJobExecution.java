@@ -1,6 +1,6 @@
 package com.thingslink.system.utils;
 
-import com.thingslink.system.domain.Job;
+import com.thingslink.system.domain.SysJob;
 import org.quartz.JobExecutionContext;
 
 /**
@@ -10,7 +10,7 @@ import org.quartz.JobExecutionContext;
  */
 public class QuartzJobExecution extends AbstractQuartzJob {
     @Override
-    protected void doExecute(JobExecutionContext context, Job job) throws Exception {
-        JobInvokeUtil.invokeMethod(job);
+    protected void doExecute(JobExecutionContext context, SysJob sysJob) throws Exception {
+        JobInvokeUtil.invokeMethod(sysJob);
     }
 }

@@ -41,9 +41,4 @@ public class AppUser extends AbstractUser {
     public String getUsername() {
         return this.phoneNumber;
     }
-
-    @Override
-    public void eraseCredentials() {
-
-    }
 }

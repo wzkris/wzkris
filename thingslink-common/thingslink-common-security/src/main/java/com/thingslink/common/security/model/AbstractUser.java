@@ -1,6 +1,7 @@
 package com.thingslink.common.security.model;
 
 import jakarta.annotation.Nonnull;
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +13,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -29,9 +30,11 @@ public abstract class AbstractUser implements UserDetails, OAuth2User, Credentia
     private static final long serialVersionUID = 2978369205157234626L;
 
     // 权限
-    private List<? extends GrantedAuthority> authorities;
-    // 扩展属性
-    private Map<String, Object> attributes;
+    private Collection<? extends GrantedAuthority> authorities;
+
+    // 额外参数
+    @Getter
+    private Map<String, Object> additionalParameters;
 
     public abstract Long getUserId();
 
@@ -45,7 +48,14 @@ public abstract class AbstractUser implements UserDetails, OAuth2User, Credentia
 
     @Override
     public Map<String, Object> getAttributes() {
-        return this.attributes == null ? Collections.EMPTY_MAP : attributes;
+        return Collections.EMPTY_MAP;
+    }
+
+    public void putAdditionalParameter(String key, Object value) {
+        if (this.additionalParameters == null) {
+            this.additionalParameters = new HashMap<>(4);
+        }
+        this.additionalParameters.put(key, value);
     }
 
     @Override
@@ -76,13 +86,15 @@ public abstract class AbstractUser implements UserDetails, OAuth2User, Credentia
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <A> A getAttribute(String name) {
-        return (A) this.getAttributes().get(name);
+    public String getName() {
+        return this.getUsername();
     }
 
     @Override
-    public String getName() {
-        return this.getUsername();
+    public void eraseCredentials() {
+        // 额外属性的值置空
+        for (Map.Entry<String, Object> entry : this.getAdditionalParameters().entrySet()) {
+            entry.setValue(null);
+        }
     }
 }

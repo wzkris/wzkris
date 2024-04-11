@@ -2,14 +2,10 @@ package com.thingslink.common.security.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serial;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author : wzkris
@@ -48,6 +44,7 @@ public class LoginUser extends AbstractUser {
 
     @Override
     public void eraseCredentials() {
+        super.eraseCredentials();
         this.password = null;
     }
 

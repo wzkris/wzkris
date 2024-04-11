@@ -2,7 +2,7 @@ package com.thingslink.system.utils;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.thingslink.system.domain.DictData;
+import com.thingslink.system.domain.SysDictData;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DictUtil {
     // 字典缓存
-    private static final Cache<String, List<DictData>> dictCache = Caffeine.newBuilder()
+    private static final Cache<String, List<SysDictData>> dictCache = Caffeine.newBuilder()
             .maximumSize(500)
             .build();
 
@@ -21,10 +21,10 @@ public class DictUtil {
      * 设置字典缓存
      *
      * @param key       参数键
-     * @param dictDatas 字典数据列表
+     * @param sysDictData 字典数据列表
      */
-    public static void setDictCache(String key, List<DictData> dictDatas) {
-        dictCache.put(key, dictDatas);
+    public static void setDictCache(String key, List<SysDictData> sysDictData) {
+        dictCache.put(key, sysDictData);
     }
 
     /**
@@ -33,7 +33,7 @@ public class DictUtil {
      * @param key 参数键
      * @return dictDatas 字典数据列表
      */
-    public static List<DictData> getDictCache(String key) {
+    public static List<SysDictData> getDictCache(String key) {
         return dictCache.getIfPresent(key);
     }
 

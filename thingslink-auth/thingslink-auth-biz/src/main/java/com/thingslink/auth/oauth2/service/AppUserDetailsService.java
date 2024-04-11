@@ -1,16 +1,15 @@
 package com.thingslink.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
-import com.thingslink.auth.domain.Customer;
-import com.thingslink.auth.mapper.CustomerMapper;
 import com.thingslink.common.core.constant.CommonConstants;
-import com.thingslink.common.core.exception.BusinessExceptionI18n;
+import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.model.AppUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.user.api.RemoteCustomerApi;
+import com.thingslink.user.api.domain.dto.CustomerDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
@@ -23,29 +22,25 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class AppUserDetailsService implements UserDetailsService {
-    private final CustomerMapper customerMapper;
+public class AppUserDetailsService implements UserDetailsServicePlus {
+    private final RemoteCustomerApi remoteCustomerApi;
 
     public UserDetails loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
-        Customer customer = customerMapper.selectByPhoneNumber(phoneNumber);
+        Result<CustomerDTO> result = remoteCustomerApi.getByPhoneNumber(phoneNumber);
+        CustomerDTO customerDTO = result.checkData();
 
-        return this.checkAndBuildAppUser(customer);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        throw new BusinessExceptionI18n("oauth2.unsupport.granttype");
+        return this.checkAndBuildAppUser(customerDTO);
     }
 
     /**
      * 构建登录用户
      */
-    private UserDetails checkAndBuildAppUser(Customer customer) {
+    private UserDetails checkAndBuildAppUser(CustomerDTO customerDTO) {
         // 校验用户状态
-        this.checkAccount(customer);
+        this.checkAccount(customerDTO);
         // 获取权限信息
 
-        AppUser appUser = MapstructUtil.convert(customer, AppUser.class);
+        AppUser appUser = MapstructUtil.convert(customerDTO, AppUser.class);
 
         return appUser;
     }
@@ -53,11 +48,11 @@ public class AppUserDetailsService implements UserDetailsService {
     /**
      * 校验用户账号
      */
-    private void checkAccount(Customer customer) {
-        if (customer == null) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");// 不能明说账号不存在
+    private void checkAccount(CustomerDTO customerDTO) {
+        if (customerDTO == null) {
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");// 不能明说账号不存在
         }
-        if (ObjUtil.equals(customer.getStatus(), CommonConstants.STATUS_DISABLE)) {
+        if (ObjUtil.equals(customerDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }

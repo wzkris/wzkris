@@ -1,6 +1,7 @@
 package com.thingslink.common.web.config;
 
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
@@ -18,6 +19,7 @@ public class HikariInitPool {
      * 项目启动时强制getConnection，来达到启动时hikari创建连接池的目的
      */
     @Bean
+    @ConditionalOnBean(DataSource.class)
     public ApplicationRunner validateDataSource(DataSource dataSource) {
         return args -> {
             try (Connection connection = dataSource.getConnection()) {

@@ -1,7 +1,7 @@
 package com.thingslink.auth.listening.event;
 
+import cn.hutool.http.useragent.UserAgent;
 import com.thingslink.common.security.model.AbstractUser;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,5 +15,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserLoginEvent {
     private AbstractUser userInfo;
-    private HttpServletRequest request;
+    private String ip;
+    private UserAgent userAgent;
 }

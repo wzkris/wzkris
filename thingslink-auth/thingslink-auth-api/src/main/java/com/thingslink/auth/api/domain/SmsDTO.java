@@ -1,6 +1,6 @@
 package com.thingslink.auth.api.domain;
 
-import com.thingslink.common.core.validate.PhoneNumber;
+import com.thingslink.common.core.annotation.PhoneNumber;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

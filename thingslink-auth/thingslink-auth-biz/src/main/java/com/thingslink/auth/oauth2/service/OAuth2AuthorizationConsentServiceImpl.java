@@ -1,12 +1,12 @@
 package com.thingslink.auth.oauth2.service;
 
+import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 /**
  * @author : wzkris
@@ -23,22 +23,21 @@ public class OAuth2AuthorizationConsentServiceImpl implements OAuth2Authorizatio
 
     private static final String PREFIX = "Authorization:consent";
 
-    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void save(OAuth2AuthorizationConsent authorizationConsent) {
-        redisTemplate.opsForValue().set(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()),
-                authorizationConsent, DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+        JdkRedisUtil.getRedissonClient().getBucket(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()))
+                .set(authorizationConsent, Duration.ofSeconds(DEFAULT_TIMEOUT));
     }
 
     @Override
     public void remove(OAuth2AuthorizationConsent authorizationConsent) {
-        redisTemplate.delete(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()));
+        JdkRedisUtil.getRedissonClient().getKeys().delete(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()));
     }
 
     @Override
     public OAuth2AuthorizationConsent findById(String registeredClientId, String principalName) {
-        return (OAuth2AuthorizationConsent) redisTemplate.opsForValue().get(this.buildRedisKey(registeredClientId, principalName));
+        return (OAuth2AuthorizationConsent) JdkRedisUtil.getRedissonClient().getBucket(this.buildRedisKey(registeredClientId, principalName)).get();
     }
 
     // 构建客户端缓存KEY

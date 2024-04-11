@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.config.handler.AccessDeniedHandlerImpl;
-import com.thingslink.common.security.config.handler.AuthenticationEntryPointImpl;
-import com.thingslink.common.security.config.handler.SsoLogoutHandler;
-import com.thingslink.common.security.config.handler.SsoLogoutSuccessHandler;
-import com.thingslink.common.security.config.white.CommonWhiteConfig;
-import com.thingslink.common.security.config.white.CustomWhiteConfig;
+import com.thingslink.common.security.config.handler.*;
+import com.thingslink.common.security.config.white.PermitIpConfig;
+import com.thingslink.common.security.config.white.WhiteUrlConfig;
 import com.thingslink.common.security.deserializer.GrantedAuthorityDeserializer;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +22,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author : wzkris
@@ -37,12 +35,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @AllArgsConstructor
 public class ResourceServerConfig {
 
-    private final CommonWhiteConfig commonWhiteConfig;
-    private final CustomWhiteConfig customWhiteConfig;
+    private final WhiteUrlConfig whiteUrlConfig;
+    private final PermitIpConfig permitIpConfig;
     private final OpaqueTokenIntrospector opaqueTokenIntrospector;
     private final RemoteTokenApi remoteTokenApi;
-
     private static final BearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
+
 
     // json序列化增强
     static {
@@ -59,11 +57,12 @@ public class ResourceServerConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers(commonWhiteConfig.getUrls().toArray(String[]::new)).permitAll()
-                                .requestMatchers(customWhiteConfig.getUrls().toArray(String[]::new)).permitAll()
+                        authorize.requestMatchers(whiteUrlConfig.getCommon().getUrls().toArray(String[]::new)).permitAll()
+                                .requestMatchers(whiteUrlConfig.getCustom().getUrls().toArray(String[]::new)).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
+                .addFilterBefore(new IpRequestFilter(permitIpConfig), UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> {
                     logout.addLogoutHandler(new SsoLogoutHandler(bearerTokenResolver, remoteTokenApi))
                             .logoutSuccessHandler(new SsoLogoutSuccessHandler());

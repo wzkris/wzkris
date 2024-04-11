@@ -1,14 +1,12 @@
 package com.thingslink.auth.oauth2.service;
 
-import com.thingslink.common.redis.util.RedisUtil;
+import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
+import com.thingslink.common.security.model.AbstractUser;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SessionCallback;
+import org.redisson.api.RBatch;
+import org.redisson.api.RedissonClient;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2DeviceCode;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
@@ -20,9 +18,10 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wzkris
@@ -36,110 +35,127 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationService {
 
-    private static final String PREFIX = "Authorization";
-
-    private final RedisTemplate<String, Object> redisTemplate;
+    private static final String OAUTH2_PREFIX = "Authorization";
 
     @Override
     public void save(@Nonnull OAuth2Authorization authorization) {
         // 所有code的过期时间，方便计算最大值
         List<Long> expiresAtList = new ArrayList<>();
 
+        // 判断所有OAuth2的code，如果有就存起来
         Map<String, Long> tokenMap = new HashMap<>();
 
         OAuth2Authorization.Token<OAuth2AuthorizationCode> authorizationCode = authorization.getToken(OAuth2AuthorizationCode.class);
         if (authorizationCode != null) {
             long between = ChronoUnit.SECONDS.between(authorizationCode.getToken().getIssuedAt(), authorizationCode.getToken().getExpiresAt());
             expiresAtList.add(between);
-            tokenMap.put(this.buildRedisKey(authorizationCode.getToken().getTokenValue()), between);
+            tokenMap.put(this.buildOAuth2Key(authorizationCode.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2AccessToken> accessToken = authorization.getAccessToken();
         if (accessToken != null) {
             long between = ChronoUnit.SECONDS.between(accessToken.getToken().getIssuedAt(), accessToken.getToken().getExpiresAt());
             expiresAtList.add(between);
-            tokenMap.put(this.buildRedisKey(accessToken.getToken().getTokenValue()), between);
+            tokenMap.put(this.buildOAuth2Key(accessToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2RefreshToken> refreshToken = authorization.getRefreshToken();
         if (refreshToken != null) {
             long between = ChronoUnit.SECONDS.between(refreshToken.getToken().getIssuedAt(), refreshToken.getToken().getExpiresAt());
             expiresAtList.add(between);
-            tokenMap.put(this.buildRedisKey(refreshToken.getToken().getTokenValue()), between);
+            tokenMap.put(this.buildOAuth2Key(refreshToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2UserCode> userCodeToken = authorization.getToken(OAuth2UserCode.class);
         if (userCodeToken != null) {
             long between = ChronoUnit.SECONDS.between(userCodeToken.getToken().getIssuedAt(), userCodeToken.getToken().getExpiresAt());
             expiresAtList.add(between);
-            tokenMap.put(this.buildRedisKey(userCodeToken.getToken().getTokenValue()), between);
+            tokenMap.put(this.buildOAuth2Key(userCodeToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2DeviceCode> deviceCodeToken = authorization.getToken(OAuth2DeviceCode.class);
         if (deviceCodeToken != null) {
             long between = ChronoUnit.SECONDS.between(deviceCodeToken.getToken().getIssuedAt(), deviceCodeToken.getToken().getExpiresAt());
             expiresAtList.add(between);
-            tokenMap.put(this.buildRedisKey(deviceCodeToken.getToken().getTokenValue()), between);
+            tokenMap.put(this.buildOAuth2Key(deviceCodeToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OidcIdToken> oidcIdTokenToken = authorization.getToken(OidcIdToken.class);
         if (oidcIdTokenToken != null) {
             long between = ChronoUnit.SECONDS.between(oidcIdTokenToken.getToken().getIssuedAt(), oidcIdTokenToken.getToken().getExpiresAt());
             expiresAtList.add(between);
-            tokenMap.put(this.buildRedisKey(oidcIdTokenToken.getToken().getTokenValue()), between);
+            tokenMap.put(this.buildOAuth2Key(oidcIdTokenToken.getToken().getTokenValue()), between);
         }
 
         Long maxTimeOut = expiresAtList.stream().max(Comparator.comparing(s -> s)).orElse(0L);
+        // 创建批量命令
+        RBatch batch = JdkRedisUtil.getRedissonClient().createBatch();
 
-        SessionCallback<Object> sessionCallback = new SessionCallback<>() {
-            @Override
-            public <K, V> Object execute(@NotNull RedisOperations<K, V> operations) throws DataAccessException {
-                for (Map.Entry<String, Long> entry : tokenMap.entrySet()) {
-                    operations.opsForValue().set((K) entry.getKey(), (V) authorization.getId(), entry.getValue(), TimeUnit.SECONDS);
-                }
-                operations.opsForValue().set((K) buildRedisKey(authorization.getId()), (V) authorization, maxTimeOut, TimeUnit.SECONDS);
-                return null;
+        // 存储所有token映射id
+        for (Map.Entry<String, Long> entry : tokenMap.entrySet()) {
+            batch.getBucket(entry.getKey()).setAsync(authorization.getId(), Duration.ofSeconds(entry.getValue()));
+        }
+
+        // 存储所有用户额外参数
+        AbstractUser userinfo = authorization.getAttribute(Principal.class.getName());
+        if (userinfo != null) {
+            for (Map.Entry<String, Object> entry : userinfo.getAdditionalParameters().entrySet()) {
+                batch.getBucket(entry.getKey()).setAsync(entry.getValue(), Duration.ofSeconds(maxTimeOut));
             }
-        };
-        redisTemplate.executePipelined(sessionCallback);
+            userinfo.eraseCredentials();
+        }
+        // 存储认证本体
+        batch.getBucket(this.buildOAuth2Key(authorization.getId())).setAsync(authorization, Duration.ofSeconds(maxTimeOut));
+
+        batch.execute();
     }
 
     @Override
     public void remove(@Nonnull OAuth2Authorization authorization) {
         List<String> keys = new ArrayList<>();
-        keys.add(this.buildRedisKey(authorization.getId()));
+        // 移除认证本体
+        keys.add(this.buildOAuth2Key(authorization.getId()));
 
+        // 移除所有token
         OAuth2Authorization.Token<OAuth2AuthorizationCode> authorizationCode = authorization.getToken(OAuth2AuthorizationCode.class);
         if (authorizationCode != null) {
-            keys.add(this.buildRedisKey(authorizationCode.getToken().getTokenValue()));
+            keys.add(this.buildOAuth2Key(authorizationCode.getToken().getTokenValue()));
         }
 
         OAuth2Authorization.Token<OAuth2AccessToken> accessToken = authorization.getAccessToken();
         if (accessToken != null) {
-            keys.add(this.buildRedisKey(accessToken.getToken().getTokenValue()));
+            keys.add(this.buildOAuth2Key(accessToken.getToken().getTokenValue()));
         }
 
         OAuth2Authorization.Token<OAuth2RefreshToken> refreshToken = authorization.getRefreshToken();
         if (refreshToken != null) {
-            keys.add(this.buildRedisKey(refreshToken.getToken().getTokenValue()));
+            keys.add(this.buildOAuth2Key(refreshToken.getToken().getTokenValue()));
         }
 
         OAuth2Authorization.Token<OAuth2UserCode> userCodeToken = authorization.getToken(OAuth2UserCode.class);
         if (userCodeToken != null) {
-            keys.add(this.buildRedisKey(userCodeToken.getToken().getTokenValue()));
+            keys.add(this.buildOAuth2Key(userCodeToken.getToken().getTokenValue()));
         }
 
         OAuth2Authorization.Token<OAuth2DeviceCode> deviceCodeToken = authorization.getToken(OAuth2DeviceCode.class);
         if (deviceCodeToken != null) {
-            keys.add(this.buildRedisKey(deviceCodeToken.getToken().getTokenValue()));
+            keys.add(this.buildOAuth2Key(deviceCodeToken.getToken().getTokenValue()));
         }
 
         OAuth2Authorization.Token<OidcIdToken> oidcIdTokenToken = authorization.getToken(OidcIdToken.class);
         if (oidcIdTokenToken != null) {
-            keys.add(this.buildRedisKey(oidcIdTokenToken.getToken().getTokenValue()));
+            keys.add(this.buildOAuth2Key(oidcIdTokenToken.getToken().getTokenValue()));
         }
 
-        RedisUtil.deleteObject(keys.toArray(String[]::new));
+        // 移除用户额外参数
+        AbstractUser userinfo = authorization.getAttribute(Principal.class.getName());
+        if (userinfo != null) {
+            for (Map.Entry<String, Object> entry : userinfo.getAdditionalParameters().entrySet()) {
+                keys.add(entry.getKey());
+            }
+        }
+
+        JdkRedisUtil.getRedissonClient().getKeys().delete(keys.toArray(String[]::new));
     }
 
     @Override
@@ -149,16 +165,17 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
 
     @Override
     public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
-        Object authorizeId = redisTemplate.opsForValue().get(this.buildRedisKey(token));
+        RedissonClient redissonClient = JdkRedisUtil.getRedissonClient();
+        Object authorizeId = redissonClient.getBucket(this.buildOAuth2Key(token)).get();
         if (authorizeId == null) {
             return null;
         }
 
-        return (OAuth2Authorization) redisTemplate.opsForValue().get(this.buildRedisKey(authorizeId.toString()));
+        return (OAuth2Authorization) redissonClient.getBucket(this.buildOAuth2Key(authorizeId.toString())).get();
     }
 
-    // 构建客户端缓存KEY
-    private String buildRedisKey(String token) {
-        return String.format("%s:%s", PREFIX, token);
+    // 构建OAuth2缓存KEY
+    private String buildOAuth2Key(String key) {
+        return String.format("%s:%s", OAUTH2_PREFIX, key);
     }
 }

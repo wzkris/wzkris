@@ -1,20 +1,10 @@
-<p align="center">
-	<img alt="logo" src="https://oscimg.oschina.net/oscnet/up-b99b286755aef70355a7084753f89cdb7c9.png">
-</p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Thingslink-cloud</h1>
-<h4 align="center">基于 Ruoyi-Cloud-plus的前后端分离的分布式微服务架构，做了一些深度改造</h4>
-<h5 align="center">OpenFeign替换Dubbo </h5>
-<h5 align="center">SpringSecurity安全框架</h5>
-<h5 align="center">数据权限使用jsqlparser解析</h5>
-<h5 align="center">替换web容器tomcat -> undertow </h5>
-<h5 align="center">OpenAPI3 </h5>
-<h5 align="center">spring状态机 </h5>
-<h5 align="center">......</h5>
+<h4 align="center">基于SpringCloudAlibaba + JDK17 + Spring-Authorization-Server的微服务框架</h4>
 
 ~~~
 com.thingslink     
 ├── thingslink-gateway         // 网关模块 [8080]
-├── thingslink-auth            // 认证服务 [9000]
+├── thingslink-auth            // 认证服务 + 用户服务 [9000]
 ├── thingslink-common          // 通用模块
 │       └── thingslink-common-core                         // 核心模块(工具包)
 │       └── thingslink-common-datascope                    // 数据权限范围

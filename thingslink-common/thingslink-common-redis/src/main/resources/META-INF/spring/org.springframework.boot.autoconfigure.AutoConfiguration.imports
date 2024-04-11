@@ -1,1 +1,1 @@
-com.thingslink.common.redis.config.RedisConfig
+com.thingslink.common.redis.config.RedissonConfig

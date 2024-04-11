@@ -1,7 +1,7 @@
 package com.thingslink.system;
 
-import com.thingslink.system.domain.Config;
-import com.thingslink.system.mapper.ConfigMapper;
+import com.thingslink.system.domain.SysConfig;
+import com.thingslink.system.mapper.SysConfigMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,11 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class MpTest {
     @Autowired
-    private ConfigMapper configMapper;
+    private SysConfigMapper sysConfigMapper;
 
     @Test
     public void test() {
-        Config config = configMapper.selectById(1L);
+        SysConfig config = sysConfigMapper.selectById(1L);
         System.out.println(config);
     }
 }

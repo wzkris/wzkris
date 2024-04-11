@@ -1,2 +1,2 @@
-com.thingslink.common.log.aspect.OperateLogAspect
+com.thingslink.common.log.annotation.aspect.OperateLogAspect
 com.thingslink.common.log.interceptor.TracingLogInterceptor

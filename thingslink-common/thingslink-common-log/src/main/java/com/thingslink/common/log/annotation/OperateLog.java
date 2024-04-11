@@ -1,7 +1,6 @@
 package com.thingslink.common.log.annotation;
 
-import com.thingslink.common.log.enums.BusinessType;
-import com.thingslink.common.log.enums.OperatorType;
+import com.thingslink.common.log.enums.OperateType;
 
 import java.lang.annotation.*;
 
@@ -20,14 +19,9 @@ public @interface OperateLog {
     String title() default "";
 
     /**
-     * 功能
+     * 操作类型
      */
-    BusinessType businessType() default BusinessType.OTHER;
-
-    /**
-     * 操作人类别
-     */
-    OperatorType operatorType() default OperatorType.USER;
+    OperateType operateType() default OperateType.OTHER;
 
     /**
      * 是否保存请求的参数

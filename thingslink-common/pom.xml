@@ -30,10 +30,8 @@
         <module>thingslink-common-seata</module>
         <module>thingslink-common-security</module>
         <module>thingslink-common-sentinel</module>
-        <module>thingslink-common-sms</module>
         <module>thingslink-common-statemachine</module>
         <module>thingslink-common-swagger</module>
-        <module>thingslink-common-third</module>
         <module>thingslink-common-web</module>
     </modules>
 </project>

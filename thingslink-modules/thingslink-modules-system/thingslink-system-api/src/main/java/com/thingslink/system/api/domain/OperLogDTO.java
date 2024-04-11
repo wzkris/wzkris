@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -18,7 +17,7 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 public class OperLogDTO implements Serializable {
-    
+
     /**
      * 日志主键
      */
@@ -28,13 +27,13 @@ public class OperLogDTO implements Serializable {
      */
     private String title;
     /**
-     * 业务类型（0其它 1新增 2修改 3删除）
+     * 操作类型（0其它 1新增 2修改 3删除）
      */
-    private Integer businessType;
+    private String operType;
     /**
-     * 业务类型数组
+     * 操作类型数组
      */
-    private Integer[] businessTypes;
+    private String[] operTypes;
     /**
      * 请求方法
      */
@@ -46,7 +45,7 @@ public class OperLogDTO implements Serializable {
     /**
      * 操作类别（0其它 1后台用户 2手机端用户）
      */
-    private Integer operatorType;
+    private String operatorType;
     /**
      * 操作人员
      */

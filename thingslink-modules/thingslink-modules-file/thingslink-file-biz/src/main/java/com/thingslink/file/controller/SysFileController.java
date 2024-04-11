@@ -1,7 +1,7 @@
 package com.thingslink.file.controller;
 
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.web.controller.BaseController;
+import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.file.api.domain.SysFile;
 import com.thingslink.file.domain.FileChunk;
 import com.thingslink.file.service.SysFileService;

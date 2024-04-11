@@ -4,10 +4,10 @@ import com.thingslink.common.security.annotation.InnerAuth;
 import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.LoginLogDTO;
 import com.thingslink.system.api.domain.OperLogDTO;
-import com.thingslink.system.domain.LoginLog;
-import com.thingslink.system.domain.OperLog;
-import com.thingslink.system.mapper.LoginLogMapper;
-import com.thingslink.system.mapper.OperLogMapper;
+import com.thingslink.system.domain.SysLoginLog;
+import com.thingslink.system.domain.SysOperLog;
+import com.thingslink.system.mapper.SysLoginLogMapper;
+import com.thingslink.system.mapper.SysOperLogMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,20 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RemoteLogApiImpl implements RemoteLogApi {
-    private final OperLogMapper operLogMapper;
-    private final LoginLogMapper loginLogMapper;
+    private final SysOperLogMapper sysOperLogMapper;
+    private final SysLoginLogMapper sysLoginLogMapper;
 
     @Override
     public void insertOperlog(@RequestBody OperLogDTO operLogDTO) {
-        OperLog operLog = new OperLog();
-        BeanUtils.copyProperties(operLogDTO, operLog);
-        operLogMapper.insert(operLog);
+        SysOperLog sysOperLog = new SysOperLog();
+        BeanUtils.copyProperties(operLogDTO, sysOperLog);
+        sysOperLogMapper.insert(sysOperLog);
     }
 
     @Override
     public void insertLoginlog(@RequestBody LoginLogDTO loginLogDTO) {
-        LoginLog loginLog = new LoginLog();
+        SysLoginLog loginLog = new SysLoginLog();
         BeanUtils.copyProperties(loginLogDTO, loginLog);
-        loginLogMapper.insert(loginLog);
+        sysLoginLogMapper.insert(loginLog);
     }
 }

@@ -2,7 +2,7 @@ package com.thingslink.equipment.controller;
 
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.orm.page.Page;
-import com.thingslink.common.web.controller.BaseController;
+import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.equipment.domain.Station;
 import com.thingslink.equipment.domain.dto.LocationDTO;
 import com.thingslink.equipment.domain.vo.StationVO;

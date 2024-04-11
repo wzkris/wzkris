@@ -1,6 +1,7 @@
 package com.thingslink.common.swagger.config;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -8,8 +9,6 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Map;
 
 /**
  * @author wzkris
@@ -27,10 +26,9 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi groupedOpenApi(SwaggerProperties swaggerProperties) {
         return GroupedOpenApi.builder()
+                .group(this.getClass().getName())
                 .displayName(swaggerProperties.getTitle())
-                .group("default") // api发现的默认名称
-                .pathsToMatch("/**")
-                .addOpenApiMethodFilter(it -> it.getAnnotation(Operation.class) != null)
+                .addOpenApiMethodFilter(it -> it.getAnnotation(Tag.class) != null)
                 .build();
     }
 

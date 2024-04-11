@@ -8,7 +8,6 @@ import org.redisson.api.RedissonClient;
 
 import java.time.Duration;
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 
 /**
  * spring redis 工具类
@@ -32,23 +31,8 @@ public class RedisUtil {
      * @param value   缓存的值
      * @param timeout 时间，单位秒
      */
-    public static <T> void setCacheObject(final String key, final T value, final long timeout) {
-        redissonclient.getBucket(key).set(value, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 缓存基本的对象，Integer、String、实体类等
-     *
-     * @param key      缓存的键值
-     * @param value    缓存的值
-     * @param timeout  时间
-     * @param timeUnit 时间颗粒度
-     */
-    public static <T> void setCacheObject(final String key,
-                                          final T value,
-                                          final long timeout,
-                                          final TimeUnit timeUnit) {
-        redissonclient.getBucket(key).set(value, timeout, timeUnit);
+    public static <T> void setCacheObject(final String key, final T value, final Duration timeout) {
+        redissonclient.getBucket(key).set(value, timeout);
     }
 
     /**

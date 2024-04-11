@@ -1,11 +1,11 @@
 package com.thingslink.auth.oauth2.authentication.sms;
 
-import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
 import com.thingslink.auth.oauth2.constants.GrantTypeConstant;
 import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.util.Assert;
 
 import java.util.Map;
 import java.util.Set;

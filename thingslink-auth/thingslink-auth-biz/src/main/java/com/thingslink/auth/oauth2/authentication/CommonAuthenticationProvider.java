@@ -83,12 +83,12 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         Set<String> authorizedScopes = this.checkClient(customAuthentication, registeredClient);
 
         // 验证并拿到授权
-        UsernamePasswordAuthenticationToken authenticatedToken = this.doAuthenticate(customAuthentication);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.doAuthenticate(customAuthentication);
 
         // @formatter:off
         DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
                     .registeredClient(registeredClient)
-                    .principal(authenticatedToken)
+                    .principal(usernamePasswordAuthenticationToken)
                     .authorizationServerContext(AuthorizationServerContextHolder.getContext())
                     .authorizedScopes(authorizedScopes)
                     .authorizationGrantType(customAuthentication.getGrantType())
@@ -97,11 +97,11 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .id(((AbstractUser) authenticatedToken.getPrincipal()).getUserId().toString())
-                .principalName(authenticatedToken.getName())
+                .id(((AbstractUser) usernamePasswordAuthenticationToken.getPrincipal()).getUserId().toString())
+                .principalName(usernamePasswordAuthenticationToken.getName())
                 .authorizationGrantType(customAuthentication.getGrantType())
                 .authorizedScopes(authorizedScopes)
-                .attribute(Principal.class.getName(), authenticatedToken);
+                .attribute(Principal.class.getName(), usernamePasswordAuthenticationToken.getPrincipal());
 
         // ----- Access token -----
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
@@ -168,9 +168,13 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         // 追加用户信息以便在OAuth2后续流程使用
-        additionalParameters.put(Principal.class.getName(), authenticatedToken.getPrincipal());
+        additionalParameters.put(Principal.class.getName(), usernamePasswordAuthenticationToken.getPrincipal());
 
-        return new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);
+
+        OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
+                new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);
+        oAuth2AccessTokenAuthenticationToken.setAuthenticated(true);
+        return oAuth2AccessTokenAuthenticationToken;
     }
 
     public OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {

@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,12 +20,12 @@ import java.util.List;
 public class TenantProperties {
 
     /**
-     * 排除表
+     * 租户表
      */
-    private List<String> excludes;
+    private List<String> includes;
 
 
-    public List<String> getExcludes() {
-        return excludes == null ? Collections.emptyList() : excludes;
+    public List<String> getIncludes() {
+        return includes == null ? Collections.emptyList() : includes;
     }
 }

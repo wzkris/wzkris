@@ -1,7 +1,7 @@
 package com.thingslink.common.security.utils;
 
+import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.exception.user.UserException;
-import com.thingslink.common.security.constants.SecurityConstants;
 import com.thingslink.common.security.model.LoginUser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

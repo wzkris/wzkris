@@ -1,6 +1,6 @@
 package com.thingslink.system.utils;
 
-import com.thingslink.system.domain.Job;
+import com.thingslink.system.domain.SysJob;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 
@@ -12,7 +12,7 @@ import org.quartz.JobExecutionContext;
 @DisallowConcurrentExecution
 public class QuartzDisallowConcurrentExecution extends AbstractQuartzJob {
     @Override
-    protected void doExecute(JobExecutionContext context, Job job) throws Exception {
-        JobInvokeUtil.invokeMethod(job);
+    protected void doExecute(JobExecutionContext context, SysJob sysJob) throws Exception {
+        JobInvokeUtil.invokeMethod(sysJob);
     }
 }

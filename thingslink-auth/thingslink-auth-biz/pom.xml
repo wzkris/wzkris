@@ -38,30 +38,24 @@
 		<dependency>
 			<groupId>com.thingslink</groupId>
 			<artifactId>thingslink-common-web</artifactId>
-		</dependency>
-
-		<!-- thingslink Common ORM -->
-		<dependency>
-			<groupId>com.thingslink</groupId>
-			<artifactId>thingslink-common-orm</artifactId>
-		</dependency>
-
-		<!-- thingslink Common DataSource -->
-		<dependency>
-			<groupId>com.thingslink</groupId>
-			<artifactId>thingslink-common-datasource</artifactId>
-		</dependency>
-
-		<!-- 日志服务-->
-		<dependency>
-			<groupId>com.thingslink</groupId>
-			<artifactId>thingslink-common-log</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.thingslink</groupId>
+					<artifactId>thingslink-common-orm</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!--本地rpc服务-->
 		<dependency>
 			<groupId>com.thingslink</groupId>
 			<artifactId>thingslink-auth-api</artifactId>
+		</dependency>
+
+		<!--用户rpc服务-->
+		<dependency>
+			<groupId>com.thingslink</groupId>
+			<artifactId>thingslink-user-api</artifactId>
 		</dependency>
 
 		<!--系统rpc服务-->

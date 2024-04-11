@@ -24,12 +24,11 @@
         <redisson.version>3.27.2</redisson.version>
         <dynamic-ds.version>4.2.0</dynamic-ds.version>
         <hutool.version>5.8.27</hutool.version>
-        <mapstruct-plus.version>1.3.5</mapstruct-plus.version>
+        <mapstruct-plus.version>1.4.0</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
         <caffeine.version>3.1.8</caffeine.version>
         <minio.version>8.2.2</minio.version>
-        <knife4j.version>4.3.0</knife4j.version>
-        <perf4j.version>0.9.16</perf4j.version>
+        <knife4j.version>4.5.0</knife4j.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
 
         <!-- 插件版本 -->
@@ -114,6 +113,7 @@
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
+            <!--字段映射-->
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus</artifactId>
@@ -124,13 +124,6 @@
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
                 <version>${mapstruct-plus.version}</version>
-            </dependency>
-
-            <!-- 性能监控和统计工具-->
-            <dependency>
-                <groupId>org.perf4j</groupId>
-                <artifactId>perf4j</artifactId>
-                <version>${perf4j.version}</version>
             </dependency>
 
             <dependency>
@@ -184,6 +177,13 @@
             <dependency>
                 <groupId>com.thingslink</groupId>
                 <artifactId>thingslink-auth-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!--认证rpc服务-->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-user-api</artifactId>
                 <version>${revision}</version>
             </dependency>
 

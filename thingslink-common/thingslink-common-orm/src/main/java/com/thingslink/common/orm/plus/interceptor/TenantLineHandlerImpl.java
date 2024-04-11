@@ -1,15 +1,13 @@
 package com.thingslink.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
+import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.orm.plus.config.TenantProperties;
 import com.thingslink.common.orm.utils.TenantUtil;
-import com.thingslink.common.security.constants.SecurityConstants;
 import com.thingslink.common.security.utils.LoginUserUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
-
-import java.util.List;
 
 /**
  * @author : wzkris
@@ -38,8 +36,7 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
     public boolean ignoreTable(String tableName) {
         // 若设置了动态租户则必须走拦截
         if (TenantUtil.getDynamic() != null) {
-            List<String> excludes = tenantProperties.getExcludes();
-            return excludes.contains(tableName);
+            return this.isIgnoreTable(tableName);
         }
         // 未登录则忽略
         if (!LoginUserUtil.isLogin()) {
@@ -51,8 +48,12 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
             return true;
         }
         // 最后再去判断表名是否忽略
-        List<String> excludes = tenantProperties.getExcludes();
-        return excludes.contains(tableName);
+        return this.isIgnoreTable(tableName);
+    }
+
+    // 是否忽略表名
+    private boolean isIgnoreTable(String tableName) {
+        return !tenantProperties.getIncludes().contains(tableName);
     }
 
 }

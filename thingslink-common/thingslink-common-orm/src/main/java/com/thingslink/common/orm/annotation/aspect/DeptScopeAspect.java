@@ -28,19 +28,27 @@ import java.util.stream.Collectors;
 @Aspect
 public class DeptScopeAspect {
 
+    /**
+     * 方法执行前执行
+     */
     @Before("@annotation(deptScope)")
     public void before(JoinPoint point, DeptScope deptScope) {
-        handleDataScope(point, deptScope);
+        handleDataScope(deptScope);
     }
 
-    // 加入@DeptScope注解的方法执行完成后执行-用于销毁数据权限sql
+    /**
+     * 加入@DeptScope注解的方法执行完成后执行-用于销毁数据权限sql
+     */
     @After("@annotation(deptScope)")
     @AfterThrowing("@annotation(deptScope)")
     public void after(JoinPoint point, DeptScope deptScope) {
         DeptScopeUtil.clear();
     }
 
-    private void handleDataScope(JoinPoint point, DeptScope deptScope) {
+    /**
+     * 处理部门数据权限
+     */
+    private void handleDataScope(DeptScope deptScope) {
         if (LoginUserUtil.isLogin()) {
             // 租户的最高管理员不查询部门数据权限
             if (LoginUserUtil.isAdmin()) {

@@ -2,9 +2,9 @@ package com.thingslink.file.service.impl;
 
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import com.thingslink.common.core.utils.file.FileUtil;
 import com.thingslink.file.domain.FileChunk;
 import com.thingslink.file.service.SysFileService;
-import com.thingslink.common.core.utils.file.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,8 @@ public class FastDfsSysFileServiceImpl implements SysFileService {
         try {
             storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
                     FileUtil.getExtension(file), null);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
         return storePath.getFullPath();

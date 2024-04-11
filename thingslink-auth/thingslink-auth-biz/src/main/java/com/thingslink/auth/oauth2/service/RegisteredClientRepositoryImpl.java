@@ -1,10 +1,11 @@
 package com.thingslink.auth.oauth2.service;
 
-import com.thingslink.auth.domain.Oauth2RegisteredClient;
-import com.thingslink.auth.mapper.Oauth2RegisteredClientMapper;
+import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.redis.util.RedisUtil;
 import com.thingslink.common.security.config.TokenConfig;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.user.api.RemoteOAuth2ClientApi;
+import com.thingslink.user.api.domain.dto.Oauth2ClientDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -32,7 +33,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     private final TokenConfig tokenConfig;
 
-    private final Oauth2RegisteredClientMapper oauth2RegisteredClientMapper;
+    private final RemoteOAuth2ClientApi remoteOAuth2ClientApi;
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -46,47 +47,48 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     @Override
     public RegisteredClient findByClientId(String clientId) {
-        Oauth2RegisteredClient oauth2RegisteredClient = RedisUtil.getCacheObject(this.buildRedisKey(clientId));
+        Oauth2ClientDTO oauth2ClientDTO = RedisUtil.getCacheObject(this.buildRedisKey(clientId));
 
-        if (oauth2RegisteredClient == null) {
-            oauth2RegisteredClient = oauth2RegisteredClientMapper.selectByClientId(clientId);
+        if (oauth2ClientDTO == null) {
+            Result<Oauth2ClientDTO> dtoResult = remoteOAuth2ClientApi.getByClientId(clientId);
+            oauth2ClientDTO = dtoResult.checkData();
 
-            if (oauth2RegisteredClient == null) {
+            if (oauth2ClientDTO == null) {
                 OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
             }
 
-            if (!Oauth2RegisteredClient.Status.NORMAL.value().equals(oauth2RegisteredClient.getStatus())) {
+            if (!Oauth2ClientDTO.Status.NORMAL.value().equals(oauth2ClientDTO.getStatus())) {
                 OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
             }
 
             // 数据库存储放入缓存
-            RedisUtil.setCacheObject(this.buildRedisKey(clientId), oauth2RegisteredClient, tokenConfig.getRefreshTokenTimeOut());
+            RedisUtil.setCacheObject(this.buildRedisKey(clientId), oauth2ClientDTO, Duration.ofSeconds(tokenConfig.getRefreshTokenTimeOut()));
         }
 
-        return this.buildRegisteredClient(oauth2RegisteredClient);
+        return this.buildRegisteredClient(oauth2ClientDTO);
     }
 
     /**
      * 构建Spring OAuth2所需要的客户端信息
      */
-    private RegisteredClient buildRegisteredClient(Oauth2RegisteredClient oauth2RegisteredClient) {
-        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2RegisteredClient.getId().toString())
-                .clientId(oauth2RegisteredClient.getClientId())
-                .clientSecret(oauth2RegisteredClient.getClientSecret())
+    private RegisteredClient buildRegisteredClient(Oauth2ClientDTO oauth2ClientDTO) {
+        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2ClientDTO.getId().toString())
+                .clientId(oauth2ClientDTO.getClientId())
+                .clientSecret(oauth2ClientDTO.getClientSecret())
                 .clientAuthenticationMethods(clientAuthenticationMethods -> {
                     clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
                     clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_POST);
                 })
                 .authorizationGrantTypes(authorizationGrantTypes -> {// 授权方式
-                    for (String authorizedGrantType : oauth2RegisteredClient.getAuthorizationGrantTypes()) {
+                    for (String authorizedGrantType : oauth2ClientDTO.getAuthorizationGrantTypes()) {
                         authorizationGrantTypes.add(new AuthorizationGrantType(authorizedGrantType));
                     }
                 })
                 .redirectUris(redirectUris -> {// 回调地址
-                    redirectUris.addAll(oauth2RegisteredClient.getRedirectUris());
+                    redirectUris.addAll(oauth2ClientDTO.getRedirectUris());
                 })
                 .scopes(scopes -> {// scope
-                    scopes.addAll(oauth2RegisteredClient.getScopes());
+                    scopes.addAll(oauth2ClientDTO.getScopes());
                 });
 
         builder.tokenSettings(TokenSettings.builder()
@@ -98,7 +100,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
                         .deviceCodeTimeToLive(Duration.ofSeconds(tokenConfig.getDeviceCodeTimeOut()))
                         .build())
                 .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(!oauth2RegisteredClient.getAutoApprove())
+                        .requireAuthorizationConsent(!oauth2ClientDTO.getAutoApprove())
                         .build());
         return builder.build();
     }

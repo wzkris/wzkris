@@ -5,10 +5,8 @@ import com.thingslink.auth.service.CaptchaService;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.annotation.InnerAuth;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -32,7 +30,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
      * 解锁账号
      */
     @Override
-    public void unlockAccount(@PathVariable String username) {
+    public void unlockAccount(String username) {
         captchaService.unlock(username);
     }
 
@@ -46,8 +44,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     public Result<Object> findByToken(String token) {
         OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(token, null);
 
-        Authentication authentication = oAuth2Authorization == null ? null : oAuth2Authorization.getAttribute(Principal.class.getName());
-        return authentication == null ? success() : success(authentication.getPrincipal());
+        return oAuth2Authorization == null ? success() : success(oAuth2Authorization.getAttribute(Principal.class.getName()));
     }
 
     /**

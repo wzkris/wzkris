@@ -2,10 +2,8 @@ package com.thingslink.auth.controller;
 
 import com.thingslink.auth.service.CaptchaService;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.web.controller.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static com.thingslink.common.core.domain.Result.success;
 
 /**
  * @author : wzkris
@@ -26,7 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-public class CaptchaController extends BaseController {
+public class CaptchaController {
 
     private final CaptchaService captchaService;
 
@@ -39,8 +39,7 @@ public class CaptchaController extends BaseController {
 
     @Operation(summary = "短信验证码")
     @GetMapping("/sms_code")
-    public Result<?> smsCode(@NotNull(message = "[phoneNumber] {validate.notnull}") String phoneNumber) {
-        captchaService.sendSmsCode(phoneNumber);
+    public Result<?> smsCode() {
         return success();
     }
 }

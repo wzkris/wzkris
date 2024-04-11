@@ -2,7 +2,7 @@ package com.thingslink.equipment.controller;
 
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.orm.page.Page;
-import com.thingslink.common.web.controller.BaseController;
+import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.equipment.domain.Device;
 import com.thingslink.equipment.domain.vo.DeviceVO;
 import com.thingslink.equipment.mapper.DeviceMapper;

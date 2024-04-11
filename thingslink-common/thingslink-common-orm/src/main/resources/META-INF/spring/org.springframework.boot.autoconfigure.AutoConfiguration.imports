@@ -1,3 +1,4 @@
 com.thingslink.common.orm.annotation.aspect.DeptScopeAspect
+com.thingslink.common.orm.annotation.aspect.DynamicTenantAspect
 com.thingslink.common.orm.plus.config.MybatisPlusConfig
 com.thingslink.common.orm.plus.config.TenantProperties

@@ -1,22 +1,26 @@
 package com.thingslink.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.thingslink.auth.domain.SysUser;
-import com.thingslink.auth.domain.bo.PermissionBO;
-import com.thingslink.auth.mapper.SysUserMapper;
-import com.thingslink.auth.service.PermissionService;
+import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import com.thingslink.common.core.constant.CommonConstants;
-import com.thingslink.common.core.utils.MapstructUtil;
+import com.thingslink.common.core.domain.Result;
+import com.thingslink.common.security.config.TokenConfig;
 import com.thingslink.common.security.model.LoginUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.user.api.RemoteSysUserApi;
+import com.thingslink.user.api.domain.dto.SysPermissionDTO;
+import com.thingslink.user.api.domain.dto.SysUserDTO;
+import com.thingslink.user.api.domain.vo.RouterVO;
 import lombok.AllArgsConstructor;
+import org.redisson.api.RBucket;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -26,52 +30,78 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class SysUserDetailsService implements UserDetailsService {
-    private final SysUserMapper sysUserMapper;
-    private final PermissionService permissionService;
+public class SysUserDetailsService implements UserDetailsServicePlus {
+    private static final String ROUTER_PREFIX = "router";
+    private final TokenConfig tokenConfig;
+    private final RemoteSysUserApi remoteSysUserApi;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser user = sysUserMapper.selectByUsername(username);
-        return this.checkAndBuildLoginUser(user);
+        Result<SysUserDTO> result = remoteSysUserApi.getByUsername(username);
+        SysUserDTO sysUserDTO = result.checkData();
+        return this.checkAndBuildLoginUser(sysUserDTO);
     }
 
-    public UserDetails loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
-        SysUser user = sysUserMapper.selectByPhoneNumber(phoneNumber);
-        return this.checkAndBuildLoginUser(user);
+    /**
+     * 获取前端路由
+     */
+    public List<RouterVO> getRouter(Long userId) {
+        RBucket<List<RouterVO>> bucket = JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId));
+        if (bucket.get() == null) {
+            Result<List<RouterVO>> listResult = remoteSysUserApi.getRouter(userId);
+            List<RouterVO> routerVOS = listResult.checkData();
+            bucket.set(routerVOS, Duration.ofSeconds(tokenConfig.getRefreshTokenTimeOut()));
+        }
+        return bucket.get();
     }
 
-    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-        SysUser user = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("email", email));
-        return this.checkAndBuildLoginUser(user);
+    public void setRouter(Long userId) {
+        Result<List<RouterVO>> listResult = remoteSysUserApi.getRouter(userId);
+        JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId)).set(listResult.checkData(), Duration.ofSeconds(tokenConfig.getRefreshTokenTimeOut()));
     }
 
     /**
      * 构建登录用户
      */
-    private UserDetails checkAndBuildLoginUser(SysUser user) {
+    private UserDetails checkAndBuildLoginUser(SysUserDTO sysUserDTO) {
         // 校验用户状态
-        this.checkAccount(user);
-        // 获取权限信息
-        PermissionBO permissions = permissionService.getPermission(user);
+        this.checkAccount(sysUserDTO);
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUserId(sysUserDTO.getUserId());
+        loginUser.setDeptId(sysUserDTO.getDeptId());
+        loginUser.setTenantId(sysUserDTO.getTenantId());
+        loginUser.setUsername(sysUserDTO.getUsername());
+        loginUser.setPassword(sysUserDTO.getPassword());
 
-        LoginUser loginUser = MapstructUtil.convert(user, LoginUser.class);
+        // 获取权限信息
+        Result<SysPermissionDTO> permissionDTOResult = remoteSysUserApi.getPermission(sysUserDTO.getUserId(), sysUserDTO.getTenantId(), sysUserDTO.getDeptId());
+        SysPermissionDTO permissions = permissionDTOResult.checkData();
 
         loginUser.setIsAdmin(permissions.getIsAdmin());
         loginUser.setAuthorities(AuthorityUtils.createAuthorityList(permissions.getGrantedAuthority()));
         loginUser.setDeptScopes(permissions.getDeptScopes());
+
+        // 获取前端路由信息
+        Result<List<RouterVO>> routerResult = remoteSysUserApi.getRouter(sysUserDTO.getUserId());
+        List<RouterVO> routerVOS = routerResult.checkData();
+        loginUser.putAdditionalParameter(this.buildRouterKey(loginUser.getUserId()), routerVOS);
         return loginUser;
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(SysUser sysUser) {
-        if (sysUser == null) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");// 不能明说账号不存在
+    private void checkAccount(SysUserDTO sysUserDTO) {
+        if (sysUserDTO == null) {
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");// 不能明说账号不存在
         }
-        if (ObjUtil.equals(sysUser.getStatus(), CommonConstants.STATUS_DISABLE)) {
+        if (ObjUtil.equals(sysUserDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
+    }
+
+    // 构建用户路由KEY
+    private String buildRouterKey(Long userId) {
+        return String.format("%s:%s", ROUTER_PREFIX, userId);
     }
 }

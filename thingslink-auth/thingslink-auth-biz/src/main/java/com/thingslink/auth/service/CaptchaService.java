@@ -6,9 +6,8 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.google.code.kaptcha.Producer;
-import com.thingslink.auth.config.CaptchaConfig;
+import com.thingslink.auth.kaptcha.CaptchaConfig;
 import com.thingslink.common.core.enums.BizCode;
-import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.exception.BusinessExceptionI18n;
 import com.thingslink.common.core.exception.param.CaptchaException;
 import com.thingslink.common.core.utils.StringUtil;
@@ -22,6 +21,7 @@ import org.springframework.util.FastByteArrayOutputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +81,7 @@ public class CaptchaService {
         }
 
         // 存入缓存
-        RedisUtil.setCacheObject(PIC_CODE_PREFIX + uuid, code, 180);
+        RedisUtil.setCacheObject(PIC_CODE_PREFIX + uuid, code, Duration.ofSeconds(180));
 
         // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
@@ -127,7 +127,7 @@ public class CaptchaService {
         }
         // TODO 调用SMS发送验证码
         String smsCode = RandomUtil.randomNumbers(6);
-        RedisUtil.setCacheObject(smsKey, smsCode, 180);
+        RedisUtil.setCacheObject(smsKey, smsCode, Duration.ofSeconds(180));
     }
 
     /**
@@ -157,7 +157,7 @@ public class CaptchaService {
             throw new BusinessExceptionI18n(BizCode.FREQUENT_RETRY.value(), "frequent.retry");
         }
         ++retryCount;
-        RedisUtil.setCacheObject(lockKey, retryCount, 300); // 默认冻结5分钟
+        RedisUtil.setCacheObject(lockKey, retryCount, Duration.ofSeconds(300)); // 默认冻结5分钟
     }
 
     /**

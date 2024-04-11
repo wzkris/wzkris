@@ -2,7 +2,7 @@ package com.thingslink.system.utils;
 
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.system.domain.Job;
+import com.thingslink.system.domain.SysJob;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,10 +18,10 @@ public class JobInvokeUtil {
     /**
      * 执行方法
      *
-     * @param job 系统任务
+     * @param sysJob 系统任务
      */
-    public static void invokeMethod(Job job) throws Exception {
-        String invokeTarget = job.getInvokeTarget();
+    public static void invokeMethod(SysJob sysJob) throws Exception {
+        String invokeTarget = sysJob.getInvokeTarget();
         String beanName = getBeanName(invokeTarget);
         String methodName = getMethodName(invokeTarget);
         List<Object[]> methodParams = getMethodParams(invokeTarget);
