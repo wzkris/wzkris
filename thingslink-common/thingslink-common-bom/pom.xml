@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.thingslink</groupId>
+    <artifactId>thingslink-common-bom</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <name>thingslink-common-bom</name>
+
+    <description>
+        thingslink依赖清单
+    </description>
+
+    <properties>
+        <revision>4.1.0</revision>
+    </properties>
+
+    <dependencyManagement>
+
+        <dependencies>
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 权限范围 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-orm</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 多数据源 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-datasource</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 日志记录 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-log</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!--mq服务 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-mq</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!--mq服务 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-mqtt</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!--rpc服务 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-openfeign</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 缓存服务 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-redis</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 分布式事务 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-seata</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 安全模块 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-security</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 限流模块-->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-sentinel</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 短信模块-->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-sms</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 状态机-->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-statemachine</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 接口模块 -->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-swagger</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 第三方模块-->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-third</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- web容器-->
+            <dependency>
+                <groupId>com.thingslink</groupId>
+                <artifactId>thingslink-common-web</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+</project>

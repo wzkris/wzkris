@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.thingslink</groupId>
+        <artifactId>thingslink</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>thingslink-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        thingslink-common通用模块
+    </description>
+
+    <modules>
+        <module>thingslink-common-bom</module>
+        <module>thingslink-common-core</module>
+        <module>thingslink-common-orm</module>
+        <module>thingslink-common-datasource</module>
+        <module>thingslink-common-log</module>
+        <module>thingslink-common-mq</module>
+        <module>thingslink-common-mqtt</module>
+        <module>thingslink-common-openfeign</module>
+        <module>thingslink-common-redis</module>
+        <module>thingslink-common-seata</module>
+        <module>thingslink-common-security</module>
+        <module>thingslink-common-sentinel</module>
+        <module>thingslink-common-sms</module>
+        <module>thingslink-common-statemachine</module>
+        <module>thingslink-common-swagger</module>
+        <module>thingslink-common-third</module>
+        <module>thingslink-common-web</module>
+    </modules>
+</project>

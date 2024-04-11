@@ -1,0 +1,67 @@
+version: '4'
+
+services:
+  mysql:
+    image: mysql:8.0.32
+    container_name: mysql_8
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+      # root 密码
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3307"
+    volumes:
+      - D:\idea\thingslink-Cloud\docker\mysql\data\:/var/lib/mysql/
+      - D:\idea\thingslink-Cloud\docker\mysql\conf\:/etc/mysql/my.cnf
+    privileged: true
+    network_mode: "host"
+
+
+  redis:
+    image: redis:6.2.7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    volumes:
+      # 配置文件
+      - D:\idea\thingslink-Cloud\docker\redis\conf:/redis/config
+      # 数据文件
+      - D:\idea\thingslink-Cloud\docker\redis\data\:/redis/data/
+    command: "redis-server /redis/config/redis.conf"
+    privileged: true
+    network_mode: "host"
+
+  nacos:
+    image: nacos/nacos-server:v2.0.3
+    container_name: nacos
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9849:9849"
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+      MODE: standalone
+    network_mode: "host"
+
+  seata-server:
+    image: seataio/seata-server:1.6.0
+    container_name: seata-server
+    ports:
+      - "7091:7091"
+      - "8091:8091"
+    environment:
+      TZ: Asia/Shanghai
+      # 注意 此处ip如果是外网使用 要改为外网ip
+      # SEATA_IP: 127.0.0.1
+      SEATA_PORT: 8091
+    volumes:
+      - D:\idea\thingslink-Cloud\docker\seata-server\logs\:/thingslink/seata-server/logs
+      # skywalking 探针
+      - D:\idea\thingslink-Cloud\docker\skywalking\agent\:/thingslink/skywalking/agent
+    privileged: true
+    network_mode: "host"

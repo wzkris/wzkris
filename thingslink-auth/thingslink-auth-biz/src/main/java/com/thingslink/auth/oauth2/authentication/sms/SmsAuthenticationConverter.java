@@ -1,0 +1,50 @@
+package com.thingslink.auth.oauth2.authentication.sms;
+
+import com.thingslink.auth.oauth2.authentication.CommonAuthenticationConverter;
+import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
+import com.thingslink.auth.oauth2.constants.GrantTypeConstant;
+import com.thingslink.auth.oauth2.constants.OAuth2ParameterConstant;
+import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
+
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author wzkris
+ * @date 2024/3/11
+ * @description 短信模式转换器
+ */
+public class SmsAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+
+    @Override
+    protected boolean support(String grantType) {
+        return GrantTypeConstant.SMS.equals(grantType);
+    }
+
+    @Override
+    public void checkParams(MultiValueMap<String, String> parameters) {
+        // phonenumber (REQUIRED)
+        String phoneNumber = parameters.getFirst(OAuth2ParameterConstant.PHONE_NUMBER);
+        if (!StringUtils.hasText(phoneNumber) || parameters.get(OAuth2ParameterConstant.PHONE_NUMBER).size() != 1) {
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.parameter.missing", OAuth2ParameterConstant.PHONE_NUMBER);
+        }
+
+        // smscode (REQUIRED)
+        String smsCode = parameters.getFirst(OAuth2ParameterConstant.SMS_CODE);
+        if (!StringUtils.hasText(smsCode) || parameters.get(OAuth2ParameterConstant.SMS_CODE).size() != 1) {
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.parameter.missing", OAuth2ParameterConstant.SMS_CODE);
+        }
+    }
+
+    @Override
+    public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
+        String phoneNumber = additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER).toString();
+        String smsCode = additionalParameters.get(OAuth2ParameterConstant.SMS_CODE).toString();
+        return new SmsAuthenticationToken(phoneNumber, smsCode, clientPrincipal, requestedScopes, additionalParameters);
+    }
+
+}

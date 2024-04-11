@@ -1,0 +1,4 @@
+com.thingslink.common.web.config.HikariInitPool
+com.thingslink.common.web.config.JacksonConfig
+com.thingslink.common.web.config.ValidatorConfig
+com.thingslink.common.web.handler.GlobalExceptionHandler

@@ -1,0 +1,52 @@
+mode:
+  type: Standalone
+  repository:
+    type: JDBC
+    props:
+      overwrite: true
+      namespace: order
+      server-lists: localhost:2181
+      retryIntervalMilliseconds: 500
+      timeToLiveSeconds: 60
+      maxRetries: 3
+      operationTimeoutMilliseconds: 500
+dataSources:
+  master:
+    #池配置
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    connectionTimeout: 10000
+    connectionTestQuery: select 1
+    minimumIdle: 5
+    maximumPoolSize: 10
+    ##
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: ${jdbc-url}
+    username: root
+    password: root
+  slave1:
+    #池配置
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    connectionTimeout: 10000
+    connectionTestQuery: select 1
+    minimumIdle: 5
+    maximumPoolSize: 10
+    ##
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: ${jdbc-url}
+    username: root
+    password: root
+rules:
+  - !READWRITE_SPLITTING
+    dataSources:
+      logic_db:
+        staticStrategy:
+          writeDataSourceName: master
+          readDataSourceNames:
+            - slave1
+        loadBalancerName: round_robin
+    loadBalancers:
+      round_robin:
+        type: ROUND_ROBIN
+
+props:
+  sql-show: true

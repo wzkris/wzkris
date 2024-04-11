@@ -1,0 +1,29 @@
+#web
+server:
+  port: 9100
+
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: thingslink-monitor
+  profiles:
+    # 环境配置
+    active: @profiles.active@
+  cloud:
+    nacos:
+      # 注册地址
+      server-addr: @nacos.server@
+      #权限认证
+      username: @nacos.username@
+      password: @nacos.password@
+      discovery:
+        namespace: @nacos.namespace@
+        group: @nacos.group@
+      config:
+        namespace: @nacos.namespace@
+        group: @nacos.group@
+  config:
+    import:
+      - optional:nacos:application-common.yml
+      - optional:nacos:${spring.application.name}.yml

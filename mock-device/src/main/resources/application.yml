@@ -1,0 +1,16 @@
+server:
+  port: 9999
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: mock-device
+
+#mqtt基本配置
+mqtt:
+  host: tcp://127.0.0.1:1883
+  username: mock_device_car
+  password: ${server.port}
+  clientId: mock_device_car:8622363949796987
+  timeout: 50
+  keepAlive: 30

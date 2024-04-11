@@ -1,0 +1,2 @@
+com.thingslink.auth.api.fallback.RemoteTokenApiFallback
+com.thingslink.auth.api.fallback.RemoteCaptchaApiFallback

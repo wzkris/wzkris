@@ -1,0 +1,76 @@
+mode:
+  type: Standalone
+  repository:
+    type: JDBC
+    props:
+      overwrite: true
+      namespace: system
+      server-lists: localhost:2181
+      retryIntervalMilliseconds: 500
+      timeToLiveSeconds: 60
+      maxRetries: 3
+      operationTimeoutMilliseconds: 500
+dataSources:
+  ds_0:
+    #池配置
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    connectionTimeout: 10000
+    connectionTestQuery: select 1
+    minimumIdle: 5
+    maximumPoolSize: 10
+    ##
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: ${jdbc-url}
+    username: root
+    password: root
+  ds_1:
+    #池配置
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    connectionTimeout: 10000
+    connectionTestQuery: select 1
+    minimumIdle: 5
+    maximumPoolSize: 10
+    ##
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: ${jdbc-url}
+    username: root
+    password: root
+rules:
+  - !SHARDING
+    tables:
+      l_post:
+        actualDataNodes: ds_0.post
+        tableStrategy:
+          standard:
+            shardingColumn: post_id
+            shardingAlgorithmName: inline
+        keyGenerateStrategy: # 分布式序列策略
+          column: post_id # 自增列名称，缺省表示不使用自增主键生成器
+          keyGeneratorName: snowflake # 分布式序列算法名称
+    shardingAlgorithms: # 分片算法配置
+      inline:
+        type: INLINE
+        props:
+          algorithm-expression: l_post->{post_id % 2}
+          allow-range-query-with-inline-sharding: true
+    keyGenerators: # 分布式序列算法配置
+      snowflake:
+        type: SNOWFLAKE
+        props:
+          worker-id: 100
+          max-vibration-offset: 4095
+          max-tolerate-time-difference-milliseconds: 20
+  - !READWRITE_SPLITTING
+    dataSources:
+      logic_db:
+        staticStrategy:
+          writeDataSourceName: ds_0
+          readDataSourceNames:
+            - ds_1
+        loadBalancerName: round_robin
+    loadBalancers:
+      round_robin:
+        type: ROUND_ROBIN
+props:
+  sql-show: true
+  sql-simple: true

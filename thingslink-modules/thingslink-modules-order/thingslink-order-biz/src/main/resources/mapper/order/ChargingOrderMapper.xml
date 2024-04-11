@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thingslink.order.mapper.ChargingOrderMapper">
+
+    <resultMap id="ChargingOrderPO" type="ChargingOrder">
+        <id column="charging_id" property="chargingId"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="pay_type" property="payType"/>
+        <result column="charging_status" property="chargingStatus"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="pay_amount" property="payAmount"/>
+        <result column="point_amount" property="pointAmount"/>
+        <result column="refund_amount" property="refundAmount"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="is_use_coupon" property="isUseCoupon"/>
+        <result property="createAt" column="create_at"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateAt" column="update_at"/>
+        <result property="updateBy" column="update_by"/>
+    </resultMap>
+
+    <sql id="SELECT_ALL_COLUMN">
+        SELECT charging_id,
+        order_no,
+        customer_id,
+        dept_id,
+        pay_type,
+        charging_status,
+        total_amount,
+        pay_amount,
+        point_amount,
+        refund_amount,
+        pay_time,
+        is_use_coupon,
+        create_at, create_by, update_at, update_by
+        FROM charging_order
+    </sql>
+
+    <!-- 实体类查询条件-->
+    <sql id="ENTITY_QUERY_CONDITION">
+        <where>
+            <if test="orderNo != null">
+                AND order_no = #{orderNo}
+            </if>
+            <if test="customerId != null">
+                AND customer_id = #{customerId}
+            </if>
+            <if test="deptId != null">
+                AND dept_id = #{deptId}
+            </if>
+            <if test="payType != null and payType != ''">
+                AND pay_type = #{payType}
+            </if>
+            <if test="chargingStatus != null and chargingStatus != ''">
+                AND charging_status = #{chargingStatus}
+            </if>
+            <if test="isUseCoupon != null and isUseCoupon != ''">
+                AND is_use_coupon = #{isUseCoupon}
+            </if>
+        </where>
+    </sql>
+
+    <!--查询单个-->
+    <select id="getById" resultMap="ChargingOrderPO">
+        <include refid="SELECT_ALL_COLUMN"/>
+        WHERE charging_id = #{chargingId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="list" resultMap="ChargingOrderPO">
+        <include refid="SELECT_ALL_COLUMN"/>
+        <include refid="ENTITY_QUERY_CONDITION"/>
+        ORDER BY charging_id DESC
+    </select>
+
+    <!-- 新增选择列 -->
+    <insert id="insert" keyProperty="chargingId" useGeneratedKeys="true">
+        INSERT INTO charging_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chargingId != null">charging_id,</if>
+            <if test="orderNo != null">order_no,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="payType != null and payType != ''">pay_type,</if>
+            <if test="chargingStatus != null and chargingStatus != ''">charging_status,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="payAmount != null">pay_amount,</if>
+            <if test="pointAmount != null">point_amount,</if>
+            <if test="refundAmount != null">refund_amount,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="isUseCoupon != null and isUseCoupon != ''">is_use_coupon,</if>
+            <if test="createAt != null">create_at,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="updateAt != null">update_at,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="chargingId != null">#{chargingId},</if>
+            <if test="orderNo != null">#{orderNo},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="payType != null and payType != ''">#{payType},</if>
+            <if test="chargingStatus != null and chargingStatus != ''">#{chargingStatus},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="payAmount != null">#{payAmount},</if>
+            <if test="pointAmount != null">#{pointAmount},</if>
+            <if test="refundAmount != null">#{refundAmount},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="isUseCoupon != null and isUseCoupon != ''">#{isUseCoupon},</if>
+            <if test="createAt != null">#{createAt},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="updateAt != null">#{updateAt},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch" keyProperty="chargingId" useGeneratedKeys="true">
+        INSERT INTO charging_order
+        (charging_id, order_no, customer_id, dept_id, pay_type, charging_status, total_amount, pay_amount,
+        point_amount, refund_amount, pay_time, is_use_coupon, create_at, create_by, update_at, update_by)
+        VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.chargingId}, #{entity.orderNo}, #{entity.customerId}, #{entity.deptId},
+            #{entity.payType}, #{entity.chargingStatus}, #{entity.totalAmount}, #{entity.payAmount},
+            #{entity.pointAmount}, #{entity.refundAmount}, #{entity.payTime}, #{entity.isUseCoupon},
+            #{entity.createAt}, #{entity.createBy}, #{entity.updateAt}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="updateById">
+        UPDATE charging_order
+        <set>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="payType != null and payType != ''">pay_type = #{payType},</if>
+            <if test="chargingStatus != null and chargingStatus != ''">charging_status = #{chargingStatus},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="payAmount != null">pay_amount = #{payAmount},</if>
+            <if test="pointAmount != null">point_amount = #{pointAmount},</if>
+            <if test="refundAmount != null">refund_amount = #{refundAmount},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="isUseCoupon != null and isUseCoupon != ''">is_use_coupon = #{isUseCoupon},</if>
+            <if test="createAt != null">create_at = #{createAt},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="updateAt != null">update_at = #{updateAt},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+        </set>
+        WHERE charging_id = #{chargingId}
+    </update>
+
+    <!--通过主键批量修改数据-->
+    <update id="updateBatchById">
+        UPDATE charging_order
+        <trim prefix="SET" suffixOverrides=",">
+            <trim prefix="order_no = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.orderNo != null">
+                        WHEN #{entity.chargingId} THEN #{entity.orderNo}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="customer_id = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.customerId != null">
+                        WHEN #{entity.chargingId} THEN #{entity.customerId}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="dept_id = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.deptId != null">
+                        WHEN #{entity.chargingId} THEN #{entity.deptId}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="pay_type = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.payType != null">
+                        WHEN #{entity.chargingId} THEN #{entity.payType}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="charging_status = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.chargingStatus != null">
+                        WHEN #{entity.chargingId} THEN #{entity.chargingStatus}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="total_amount = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.totalAmount != null">
+                        WHEN #{entity.chargingId} THEN #{entity.totalAmount}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="pay_amount = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.payAmount != null">
+                        WHEN #{entity.chargingId} THEN #{entity.payAmount}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="point_amount = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.pointAmount != null">
+                        WHEN #{entity.chargingId} THEN #{entity.pointAmount}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="refund_amount = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.refundAmount != null">
+                        WHEN #{entity.chargingId} THEN #{entity.refundAmount}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="pay_time = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.payTime != null">
+                        WHEN #{entity.chargingId} THEN #{entity.payTime}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_use_coupon = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.isUseCoupon != null">
+                        WHEN #{entity.chargingId} THEN #{entity.isUseCoupon}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="update_by = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.createAt != null">
+                        WHEN #{entity.chargingId} THEN #{entity.updateBy}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="update_at = CASE charging_id" suffix="END,">
+                <foreach collection="entities" item="entity">
+                    <if test="entity.updateAt != null">
+                        WHEN #{entity.chargingId} THEN #{entity.updateAt}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        WHERE charging_id IN
+        <foreach collection="entities" item="entity" open="(" separator="," close=")">
+            #{entity.chargingId}
+        </foreach>
+    </update>
+
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        DELETE
+        FROM charging_order
+        WHERE charging_id = #{chargingId}
+    </delete>
+</mapper>
+
+
