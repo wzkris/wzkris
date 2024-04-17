@@ -1,6 +1,7 @@
 package com.thingslink.user.api_feign;
 
 import com.thingslink.common.core.domain.Result;
+import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.annotation.InnerAuth;
 import com.thingslink.user.api.RemoteCustomerApi;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
@@ -30,14 +31,7 @@ public class RemoteCustomerApiImpl implements RemoteCustomerApi {
     @Override
     public Result<CustomerDTO> getByPhoneNumber(String phoneNumber) {
         Customer customer = customerMapper.selectByPhoneNumber(phoneNumber);
-
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setUserId(customer.getUserId());
-        customerDTO.setNickname(customer.getNickname());
-        customerDTO.setPhoneNumber(customer.getPhoneNumber());
-        customerDTO.setStatus(customer.getStatus());
-        customerDTO.setGender(customer.getGender());
-        customerDTO.setAvatar(customer.getAvatar());
+        CustomerDTO customerDTO = MapstructUtil.convert(customer, CustomerDTO.class);
         return success(customerDTO);
     }
 

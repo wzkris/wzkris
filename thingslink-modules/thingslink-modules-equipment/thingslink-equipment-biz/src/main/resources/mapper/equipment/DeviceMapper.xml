@@ -12,9 +12,9 @@
         <result column="device_status" property="deviceStatus"/>
         <result column="road_status" property="roadStatus"/>
         <result property="createAt" column="create_at"/>
-        <result property="createBy" column="create_by"/>
+        <result property="createId" column="create_id"/>
         <result property="updateAt" column="update_at"/>
-        <result property="updateBy" column="update_by"/>
+        <result property="updateId" column="update_id"/>
     </resultMap>
 
     <resultMap id="DeviceVO" type="DeviceVO" extends="DevicePO">
@@ -29,7 +29,7 @@
         online_time,
         device_status,
         road_status,
-        create_at, create_by, update_at, update_by
+        create_at, create_id, update_at, update_id
         FROM device
     </sql>
 
@@ -90,9 +90,9 @@
             <if test="deviceStatus != null and deviceStatus != ''">device_status,</if>
             <if test="roadStatus != null and roadStatus != ''">road_status,</if>
             <if test="createAt != null">create_at,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="updateAt != null">update_at,</if>
-            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="deviceId != null">#{deviceId},</if>
@@ -104,21 +104,21 @@
             <if test="deviceStatus != null and deviceStatus != ''">#{deviceStatus},</if>
             <if test="roadStatus != null and roadStatus != ''">#{roadStatus},</if>
             <if test="createAt != null">#{createAt},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="updateAt != null">#{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
         </trim>
     </insert>
 
     <insert id="insertBatch" keyProperty="deviceId" useGeneratedKeys="true">
         INSERT INTO device
         (device_id, device_name, station_id, serial_no, version, online_time, device_status, road_status, create_at,
-        create_by, update_at, update_by)
+        create_id, update_at, update_id)
         VALUES
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.deviceId}, #{entity.deviceName}, #{entity.stationId}, #{entity.serialNo}, #{entity.version},
             #{entity.onlineTime}, #{entity.deviceStatus}, #{entity.roadStatus}, #{entity.createAt},
-            #{entity.createBy}, #{entity.updateAt}, #{entity.updateBy})
+            #{entity.createId}, #{entity.updateAt}, #{entity.updateId})
         </foreach>
     </insert>
 
@@ -134,9 +134,9 @@
             <if test="deviceStatus != null and deviceStatus != ''">device_status = #{deviceStatus},</if>
             <if test="roadStatus != null and roadStatus != ''">road_status = #{roadStatus},</if>
             <if test="createAt != null">create_at = #{createAt},</if>
-            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="updateAt != null">update_at = #{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
         </set>
         WHERE device_id = #{deviceId}
     </update>
@@ -151,9 +151,9 @@
             <if test="deviceStatus != null and deviceStatus != ''">device_status = #{deviceStatus},</if>
             <if test="roadStatus != null and roadStatus != ''">road_status = #{roadStatus},</if>
             <if test="createAt != null">create_at = #{createAt},</if>
-            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="updateAt != null">update_at = #{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
         </set>
         WHERE serial_no = #{serialNo}
     </update>
@@ -212,10 +212,10 @@
                     </if>
                 </foreach>
             </trim>
-            <trim prefix="create_by = CASE device_id" suffix="END,">
+            <trim prefix="create_id = CASE device_id" suffix="END,">
                 <foreach collection="entities" item="entity">
-                    <if test="entity.createBy != null">
-                        WHEN #{entity.deviceId} THEN #{entity.createBy}
+                    <if test="entity.createId != null">
+                        WHEN #{entity.deviceId} THEN #{entity.createId}
                     </if>
                 </foreach>
             </trim>

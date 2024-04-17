@@ -3,7 +3,6 @@ package com.thingslink.auth.oauth2.service;
 import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.model.AppUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import com.thingslink.user.api.RemoteCustomerApi;
@@ -40,7 +39,9 @@ public class AppUserDetailsService implements UserDetailsServicePlus {
         this.checkAccount(customerDTO);
         // 获取权限信息
 
-        AppUser appUser = MapstructUtil.convert(customerDTO, AppUser.class);
+        AppUser appUser = new AppUser();
+        appUser.setUserId(customerDTO.getUserId());
+        appUser.setPhoneNumber(customerDTO.getPhoneNumber());
 
         return appUser;
     }

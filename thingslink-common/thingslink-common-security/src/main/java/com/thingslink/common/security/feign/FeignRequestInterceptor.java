@@ -10,8 +10,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 
 /**
@@ -52,14 +50,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
         }
 
         // 判断具体授权票据
-        if (authentication instanceof OAuth2ClientAuthenticationToken authenticationToken) {
-
-        }
-        else if (authentication instanceof OAuth2AccessTokenAuthenticationToken authenticationToken) {
-            OAuth2AccessToken auth2AccessToken = authenticationToken.getAccessToken();
-            requestTemplate.header(SecurityConstants.TOKEN_HEADER, auth2AccessToken.getTokenType().getValue() + StringUtil.SPACE + auth2AccessToken.getTokenValue());
-        }
-        else if (authentication instanceof BearerTokenAuthentication authenticationToken) {
+        if (authentication instanceof BearerTokenAuthentication authenticationToken) {
             OAuth2AccessToken auth2AccessToken = (OAuth2AccessToken) authenticationToken.getCredentials();
             requestTemplate.header(SecurityConstants.TOKEN_HEADER, auth2AccessToken.getTokenType().getValue() + StringUtil.SPACE + auth2AccessToken.getTokenValue());
         }

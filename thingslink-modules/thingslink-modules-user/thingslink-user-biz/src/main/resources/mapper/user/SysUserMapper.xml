@@ -18,9 +18,9 @@
         <result property="isDeleted" column="is_deleted"/>
         <result property="remark" column="remark"/>
         <result property="createAt" column="create_at"/>
-        <result property="createBy" column="create_by"/>
+        <result property="createId" column="create_id"/>
         <result property="updateAt" column="update_at"/>
-        <result property="updateBy" column="update_by"/>
+        <result property="updateId" column="update_id"/>
     </resultMap>
 
     <sql id="SELECT_ALL_COLUMN">
@@ -38,9 +38,9 @@
         is_deleted,
         remark,
         create_at,
-        create_by,
+        create_id,
         update_at,
-        update_by
+        update_id
         FROM sys_user
     </sql>
 

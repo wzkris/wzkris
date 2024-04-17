@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -97,7 +96,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
         }
 
         // 存储所有用户额外参数
-        AbstractUser userinfo = authorization.getAttribute(Principal.class.getName());
+        AbstractUser userinfo = authorization.getAttribute(AbstractUser.class.getName());
         if (userinfo != null) {
             for (Map.Entry<String, Object> entry : userinfo.getAdditionalParameters().entrySet()) {
                 batch.getBucket(entry.getKey()).setAsync(entry.getValue(), Duration.ofSeconds(maxTimeOut));
@@ -148,7 +147,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
         }
 
         // 移除用户额外参数
-        AbstractUser userinfo = authorization.getAttribute(Principal.class.getName());
+        AbstractUser userinfo = authorization.getAttribute(AbstractUser.class.getName());
         if (userinfo != null) {
             for (Map.Entry<String, Object> entry : userinfo.getAdditionalParameters().entrySet()) {
                 keys.add(entry.getKey());

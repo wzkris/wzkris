@@ -11,7 +11,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -23,7 +22,7 @@ import java.util.Collection;
  * @date : 2023/11/21 14:58
  */
 @Slf4j
-@Component("LoginUserUtil")
+@Component("LoginUserUtil") //加入Spring容器以用于SPEL
 public class LoginUserUtil {
 
     @Getter
@@ -55,7 +54,6 @@ public class LoginUserUtil {
         Authentication authentication = getAuthentication();
         return null != authentication && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)
-                && !(authentication instanceof OAuth2ClientAuthenticationToken)
                 && authentication.getPrincipal() instanceof LoginUser;
     }
 

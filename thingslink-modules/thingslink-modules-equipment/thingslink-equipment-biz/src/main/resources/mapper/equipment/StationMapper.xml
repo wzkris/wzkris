@@ -15,9 +15,9 @@
         <result column="longitude" property="longitude" />
         <result column="latitude" property="latitude" />
         <result property="createAt" column="create_at"/>
-        <result property="createBy" column="create_by"/>
+        <result property="createId" column="create_id"/>
         <result property="updateAt" column="update_at"/>
-        <result property="updateBy" column="update_by"/>
+        <result property="updateId" column="update_id"/>
     </resultMap>
 
     <resultMap id="StationVO" type="StationVO">
@@ -39,7 +39,7 @@
                address,
                latitude,
                longitude,
-        create_at, create_by, update_at, update_by
+        create_at, create_id, update_at, update_id
         FROM station
     </sql>
 
@@ -115,9 +115,9 @@
             <if test="latitude != null">latitude,</if>
             <if test="longitude != null">longitude,</if>
             <if test="createAt != null">create_at,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="updateAt != null">update_at,</if>
-            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="stationId != null">#{stationId},</if>
@@ -130,9 +130,9 @@
             <if test="latitude != null">#{latitude},</if>
             <if test="longitude != null">#{longitude},</if>
             <if test="createAt != null">#{createAt},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="updateAt != null">#{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
         </trim>
     </insert>
 
@@ -149,9 +149,9 @@
             <if test="latitude != null">latitude = #{latitude},</if>
             <if test="longitude != null">longitude = #{longitude},</if>
             <if test="createAt != null">create_at = #{createAt},</if>
-            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="updateAt != null">update_at = #{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
         </set>
         WHERE station_id = #{stationId}
     </update>

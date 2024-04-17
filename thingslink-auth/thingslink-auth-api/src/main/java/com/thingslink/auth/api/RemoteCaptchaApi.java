@@ -17,5 +17,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface RemoteCaptchaApi {
 
     @PostMapping("/inner/sms/validate")
-    Result<?> validateSms(@RequestBody SmsDTO smsDTO);
+    Result<Void> validateSms(@RequestBody SmsDTO smsDTO);
 }

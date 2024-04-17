@@ -7,10 +7,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thingslink.common.core.annotation.PhoneNumber;
 import com.thingslink.common.core.annotation.Xss;
 import com.thingslink.common.core.annotation.group.ValidationGroups;
-import com.thingslink.common.orm.model.BaseEntity;
 import com.thingslink.common.core.constant.SecurityConstants;
+import com.thingslink.common.orm.model.BaseEntity;
 import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.user.api.domain.dto.SysUserDTO;
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +23,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,10 @@ import java.util.Map;
  */
 @Data
 @Accessors(chain = true)
-@AutoMapper(target = LoginUser.class)
+@AutoMappers({
+        @AutoMapper(target = LoginUser.class),
+        @AutoMapper(target = SysUserDTO.class)
+})
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @FieldNameConstants
@@ -88,7 +92,7 @@ public class SysUser extends BaseEntity {
     private String loginIp;
 
     @Schema(description = "最近登录日期")
-    private LocalDateTime loginDate;
+    private Long loginDate;
 
     @Schema(description = "用户额外信息")
     private String remark;

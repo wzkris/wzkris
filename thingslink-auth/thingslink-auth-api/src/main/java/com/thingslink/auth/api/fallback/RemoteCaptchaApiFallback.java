@@ -25,7 +25,7 @@ public class RemoteCaptchaApiFallback implements FallbackFactory<RemoteCaptchaAp
         log.error("-----------认证服务发生熔断-----------");
         return new RemoteCaptchaApi() {
             @Override
-            public Result<?> validateSms(SmsDTO smsDTO) {
+            public Result<Void> validateSms(SmsDTO smsDTO) {
                 log.error("验证短信发生异常，errMsg：{}", cause.getMessage(), cause);
 
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());

@@ -1,4 +1,4 @@
-package com.thingslink.user.controller.test;
+package com.thingslink.auth.controller.test;
 
 import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.LoginLogDTO;

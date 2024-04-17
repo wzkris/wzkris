@@ -1,6 +1,6 @@
 package com.thingslink.common.log.annotation.aspect;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.StringUtil;
@@ -59,7 +59,7 @@ public class OperateLogAspect {
             OperLogDTO operLogDTO = new OperLogDTO();
             operLogDTO.setOperType(operateLog.operateType().getValue());
             operLogDTO.setStatus(OperateStatus.SUCCESS.value());
-            operLogDTO.setOperTime(LocalDateTimeUtil.now());
+            operLogDTO.setOperTime(DateUtil.current());
             // 请求的地址
             String ip = ServletUtil.getClientIP(ServletUtil.getRequest());
             operLogDTO.setOperIp(ip);

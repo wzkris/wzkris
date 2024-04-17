@@ -20,9 +20,9 @@
         <result column="is_cache"   property="isCache"/>
         <result column="is_visible" property="isVisible"/>
         <result column="create_at"  property="createAt"/>
-        <result column="create_by"  property="createBy"/>
+        <result column="create_id"  property="createId"/>
         <result column="update_at"  property="updateAt"/>
-        <result column="update_by"  property="updateBy"/>
+        <result column="update_id"  property="updateId"/>
     </resultMap>
 
     <sql id="SELECT_ALL_COLUMN">
@@ -41,9 +41,9 @@
         perms,
         icon,
         create_at,
-        create_by,
+        create_id,
         update_at,
-        update_by
+        update_id
         FROM sys_menu
     </sql>
 

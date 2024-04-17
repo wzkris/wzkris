@@ -43,7 +43,7 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
     }
 
     /**
-     * 获取前端路由
+     * 获取前端路由，缓存路由结果
      */
     public List<RouterVO> getRouter(Long userId) {
         RBucket<List<RouterVO>> bucket = JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId));

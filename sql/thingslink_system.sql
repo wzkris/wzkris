@@ -11,18 +11,17 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 12/04/2024 12:52:31
+ Date: 17/04/2024 14:12:09
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+CREATE DATABASE IF NOT EXISTS thingslink_system;
+USE thingslink_system;
 -- ----------------------------
 -- Table structure for qrtz_blob_triggers
 -- ----------------------------
-CREATE DATABASE IF NOT EXISTS thingslink_system;
-USE thingslink_system;
-
 DROP TABLE IF EXISTS `qrtz_blob_triggers`;
 CREATE TABLE `qrtz_blob_triggers`  (
   `sched_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '调度名称',
@@ -247,10 +246,10 @@ CREATE TABLE `sys_config`  (
   `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数键名',
   `config_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '参数键值',
   `config_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Y' COMMENT '系统内置（Y是 N否）',
-  `create_at` datetime NOT NULL COMMENT '创建时间',
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `update_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  `create_id` bigint NOT NULL COMMENT '创建者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
+  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`config_id`) USING BTREE,
   UNIQUE INDEX `uk_config_key`(`config_key` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '参数配置表' ROW_FORMAT = DYNAMIC;
@@ -258,10 +257,10 @@ CREATE TABLE `sys_config`  (
 -- ----------------------------
 -- Records of sys_config
 -- ----------------------------
-INSERT INTO `sys_config` VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-yellow', 'Y', '2022-12-19 10:06:08', '', '2023-08-12 10:52:04', NULL);
-INSERT INTO `sys_config` VALUES (2, '用户管理-账号初始密码', 'sys.user.initPassword', '123456', 'Y', '2022-12-19 10:06:08', '', '2023-05-31 11:00:14', NULL);
-INSERT INTO `sys_config` VALUES (3, '主框架页-侧边栏主题', 'sys.index.sideTheme', 'theme-light', 'Y', '2022-12-19 10:06:08', '', '2023-12-01 15:43:24', NULL);
-INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能', 'sys.account.registerUser', 'false', 'Y', '2022-12-19 10:06:08', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-yellow', 'Y', 1713334134616, 1, 20230812105204, NULL);
+INSERT INTO `sys_config` VALUES (2, '用户管理-账号初始密码', 'sys.user.initPassword', '123456', 'Y', 1713334134616, 1, 20230531110014, NULL);
+INSERT INTO `sys_config` VALUES (3, '主框架页-侧边栏主题', 'sys.index.sideTheme', 'theme-light', 'Y', 1713334134616, 1, 20231201154324, NULL);
+INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能', 'sys.account.registerUser', 'false', 'Y', 1713334134616, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -276,10 +275,10 @@ CREATE TABLE `sys_dict_data`  (
   `css_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
   `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '表格回显样式',
   `is_default` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '是否默认（Y是 N否）',
-  `create_at` datetime NOT NULL COMMENT '创建时间',
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `update_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  `create_id` bigint NOT NULL COMMENT '创建者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
+  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`dict_code`) USING BTREE,
   INDEX `idx_dict_type`(`dict_type` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
@@ -287,58 +286,58 @@ CREATE TABLE `sys_dict_data`  (
 -- ----------------------------
 -- Records of sys_dict_data
 -- ----------------------------
-INSERT INTO `sys_dict_data` VALUES (1, 1, '男', '0', 'sys_user_sex', '', '', 'Y', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (2, 2, '女', '1', 'sys_user_sex', '', '', 'N', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (3, 3, '未知', '2', 'sys_user_sex', '', '', 'N', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (4, 1, '显示', '1', 'sys_show_hide', '', 'primary', 'Y', '2022-12-19 10:06:07', '', '2023-05-31 11:00:00', NULL);
-INSERT INTO `sys_dict_data` VALUES (5, 2, '隐藏', '0', 'sys_show_hide', '', 'danger', 'N', '2022-12-19 10:06:07', '', '2023-05-31 11:00:05', NULL);
-INSERT INTO `sys_dict_data` VALUES (6, 1, '正常', '0', 'sys_normal_disable', '', 'primary', 'Y', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (7, 2, '停用', '1', 'sys_normal_disable', '', 'danger', 'N', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (8, 1, '正常', '0', 'sys_job_status', '', 'primary', 'Y', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (9, 2, '暂停', '1', 'sys_job_status', '', 'danger', 'N', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (10, 1, '默认', 'DEFAULT', 'sys_job_group', '', '', 'Y', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (11, 2, '系统', 'SYSTEM', 'sys_job_group', '', '', 'N', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (12, 1, '是', 'Y', 'sys_yes_no', '', 'primary', 'Y', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (13, 2, '否', 'N', 'sys_yes_no', '', 'danger', 'N', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (14, 1, '通知', '1', 'sys_notice_type', '', 'warning', 'Y', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (15, 2, '公告', '2', 'sys_notice_type', '', 'success', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (16, 1, '正常', '0', 'sys_notice_status', '', 'primary', 'Y', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (17, 2, '关闭', '1', 'sys_notice_status', '', 'danger', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (18, 0, '其他', '0', 'sys_oper_type', '', 'info', 'N', '2022-12-19 10:06:08', '', '2024-04-12 10:33:37', '1');
-INSERT INTO `sys_dict_data` VALUES (19, 1, '新增', '1', 'sys_oper_type', '', 'info', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (20, 2, '修改', '2', 'sys_oper_type', '', 'info', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (21, 3, '删除', '3', 'sys_oper_type', '', 'danger', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (22, 4, '授权', '4', 'sys_oper_type', '', 'primary', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (23, 5, '导出', '5', 'sys_oper_type', '', 'warning', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (24, 6, '导入', '6', 'sys_oper_type', '', 'warning', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (28, 1, '成功', '0', 'sys_common_status', '', 'primary', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (29, 2, '失败', '1', 'sys_common_status', '', 'danger', 'N', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (30, 0, '管理员', 'admin', 'pre_dict', NULL, 'default', 'N', '2023-01-13 17:23:51', '', '2024-04-12 10:51:33', '1');
-INSERT INTO `sys_dict_data` VALUES (31, 0, '租户', 'tenant', 'pre_dict', NULL, 'default', 'N', '2023-01-13 17:24:05', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (32, 0, '用户', 'user', 'pre_dict', NULL, 'default', 'N', '2023-01-13 17:24:41', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (33, 0, '在线', 'ONLINE', 'device_status', NULL, 'success', 'N', '2023-02-06 14:53:36', '', '2023-12-01 15:33:59', NULL);
-INSERT INTO `sys_dict_data` VALUES (34, 0, '离线', 'OFFLINE', 'device_status', NULL, 'info', 'N', '2023-02-06 14:53:57', '', '2023-12-01 15:34:04', NULL);
-INSERT INTO `sys_dict_data` VALUES (35, 1, '故障', 'FAULT', 'device_status', NULL, 'danger', 'N', '2023-02-06 14:54:23', '', '2023-12-01 15:34:21', NULL);
-INSERT INTO `sys_dict_data` VALUES (36, 2, '检修', 'FIX', 'device_status', NULL, 'warning', 'N', '2023-02-06 14:54:42', '', '2023-12-01 15:34:26', NULL);
-INSERT INTO `sys_dict_data` VALUES (37, 0, '未认证', 'NO', 'pay_certification_status', NULL, 'info', 'N', '2023-02-06 14:59:13', '', '2023-02-06 17:21:27', NULL);
-INSERT INTO `sys_dict_data` VALUES (38, 0, '微信支付', 'WX', 'pay_certification_status', NULL, 'success', 'N', '2023-02-06 14:59:28', '', '2023-02-06 17:21:34', NULL);
-INSERT INTO `sys_dict_data` VALUES (39, 0, '支付宝', 'ALI', 'pay_certification_status', NULL, 'primary', 'N', '2023-02-06 14:59:41', '', '2023-02-06 17:21:47', NULL);
-INSERT INTO `sys_dict_data` VALUES (40, 0, '微信、支付宝认证', 'ALL', 'pay_certification_status', NULL, 'default', 'N', '2023-02-06 15:00:08', '', '2023-02-06 17:22:01', NULL);
-INSERT INTO `sys_dict_data` VALUES (41, 0, '全部数据权限', '1', 'data_scope', NULL, 'default', 'N', '2023-02-06 17:17:28', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (42, 0, '自定数据权限', '2', 'data_scope', NULL, 'default', 'N', '2023-02-06 17:17:42', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (43, 0, '本部门数据权限', '3', 'data_scope', NULL, 'default', 'N', '2023-02-06 17:17:56', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (44, 0, '本部门及以下数据权限', '4', 'data_scope', NULL, 'default', 'N', '2023-02-06 17:18:09', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (45, 0, '支付成功', 'SUCCESS', 'charging_status', NULL, 'success', 'N', '2023-02-07 17:12:34', '', '2023-12-01 15:36:01', NULL);
-INSERT INTO `sys_dict_data` VALUES (46, 0, '订单关闭', 'CLOSED', 'charging_status', NULL, 'info', 'N', '2023-02-07 17:12:48', '', '2023-12-01 15:36:06', NULL);
-INSERT INTO `sys_dict_data` VALUES (47, 0, '充电中', 'CHARGING', 'charging_status', NULL, 'warning', 'N', '2023-02-07 17:13:05', '', '2023-12-01 15:36:41', NULL);
-INSERT INTO `sys_dict_data` VALUES (48, 0, '充电结束', 'CHARGE_END', 'charging_status', NULL, 'danger', 'N', '2023-02-07 17:13:18', '', '2023-12-01 15:37:22', NULL);
-INSERT INTO `sys_dict_data` VALUES (49, 0, '未支付', 'NOTPAY', 'charging_status', NULL, 'primary', 'N', '2023-02-07 17:13:36', '', '2023-12-01 15:35:56', NULL);
-INSERT INTO `sys_dict_data` VALUES (50, 0, '支付异常', 'ERROR', 'charging_status', NULL, 'danger', NULL, '2023-12-01 15:37:45', '', '2023-12-01 15:37:55', NULL);
-INSERT INTO `sys_dict_data` VALUES (51, 0, '钱包支付', 'WALLET', 'pay_type', NULL, 'info', 'N', '2023-02-07 17:16:26', '', '2023-12-01 15:40:27', NULL);
-INSERT INTO `sys_dict_data` VALUES (52, 0, '微信支付', 'WECHAT', 'pay_type', NULL, 'success', 'N', '2023-02-07 17:16:38', '', '2023-12-01 15:40:33', NULL);
-INSERT INTO `sys_dict_data` VALUES (53, 0, '支付宝', 'ZFB', 'pay_type', NULL, 'primary', 'N', '2023-02-07 17:16:48', '', '2023-12-01 15:40:38', NULL);
-INSERT INTO `sys_dict_data` VALUES (54, 0, '空闲', '0', 'road_status', NULL, 'success', 'N', '2023-02-11 10:46:10', '', '2023-06-06 08:28:12', NULL);
-INSERT INTO `sys_dict_data` VALUES (55, 0, '占用', '1', 'road_status', NULL, 'primary', 'N', '2023-02-11 10:46:22', '', '2023-06-06 08:28:51', NULL);
+INSERT INTO `sys_dict_data` VALUES (1, 1, '男', '0', 'sys_user_sex', '', '', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (2, 2, '女', '1', 'sys_user_sex', '', '', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (3, 3, '未知', '2', 'sys_user_sex', '', '', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (4, 1, '显示', '1', 'sys_show_hide', '', 'primary', 'Y', 1713334134616, 1, 20230531110000, NULL);
+INSERT INTO `sys_dict_data` VALUES (5, 2, '隐藏', '0', 'sys_show_hide', '', 'danger', 'N', 1713334134616, 1, 20230531110005, NULL);
+INSERT INTO `sys_dict_data` VALUES (6, 1, '正常', '0', 'sys_normal_disable', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (7, 2, '停用', '1', 'sys_normal_disable', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (8, 1, '正常', '0', 'sys_job_status', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (9, 2, '暂停', '1', 'sys_job_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (10, 1, '默认', 'DEFAULT', 'sys_job_group', '', '', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (11, 2, '系统', 'SYSTEM', 'sys_job_group', '', '', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (12, 1, '是', 'Y', 'sys_yes_no', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (13, 2, '否', 'N', 'sys_yes_no', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (14, 1, '通知', '1', 'sys_notice_type', '', 'warning', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (15, 2, '公告', '2', 'sys_notice_type', '', 'success', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (16, 1, '正常', '0', 'sys_notice_status', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (17, 2, '关闭', '1', 'sys_notice_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (18, 0, '其他', '0', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, 20240412103337, 1);
+INSERT INTO `sys_dict_data` VALUES (19, 1, '新增', '1', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (20, 2, '修改', '2', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (21, 3, '删除', '3', 'sys_oper_type', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (22, 4, '授权', '4', 'sys_oper_type', '', 'primary', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (23, 5, '导出', '5', 'sys_oper_type', '', 'warning', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (24, 6, '导入', '6', 'sys_oper_type', '', 'warning', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (28, 1, '成功', '0', 'sys_common_status', '', 'primary', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (29, 2, '失败', '1', 'sys_common_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (30, 0, '管理员', 'admin', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, 20240412105133, 1);
+INSERT INTO `sys_dict_data` VALUES (31, 0, '租户', 'tenant', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (32, 0, '用户', 'user', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (33, 0, '在线', 'ONLINE', 'device_status', NULL, 'success', 'N', 1713334134616, 1, 20231201153359, NULL);
+INSERT INTO `sys_dict_data` VALUES (34, 0, '离线', 'OFFLINE', 'device_status', NULL, 'info', 'N', 1713334134616, 1, 20231201153404, NULL);
+INSERT INTO `sys_dict_data` VALUES (35, 1, '故障', 'FAULT', 'device_status', NULL, 'danger', 'N', 1713334134616, 1, 20231201153421, NULL);
+INSERT INTO `sys_dict_data` VALUES (36, 2, '检修', 'FIX', 'device_status', NULL, 'warning', 'N', 1713334134616, 1, 20231201153426, NULL);
+INSERT INTO `sys_dict_data` VALUES (37, 0, '未认证', 'NO', 'pay_certification_status', NULL, 'info', 'N', 1713334134616, 1, 20230206172127, NULL);
+INSERT INTO `sys_dict_data` VALUES (38, 0, '微信支付', 'WX', 'pay_certification_status', NULL, 'success', 'N', 1713334134616, 1, 20230206172134, NULL);
+INSERT INTO `sys_dict_data` VALUES (39, 0, '支付宝', 'ALI', 'pay_certification_status', NULL, 'primary', 'N', 1713334134616, 1, 20230206172147, NULL);
+INSERT INTO `sys_dict_data` VALUES (40, 0, '微信、支付宝认证', 'ALL', 'pay_certification_status', NULL, 'default', 'N', 1713334134616, 1, 20230206172201, NULL);
+INSERT INTO `sys_dict_data` VALUES (41, 0, '全部数据权限', '1', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (42, 0, '自定数据权限', '2', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (43, 0, '本部门数据权限', '3', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (44, 0, '本部门及以下数据权限', '4', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (45, 0, '支付成功', 'SUCCESS', 'charging_status', NULL, 'success', 'N', 1713334134616, 1, 20231201153601, NULL);
+INSERT INTO `sys_dict_data` VALUES (46, 0, '订单关闭', 'CLOSED', 'charging_status', NULL, 'info', 'N', 1713334134616, 1, 20231201153606, NULL);
+INSERT INTO `sys_dict_data` VALUES (47, 0, '充电中', 'CHARGING', 'charging_status', NULL, 'warning', 'N', 1713334134616, 1, 20231201153641, NULL);
+INSERT INTO `sys_dict_data` VALUES (48, 0, '充电结束', 'CHARGE_END', 'charging_status', NULL, 'danger', 'N', 1713334134616, 1, 20231201153722, NULL);
+INSERT INTO `sys_dict_data` VALUES (49, 0, '未支付', 'NOTPAY', 'charging_status', NULL, 'primary', 'N', 1713334134616, 1, 20231201153556, NULL);
+INSERT INTO `sys_dict_data` VALUES (50, 0, '支付异常', 'ERROR', 'charging_status', NULL, 'danger', NULL, 1713334134616, 1, 20231201153755, NULL);
+INSERT INTO `sys_dict_data` VALUES (51, 0, '钱包支付', 'WALLET', 'pay_type', NULL, 'info', 'N', 1713334134616, 1, 20231201154027, NULL);
+INSERT INTO `sys_dict_data` VALUES (52, 0, '微信支付', 'WECHAT', 'pay_type', NULL, 'success', 'N', 1713334134616, 1, 20231201154033, NULL);
+INSERT INTO `sys_dict_data` VALUES (53, 0, '支付宝', 'ZFB', 'pay_type', NULL, 'primary', 'N', 1713334134616, 1, 20231201154038, NULL);
+INSERT INTO `sys_dict_data` VALUES (54, 0, '空闲', '0', 'road_status', NULL, 'success', 'N', 1713334134616, 1, 20230606082812, NULL);
+INSERT INTO `sys_dict_data` VALUES (55, 0, '占用', '1', 'road_status', NULL, 'primary', 'N', 1713334134616, 1, 20230606082851, NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_type
@@ -348,10 +347,10 @@ CREATE TABLE `sys_dict_type`  (
   `dict_id` bigint NOT NULL COMMENT '字典主键',
   `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典名称',
   `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典类型',
-  `create_at` datetime NOT NULL COMMENT '创建时间',
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `update_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  `create_id` bigint NOT NULL COMMENT '创建者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
+  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`dict_id`) USING BTREE,
   UNIQUE INDEX `uk_dict_type`(`dict_type` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
@@ -359,23 +358,23 @@ CREATE TABLE `sys_dict_type`  (
 -- ----------------------------
 -- Records of sys_dict_type
 -- ----------------------------
-INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'sys_user_sex', '2022-12-19 10:06:07', '', '2023-05-31 10:59:54', NULL);
-INSERT INTO `sys_dict_type` VALUES (2, '菜单状态', 'sys_show_hide', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (3, '系统开关', 'sys_normal_disable', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (4, '任务状态', 'sys_job_status', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (5, '任务分组', 'sys_job_group', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (6, '系统是否', 'sys_yes_no', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (7, '通知类型', 'sys_notice_type', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (8, '通知状态', 'sys_notice_status', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (9, '操作类型', 'sys_oper_type', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (10, '系统状态', 'sys_common_status', '2022-12-19 10:06:07', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (11, '预留字典', 'pre_dict', '2023-01-13 17:23:23', '', '2024-04-12 10:51:14', '1');
-INSERT INTO `sys_dict_type` VALUES (12, '设备状态', 'device_status', '2023-02-06 14:52:33', '', '2023-08-25 08:25:44', NULL);
-INSERT INTO `sys_dict_type` VALUES (13, '支付认证状态', 'pay_certification_status', '2023-02-06 14:57:53', '', NULL, NULL);
-INSERT INTO `sys_dict_type` VALUES (14, '数据权限', 'data_scope', '2023-02-06 17:17:10', '', '2023-02-09 14:06:23', NULL);
-INSERT INTO `sys_dict_type` VALUES (15, '支付状态', 'charging_status', '2023-02-07 17:11:04', '', '2023-12-01 15:39:39', NULL);
-INSERT INTO `sys_dict_type` VALUES (16, '支付方式', 'pay_type', '2023-02-07 17:15:58', '', '2023-12-01 15:40:12', NULL);
-INSERT INTO `sys_dict_type` VALUES (17, '设备通道状态', 'road_status', '2023-02-11 10:45:46', '', '2023-06-10 13:54:04', NULL);
+INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'sys_user_sex', 1713334134616, 1, 20230531105954, 1);
+INSERT INTO `sys_dict_type` VALUES (2, '菜单状态', 'sys_show_hide', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (3, '系统开关', 'sys_normal_disable', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (4, '任务状态', 'sys_job_status', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (5, '任务分组', 'sys_job_group', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (6, '系统是否', 'sys_yes_no', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (7, '通知类型', 'sys_notice_type', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (8, '通知状态', 'sys_notice_status', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (9, '操作类型', 'sys_oper_type', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (10, '系统状态', 'sys_common_status', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (11, '预留字典', 'pre_dict', 1713334134616, 1, 20240412105114, 1);
+INSERT INTO `sys_dict_type` VALUES (12, '设备状态', 'device_status', 1713334134616, 1, 20230825082544, 1);
+INSERT INTO `sys_dict_type` VALUES (13, '支付认证状态', 'pay_certification_status', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_dict_type` VALUES (14, '数据权限', 'data_scope', 1713334134616, 1, 20230209140623, 1);
+INSERT INTO `sys_dict_type` VALUES (15, '支付状态', 'charging_status', 1713334134616, 1, 20231201153939, 1);
+INSERT INTO `sys_dict_type` VALUES (16, '支付方式', 'pay_type', 1713334134616, 1, 20231201154012, 1);
+INSERT INTO `sys_dict_type` VALUES (17, '设备通道状态', 'road_status', 1713334134616, 1, 20230610135404, 1);
 
 -- ----------------------------
 -- Table structure for sys_job
@@ -390,18 +389,18 @@ CREATE TABLE `sys_job`  (
   `misfire_policy` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '计划执行错误策略（1立即执行 2执行一次 3放弃执行）',
   `concurrent` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '是否并发执行（0允许 1禁止）',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '状态（0正常 1暂停）',
-  `create_at` datetime NOT NULL COMMENT '创建时间',
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `update_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  `create_id` bigint NOT NULL COMMENT '创建者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
+  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`job_id`, `job_name`, `job_group`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '定时任务调度表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_job
 -- ----------------------------
-INSERT INTO `sys_job` VALUES (2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')', '0/15 * * * * ?', '3', '1', '1', '2022-12-19 10:06:08', '', NULL, NULL);
-INSERT INTO `sys_job` VALUES (3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)', '0/20 * * * * ?', '3', '1', '1', '2022-12-19 10:06:09', '', '2023-06-06 11:11:45', NULL);
+INSERT INTO `sys_job` VALUES (2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')', '0/15 * * * * ?', '3', '1', '1', 1713334134616, 1, NULL, 1);
+INSERT INTO `sys_job` VALUES (3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)', '0/20 * * * * ?', '3', '1', '1', 1713334134616, 1, 20230606111145, 1);
 
 -- ----------------------------
 -- Table structure for sys_job_log
@@ -415,30 +414,30 @@ CREATE TABLE `sys_job_log`  (
   `job_message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '日志信息',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行状态（0正常 1失败）',
   `exception_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
-  `create_at` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`job_log_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_job_log
 -- ----------------------------
-INSERT INTO `sys_job_log` VALUES (1769648108174245889, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', NULL);
-INSERT INTO `sys_job_log` VALUES (1769649128296079362, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-18 16:56:45');
-INSERT INTO `sys_job_log` VALUES (1769649944801239041, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：0毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-18 17:00:00');
-INSERT INTO `sys_job_log` VALUES (1773530515004674050, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：4毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-29 10:00:00');
-INSERT INTO `sys_job_log` VALUES (1773545614385827841, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：2毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-29 11:00:00');
-INSERT INTO `sys_job_log` VALUES (1773590913007452162, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：4毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-29 14:00:00');
-INSERT INTO `sys_job_log` VALUES (1773606012321497089, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：2毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-29 15:00:00');
-INSERT INTO `sys_job_log` VALUES (1773621111845257217, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：3毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-29 16:00:00');
-INSERT INTO `sys_job_log` VALUES (1773636211503230978, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-29 17:00:00');
-INSERT INTO `sys_job_log` VALUES (1773877803413639169, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 09:00:00');
-INSERT INTO `sys_job_log` VALUES (1773892902719295490, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 10:00:00');
-INSERT INTO `sys_job_log` VALUES (1773908002213695489, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 11:00:00');
-INSERT INTO `sys_job_log` VALUES (1773923101703901186, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 12:00:00');
-INSERT INTO `sys_job_log` VALUES (1773938201206689794, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 13:00:00');
-INSERT INTO `sys_job_log` VALUES (1773953300776587266, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：2毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 14:00:00');
-INSERT INTO `sys_job_log` VALUES (1773968400203878401, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 15:00:00');
-INSERT INTO `sys_job_log` VALUES (1773983500151263234, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：105毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', '2024-03-30 16:00:00');
+INSERT INTO `sys_job_log` VALUES (1769648108174245889, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1769649128296079362, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1769649944801239041, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：0毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773530515004674050, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：4毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773545614385827841, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：2毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773590913007452162, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：4毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773606012321497089, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：2毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773621111845257217, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：3毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773636211503230978, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773877803413639169, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：5毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773892902719295490, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773908002213695489, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773923101703901186, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773938201206689794, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773953300776587266, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：2毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773968400203878401, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：1毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
+INSERT INTO `sys_job_log` VALUES (1773983500151263234, '刷新SameToken（每小时）', 'DEFAULT', 'sameTokenTask.refreshToken()', '刷新SameToken（每小时） 总共耗时：105毫秒', '1', 'NoSuchBeanDefinitionException: No bean named \'refreshToken\' available', 1713334134616);
 
 -- ----------------------------
 -- Table structure for sys_login_log
@@ -452,13 +451,26 @@ CREATE TABLE `sys_login_log`  (
   `ip_addr` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip地址',
   `browser` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '浏览器类型',
   `os` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作系统',
-  `login_time` datetime NOT NULL COMMENT '访问时间',
+  `login_time` bigint NOT NULL COMMENT '访问时间',
   PRIMARY KEY (`log_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '后台登录日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
+INSERT INTO `sys_login_log` VALUES (1779028287854153729, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413140610);
+INSERT INTO `sys_login_log` VALUES (1779039488944349185, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 20240413145040);
+INSERT INTO `sys_login_log` VALUES (1779050294973014017, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413153337);
+INSERT INTO `sys_login_log` VALUES (1779051600932478978, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413153849);
+INSERT INTO `sys_login_log` VALUES (1779056793908649986, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 20240413155927);
+INSERT INTO `sys_login_log` VALUES (1779059212960899073, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413160904);
+INSERT INTO `sys_login_log` VALUES (1779068245444894721, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413164457);
+INSERT INTO `sys_login_log` VALUES (1779069569137876994, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413165013);
+INSERT INTO `sys_login_log` VALUES (1779071944779079682, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413165939);
+INSERT INTO `sys_login_log` VALUES (1779768079093039105, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150549);
+INSERT INTO `sys_login_log` VALUES (1779768173334855681, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150613);
+INSERT INTO `sys_login_log` VALUES (1779768345410371585, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150650);
+INSERT INTO `sys_login_log` VALUES (1780477864071372801, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713333976135);
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -471,10 +483,10 @@ CREATE TABLE `sys_notice`  (
   `notice_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '公告内容',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公告状态（0正常 1关闭）',
   `message_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '消息id',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-  `create_at` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `create_by` bigint NULL DEFAULT NULL COMMENT '创建者',
+  `create_id` bigint NULL DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `update_id` bigint NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`notice_id`) USING BTREE,
   UNIQUE INDEX `uk_message_id`(`message_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '通知公告表' ROW_FORMAT = DYNAMIC;
@@ -482,8 +494,8 @@ CREATE TABLE `sys_notice`  (
 -- ----------------------------
 -- Records of sys_notice
 -- ----------------------------
-INSERT INTO `sys_notice` VALUES (1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '<p>&lt;</p>', '0', '1', 'admin', '2022-12-19 10:06:09', 'admin', '2023-06-08 13:45:37');
-INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '<p>&lt;</p>', '0', '2', 'admin', '2022-12-19 10:06:09', 'admin', '2023-06-12 13:43:32');
+INSERT INTO `sys_notice` VALUES (1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '<p>&lt;</p>', '0', '1', 1, 20221219100609, 1, 20230608134537);
+INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '<p>&lt;</p>', '0', '2', 1, 20221219100609, 1, 20230612134332);
 
 -- ----------------------------
 -- Table structure for sys_oper_log
@@ -504,15 +516,15 @@ CREATE TABLE `sys_oper_log`  (
   `json_result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回参数',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作状态（0正常 1异常）',
   `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '错误消息',
-  `oper_time` datetime NULL DEFAULT NULL COMMENT '操作时间',
+  `oper_time` bigint NOT NULL COMMENT '操作时间',
   PRIMARY KEY (`oper_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '操作日志记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_oper_log
 -- ----------------------------
-INSERT INTO `sys_oper_log` VALUES (1778625396790194177, 0, '操作日志', '3', 'com.thingslink.system.controller.log.SysOperlogController.clean()', 'DELETE', 'admin', '/operlog/clean', '127.0.0.1', NULL, NULL, NULL, '0', NULL, '2024-04-12 11:25:14');
-INSERT INTO `sys_oper_log` VALUES (1778625872730451970, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, '{\"createAt\":\"2024-04-03 12:38:25\",\"createBy\":\"1774671331412627456\",\"updateAt\":\"2024-04-12 11:27:07\",\"updateBy\":\"1\",\"deptId\":\"1775382319191453698\",\"tenantId\":\"1774671331416821762\",\"parentId\":null,\"ancestors\":null,\"deptName\":\"默认租户部门\",\"status\":\"0\",\"deptSort\":0,\"contact\":null,\"email\":null,\"children\":[]}', NULL, '0', NULL, '2024-04-12 11:27:07');
-INSERT INTO `sys_oper_log` VALUES (1778626232891142146, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, NULL, '{\"biz\":0,\"data\":null,\"err_msg\":\"Success\",\"timestamp\":1712892513784}', '0', NULL, '2024-04-12 11:28:33');
+INSERT INTO `sys_oper_log` VALUES (1778625396790194177, 0, '操作日志', '3', 'com.thingslink.system.controller.log.SysOperlogController.clean()', 'DELETE', 'admin', '/operlog/clean', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 20240412112514);
+INSERT INTO `sys_oper_log` VALUES (1778625872730451970, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, '{\"createAt\":\"2024-04-03 12:38:25\",\"createBy\":\"1774671331412627456\",\"updateAt\":\"2024-04-12 11:27:07\",\"updateBy\":\"1\",\"deptId\":\"1775382319191453698\",\"tenantId\":\"1774671331416821762\",\"parentId\":null,\"ancestors\":null,\"deptName\":\"默认租户部门\",\"status\":\"0\",\"deptSort\":0,\"contact\":null,\"email\":null,\"children\":[]}', NULL, '0', NULL, 20240412112707);
+INSERT INTO `sys_oper_log` VALUES (1778626232891142146, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, NULL, '{\"biz\":0,\"data\":null,\"err_msg\":\"Success\",\"timestamp\":1712892513784}', '0', NULL, 20240412112833);
 
 SET FOREIGN_KEY_CHECKS = 1;

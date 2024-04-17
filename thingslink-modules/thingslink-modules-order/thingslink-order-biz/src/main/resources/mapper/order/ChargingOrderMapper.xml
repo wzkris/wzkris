@@ -16,9 +16,9 @@
         <result column="pay_time" property="payTime"/>
         <result column="is_use_coupon" property="isUseCoupon"/>
         <result property="createAt" column="create_at"/>
-        <result property="createBy" column="create_by"/>
+        <result property="createId" column="create_id"/>
         <result property="updateAt" column="update_at"/>
-        <result property="updateBy" column="update_by"/>
+        <result property="updateId" column="update_id"/>
     </resultMap>
 
     <sql id="SELECT_ALL_COLUMN">
@@ -34,7 +34,7 @@
         refund_amount,
         pay_time,
         is_use_coupon,
-        create_at, create_by, update_at, update_by
+        create_at, create_id, update_at, update_id
         FROM charging_order
     </sql>
 
@@ -92,9 +92,9 @@
             <if test="payTime != null">pay_time,</if>
             <if test="isUseCoupon != null and isUseCoupon != ''">is_use_coupon,</if>
             <if test="createAt != null">create_at,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="updateAt != null">update_at,</if>
-            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="chargingId != null">#{chargingId},</if>
@@ -110,22 +110,22 @@
             <if test="payTime != null">#{payTime},</if>
             <if test="isUseCoupon != null and isUseCoupon != ''">#{isUseCoupon},</if>
             <if test="createAt != null">#{createAt},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="updateAt != null">#{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
         </trim>
     </insert>
 
     <insert id="insertBatch" keyProperty="chargingId" useGeneratedKeys="true">
         INSERT INTO charging_order
         (charging_id, order_no, customer_id, dept_id, pay_type, charging_status, total_amount, pay_amount,
-        point_amount, refund_amount, pay_time, is_use_coupon, create_at, create_by, update_at, update_by)
+        point_amount, refund_amount, pay_time, is_use_coupon, create_at, create_id, update_at, update_id)
         VALUES
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.chargingId}, #{entity.orderNo}, #{entity.customerId}, #{entity.deptId},
             #{entity.payType}, #{entity.chargingStatus}, #{entity.totalAmount}, #{entity.payAmount},
             #{entity.pointAmount}, #{entity.refundAmount}, #{entity.payTime}, #{entity.isUseCoupon},
-            #{entity.createAt}, #{entity.createBy}, #{entity.updateAt}, #{entity.updateBy})
+            #{entity.createAt}, #{entity.createId}, #{entity.updateAt}, #{entity.updateId})
         </foreach>
     </insert>
 
@@ -145,9 +145,9 @@
             <if test="payTime != null">pay_time = #{payTime},</if>
             <if test="isUseCoupon != null and isUseCoupon != ''">is_use_coupon = #{isUseCoupon},</if>
             <if test="createAt != null">create_at = #{createAt},</if>
-            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="updateAt != null">update_at = #{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
         </set>
         WHERE charging_id = #{chargingId}
     </update>
@@ -233,10 +233,10 @@
                     </if>
                 </foreach>
             </trim>
-            <trim prefix="update_by = CASE charging_id" suffix="END,">
+            <trim prefix="update_id = CASE charging_id" suffix="END,">
                 <foreach collection="entities" item="entity">
                     <if test="entity.createAt != null">
-                        WHEN #{entity.chargingId} THEN #{entity.updateBy}
+                        WHEN #{entity.chargingId} THEN #{entity.updateId}
                     </if>
                 </foreach>
             </trim>

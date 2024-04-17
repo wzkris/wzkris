@@ -3,13 +3,14 @@ package com.thingslink.system.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.thingslink.system.api.domain.LoginLogDTO;
+import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import java.util.Map;
  * @date : 2023/8/26 14:35
  */
 @Data
+@AutoMapper(target = LoginLogDTO.class)
 @Accessors(chain = true)
 public class SysLoginLog implements Serializable {
 
@@ -48,7 +50,7 @@ public class SysLoginLog implements Serializable {
     private String os;
 
     @Schema(description = "登录时间")
-    private LocalDateTime loginTime;
+    private Long loginTime;
 
     @JsonIgnore
     @TableField(exist = false)

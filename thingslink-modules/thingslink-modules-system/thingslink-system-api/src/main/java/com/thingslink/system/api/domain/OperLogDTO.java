@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +80,7 @@ public class OperLogDTO implements Serializable {
     /**
      * 操作时间
      */
-    private LocalDateTime operTime;
+    private Long operTime;
 
     /**
      * 请求参数

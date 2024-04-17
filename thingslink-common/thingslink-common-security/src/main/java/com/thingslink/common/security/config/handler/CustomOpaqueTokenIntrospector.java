@@ -16,11 +16,11 @@ import java.util.LinkedHashMap;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : token自省
+ * @description : 自定义token自省
  * @date : 2024/3/8 14:34.
  */
 @AllArgsConstructor
-public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
+public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
     private final RemoteTokenApi remoteTokenApi;
 
@@ -43,6 +43,7 @@ public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
             return JsonUtil.parseObject(resMap, LoginUser.class);
         }
 
+        // 返回空即为未认证
         return null;
     }
 

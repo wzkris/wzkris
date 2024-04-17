@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 
 import java.util.Collection;
 
@@ -47,7 +46,6 @@ public class AppUserUtil {
         Authentication authentication = getAuthentication();
         return null != authentication && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)
-                && !(authentication instanceof OAuth2ClientAuthenticationToken)
                 && authentication.getPrincipal() instanceof AppUser;
     }
 

@@ -3,6 +3,8 @@ package com.thingslink.system.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.thingslink.system.api.domain.OperLogDTO;
+import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,6 +21,7 @@ import java.util.Map;
  * @author wzkris
  */
 @Data
+@AutoMapper(target = OperLogDTO.class)
 @Accessors(chain = true)
 public class SysOperLog implements Serializable {
 
@@ -68,7 +71,7 @@ public class SysOperLog implements Serializable {
     private String errorMsg;
 
     @Schema(description = "操作时间")
-    private LocalDateTime operTime;
+    private Long operTime;
 
     @JsonIgnore
     @TableField(exist = false)

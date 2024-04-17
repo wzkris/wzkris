@@ -1,7 +1,7 @@
 package com.thingslink.system.utils;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.StringUtil;
@@ -44,7 +44,7 @@ public abstract class AbstractQuartzJob implements org.quartz.Job {
      * 执行前
      *
      * @param context 工作执行上下文对象
-     * @param sysJob     系统计划任务
+     * @param sysJob  系统计划任务
      */
     protected void before(JobExecutionContext context, SysJob sysJob) {
         threadLocal.set(System.currentTimeMillis());
@@ -54,7 +54,7 @@ public abstract class AbstractQuartzJob implements org.quartz.Job {
      * 执行后
      *
      * @param context 工作执行上下文对象
-     * @param sysJob     系统计划任务
+     * @param sysJob  系统计划任务
      */
     protected void after(JobExecutionContext context, SysJob sysJob, Exception e) {
         Long startTime = threadLocal.get();
@@ -66,7 +66,7 @@ public abstract class AbstractQuartzJob implements org.quartz.Job {
         sysJobLog.setInvokeTarget(sysJob.getInvokeTarget());
         long runMs = System.currentTimeMillis() - startTime;
         sysJobLog.setJobMessage(sysJobLog.getJobName() + " 总共耗时：" + runMs + "毫秒");
-        sysJobLog.setCreateAt(LocalDateTimeUtil.now());
+        sysJobLog.setCreateAt(DateUtil.current());
         if (e != null) {
             sysJobLog.setStatus("1");
             String errorMsg = StringUtil.sub(ExceptionUtil.getMessage(e), 0, 2000);
@@ -84,7 +84,7 @@ public abstract class AbstractQuartzJob implements org.quartz.Job {
      * 执行方法，由子类重载
      *
      * @param context 工作执行上下文对象
-     * @param sysJob     系统计划任务
+     * @param sysJob  系统计划任务
      * @throws Exception 执行过程中的异常
      */
     protected abstract void doExecute(JobExecutionContext context, SysJob sysJob) throws Exception;

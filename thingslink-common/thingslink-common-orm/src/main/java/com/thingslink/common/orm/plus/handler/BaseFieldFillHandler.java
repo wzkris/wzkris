@@ -1,13 +1,12 @@
 package com.thingslink.common.orm.plus.handler;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.thingslink.common.orm.model.BaseEntity;
 import com.thingslink.common.security.utils.LoginUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-
-import java.time.LocalDateTime;
 
 /**
  * @author : wzkris
@@ -21,12 +20,12 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
                 && LoginUserUtil.isLogin()) {
-            LocalDateTime localDateTime = LocalDateTime.now();
-            String userId = LoginUserUtil.getUserId().toString();
-            this.setFieldValByName(BaseEntity.Fields.createAt, localDateTime, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.createBy, userId, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateAt, localDateTime, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateBy, userId, metaObject);
+            Long now = DateUtil.current();
+            Long userId = LoginUserUtil.getUserId();
+            this.setFieldValByName(BaseEntity.Fields.createAt, now, metaObject);
+            this.setFieldValByName(BaseEntity.Fields.createId, userId, metaObject);
+            this.setFieldValByName(BaseEntity.Fields.updateAt, now, metaObject);
+            this.setFieldValByName(BaseEntity.Fields.updateId, userId, metaObject);
         }
     }
 
@@ -34,8 +33,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
                 && LoginUserUtil.isLogin()) {
-            this.setFieldValByName(BaseEntity.Fields.updateAt, LocalDateTime.now(), metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateBy, LoginUserUtil.getUserId().toString(), metaObject);
+            this.setFieldValByName(BaseEntity.Fields.updateAt, DateUtil.current(), metaObject);
+            this.setFieldValByName(BaseEntity.Fields.updateId, LoginUserUtil.getUserId(), metaObject);
         }
     }
 }

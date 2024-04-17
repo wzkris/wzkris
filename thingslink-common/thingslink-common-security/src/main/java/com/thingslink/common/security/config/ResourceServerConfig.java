@@ -10,7 +10,6 @@ import com.thingslink.common.security.config.white.WhiteUrlConfig;
 import com.thingslink.common.security.deserializer.GrantedAuthorityDeserializer;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,7 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -37,10 +35,8 @@ public class ResourceServerConfig {
 
     private final WhiteUrlConfig whiteUrlConfig;
     private final PermitIpConfig permitIpConfig;
-    private final OpaqueTokenIntrospector opaqueTokenIntrospector;
     private final RemoteTokenApi remoteTokenApi;
-    private static final BearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
-
+    private final OpaqueTokenIntrospector opaqueTokenIntrospector;
 
     // json序列化增强
     static {
@@ -52,8 +48,7 @@ public class ResourceServerConfig {
     }
 
     @Bean
-    @Order(2)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize ->
@@ -63,10 +58,6 @@ public class ResourceServerConfig {
                 )
                 .formLogin(Customizer.withDefaults())
                 .addFilterBefore(new IpRequestFilter(permitIpConfig), UsernamePasswordAuthenticationFilter.class)
-                .logout(logout -> {
-                    logout.addLogoutHandler(new SsoLogoutHandler(bearerTokenResolver, remoteTokenApi))
-                            .logoutSuccessHandler(new SsoLogoutSuccessHandler());
-                })
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
@@ -75,6 +66,10 @@ public class ResourceServerConfig {
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                             .accessDeniedHandler(new AccessDeniedHandlerImpl())
                     ;
+                })
+                .logout(logout -> {
+                    logout.addLogoutHandler(new SsoLogoutHandler(new DefaultBearerTokenResolver(), remoteTokenApi))
+                            .logoutSuccessHandler(new SsoLogoutSuccessHandler());
                 })
         ;
 

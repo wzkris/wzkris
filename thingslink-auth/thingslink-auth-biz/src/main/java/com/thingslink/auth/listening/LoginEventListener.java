@@ -1,5 +1,6 @@
 package com.thingslink.auth.listening;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
 import com.thingslink.auth.listening.event.UserLoginEvent;
 import com.thingslink.common.core.utils.ip.AddressUtil;
@@ -16,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 /**
  * @author : wzkris
@@ -49,12 +48,12 @@ public class LoginEventListener {
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
             loginInfoDTO.setUserId(loginUser.getUserId());
             loginInfoDTO.setLoginIp(ip);
-            loginInfoDTO.setLoginDate(LocalDateTime.now());
+            loginInfoDTO.setLoginDate(DateUtil.current());
             remoteSysUserApi.updateLoginInfo(loginInfoDTO);
             // 插入后台登陆日志
             final LoginLogDTO loginLogDTO = new LoginLogDTO();
             loginLogDTO.setUserId(loginUser.getUserId());
-            loginLogDTO.setLoginTime(LocalDateTime.now());
+            loginLogDTO.setLoginTime(DateUtil.current());
             loginLogDTO.setIpAddr(ip);
             loginLogDTO.setAddress(AddressUtil.getRealAddressByIp(ip));
             // 获取客户端操作系统
@@ -70,7 +69,7 @@ public class LoginEventListener {
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
             loginInfoDTO.setUserId(appUser.getUserId());
             loginInfoDTO.setLoginIp(ip);
-            loginInfoDTO.setLoginDate(LocalDateTime.now());
+            loginInfoDTO.setLoginDate(DateUtil.current());
             remoteCustomerApi.updateLoginInfo(loginInfoDTO);
         }
 

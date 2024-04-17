@@ -36,7 +36,7 @@ public class SysPostController extends BaseController {
     public Result<Page<SysPost>> list(SysPost sysPost) {
         startPage();
         List<SysPost> list = sysPostService.list(sysPost);
-        return BaseController.getDataTable(list);
+        return getDataTable(list);
     }
 
     @Operation(summary = "岗位详细信息")

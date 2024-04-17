@@ -25,9 +25,6 @@ public class OAuth2ExceptionUtil {
         else if (errorCode.equals(OAuth2ErrorCodes.ACCESS_DENIED) || errorCode.equals(OAuth2ErrorCodes.INSUFFICIENT_SCOPE)) {
             return Result.resp(BizCode.FORBID, errorMsg);
         }
-        else if (errorCode.equals(OAuth2ErrorCodes.INVALID_TOKEN)) { // token不合法则返回子状态
-            return Result.resp(BizCode.UNAUTHORIZED__INVALID_TOKEN);
-        }
         else if (errorCode.startsWith("unsupported_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE ->
@@ -40,7 +37,16 @@ public class OAuth2ExceptionUtil {
             };
         }
         else if (errorCode.startsWith("invalid_")) {
-            return Result.resp(BizCode.BAD_REQUEST, errorMsg);
+            if (errorCode.equals(OAuth2ErrorCodes.INVALID_TOKEN)) { // token不合法则返回子状态
+                return Result.resp(BizCode.UNAUTHORIZED__INVALID_TOKEN);
+            }
+            else if (errorCode.equals(OAuth2ErrorCodes.INVALID_GRANT)) {// refresh_token刷新失败
+                if (errorMsg == null) errorMsg = BizCode.UNAUTHORIZED.desc();
+                return Result.resp(BizCode.UNAUTHORIZED, errorMsg);
+            }
+            else {
+                return Result.resp(BizCode.BAD_REQUEST, errorMsg);
+            }
         }
         else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
             return Result.resp(BizCode.BAD_GATEWAY, errorMsg);

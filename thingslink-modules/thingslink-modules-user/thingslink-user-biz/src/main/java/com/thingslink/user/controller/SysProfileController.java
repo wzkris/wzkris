@@ -3,6 +3,13 @@ package com.thingslink.user.controller;
 import cn.hutool.core.map.MapUtil;
 import com.thingslink.auth.api.RemoteCaptchaApi;
 import com.thingslink.auth.api.domain.SmsDTO;
+import com.thingslink.common.core.domain.Result;
+import com.thingslink.common.core.utils.StringUtil;
+import com.thingslink.common.log.annotation.OperateLog;
+import com.thingslink.common.log.enums.OperateType;
+import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.utils.LoginUserUtil;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.domain.dto.SysUserDTO;
 import com.thingslink.user.mapper.SysDeptMapper;
@@ -10,13 +17,6 @@ import com.thingslink.user.mapper.SysUserMapper;
 import com.thingslink.user.service.SysPostService;
 import com.thingslink.user.service.SysRoleService;
 import com.thingslink.user.service.SysUserService;
-import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.log.annotation.OperateLog;
-import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.security.model.LoginUser;
-import com.thingslink.common.security.utils.LoginUserUtil;
-import com.thingslink.common.orm.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +63,7 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PutMapping
     public Result<?> update(@RequestBody SysUserDTO sysUserDTO) {
-        SysUser user = new SysUser();
-        user.setUserId(LoginUserUtil.getUserId());
+        SysUser user = new SysUser(LoginUserUtil.getUserId());
         user.setNickname(sysUserDTO.getNickname());
         user.setGender(sysUserDTO.getGender());
         return toRes(userMapper.updateById(user));
@@ -81,7 +80,8 @@ public class SysProfileController extends BaseController {
         }
         // 验证
         SmsDTO smsDTO = new SmsDTO(userMapper.selectPhoneNumberById(userId), smsCode);
-        remoteCaptchaApi.validateSms(smsDTO);
+        Result<Void> result = remoteCaptchaApi.validateSms(smsDTO);
+        result.checkData();
 
         SysUser user = new SysUser(userId);
         user.setPhoneNumber(phoneNumber);

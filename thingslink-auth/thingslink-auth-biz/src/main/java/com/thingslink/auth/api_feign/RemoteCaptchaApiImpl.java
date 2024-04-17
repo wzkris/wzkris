@@ -26,7 +26,7 @@ public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
      * 校验手机号
      */
     @Override
-    public Result<?> validateSms(SmsDTO smsDTO) {
+    public Result<Void> validateSms(SmsDTO smsDTO) {
         captchaService.validateSmsCode(smsDTO.getPhoneNumber(), smsDTO.getSmsCode());
         return success();
     }

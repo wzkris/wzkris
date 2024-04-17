@@ -47,7 +47,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
@@ -74,18 +73,16 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                                         Authentication authentication) throws IOException {
         // 拿到返回的token
         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
-        // 设置登录上下文，以便调用时通过鉴权
-        SecurityContextHolder.getContext().setAuthentication(accessTokenAuthentication);
 
         Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
         if (!CollectionUtils.isEmpty(additionalParameters)) {
             // 拿到追加的用户信息，发布登录事件
-            AbstractUser userInfo = (AbstractUser) additionalParameters.get(Principal.class.getName());
+            AbstractUser userInfo = (AbstractUser) additionalParameters.get(AbstractUser.class.getName());
             SpringUtil.publishEvent(new UserLoginEvent(userInfo, ServletUtil.getClientIP(request),
                     UserAgentUtil.parse(request.getHeader("User-Agent"))));
 
             // 移除用户信息，否则会返回给前端
-            additionalParameters.remove(Principal.class.getName());
+            additionalParameters.remove(AbstractUser.class.getName());
         }
 
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();

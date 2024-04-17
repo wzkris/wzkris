@@ -25,6 +25,8 @@ public class SsoLogoutHandler implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
         String accessToken = bearerTokenResolver.resolve(request);
-        remoteTokenApi.logoutByToken(accessToken);
+        if (accessToken != null) {
+            remoteTokenApi.logoutByToken(accessToken);
+        }
     }
 }

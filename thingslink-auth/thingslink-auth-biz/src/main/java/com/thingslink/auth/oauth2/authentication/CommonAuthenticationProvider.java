@@ -23,10 +23,7 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author wzkris
@@ -94,14 +91,19 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                     .authorizationGrantType(customAuthentication.getGrantType())
                     .authorizationGrant(customAuthentication);
 
+        // 用户信息
+        AbstractUser userinfo = (AbstractUser) usernamePasswordAuthenticationToken.getPrincipal();
+
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .id(((AbstractUser) usernamePasswordAuthenticationToken.getPrincipal()).getUserId().toString())
+                .id(userinfo.getUserId().toString())
                 .principalName(usernamePasswordAuthenticationToken.getName())
                 .authorizationGrantType(customAuthentication.getGrantType())
                 .authorizedScopes(authorizedScopes)
-                .attribute(Principal.class.getName(), usernamePasswordAuthenticationToken.getPrincipal());
+                .attribute(Principal.class.getName(),
+                        new UsernamePasswordAuthenticationToken(null, null, Collections.emptyList()))// 保证refresh_token的时候转换正常
+                .attribute(AbstractUser.class.getName(), userinfo);
 
         // ----- Access token -----
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
@@ -168,7 +170,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         // 追加用户信息以便在OAuth2后续流程使用
-        additionalParameters.put(Principal.class.getName(), usernamePasswordAuthenticationToken.getPrincipal());
+        additionalParameters.put(AbstractUser.class.getName(), usernamePasswordAuthenticationToken.getPrincipal());
 
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
