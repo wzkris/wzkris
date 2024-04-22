@@ -5,10 +5,10 @@ import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DeptScope;
 import com.thingslink.common.orm.utils.DeptScopeUtil;
 import com.thingslink.common.security.utils.LoginUserUtil;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.schema.Column;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -62,8 +62,8 @@ public class DeptScopeAspect {
             // 生成权限sql片段
             String aliasColumn = StringUtil.isBlank(deptScope.tableAlias()) ? deptScope.columnAlias() :
                     StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
-            ItemsList itemsList = new ExpressionList(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
-            InExpression inExpression = new InExpression(new Column(aliasColumn), itemsList);
+            Expression expression = new ExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
+            InExpression inExpression = new InExpression(new Column(aliasColumn), expression);
 
             DeptScopeUtil.setSqlExpression(inExpression);
         }

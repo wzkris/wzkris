@@ -247,11 +247,12 @@ public class SysUserServiceImpl implements SysUserService {
                     .one().getTenantId();
         }
         if (userDTO.getDeptId() != null) {
-            Long deptSize = new LambdaQueryChainWrapper<>(sysDeptMapper)
+            Long deptId = new LambdaQueryChainWrapper<>(sysDeptMapper)
                     .eq(SysDept::getDeptId, userDTO.getDeptId())
                     .eq(SysDept::getTenantId, tenantId)
-                    .count();
-            if (deptSize != userDTO.getPostIds().length) {
+                    .one()
+                    .getDeptId();
+            if (ObjUtil.notEqual(deptId, userDTO.getDeptId())) {
                 throw new BusinessException("操作失败，部门归属租户与用户租户不一致");
             }
         }
