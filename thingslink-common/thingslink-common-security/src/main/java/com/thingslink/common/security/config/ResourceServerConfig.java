@@ -57,7 +57,7 @@ public class ResourceServerConfig {
                                 .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
-                .addFilterBefore(new IpRequestFilter(permitIpConfig), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new BeforeOpaqueTokenFilter(permitIpConfig), UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {

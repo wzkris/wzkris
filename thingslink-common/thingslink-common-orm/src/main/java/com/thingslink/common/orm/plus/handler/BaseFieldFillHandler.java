@@ -5,9 +5,9 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.thingslink.common.orm.model.BaseEntity;
 import com.thingslink.common.security.model.AbstractUser;
+import com.thingslink.common.security.utils.CurrentUserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * @author : wzkris
@@ -52,7 +52,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      */
     private AbstractUser getUserInfo() {
         try {
-            return (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return CurrentUserHolder.getPrincipal();
         }
         catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");

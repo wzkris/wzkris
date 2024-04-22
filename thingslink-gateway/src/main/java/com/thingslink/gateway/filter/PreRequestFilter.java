@@ -33,7 +33,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
 
         mutate.headers(header -> {
             // 清洗请求头
-            header.remove(SecurityConstants.GATEWAY_IP);
+            header.remove(SecurityConstants.GATEWAY_IP_HEADER);
             header.remove(SecurityConstants.INNER_REQUEST_HEADER);
         });
         return chain.filter(exchange.mutate().request(mutate.build()).build());

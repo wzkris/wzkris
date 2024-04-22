@@ -22,7 +22,6 @@ import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.model.AbstractUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,6 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessTokenResponseMapConverter;
@@ -44,7 +42,6 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenRespon
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
@@ -71,19 +68,12 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
+        // 发布登录事件
+        SpringUtil.publishEvent(new UserLoginEvent(ServletUtil.getClientIP(request),
+                UserAgentUtil.parse(request.getHeader("User-Agent"))));
+
         // 拿到返回的token
         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
-
-        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
-        if (!CollectionUtils.isEmpty(additionalParameters)) {
-            // 拿到追加的用户信息，发布登录事件
-            AbstractUser userInfo = (AbstractUser) additionalParameters.get(AbstractUser.class.getName());
-            SpringUtil.publishEvent(new UserLoginEvent(userInfo, ServletUtil.getClientIP(request),
-                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
-
-            // 移除用户信息，否则会返回给前端
-            additionalParameters.remove(AbstractUser.class.getName());
-        }
 
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
@@ -99,6 +89,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         }
 
         // 追加输出参数
+        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
         builder.additionalParameters(additionalParameters);
 
         ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);

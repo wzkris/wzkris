@@ -15,7 +15,12 @@ public interface SecurityConstants {
     /**
      * 网关IP
      */
-    String GATEWAY_IP = "gateway_ip";
+    String GATEWAY_IP_HEADER = "gateway_ip";
+
+    /**
+     * 个人信息
+     */
+    String PRINCIPAL_HEADER = "current_principal";
 
     /**
      * 内部请求标识

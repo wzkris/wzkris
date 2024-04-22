@@ -7,6 +7,7 @@ import com.thingslink.common.core.utils.ip.AddressUtil;
 import com.thingslink.common.security.model.AbstractUser;
 import com.thingslink.common.security.model.AppUser;
 import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.utils.CurrentUserHolder;
 import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.LoginLogDTO;
 import com.thingslink.user.api.RemoteCustomerApi;
@@ -39,7 +40,7 @@ public class LoginEventListener {
     @EventListener
     public void recordLoginLog(UserLoginEvent userLoginEvent) {
         log.info(Thread.currentThread().getName() + "监听到事件：" + userLoginEvent);
-        final AbstractUser userInfo = userLoginEvent.getUserInfo();
+        final AbstractUser userInfo = CurrentUserHolder.getPrincipal();
         final String ip = userLoginEvent.getIp();
         final UserAgent userAgent = userLoginEvent.getUserAgent();
 

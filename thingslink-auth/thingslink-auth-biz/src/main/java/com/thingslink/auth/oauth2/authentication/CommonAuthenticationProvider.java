@@ -1,6 +1,7 @@
 package com.thingslink.auth.oauth2.authentication;
 
 import com.thingslink.common.security.model.AbstractUser;
+import com.thingslink.common.security.utils.CurrentUserHolder;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -169,9 +170,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             additionalParameters.put(OidcParameterNames.ID_TOKEN, idToken.getTokenValue());
         }
 
-        // 追加用户信息以便在OAuth2后续流程使用
-        additionalParameters.put(AbstractUser.class.getName(), usernamePasswordAuthenticationToken.getPrincipal());
-
+        // 设置当前用户信息以便在OAuth2后续流程使用
+        CurrentUserHolder.setAuthentication(userinfo);
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);

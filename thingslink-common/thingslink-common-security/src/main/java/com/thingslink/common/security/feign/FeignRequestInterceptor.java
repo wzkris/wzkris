@@ -1,16 +1,14 @@
 package com.thingslink.common.security.feign;
 
+import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.StringUtil;
+import com.thingslink.common.core.utils.json.JsonUtil;
+import com.thingslink.common.security.utils.CurrentUserHolder;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 
 /**
  * @author : wzkris
@@ -27,33 +25,33 @@ public class FeignRequestInterceptor implements RequestInterceptor {
         requestTemplate.header(SecurityConstants.INNER_REQUEST_HEADER, target);
 
         HttpServletRequest request = ServletUtil.getRequest();
-        if (request != null) {
+        if (ObjUtil.isNotNull(request)) {
             String gatewayIp;
-            if (request.getHeader(SecurityConstants.GATEWAY_IP) == null) {
+            if (request.getHeader(SecurityConstants.GATEWAY_IP_HEADER) == null) {
                 // 如果网关IP请求头为空，则代表该request为网关转发
                 gatewayIp = ServletUtil.getClientIP(request);
             }
             else {
-                gatewayIp = request.getHeader(SecurityConstants.GATEWAY_IP);
+                gatewayIp = request.getHeader(SecurityConstants.GATEWAY_IP_HEADER);
             }
 
-            requestTemplate.header(SecurityConstants.GATEWAY_IP, gatewayIp);
+            requestTemplate.header(SecurityConstants.GATEWAY_IP_HEADER, gatewayIp);
         }
 
-        // 拿不到request，说明是异步调用或者内部调用
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // 未登录则直接返回
-        if (authentication == null
-                || !authentication.isAuthenticated()
-                || authentication instanceof AnonymousAuthenticationToken) {
+        // 未经过认证则直接返回
+        if (!CurrentUserHolder.isAuthenticated()) {
             return;
         }
 
-        // 判断具体授权票据
-        if (authentication instanceof BearerTokenAuthentication authenticationToken) {
-            OAuth2AccessToken auth2AccessToken = (OAuth2AccessToken) authenticationToken.getCredentials();
-            requestTemplate.header(SecurityConstants.TOKEN_HEADER, auth2AccessToken.getTokenType().getValue() + StringUtil.SPACE + auth2AccessToken.getTokenValue());
+        if (ObjUtil.isNotNull(request)) {
+            // 追加Token
+            String token = request.getHeader(SecurityConstants.TOKEN_HEADER);
+            if (StringUtil.isNotBlank(token)) {
+                requestTemplate.header(SecurityConstants.TOKEN_HEADER, token);
+            }
         }
 
+        // 追加个人信息
+        requestTemplate.header(SecurityConstants.PRINCIPAL_HEADER, JsonUtil.toJsonString(CurrentUserHolder.getPrincipal()));
     }
 }
