@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.thingslink.common.orm.model.BaseEntity;
-import com.thingslink.common.security.model.AbstractUser;
 import com.thingslink.common.security.utils.CurrentUserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -21,13 +20,9 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
             Long current = DateUtil.current();
+            Long createId = this.getUserId();
             this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
             this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-            Long createId = 0L;
-            AbstractUser userInfo = this.getUserInfo();
-            if (userInfo != null) {
-                createId = userInfo.getUserId();
-            }
             this.setFieldValByName(BaseEntity.Fields.createId, createId, metaObject);
             this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
         }
@@ -37,12 +32,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
             Long current = DateUtil.current();
+            Long createId = this.getUserId();
             this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-            Long createId = 0L;
-            AbstractUser userInfo = this.getUserInfo();
-            if (userInfo != null) {
-                createId = userInfo.getUserId();
-            }
             this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
         }
     }
@@ -50,13 +41,13 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     /**
      * 获取登录用户
      */
-    private AbstractUser getUserInfo() {
+    private Long getUserId() {
         try {
-            return CurrentUserHolder.getPrincipal();
+            return CurrentUserHolder.getPrincipal().getUserId();
         }
         catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");
-            return null;
+            return 0L;
         }
     }
 }
