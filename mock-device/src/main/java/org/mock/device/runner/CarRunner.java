@@ -2,13 +2,11 @@ package org.mock.device.runner;
 
 import cn.hutool.core.io.resource.Resource;
 import cn.hutool.core.io.resource.ResourceUtil;
-import cn.hutool.core.util.ByteUtil;
 import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
-import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.mqtt.constant.MqttTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.mock.device.util.MqttUtil;

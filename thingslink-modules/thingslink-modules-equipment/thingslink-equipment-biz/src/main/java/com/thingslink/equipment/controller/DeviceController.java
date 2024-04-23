@@ -51,7 +51,7 @@ public class DeviceController extends BaseController {
     @GetMapping("/{deviceId}")
     @PreAuthorize("hasAuthority('device:query')")
     public Result<Device> query(@PathVariable Long deviceId) {
-        return success(deviceMapper.getById(deviceId));
+        return success(deviceMapper.selectById(deviceId));
     }
 
     /**

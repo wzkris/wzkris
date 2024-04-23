@@ -1,4 +1,4 @@
-package com.thingslink.common.mqtt.constant;
+package com.thingslink.equipment.mqtt.constants;
 
 /**
  * @author : wzkris

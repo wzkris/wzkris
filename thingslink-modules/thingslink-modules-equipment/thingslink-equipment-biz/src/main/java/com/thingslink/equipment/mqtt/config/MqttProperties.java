@@ -17,6 +17,10 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "mqtt")
 public class MqttProperties {
     /**
+     * 状态
+     */
+    private Boolean enable;
+    /**
      * mqtt连接地址
      */
     private String host;

@@ -57,13 +57,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!--mq服务 -->
-            <dependency>
-                <groupId>com.thingslink</groupId>
-                <artifactId>thingslink-common-mqtt</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!--rpc服务 -->
             <dependency>
                 <groupId>com.thingslink</groupId>
