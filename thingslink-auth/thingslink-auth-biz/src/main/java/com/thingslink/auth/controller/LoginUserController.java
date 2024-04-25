@@ -4,7 +4,7 @@ package com.thingslink.auth.controller;
 import com.thingslink.auth.domain.LoginUserVO;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.common.security.utils.LoginUserUtil;
 import com.thingslink.user.api.domain.vo.RouterVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +29,7 @@ public class LoginUserController {
     @Operation(summary = "用户信息")
     @GetMapping
     public Result<LoginUserVO> loginUser() {
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        LoginSysUser loginUser = LoginUserUtil.getLoginUser();
         LoginUserVO loginUserVO = new LoginUserVO();
         loginUserVO.setUserId(loginUser.getUserId());
         loginUserVO.setUsername(loginUser.getUsername());

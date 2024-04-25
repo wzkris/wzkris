@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thingslink.common.core.annotation.PhoneNumber;
 import com.thingslink.common.core.annotation.Xss;
 import com.thingslink.common.orm.model.BaseEntity;
-import com.thingslink.common.security.model.AppUser;
+import com.thingslink.common.security.model.LoginAppUser;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -21,20 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 顾客 customer
+ * 顾客 app_user
  *
  * @author wzkris
  */
 @Data
 @Accessors(chain = true)
 @AutoMappers({
-        @AutoMapper(target = AppUser.class),
+        @AutoMapper(target = LoginAppUser.class),
         @AutoMapper(target = CustomerDTO.class)
 })
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @FieldNameConstants
-public class Customer extends BaseEntity {
+public class AppUser extends BaseEntity {
 
     @TableId
     private Long userId;
@@ -80,7 +80,7 @@ public class Customer extends BaseEntity {
         return params;
     }
 
-    public Customer(Long userId) {
+    public AppUser(Long userId) {
         this.userId = userId;
     }
 

@@ -1,6 +1,6 @@
 package com.thingslink.common.security.utils;
 
-import com.thingslink.common.security.model.AppUser;
+import com.thingslink.common.security.model.LoginAppUser;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,7 +19,7 @@ public class AppUserUtil extends CurrentUserHolder {
      * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        return CurrentUserHolder.isAuthenticated() && CurrentUserHolder.getPrincipal() instanceof AppUser;
+        return CurrentUserHolder.isAuthenticated() && CurrentUserHolder.getPrincipal() instanceof LoginAppUser;
     }
 
     /**
@@ -27,8 +27,8 @@ public class AppUserUtil extends CurrentUserHolder {
      *
      * @return 当前用户
      */
-    public static AppUser getAppUser() {
-        return (AppUser) CurrentUserHolder.getPrincipal();
+    public static LoginAppUser getAppUser() {
+        return (LoginAppUser) CurrentUserHolder.getPrincipal();
     }
 
     /**

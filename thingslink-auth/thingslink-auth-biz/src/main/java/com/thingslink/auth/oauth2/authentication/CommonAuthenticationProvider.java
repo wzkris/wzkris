@@ -1,6 +1,6 @@
 package com.thingslink.auth.oauth2.authentication;
 
-import com.thingslink.common.security.model.AbstractUser;
+import com.thingslink.common.security.model.LoginUser;
 import com.thingslink.common.security.utils.CurrentUserHolder;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -93,18 +93,18 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                     .authorizationGrant(customAuthentication);
 
         // 用户信息
-        AbstractUser userinfo = (AbstractUser) usernamePasswordAuthenticationToken.getPrincipal();
+        LoginUser loginUser = (LoginUser) usernamePasswordAuthenticationToken.getPrincipal();
 
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .id(userinfo.getUserId().toString())
+                .id(loginUser.getUserId().toString())
                 .principalName(usernamePasswordAuthenticationToken.getName())
                 .authorizationGrantType(customAuthentication.getGrantType())
                 .authorizedScopes(authorizedScopes)
                 .attribute(Principal.class.getName(),
                         new UsernamePasswordAuthenticationToken(null, null, Collections.emptyList()))// 保证refresh_token的时候转换正常
-                .attribute(AbstractUser.class.getName(), userinfo);
+                .attribute(LoginUser.class.getName(), loginUser);
 
         // ----- Access token -----
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
@@ -171,7 +171,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         // 设置当前用户信息以便在OAuth2后续流程使用
-        CurrentUserHolder.setAuthentication(userinfo);
+        CurrentUserHolder.setAuthentication(loginUser);
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);

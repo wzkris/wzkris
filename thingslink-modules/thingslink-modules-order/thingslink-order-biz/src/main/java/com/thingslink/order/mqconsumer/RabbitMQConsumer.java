@@ -1,6 +1,6 @@
 package com.thingslink.order.mqconsumer;
 
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.mq.constant.MQTopic;
 import com.thingslink.order.service.ChargingOrderService;
@@ -28,13 +28,13 @@ public class RabbitMQConsumer {
     private final RabbitTemplate rabbitTemplate;
 
     @RabbitListener(queues = MQTopic.TEST)
-    public LoginUser TEST(@Payload LoginUser loginUser) {
+    public LoginSysUser TEST(@Payload LoginSysUser loginUser) {
         System.out.println(loginUser);
-        return new LoginUser();
+        return new LoginSysUser();
     }
 
     @RabbitListener(queues = MQTopic.ORDER_CLOSE)
     public void ORDER_CLOSE(Message message) {
-        System.out.println(JsonUtil.parseObject(message.getBody(), LoginUser.class));
+        System.out.println(JsonUtil.parseObject(message.getBody(), LoginSysUser.class));
     }
 }

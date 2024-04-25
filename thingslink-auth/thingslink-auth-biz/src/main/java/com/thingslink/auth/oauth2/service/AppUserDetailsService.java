@@ -3,9 +3,9 @@ package com.thingslink.auth.oauth2.service;
 import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.model.AppUser;
+import com.thingslink.common.security.model.LoginAppUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
-import com.thingslink.user.api.RemoteCustomerApi;
+import com.thingslink.user.api.RemoteAppUserApi;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +22,10 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AppUserDetailsService implements UserDetailsServicePlus {
-    private final RemoteCustomerApi remoteCustomerApi;
+    private final RemoteAppUserApi remoteAppUserApi;
 
     public UserDetails loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
-        Result<CustomerDTO> result = remoteCustomerApi.getByPhoneNumber(phoneNumber);
+        Result<CustomerDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
         CustomerDTO customerDTO = result.checkData();
 
         return this.checkAndBuildAppUser(customerDTO);
@@ -39,7 +39,7 @@ public class AppUserDetailsService implements UserDetailsServicePlus {
         this.checkAccount(customerDTO);
         // 获取权限信息
 
-        AppUser appUser = new AppUser();
+        LoginAppUser appUser = new LoginAppUser();
         appUser.setUserId(customerDTO.getUserId());
         appUser.setPhoneNumber(customerDTO.getPhoneNumber());
 

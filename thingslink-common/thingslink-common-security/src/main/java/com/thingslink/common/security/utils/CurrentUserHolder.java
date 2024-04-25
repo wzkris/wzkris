@@ -2,7 +2,7 @@ package com.thingslink.common.security.utils;
 
 
 import com.thingslink.common.core.exception.user.UserException;
-import com.thingslink.common.security.model.AbstractUser;
+import com.thingslink.common.security.model.LoginUser;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,8 +32,8 @@ public class CurrentUserHolder {
     /**
      * 设置当前认证信息
      */
-    public static void setAuthentication(AbstractUser abstractUser) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(abstractUser, null, abstractUser.getAuthorities());
+    public static void setAuthentication(LoginUser loginUser) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
@@ -54,7 +54,7 @@ public class CurrentUserHolder {
         Authentication authentication = getAuthentication();
         return null != authentication && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)
-                && authentication.getPrincipal() instanceof AbstractUser;
+                && authentication.getPrincipal() instanceof LoginUser;
     }
 
     /**
@@ -62,10 +62,10 @@ public class CurrentUserHolder {
      *
      * @return 当前用户
      */
-    public static AbstractUser getPrincipal() {
-        AbstractUser user;
+    public static LoginUser getPrincipal() {
+        LoginUser user;
         try {
-            user = (AbstractUser) getAuthentication().getPrincipal();
+            user = (LoginUser) getAuthentication().getPrincipal();
         }
         catch (Exception e) {
             throw new UserException(401, "user.not.login");

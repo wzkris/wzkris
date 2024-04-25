@@ -4,9 +4,9 @@ import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.model.AbstractUser;
-import com.thingslink.common.security.model.AppUser;
 import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginAppUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.common.security.utils.CurrentUserHolder;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -44,19 +44,19 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     /**
      * 构建登录用户信息
      */
-    public static AbstractUser buildAuthenticatedUser(LinkedHashMap<String, Object> resMap) {
+    public static LoginUser buildAuthenticatedUser(LinkedHashMap<String, Object> resMap) {
         if (resMap == null || resMap.get("userType") == null) {
             throw new InvalidBearerTokenException(OAuth2ErrorCodes.INVALID_TOKEN);
         }
 
         String userType = resMap.get("userType").toString();
 
-        if (StringUtil.equals(userType, AppUser.USER_TYPE)) {
-            return JsonUtil.parseObject(resMap, AppUser.class);
+        if (StringUtil.equals(userType, LoginAppUser.USER_TYPE)) {
+            return JsonUtil.parseObject(resMap, LoginAppUser.class);
         }
 
-        if (StringUtil.equals(userType, LoginUser.USER_TYPE)) {
-            return JsonUtil.parseObject(resMap, LoginUser.class);
+        if (StringUtil.equals(userType, LoginSysUser.USER_TYPE)) {
+            return JsonUtil.parseObject(resMap, LoginSysUser.class);
         }
 
         // 返回空即为未认证

@@ -3,7 +3,7 @@ package com.thingslink.auth.controller;
 import com.thingslink.auth.domain.AppUserVO;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.MapstructUtil;
-import com.thingslink.common.security.model.AppUser;
+import com.thingslink.common.security.model.LoginAppUser;
 import com.thingslink.common.security.utils.AppUserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +23,7 @@ public class AppUserController {
     @Operation(summary = "用户信息")
     @GetMapping
     public Result<AppUserVO> appUser() {
-        AppUser appUser = AppUserUtil.getAppUser();
+        LoginAppUser appUser = AppUserUtil.getAppUser();
         AppUserVO appUserVO = MapstructUtil.convert(appUser, AppUserVO.class);
         return success(appUserVO);
     }

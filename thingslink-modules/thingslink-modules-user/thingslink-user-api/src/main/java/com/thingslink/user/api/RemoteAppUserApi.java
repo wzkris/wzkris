@@ -3,7 +3,7 @@ package com.thingslink.user.api;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
 import com.thingslink.user.api.domain.dto.LoginInfoDTO;
-import com.thingslink.user.api.fallback.RemoteCustomerApiFallback;
+import com.thingslink.user.api.fallback.RemoteAppUserApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,8 +20,8 @@ import static com.thingslink.common.core.constant.SecurityConstants.INNER_REQUES
  * @date : 2024/4/15 16:20
  */
 @FeignClient(value = "thingslink-user", contextId = "RemoteCustomerApi",
-        fallbackFactory = RemoteCustomerApiFallback.class)
-public interface RemoteCustomerApi {
+        fallbackFactory = RemoteAppUserApiFallback.class)
+public interface RemoteAppUserApi {
 
     /**
      * 根据手机号查询app用户

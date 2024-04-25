@@ -9,7 +9,7 @@ import com.thingslink.common.core.annotation.Xss;
 import com.thingslink.common.core.annotation.group.ValidationGroups;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.orm.model.BaseEntity;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.user.api.domain.dto.SysUserDTO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -34,7 +34,7 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 @AutoMappers({
-        @AutoMapper(target = LoginUser.class),
+        @AutoMapper(target = LoginSysUser.class),
         @AutoMapper(target = SysUserDTO.class)
 })
 @EqualsAndHashCode(callSuper = true)

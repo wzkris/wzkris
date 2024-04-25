@@ -1,51 +1,100 @@
 package com.thingslink.common.security.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import jakarta.annotation.Nonnull;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.io.Serial;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * @author : wzkris
- * @version : V1.0.1
- * @description : 登录用户信息
- * @date : 2023/8/7 16:38
- * @UPDATE： 2024/4/9 09:29
+ * @version : V1.0.0
+ * @description : 登录用户信息抽象类
+ * @date : 2024/4/9 09:29
  */
-@Data
-@Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class LoginUser extends AbstractUser {
-    @Serial
-    private static final long serialVersionUID = 3291189147544840626L;
+@Setter
+public abstract class LoginUser implements UserDetails, OAuth2User, CredentialsContainer, Serializable {
 
-    public static final String USER_TYPE = "sys_user";
-    // 登录id
-    private Long userId;
-    // 部门id
-    private Long deptId;
-    // 租户id
-    private Long tenantId;
-    // 是否当前租户下的最高管理员
-    private Boolean isAdmin;
-    // 用户名
-    private String username;
-    // 密码
-    private String password;
-    // 部门数据权限， 最终会拼接到SQL中
-    private List<Long> deptScopes;
+    @Serial
+    private static final long serialVersionUID = 2978369205157234626L;
+
+    // 权限
+    private Collection<? extends GrantedAuthority> authorities;
+
+    // 额外参数
+    @Getter
+    private Map<String, Object> additionalParameters;
+
+    public abstract Long getUserId();
+
+    // 用于判断用户类型
+    public abstract String getUserType();
 
     @Override
-    public String getUserType() {
-        return USER_TYPE;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities == null ? AuthorityUtils.NO_AUTHORITIES : authorities;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return Collections.EMPTY_MAP;
+    }
+
+    public void putAdditionalParameter(String key, Object value) {
+        if (this.additionalParameters == null) {
+            this.additionalParameters = new HashMap<>(4);
+        }
+        this.additionalParameters.put(key, value);
+    }
+
+    @Override
+    public abstract String getPassword();
+
+    @Override
+    @Nonnull
+    public abstract String getUsername();
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return this.getUsername();
     }
 
     @Override
     public void eraseCredentials() {
-        super.eraseCredentials();
-        this.password = null;
+        // 额外属性的值置空
+        for (Map.Entry<String, Object> entry : this.getAdditionalParameters().entrySet()) {
+            entry.setValue(null);
+        }
     }
-
 }

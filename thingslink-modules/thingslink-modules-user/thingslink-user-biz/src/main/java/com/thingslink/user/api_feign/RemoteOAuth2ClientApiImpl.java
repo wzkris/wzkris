@@ -5,8 +5,8 @@ import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.annotation.InnerAuth;
 import com.thingslink.user.api.RemoteOAuth2ClientApi;
 import com.thingslink.user.api.domain.dto.Oauth2ClientDTO;
-import com.thingslink.user.domain.Oauth2RegisteredClient;
-import com.thingslink.user.mapper.Oauth2RegisteredClientMapper;
+import com.thingslink.user.domain.Oauth2Client;
+import com.thingslink.user.mapper.Oauth2ClientMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,14 +22,14 @@ import static com.thingslink.common.core.domain.Result.success;
 @RestController
 @RequiredArgsConstructor
 public class RemoteOAuth2ClientApiImpl implements RemoteOAuth2ClientApi {
-    private final Oauth2RegisteredClientMapper oauth2RegisteredClientMapper;
+    private final Oauth2ClientMapper oauth2ClientMapper;
 
     /**
      * 查询OAuth2客户端
      */
     @Override
     public Result<Oauth2ClientDTO> getByClientId(String clientId) {
-        Oauth2RegisteredClient registeredClient = oauth2RegisteredClientMapper.selectByClientId(clientId);
+        Oauth2Client registeredClient = oauth2ClientMapper.selectByClientId(clientId);
         Oauth2ClientDTO oauth2ClientDTO = MapstructUtil.convert(registeredClient, Oauth2ClientDTO.class);
         return success(oauth2ClientDTO);
     }

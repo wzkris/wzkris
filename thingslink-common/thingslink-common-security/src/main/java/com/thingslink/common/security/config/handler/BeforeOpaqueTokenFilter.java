@@ -8,7 +8,7 @@ import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.config.white.PermitIpConfig;
-import com.thingslink.common.security.model.AbstractUser;
+import com.thingslink.common.security.model.LoginUser;
 import com.thingslink.common.security.utils.CurrentUserHolder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -63,8 +63,8 @@ public class BeforeOpaqueTokenFilter extends OncePerRequestFilter {
             // 不为空说明经过一次调用，直接读取值
             LinkedHashMap<String, Object> resMap = JsonUtil.parseObject(currentPrincipal, LinkedHashMap.class);
 
-            AbstractUser abstractUser = CustomOpaqueTokenIntrospector.buildAuthenticatedUser(resMap);
-            CurrentUserHolder.setAuthentication(abstractUser);
+            LoginUser loginUser = CustomOpaqueTokenIntrospector.buildAuthenticatedUser(resMap);
+            CurrentUserHolder.setAuthentication(loginUser);
         }
 
         // 继续过滤器链

@@ -1,7 +1,7 @@
 package com.thingslink.common.security.utils;
 
 import com.thingslink.common.core.constant.SecurityConstants;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,7 +27,7 @@ public class LoginUserUtil extends CurrentUserHolder {
      * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        return CurrentUserHolder.isAuthenticated() && CurrentUserHolder.getPrincipal() instanceof LoginUser;
+        return CurrentUserHolder.isAuthenticated() && CurrentUserHolder.getPrincipal() instanceof LoginSysUser;
     }
 
     /**
@@ -56,8 +56,8 @@ public class LoginUserUtil extends CurrentUserHolder {
      *
      * @return 当前用户
      */
-    public static LoginUser getLoginUser() {
-        return (LoginUser) CurrentUserHolder.getPrincipal();
+    public static LoginSysUser getLoginUser() {
+        return (LoginSysUser) CurrentUserHolder.getPrincipal();
     }
 
     /**

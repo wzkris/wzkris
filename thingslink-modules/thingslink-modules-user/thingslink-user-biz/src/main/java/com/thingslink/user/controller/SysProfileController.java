@@ -8,7 +8,7 @@ import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.model.BaseController;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.common.security.utils.LoginUserUtil;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.domain.dto.SysUserDTO;
@@ -92,7 +92,7 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PutMapping("/password")
     public Result<?> updatePwd(String oldPassword, String newPassword) {
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        LoginSysUser loginUser = LoginUserUtil.getLoginUser();
 
         String encryptPassword = LoginUserUtil.encryptPassword(newPassword);
         String username = loginUser.getUsername();
@@ -112,7 +112,7 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PutMapping("/avatar")
     public Result<?> updateAvatar(@RequestBody String url) {
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        LoginSysUser loginUser = LoginUserUtil.getLoginUser();
         return toRes(userMapper.updateAvatar(loginUser.getUsername(), url) > 0);
     }
 }
