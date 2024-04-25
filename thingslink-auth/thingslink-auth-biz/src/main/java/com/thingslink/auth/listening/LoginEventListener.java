@@ -1,14 +1,16 @@
 package com.thingslink.auth.listening;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
 import com.thingslink.auth.listening.event.UserLoginEvent;
 import com.thingslink.common.core.utils.ip.AddressUtil;
-import com.thingslink.common.security.model.AbstractUser;
-import com.thingslink.common.security.model.AppUser;
 import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginAppUser;
+import com.thingslink.common.security.model.LoginSysUser;
+import com.thingslink.common.security.utils.CurrentUserHolder;
 import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.LoginLogDTO;
-import com.thingslink.user.api.RemoteCustomerApi;
+import com.thingslink.user.api.RemoteAppUserApi;
 import com.thingslink.user.api.RemoteSysUserApi;
 import com.thingslink.user.api.domain.dto.LoginInfoDTO;
 import lombok.AllArgsConstructor;
@@ -16,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 /**
  * @author : wzkris
@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 public class LoginEventListener {
     private final RemoteLogApi remoteLogApi;
     private final RemoteSysUserApi remoteSysUserApi;
-    private final RemoteCustomerApi remoteCustomerApi;
+    private final RemoteAppUserApi remoteAppUserApi;
 
     /**
      * 异步记录登录日志
@@ -40,21 +40,21 @@ public class LoginEventListener {
     @EventListener
     public void recordLoginLog(UserLoginEvent userLoginEvent) {
         log.info(Thread.currentThread().getName() + "监听到事件：" + userLoginEvent);
-        final AbstractUser userInfo = userLoginEvent.getUserInfo();
+        final LoginUser loginUser = CurrentUserHolder.getPrincipal();
         final String ip = userLoginEvent.getIp();
         final UserAgent userAgent = userLoginEvent.getUserAgent();
 
-        if (userInfo instanceof LoginUser loginUser) {
+        if (loginUser instanceof LoginSysUser sysUser) {
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
-            loginInfoDTO.setUserId(loginUser.getUserId());
+            loginInfoDTO.setUserId(sysUser.getUserId());
             loginInfoDTO.setLoginIp(ip);
-            loginInfoDTO.setLoginDate(LocalDateTime.now());
+            loginInfoDTO.setLoginDate(DateUtil.current());
             remoteSysUserApi.updateLoginInfo(loginInfoDTO);
             // 插入后台登陆日志
             final LoginLogDTO loginLogDTO = new LoginLogDTO();
-            loginLogDTO.setUserId(loginUser.getUserId());
-            loginLogDTO.setLoginTime(LocalDateTime.now());
+            loginLogDTO.setUserId(sysUser.getUserId());
+            loginLogDTO.setLoginTime(DateUtil.current());
             loginLogDTO.setIpAddr(ip);
             loginLogDTO.setAddress(AddressUtil.getRealAddressByIp(ip));
             // 获取客户端操作系统
@@ -65,13 +65,13 @@ public class LoginEventListener {
             loginLogDTO.setBrowser(browser);
             remoteLogApi.insertLoginlog(loginLogDTO);
         }
-        else if (userInfo instanceof AppUser appUser) {
+        else if (loginUser instanceof LoginAppUser appUser) {
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
             loginInfoDTO.setUserId(appUser.getUserId());
             loginInfoDTO.setLoginIp(ip);
-            loginInfoDTO.setLoginDate(LocalDateTime.now());
-            remoteCustomerApi.updateLoginInfo(loginInfoDTO);
+            loginInfoDTO.setLoginDate(DateUtil.current());
+            remoteAppUserApi.updateLoginInfo(loginInfoDTO);
         }
 
     }

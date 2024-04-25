@@ -5,7 +5,6 @@ import jakarta.annotation.Nullable;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
@@ -31,10 +30,8 @@ public class SsoLogoutSuccessHandler implements LogoutSuccessHandler {
         if (StrUtil.isNotBlank(redirectUrl)) {
             response.sendRedirect(redirectUrl);
         }
-        else if (StrUtil.isNotBlank(request.getHeader(HttpHeaders.REFERER))) {
-            // 默认跳转referer 地址
-            String referer = request.getHeader(HttpHeaders.REFERER);
-            response.sendRedirect(referer);
+        else {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
     }
 }

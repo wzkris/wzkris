@@ -2,7 +2,7 @@ package com.thingslink.user.api.fallback;
 
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.enums.BizCode;
-import com.thingslink.user.api.RemoteCustomerApi;
+import com.thingslink.user.api.RemoteAppUserApi;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
 import com.thingslink.user.api.domain.dto.LoginInfoDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +19,12 @@ import static com.thingslink.common.core.domain.Result.resp;
  */
 @Slf4j
 @Component
-public class RemoteCustomerApiFallback implements FallbackFactory<RemoteCustomerApi> {
+public class RemoteAppUserApiFallback implements FallbackFactory<RemoteAppUserApi> {
 
     @Override
-    public RemoteCustomerApi create(Throwable cause) {
+    public RemoteAppUserApi create(Throwable cause) {
         log.error("-----------用户服务发生熔断-----------");
-        return new RemoteCustomerApi() {
+        return new RemoteAppUserApi() {
 
             @Override
             public Result<CustomerDTO> getByPhoneNumber(String phoneNumber) {

@@ -16,9 +16,9 @@
         <result property="contact"      column="contact"/>
         <result property="email"        column="email"/>
         <result property="createAt"     column="create_at"/>
-        <result property="createBy"     column="create_by"/>
+        <result property="createId"     column="create_id"/>
         <result property="updateAt"     column="update_at"/>
-        <result property="updateBy"     column="update_by"/>
+        <result property="updateId"     column="update_id"/>
     </resultMap>
 
 
@@ -33,9 +33,9 @@
         email,
         status,
         create_at,
-        create_by,
+        create_id,
         update_at,
-        update_by
+        update_id
         FROM sys_dept
     </sql>
 

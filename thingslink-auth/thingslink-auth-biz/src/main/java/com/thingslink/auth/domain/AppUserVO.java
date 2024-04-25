@@ -3,7 +3,7 @@ package com.thingslink.auth.domain;
 
 import com.thingslink.common.core.annotation.Sensitive;
 import com.thingslink.common.core.annotation.impl.SensitiveStrategy;
-import com.thingslink.common.security.model.AppUser;
+import com.thingslink.common.security.model.LoginAppUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@AutoMapper(target = AppUser.class)
+@AutoMapper(target = LoginAppUser.class)
 public class AppUserVO {
 
     @Schema(description = "登录id")

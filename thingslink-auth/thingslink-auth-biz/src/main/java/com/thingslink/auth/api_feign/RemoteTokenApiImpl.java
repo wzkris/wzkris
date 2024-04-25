@@ -4,12 +4,11 @@ import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.auth.service.CaptchaService;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.annotation.InnerAuth;
+import com.thingslink.common.security.model.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
 
 import static com.thingslink.common.core.domain.Result.success;
 
@@ -44,7 +43,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     public Result<Object> findByToken(String token) {
         OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(token, null);
 
-        return oAuth2Authorization == null ? success() : success(oAuth2Authorization.getAttribute(Principal.class.getName()));
+        return oAuth2Authorization == null ? success() : success(oAuth2Authorization.getAttribute(LoginUser.class.getName()));
     }
 
     /**

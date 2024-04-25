@@ -4,8 +4,8 @@ import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.user.domain.SysDept;
 import com.thingslink.user.domain.SysRole;
 import com.thingslink.user.domain.SysUser;
@@ -51,7 +51,7 @@ public class SysRoleController extends BaseController {
     public Result<Page<SysRole>> list(SysRole role) {
         startPage();
         List<SysRole> list = sysRoleService.list(role);
-        return BaseController.getDataTable(list);
+        return getDataTable(list);
     }
 
     @Operation(summary = "角色详细信息")
@@ -129,7 +129,7 @@ public class SysRoleController extends BaseController {
     public Result<Page<SysUser>> allocatedList(SysUser user, Long roleId) {
         startPage();
         List<SysUser> list = userService.listAllocated(user, roleId);
-        return BaseController.getDataTable(list);
+        return getDataTable(list);
     }
 
     @Operation(summary = "查询角色未分配的用户列表")
@@ -138,7 +138,7 @@ public class SysRoleController extends BaseController {
     public Result<Page<SysUser>> unallocatedList(SysUser user, Long roleId) {
         startPage();
         List<SysUser> list = userService.listUnallocated(user, roleId);
-        return BaseController.getDataTable(list);
+        return getDataTable(list);
     }
 
     @Operation(summary = "取消授权用户")

@@ -33,9 +33,9 @@ CREATE TABLE `device`  (
   `device_status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '设备状态',
   `road_status` json NULL COMMENT '通道状态 0-空闲 1-使用',
   `create_at` datetime NOT NULL COMMENT '创建时间',
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
+  `create_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
   `update_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `update_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`device_id`) USING BTREE,
   UNIQUE INDEX `uk_serial_no`(`serial_no` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
@@ -60,9 +60,9 @@ CREATE TABLE `station`  (
   `longitude` decimal(9, 6) NULL DEFAULT NULL COMMENT '经度',
   `latitude` decimal(8, 6) NULL DEFAULT NULL COMMENT '纬度',
   `create_at` datetime NOT NULL COMMENT '创建时间',
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
+  `create_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
   `update_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `update_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`station_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 

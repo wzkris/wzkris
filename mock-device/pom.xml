@@ -23,8 +23,8 @@
 
         <!-- mqtt消息队列 -->
         <dependency>
-            <groupId>com.thingslink</groupId>
-            <artifactId>thingslink-common-mqtt</artifactId>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
         </dependency>
 
         <dependency>

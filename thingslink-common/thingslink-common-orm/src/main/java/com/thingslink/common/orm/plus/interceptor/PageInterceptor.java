@@ -119,12 +119,11 @@ public class PageInterceptor extends PaginationInnerInterceptor {
     private String autoCountSql(String sql) {
         try {
             Select select = (Select) JsqlParserGlobal.parse(sql);
-            SelectBody selectBody = select.getSelectBody();
             // https://github.com/baomidou/mybatis-plus/issues/3920  分页增加union语法支持
-            if (selectBody instanceof SetOperationList) {
+            if (select instanceof SetOperationList) {
                 return lowLevelCountSql(sql);
             }
-            PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+            PlainSelect plainSelect = (PlainSelect) select;
             Distinct distinct = plainSelect.getDistinct();
             GroupByElement groupBy = plainSelect.getGroupBy();
 
@@ -176,8 +175,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
                             Table table = (Table) rightItem;
                             str = Optional.ofNullable(table.getAlias()).map(Alias::getName).orElse(table.getName()) + StringPool.DOT;
                         }
-                        else if (rightItem instanceof SubSelect) {
-                            SubSelect subSelect = (SubSelect) rightItem;
+                        else if (rightItem instanceof ParenthesedSelect subSelect) {
                             /* 如果 left join 是子查询，并且子查询里包含 ?(代表有入参) 或者 where 条件里包含使用 join 的表的字段作条件,就不移除 join */
                             if (subSelect.toString().contains(StringPool.QUESTION_MARK)) {
                                 canRemoveJoin = false;

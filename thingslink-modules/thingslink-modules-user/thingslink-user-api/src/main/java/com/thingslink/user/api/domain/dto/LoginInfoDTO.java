@@ -13,5 +13,5 @@ import java.time.LocalDateTime;
 public class LoginInfoDTO {
     private Long userId;
     private String loginIp;
-    private LocalDateTime loginDate;
+    private Long loginDate;
 }

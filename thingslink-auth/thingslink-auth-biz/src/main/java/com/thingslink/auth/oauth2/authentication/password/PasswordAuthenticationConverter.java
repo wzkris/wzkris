@@ -31,13 +31,13 @@ public class PasswordAuthenticationConverter extends CommonAuthenticationConvert
         // username (REQUIRED)
         String username = parameters.getFirst(OAuth2ParameterNames.USERNAME);
         if (!StringUtils.hasText(username) || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.parameter.missing", OAuth2ParameterNames.USERNAME);
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail", OAuth2ParameterNames.USERNAME);
         }
 
         // password (REQUIRED)
         String password = parameters.getFirst(OAuth2ParameterNames.PASSWORD);
         if (!StringUtils.hasText(password) || parameters.get(OAuth2ParameterNames.PASSWORD).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.parameter.missing", OAuth2ParameterNames.PASSWORD);
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail", OAuth2ParameterNames.PASSWORD);
         }
     }
 

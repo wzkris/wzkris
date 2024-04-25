@@ -49,5 +49,5 @@ public class LoginLogDTO {
     /**
      * 登录时间
      */
-    private LocalDateTime loginTime;
+    private Long loginTime;
 }

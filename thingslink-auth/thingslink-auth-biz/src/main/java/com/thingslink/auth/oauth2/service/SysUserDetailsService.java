@@ -5,7 +5,7 @@ import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.config.TokenConfig;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import com.thingslink.user.api.RemoteSysUserApi;
 import com.thingslink.user.api.domain.dto.SysPermissionDTO;
@@ -43,7 +43,7 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
     }
 
     /**
-     * 获取前端路由
+     * 获取前端路由，缓存路由结果
      */
     public List<RouterVO> getRouter(Long userId) {
         RBucket<List<RouterVO>> bucket = JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId));
@@ -66,7 +66,7 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
     private UserDetails checkAndBuildLoginUser(SysUserDTO sysUserDTO) {
         // 校验用户状态
         this.checkAccount(sysUserDTO);
-        LoginUser loginUser = new LoginUser();
+        LoginSysUser loginUser = new LoginSysUser();
         loginUser.setUserId(sysUserDTO.getUserId());
         loginUser.setDeptId(sysUserDTO.getDeptId());
         loginUser.setTenantId(sysUserDTO.getTenantId());

@@ -50,8 +50,8 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
         Oauth2ClientDTO oauth2ClientDTO = RedisUtil.getCacheObject(this.buildRedisKey(clientId));
 
         if (oauth2ClientDTO == null) {
-            Result<Oauth2ClientDTO> dtoResult = remoteOAuth2ClientApi.getByClientId(clientId);
-            oauth2ClientDTO = dtoResult.checkData();
+            Result<Oauth2ClientDTO> clientResult = remoteOAuth2ClientApi.getByClientId(clientId);
+            oauth2ClientDTO = clientResult.checkData();
 
             if (oauth2ClientDTO == null) {
                 OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");

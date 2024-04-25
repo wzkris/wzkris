@@ -13,7 +13,10 @@
     <artifactId>thingslink-equipment-api</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.thingslink</groupId>
+            <artifactId>thingslink-common-openfeign</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

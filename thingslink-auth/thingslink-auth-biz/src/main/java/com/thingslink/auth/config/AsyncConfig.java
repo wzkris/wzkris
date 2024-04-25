@@ -1,4 +1,4 @@
-package com.thingslink.user.config;
+package com.thingslink.auth.config;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.thingslink.common.core.exception.BusinessException;

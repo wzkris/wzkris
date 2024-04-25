@@ -36,7 +36,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         return new LambdaQueryWrapper<SysNotice>()
                 .like(StringUtil.isNotBlank(notice.getNoticeTitle()), SysNotice::getNoticeTitle, notice.getNoticeTitle())
                 .eq(StringUtil.isNotBlank(notice.getNoticeType()), SysNotice::getNoticeType, notice.getNoticeType())
-                .like(StringUtil.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy())
                 .orderByDesc(SysNotice::getNoticeId);
     }
 

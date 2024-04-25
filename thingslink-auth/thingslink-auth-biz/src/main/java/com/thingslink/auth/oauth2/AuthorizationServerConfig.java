@@ -13,6 +13,7 @@ import com.thingslink.auth.oauth2.service.SysUserDetailsService;
 import com.thingslink.common.security.utils.LoginUserUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -42,7 +43,7 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 public class AuthorizationServerConfig {
 
     @Bean
-    @Order(1)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServer(HttpSecurity http,
                                                    SysUserDetailsService sysUserDetailsService,
                                                    AppUserDetailsService appUserDetailsService,
@@ -84,8 +85,7 @@ public class AuthorizationServerConfig {
                     new LoginUrlAuthenticationEntryPoint("/login"),// 401了跳转到登录页
                     new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
             );
-        })
-        ;
+        });
 
         return http.build();
     }

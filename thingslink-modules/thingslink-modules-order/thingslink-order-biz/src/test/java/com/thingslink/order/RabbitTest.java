@@ -1,6 +1,6 @@
 package com.thingslink.order;
 
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
@@ -26,9 +26,9 @@ public class RabbitTest {
         Message message = rabbitTemplate.sendAndReceive(
                 "amq.direct",
                 "_test",
-                MessageBuilder.withBody(JsonUtil.toBytes(new LoginUser())).build()
+                MessageBuilder.withBody(JsonUtil.toBytes(new LoginSysUser())).build()
         );
 
-        System.out.println(JsonUtil.parseObject(message.getBody(), LoginUser.class));
+        System.out.println(JsonUtil.parseObject(message.getBody(), LoginSysUser.class));
     }
 }

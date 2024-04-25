@@ -1,13 +1,12 @@
 package com.thingslink.common.orm.plus.handler;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.thingslink.common.orm.model.BaseEntity;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.CurrentUserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-
-import java.time.LocalDateTime;
 
 /**
  * @author : wzkris
@@ -19,23 +18,36 @@ import java.time.LocalDateTime;
 public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
-        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && LoginUserUtil.isLogin()) {
-            LocalDateTime localDateTime = LocalDateTime.now();
-            String userId = LoginUserUtil.getUserId().toString();
-            this.setFieldValByName(BaseEntity.Fields.createAt, localDateTime, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.createBy, userId, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateAt, localDateTime, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateBy, userId, metaObject);
+        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
+            Long current = DateUtil.current();
+            Long createId = this.getUserId();
+            this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
+            this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
+            this.setFieldValByName(BaseEntity.Fields.createId, createId, metaObject);
+            this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
         }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && LoginUserUtil.isLogin()) {
-            this.setFieldValByName(BaseEntity.Fields.updateAt, LocalDateTime.now(), metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateBy, LoginUserUtil.getUserId().toString(), metaObject);
+        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
+            Long current = DateUtil.current();
+            Long createId = this.getUserId();
+            this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
+            this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
+        }
+    }
+
+    /**
+     * 获取登录用户
+     */
+    private Long getUserId() {
+        try {
+            return CurrentUserHolder.getPrincipal().getUserId();
+        }
+        catch (Exception e) {
+            log.warn("属性填充警告 => 用户未登录");
+            return 0L;
         }
     }
 }

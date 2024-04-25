@@ -1,50 +1,25 @@
 package com.thingslink.common.security.utils;
 
 import com.thingslink.common.core.constant.SecurityConstants;
-import com.thingslink.common.core.exception.user.UserException;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.model.LoginSysUser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.stereotype.Component;
-
-import java.util.Collection;
 
 /**
  * @author : wzkris
  * @version : V1.0.0
  * @description : 用户信息工具类
  * @date : 2023/11/21 14:58
+ * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("LoginUserUtil")
-public class LoginUserUtil {
+@Component("LoginUserUtil") //加入Spring容器以用于SPEL
+public class LoginUserUtil extends CurrentUserHolder {
 
     @Getter
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    /**
-     * 获得当前认证信息，可能登录可能未登录
-     *
-     * @return 认证信息
-     */
-    public static Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
-
-    /**
-     * 获取权限
-     */
-    public static Collection<? extends GrantedAuthority> getAuthorities() {
-        Authentication authentication = getAuthentication();
-        return authentication == null ? AuthorityUtils.NO_AUTHORITIES : authentication.getAuthorities();
-    }
 
     /**
      * 是否登录
@@ -52,11 +27,7 @@ public class LoginUserUtil {
      * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        Authentication authentication = getAuthentication();
-        return null != authentication && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken)
-                && !(authentication instanceof OAuth2ClientAuthenticationToken)
-                && authentication.getPrincipal() instanceof LoginUser;
+        return CurrentUserHolder.isAuthenticated() && CurrentUserHolder.getPrincipal() instanceof LoginSysUser;
     }
 
     /**
@@ -85,15 +56,8 @@ public class LoginUserUtil {
      *
      * @return 当前用户
      */
-    public static LoginUser getLoginUser() {
-        LoginUser loginUser;
-        try {
-            loginUser = (LoginUser) getAuthentication().getPrincipal();
-        }
-        catch (Exception e) {
-            throw new UserException(401, "user.not.login");
-        }
-        return loginUser;
+    public static LoginSysUser getLoginUser() {
+        return (LoginSysUser) CurrentUserHolder.getPrincipal();
     }
 
     /**

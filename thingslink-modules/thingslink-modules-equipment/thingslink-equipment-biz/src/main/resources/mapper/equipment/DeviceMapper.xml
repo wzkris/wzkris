@@ -12,9 +12,9 @@
         <result column="device_status" property="deviceStatus"/>
         <result column="road_status" property="roadStatus"/>
         <result property="createAt" column="create_at"/>
-        <result property="createBy" column="create_by"/>
+        <result property="createId" column="create_id"/>
         <result property="updateAt" column="update_at"/>
-        <result property="updateBy" column="update_by"/>
+        <result property="updateId" column="update_id"/>
     </resultMap>
 
     <resultMap id="DeviceVO" type="DeviceVO" extends="DevicePO">
@@ -29,7 +29,7 @@
         online_time,
         device_status,
         road_status,
-        create_at, create_by, update_at, update_by
+        create_at, create_id, update_at, update_id
         FROM device
     </sql>
 
@@ -58,187 +58,11 @@
         </where>
     </sql>
 
-    <!--查询单个-->
-    <select id="getById" resultMap="DevicePO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        WHERE device_id = #{deviceId}
-    </select>
-
-    <!--查询指定行数据-->
-    <select id="list" resultMap="DevicePO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        <include refid="ENTITY_QUERY_CONDITION"/>
-        ORDER BY device_id DESC
-    </select>
-
     <select id="listVO" resultMap="DeviceVO">
         <include refid="SELECT_ALL_COLUMN"/>
         <include refid="ENTITY_QUERY_CONDITION"/>
         ORDER BY device_id DESC
     </select>
-
-    <!-- 新增选择列 -->
-    <insert id="insert" keyProperty="deviceId" useGeneratedKeys="true">
-        INSERT INTO device
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="deviceId != null">device_id,</if>
-            <if test="deviceName != null and deviceName != ''">device_name,</if>
-            <if test="stationId != null">station_id,</if>
-            <if test="serialNo != null">serial_no,</if>
-            <if test="version != null and version != ''">version,</if>
-            <if test="onlineTime != null">online_time,</if>
-            <if test="deviceStatus != null and deviceStatus != ''">device_status,</if>
-            <if test="roadStatus != null and roadStatus != ''">road_status,</if>
-            <if test="createAt != null">create_at,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
-            <if test="updateAt != null">update_at,</if>
-            <if test="updateBy != null and updateBy != ''">update_by,</if>
-        </trim>
-        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
-            <if test="deviceId != null">#{deviceId},</if>
-            <if test="deviceName != null and deviceName != ''">#{deviceName},</if>
-            <if test="stationId != null">#{stationId},</if>
-            <if test="serialNo != null">#{serialNo},</if>
-            <if test="version != null and version != ''">#{version},</if>
-            <if test="onlineTime != null">#{onlineTime},</if>
-            <if test="deviceStatus != null and deviceStatus != ''">#{deviceStatus},</if>
-            <if test="roadStatus != null and roadStatus != ''">#{roadStatus},</if>
-            <if test="createAt != null">#{createAt},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
-            <if test="updateAt != null">#{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
-        </trim>
-    </insert>
-
-    <insert id="insertBatch" keyProperty="deviceId" useGeneratedKeys="true">
-        INSERT INTO device
-        (device_id, device_name, station_id, serial_no, version, online_time, device_status, road_status, create_at,
-        create_by, update_at, update_by)
-        VALUES
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.deviceId}, #{entity.deviceName}, #{entity.stationId}, #{entity.serialNo}, #{entity.version},
-            #{entity.onlineTime}, #{entity.deviceStatus}, #{entity.roadStatus}, #{entity.createAt},
-            #{entity.createBy}, #{entity.updateAt}, #{entity.updateBy})
-        </foreach>
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="updateById">
-        UPDATE device
-        <set>
-            <if test="deviceName != null and deviceName != ''">device_name = #{deviceName},</if>
-            <if test="stationId != null">station_id = #{stationId},</if>
-            <if test="serialNo != null and serialNo != ''">serial_no = #{serialNo},</if>
-            <if test="version != null and version != ''">version = #{version},</if>
-            <if test="onlineTime != null">online_time = #{onlineTime},</if>
-            <if test="deviceStatus != null and deviceStatus != ''">device_status = #{deviceStatus},</if>
-            <if test="roadStatus != null and roadStatus != ''">road_status = #{roadStatus},</if>
-            <if test="createAt != null">create_at = #{createAt},</if>
-            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
-            <if test="updateAt != null">update_at = #{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
-        </set>
-        WHERE device_id = #{deviceId}
-    </update>
-
-    <update id="updateBySerialNo">
-        UPDATE device
-        <set>
-            <if test="deviceName != null and deviceName != ''">device_name = #{deviceName},</if>
-            <if test="stationId != null">station_id = #{stationId},</if>
-            <if test="version != null and version != ''">version = #{version},</if>
-            <if test="onlineTime != null">online_time = #{onlineTime},</if>
-            <if test="deviceStatus != null and deviceStatus != ''">device_status = #{deviceStatus},</if>
-            <if test="roadStatus != null and roadStatus != ''">road_status = #{roadStatus},</if>
-            <if test="createAt != null">create_at = #{createAt},</if>
-            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
-            <if test="updateAt != null">update_at = #{updateAt},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
-        </set>
-        WHERE serial_no = #{serialNo}
-    </update>
-
-
-    <!--通过主键批量修改数据-->
-    <update id="updateBatchById">
-        UPDATE device
-        <trim prefix="SET" suffixOverrides=",">
-            <trim prefix="device_name = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.deviceName != null">
-                        WHEN #{entity.deviceId} THEN #{entity.deviceName}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="station_id = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.stationId != null">
-                        WHEN #{entity.deviceId} THEN #{entity.stationId}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="serial_no = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.serialNo != null">
-                        WHEN #{entity.deviceId} THEN #{entity.serialNo}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="version = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.version != null">
-                        WHEN #{entity.deviceId} THEN #{entity.version}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="online_time = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.onlineTime != null">
-                        WHEN #{entity.deviceId} THEN #{entity.onlineTime}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="device_status = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.deviceStatus != null">
-                        WHEN #{entity.deviceId} THEN #{entity.deviceStatus}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="road_status = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.roadStatus != null">
-                        WHEN #{entity.deviceId} THEN #{entity.roadStatus}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="create_by = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.createBy != null">
-                        WHEN #{entity.deviceId} THEN #{entity.createBy}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="update_at = CASE device_id" suffix="END,">
-                <foreach collection="entities" item="entity">
-                    <if test="entity.updateAt != null">
-                        WHEN #{entity.deviceId} THEN #{entity.updateAt}
-                    </if>
-                </foreach>
-            </trim>
-        </trim>
-        WHERE device_id IN
-        <foreach collection="entities" item="entity" open="(" separator="," close=")">
-            #{entity.deviceId}
-        </foreach>
-    </update>
-
-    <!--通过主键删除-->
-    <delete id="deleteById">
-        DELETE
-        FROM device
-        WHERE device_id = #{deviceId}
-    </delete>
 
 </mapper>
 

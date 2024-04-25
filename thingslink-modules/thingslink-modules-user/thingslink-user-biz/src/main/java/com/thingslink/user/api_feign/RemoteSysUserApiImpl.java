@@ -1,6 +1,7 @@
 package com.thingslink.user.api_feign;
 
 import com.thingslink.common.core.domain.Result;
+import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.annotation.InnerAuth;
 import com.thingslink.user.api.RemoteSysUserApi;
 import com.thingslink.user.api.domain.dto.LoginInfoDTO;
@@ -11,6 +12,8 @@ import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.mapper.SysUserMapper;
 import com.thingslink.user.service.PermissionService;
 import com.thingslink.user.service.SysMenuService;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,19 +42,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     @Override
     public Result<SysUserDTO> getByUsername(String username) {
         SysUser sysUser = sysUserMapper.selectByUsername(username);
-
-        SysUserDTO sysUserDTO = new SysUserDTO();
-        sysUserDTO.setUserId(sysUser.getUserId());
-        sysUserDTO.setTenantId(sysUser.getTenantId());
-        sysUserDTO.setDeptId(sysUser.getDeptId());
-        sysUserDTO.setUsername(sysUser.getUsername());
-        sysUserDTO.setNickname(sysUser.getNickname());
-        sysUserDTO.setEmail(sysUser.getEmail());
-        sysUserDTO.setPhoneNumber(sysUser.getPhoneNumber());
-        sysUserDTO.setStatus(sysUser.getStatus());
-        sysUserDTO.setGender(sysUser.getGender());
-        sysUserDTO.setAvatar(sysUser.getAvatar());
-        sysUserDTO.setPassword(sysUser.getPassword());
+        SysUserDTO sysUserDTO = MapstructUtil.convert(sysUser, SysUserDTO.class);
         return success(sysUserDTO);
     }
 
@@ -59,7 +50,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
      * 查询管理员权限
      */
     @Override
-    public Result<SysPermissionDTO> getPermission(Long userId, Long tenantId, Long deptId) {
+    public Result<SysPermissionDTO> getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
         SysPermissionDTO permission = permissionService.getPermission(userId, tenantId, deptId);
         return success(permission);
     }

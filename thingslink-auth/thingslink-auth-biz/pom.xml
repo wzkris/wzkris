@@ -28,6 +28,12 @@
 			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 		</dependency>
 
+		<!-- Spring OAuth2授权服务器-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-authorization-server</artifactId>
+		</dependency>
+
 		<!-- Sentinel -->
 		<dependency>
 			<groupId>com.thingslink</groupId>

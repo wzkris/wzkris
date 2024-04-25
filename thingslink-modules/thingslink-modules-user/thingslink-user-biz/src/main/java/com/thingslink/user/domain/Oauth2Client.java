@@ -4,14 +4,22 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.thingslink.common.orm.model.BaseEntity;
+import com.thingslink.user.api.domain.dto.Oauth2ClientDTO;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@AutoMappers({
+        @AutoMapper(target = Oauth2ClientDTO.class),
+})
+@EqualsAndHashCode(callSuper = true)
 @TableName(autoResultMap = true)
-public class Oauth2RegisteredClient {
+public class Oauth2Client extends BaseEntity {
     @TableId
     private Long id;
     // 客户端id 等价于app_id
@@ -31,27 +39,4 @@ public class Oauth2RegisteredClient {
     private String status;
     // 是否自动放行
     private Boolean autoApprove;
-
-    private String createBy;
-    private LocalDateTime createAt;
-    private String updateBy;
-    private LocalDateTime updateAt;
-
-    public enum Status {
-        NORMAL("0", "正常"),
-        DISABLE("1", "停用"),
-        WAIT_AUDIT("2", "待审核"),
-        REJECT_AUDIT("3", "审核拒绝");
-
-
-        private final String value;
-
-        Status(String value, String description) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package com.thingslink.system.api_feign;
 
+import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.annotation.InnerAuth;
 import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.LoginLogDTO;
@@ -9,7 +10,6 @@ import com.thingslink.system.domain.SysOperLog;
 import com.thingslink.system.mapper.SysLoginLogMapper;
 import com.thingslink.system.mapper.SysOperLogMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,15 +28,13 @@ public class RemoteLogApiImpl implements RemoteLogApi {
 
     @Override
     public void insertOperlog(@RequestBody OperLogDTO operLogDTO) {
-        SysOperLog sysOperLog = new SysOperLog();
-        BeanUtils.copyProperties(operLogDTO, sysOperLog);
+        SysOperLog sysOperLog = MapstructUtil.convert(operLogDTO, SysOperLog.class);
         sysOperLogMapper.insert(sysOperLog);
     }
 
     @Override
     public void insertLoginlog(@RequestBody LoginLogDTO loginLogDTO) {
-        SysLoginLog loginLog = new SysLoginLog();
-        BeanUtils.copyProperties(loginLogDTO, loginLog);
-        sysLoginLogMapper.insert(loginLog);
+        SysLoginLog sysLoginLog = MapstructUtil.convert(loginLogDTO, SysLoginLog.class);
+        sysLoginLogMapper.insert(sysLoginLog);
     }
 }

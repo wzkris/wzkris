@@ -7,7 +7,10 @@ import com.thingslink.user.api.domain.dto.SysUserDTO;
 import com.thingslink.user.api.domain.vo.RouterVO;
 import com.thingslink.user.api.fallback.RemoteSysUserApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -37,6 +40,7 @@ public interface RemoteSysUserApi {
     Result<SysPermissionDTO> getPermission(@RequestParam("userId") Long userId,
                                            @RequestParam("tenantId") Long tenantId,
                                            @RequestParam(value = "deptId", required = false) Long deptId);
+
     /**
      * 更新用户登录信息
      */

@@ -10,7 +10,6 @@ com.thingslink
 │       └── thingslink-common-datascope                    // 数据权限范围
 │       └── thingslink-common-datasource                   // 多数据源
 │       └── thingslink-common-log                          // 日志记录
-│       └── thingslink-common-mqtt                         // 消息队列(mqtt)
 │       └── thingslink-common-openfeign                    // rpc
 │       └── thingslink-common-mq                     // 消息队列(rocketmq)
 │       └── thingslink-common-redis                        // 缓存服务

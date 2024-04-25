@@ -30,13 +30,13 @@ public class SmsAuthenticationConverter extends CommonAuthenticationConverter<Co
         // phonenumber (REQUIRED)
         String phoneNumber = parameters.getFirst(OAuth2ParameterConstant.PHONE_NUMBER);
         if (!StringUtils.hasText(phoneNumber) || parameters.get(OAuth2ParameterConstant.PHONE_NUMBER).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.parameter.missing", OAuth2ParameterConstant.PHONE_NUMBER);
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.PHONE_NUMBER);
         }
 
         // smscode (REQUIRED)
         String smsCode = parameters.getFirst(OAuth2ParameterConstant.SMS_CODE);
         if (!StringUtils.hasText(smsCode) || parameters.get(OAuth2ParameterConstant.SMS_CODE).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.parameter.missing", OAuth2ParameterConstant.SMS_CODE);
+            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.SMS_CODE);
         }
     }
 
