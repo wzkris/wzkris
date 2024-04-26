@@ -11,7 +11,7 @@ import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.exception.BusinessExceptionI18n;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -247,7 +247,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         // deptid为空则新增操作，判断是否传了租户ID
         if (dept.getDeptId() == null) {
             if (dept.getTenantId() == null) {
-                tenantId = LoginUserUtil.getTenantId();
+                tenantId = SysUserUtil.getTenantId();
             }
             else {
                 tenantId = dept.getTenantId();

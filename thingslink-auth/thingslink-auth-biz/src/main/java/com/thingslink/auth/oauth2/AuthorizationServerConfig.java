@@ -10,7 +10,7 @@ import com.thingslink.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.thingslink.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
 import com.thingslink.auth.oauth2.service.AppUserDetailsService;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -112,7 +112,7 @@ public class AuthorizationServerConfig {
      */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(SysUserDetailsService sysUserDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(LoginUserUtil.getPasswordEncoder());
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(SysUserUtil.getPasswordEncoder());
         daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
         return daoAuthenticationProvider;
     }

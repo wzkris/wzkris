@@ -2,68 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thingslink.equipment.mapper.DeviceMapper">
 
-    <resultMap id="DevicePO" type="Device">
-        <id column="device_id" property="deviceId"/>
-        <result column="device_name" property="deviceName"/>
-        <result column="station_id" property="stationId"/>
-        <result column="serial_no" property="serialNo"/>
-        <result column="version" property="version"/>
-        <result column="online_time" property="onlineTime"/>
-        <result column="device_status" property="deviceStatus"/>
-        <result column="road_status" property="roadStatus"/>
-        <result property="createAt" column="create_at"/>
-        <result property="createId" column="create_id"/>
-        <result property="updateAt" column="update_at"/>
-        <result property="updateId" column="update_id"/>
-    </resultMap>
-
-    <resultMap id="DeviceVO" type="DeviceVO" extends="DevicePO">
-    </resultMap>
-
-    <sql id="SELECT_ALL_COLUMN">
-        SELECT device_id,
-        device_name,
-        station_id,
-        serial_no,
-        version,
-        online_time,
-        device_status,
-        road_status,
-        create_at, create_id, update_at, update_id
-        FROM device
-    </sql>
-
-    <sql id="ENTITY_QUERY_CONDITION">
-        <where>
-            <if test="condition != null">
-                <if test="condition.deviceId != null">
-                    AND device_id = #{condition.deviceId}
-                </if>
-                <if test="condition.deviceName != null and condition.deviceName != ''">
-                    AND device_name LIKE CONCAT('%', #{condition.deviceName},'%')
-                </if>
-                <if test="condition.stationId != null">
-                    AND station_id = #{condition.stationId}
-                </if>
-                <if test="condition.serialNo != null and condition.serialNo != ''">
-                    AND serial_no = #{condition.serialNo}
-                </if>
-                <if test="condition.version != null and condition.version != ''">
-                    AND version = #{condition.version}
-                </if>
-                <if test="condition.deviceStatus != null and condition.deviceStatus != ''">
-                    AND device_status = #{condition.deviceStatus}
-                </if>
-            </if>
-        </where>
-    </sql>
-
-    <select id="listVO" resultMap="DeviceVO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        <include refid="ENTITY_QUERY_CONDITION"/>
-        ORDER BY device_id DESC
-    </select>
-
 </mapper>
 
 

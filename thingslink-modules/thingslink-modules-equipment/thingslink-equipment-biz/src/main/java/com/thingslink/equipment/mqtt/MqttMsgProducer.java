@@ -16,7 +16,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  * @date : 2023/4/29 14:47
  */
 @Slf4j
-public class MqttMessageProducer implements MqttCallback {
+public class MqttMsgProducer implements MqttCallback {
 
     @Override
     public void connectionLost(Throwable cause) {
@@ -40,7 +40,7 @@ public class MqttMessageProducer implements MqttCallback {
             if (topic.startsWith("$SYS/brokers/")) {
                 if (StringUtil.equals("connected", topicSp[5])) {
                     // 上线
-                    String clientid = topicSp[4].split(":")[1];
+                    String clientid = topicSp[4];
                     MessageDTO messageDTO = new MessageDTO(clientid, null, message.getPayload());
                 }
                 else if (StringUtil.equals("disconnected", topicSp[5])) {

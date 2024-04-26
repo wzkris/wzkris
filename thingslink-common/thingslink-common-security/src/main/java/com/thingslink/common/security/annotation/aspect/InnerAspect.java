@@ -1,9 +1,9 @@
 package com.thingslink.common.security.annotation.aspect;
 
+import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.utils.MessageUtil;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.security.annotation.InnerAuth;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

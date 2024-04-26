@@ -5,7 +5,7 @@ import com.thingslink.auth.domain.LoginUserVO;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.model.LoginSysUser;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import com.thingslink.user.api.domain.vo.RouterVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +29,7 @@ public class LoginUserController {
     @Operation(summary = "用户信息")
     @GetMapping
     public Result<LoginUserVO> loginUser() {
-        LoginSysUser loginUser = LoginUserUtil.getLoginUser();
+        LoginSysUser loginUser = SysUserUtil.getLoginUser();
         LoginUserVO loginUserVO = new LoginUserVO();
         loginUserVO.setUserId(loginUser.getUserId());
         loginUserVO.setUsername(loginUser.getUsername());
@@ -41,7 +41,7 @@ public class LoginUserController {
     @Operation(summary = "路由树")
     @GetMapping("routing")
     public Result<List<RouterVO>> routers() {
-        List<RouterVO> router = sysUserDetailsService.getRouter(LoginUserUtil.getUserId());
+        List<RouterVO> router = sysUserDetailsService.getRouter(SysUserUtil.getUserId());
         return success(router);
     }
 }

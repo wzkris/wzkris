@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DeptScope;
 import com.thingslink.common.orm.utils.DeptScopeUtil;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
@@ -49,13 +49,13 @@ public class DeptScopeAspect {
      * 处理部门数据权限
      */
     private void handleDataScope(DeptScope deptScope) {
-        if (LoginUserUtil.isLogin()) {
+        if (SysUserUtil.isLogin()) {
             // 租户的最高管理员不查询部门数据权限
-            if (LoginUserUtil.isAdmin()) {
+            if (SysUserUtil.isAdmin()) {
                 return;
             }
             // 没有部门权限数据则不拼接
-            List<Long> deptScopes = LoginUserUtil.getLoginUser().getDeptScopes();
+            List<Long> deptScopes = SysUserUtil.getLoginUser().getDeptScopes();
             if (CollUtil.isEmpty(deptScopes)) {
                 return;
             }

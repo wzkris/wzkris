@@ -7,7 +7,7 @@ import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateStatus;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.OperLogDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,8 +65,8 @@ public class OperateLogAspect {
             operLogDTO.setOperIp(ip);
             operLogDTO.setOperUrl(StringUtil.sub(ServletUtil.getRequest().getRequestURI(), 0, 255));
             String username = "";
-            if (LoginUserUtil.isLogin()) {
-                username = LoginUserUtil.getLoginUser().getUsername();
+            if (SysUserUtil.isLogin()) {
+                username = SysUserUtil.getLoginUser().getUsername();
             }
             if (StringUtil.isNotBlank(username)) {
                 operLogDTO.setOperName(username);
