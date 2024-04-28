@@ -7,6 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import static com.thingslink.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -16,6 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "thingslink-auth", contextId = "RemoteCaptchaApi", fallbackFactory = RemoteCaptchaApiFallback.class)
 public interface RemoteCaptchaApi {
 
-    @PostMapping("/inner/sms/validate")
+    @PostMapping(INNER_REQUEST_PATH + "/sms/validate")
     Result<Void> validateSms(@RequestBody SmsDTO smsDTO);
 }

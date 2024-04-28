@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static com.thingslink.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface RemoteTokenApi {
 
     // 解锁账户
-    @PostMapping("/inner/unlock/{username}")
+    @PostMapping(INNER_REQUEST_PATH + "/unlock/{username}")
     void unlockAccount(@PathVariable("username") String username);
 
     /**
@@ -27,12 +29,12 @@ public interface RemoteTokenApi {
      * @param token 可以是access_token/refresh_token/oidc_token 等等
      * @return 用户信息
      */
-    @GetMapping("/inner/findByToken")
+    @GetMapping(INNER_REQUEST_PATH + "/findByToken")
     Result<Object> findByToken(@RequestParam("token") String token);
 
     /**
      * 退出登录
      */
-    @GetMapping("/inner/logout")
+    @GetMapping(INNER_REQUEST_PATH + "/logout")
     void logoutByToken(@RequestParam("access_token") String accessToken);
 }

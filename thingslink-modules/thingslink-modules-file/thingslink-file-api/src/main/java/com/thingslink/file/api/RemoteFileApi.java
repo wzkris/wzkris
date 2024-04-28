@@ -7,6 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.thingslink.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -22,7 +24,7 @@ public interface RemoteFileApi {
      * @return 返回文件信息
      */
     @Deprecated
-    @PostMapping("/inner/file/upload")
+    @PostMapping(INNER_REQUEST_PATH + "/file/upload")
     Result<SysFile> upload(MultipartFile file);
 
 }

@@ -7,6 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import static com.thingslink.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -19,12 +21,12 @@ public interface RemoteLogApi {
     /**
      * 新增操作日志
      */
-    @PostMapping("/inner/operlog")
+    @PostMapping(INNER_REQUEST_PATH + "/operlog")
     void insertOperlog(@RequestBody OperLogDTO operLogDTO);
 
     /**
      * 新增登录日志
      */
-    @PostMapping("/inner/loginlog")
+    @PostMapping(INNER_REQUEST_PATH + "/loginlog")
     void insertLoginlog(@RequestBody LoginLogDTO loginLogDTO);
 }
