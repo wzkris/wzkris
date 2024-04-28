@@ -6,7 +6,7 @@ import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.config.handler.*;
 import com.thingslink.common.security.config.white.PermitIpConfig;
-import com.thingslink.common.security.config.white.WhiteUrlConfig;
+import com.thingslink.common.security.config.white.PermitUrlConfig;
 import com.thingslink.common.security.deserializer.GrantedAuthorityDeserializer;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +33,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class ResourceServerConfig {
 
-    private final WhiteUrlConfig whiteUrlConfig;
+    private final PermitUrlConfig permitUrlConfig;
     private final PermitIpConfig permitIpConfig;
     private final RemoteTokenApi remoteTokenApi;
     private final OpaqueTokenIntrospector opaqueTokenIntrospector;
@@ -51,10 +51,18 @@ public class ResourceServerConfig {
     public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
-                .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers(whiteUrlConfig.getCommon().getUrls().toArray(String[]::new)).permitAll()
-                                .requestMatchers(whiteUrlConfig.getCustom().getUrls().toArray(String[]::new)).permitAll()
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize -> {
+                            // 配置url白名单
+                            PermitUrlConfig.Common common = permitUrlConfig.getCommon();
+                            if (common != null) {
+                                authorize.requestMatchers(common.getUrls().toArray(String[]::new)).permitAll();
+                            }
+                            PermitUrlConfig.Custom custom = permitUrlConfig.getCustom();
+                            if (custom != null) {
+                                authorize.requestMatchers(custom.getUrls().toArray(String[]::new)).permitAll();
+                            }
+                            authorize.anyRequest().authenticated();
+                        }
                 )
                 .formLogin(Customizer.withDefaults())
                 .addFilterBefore(new BeforeOpaqueTokenFilter(permitIpConfig), UsernamePasswordAuthenticationFilter.class)
