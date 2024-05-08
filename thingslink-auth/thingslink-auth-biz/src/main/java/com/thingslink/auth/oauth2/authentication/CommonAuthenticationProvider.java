@@ -170,8 +170,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             additionalParameters.put(OidcParameterNames.ID_TOKEN, idToken.getTokenValue());
         }
 
-        // 设置当前用户信息以便在OAuth2后续流程使用
-        CurrentUserHolder.setAuthentication(loginUser);
+        // 传递用户信息供OAuth2后续流程使用
+        additionalParameters.put(LoginUser.class.getName(), loginUser);
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);

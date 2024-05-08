@@ -16,12 +16,15 @@
 
 package com.thingslink.auth.oauth2.handler;
 
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.thingslink.auth.listening.event.UserLoginEvent;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
+import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.utils.CurrentUserHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +52,7 @@ import java.util.Map;
 
 /**
  * @author wzkris
- * @description 认证成功处理
+ * @description 登录成功统一处理
  * @date 2024-03-01
  */
 @Slf4j
@@ -68,13 +71,21 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        // 发布登录事件
-        SpringUtil.publishEvent(new UserLoginEvent(ServletUtil.getClientIP(request),
-                UserAgentUtil.parse(request.getHeader("User-Agent"))));
-
         // 拿到返回的token
         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
+        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
 
+        // 判断是否携带当前用户信息
+        if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(LoginUser.class.getName())) {
+            LoginUser loginUser = (LoginUser) additionalParameters.get(LoginUser.class.getName());
+            CurrentUserHolder.setAuthentication(loginUser);
+            // 发布登录事件
+            SpringUtil.publishEvent(new UserLoginEvent(ServletUtil.getClientIP(request),
+                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
+            additionalParameters.remove(LoginUser.class.getName());
+        }
+
+        // 构造响应体
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
 
@@ -89,7 +100,6 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         }
 
         // 追加输出参数
-        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
         builder.additionalParameters(additionalParameters);
 
         ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);

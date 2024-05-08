@@ -130,9 +130,4 @@ public class AuthorizationServerConfig {
                 new JwtGenerator(new NimbusJwtEncoder(jwkSource)));
     }
 
-    @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-    }
-
 }

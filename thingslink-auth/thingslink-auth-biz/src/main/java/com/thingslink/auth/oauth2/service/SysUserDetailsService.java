@@ -1,10 +1,10 @@
 package com.thingslink.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
+import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.config.TokenConfig;
 import com.thingslink.common.security.model.LoginSysUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import com.thingslink.user.api.RemoteSysUserApi;
@@ -81,10 +81,6 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
         loginUser.setAuthorities(AuthorityUtils.createAuthorityList(permissions.getGrantedAuthority()));
         loginUser.setDeptScopes(permissions.getDeptScopes());
 
-        // 获取前端路由信息
-        Result<List<RouterVO>> routerResult = remoteSysUserApi.getRouter(sysUserDTO.getUserId());
-        List<RouterVO> routerVOS = routerResult.checkData();
-        loginUser.putAdditionalParameter(this.buildRouterKey(loginUser.getUserId()), routerVOS);
         return loginUser;
     }
 

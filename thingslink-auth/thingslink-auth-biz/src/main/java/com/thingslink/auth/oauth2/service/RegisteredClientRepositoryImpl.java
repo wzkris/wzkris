@@ -1,8 +1,8 @@
 package com.thingslink.auth.oauth2.service;
 
+import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.redis.util.RedisUtil;
-import com.thingslink.common.security.config.TokenConfig;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import com.thingslink.user.api.RemoteOAuth2ClientApi;
 import com.thingslink.user.api.domain.dto.Oauth2ClientDTO;

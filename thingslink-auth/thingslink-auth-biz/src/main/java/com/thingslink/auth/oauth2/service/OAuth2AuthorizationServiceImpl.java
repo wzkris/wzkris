@@ -95,14 +95,6 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
             batch.getBucket(entry.getKey()).setAsync(authorization.getId(), Duration.ofSeconds(entry.getValue()));
         }
 
-        // 存储所有用户额外参数
-        LoginUser userinfo = authorization.getAttribute(LoginUser.class.getName());
-        if (userinfo != null) {
-            for (Map.Entry<String, Object> entry : userinfo.getAdditionalParameters().entrySet()) {
-                batch.getBucket(entry.getKey()).setAsync(entry.getValue(), Duration.ofSeconds(maxTimeOut));
-            }
-            userinfo.eraseCredentials();
-        }
         // 存储认证本体
         batch.getBucket(this.buildOAuth2Key(authorization.getId())).setAsync(authorization, Duration.ofSeconds(maxTimeOut));
 
