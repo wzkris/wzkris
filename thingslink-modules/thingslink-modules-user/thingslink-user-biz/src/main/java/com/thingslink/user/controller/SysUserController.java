@@ -20,7 +20,7 @@ import com.thingslink.common.core.annotation.group.ValidationGroups;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.page.Page;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import com.thingslink.common.orm.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -68,7 +68,7 @@ public class SysUserController extends BaseController {
         sysUserService.checkDataScopes(userId);
         SysUser user = sysUserMapper.selectById(userId);
         // 未指定用户则默认为自身租户
-        Long specifyTenantId = user == null ? LoginUserUtil.getTenantId() : user.getTenantId();
+        Long specifyTenantId = user == null ? SysUserUtil.getTenantId() : user.getTenantId();
         Map<String, Object> res = new HashMap<>(8);
         // 用户信息
         res.put("user", user);
@@ -144,7 +144,7 @@ public class SysUserController extends BaseController {
         // 校验权限
         sysUserService.checkDataScopes(user.getUserId());
         SysUser update = new SysUser(user.getUserId());
-        update.setPassword(LoginUserUtil.encryptPassword(user.getPassword()));
+        update.setPassword(SysUserUtil.encryptPassword(user.getPassword()));
         return toRes(sysUserMapper.updateById(update));
     }
 

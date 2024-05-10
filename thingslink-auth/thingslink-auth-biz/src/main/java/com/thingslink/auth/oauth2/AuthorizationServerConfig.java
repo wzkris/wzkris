@@ -10,7 +10,7 @@ import com.thingslink.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.thingslink.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
 import com.thingslink.auth.oauth2.service.AppUserDetailsService;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -22,7 +22,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -44,11 +43,11 @@ public class AuthorizationServerConfig {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServer(HttpSecurity http,
-                                                   SysUserDetailsService sysUserDetailsService,
-                                                   AppUserDetailsService appUserDetailsService,
-                                                   OAuth2AuthorizationService authorizationService,
-                                                   OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator) throws Exception {
+    public SecurityFilterChain authorizationFilterChain(HttpSecurity http,
+                                                        SysUserDetailsService sysUserDetailsService,
+                                                        AppUserDetailsService appUserDetailsService,
+                                                        OAuth2AuthorizationService authorizationService,
+                                                        OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
@@ -112,7 +111,7 @@ public class AuthorizationServerConfig {
      */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(SysUserDetailsService sysUserDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(LoginUserUtil.getPasswordEncoder());
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(SysUserUtil.getPasswordEncoder());
         daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
         return daoAuthenticationProvider;
     }
@@ -128,11 +127,6 @@ public class AuthorizationServerConfig {
                 new OAuth2AccessTokenGenerator(),
                 new OAuth2RefreshTokenGenerator(),
                 new JwtGenerator(new NimbusJwtEncoder(jwkSource)));
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
 
 }

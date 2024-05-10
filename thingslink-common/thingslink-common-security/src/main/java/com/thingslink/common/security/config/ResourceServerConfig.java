@@ -2,13 +2,16 @@ package com.thingslink.common.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.config.handler.*;
+import com.thingslink.common.security.config.handler.AccessDeniedHandlerImpl;
+import com.thingslink.common.security.config.handler.AuthenticationEntryPointImpl;
+import com.thingslink.common.security.config.handler.BeforeOpaqueTokenFilter;
 import com.thingslink.common.security.config.white.PermitIpConfig;
-import com.thingslink.common.security.config.white.WhiteUrlConfig;
+import com.thingslink.common.security.config.white.PermitUrlConfig;
 import com.thingslink.common.security.deserializer.GrantedAuthorityDeserializer;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,7 +21,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
-import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -33,9 +35,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class ResourceServerConfig {
 
-    private final WhiteUrlConfig whiteUrlConfig;
+    private static final Logger log = LoggerFactory.getLogger(ResourceServerConfig.class);
+    private final PermitUrlConfig permitUrlConfig;
     private final PermitIpConfig permitIpConfig;
-    private final RemoteTokenApi remoteTokenApi;
     private final OpaqueTokenIntrospector opaqueTokenIntrospector;
 
     // json序列化增强
@@ -51,10 +53,18 @@ public class ResourceServerConfig {
     public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
-                .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers(whiteUrlConfig.getCommon().getUrls().toArray(String[]::new)).permitAll()
-                                .requestMatchers(whiteUrlConfig.getCustom().getUrls().toArray(String[]::new)).permitAll()
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize -> {
+                            // 配置url白名单
+                            PermitUrlConfig.Common common = permitUrlConfig.getCommon();
+                            if (common != null) {
+                                authorize.requestMatchers(common.getUrls().toArray(String[]::new)).permitAll();
+                            }
+                            PermitUrlConfig.Custom custom = permitUrlConfig.getCustom();
+                            if (custom != null) {
+                                authorize.requestMatchers(custom.getUrls().toArray(String[]::new)).permitAll();
+                            }
+                            authorize.anyRequest().authenticated();
+                        }
                 )
                 .formLogin(Customizer.withDefaults())
                 .addFilterBefore(new BeforeOpaqueTokenFilter(permitIpConfig), UsernamePasswordAuthenticationFilter.class)
@@ -66,10 +76,6 @@ public class ResourceServerConfig {
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                             .accessDeniedHandler(new AccessDeniedHandlerImpl())
                     ;
-                })
-                .logout(logout -> {
-                    logout.addLogoutHandler(new SsoLogoutHandler(new DefaultBearerTokenResolver(), remoteTokenApi))
-                            .logoutSuccessHandler(new SsoLogoutSuccessHandler());
                 })
         ;
 

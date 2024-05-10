@@ -4,7 +4,6 @@ import cn.hutool.core.net.NetUtil;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.enums.BizCode;
-import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.config.white.PermitIpConfig;
@@ -47,11 +46,8 @@ public class BeforeOpaqueTokenFilter extends OncePerRequestFilter {
         // 校验ip
         if (ipConfig.getEnable() != null && ipConfig.getEnable()) {
             String headerIp = request.getHeader(SecurityConstants.GATEWAY_IP_HEADER);
-            // 请求头为空代表网关转发，从request里获取
-            if (headerIp == null) {
-                headerIp = ServletUtil.getClientIP(request);
-            }
-            if (!isPermitIp(headerIp, ipConfig.getIpList())) {
+            // 请求头为空或非法则返回
+            if (headerIp == null || !isPermitIp(headerIp, ipConfig.getIpList())) {
                 responseJson(response, Result.resp(BizCode.FORBID, "该ip不允许访问"));
                 return;
             }

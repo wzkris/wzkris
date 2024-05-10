@@ -18,7 +18,7 @@ import java.util.List;
 @RefreshScope
 @Configuration
 @ConfigurationProperties(prefix = "security.white")
-public class WhiteUrlConfig {
+public class PermitUrlConfig {
 
     /**
      * 公共配置
@@ -29,14 +29,6 @@ public class WhiteUrlConfig {
      * 自定义配置
      */
     private Custom custom;
-
-    public Common getCommon() {
-        return common == null ? new Common() : this.common;
-    }
-
-    public Custom getCustom() {
-        return custom == null ? new Custom() : this.custom;
-    }
 
     @Data
     @NoArgsConstructor

@@ -53,7 +53,6 @@ public class MqttUtil {
     public static void subDefaultTopic() {
         // 订阅队列 加号为占位符
         try {
-            mqttClient.subscribe(String.format(MqttTopic.CAR_AUTH, "+", "+"), 1);
             mqttClient.subscribe(String.format(MqttTopic.CAR_ATTR, "+", "+"), 1);
             mqttClient.subscribe(String.format(MqttTopic.CAR_SERVICE_REPLY, "+", "+"), 1);
             mqttClient.subscribe(String.format(MqttTopic.CAR_EVENT, "+", "+"), 1);

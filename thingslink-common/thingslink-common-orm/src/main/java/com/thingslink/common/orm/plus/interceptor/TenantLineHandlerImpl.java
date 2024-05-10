@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.orm.plus.config.TenantProperties;
 import com.thingslink.common.orm.utils.TenantUtil;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -28,7 +28,7 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
             return new LongValue(tenantId);
         }
         // 没设置动态租户走自身的租户
-        tenantId = LoginUserUtil.getTenantId();
+        tenantId = SysUserUtil.getTenantId();
         return new LongValue(tenantId);
     }
 
@@ -39,11 +39,11 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
             return this.isIgnoreTable(tableName);
         }
         // 未登录则忽略
-        if (!LoginUserUtil.isLogin()) {
+        if (!SysUserUtil.isLogin()) {
             return true;
         }
         // 为超级租户则忽略
-        Long tenantId = LoginUserUtil.getTenantId();
+        Long tenantId = SysUserUtil.getTenantId();
         if (SecurityConstants.SUPER_TENANT_ID.equals(tenantId)) {
             return true;
         }

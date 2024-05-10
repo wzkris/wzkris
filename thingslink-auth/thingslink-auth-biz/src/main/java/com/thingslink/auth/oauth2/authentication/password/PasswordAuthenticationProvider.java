@@ -4,7 +4,7 @@ import com.thingslink.auth.oauth2.authentication.CommonAuthenticationProvider;
 import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +38,7 @@ public class PasswordAuthenticationProvider extends CommonAuthenticationProvider
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
 
-        if (userDetails == null || !LoginUserUtil.matchesPassword(authenticationToken.getPassword(), userDetails.getPassword())) {
+        if (userDetails == null || !SysUserUtil.matchesPassword(authenticationToken.getPassword(), userDetails.getPassword())) {
             OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 

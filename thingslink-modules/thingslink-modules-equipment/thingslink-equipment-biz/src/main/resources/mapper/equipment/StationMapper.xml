@@ -4,22 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thingslink.equipment.mapper.StationMapper">
 
-    <resultMap id="StationPO" type="Station">
-        <id column="station_id" property="stationId" />
-        <result column="station_name" property="stationName" />
-        <result column="dept_id" property="deptId" />
-        <result column="province_id" property="provinceId" />
-        <result column="city_id" property="cityId" />
-        <result column="district_id" property="districtId" />
-        <result column="address" property="address" />
-        <result column="longitude" property="longitude" />
-        <result column="latitude" property="latitude" />
-        <result property="createAt" column="create_at"/>
-        <result property="createId" column="create_id"/>
-        <result property="updateAt" column="update_at"/>
-        <result property="updateId" column="update_id"/>
-    </resultMap>
-
     <resultMap id="StationVO" type="StationVO">
         <id property="stationId" column="station_id"/>
         <result property="stationName" column="station_name"/>
@@ -29,54 +13,6 @@
         <result property="distance" column="distance"/>
     </resultMap>
 
-    <sql id="SELECT_ALL_COLUMN">
-        SELECT station_id,
-               station_name,
-               dept_id,
-               province_id,
-               city_id,
-               district_id,
-               address,
-               latitude,
-               longitude,
-        create_at, create_id, update_at, update_id
-        FROM station
-    </sql>
-
-    <select id="getById" parameterType="java.lang.Long" resultMap="StationPO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        WHERE station_id = #{stationId,jdbcType=BIGINT}
-    </select>
-
-    <select id="list" resultMap="StationPO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        <where>
-            <if test="stationName != null and stationName != ''">
-                AND station_name = #{stationName,jdbcType=VARCHAR},
-            </if>
-            <if test="deptId != null">
-                AND dept_id = #{deptId,jdbcType=BIGINT},
-            </if>
-            <if test="provinceId != null">
-                AND province_id = #{provinceId,jdbcType=BIGINT},
-            </if>
-            <if test="cityId != null">
-                AND city_id = #{cityId,jdbcType=BIGINT},
-            </if>
-            <if test="districtId != null">
-                AND district_id = #{districtId,jdbcType=BIGINT},
-            </if>
-        </where>
-        ORDER BY station_id DESC
-    </select>
-
-    <select id="listByIds" resultMap="StationPO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        WHERE station_id IN
-        <foreach collection="stationIds" item="stationId" separator="," open="(" close=")">
-            #{stationId}
-        </foreach>
-    </select>
 
     <select id="listVOByLocation" resultMap="StationVO">
         SELECT station_id,
@@ -101,64 +37,4 @@
         </if>
     </select>
 
-    <!-- 新增选择列 -->
-    <insert id="insert" keyProperty="stationId" useGeneratedKeys="true">
-        INSERT INTO station
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="stationId != null">station_id,</if>
-            <if test="stationName != null and stationName != ''">station_name,</if>
-            <if test="deptId != null">dept_id,</if>
-            <if test="provinceId != null">province_id,</if>
-            <if test="cityId != null">city_id,</if>
-            <if test="districtId != null">district_id,</if>
-            <if test="address != null and address != ''">address,</if>
-            <if test="latitude != null">latitude,</if>
-            <if test="longitude != null">longitude,</if>
-            <if test="createAt != null">create_at,</if>
-            <if test="createId != null and createId != ''">create_id,</if>
-            <if test="updateAt != null">update_at,</if>
-            <if test="updateId != null and updateId != ''">update_id,</if>
-        </trim>
-        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
-            <if test="stationId != null">#{stationId},</if>
-            <if test="stationName != null and stationName != ''">#{stationName},</if>
-            <if test="deptId != null">#{deptId},</if>
-            <if test="provinceId != null">#{provinceId},</if>
-            <if test="cityId != null">#{cityId},</if>
-            <if test="districtId != null">#{districtId},</if>
-            <if test="address != null and address != ''">#{address},</if>
-            <if test="latitude != null">#{latitude},</if>
-            <if test="longitude != null">#{longitude},</if>
-            <if test="createAt != null">#{createAt},</if>
-            <if test="createId != null and createId != ''">#{createId},</if>
-            <if test="updateAt != null">#{updateAt},</if>
-            <if test="updateId != null and updateId != ''">#{updateId},</if>
-        </trim>
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="updateById">
-        UPDATE station
-        <set>
-            <if test="stationName != null and stationName != ''">station_name = #{stationName},</if>
-            <if test="deptId != null">dept_id = #{deptId},</if>
-            <if test="provinceId != null">province_id = #{provinceId},</if>
-            <if test="cityId != null">city_id = #{cityId},</if>
-            <if test="districtId != null">district_id = #{districtId},</if>
-            <if test="address != null and address != ''">address = #{address},</if>
-            <if test="latitude != null">latitude = #{latitude},</if>
-            <if test="longitude != null">longitude = #{longitude},</if>
-            <if test="createAt != null">create_at = #{createAt},</if>
-            <if test="createId != null and createId != ''">create_id = #{createId},</if>
-            <if test="updateAt != null">update_at = #{updateAt},</if>
-            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
-        </set>
-        WHERE station_id = #{stationId}
-    </update>
-
-    <delete id="deleteById" parameterType="java.lang.Long">
-        DELETE
-        FROM station
-        WHERE station_id = #{stationId,jdbcType=BIGINT}
-    </delete>
 </mapper>

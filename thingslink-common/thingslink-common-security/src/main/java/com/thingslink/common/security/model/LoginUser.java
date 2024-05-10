@@ -92,9 +92,5 @@ public abstract class LoginUser implements UserDetails, OAuth2User, CredentialsC
 
     @Override
     public void eraseCredentials() {
-        // 额外属性的值置空
-        for (Map.Entry<String, Object> entry : this.getAdditionalParameters().entrySet()) {
-            entry.setValue(null);
-        }
     }
 }

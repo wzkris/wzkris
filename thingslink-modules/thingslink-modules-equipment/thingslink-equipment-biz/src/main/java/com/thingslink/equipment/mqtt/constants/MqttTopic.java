@@ -12,13 +12,8 @@ public interface MqttTopic {
 
     /**
      * %s 占位符可以根据实际情况进行替换 这里简单点我会直接拿设备的sn号替换
-     * 最终队列会变成 device/car/{random_key}/{sn}/auth/post
+     * 最终队列会变成 device/car/{random_key}/{sn}/property/request
      */
-
-    // 充电桩汽车入网队列
-    String CAR_AUTH = "device/car/%s/%s/auth/post";
-    // 入网回应队列
-    String CAR_AUTH_REPLY = "device/car/%s/%s/auth/post_reply";
 
     // 充电桩汽车属性队列 (属性是设备的功能模型，用于描述设备运行时的状态)
     String CAR_ATTR = "device/car/%s/%s/property/request";

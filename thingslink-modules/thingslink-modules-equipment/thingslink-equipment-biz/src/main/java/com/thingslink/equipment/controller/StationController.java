@@ -1,12 +1,13 @@
 package com.thingslink.equipment.controller;
 
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.equipment.domain.Station;
 import com.thingslink.equipment.domain.dto.LocationDTO;
 import com.thingslink.equipment.domain.vo.StationVO;
 import com.thingslink.equipment.mapper.StationMapper;
+import com.thingslink.equipment.service.StationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ import java.util.List;
 public class StationController extends BaseController {
 
     private final StationMapper stationMapper;
+    private final StationService stationService;
 
     @Operation(summary = "(匿名接口)根据经纬度定位最近电站")
     @GetMapping("/open/list")
@@ -48,7 +50,7 @@ public class StationController extends BaseController {
     @PreAuthorize("hasAuthority('station:list')")
     public Result<Page<Station>> listPage(Station station) {
         startPage();
-        List<Station> list = stationMapper.list(station);
+        List<Station> list = stationService.list(station);
         return getDataTable(list);
     }
 
@@ -61,7 +63,7 @@ public class StationController extends BaseController {
     @GetMapping("/{stationId}")
     @PreAuthorize("hasAuthority('station:query')")
     public Result<Station> query(@PathVariable Long stationId) {
-        return success(stationMapper.getById(stationId));
+        return success(stationMapper.selectById(stationId));
     }
 
     /**

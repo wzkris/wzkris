@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.security.utils.LoginUserUtil;
+import com.thingslink.common.security.utils.SysUserUtil;
 import com.thingslink.user.constant.UserConstants;
 import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.domain.SysUser;
@@ -44,7 +44,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     public List<SysMenu> list(SysMenu menu) {
         LambdaQueryWrapper<SysMenu> lqw = this.buildQueryWrapper(menu);
         List<SysMenu> menuList;
-        Long userId = LoginUserUtil.getUserId();
+        Long userId = SysUserUtil.getUserId();
 
         if (SysUser.isSuperAdmin(userId)) {
             // 超管查全部

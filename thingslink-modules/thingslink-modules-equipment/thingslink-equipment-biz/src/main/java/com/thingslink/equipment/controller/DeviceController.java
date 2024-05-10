@@ -1,8 +1,8 @@
 package com.thingslink.equipment.controller;
 
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.equipment.domain.Device;
 import com.thingslink.equipment.domain.vo.DeviceVO;
 import com.thingslink.equipment.mapper.DeviceMapper;
@@ -36,9 +36,9 @@ public class DeviceController extends BaseController {
      */
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('device:list')")
-    public Result<Page<DeviceVO>> listPage(Device device) {
+    public Result<Page<Device>> listPage(Device device) {
         startPage();
-        List<DeviceVO> list = deviceService.listVO(device);
+        List<Device> list = deviceService.list(device);
         return getDataTable(list);
     }
 
@@ -50,8 +50,8 @@ public class DeviceController extends BaseController {
      */
     @GetMapping("/{deviceId}")
     @PreAuthorize("hasAuthority('device:query')")
-    public Result<Device> query(@PathVariable Long deviceId) {
-        return success(deviceMapper.selectById(deviceId));
+    public Result<DeviceVO> query(@PathVariable Long deviceId) {
+        return success(deviceService.getVOById(deviceId));
     }
 
     /**

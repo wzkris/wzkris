@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("LoginUserUtil") //加入Spring容器以用于SPEL
-public class LoginUserUtil extends CurrentUserHolder {
+@Component("SysUserUtil") //加入Spring容器以用于SPEL
+public class SysUserUtil extends CurrentUserHolder {
 
     @Getter
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

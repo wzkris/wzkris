@@ -13,11 +13,7 @@ import java.util.List;
  */
 public interface DeviceService {
 
-    /**
-     * 返回设备vo
-     *
-     * @param device 筛选条件
-     * @return 设备展示层
-     */
-    List<DeviceVO> listVO(Device device);
+    List<Device> list(Device device);
+
+    DeviceVO getVOById(Long deviceId);
 }

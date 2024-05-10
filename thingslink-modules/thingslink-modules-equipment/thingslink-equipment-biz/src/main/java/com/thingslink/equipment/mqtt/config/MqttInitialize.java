@@ -1,6 +1,6 @@
 package com.thingslink.equipment.mqtt.config;
 
-import com.thingslink.equipment.mqtt.MqttMessageProducer;
+import com.thingslink.equipment.mqtt.MqttMsgProducer;
 import com.thingslink.equipment.mqtt.utils.MqttUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -35,7 +35,7 @@ public class MqttInitialize implements InitializingBean {
         connectOptions.setPassword(mqttProperties.getPassword().toCharArray());
         connectOptions.setConnectionTimeout(mqttProperties.getTimeout());
         connectOptions.setKeepAliveInterval(mqttProperties.getKeepAlive());
-        mqttClient.setCallback(new MqttMessageProducer());
+        mqttClient.setCallback(new MqttMsgProducer());
         // 建立连接
         log.info("-------------------mqtt连接初始化-------------------");
         mqttClient.connect(connectOptions);

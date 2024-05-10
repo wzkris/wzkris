@@ -17,7 +17,7 @@
         <java.version>17</java.version>
         <spring-boot.version>3.2.4</spring-boot.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
-        <spring-cloud-alibaba.version>2023.0.0.0-RC1</spring-cloud-alibaba.version>
+        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
         <spring-statemachine.version>3.2.0</spring-statemachine.version>
         <lombok.version>1.18.28</lombok.version>
         <mysql.version>8.0.33</mysql.version>

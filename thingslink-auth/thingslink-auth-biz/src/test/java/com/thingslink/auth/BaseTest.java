@@ -1,19 +1,16 @@
 package com.thingslink.auth;
 
-import io.undertow.servlet.spec.HttpServletRequestImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -62,8 +59,12 @@ public class BaseTest implements Controller {
 
     @Test
     public void palindromeTest() {
-        AntPathRequestMatcher antPathMatcher = new AntPathRequestMatcher("/*/back-login", null);
-
+        BigDecimal totalElecMoney = BigDecimal.valueOf(0.6987);
+        BigDecimal totalSerMoney = BigDecimal.valueOf(0.5678);
+        totalElecMoney = totalElecMoney.add(totalElecMoney.multiply(BigDecimal.valueOf(0))).setScale(2, RoundingMode.HALF_UP);
+        totalSerMoney = totalSerMoney.add(totalSerMoney.multiply(BigDecimal.valueOf(0))).setScale(2, RoundingMode.HALF_UP);
+        System.out.println(totalElecMoney);
+        System.out.println(totalSerMoney);
     }
 
     public List<List<Integer>> threeSum(int[] nums) {

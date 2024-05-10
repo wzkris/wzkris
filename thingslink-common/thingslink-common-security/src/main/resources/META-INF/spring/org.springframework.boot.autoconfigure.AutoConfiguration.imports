@@ -1,4 +1,3 @@
 com.thingslink.common.security.config.ResourceServerConfig
 com.thingslink.common.security.config.handler.CustomOpaqueTokenIntrospector
 com.thingslink.common.security.feign.FeignRequestInterceptor
-com.thingslink.common.security.utils.LoginUserUtil
