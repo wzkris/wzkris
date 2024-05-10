@@ -50,14 +50,14 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
         if (bucket.get() == null) {
             Result<List<RouterVO>> listResult = remoteSysUserApi.getRouter(userId);
             List<RouterVO> routerVOS = listResult.checkData();
-            bucket.set(routerVOS, Duration.ofSeconds(tokenConfig.getRefreshTokenTimeOut()));
+            bucket.set(routerVOS, Duration.ofSeconds(tokenConfig.getAccessTokenTimeOut()));
         }
         return bucket.get();
     }
 
     public void setRouter(Long userId) {
         Result<List<RouterVO>> listResult = remoteSysUserApi.getRouter(userId);
-        JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId)).set(listResult.checkData(), Duration.ofSeconds(tokenConfig.getRefreshTokenTimeOut()));
+        JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId)).set(listResult.checkData(), Duration.ofSeconds(tokenConfig.getAccessTokenTimeOut()));
     }
 
     /**
