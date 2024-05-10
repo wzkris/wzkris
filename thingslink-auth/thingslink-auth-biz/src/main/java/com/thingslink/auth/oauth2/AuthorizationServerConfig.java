@@ -22,7 +22,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -44,11 +43,11 @@ public class AuthorizationServerConfig {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServer(HttpSecurity http,
-                                                   SysUserDetailsService sysUserDetailsService,
-                                                   AppUserDetailsService appUserDetailsService,
-                                                   OAuth2AuthorizationService authorizationService,
-                                                   OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator) throws Exception {
+    public SecurityFilterChain authorizationFilterChain(HttpSecurity http,
+                                                        SysUserDetailsService sysUserDetailsService,
+                                                        AppUserDetailsService appUserDetailsService,
+                                                        OAuth2AuthorizationService authorizationService,
+                                                        OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)

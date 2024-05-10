@@ -1,7 +1,6 @@
 package com.thingslink.auth.oauth2.service;
 
 import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
-import com.thingslink.common.security.model.LoginUser;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -136,14 +135,6 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
         OAuth2Authorization.Token<OidcIdToken> oidcIdTokenToken = authorization.getToken(OidcIdToken.class);
         if (oidcIdTokenToken != null) {
             keys.add(this.buildOAuth2Key(oidcIdTokenToken.getToken().getTokenValue()));
-        }
-
-        // 移除用户额外参数
-        LoginUser userinfo = authorization.getAttribute(LoginUser.class.getName());
-        if (userinfo != null) {
-            for (Map.Entry<String, Object> entry : userinfo.getAdditionalParameters().entrySet()) {
-                keys.add(entry.getKey());
-            }
         }
 
         JdkRedisUtil.getRedissonClient().getKeys().delete(keys.toArray(String[]::new));

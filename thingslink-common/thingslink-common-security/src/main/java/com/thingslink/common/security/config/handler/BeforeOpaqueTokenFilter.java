@@ -4,7 +4,6 @@ import cn.hutool.core.net.NetUtil;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.enums.BizCode;
-import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.config.white.PermitIpConfig;
