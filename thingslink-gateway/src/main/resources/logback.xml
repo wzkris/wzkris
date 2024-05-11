@@ -2,7 +2,7 @@
 <configuration>
 
     <!-- 日志存放路径 -->
-    <property name="log.path" value="./logs/${project.artifactId}"/>
+    <property name="log.path" value="logs/${project.artifactId}"/>
     <!-- 日志输出格式 -->
     <property name="log.pattern"
               value="%cyan(%d{yyyy-MM-dd HH:mm:ss}) %green([%thread]) %highlight(%-5level) %boldMagenta(%logger%n) - %msg%n"/>
@@ -23,7 +23,7 @@
             <!-- 日志文件名格式 -->
             <fileNamePattern>${log.path}/info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 日志最大的历史 3天 -->
-            <maxHistory>1</maxHistory>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>${log.pattern}</pattern>
@@ -31,7 +31,7 @@
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <!-- 过滤的级别 -->
-            <level>INFO</level>
+<!--            <level>INFO</level>-->
             <!-- 匹配时的操作：接收（记录） -->
             <onMatch>ACCEPT</onMatch>
             <!-- 不匹配时的操作：拒绝（不记录） -->

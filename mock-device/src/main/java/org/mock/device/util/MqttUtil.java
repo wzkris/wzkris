@@ -2,7 +2,6 @@ package org.mock.device.util;
 
 import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.utils.SpringUtil;
-import com.thingslink.common.mqtt.constant.MqttTopic;
 import io.micrometer.common.util.StringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,10 +47,6 @@ public class MqttUtil {
             mqttClient.connect(connectOptions);
 
             // 订阅队列 加号为占位符
-            mqttClient.subscribe(String.format(MqttTopic.CAR_AUTH_REPLY, "+", "+"));
-            mqttClient.subscribe(String.format(MqttTopic.CAR_ATTR_REPLY, "+", "+"));
-            mqttClient.subscribe(String.format(MqttTopic.CAR_SERVICE, "+", "+"));
-            mqttClient.subscribe(String.format(MqttTopic.CAR_EVENT_REPLY, "+", "+"));
         }
         catch (MqttException e) {
             log.error("mqtt客户端初始化失败，errmsg：{}", e.getMessage(), e);

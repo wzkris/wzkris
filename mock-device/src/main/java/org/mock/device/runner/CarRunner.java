@@ -7,7 +7,6 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
-import com.thingslink.common.mqtt.constant.MqttTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.mock.device.util.MqttUtil;
 import org.springframework.boot.CommandLineRunner;
@@ -41,7 +40,7 @@ public class CarRunner implements CommandLineRunner {
                 byte[] encryStr = rsa.encrypt(str, KeyType.PublicKey);
 
                 // 转16进制发送
-                MqttUtil.publish(String.format(MqttTopic.CAR_AUTH, MqttTopic.DEFAULT_CAR_P_K, sn), new String(HexUtil.encodeHex(encryStr)), 0);
+                MqttUtil.publish("MqttTopic.CAR_SERVICE", new String(HexUtil.encodeHex(encryStr)), 0);
             }
         }, 0, 2000);
     }
