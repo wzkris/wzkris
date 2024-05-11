@@ -9,6 +9,7 @@ import com.thingslink.common.core.exception.UtilException;
 import com.thingslink.common.core.exception.param.CaptchaException;
 import com.thingslink.common.core.exception.user.UserException;
 import com.thingslink.common.core.utils.MessageUtil;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static com.thingslink.common.core.domain.Result.fail;
 import static com.thingslink.common.core.domain.Result.resp;
@@ -62,8 +64,8 @@ public class GlobalExceptionHandler {
     /**
      * 404异常
      */
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public Result<?> handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletRequest request) {
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    public Result<?> handleNoHandlerFoundException(ServletException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return resp(BizCode.NOT_FOUND);
     }
@@ -227,7 +229,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Result<?> handleException(Exception e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',发生系统异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.error("请求地址'{} {}',发生系统异常，异常类型：{}, 异常信息：{}", request.getMethod(), request.getRequestURI(), e.getClass(), e.getMessage());
         return resp(BizCode.INTERNAL_ERROR, e.getMessage());
     }
 }
