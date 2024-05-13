@@ -3,7 +3,7 @@ package com.thingslink.auth.oauth2.service;
 import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.model.LoginAppUser;
+import com.thingslink.common.security.oauth2.model.LoginAppUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import com.thingslink.user.api.RemoteAppUserApi;
 import com.thingslink.user.api.domain.dto.CustomerDTO;

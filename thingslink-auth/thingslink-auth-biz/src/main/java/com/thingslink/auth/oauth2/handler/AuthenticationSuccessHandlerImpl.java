@@ -23,7 +23,7 @@ import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.oauth2.model.LoginUser;
 import com.thingslink.common.security.utils.CurrentUserHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -90,8 +90,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
 
         OAuth2AccessTokenResponse.Builder builder = OAuth2AccessTokenResponse.withToken(accessToken.getTokenValue())
-                .tokenType(accessToken.getTokenType())
-                .scopes(accessToken.getScopes());
+                .tokenType(accessToken.getTokenType());
         if (accessToken.getIssuedAt() != null && accessToken.getExpiresAt() != null) {
             builder.expiresIn(ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()));
         }

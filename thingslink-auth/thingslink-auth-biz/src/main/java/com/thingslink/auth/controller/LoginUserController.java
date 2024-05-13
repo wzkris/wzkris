@@ -4,7 +4,7 @@ package com.thingslink.auth.controller;
 import com.thingslink.auth.domain.LoginUserVO;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.model.LoginSysUser;
 import com.thingslink.common.security.utils.SysUserUtil;
 import com.thingslink.user.api.domain.vo.RouterVO;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,4 +1,4 @@
-package com.thingslink.common.security.config.white;
+package com.thingslink.common.security.oauth2.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package com.thingslink.common.security.utils;
 
 import com.thingslink.common.core.constant.SecurityConstants;
-import com.thingslink.common.security.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.model.LoginSysUser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

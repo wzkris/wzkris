@@ -1,6 +1,6 @@
 package com.thingslink.order;
 
-import com.thingslink.common.security.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.model.LoginSysUser;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;

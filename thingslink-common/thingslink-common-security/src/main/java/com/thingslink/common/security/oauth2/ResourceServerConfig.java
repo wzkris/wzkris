@@ -1,14 +1,14 @@
-package com.thingslink.common.security.config;
+package com.thingslink.common.security.oauth2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.config.handler.AccessDeniedHandlerImpl;
-import com.thingslink.common.security.config.handler.AuthenticationEntryPointImpl;
-import com.thingslink.common.security.config.handler.BeforeOpaqueTokenFilter;
-import com.thingslink.common.security.config.white.PermitIpConfig;
-import com.thingslink.common.security.config.white.PermitUrlConfig;
-import com.thingslink.common.security.deserializer.GrantedAuthorityDeserializer;
+import com.thingslink.common.security.oauth2.config.PermitIpConfig;
+import com.thingslink.common.security.oauth2.config.PermitUrlConfig;
+import com.thingslink.common.security.oauth2.deserializer.GrantedAuthorityDeserializer;
+import com.thingslink.common.security.oauth2.handler.AccessDeniedHandlerImpl;
+import com.thingslink.common.security.oauth2.handler.AuthenticationEntryPointImpl;
+import com.thingslink.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author : wzkris
@@ -38,7 +36,6 @@ public class ResourceServerConfig {
     private static final Logger log = LoggerFactory.getLogger(ResourceServerConfig.class);
     private final PermitUrlConfig permitUrlConfig;
     private final PermitIpConfig permitIpConfig;
-    private final OpaqueTokenIntrospector opaqueTokenIntrospector;
 
     // json序列化增强
     static {
@@ -67,11 +64,13 @@ public class ResourceServerConfig {
                         }
                 )
                 .formLogin(Customizer.withDefaults())
-                .addFilterBefore(new BeforeOpaqueTokenFilter(permitIpConfig), UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
-                                token.introspector(opaqueTokenIntrospector);
+                                token.introspector(new CustomOpaqueTokenIntrospector(
+                                        "http://127.0.0.1:8080/auth/oauth2/introspect",
+                                        "server",
+                                        "secret"));
                             })
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                             .accessDeniedHandler(new AccessDeniedHandlerImpl())

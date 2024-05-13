@@ -3,7 +3,7 @@ package com.thingslink.auth.domain;
 
 import com.thingslink.common.core.annotation.Sensitive;
 import com.thingslink.common.core.annotation.impl.SensitiveStrategy;
-import com.thingslink.common.security.model.LoginAppUser;
+import com.thingslink.common.security.oauth2.model.LoginAppUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

@@ -13,10 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : feign请求拦截器
+ * @description : OAuth2 feign请求拦截器
  * @date : 2023/8/4 10:46
  */
-public class FeignRequestInterceptor implements RequestInterceptor {
+public class OAuth2FeignInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
@@ -24,24 +24,12 @@ public class FeignRequestInterceptor implements RequestInterceptor {
         String target = requestTemplate.feignTarget().name();
         requestTemplate.header(SecurityConstants.INNER_REQUEST_HEADER, target);
 
-        HttpServletRequest request = ServletUtil.getRequest();
-        if (ObjUtil.isNotNull(request)) {
-            String gatewayIp;
-            if (request.getHeader(SecurityConstants.GATEWAY_IP_HEADER) == null) {
-                // 如果网关IP请求头为空，则代表该request为网关转发
-                gatewayIp = ServletUtil.getClientIP(request);
-            }
-            else {
-                gatewayIp = request.getHeader(SecurityConstants.GATEWAY_IP_HEADER);
-            }
-
-            requestTemplate.header(SecurityConstants.GATEWAY_IP_HEADER, gatewayIp);
-        }
-
         // 未经过认证则直接返回
         if (!CurrentUserHolder.isAuthenticated()) {
             return;
         }
+
+        HttpServletRequest request = ServletUtil.getRequest();
 
         if (ObjUtil.isNotNull(request)) {
             // 追加Token

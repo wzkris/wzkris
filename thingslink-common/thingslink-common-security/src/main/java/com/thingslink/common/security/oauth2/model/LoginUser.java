@@ -1,4 +1,4 @@
-package com.thingslink.common.security.model;
+package com.thingslink.common.security.oauth2.model;
 
 import jakarta.annotation.Nonnull;
 import lombok.Getter;
@@ -32,10 +32,6 @@ public abstract class LoginUser implements UserDetails, OAuth2User, CredentialsC
     // 权限
     private Collection<? extends GrantedAuthority> authorities;
 
-    // 额外参数
-    @Getter
-    private Map<String, Object> additionalParameters;
-
     public abstract Long getUserId();
 
     // 用于判断用户类型
@@ -49,13 +45,6 @@ public abstract class LoginUser implements UserDetails, OAuth2User, CredentialsC
     @Override
     public Map<String, Object> getAttributes() {
         return Collections.EMPTY_MAP;
-    }
-
-    public void putAdditionalParameter(String key, Object value) {
-        if (this.additionalParameters == null) {
-            this.additionalParameters = new HashMap<>(4);
-        }
-        this.additionalParameters.put(key, value);
     }
 
     @Override

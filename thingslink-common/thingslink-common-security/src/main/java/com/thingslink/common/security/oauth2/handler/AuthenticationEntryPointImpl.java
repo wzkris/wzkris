@@ -1,4 +1,4 @@
-package com.thingslink.common.security.config.handler;
+package com.thingslink.common.security.oauth2.handler;
 
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.enums.BizCode;

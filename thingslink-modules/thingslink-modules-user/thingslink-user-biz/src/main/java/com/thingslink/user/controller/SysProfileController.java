@@ -8,7 +8,7 @@ import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.model.BaseController;
-import com.thingslink.common.security.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.model.LoginSysUser;
 import com.thingslink.common.security.utils.SysUserUtil;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.domain.dto.SysUserDTO;

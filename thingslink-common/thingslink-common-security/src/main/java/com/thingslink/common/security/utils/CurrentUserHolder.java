@@ -2,7 +2,7 @@ package com.thingslink.common.security.utils;
 
 
 import com.thingslink.common.core.exception.user.UserException;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.oauth2.model.LoginUser;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

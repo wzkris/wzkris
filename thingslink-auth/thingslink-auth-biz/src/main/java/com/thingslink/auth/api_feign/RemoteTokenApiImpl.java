@@ -4,7 +4,7 @@ import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.auth.service.CaptchaService;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.annotation.InnerAuth;
-import com.thingslink.common.security.model.LoginUser;
+import com.thingslink.common.security.oauth2.model.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;

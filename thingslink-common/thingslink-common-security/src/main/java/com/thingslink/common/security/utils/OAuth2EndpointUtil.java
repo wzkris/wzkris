@@ -1,6 +1,6 @@
 package com.thingslink.common.security.utils;
 
-import com.thingslink.common.security.exception.OAuth2AuthenticationI18nException;
+import com.thingslink.common.security.oauth2.exception.OAuth2AuthenticationI18nException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;

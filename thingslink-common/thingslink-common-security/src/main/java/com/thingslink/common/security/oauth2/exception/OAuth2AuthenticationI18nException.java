@@ -1,4 +1,4 @@
-package com.thingslink.common.security.exception;
+package com.thingslink.common.security.oauth2.exception;
 
 import com.thingslink.common.core.utils.MessageUtil;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;

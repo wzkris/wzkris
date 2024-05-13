@@ -1,6 +1,6 @@
 package com.thingslink.common.security.utils;
 
-import com.thingslink.common.security.model.LoginAppUser;
+import com.thingslink.common.security.oauth2.model.LoginAppUser;
 import lombok.extern.slf4j.Slf4j;
 
 /**

@@ -1,4 +1,4 @@
-package com.thingslink.common.security.deserializer;
+package com.thingslink.common.security.oauth2.deserializer;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

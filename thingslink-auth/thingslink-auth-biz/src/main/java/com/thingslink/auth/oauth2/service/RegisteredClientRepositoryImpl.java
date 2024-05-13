@@ -42,7 +42,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     @Override
     public RegisteredClient findById(String id) {
-        throw new UnsupportedOperationException(this.getClass().getName() + "#findById is not support");
+        return this.findByClientId(id);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
      * 构建Spring OAuth2所需要的客户端信息
      */
     private RegisteredClient buildRegisteredClient(Oauth2ClientDTO oauth2ClientDTO) {
-        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2ClientDTO.getId().toString())
+        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2ClientDTO.getClientId())
                 .clientId(oauth2ClientDTO.getClientId())
                 .clientSecret(oauth2ClientDTO.getClientSecret())
                 .clientAuthenticationMethods(clientAuthenticationMethods -> {

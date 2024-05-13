@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2TokenIntrospectionAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -31,6 +35,8 @@ import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -115,6 +121,18 @@ public class AuthorizationServerConfig {
         daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
         return daoAuthenticationProvider;
     }
+
+    /**
+     * AuthenticationProvider的管理器
+     */
+//    @Bean
+//    public AuthenticationManager authenticationManager(List<AuthenticationProvider> providers,
+//                                                       OAuth2TokenIntrospectionAuthenticationProvider oAuth2TokenIntrospectionAuthenticationProvider) {
+//        // 移除OAuth2默认的oAuth2TokenIntrospectionAuthenticationProvider，添加自定义的token自省逻辑
+//        providers.remove(oAuth2TokenIntrospectionAuthenticationProvider);
+//        providers.add();
+//        return new ProviderManager(providers);
+//    }
 
     /**
      * 令牌生成规则实现 </br>

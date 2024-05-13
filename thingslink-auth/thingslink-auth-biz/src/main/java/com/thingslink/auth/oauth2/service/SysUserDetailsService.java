@@ -5,7 +5,7 @@ import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.model.LoginSysUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import com.thingslink.user.api.RemoteSysUserApi;
 import com.thingslink.user.api.domain.dto.SysPermissionDTO;

@@ -1,4 +1,4 @@
-package com.thingslink.common.security.model;
+package com.thingslink.common.security.oauth2.model;
 
 import jakarta.annotation.Nonnull;
 import lombok.Data;

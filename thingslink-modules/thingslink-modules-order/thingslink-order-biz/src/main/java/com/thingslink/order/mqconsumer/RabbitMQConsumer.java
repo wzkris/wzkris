@@ -1,6 +1,6 @@
 package com.thingslink.order.mqconsumer;
 
-import com.thingslink.common.security.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.model.LoginSysUser;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.mq.constant.MQTopic;
 import com.thingslink.order.service.ChargingOrderService;

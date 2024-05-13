@@ -1,7 +1,6 @@
 package com.thingslink.auth.oauth2.authentication;
 
-import com.thingslink.common.security.model.LoginUser;
-import com.thingslink.common.security.utils.CurrentUserHolder;
+import com.thingslink.common.security.oauth2.model.LoginUser;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +23,10 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author wzkris
@@ -60,7 +62,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                     OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
                 }
             }
-            authorizedScopes.addAll(authenticationToken.getScopes());
+            authorizedScopes.addAll(registeredClient.getScopes());
         }
         return authorizedScopes;
     }
@@ -74,7 +76,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         T customAuthentication = (T) authentication;
 
-        OAuth2ClientAuthenticationToken clientPrincipal = this.getAuthenticatedClientElseThrowInvalidClient(authentication);
+        OAuth2ClientAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(authentication);
 
 
         RegisteredClient registeredClient = clientPrincipal.getRegisteredClient();
@@ -102,8 +104,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                 .principalName(usernamePasswordAuthenticationToken.getName())
                 .authorizationGrantType(customAuthentication.getGrantType())
                 .authorizedScopes(authorizedScopes)
-                .attribute(Principal.class.getName(),
-                        new UsernamePasswordAuthenticationToken(null, null, Collections.emptyList()))// 保证refresh_token的时候转换正常
+                .attribute(Principal.class.getName(), clientPrincipal)// 保证refresh_token的时候转换正常
                 .attribute(LoginUser.class.getName(), loginUser);
 
         // ----- Access token -----
@@ -179,7 +180,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         return oAuth2AccessTokenAuthenticationToken;
     }
 
-    public OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
+    public static OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
         OAuth2ClientAuthenticationToken clientPrincipal = null;
         if (OAuth2ClientAuthenticationToken.class.isAssignableFrom(authentication.getPrincipal().getClass())) {
             clientPrincipal = (OAuth2ClientAuthenticationToken) authentication.getPrincipal();

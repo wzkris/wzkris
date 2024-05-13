@@ -3,7 +3,6 @@ package com.thingslink.common.core.utils;
 import io.github.linpeilie.Converter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,6 @@ public class MapstructUtil {
      * @return desc
      */
     public static <T, V> V convert(T source, Class<V> desc) {
-        Assert.notNull(source, "source is empty");
-
         return CONVERTER.convert(source, desc);
     }
 
@@ -40,8 +37,6 @@ public class MapstructUtil {
      * @return desc
      */
     public static <T, V> V convert(T source, V desc) {
-        Assert.notNull(source, "source is empty");
-
         return CONVERTER.convert(source, desc);
     }
 
@@ -53,8 +48,6 @@ public class MapstructUtil {
      * @return desc
      */
     public static <T, V> List<V> convert(List<T> sourceList, Class<V> desc) {
-        Assert.notEmpty(sourceList, "sourceList is empty");
-
         return CONVERTER.convert(sourceList, desc);
     }
 
@@ -66,8 +59,6 @@ public class MapstructUtil {
      * @return bean对象
      */
     public static <T> T convert(Map<String, Object> map, Class<T> beanClass) {
-        Assert.notEmpty(map, "map is empty");
-
         return CONVERTER.convert(map, beanClass);
     }
 }

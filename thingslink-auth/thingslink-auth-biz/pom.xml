@@ -34,6 +34,12 @@
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
 		</dependency>
 
+		<!-- Spring Oauth2客户端 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
 		<!-- Sentinel -->
 		<dependency>
 			<groupId>com.thingslink</groupId>
