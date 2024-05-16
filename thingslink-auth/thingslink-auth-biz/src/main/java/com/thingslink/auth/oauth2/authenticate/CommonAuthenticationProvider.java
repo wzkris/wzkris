@@ -1,11 +1,12 @@
-package com.thingslink.auth.oauth2.authentication;
+package com.thingslink.auth.oauth2.authenticate;
 
-import com.thingslink.common.security.oauth2.model.LoginUser;
-import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
+import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -48,10 +49,14 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     /**
      * 校验客户端模式和scope
      */
+    @Nonnull
     public Set<String> checkClient(CommonAuthenticationToken authenticationToken, RegisteredClient registeredClient) {
-        if (registeredClient == null ||
-                !registeredClient.getAuthorizationGrantTypes().contains(authenticationToken.getGrantType())) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.unsupport.granttype");
+        if (registeredClient == null) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.client.invalid");
+        }
+
+        if (!registeredClient.getAuthorizationGrantTypes().contains(authenticationToken.getGrantType())) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.unsupport.granttype");
         }
 
         Set<String> authorizedScopes = new LinkedHashSet<>();
@@ -59,7 +64,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (!authenticationToken.getScopes().isEmpty()) {
             for (String requestedScope : authenticationToken.getScopes()) {
                 if (!registeredClient.getScopes().contains(requestedScope)) {
-                    OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
+                    OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
                 }
             }
             authorizedScopes.addAll(registeredClient.getScopes());
@@ -70,48 +75,45 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     /**
      * 认证核心方法
      */
-    protected abstract UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication);
+    protected abstract OAuth2AuthenticationToken doAuthenticate(Authentication authentication);
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         T customAuthentication = (T) authentication;
 
-        OAuth2ClientAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(authentication);
+        OAuth2ClientAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(customAuthentication);
 
 
         RegisteredClient registeredClient = clientPrincipal.getRegisteredClient();
+
+        // 校验客户端
         Set<String> authorizedScopes = this.checkClient(customAuthentication, registeredClient);
 
         // 验证并拿到授权
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = this.doAuthenticate(customAuthentication);
+        OAuth2AuthenticationToken oAuth2AuthenticationToken = this.doAuthenticate(customAuthentication);
 
         // @formatter:off
         DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
                     .registeredClient(registeredClient)
-                    .principal(usernamePasswordAuthenticationToken)
+                    .principal(oAuth2AuthenticationToken)
                     .authorizationServerContext(AuthorizationServerContextHolder.getContext())
                     .authorizedScopes(authorizedScopes)
                     .authorizationGrantType(customAuthentication.getGrantType())
                     .authorizationGrant(customAuthentication);
 
-        // 用户信息
-        LoginUser loginUser = (LoginUser) usernamePasswordAuthenticationToken.getPrincipal();
-
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .id(loginUser.getUserId().toString())
-                .principalName(usernamePasswordAuthenticationToken.getName())
+                .principalName(oAuth2AuthenticationToken.getName())
                 .authorizationGrantType(customAuthentication.getGrantType())
                 .authorizedScopes(authorizedScopes)
-                .attribute(Principal.class.getName(), clientPrincipal)// 保证refresh_token的时候转换正常
-                .attribute(LoginUser.class.getName(), loginUser);
+                .attribute(Principal.class.getName(), oAuth2AuthenticationToken);
 
         // ----- Access token -----
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
         OAuth2Token generatedAccessToken = this.tokenGenerator.generate(tokenContext);
         if (generatedAccessToken == null) {
-            OAuth2EndpointUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the access_token.");
+            OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the access_token.");
         }
 
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
@@ -134,7 +136,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.REFRESH_TOKEN).build();
             OAuth2Token generatedRefreshToken = this.tokenGenerator.generate(tokenContext);
             if (!(generatedRefreshToken instanceof OAuth2RefreshToken)) {
-                OAuth2EndpointUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the refresh_token.");
+                OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the refresh_token.");
             }
 
             refreshToken = (OAuth2RefreshToken) generatedRefreshToken;
@@ -152,7 +154,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                 // @formatter:on
             OAuth2Token generatedIdToken = this.tokenGenerator.generate(tokenContext);
             if (!(generatedIdToken instanceof Jwt)) {
-                OAuth2EndpointUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the id_token.");
+                OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the id_token.");
             }
 
             idToken = new OidcIdToken(generatedIdToken.getTokenValue(), generatedIdToken.getIssuedAt(),
@@ -172,7 +174,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         // 传递用户信息供OAuth2后续流程使用
-        additionalParameters.put(LoginUser.class.getName(), loginUser);
+        additionalParameters.put(OAuth2User.class.getName(), oAuth2AuthenticationToken.getPrincipal());
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);

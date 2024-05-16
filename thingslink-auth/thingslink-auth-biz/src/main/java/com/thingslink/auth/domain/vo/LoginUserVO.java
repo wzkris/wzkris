@@ -1,4 +1,4 @@
-package com.thingslink.auth.domain;
+package com.thingslink.auth.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,8 +17,6 @@ import java.util.Collection;
 @Data
 @Accessors(chain = true)
 public class LoginUserVO {
-    @Schema(description = "登录id")
-    private Long userId;
 
     @Schema(description = "用户名")
     private String username;

@@ -1,4 +1,4 @@
-package com.thingslink.auth.domain;
+package com.thingslink.auth.domain.vo;
 
 
 import com.thingslink.common.core.annotation.Sensitive;

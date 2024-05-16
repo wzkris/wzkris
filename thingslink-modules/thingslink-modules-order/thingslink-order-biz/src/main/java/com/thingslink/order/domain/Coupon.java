@@ -1,11 +1,11 @@
 package com.thingslink.order.domain;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.thingslink.order.enums.CouponStatus;
 import com.thingslink.order.enums.CouponType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;

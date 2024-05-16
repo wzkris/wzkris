@@ -1,16 +1,20 @@
-package com.thingslink.auth.oauth2.authentication.password;
+package com.thingslink.auth.oauth2.authenticate.password;
 
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationProvider;
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationProvider;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationToken;
+import com.thingslink.auth.oauth2.model.UserModel;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
-import com.thingslink.common.security.utils.OAuth2EndpointUtil;
-import com.thingslink.common.security.utils.SysUserUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import com.thingslink.common.security.oauth2.constants.OAuth2Type;
+import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
+import com.thingslink.common.security.utils.SysUtil;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.util.Assert;
 
@@ -33,16 +37,22 @@ public class PasswordAuthenticationProvider extends CommonAuthenticationProvider
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
+    public OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
+        UserModel userModel = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
 
-        if (userDetails == null || !SysUserUtil.matchesPassword(authenticationToken.getPassword(), userDetails.getPassword())) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+        if (userModel == null || !SysUtil.matchesPassword(authenticationToken.getPassword(), userModel.getPassword())) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        String clientId = ((OAuth2ClientAuthenticationToken) authenticationToken.getPrincipal()).getPrincipal().toString();
+
+        OAuth2User oAuth2User = new OAuth2User(OAuth2Type.SYS_USER.getValue(), userModel.getUsername(), userModel.getAttributes(),
+                userModel.getAuthorities());
+
+        return new OAuth2AuthenticationToken(oAuth2User,
+                AuthorityUtils.createAuthorityList(authenticationToken.getScopes()), clientId);
     }
 
     @Override

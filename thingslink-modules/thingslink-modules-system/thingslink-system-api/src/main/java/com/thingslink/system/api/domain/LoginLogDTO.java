@@ -3,8 +3,6 @@ package com.thingslink.system.api.domain;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-
 /**
  * @author : wzkris
  * @version : V1.0.0

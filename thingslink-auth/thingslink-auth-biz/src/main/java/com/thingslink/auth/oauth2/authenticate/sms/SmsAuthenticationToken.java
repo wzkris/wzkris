@@ -1,6 +1,6 @@
-package com.thingslink.auth.oauth2.authentication.sms;
+package com.thingslink.auth.oauth2.authenticate.sms;
 
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.thingslink.auth.oauth2.constants.GrantTypeConstant;
 import lombok.Getter;
 import org.springframework.security.core.Authentication;

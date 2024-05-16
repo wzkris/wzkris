@@ -1,6 +1,8 @@
 package com.thingslink.common.security.utils;
 
 import com.thingslink.common.core.constant.SecurityConstants;
+import com.thingslink.common.core.utils.json.JsonUtil;
+import com.thingslink.common.security.oauth2.constants.OAuth2Type;
 import com.thingslink.common.security.oauth2.model.LoginSysUser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +17,8 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("SysUserUtil") //加入Spring容器以用于SPEL
-public class SysUserUtil extends CurrentUserHolder {
+@Component("SysUtil") //加入Spring容器以用于SPEL
+public class SysUtil extends OAuth2Holder {
 
     @Getter
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -27,7 +29,7 @@ public class SysUserUtil extends CurrentUserHolder {
      * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        return CurrentUserHolder.isAuthenticated() && CurrentUserHolder.getPrincipal() instanceof LoginSysUser;
+        return OAuth2Holder.isAuthenticated() && OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue());
     }
 
     /**
@@ -57,7 +59,7 @@ public class SysUserUtil extends CurrentUserHolder {
      * @return 当前用户
      */
     public static LoginSysUser getLoginUser() {
-        return (LoginSysUser) CurrentUserHolder.getPrincipal();
+        return JsonUtil.parseObject(OAuth2Holder.getPrincipal().getAttributes(), LoginSysUser.class);
     }
 
     /**

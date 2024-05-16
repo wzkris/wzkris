@@ -1,10 +1,8 @@
 package com.thingslink.common.security.oauth2.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.io.Serial;
 import java.util.List;
 
 /**
@@ -16,12 +14,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class LoginSysUser extends LoginUser {
-    @Serial
-    private static final long serialVersionUID = 3291189147544840626L;
+public class LoginSysUser {
 
-    public static final String USER_TYPE = "sys_user";
     // 登录id
     private Long userId;
     // 部门id
@@ -36,16 +30,5 @@ public class LoginSysUser extends LoginUser {
     private String password;
     // 部门数据权限， 最终会拼接到SQL中
     private List<Long> deptScopes;
-
-    @Override
-    public String getUserType() {
-        return USER_TYPE;
-    }
-
-    @Override
-    public void eraseCredentials() {
-        super.eraseCredentials();
-        this.password = null;
-    }
 
 }

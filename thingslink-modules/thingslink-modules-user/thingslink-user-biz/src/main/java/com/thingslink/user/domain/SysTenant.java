@@ -1,8 +1,8 @@
 package com.thingslink.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.thingslink.common.orm.model.BaseEntity;
 import com.thingslink.common.core.constant.SecurityConstants;
+import com.thingslink.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -3,15 +3,15 @@ package com.thingslink.user.service.impl;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.thingslink.user.domain.SysDept;
-import com.thingslink.user.domain.vo.SelectTree;
-import com.thingslink.user.mapper.SysDeptMapper;
-import com.thingslink.user.service.SysDeptService;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.exception.BusinessExceptionI18n;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.security.utils.SysUserUtil;
+import com.thingslink.common.security.utils.SysUtil;
+import com.thingslink.user.domain.SysDept;
+import com.thingslink.user.domain.vo.SelectTree;
+import com.thingslink.user.mapper.SysDeptMapper;
+import com.thingslink.user.service.SysDeptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -247,7 +247,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         // deptid为空则新增操作，判断是否传了租户ID
         if (dept.getDeptId() == null) {
             if (dept.getTenantId() == null) {
-                tenantId = SysUserUtil.getTenantId();
+                tenantId = SysUtil.getTenantId();
             }
             else {
                 tenantId = dept.getTenantId();

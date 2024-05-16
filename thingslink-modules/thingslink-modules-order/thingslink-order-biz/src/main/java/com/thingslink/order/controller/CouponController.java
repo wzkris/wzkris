@@ -1,8 +1,8 @@
 package com.thingslink.order.controller;
 
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.order.domain.Coupon;
 import com.thingslink.order.mapper.CouponMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;

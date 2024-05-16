@@ -1,8 +1,8 @@
 package com.thingslink.user.service;
 
 
-import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.api.domain.vo.RouterVO;
+import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.domain.vo.SelectTree;
 
 import java.util.List;

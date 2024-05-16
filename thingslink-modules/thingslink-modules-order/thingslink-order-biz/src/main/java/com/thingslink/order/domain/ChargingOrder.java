@@ -2,8 +2,8 @@ package com.thingslink.order.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.thingslink.common.orm.model.BaseEntity;
-import com.thingslink.order.enums.PayType;
 import com.thingslink.order.enums.ChargingStatus;
+import com.thingslink.order.enums.PayType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

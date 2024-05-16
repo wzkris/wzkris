@@ -4,10 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
 import com.thingslink.auth.listening.event.UserLoginEvent;
 import com.thingslink.common.core.utils.ip.AddressUtil;
-import com.thingslink.common.security.oauth2.model.LoginUser;
-import com.thingslink.common.security.oauth2.model.LoginAppUser;
-import com.thingslink.common.security.oauth2.model.LoginSysUser;
-import com.thingslink.common.security.utils.CurrentUserHolder;
+import com.thingslink.common.security.oauth2.constants.OAuth2Type;
 import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.LoginLogDTO;
 import com.thingslink.user.api.RemoteAppUserApi;
@@ -38,22 +35,22 @@ public class LoginEventListener {
      **/
     @Async
     @EventListener
-    public void recordLoginLog(UserLoginEvent userLoginEvent) {
-        log.info(Thread.currentThread().getName() + "监听到事件：" + userLoginEvent);
-        final LoginUser loginUser = CurrentUserHolder.getPrincipal();
-        final String ip = userLoginEvent.getIp();
-        final UserAgent userAgent = userLoginEvent.getUserAgent();
+    public void recordLoginLog(UserLoginEvent event) {
+        log.info(Thread.currentThread().getName() + "监听到事件：" + event);
+        final String oauth2Type = event.getOauth2Type();
+        final String ip = event.getIp();
+        final UserAgent userAgent = event.getUserAgent();
 
-        if (loginUser instanceof LoginSysUser sysUser) {
+        if (oauth2Type.equals(OAuth2Type.SYS_USER.getValue())) {
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
-            loginInfoDTO.setUserId(sysUser.getUserId());
+            loginInfoDTO.setUserId(event.getUserId());
             loginInfoDTO.setLoginIp(ip);
             loginInfoDTO.setLoginDate(DateUtil.current());
             remoteSysUserApi.updateLoginInfo(loginInfoDTO);
             // 插入后台登陆日志
             final LoginLogDTO loginLogDTO = new LoginLogDTO();
-            loginLogDTO.setUserId(sysUser.getUserId());
+            loginLogDTO.setUserId(event.getUserId());
             loginLogDTO.setLoginTime(DateUtil.current());
             loginLogDTO.setIpAddr(ip);
             loginLogDTO.setAddress(AddressUtil.getRealAddressByIp(ip));
@@ -65,10 +62,10 @@ public class LoginEventListener {
             loginLogDTO.setBrowser(browser);
             remoteLogApi.insertLoginlog(loginLogDTO);
         }
-        else if (loginUser instanceof LoginAppUser appUser) {
+        else if (oauth2Type.equals(OAuth2Type.APP_USER.getValue())) {
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
-            loginInfoDTO.setUserId(appUser.getUserId());
+            loginInfoDTO.setUserId(event.getUserId());
             loginInfoDTO.setLoginIp(ip);
             loginInfoDTO.setLoginDate(DateUtil.current());
             remoteAppUserApi.updateLoginInfo(loginInfoDTO);

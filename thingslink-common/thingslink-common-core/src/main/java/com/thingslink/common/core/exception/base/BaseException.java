@@ -3,8 +3,6 @@ package com.thingslink.common.core.exception.base;
 import com.thingslink.common.core.enums.BizCode;
 import com.thingslink.common.core.utils.MessageUtil;
 
-import java.io.Serial;
-
 /**
  * 基础异常
  *

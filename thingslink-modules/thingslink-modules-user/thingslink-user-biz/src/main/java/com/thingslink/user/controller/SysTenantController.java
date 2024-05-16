@@ -1,17 +1,17 @@
 package com.thingslink.user.controller;
 
+import com.thingslink.common.core.annotation.group.ValidationGroups;
+import com.thingslink.common.core.domain.Result;
+import com.thingslink.common.log.annotation.OperateLog;
+import com.thingslink.common.log.enums.OperateType;
+import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.user.domain.SysTenant;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.domain.dto.SysTenantDTO;
 import com.thingslink.user.mapper.SysTenantMapper;
 import com.thingslink.user.service.SysTenantService;
 import com.thingslink.user.service.SysUserService;
-import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.core.annotation.group.ValidationGroups;
-import com.thingslink.common.log.annotation.OperateLog;
-import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
-import com.thingslink.common.orm.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;

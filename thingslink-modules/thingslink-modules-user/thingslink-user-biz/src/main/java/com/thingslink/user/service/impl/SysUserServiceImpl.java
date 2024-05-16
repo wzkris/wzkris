@@ -9,7 +9,7 @@ import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.utils.PageUtil;
-import com.thingslink.common.security.utils.SysUserUtil;
+import com.thingslink.common.security.utils.SysUtil;
 import com.thingslink.user.domain.*;
 import com.thingslink.user.domain.dto.SysUserDTO;
 import com.thingslink.user.domain.vo.SysUserVO;
@@ -115,7 +115,7 @@ public class SysUserServiceImpl implements SysUserService {
     @DynamicTenant
     public boolean insertUser(SysUserDTO dto) {
         // 密码加密
-        dto.setPassword(SysUserUtil.encryptPassword(dto.getPassword()));
+        dto.setPassword(SysUtil.encryptPassword(dto.getPassword()));
         int rows = sysUserMapper.insert(dto);
         // 新增用户与角色管理
         this.insertUserRole(dto.getUserId(), dto.getRoleIds());
@@ -233,7 +233,7 @@ public class SysUserServiceImpl implements SysUserService {
         // userid为空则新增操作，判断是否传了租户ID
         if (userDTO.getUserId() == null) {
             if (userDTO.getTenantId() == null) {
-                tenantId = SysUserUtil.getTenantId();
+                tenantId = SysUtil.getTenantId();
             }
             else {
                 tenantId = userDTO.getTenantId();

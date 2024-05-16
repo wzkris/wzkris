@@ -3,6 +3,8 @@ package com.thingslink.common.security.utils;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.enums.BizCode;
 import com.thingslink.common.core.utils.MessageUtil;
+import com.thingslink.common.security.oauth2.exception.OAuth2AuthenticationI18nException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 
@@ -10,6 +12,24 @@ import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
  * OAuth2异常工具类
  */
 public class OAuth2ExceptionUtil {
+
+    private static final String ACCESS_TOKEN_REQUEST_ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
+
+    /**
+     * 抛出OAuth2异常
+     */
+    public static void throwError(String errorCode, String description) {
+        throw new OAuth2AuthenticationException(
+                new OAuth2Error(errorCode, description, ACCESS_TOKEN_REQUEST_ERROR_URI)
+        );
+    }
+
+    /**
+     * 抛出OAuth2国际化异常
+     */
+    public static void throwErrorI18n(String errorCode, String code, Object... args) {
+        throw new OAuth2AuthenticationI18nException(errorCode, code, args);
+    }
 
     /**
      * 将OAuth2异常翻译成通用返回值

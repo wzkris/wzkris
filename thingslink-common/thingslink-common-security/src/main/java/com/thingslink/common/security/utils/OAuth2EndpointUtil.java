@@ -1,9 +1,6 @@
 package com.thingslink.common.security.utils;
 
-import com.thingslink.common.security.oauth2.exception.OAuth2AuthenticationI18nException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -26,13 +23,4 @@ public class OAuth2EndpointUtil {
         return parameters;
     }
 
-    public static void throwError(String errorCode, String description) {
-        throw new OAuth2AuthenticationException(
-                new OAuth2Error(errorCode, description, ACCESS_TOKEN_REQUEST_ERROR_URI)
-        );
-    }
-
-    public static void throwErrorI18n(String errorCode, String code, Object... args) {
-        throw new OAuth2AuthenticationI18nException(errorCode, code, args);
-    }
 }

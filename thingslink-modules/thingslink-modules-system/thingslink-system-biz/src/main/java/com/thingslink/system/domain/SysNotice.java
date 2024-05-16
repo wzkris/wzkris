@@ -1,14 +1,13 @@
 package com.thingslink.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.thingslink.common.orm.model.BaseEntity;
 import com.thingslink.common.core.annotation.Xss;
+import com.thingslink.common.orm.model.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 /**
  * 通知公告表 notice

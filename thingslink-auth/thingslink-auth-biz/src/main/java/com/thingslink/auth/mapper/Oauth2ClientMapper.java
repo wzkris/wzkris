@@ -1,7 +1,7 @@
-package com.thingslink.user.mapper;
+package com.thingslink.auth.mapper;
 
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.thingslink.user.domain.Oauth2Client;
+import com.thingslink.auth.domain.Oauth2Client;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;

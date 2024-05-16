@@ -2,23 +2,20 @@ package com.thingslink.auth.oauth2;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.thingslink.auth.oauth2.authentication.password.PasswordAuthenticationConverter;
-import com.thingslink.auth.oauth2.authentication.password.PasswordAuthenticationProvider;
-import com.thingslink.auth.oauth2.authentication.sms.SmsAuthenticationConverter;
-import com.thingslink.auth.oauth2.authentication.sms.SmsAuthenticationProvider;
+import com.thingslink.auth.oauth2.authenticate.password.PasswordAuthenticationConverter;
+import com.thingslink.auth.oauth2.authenticate.password.PasswordAuthenticationProvider;
+import com.thingslink.auth.oauth2.authenticate.sms.SmsAuthenticationConverter;
+import com.thingslink.auth.oauth2.authenticate.sms.SmsAuthenticationProvider;
 import com.thingslink.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.thingslink.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
 import com.thingslink.auth.oauth2.service.AppUserDetailsService;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
-import com.thingslink.common.security.utils.SysUserUtil;
+import com.thingslink.common.security.utils.SysUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2TokenIntrospectionAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -35,8 +31,6 @@ import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
-
-import java.util.List;
 
 /**
  * @author : wzkris
@@ -117,7 +111,7 @@ public class AuthorizationServerConfig {
      */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(SysUserDetailsService sysUserDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(SysUserUtil.getPasswordEncoder());
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(SysUtil.getPasswordEncoder());
         daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
         return daoAuthenticationProvider;
     }

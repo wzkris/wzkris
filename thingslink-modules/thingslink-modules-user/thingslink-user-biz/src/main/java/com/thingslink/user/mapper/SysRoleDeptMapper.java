@@ -1,7 +1,7 @@
 package com.thingslink.user.mapper;
 
-import com.thingslink.user.domain.SysRoleDept;
 import com.thingslink.common.orm.annotation.DeptScope;
+import com.thingslink.user.domain.SysRoleDept;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;

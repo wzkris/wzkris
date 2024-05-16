@@ -4,7 +4,6 @@ import com.thingslink.order.domain.ChargingOrder;
 import com.thingslink.order.enums.ChargingEvent;
 import com.thingslink.order.enums.ChargingStatus;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageHeaders;

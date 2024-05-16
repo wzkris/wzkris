@@ -1,10 +1,8 @@
 package com.thingslink.equipment;
 
+import com.thingslink.equipment.mapper.DeviceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.thingslink.equipment.Thingslink_EquipmentApplication;
-import com.thingslink.equipment.mapper.DeviceMapper;
 
 /**
  * @author : wzkris

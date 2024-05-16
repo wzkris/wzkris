@@ -5,7 +5,7 @@ import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.common.orm.utils.TenantUtil;
-import com.thingslink.common.security.utils.SysUserUtil;
+import com.thingslink.common.security.utils.SysUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -40,7 +40,7 @@ public class DynamicTenantAspect {
         Long tenantId;
         // 为空则走自身租户
         if (StringUtil.isBlank(dynamicTenant.value())) {
-            tenantId = SysUserUtil.getTenantId();
+            tenantId = SysUtil.getTenantId();
         }
         else {
             // 否则解析spel，拿到对应参数

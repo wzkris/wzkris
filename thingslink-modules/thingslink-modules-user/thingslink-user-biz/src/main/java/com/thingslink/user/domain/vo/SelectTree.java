@@ -1,8 +1,8 @@
 package com.thingslink.user.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.domain.SysDept;
+import com.thingslink.user.domain.SysMenu;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;

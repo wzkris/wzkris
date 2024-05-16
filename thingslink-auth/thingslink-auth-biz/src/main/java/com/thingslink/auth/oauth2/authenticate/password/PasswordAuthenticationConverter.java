@@ -1,8 +1,8 @@
-package com.thingslink.auth.oauth2.authentication.password;
+package com.thingslink.auth.oauth2.authenticate.password;
 
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationConverter;
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
-import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationConverter;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationToken;
+import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -31,13 +31,13 @@ public class PasswordAuthenticationConverter extends CommonAuthenticationConvert
         // username (REQUIRED)
         String username = parameters.getFirst(OAuth2ParameterNames.USERNAME);
         if (!StringUtils.hasText(username) || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail", OAuth2ParameterNames.USERNAME);
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail", OAuth2ParameterNames.USERNAME);
         }
 
         // password (REQUIRED)
         String password = parameters.getFirst(OAuth2ParameterNames.PASSWORD);
         if (!StringUtils.hasText(password) || parameters.get(OAuth2ParameterNames.PASSWORD).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail", OAuth2ParameterNames.PASSWORD);
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail", OAuth2ParameterNames.PASSWORD);
         }
     }
 

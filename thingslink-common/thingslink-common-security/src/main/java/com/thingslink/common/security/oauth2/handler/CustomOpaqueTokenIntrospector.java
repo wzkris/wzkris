@@ -1,20 +1,20 @@
 package com.thingslink.common.security.oauth2.handler;
 
-import com.thingslink.common.core.utils.StringUtil;
+import com.thingslink.common.core.constant.SecurityConstants;
+import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.oauth2.model.LoginAppUser;
-import com.thingslink.common.security.oauth2.model.LoginSysUser;
-import com.thingslink.common.security.utils.CurrentUserHolder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.thingslink.common.security.oauth2.model.OAuth2User;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionException;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
@@ -28,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -37,12 +37,11 @@ import java.util.Map;
  * @date : 2024/3/8 14:34.
  * @UPDATE: 2024/5/14 10:11 custom from @org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector
  */
+@Slf4j
 public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private static final ParameterizedTypeReference<Map<String, Object>> STRING_OBJECT_MAP = new ParameterizedTypeReference<Map<String, Object>>() {
+    private static final ParameterizedTypeReference<OAuth2User> STRING_OBJECT_MAP = new ParameterizedTypeReference<>() {
     };
-
-    private static final Log log = LogFactory.getLog(CustomOpaqueTokenIntrospector.class);
 
     private final RestOperations restOperations;
 
@@ -53,7 +52,27 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         Assert.notNull(clientId, "clientId cannot be null");
         Assert.notNull(clientSecret, "clientSecret cannot be null");
         this.requestEntityConverter = this.defaultRequestEntityConverter(URI.create(introspectionUri));
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = this.defaultRestTemplate(new RestTemplate());
+        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(clientId, clientSecret));
+        this.restOperations = restTemplate;
+    }
+
+    private Converter<String, RequestEntity<?>> defaultRequestEntityConverter(URI introspectionUri) {
+        return (token) -> {
+            HttpHeaders headers = requestHeaders();
+            MultiValueMap<String, String> body = requestBody(token);
+            return new RequestEntity<>(body, headers, HttpMethod.POST, introspectionUri);
+        };
+    }
+
+    private RestTemplate defaultRestTemplate(RestTemplate restTemplate) {
+        // 替换jackson序列化mapper
+        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        for (HttpMessageConverter<?> messageConverter : messageConverters) {
+            if (messageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+                mappingJackson2HttpMessageConverter.setObjectMapper(JsonUtil.getObjectMapper());
+            }
+        }
         restTemplate.setErrorHandler(new ResponseErrorHandler() {
             @Override
             public boolean hasError(ClientHttpResponse response) throws IOException {
@@ -65,16 +84,7 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
             }
         });
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(clientId, clientSecret));
-        this.restOperations = restTemplate;
-    }
-
-    private Converter<String, RequestEntity<?>> defaultRequestEntityConverter(URI introspectionUri) {
-        return (token) -> {
-            HttpHeaders headers = requestHeaders();
-            MultiValueMap<String, String> body = requestBody(token);
-            return new RequestEntity<>(body, headers, HttpMethod.POST, introspectionUri);
-        };
+        return restTemplate;
     }
 
     private HttpHeaders requestHeaders() {
@@ -91,24 +101,24 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
-        if (CurrentUserHolder.isAuthenticated()) {
-            return CurrentUserHolder.getPrincipal();
+        // request不会为空
+        HttpServletRequest request = ServletUtil.getRequest();
+        if (request.getHeader(SecurityConstants.PRINCIPAL_HEADER) != null) {
+            return JsonUtil.parseObject(request.getHeader(SecurityConstants.PRINCIPAL_HEADER), OAuth2User.class);
         }
 
-        // 否则校验token
+        // 否则校验token, 此处token可能为用户token或应用token
         RequestEntity<?> requestEntity = this.requestEntityConverter.convert(token);
         if (requestEntity == null) {
             throw new OAuth2IntrospectionException("requestEntityConverter returned a null entity");
         }
 
-        ResponseEntity<Map<String, Object>> responseEntity = this.makeRequest(requestEntity);
+        ResponseEntity<OAuth2User> responseEntity = this.makeRequest(requestEntity);
 
-        Map<String, Object> response = this.adaptToCustomResponse(responseEntity);
-
-        return this.buildOAuth2User(response);
+        return this.adaptToCustomResponse(responseEntity);
     }
 
-    private ResponseEntity<Map<String, Object>> makeRequest(RequestEntity<?> requestEntity) {
+    private ResponseEntity<OAuth2User> makeRequest(RequestEntity<?> requestEntity) {
         try {
             return this.restOperations.exchange(requestEntity, STRING_OBJECT_MAP);
         }
@@ -117,34 +127,18 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         }
     }
 
-    private Map<String, Object> adaptToCustomResponse(ResponseEntity<Map<String, Object>> responseEntity) {
+    private OAuth2User adaptToCustomResponse(ResponseEntity<OAuth2User> responseEntity) {
         if (responseEntity.getStatusCode() != HttpStatus.OK || responseEntity.getBody() == null) {
-            return Collections.emptyMap();
-        }
-
-        return responseEntity.getBody();
-    }
-
-    /**
-     * 构建登录用户信息
-     */
-    public OAuth2User buildOAuth2User(Map<String, Object> resMap) {
-        if (resMap == null || resMap.get("userType") == null) {
-            log.warn("userType is invalid");
             throw new InvalidBearerTokenException(OAuth2ErrorCodes.INVALID_TOKEN);
         }
 
-        String userType = resMap.get("userType").toString();
+        OAuth2User oAuth2User = responseEntity.getBody();
 
-        if (StringUtil.equals(userType, LoginAppUser.USER_TYPE)) {
-            return JsonUtil.parseObject(resMap, LoginAppUser.class);
+        if (oAuth2User.getOauth2Type() == null) {
+            throw new InvalidBearerTokenException(OAuth2ErrorCodes.INVALID_TOKEN);
         }
 
-        if (StringUtil.equals(userType, LoginSysUser.USER_TYPE)) {
-            return JsonUtil.parseObject(resMap, LoginSysUser.class);
-        }
-
-        throw new InvalidBearerTokenException(OAuth2ErrorCodes.INVALID_TOKEN);
+        return oAuth2User;
     }
 
 }

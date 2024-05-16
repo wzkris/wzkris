@@ -1,16 +1,16 @@
 package com.thingslink.user.controller;
 
 import cn.hutool.core.util.ObjUtil;
-import com.thingslink.user.domain.SysDept;
-import com.thingslink.user.domain.vo.SelectTree;
-import com.thingslink.user.mapper.SysDeptMapper;
-import com.thingslink.user.service.SysDeptService;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.user.domain.SysDept;
+import com.thingslink.user.domain.vo.SelectTree;
+import com.thingslink.user.mapper.SysDeptMapper;
+import com.thingslink.user.service.SysDeptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,6 @@
 package com.thingslink.order.statemachine;
 
-import com.thingslink.order.domain.ChargingOrder;
 import com.thingslink.order.enums.ChargingEvent;
-import com.thingslink.order.enums.ChargingStatus;
 import org.springframework.messaging.Message;
 import org.springframework.statemachine.annotation.OnTransition;
 import org.springframework.statemachine.annotation.WithStateMachine;

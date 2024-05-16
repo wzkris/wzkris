@@ -1,13 +1,13 @@
 package com.thingslink.user.controller;
 
-import com.thingslink.user.domain.SysPost;
-import com.thingslink.user.mapper.SysPostMapper;
-import com.thingslink.user.service.SysPostService;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
+import com.thingslink.user.domain.SysPost;
+import com.thingslink.user.mapper.SysPostMapper;
+import com.thingslink.user.service.SysPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

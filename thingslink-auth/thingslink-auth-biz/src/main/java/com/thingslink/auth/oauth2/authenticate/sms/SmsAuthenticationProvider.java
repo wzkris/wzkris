@@ -1,15 +1,19 @@
-package com.thingslink.auth.oauth2.authentication.sms;
+package com.thingslink.auth.oauth2.authenticate.sms;
 
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationProvider;
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationProvider;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationToken;
+import com.thingslink.auth.oauth2.model.UserModel;
 import com.thingslink.auth.oauth2.service.AppUserDetailsService;
-import com.thingslink.common.security.utils.OAuth2EndpointUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import com.thingslink.common.security.oauth2.constants.OAuth2Type;
+import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.util.Assert;
 
@@ -33,17 +37,23 @@ public class SmsAuthenticationProvider extends CommonAuthenticationProvider<Comm
     }
 
     @Override
-    protected UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
+    protected OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
         // TODO 校验code
 
-        UserDetails userDetails = userDetailsService.loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        UserModel userModel = userDetailsService.loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
-        if (userDetails == null) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+        if (userModel == null) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        String clientId = ((OAuth2ClientAuthenticationToken) authenticationToken.getPrincipal()).getPrincipal().toString();
+
+        OAuth2User oAuth2User = new OAuth2User(OAuth2Type.APP_USER.getValue(), userModel.getUsername(), userModel.getAttributes(),
+                userModel.getAuthorities());
+
+        return new OAuth2AuthenticationToken(oAuth2User,
+                AuthorityUtils.createAuthorityList(authenticationToken.getScopes()), clientId);
     }
 
     @Override

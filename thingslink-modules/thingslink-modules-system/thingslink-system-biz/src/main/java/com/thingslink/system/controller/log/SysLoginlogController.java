@@ -2,8 +2,8 @@ package com.thingslink.system.controller.log;
 
 import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.system.domain.SysLoginLog;
 import com.thingslink.system.mapper.SysLoginLogMapper;
 import com.thingslink.system.service.SysLoginLogService;

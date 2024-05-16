@@ -1,7 +1,7 @@
 package com.thingslink.order.service.impl;
 
-import com.thingslink.order.service.CouponService;
 import com.thingslink.order.mapper.CouponMapper;
+import com.thingslink.order.service.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,7 @@
 package com.thingslink.common.security.utils;
 
+import com.thingslink.common.core.utils.json.JsonUtil;
+import com.thingslink.common.security.oauth2.constants.OAuth2Type;
 import com.thingslink.common.security.oauth2.model.LoginAppUser;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-public class AppUserUtil extends CurrentUserHolder {
+public class AppUtil extends OAuth2Holder {
 
     /**
      * 是否登录
@@ -19,7 +21,7 @@ public class AppUserUtil extends CurrentUserHolder {
      * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        return CurrentUserHolder.isAuthenticated() && CurrentUserHolder.getPrincipal() instanceof LoginAppUser;
+        return OAuth2Holder.isAuthenticated() && OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.APP_USER.getValue());
     }
 
     /**
@@ -28,7 +30,7 @@ public class AppUserUtil extends CurrentUserHolder {
      * @return 当前用户
      */
     public static LoginAppUser getAppUser() {
-        return (LoginAppUser) CurrentUserHolder.getPrincipal();
+        return JsonUtil.parseObject(OAuth2Holder.getPrincipal().getAttributes(), LoginAppUser.class);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.thingslink.user.mapper;
 
-import com.thingslink.user.domain.SysPost;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
+import com.thingslink.user.domain.SysPost;
 import org.springframework.stereotype.Repository;
 
 /**

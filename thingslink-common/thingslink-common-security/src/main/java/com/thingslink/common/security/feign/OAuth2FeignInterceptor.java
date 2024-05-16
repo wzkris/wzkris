@@ -1,14 +1,12 @@
 package com.thingslink.common.security.feign;
 
-import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.constant.SecurityConstants;
-import com.thingslink.common.core.utils.ServletUtil;
-import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.utils.CurrentUserHolder;
+import com.thingslink.common.security.utils.ClientTokenUtil;
+import com.thingslink.common.security.utils.OAuth2Holder;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 
 /**
  * @author : wzkris
@@ -16,30 +14,18 @@ import jakarta.servlet.http.HttpServletRequest;
  * @description : OAuth2 feign请求拦截器
  * @date : 2023/8/4 10:46
  */
+@AllArgsConstructor
 public class OAuth2FeignInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        // 通过feign调用的请求加上内部调用标识，否则无法访问feign暴露接口
-        String target = requestTemplate.feignTarget().name();
-        requestTemplate.header(SecurityConstants.INNER_REQUEST_HEADER, target);
-
-        // 未经过认证则直接返回
-        if (!CurrentUserHolder.isAuthenticated()) {
-            return;
+        if (OAuth2Holder.isAuthenticated()) {
+            // 认证过了则追加信息
+            requestTemplate.header(SecurityConstants.PRINCIPAL_HEADER, JsonUtil.toJsonString(OAuth2Holder.getPrincipal()));
         }
-
-        HttpServletRequest request = ServletUtil.getRequest();
-
-        if (ObjUtil.isNotNull(request)) {
-            // 追加Token
-            String token = request.getHeader(SecurityConstants.TOKEN_HEADER);
-            if (StringUtil.isNotBlank(token)) {
-                requestTemplate.header(SecurityConstants.TOKEN_HEADER, token);
-            }
+        else {
+            // 未登录追加client_token，否则无法访问feign暴露接口
+            requestTemplate.header(SecurityConstants.TOKEN_HEADER, ClientTokenUtil.getClientToken());
         }
-
-        // 追加个人信息
-        requestTemplate.header(SecurityConstants.PRINCIPAL_HEADER, JsonUtil.toJsonString(CurrentUserHolder.getPrincipal()));
     }
 }

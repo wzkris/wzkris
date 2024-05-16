@@ -1,11 +1,11 @@
 package com.thingslink.auth.controller;
 
 
-import com.thingslink.auth.domain.LoginUserVO;
+import com.thingslink.auth.domain.vo.LoginUserVO;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.oauth2.model.LoginSysUser;
-import com.thingslink.common.security.utils.SysUserUtil;
+import com.thingslink.common.security.utils.SysUtil;
 import com.thingslink.user.api.domain.vo.RouterVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,19 +29,18 @@ public class LoginUserController {
     @Operation(summary = "用户信息")
     @GetMapping
     public Result<LoginUserVO> loginUser() {
-        LoginSysUser loginUser = SysUserUtil.getLoginUser();
+        LoginSysUser loginUser = SysUtil.getLoginUser();
         LoginUserVO loginUserVO = new LoginUserVO();
-        loginUserVO.setUserId(loginUser.getUserId());
         loginUserVO.setUsername(loginUser.getUsername());
         loginUserVO.setIsAdmin(loginUser.getIsAdmin());
-        loginUserVO.setAuthorities(loginUser.getAuthorities());
+        loginUserVO.setAuthorities(SysUtil.getAuthorities());
         return success(loginUserVO);
     }
 
     @Operation(summary = "路由树")
     @GetMapping("routing")
     public Result<List<RouterVO>> routers() {
-        List<RouterVO> router = sysUserDetailsService.getRouter(SysUserUtil.getUserId());
+        List<RouterVO> router = sysUserDetailsService.getRouter(SysUtil.getUserId());
         return success(router);
     }
 }

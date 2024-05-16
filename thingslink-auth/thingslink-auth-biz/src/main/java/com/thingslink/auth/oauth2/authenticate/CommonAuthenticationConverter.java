@@ -1,6 +1,8 @@
-package com.thingslink.auth.oauth2.authentication;
+package com.thingslink.auth.oauth2.authenticate;
 
+import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,12 +53,12 @@ public abstract class CommonAuthenticationConverter<T extends OAuth2Authorizatio
         // scope (OPTIONAL)
         String scope = parameters.getFirst(OAuth2ParameterNames.SCOPE);
         if (StringUtils.hasText(scope) && parameters.get(OAuth2ParameterNames.SCOPE).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
         }
 
         Set<String> requestedScopes = null;
         if (StringUtils.hasText(scope)) {
-            requestedScopes = new HashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(scope, " ")));
+            requestedScopes = new HashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(scope, StringUtil.COMMA)));
         }
 
         // 校验个性化参数
@@ -65,7 +67,7 @@ public abstract class CommonAuthenticationConverter<T extends OAuth2Authorizatio
         // 获取当前已经认证的客户端信息
         Authentication clientPrincipal = SecurityContextHolder.getContext().getAuthentication();
         if (clientPrincipal == null) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
         }
 
         // 扩展信息

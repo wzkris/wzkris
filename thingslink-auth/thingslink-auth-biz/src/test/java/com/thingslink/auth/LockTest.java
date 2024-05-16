@@ -25,7 +25,7 @@ public class LockTest {
     @Test
     @DisplayName("线程交替打印测试")
     public void threadPrint() {
-        System.out.println("898604F2102382153500".substring("898604F2102382153500".length() - 16));
+
     }
 
 

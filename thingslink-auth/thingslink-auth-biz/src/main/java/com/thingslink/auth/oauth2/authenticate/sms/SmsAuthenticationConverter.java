@@ -1,10 +1,10 @@
-package com.thingslink.auth.oauth2.authentication.sms;
+package com.thingslink.auth.oauth2.authenticate.sms;
 
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationConverter;
-import com.thingslink.auth.oauth2.authentication.CommonAuthenticationToken;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationConverter;
+import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.thingslink.auth.oauth2.constants.GrantTypeConstant;
 import com.thingslink.auth.oauth2.constants.OAuth2ParameterConstant;
-import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.util.MultiValueMap;
@@ -30,13 +30,13 @@ public class SmsAuthenticationConverter extends CommonAuthenticationConverter<Co
         // phonenumber (REQUIRED)
         String phoneNumber = parameters.getFirst(OAuth2ParameterConstant.PHONE_NUMBER);
         if (!StringUtils.hasText(phoneNumber) || parameters.get(OAuth2ParameterConstant.PHONE_NUMBER).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.PHONE_NUMBER);
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.PHONE_NUMBER);
         }
 
         // smscode (REQUIRED)
         String smsCode = parameters.getFirst(OAuth2ParameterConstant.SMS_CODE);
         if (!StringUtils.hasText(smsCode) || parameters.get(OAuth2ParameterConstant.SMS_CODE).size() != 1) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.SMS_CODE);
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.SMS_CODE);
         }
     }
 

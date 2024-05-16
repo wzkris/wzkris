@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.thingslink.common.core.domain.Result.success;
-
 /**
  * @author : wzkris
  * @version : V1.0.0

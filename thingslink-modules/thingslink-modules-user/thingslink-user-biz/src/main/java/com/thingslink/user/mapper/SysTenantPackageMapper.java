@@ -1,8 +1,8 @@
 package com.thingslink.user.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.thingslink.user.domain.SysTenantPackage;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
+import com.thingslink.user.domain.SysTenantPackage;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

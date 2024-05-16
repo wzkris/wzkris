@@ -31,10 +31,8 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
 
+        // 清洗请求头
         mutate.headers(header -> {
-            // 清洗请求头
-            header.remove(SecurityConstants.GATEWAY_IP_HEADER);
-            header.remove(SecurityConstants.INNER_REQUEST_HEADER);
             header.remove(SecurityConstants.PRINCIPAL_HEADER);
         });
         return chain.filter(exchange.mutate().request(mutate.build()).build());

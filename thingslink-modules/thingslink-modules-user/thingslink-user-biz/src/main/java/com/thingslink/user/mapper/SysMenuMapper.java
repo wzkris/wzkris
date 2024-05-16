@@ -1,7 +1,7 @@
 package com.thingslink.user.mapper;
 
-import com.thingslink.user.domain.SysMenu;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
+import com.thingslink.user.domain.SysMenu;
 import jakarta.annotation.Nullable;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

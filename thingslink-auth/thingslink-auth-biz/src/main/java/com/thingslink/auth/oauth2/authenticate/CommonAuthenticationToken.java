@@ -1,4 +1,4 @@
-package com.thingslink.auth.oauth2.authentication;
+package com.thingslink.auth.oauth2.authenticate;
 
 import lombok.Getter;
 import org.springframework.security.core.Authentication;

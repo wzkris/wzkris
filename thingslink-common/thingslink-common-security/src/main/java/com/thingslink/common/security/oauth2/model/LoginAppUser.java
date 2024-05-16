@@ -1,11 +1,7 @@
 package com.thingslink.common.security.oauth2.model;
 
-import jakarta.annotation.Nonnull;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.io.Serial;
 
 
 /**
@@ -17,30 +13,11 @@ import java.io.Serial;
  */
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class LoginAppUser extends LoginUser {
-    @Serial
-    private static final long serialVersionUID = 4344390570373928224L;
+public class LoginAppUser {
 
-    public static final String USER_TYPE = "app_user";
     // 登录id
     private Long userId;
     // 手机号
     private String phoneNumber;
 
-    @Override
-    public String getUserType() {
-        return USER_TYPE;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    @Nonnull
-    public String getUsername() {
-        return this.phoneNumber;
-    }
 }

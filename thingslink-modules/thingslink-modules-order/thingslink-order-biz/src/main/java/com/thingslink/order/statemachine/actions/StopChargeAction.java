@@ -5,7 +5,6 @@ import com.thingslink.order.enums.ChargingEvent;
 import com.thingslink.order.enums.ChargingStatus;
 import com.thingslink.order.mapper.ChargingOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;

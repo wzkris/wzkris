@@ -3,15 +3,14 @@ package com.thingslink.common.security.oauth2;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.oauth2.config.PermitIpConfig;
-import com.thingslink.common.security.oauth2.config.PermitUrlConfig;
+import com.thingslink.common.security.oauth2.config.OAuth2Properties;
+import com.thingslink.common.security.oauth2.config.PermitUrlProperties;
 import com.thingslink.common.security.oauth2.deserializer.GrantedAuthorityDeserializer;
 import com.thingslink.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.thingslink.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.thingslink.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -28,14 +27,14 @@ import org.springframework.security.web.SecurityFilterChain;
  * @description : 资源服务器安全配置
  * @date : 2023/11/16 10:48
  */
+@Slf4j
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 @AllArgsConstructor
 public class ResourceServerConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(ResourceServerConfig.class);
-    private final PermitUrlConfig permitUrlConfig;
-    private final PermitIpConfig permitIpConfig;
+    private final PermitUrlProperties permitUrlProperties;
+    private final OAuth2Properties oAuth2Properties;
 
     // json序列化增强
     static {
@@ -52,13 +51,11 @@ public class ResourceServerConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
                             // 配置url白名单
-                            PermitUrlConfig.Common common = permitUrlConfig.getCommon();
-                            if (common != null) {
-                                authorize.requestMatchers(common.getUrls().toArray(String[]::new)).permitAll();
+                            if (permitUrlProperties.getCommonUrls() != null) {
+                                authorize.requestMatchers(permitUrlProperties.getCommonUrls().toArray(String[]::new)).permitAll();
                             }
-                            PermitUrlConfig.Custom custom = permitUrlConfig.getCustom();
-                            if (custom != null) {
-                                authorize.requestMatchers(custom.getUrls().toArray(String[]::new)).permitAll();
+                            if (permitUrlProperties.getCustomUrls() != null) {
+                                authorize.requestMatchers(permitUrlProperties.getCustomUrls().toArray(String[]::new)).permitAll();
                             }
                             authorize.anyRequest().authenticated();
                         }
@@ -67,15 +64,14 @@ public class ResourceServerConfig {
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
-                                token.introspector(new CustomOpaqueTokenIntrospector(
-                                        "http://127.0.0.1:8080/auth/oauth2/introspect",
-                                        "server",
-                                        "secret"));
+                                token.introspector(new CustomOpaqueTokenIntrospector(oAuth2Properties.getIntrospectionUri(),
+                                        oAuth2Properties.getClientid(), oAuth2Properties.getClientSecret()));
                             })
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                             .accessDeniedHandler(new AccessDeniedHandlerImpl())
                     ;
                 })
+//                .oauth2Client(Customizer.withDefaults())
         ;
 
         return http.build();

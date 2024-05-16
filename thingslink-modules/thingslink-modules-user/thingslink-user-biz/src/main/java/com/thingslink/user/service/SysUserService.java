@@ -1,9 +1,9 @@
 package com.thingslink.user.service;
 
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.domain.dto.SysUserDTO;
 import com.thingslink.user.domain.vo.SysUserVO;
-import com.thingslink.common.orm.page.Page;
 
 import java.util.List;
 
