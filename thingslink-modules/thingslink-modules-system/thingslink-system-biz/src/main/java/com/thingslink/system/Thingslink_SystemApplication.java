@@ -3,6 +3,8 @@ package com.thingslink.system;
 import com.thingslink.common.web.annotation.EnableCustomConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 
 /**
  * 系统模块
@@ -12,8 +14,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableCustomConfig
 @SpringBootApplication
 public class Thingslink_SystemApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(Thingslink_SystemApplication.class, args);
+        SpringApplication springApplication = new SpringApplication(Thingslink_SystemApplication.class);
+        springApplication.addListeners(new ApplicationPidFileWriter());
+        springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
+        springApplication.run(args);
         System.out.println("""
                 (♥◠‿◠)ﾉﾞ  系统模块启动成功   ლ(´ڡ`ლ)ﾞ \s
                   _   _     _                 _ _       _   \s
