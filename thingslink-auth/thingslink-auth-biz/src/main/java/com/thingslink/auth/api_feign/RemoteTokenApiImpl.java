@@ -2,15 +2,10 @@ package com.thingslink.auth.api_feign;
 
 import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.auth.service.CaptchaService;
-import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.annotation.InnerAuth;
-import com.thingslink.common.security.oauth2.model.OAuth2User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.thingslink.common.core.domain.Result.success;
 
 /**
  * @author : wzkris
@@ -31,30 +26,6 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     @Override
     public void unlockAccount(String username) {
         captchaService.unlock(username);
-    }
-
-    /**
-     * 根据token获取用户信息
-     *
-     * @param token 可以是access_token/refresh_token/oidc_token 等等
-     * @return 用户信息
-     */
-    @Override
-    public Result<Object> findByToken(String token) {
-        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(token, null);
-
-        return oAuth2Authorization == null ? success() : success(oAuth2Authorization.getAttribute(OAuth2User.class.getName()));
-    }
-
-    /**
-     * 退出登录
-     */
-    @Override
-    public void logoutByToken(String accessToken) {
-        OAuth2Authorization authorization = oAuth2AuthorizationService.findByToken(accessToken, null);
-        if (authorization != null) {
-            oAuth2AuthorizationService.remove(authorization);
-        }
     }
 
 }

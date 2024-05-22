@@ -7,9 +7,9 @@ import com.thingslink.auth.oauth2.service.SysUserDetailsService;
 import com.thingslink.common.security.oauth2.constants.OAuth2Type;
 import com.thingslink.common.security.oauth2.model.OAuth2User;
 import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
-import com.thingslink.common.security.utils.SysUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
@@ -25,15 +25,19 @@ import org.springframework.util.Assert;
  */
 public class PasswordAuthenticationProvider extends CommonAuthenticationProvider<CommonAuthenticationToken> {
     private final SysUserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
     public PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                          SysUserDetailsService userDetailsService) {
+                                          SysUserDetailsService userDetailsService,
+                                          PasswordEncoder passwordEncoder) {
         super(tokenGenerator, authorizationService);
         Assert.notNull(authorizationService, "authorizationService cannot be null");
         Assert.notNull(tokenGenerator, "tokenGenerator cannot be null");
         Assert.notNull(userDetailsService, "userDetailsService cannot be null");
+        Assert.notNull(passwordEncoder, "passwordEncoder cannot be null");
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,7 +46,8 @@ public class PasswordAuthenticationProvider extends CommonAuthenticationProvider
 
         UserModel userModel = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
 
-        if (userModel == null || !SysUtil.matchesPassword(authenticationToken.getPassword(), userModel.getPassword())) {
+
+        if (userModel == null || !passwordEncoder.matches(authenticationToken.getPassword(), userModel.getPassword())) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 

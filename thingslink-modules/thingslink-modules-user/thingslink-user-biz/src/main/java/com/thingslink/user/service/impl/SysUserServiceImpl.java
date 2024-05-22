@@ -17,6 +17,7 @@ import com.thingslink.user.mapper.*;
 import com.thingslink.user.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -39,6 +40,8 @@ public class SysUserServiceImpl implements SysUserService {
     private final SysDeptMapper sysDeptMapper;
     private final SysUserRoleMapper sysUserRoleMapper;
     private final SysUserPostMapper sysUserPostMapper;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public Page<SysUserVO> listPage(SysUser user) {
@@ -107,19 +110,19 @@ public class SysUserServiceImpl implements SysUserService {
     /**
      * 新增管理员信息
      *
-     * @param dto 用户信息
+     * @param userDTO 用户信息
      * @return 结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     @DynamicTenant
-    public boolean insertUser(SysUserDTO dto) {
+    public boolean insertUser(SysUserDTO userDTO) {
         // 密码加密
-        dto.setPassword(SysUtil.encryptPassword(dto.getPassword()));
-        int rows = sysUserMapper.insert(dto);
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        int rows = sysUserMapper.insert(userDTO);
         // 新增用户与角色管理
-        this.insertUserRole(dto.getUserId(), dto.getRoleIds());
-        this.insertUserPost(dto.getUserId(), dto.getPostIds());
+        this.insertUserRole(userDTO.getUserId(), userDTO.getRoleIds());
+        this.insertUserPost(userDTO.getUserId(), userDTO.getPostIds());
         // 新增用户信息
         return rows > 0;
     }

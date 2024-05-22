@@ -10,7 +10,6 @@ import com.thingslink.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.thingslink.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
 import com.thingslink.auth.oauth2.service.AppUserDetailsService;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
-import com.thingslink.common.security.utils.SysUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -19,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
@@ -47,7 +45,8 @@ public class AuthorizationServerConfig {
                                                         SysUserDetailsService sysUserDetailsService,
                                                         AppUserDetailsService appUserDetailsService,
                                                         OAuth2AuthorizationService authorizationService,
-                                                        OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator) throws Exception {
+                                                        OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator,
+                                                        PasswordEncoder passwordEncoder) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
@@ -62,7 +61,8 @@ public class AuthorizationServerConfig {
                                 authenticationProviders.add(
                                         new PasswordAuthenticationProvider(authorizationService
                                                 , oAuth2TokenGenerator
-                                                , sysUserDetailsService));
+                                                , sysUserDetailsService
+                                                , passwordEncoder));
                                 authenticationProviders.add(
                                         new SmsAuthenticationProvider(authorizationService,
                                                 oAuth2TokenGenerator,
@@ -90,14 +90,6 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * 单例的加密器 给OAuth2其余组件公用
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
      * 用于授权服务器配置
      */
     @Bean
@@ -110,23 +102,11 @@ public class AuthorizationServerConfig {
      * 手动对后台用户进行创建
      */
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(SysUserDetailsService sysUserDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(SysUtil.getPasswordEncoder());
+    public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder, SysUserDetailsService sysUserDetailsService) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
         return daoAuthenticationProvider;
     }
-
-    /**
-     * AuthenticationProvider的管理器
-     */
-//    @Bean
-//    public AuthenticationManager authenticationManager(List<AuthenticationProvider> providers,
-//                                                       OAuth2TokenIntrospectionAuthenticationProvider oAuth2TokenIntrospectionAuthenticationProvider) {
-//        // 移除OAuth2默认的oAuth2TokenIntrospectionAuthenticationProvider，添加自定义的token自省逻辑
-//        providers.remove(oAuth2TokenIntrospectionAuthenticationProvider);
-//        providers.add();
-//        return new ProviderManager(providers);
-//    }
 
     /**
      * 令牌生成规则实现 </br>

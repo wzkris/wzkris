@@ -20,6 +20,7 @@ import com.thingslink.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -40,6 +41,7 @@ public class SysProfileController extends BaseController {
     private final SysPostService sysPostService;
     private final SysDeptMapper sysDeptMapper;
     private final RemoteCaptchaApi remoteCaptchaApi;
+    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "个人信息")
     @GetMapping
@@ -94,17 +96,19 @@ public class SysProfileController extends BaseController {
     public Result<?> updatePwd(String oldPassword, String newPassword) {
         LoginSysUser loginUser = SysUtil.getLoginUser();
 
-        String encryptPassword = SysUtil.encryptPassword(newPassword);
         String username = loginUser.getUsername();
         String password = userMapper.selectPwdByUserName(username);
-        if (!SysUtil.matchesPassword(oldPassword, password)) {
+
+        if (!passwordEncoder.matches(oldPassword, password)) {
             return fail("修改密码失败，旧密码错误");
         }
-        if (SysUtil.matchesPassword(newPassword, password)) {
+
+        if (passwordEncoder.matches(newPassword, password)) {
             return fail("新密码不能与旧密码相同");
         }
+
         SysUser update = new SysUser(loginUser.getUserId());
-        update.setPassword(encryptPassword);
+        update.setPassword(passwordEncoder.encode(password));
         return toRes(userMapper.updateById(update));
     }
 

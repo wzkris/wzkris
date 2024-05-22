@@ -4,9 +4,7 @@ import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.oauth2.constants.OAuth2Type;
 import com.thingslink.common.security.oauth2.model.LoginSysUser;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,9 +18,6 @@ import org.springframework.stereotype.Component;
 @Component("SysUtil") //加入Spring容器以用于SPEL
 public class SysUtil extends OAuth2Holder {
 
-    @Getter
-    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     /**
      * 是否登录
      *
@@ -30,27 +25,6 @@ public class SysUtil extends OAuth2Holder {
      */
     public static boolean isLogin() {
         return OAuth2Holder.isAuthenticated() && OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue());
-    }
-
-    /**
-     * 生成BCryptPasswordEncoder密码
-     *
-     * @param password 密码
-     * @return 加密字符串
-     */
-    public static String encryptPassword(String password) {
-        return passwordEncoder.encode(password);
-    }
-
-    /**
-     * 判断密码是否相同
-     *
-     * @param rawPass   真实密码
-     * @param encryPass 加密后字符
-     * @return 结果
-     */
-    public static boolean matchesPassword(String rawPass, String encryPass) {
-        return passwordEncoder.matches(rawPass, encryPass);
     }
 
     /**

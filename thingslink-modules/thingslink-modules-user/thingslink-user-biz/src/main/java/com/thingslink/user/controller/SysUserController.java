@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +53,8 @@ public class SysUserController extends BaseController {
     private final SysPostService sysPostService;
     private final SysUserPostMapper sysUserPostMapper;
     private final SysUserRoleMapper sysUserRoleMapper;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
@@ -143,8 +146,9 @@ public class SysUserController extends BaseController {
     public Result<?> resetPwd(@RequestBody SysUser user) {
         // 校验权限
         sysUserService.checkDataScopes(user.getUserId());
+
         SysUser update = new SysUser(user.getUserId());
-        update.setPassword(SysUtil.encryptPassword(user.getPassword()));
+        update.setPassword(passwordEncoder.encode(user.getPassword()));
         return toRes(sysUserMapper.updateById(update));
     }
 
