@@ -40,14 +40,14 @@ public class SysTenantController extends BaseController {
     private final SysUserService sysUserService;
 
     @Operation(summary = "租户分页")
-    @PreAuthorize("hasAuthority('tenant:list')")
+    @PreAuthorize("@ps.hasPerms('tenant:list')")
     @GetMapping("/list")
     public Result<Page<SysTenant>> list(SysTenant sysTenant) {
         return success(sysTenantService.listPage(sysTenant));
     }
 
     @Operation(summary = "获取租户详细信息")
-    @PreAuthorize("hasAuthority('tenant:query')")
+    @PreAuthorize("@ps.hasPerms('tenant:query')")
     @GetMapping("/{tenantId}")
     public Result<SysTenant> getInfo(@NotNull(message = "[tenantId] {validate.notnull}")
                                      @PathVariable Long tenantId) {
@@ -55,7 +55,7 @@ public class SysTenantController extends BaseController {
     }
 
     @Operation(summary = "新增租户")
-    @PreAuthorize("hasAuthority('tenant:add')")
+    @PreAuthorize("@ps.hasPerms('tenant:add')")
     @OperateLog(title = "租户", operateType = OperateType.INSERT)
     @PostMapping
     public Result<Void> add(@Validated(value = ValidationGroups.Insert.class) @RequestBody SysTenantDTO sysTenantDTO) {
@@ -66,7 +66,7 @@ public class SysTenantController extends BaseController {
     }
 
     @Operation(summary = "修改租户")
-    @PreAuthorize("hasAuthority('tenant:edit')")
+    @PreAuthorize("@ps.hasPerms('tenant:edit')")
     @OperateLog(title = "租户", operateType = OperateType.UPDATE)
     @PutMapping
     public Result<Void> edit(@RequestBody SysTenant sysTenant) {
@@ -74,7 +74,7 @@ public class SysTenantController extends BaseController {
     }
 
     @Operation(summary = "删除租户")
-    @PreAuthorize("hasAuthority('tenant:remove')")
+    @PreAuthorize("@ps.hasPerms('tenant:remove')")
     @OperateLog(title = "租户", operateType = OperateType.DELETE)
     @DeleteMapping("/{tenantIds}")
     public Result<Void> remove(@NotEmpty(message = "[tenantIds] {validate.notnull}") @PathVariable Long[] tenantIds) {

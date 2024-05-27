@@ -33,7 +33,7 @@ public class CouponController extends BaseController {
      * @return 查询结果
      */
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('coupon:list')")
+    @PreAuthorize("@ps.hasPerms('coupon:list')")
     public Result<Page<Coupon>> listPage(Coupon coupon) {
         startPage();
         List<Coupon> list = couponMapper.list(coupon);
@@ -47,7 +47,7 @@ public class CouponController extends BaseController {
      * @return 单条数据
      */
     @GetMapping("/{couponId}")
-    @PreAuthorize("hasAuthority('coupon:query')")
+    @PreAuthorize("@ps.hasPerms('coupon:query')")
     public Result<Coupon> query(@PathVariable Long couponId) {
         return success(couponMapper.getById(couponId));
     }
@@ -59,7 +59,7 @@ public class CouponController extends BaseController {
      * @return 新增结果
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('coupon:add')")
+    @PreAuthorize("@ps.hasPerms('coupon:add')")
     public Result<?> add(@RequestBody Coupon coupon) {
         return toRes(couponMapper.insert(coupon));
     }
@@ -71,7 +71,7 @@ public class CouponController extends BaseController {
      * @return 编辑结果
      */
     @PutMapping
-    @PreAuthorize("hasAuthority('coupon:edit')")
+    @PreAuthorize("@ps.hasPerms('coupon:edit')")
     public Result<?> edit(@RequestBody Coupon coupon) {
         return toRes(couponMapper.updateById(coupon));
     }
@@ -83,7 +83,7 @@ public class CouponController extends BaseController {
      * @return 删除是否成功
      */
     @DeleteMapping("/{couponId}")
-    @PreAuthorize("hasAuthority('coupon:remove')")
+    @PreAuthorize("@ps.hasPerms('coupon:remove')")
     public Result<?> deleteById(@PathVariable Long couponId) {
         return toRes(couponMapper.deleteById(couponId));
     }

@@ -32,7 +32,7 @@ public class SysDictTypeController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('dict:list')")
+    @PreAuthorize("@ps.hasPerms('dict:list')")
     public Result<Page<SysDictType>> list(SysDictType sysDictType) {
         startPage();
         List<SysDictType> list = sysDictTypeService.list(sysDictType);
@@ -43,7 +43,7 @@ public class SysDictTypeController extends BaseController {
      * 查询字典类型详细
      */
     @GetMapping("/{dictId}")
-    @PreAuthorize("hasAuthority('dict:query')")
+    @PreAuthorize("@ps.hasPerms('dict:query')")
     public Result<?> getInfo(@PathVariable Long dictId) {
         return success(sysDictTypeMapper.selectById(dictId));
     }
@@ -53,7 +53,7 @@ public class SysDictTypeController extends BaseController {
      */
     @OperateLog(title = "字典类型", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('dict:add')")
+    @PreAuthorize("@ps.hasPerms('dict:add')")
     public Result<?> add(@Validated @RequestBody SysDictType dict) {
         if (sysDictTypeService.checkDictTypeUnique(dict)) {
             return fail("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
@@ -66,7 +66,7 @@ public class SysDictTypeController extends BaseController {
      */
     @OperateLog(title = "字典类型", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('dict:edit')")
+    @PreAuthorize("@ps.hasPerms('dict:edit')")
     public Result<?> edit(@Validated @RequestBody SysDictType dict) {
         if (sysDictTypeService.checkDictTypeUnique(dict)) {
             return fail("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
@@ -79,7 +79,7 @@ public class SysDictTypeController extends BaseController {
      */
     @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
     @DeleteMapping("/{dictIds}")
-    @PreAuthorize("hasAuthority('dict:remove')")
+    @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> remove(@PathVariable Long[] dictIds) {
         sysDictTypeService.deleteDictTypeByIds(dictIds);
         return success();
@@ -90,7 +90,7 @@ public class SysDictTypeController extends BaseController {
      */
     @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
     @DeleteMapping("/refreshCache")
-    @PreAuthorize("hasAuthority('dict:remove')")
+    @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> refreshCache() {
         sysDictTypeService.resetDictCache();
         return success();

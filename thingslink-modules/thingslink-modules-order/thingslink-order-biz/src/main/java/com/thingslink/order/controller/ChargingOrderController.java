@@ -34,7 +34,7 @@ public class ChargingOrderController extends BaseController {
      */
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('order:list')")
+    @PreAuthorize("@ps.hasPerms('order:list')")
     public Result<Page<ChargingOrder>> listPage(ChargingOrder order) {
         startPage();
         List<ChargingOrder> list = chargingOrderMapper.list(order);
@@ -48,7 +48,7 @@ public class ChargingOrderController extends BaseController {
      * @return 单条数据
      */
     @GetMapping("/{chargingId}")
-    @PreAuthorize("hasAuthority('order:query')")
+    @PreAuthorize("@ps.hasPerms('order:query')")
     public Result<ChargingOrder> query(@PathVariable Long chargingId) {
         return success(chargingOrderMapper.getById(chargingId));
     }
@@ -60,7 +60,7 @@ public class ChargingOrderController extends BaseController {
      * @return 删除是否成功
      */
     @DeleteMapping("/{chargingId}")
-    @PreAuthorize("hasAuthority('order:remove')")
+    @PreAuthorize("@ps.hasPerms('order:remove')")
     public Result<?> deleteById(@PathVariable Long chargingId) {
         return toRes(chargingOrderMapper.deleteById(chargingId));
     }

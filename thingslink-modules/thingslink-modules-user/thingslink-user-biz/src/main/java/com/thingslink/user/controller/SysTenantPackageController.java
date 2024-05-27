@@ -39,14 +39,14 @@ public class SysTenantPackageController extends BaseController {
     private final SysTenantPackageService tenantPackageService;
 
     @Operation(summary = "套餐分页")
-    @PreAuthorize("hasAuthority('tenantPackage:list')")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:list')")
     @GetMapping("/list")
     public Result<Page<SysTenantPackage>> list(SysTenantPackage sysTenantPackage) {
         return success(tenantPackageService.listPage(sysTenantPackage));
     }
 
     @Operation(summary = "套餐下拉选列表")
-    @PreAuthorize("hasAuthority('tenantPackage:list')")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:list')")
     @GetMapping("/selectList")
     public Result<List<SysTenantPackage>> selectList() {
         LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
@@ -55,7 +55,7 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "套餐详细信息")
-    @PreAuthorize("hasAuthority('tenantPackage:query')")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:query')")
     @GetMapping("/{packageId}")
     public Result<SysTenantPackage> getInfo(@NotNull(message = "[packageId] {validate.notnull}")
                                             @PathVariable Long packageId) {
@@ -63,7 +63,7 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "新增租户套餐")
-    @PreAuthorize("hasAuthority('tenantPackage:add')")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:add')")
     @OperateLog(title = "租户套餐", operateType = OperateType.INSERT)
     @PostMapping
     public Result<Void> add(@Valid @RequestBody SysTenantPackage tenantPackage) {
@@ -71,7 +71,7 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "修改租户套餐")
-    @PreAuthorize("hasAuthority('tenantPackage:edit')")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:edit')")
     @OperateLog(title = "租户套餐", operateType = OperateType.UPDATE)
     @PutMapping
     public Result<Void> edit(@Valid @RequestBody SysTenantPackage tenantPackage) {
@@ -79,7 +79,7 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "删除租户套餐")
-    @PreAuthorize("hasAuthority('tenantPackage:remove')")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:remove')")
     @OperateLog(title = "租户套餐", operateType = OperateType.DELETE)
     @DeleteMapping("/{packageIds}")
     public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @PathVariable Long[] packageIds) {

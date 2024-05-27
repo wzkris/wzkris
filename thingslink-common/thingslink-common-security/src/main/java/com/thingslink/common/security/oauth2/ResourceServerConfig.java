@@ -9,6 +9,7 @@ import com.thingslink.common.security.oauth2.deserializer.GrantedAuthorityDeseri
 import com.thingslink.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.thingslink.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.thingslink.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
+import com.thingslink.common.security.oauth2.service.PermissionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -77,6 +78,14 @@ public class ResourceServerConfig {
         ;
 
         return http.build();
+    }
+
+    /**
+     * 鉴权具体的实现逻辑
+     */
+    @Bean("ps")
+    public PermissionService permissionService() {
+        return new PermissionService();
     }
 
     /**

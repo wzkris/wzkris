@@ -47,7 +47,7 @@ public class StationController extends BaseController {
      * @return 查询结果
      */
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('station:list')")
+    @PreAuthorize("@ps.hasPerms('station:list')")
     public Result<Page<Station>> listPage(Station station) {
         startPage();
         List<Station> list = stationService.list(station);
@@ -61,7 +61,7 @@ public class StationController extends BaseController {
      * @return 单条数据
      */
     @GetMapping("/{stationId}")
-    @PreAuthorize("hasAuthority('station:query')")
+    @PreAuthorize("@ps.hasPerms('station:query')")
     public Result<Station> query(@PathVariable Long stationId) {
         return success(stationMapper.selectById(stationId));
     }
@@ -73,7 +73,7 @@ public class StationController extends BaseController {
      * @return 新增结果
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('station:add')")
+    @PreAuthorize("@ps.hasPerms('station:add')")
     public Result<?> add(@RequestBody Station station) {
         return toRes(stationMapper.insert(station));
     }
@@ -85,7 +85,7 @@ public class StationController extends BaseController {
      * @return 编辑结果
      */
     @PutMapping
-    @PreAuthorize("hasAuthority('station:edit')")
+    @PreAuthorize("@ps.hasPerms('station:edit')")
     public Result<?> edit(@RequestBody Station station) {
         return toRes(stationMapper.updateById(station));
     }
@@ -97,7 +97,7 @@ public class StationController extends BaseController {
      * @return 删除是否成功
      */
     @DeleteMapping("/{stationId}")
-    @PreAuthorize("hasAuthority('station:remove')")
+    @PreAuthorize("@ps.hasPerms('station:remove')")
     public Result<?> deleteById(@PathVariable Long stationId) {
         return toRes(stationMapper.deleteById(stationId));
     }

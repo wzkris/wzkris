@@ -35,7 +35,7 @@ public class DeviceController extends BaseController {
      * @return 查询结果
      */
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('device:list')")
+    @PreAuthorize("@ps.hasPerms('device:list')")
     public Result<Page<Device>> listPage(Device device) {
         startPage();
         List<Device> list = deviceService.list(device);
@@ -49,7 +49,7 @@ public class DeviceController extends BaseController {
      * @return 单条数据
      */
     @GetMapping("/{deviceId}")
-    @PreAuthorize("hasAuthority('device:query')")
+    @PreAuthorize("@ps.hasPerms('device:query')")
     public Result<DeviceVO> query(@PathVariable Long deviceId) {
         return success(deviceService.getVOById(deviceId));
     }
@@ -61,7 +61,7 @@ public class DeviceController extends BaseController {
      * @return 新增结果
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('device:add')")
+    @PreAuthorize("@ps.hasPerms('device:add')")
     public Result<?> add(@RequestBody Device device) {
         return toRes(deviceMapper.insert(device));
     }
@@ -73,7 +73,7 @@ public class DeviceController extends BaseController {
      * @return 编辑结果
      */
     @PutMapping
-    @PreAuthorize("hasAuthority('device:edit')")
+    @PreAuthorize("@ps.hasPerms('device:edit')")
     public Result<?> edit(@RequestBody Device device) {
         return toRes(deviceMapper.updateById(device));
     }
@@ -85,7 +85,7 @@ public class DeviceController extends BaseController {
      * @return 删除是否成功
      */
     @DeleteMapping("/{deviceId}")
-    @PreAuthorize("hasAuthority('device:remove')")
+    @PreAuthorize("@ps.hasPerms('device:remove')")
     public Result<?> deleteById(@PathVariable Long deviceId) {
         return toRes(deviceMapper.deleteById(deviceId));
     }

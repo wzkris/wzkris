@@ -32,7 +32,7 @@ public class SysPostController extends BaseController {
 
     @Operation(summary = "岗位分页")
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('post:list')")
+    @PreAuthorize("@ps.hasPerms('post:list')")
     public Result<Page<SysPost>> list(SysPost sysPost) {
         startPage();
         List<SysPost> list = sysPostService.list(sysPost);
@@ -41,7 +41,7 @@ public class SysPostController extends BaseController {
 
     @Operation(summary = "岗位详细信息")
     @GetMapping("/{postId}")
-    @PreAuthorize("hasAuthority('post:query')")
+    @PreAuthorize("@ps.hasPerms('post:query')")
     public Result<?> getInfo(@PathVariable Long postId) {
         return success(sysPostMapper.selectById(postId));
     }
@@ -49,7 +49,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "新增岗位")
     @OperateLog(title = "岗位管理", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('post:add')")
+    @PreAuthorize("@ps.hasPerms('post:add')")
     public Result<?> add(@Validated @RequestBody SysPost sysPost) {
         return toRes(sysPostMapper.insert(sysPost));
     }
@@ -57,7 +57,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "修改岗位")
     @OperateLog(title = "岗位管理", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('post:edit')")
+    @PreAuthorize("@ps.hasPerms('post:edit')")
     public Result<?> edit(@Validated @RequestBody SysPost sysPost) {
         return toRes(sysPostMapper.updateById(sysPost));
     }
@@ -65,7 +65,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "修改岗位")
     @OperateLog(title = "岗位管理", operateType = OperateType.DELETE)
     @DeleteMapping("/{postIds}")
-    @PreAuthorize("hasAuthority('post:remove')")
+    @PreAuthorize("@ps.hasPerms('post:remove')")
     public Result<?> remove(@PathVariable Long[] postIds) {
         return toRes(sysPostService.deleteByPostIds(postIds));
     }

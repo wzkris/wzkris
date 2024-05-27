@@ -10,8 +10,8 @@ import com.thingslink.user.api.domain.dto.SysUserDTO;
 import com.thingslink.user.api.domain.vo.RouterVO;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.mapper.SysUserMapper;
-import com.thingslink.user.service.PermissionService;
 import com.thingslink.user.service.SysMenuService;
+import com.thingslink.user.service.SysPermissionService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ import static com.thingslink.common.core.domain.Result.success;
 @RequiredArgsConstructor
 public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     private final SysUserMapper sysUserMapper;
-    private final PermissionService permissionService;
+    private final SysPermissionService sysPermissionService;
     private final SysMenuService sysMenuService;
 
     /**
@@ -51,7 +51,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
      */
     @Override
     public Result<SysPermissionDTO> getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
-        SysPermissionDTO permission = permissionService.getPermission(userId, tenantId, deptId);
+        SysPermissionDTO permission = sysPermissionService.getPermission(userId, tenantId, deptId);
         return success(permission);
     }
 

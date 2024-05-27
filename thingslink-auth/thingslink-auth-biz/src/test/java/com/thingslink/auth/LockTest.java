@@ -16,18 +16,6 @@ import java.util.concurrent.locks.Lock;
 @DisplayName("锁测试")
 public class LockTest {
 
-    @Test
-    @DisplayName("取余测试")
-    public void test() {
-        System.out.println(8 % 5);
-    }
-
-    @Test
-    @DisplayName("线程交替打印测试")
-    public void threadPrint() {
-
-    }
-
 
     class Counter {
         int num;

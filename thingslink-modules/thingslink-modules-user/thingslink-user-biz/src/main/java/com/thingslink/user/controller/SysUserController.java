@@ -58,14 +58,14 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('user:list')")
+    @PreAuthorize("@ps.hasPerms('user:list')")
     public Result<Page<SysUserVO>> listPage(SysUser user) {
         return success(sysUserService.listPage(user));
     }
 
     @Operation(summary = "用户详细信息")
     @GetMapping({"/{userId}", "/"})
-    @PreAuthorize("hasAuthority('user:query')")
+    @PreAuthorize("@ps.hasPerms('user:query')")
     public Result<?> getInfo(@PathVariable(required = false) Long userId) {
         // 校验权限
         sysUserService.checkDataScopes(userId);
@@ -88,7 +88,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "新增用户")
     @OperateLog(title = "后台管理", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('user:add')")
+    @PreAuthorize("@ps.hasPerms('user:add')")
     public Result<?> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
         // 校验租户ID
         sysUserService.checkTenantId(userDTO);
@@ -109,7 +109,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "修改用户")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('user:edit')")
+    @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> edit(@Validated @RequestBody SysUserDTO userDTO) {
         // 校验权限
         sysUserService.checkDataScopes(userDTO.getUserId());
@@ -132,7 +132,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "删除用户")
     @OperateLog(title = "后台管理", operateType = OperateType.DELETE)
     @DeleteMapping("/{userIds}")
-    @PreAuthorize("hasAuthority('user:remove')")
+    @PreAuthorize("@ps.hasPerms('user:remove')")
     public Result<?> remove(@PathVariable Long[] userIds) {
         // 校验权限
         sysUserService.checkDataScopes(userIds);
@@ -142,7 +142,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "重置密码")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
     @PutMapping("/resetPwd")
-    @PreAuthorize("hasAuthority('user:edit')")
+    @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> resetPwd(@RequestBody SysUser user) {
         // 校验权限
         sysUserService.checkDataScopes(user.getUserId());
@@ -155,7 +155,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
     @PutMapping("/changeStatus")
-    @PreAuthorize("hasAuthority('user:edit')")
+    @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> changeStatus(@RequestBody SysUser user) {
         // 校验权限
         sysUserService.checkDataScopes(user.getUserId());
@@ -166,7 +166,7 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "根据用户id获取授权角色")
     @GetMapping("/authRole/{userId}")
-    @PreAuthorize("hasAuthority('user:query')")
+    @PreAuthorize("@ps.hasPerms('user:query')")
     public Result<?> authRole(@PathVariable Long userId) {
         // 校验权限
         sysUserService.checkDataScopes(userId);
@@ -183,7 +183,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "用户授权角色")
     @OperateLog(title = "后台管理", operateType = OperateType.GRANT)
     @PutMapping("/authRole")
-    @PreAuthorize("hasAuthority('user:edit')")
+    @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> authRole(Long userId, @NotEmpty(message = "[roleIds] {validate.notnull}") Long[] roleIds) {
         // 校验用户可操作权限
         sysUserService.checkDataScopes(userId);

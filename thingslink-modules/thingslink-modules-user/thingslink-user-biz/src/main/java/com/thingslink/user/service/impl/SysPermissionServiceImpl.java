@@ -2,7 +2,6 @@ package com.thingslink.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.thingslink.common.core.constant.CommonConstants;
-import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.user.api.domain.dto.SysPermissionDTO;
@@ -10,8 +9,8 @@ import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.domain.SysRole;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.mapper.*;
-import com.thingslink.user.service.PermissionService;
 import com.thingslink.user.service.SysMenuService;
+import com.thingslink.user.service.SysPermissionService;
 import com.thingslink.user.service.SysRoleService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class PermissionServiceImpl implements PermissionService {
+public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysRoleMapper sysRoleMapper;
     private final SysRoleService sysRoleService;
     private final SysMenuMapper sysMenuMapper;
@@ -85,14 +84,7 @@ public class PermissionServiceImpl implements PermissionService {
         if (SysUser.isSuperAdmin(userId)) {
             // 超级管理员查出所有角色
             isAdmin = true;
-            roles = sysRoleMapper.selectList(null);
-            grantedAuthority = roles.stream().filter(r -> StringUtil.isNotBlank(r.getRoleKey()))
-                    .map(r -> SecurityConstants.ROLE_PREFIX + r.getRoleKey()).collect(Collectors.toList());
-            // 查出所有权限
-            List<String> menuPerms = sysMenuMapper.selectList(new LambdaQueryWrapper<SysMenu>()
-                    .select(SysMenu::getPerms)
-            ).stream().map(SysMenu::getPerms).filter(StringUtil::isNotBlank).toList();
-            grantedAuthority.addAll(menuPerms);
+            grantedAuthority = Collections.singletonList("*");
         }
         else {
             // 租户最高管理员特殊处理
@@ -100,9 +92,10 @@ public class PermissionServiceImpl implements PermissionService {
             if (tenantPackageId != null) {
                 // 租户最高管理员查出所有租户角色
                 isAdmin = true;
-                roles = sysRoleMapper.selectList(null);
-                grantedAuthority = roles.stream().filter(r -> StringUtil.isNotBlank(r.getRoleKey()))
-                        .map(r -> SecurityConstants.ROLE_PREFIX + r.getRoleKey()).collect(Collectors.toList());
+                grantedAuthority = sysRoleMapper.selectList(null).stream()
+                        .map(SysRole::getRoleKey)
+                        .filter(StringUtil::isNotBlank)
+                        .collect(Collectors.toList());
                 // 查出套餐绑定的所有权限
                 List<Long> menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
                 List<String> menuPerms = sysMenuMapper.selectList(new LambdaQueryWrapper<SysMenu>()
@@ -115,8 +108,10 @@ public class PermissionServiceImpl implements PermissionService {
             else {
                 // 否则为普通用户
                 roles = sysRoleService.listByUserId(userId);
-                grantedAuthority = roles.stream().filter(r -> StringUtil.isNotBlank(r.getRoleKey()))
-                        .map(r -> SecurityConstants.ROLE_PREFIX + r.getRoleKey()).collect(Collectors.toList());
+                grantedAuthority = roles.stream()
+                        .map(SysRole::getRoleKey)
+                        .filter(StringUtil::isNotBlank)
+                        .collect(Collectors.toList());
                 // 菜单权限
                 List<Long> roleIds = roles.stream().map(SysRole::getRoleId).collect(Collectors.toList());
                 grantedAuthority.addAll(sysMenuService.listPermsByRoleIds(roleIds).stream().filter(StringUtil::isNotBlank).toList());

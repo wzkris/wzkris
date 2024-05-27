@@ -40,7 +40,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('menu:list') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:list') && @SysUtil.isSuperTenant()")
     public Result<?> list(SysMenu menu) {
         List<SysMenu> menus = sysMenuService.list(menu);
         return success(menus);
@@ -48,7 +48,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @PreAuthorize("hasAuthority('menu:query') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:query') && @SysUtil.isSuperTenant()")
     public Result<?> getInfo(@PathVariable Long menuId) {
         return success(sysMenuMapper.selectById(menuId));
     }
@@ -62,7 +62,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "角色菜单列表树")
     @GetMapping("/roleMenuTreeList/{roleId}")
-    @PreAuthorize("hasAuthority('menu:list')")
+    @PreAuthorize("@ps.hasPerms('menu:list')")
     public Result<?> roleMenuTreeList(@PathVariable Long roleId) {
         Map<String, Object> res = new HashMap<>(2);
         res.put("checkedKeys", sysRoleMenuMapper.listMenuIdByRoleIds(roleId));
@@ -72,7 +72,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "租户套餐菜单列表树")
     @GetMapping("/tenantPackageMenuTreeList/{packageId}")
-    @PreAuthorize("hasAuthority('menu:list') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:list') && @SysUtil.isSuperTenant()")
     public Result<?> tenantPackageMenuTreeList(@PathVariable Long packageId) {
         Map<String, Object> res = new HashMap<>(2);
         res.put("checkedKeys", sysTenantPackageMapper.listMenuIdByPackageId(packageId));
@@ -83,7 +83,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('menu:add') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:add') && @SysUtil.isSuperTenant()")
     public Result<?> add(@Valid @RequestBody SysMenu menu) {
         if (StringUtil.equals(CommonConstants.NOT_UNIQUE, sysMenuService.checkMenuNameUnique(menu.getMenuName(), menu.getParentId()))) {
             return fail("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
@@ -97,7 +97,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('menu:edit') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:edit') && @SysUtil.isSuperTenant()")
     public Result<?> edit(@Valid @RequestBody SysMenu menu) {
         if (StringUtil.equals(CommonConstants.NOT_UNIQUE, sysMenuService.checkMenuNameUnique(menu.getMenuName(), menu.getParentId()))) {
             return fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
@@ -114,7 +114,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.DELETE)
     @DeleteMapping("/{menuId}")
-    @PreAuthorize("hasAuthority('menu:remove') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:remove') && @SysUtil.isSuperTenant()")
     public Result<?> remove(@PathVariable Long menuId) {
         if (sysMenuService.hasChildByMenuId(menuId)) {
             return fail("存在子菜单,不允许删除");

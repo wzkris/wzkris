@@ -5,11 +5,11 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 /**
- * 权限信息 服务层
+ * 系统权限信息 服务层
  *
  * @author wzkris
  */
-public interface PermissionService {
+public interface SysPermissionService {
 
     /**
      * 返回已授权码及数据权限
