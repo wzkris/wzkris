@@ -21,7 +21,6 @@
     <modules>
         <module>thingslink-modules-equipment</module>
         <module>thingslink-modules-file</module>
-        <module>thingslink-modules-order</module>
         <module>thingslink-modules-system</module>
 	    <module>thingslink-modules-user</module>
     </modules>

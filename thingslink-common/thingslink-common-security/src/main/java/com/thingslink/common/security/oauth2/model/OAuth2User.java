@@ -38,7 +38,7 @@ public class OAuth2User implements org.springframework.security.oauth2.core.user
 
     @Override
     public Map<String, Object> getAttributes() {
-        return attributes;
+        return this.attributes;
     }
 
     @Override

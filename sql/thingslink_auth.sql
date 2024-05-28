@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 21/05/2024 08:45:53
+ Date: 29/05/2024 14:12:18
 */
 
 SET NAMES utf8mb4;
@@ -43,7 +43,7 @@ CREATE TABLE `oauth2_client`  (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, 'inner-client', '$2a$10$jKXqoIKK.w57jS5MKKasH.NQxxpfyUOlvP9yIXYsXelR7dbUGgBn.', '[\"scope.inner\"]', '[\"client_credentials\"]', '[]', '0', 0, 1713334134616, 1, NULL, NULL);
-INSERT INTO `oauth2_client` VALUES (2, 'server', '$2a$10$jKXqoIKK.w57jS5MKKasH.NQxxpfyUOlvP9yIXYsXelR7dbUGgBn.', '[]', '[\"password\", \"sms\", \"refresh_token\", \"authorization_code\"]', '[\"http://localhost:9000/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, NULL, 1);
+INSERT INTO `oauth2_client` VALUES (1, 'inner-client', '{bcrypt}$2a$10$jKXqoIKK.w57jS5MKKasH.NQxxpfyUOlvP9yIXYsXelR7dbUGgBn.', '[\"scope.inner\"]', '[\"client_credentials\"]', '[]', '0', 0, 1713334134616, 1, NULL, NULL);
+INSERT INTO `oauth2_client` VALUES (2, 'server', '{bcrypt}$2a$10$jKXqoIKK.w57jS5MKKasH.NQxxpfyUOlvP9yIXYsXelR7dbUGgBn.', '[]', '[\"password\", \"sms\", \"refresh_token\", \"authorization_code\"]', '[\"http://localhost:8080/auth/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, NULL, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

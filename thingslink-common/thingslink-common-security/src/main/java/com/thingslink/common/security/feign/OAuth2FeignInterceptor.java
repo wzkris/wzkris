@@ -23,9 +23,7 @@ public class OAuth2FeignInterceptor implements RequestInterceptor {
             // 认证过了则追加信息
             requestTemplate.header(SecurityConstants.PRINCIPAL_HEADER, JsonUtil.toJsonString(OAuth2Holder.getPrincipal()));
         }
-        else {
-            // 未登录追加client_token，否则无法访问feign暴露接口
-            requestTemplate.header(SecurityConstants.TOKEN_HEADER, ClientTokenUtil.getClientToken());
-        }
+        // 追加client_token，否则无法访问feign接口
+        requestTemplate.header(SecurityConstants.TOKEN_HEADER, ClientTokenUtil.getClientToken());
     }
 }

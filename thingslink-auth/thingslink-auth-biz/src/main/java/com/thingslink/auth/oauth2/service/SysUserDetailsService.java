@@ -59,11 +59,6 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
         return bucket.get();
     }
 
-    public void setRouter(Long userId) {
-        Result<List<RouterVO>> listResult = remoteSysUserApi.getRouter(userId);
-        JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId)).set(listResult.checkData(), Duration.ofSeconds(tokenConfig.getAccessTokenTimeOut()));
-    }
-
     /**
      * 构建登录用户
      */
