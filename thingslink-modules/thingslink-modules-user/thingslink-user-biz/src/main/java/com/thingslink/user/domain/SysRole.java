@@ -36,10 +36,6 @@ public class SysRole extends BaseEntity {
     @Schema(description = "角色名称")
     private String roleName;
 
-    @Size(min = 0, max = 25, message = "[roleKey] {validate.size.illegal}")
-    @Schema(description = "角色权限")
-    private String roleKey;
-
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;
 

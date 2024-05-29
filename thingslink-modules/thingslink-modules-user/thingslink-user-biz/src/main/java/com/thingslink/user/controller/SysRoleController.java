@@ -1,6 +1,5 @@
 package com.thingslink.user.controller;
 
-import cn.hutool.core.util.ObjUtil;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
@@ -68,11 +67,6 @@ public class SysRoleController extends BaseController {
     @PostMapping
     @PreAuthorize("@ps.hasPerms('role:add')")
     public Result<?> add(@Validated @RequestBody SysRoleDTO roleDTO) {
-        // 判断key是否重复
-        if (ObjUtil.isNotNull(roleDTO.getRoleKey()) &&
-                sysRoleService.checkRoleKeyUnique(roleDTO.getRoleKey(), roleDTO.getRoleId())) {
-            return fail("新增角色'" + roleDTO.getRoleKey() + "'失败，角色权限已存在");
-        }
         return toRes(sysRoleService.insertRole(roleDTO));
     }
 
@@ -83,10 +77,6 @@ public class SysRoleController extends BaseController {
     public Result<?> edit(@Validated @RequestBody SysRoleDTO roleDTO) {
         // 权限校验
         sysRoleService.checkDataScopes(roleDTO.getRoleId());
-        if (ObjUtil.isNotNull(roleDTO.getRoleKey()) &&
-                sysRoleService.checkRoleKeyUnique(roleDTO.getRoleKey(), roleDTO.getRoleId())) {
-            return fail("新增角色'" + roleDTO.getRoleKey() + "'失败，角色权限已存在");
-        }
         return toRes(sysRoleService.updateRole(roleDTO));
     }
 
@@ -109,7 +99,7 @@ public class SysRoleController extends BaseController {
     public Result<?> dataScope(@RequestBody SysRoleDTO roleDTO) {
         // 权限校验
         sysRoleService.checkDataScopes(roleDTO.getRoleId());
-        return toRes(sysRoleService.authDeptScope(roleDTO));
+        return toRes(sysRoleService.updateDeptScope(roleDTO));
     }
 
     @Operation(summary = "删除角色")

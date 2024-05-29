@@ -1,11 +1,8 @@
 package com.thingslink.user.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.user.api.domain.dto.SysPermissionDTO;
-import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.domain.SysRole;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.mapper.*;
@@ -92,29 +89,16 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             if (tenantPackageId != null) {
                 // 租户最高管理员查出所有租户角色
                 isAdmin = true;
-                grantedAuthority = sysRoleMapper.selectList(null).stream()
-                        .map(SysRole::getRoleKey)
-                        .filter(StringUtil::isNotBlank)
-                        .collect(Collectors.toList());
                 // 查出套餐绑定的所有权限
                 List<Long> menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
-                List<String> menuPerms = sysMenuMapper.selectList(new LambdaQueryWrapper<SysMenu>()
-                        .select(SysMenu::getPerms)
-                        .eq(SysMenu::getStatus, CommonConstants.STATUS_ENABLE)
-                        .in(SysMenu::getMenuId, menuIds)
-                ).stream().map(SysMenu::getPerms).filter(StringUtil::isNotBlank).toList();
-                grantedAuthority.addAll(menuPerms);
+                grantedAuthority = sysMenuService.listPermsByMenuIds(menuIds);
             }
             else {
                 // 否则为普通用户
                 roles = sysRoleService.listByUserId(userId);
-                grantedAuthority = roles.stream()
-                        .map(SysRole::getRoleKey)
-                        .filter(StringUtil::isNotBlank)
-                        .collect(Collectors.toList());
                 // 菜单权限
                 List<Long> roleIds = roles.stream().map(SysRole::getRoleId).collect(Collectors.toList());
-                grantedAuthority.addAll(sysMenuService.listPermsByRoleIds(roleIds).stream().filter(StringUtil::isNotBlank).toList());
+                grantedAuthority = sysMenuService.listPermsByRoleIds(roleIds);
                 // 数据权限
                 deptScopes = this.listDeptScope(roles, deptId);
             }

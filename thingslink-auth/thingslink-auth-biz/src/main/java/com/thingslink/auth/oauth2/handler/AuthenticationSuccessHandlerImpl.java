@@ -16,6 +16,7 @@
 
 package com.thingslink.auth.oauth2.handler;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.thingslink.auth.listening.event.UserLoginEvent;
@@ -78,7 +79,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(OAuth2User.class.getName())) {
             OAuth2User oAuth2User = (OAuth2User) additionalParameters.get(OAuth2User.class.getName());
             // 发布登录事件
-            SpringUtil.publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), oAuth2User.getAttribute("userId"),
+            SpringUtil.publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), Convert.toLong(oAuth2User.getAttribute("userId")),
                     ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader("User-Agent"))));
             additionalParameters.remove(OAuth2User.class.getName());
         }

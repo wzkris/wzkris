@@ -16,6 +16,7 @@ import com.thingslink.user.mapper.SysRoleMenuMapper;
 import com.thingslink.user.mapper.SysUserRoleMapper;
 import com.thingslink.user.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,6 @@ public class SysRoleServiceImpl implements SysRoleService {
                 .eq(ObjUtil.isNotNull(sysRole.getRoleId()), SysRole::getRoleId, sysRole.getRoleId())
                 .eq(ObjUtil.isNotNull(sysRole.getTenantId()), SysRole::getTenantId, sysRole.getTenantId())
                 .like(StringUtil.isNotNull(sysRole.getRoleName()), SysRole::getRoleName, sysRole.getRoleName())
-                .like(StringUtil.isNotNull(sysRole.getRoleKey()), SysRole::getRoleKey, sysRole.getRoleKey())
                 .eq(StringUtil.isNotNull(sysRole.getStatus()), SysRole::getStatus, sysRole.getStatus())
                 .orderByDesc(SysRole::getRoleSort, SysRole::getRoleId);
     }
@@ -69,7 +69,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return 角色列表
      */
     @Override
-    public List<SysRole> listByUserId(Long userId) {
+    public List<SysRole> listByUserId(@Nullable Long userId) {
         List<Long> roleIds = sysUserRoleMapper.listRoleIdByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
@@ -85,7 +85,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * 根据用户id获取角色
      */
     @Override
-    public String getRoleGroup(Long userId) {
+    public String getRoleGroup(@Nullable Long userId) {
         // 角色组
         List<SysRole> roles = this.listByUserId(userId);
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
@@ -155,7 +155,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int authDeptScope(SysRoleDTO roleDTO) {
+    public int updateDeptScope(SysRoleDTO roleDTO) {
         // 删除角色与部门关联
         sysRoleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
         // 新增角色和部门信息（数据权限）
@@ -211,20 +211,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         // 删除角色与部门关联
         sysRoleDeptMapper.deleteByRoleIds(roleIds);
         return sysRoleMapper.deleteByRoleIds(roleIds);
-    }
-
-    /**
-     * 校验角色权限是否唯一
-     *
-     * @param roleKey 角色权限
-     * @return 结果
-     */
-    @Override
-    public boolean checkRoleKeyUnique(String roleKey, Long roleId) {
-        LambdaQueryWrapper<SysRole> lqw = new LambdaQueryWrapper<SysRole>()
-                .eq(SysRole::getRoleKey, roleKey)
-                .ne(ObjUtil.isNotNull(roleId), SysRole::getRoleId, roleId);
-        return sysRoleMapper.exists(lqw);
     }
 
     /**

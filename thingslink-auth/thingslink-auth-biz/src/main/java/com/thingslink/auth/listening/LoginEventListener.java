@@ -37,6 +37,10 @@ public class LoginEventListener {
     @EventListener
     public void recordLoginLog(UserLoginEvent event) {
         log.info(Thread.currentThread().getName() + "监听到事件：" + event);
+        if (event.getUserId() == null) {
+            log.warn("用户id为空，不进行登录日志记录，事件信息：{}", event);
+            return;
+        }
         final String oauth2Type = event.getOauth2Type();
         final String ip = event.getIp();
         final UserAgent userAgent = event.getUserAgent();
