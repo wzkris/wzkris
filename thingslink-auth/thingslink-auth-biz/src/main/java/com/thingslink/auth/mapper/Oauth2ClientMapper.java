@@ -1,7 +1,7 @@
 package com.thingslink.auth.mapper;
 
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.thingslink.auth.domain.Oauth2Client;
+import com.thingslink.auth.domain.OAuth2Client;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -10,7 +10,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface Oauth2ClientMapper extends BaseMapperPlus<Oauth2Client> {
+public interface Oauth2ClientMapper extends BaseMapperPlus<OAuth2Client> {
 
     @Results(id = "clientMap", value = {
             @Result(column = "scopes", property = "scopes",
@@ -21,5 +21,5 @@ public interface Oauth2ClientMapper extends BaseMapperPlus<Oauth2Client> {
                     jdbcType = JdbcType.ARRAY, typeHandler = JacksonTypeHandler.class)
     })
     @Select("SELECT * FROM oauth2_client WHERE client_id = #{clientId}")
-    Oauth2Client selectByClientId(String clientId);
+    OAuth2Client selectByClientId(String clientId);
 }

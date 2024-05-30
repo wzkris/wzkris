@@ -1,7 +1,7 @@
 package com.thingslink.auth.oauth2.service;
 
 import com.thingslink.auth.config.TokenConfig;
-import com.thingslink.auth.domain.Oauth2Client;
+import com.thingslink.auth.domain.OAuth2Client;
 import com.thingslink.auth.mapper.Oauth2ClientMapper;
 import com.thingslink.common.core.utils.MessageUtil;
 import com.thingslink.common.redis.util.RedisUtil;
@@ -48,7 +48,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     @Override
     public RegisteredClient findByClientId(String clientId) {
-        Oauth2Client oauth2Client = RedisUtil.getObj(this.buildRedisKey(clientId));
+        OAuth2Client oauth2Client = RedisUtil.getObj(this.buildRedisKey(clientId));
 
         if (oauth2Client == null) {
             oauth2Client = oauth2ClientMapper.selectByClientId(clientId);
@@ -69,7 +69,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
     /**
      * 构建Spring OAuth2所需要的客户端信息
      */
-    private RegisteredClient buildRegisteredClient(Oauth2Client oauth2Client) {
+    private RegisteredClient buildRegisteredClient(OAuth2Client oauth2Client) {
         RegisteredClient.Builder builder = RegisteredClient.withId(oauth2Client.getId().toString())
                 .clientId(oauth2Client.getClientId())
                 .clientSecret(oauth2Client.getClientSecret())

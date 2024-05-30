@@ -1,9 +1,7 @@
 package com.thingslink.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
-import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.auth.oauth2.model.UserModel;
-import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.json.JsonUtil;
@@ -12,18 +10,13 @@ import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import com.thingslink.user.api.RemoteSysUserApi;
 import com.thingslink.user.api.domain.dto.SysPermissionDTO;
 import com.thingslink.user.api.domain.dto.SysUserDTO;
-import com.thingslink.user.api.domain.vo.RouterVO;
 import lombok.AllArgsConstructor;
-import org.redisson.api.RBucket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author : wzkris
@@ -31,12 +24,10 @@ import java.util.List;
  * @description : 查询系统用户信息
  * @date : 2024/2/26 10:03
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class SysUserDetailsService implements UserDetailsServicePlus {
-    private static final String ROUTER_PREFIX = "router";
-    private static final Logger log = LoggerFactory.getLogger(SysUserDetailsService.class);
-    private final TokenConfig tokenConfig;
     private final RemoteSysUserApi remoteSysUserApi;
 
     @Override
@@ -44,19 +35,6 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
         Result<SysUserDTO> result = remoteSysUserApi.getByUsername(username);
         SysUserDTO sysUserDTO = result.checkData();
         return this.checkAndBuildLoginUser(sysUserDTO);
-    }
-
-    /**
-     * 获取前端路由，缓存路由结果
-     */
-    public List<RouterVO> getRouter(Long userId) {
-        RBucket<List<RouterVO>> bucket = JdkRedisUtil.getRedissonClient().getBucket(this.buildRouterKey(userId));
-        if (bucket.get() == null) {
-            Result<List<RouterVO>> listResult = remoteSysUserApi.getRouter(userId);
-            List<RouterVO> routerVOS = listResult.checkData();
-            bucket.set(routerVOS, Duration.ofSeconds(tokenConfig.getAccessTokenTimeOut()));
-        }
-        return bucket.get();
     }
 
     /**
@@ -93,10 +71,5 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
         if (ObjUtil.equals(sysUserDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
-    }
-
-    // 构建用户路由KEY
-    private String buildRouterKey(Long userId) {
-        return String.format("%s:%s", ROUTER_PREFIX, userId);
     }
 }

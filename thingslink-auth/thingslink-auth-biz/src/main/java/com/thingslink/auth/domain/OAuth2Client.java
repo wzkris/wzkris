@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName(autoResultMap = true)
-public class Oauth2Client extends BaseEntity {
+public class OAuth2Client extends BaseEntity {
     @TableId
     private Long id;
     // 客户端id 等价于app_id
