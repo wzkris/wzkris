@@ -10,7 +10,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface Oauth2ClientMapper extends BaseMapperPlus<OAuth2Client> {
+public interface OAuth2ClientMapper extends BaseMapperPlus<OAuth2Client> {
 
     @Results(id = "clientMap", value = {
             @Result(column = "scopes", property = "scopes",

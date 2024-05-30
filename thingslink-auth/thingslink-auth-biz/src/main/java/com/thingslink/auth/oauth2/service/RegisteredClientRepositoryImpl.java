@@ -2,7 +2,7 @@ package com.thingslink.auth.oauth2.service;
 
 import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.auth.domain.OAuth2Client;
-import com.thingslink.auth.mapper.Oauth2ClientMapper;
+import com.thingslink.auth.mapper.OAuth2ClientMapper;
 import com.thingslink.common.core.utils.MessageUtil;
 import com.thingslink.common.redis.util.RedisUtil;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     private final TokenConfig tokenConfig;
 
-    private final Oauth2ClientMapper oauth2ClientMapper;
+    private final OAuth2ClientMapper oauth2ClientMapper;
 
     @Override
     public void save(RegisteredClient registeredClient) {
