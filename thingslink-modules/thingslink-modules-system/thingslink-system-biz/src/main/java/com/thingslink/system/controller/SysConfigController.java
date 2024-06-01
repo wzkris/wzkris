@@ -3,8 +3,8 @@ package com.thingslink.system.controller;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.system.domain.SysConfig;
 import com.thingslink.system.mapper.SysConfigMapper;
 import com.thingslink.system.service.SysConfigService;
@@ -33,7 +33,7 @@ public class SysConfigController extends BaseController {
      * 获取参数配置列表
      */
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('config:list')")
+    @PreAuthorize("@ps.hasPerms('config:list')")
     public Result<Page<SysConfig>> list(SysConfig config) {
         startPage();
         List<SysConfig> list = sysConfigService.list(config);
@@ -61,7 +61,7 @@ public class SysConfigController extends BaseController {
      */
     @OperateLog(title = "参数管理", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('config:add')")
+    @PreAuthorize("@ps.hasPerms('config:add')")
     public Result<?> add(@Validated @RequestBody SysConfig config) {
         if (sysConfigService.checkConfigKeyUnique(config)) {
             return fail("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
@@ -74,7 +74,7 @@ public class SysConfigController extends BaseController {
      */
     @OperateLog(title = "参数管理", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('config:edit')")
+    @PreAuthorize("@ps.hasPerms('config:edit')")
     public Result<?> edit(@Validated @RequestBody SysConfig config) {
         if (sysConfigService.checkConfigKeyUnique(config)) {
             return fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
@@ -87,7 +87,7 @@ public class SysConfigController extends BaseController {
      */
     @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
     @DeleteMapping("{configIds}")
-    @PreAuthorize("hasAuthority('config:remove')")
+    @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> remove(@PathVariable Long[] configIds) {
         sysConfigService.deleteConfigByIds(configIds);
         return success();
@@ -98,7 +98,7 @@ public class SysConfigController extends BaseController {
      */
     @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
     @DeleteMapping("refreshCache")
-    @PreAuthorize("hasAuthority('config:remove')")
+    @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> refreshCache() {
         sysConfigService.resetConfigCache();
         return success();

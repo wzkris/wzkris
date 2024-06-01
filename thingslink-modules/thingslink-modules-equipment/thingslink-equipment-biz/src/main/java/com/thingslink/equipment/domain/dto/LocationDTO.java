@@ -1,12 +1,12 @@
 package com.thingslink.equipment.domain.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.math.BigDecimal;
 
 /**

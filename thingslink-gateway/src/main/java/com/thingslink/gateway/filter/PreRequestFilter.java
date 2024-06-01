@@ -1,6 +1,5 @@
 package com.thingslink.gateway.filter;
 
-import cn.hutool.http.HttpUtil;
 import com.thingslink.common.core.constant.SecurityConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -21,12 +20,6 @@ import reactor.core.publisher.Mono;
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
 
-    private static final String localIp;
-
-    static {
-        localIp = HttpUtil.get("https://ident.me");
-    }
-
     /**
      * do something
      *
@@ -38,14 +31,9 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
 
+        // 清洗请求头
         mutate.headers(header -> {
-            // 清洗请求头
-            header.remove(SecurityConstants.GATEWAY_IP_HEADER);
-            header.remove(SecurityConstants.INNER_REQUEST_HEADER);
             header.remove(SecurityConstants.PRINCIPAL_HEADER);
-
-            // 追加公网ip请求头
-            header.add(SecurityConstants.GATEWAY_IP_HEADER, localIp);
         });
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }

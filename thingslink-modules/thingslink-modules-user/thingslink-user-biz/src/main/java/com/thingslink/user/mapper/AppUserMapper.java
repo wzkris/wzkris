@@ -1,7 +1,7 @@
 package com.thingslink.user.mapper;
 
-import com.thingslink.user.domain.AppUser;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
+import com.thingslink.user.domain.AppUser;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 

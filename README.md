@@ -23,7 +23,6 @@ com.thingslink
 │       └── thingslink-modules-equipment                           // 设备服务 [2000]
 │       └── thingslink-modules-file                                // 文件服务 [9300]
 │       └── thingslink-modules-system                              // 系统服务 [5555]
-│       └── thingslink-modules-order                               // 交易服务 [3000]
 ├── thingslink-visual          // 图形化管理模块
 │       └── thingslink-visual-monitor                      // 监控中心 [9100]
 ├──pom.xml                // 公共依赖

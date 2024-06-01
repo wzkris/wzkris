@@ -1,9 +1,10 @@
 package com.thingslink.user.service;
 
 
-import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.api.domain.vo.RouterVO;
+import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.domain.vo.SelectTree;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -28,7 +29,15 @@ public interface SysMenuService {
      * @param roleIds 角色ID集合
      * @return 权限列表
      */
-    List<String> listPermsByRoleIds(List<Long> roleIds);
+    List<String> listPermsByRoleIds(@Nullable List<Long> roleIds);
+
+    /**
+     * 根据菜单ID集合查询权限
+     *
+     * @param menuIds 菜单ID集合
+     * @return 权限列表
+     */
+    List<String> listPermsByMenuIds(@Nullable List<Long> menuIds);
 
     /**
      * 查询菜单选择树（全部）

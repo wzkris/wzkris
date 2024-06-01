@@ -2,15 +2,14 @@ package com.thingslink.auth.oauth2;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.thingslink.auth.oauth2.authentication.password.PasswordAuthenticationConverter;
-import com.thingslink.auth.oauth2.authentication.password.PasswordAuthenticationProvider;
-import com.thingslink.auth.oauth2.authentication.sms.SmsAuthenticationConverter;
-import com.thingslink.auth.oauth2.authentication.sms.SmsAuthenticationProvider;
+import com.thingslink.auth.oauth2.authenticate.password.PasswordAuthenticationConverter;
+import com.thingslink.auth.oauth2.authenticate.password.PasswordAuthenticationProvider;
+import com.thingslink.auth.oauth2.authenticate.sms.SmsAuthenticationConverter;
+import com.thingslink.auth.oauth2.authenticate.sms.SmsAuthenticationProvider;
 import com.thingslink.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.thingslink.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
 import com.thingslink.auth.oauth2.service.AppUserDetailsService;
 import com.thingslink.auth.oauth2.service.SysUserDetailsService;
-import com.thingslink.common.security.utils.SysUserUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -19,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
@@ -47,7 +45,8 @@ public class AuthorizationServerConfig {
                                                         SysUserDetailsService sysUserDetailsService,
                                                         AppUserDetailsService appUserDetailsService,
                                                         OAuth2AuthorizationService authorizationService,
-                                                        OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator) throws Exception {
+                                                        OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator,
+                                                        PasswordEncoder passwordEncoder) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
@@ -62,7 +61,8 @@ public class AuthorizationServerConfig {
                                 authenticationProviders.add(
                                         new PasswordAuthenticationProvider(authorizationService
                                                 , oAuth2TokenGenerator
-                                                , sysUserDetailsService));
+                                                , sysUserDetailsService
+                                                , passwordEncoder));
                                 authenticationProviders.add(
                                         new SmsAuthenticationProvider(authorizationService,
                                                 oAuth2TokenGenerator,
@@ -90,14 +90,6 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * 单例的加密器 给OAuth2其余组件公用
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
      * 用于授权服务器配置
      */
     @Bean
@@ -110,8 +102,8 @@ public class AuthorizationServerConfig {
      * 手动对后台用户进行创建
      */
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(SysUserDetailsService sysUserDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(SysUserUtil.getPasswordEncoder());
+    public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder, SysUserDetailsService sysUserDetailsService) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
         return daoAuthenticationProvider;
     }

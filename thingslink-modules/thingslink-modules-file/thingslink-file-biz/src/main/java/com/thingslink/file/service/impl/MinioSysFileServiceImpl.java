@@ -1,9 +1,9 @@
 package com.thingslink.file.service.impl;
 
+import com.thingslink.common.core.utils.file.FileUtil;
 import com.thingslink.file.config.MinioConfig;
 import com.thingslink.file.domain.FileChunk;
 import com.thingslink.file.service.SysFileService;
-import com.thingslink.common.core.utils.file.FileUtil;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;

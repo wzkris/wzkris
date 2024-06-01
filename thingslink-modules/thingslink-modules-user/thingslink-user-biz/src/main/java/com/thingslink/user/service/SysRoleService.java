@@ -2,6 +2,7 @@ package com.thingslink.user.service;
 
 import com.thingslink.user.domain.SysRole;
 import com.thingslink.user.domain.dto.SysRoleDTO;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -26,12 +27,12 @@ public interface SysRoleService {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRole> listByUserId(Long userId);
+    List<SysRole> listByUserId(@Nullable Long userId);
 
     /**
      * 根据用户id获取角色
      */
-    String getRoleGroup(Long userId);
+    String getRoleGroup(@Nullable Long userId);
 
     /**
      * 新增保存角色信息
@@ -63,7 +64,7 @@ public interface SysRoleService {
      * @param roleDTO 角色信息
      * @return 结果
      */
-    int authDeptScope(SysRoleDTO roleDTO);
+    int updateDeptScope(SysRoleDTO roleDTO);
 
     /**
      * 批量删除角色信息
@@ -72,14 +73,6 @@ public interface SysRoleService {
      * @return 结果
      */
     int deleteBatchByIds(Long... roleIds);
-
-    /**
-     * 校验角色权限是否唯一
-     *
-     * @param roleKey 角色权限
-     * @return 结果
-     */
-    boolean checkRoleKeyUnique(String roleKey, Long roleId);
 
     /**
      * 校验角色是否被用户关联

@@ -2,6 +2,8 @@ package com.thingslink.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 
 /**
  * 网关启动程序
@@ -10,8 +12,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class Thingslink_GatewayApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(Thingslink_GatewayApplication.class, args);
+        SpringApplication springApplication = new SpringApplication(Thingslink_GatewayApplication.class);
+        springApplication.addListeners(new ApplicationPidFileWriter());
+        springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
+        springApplication.run(args);
         System.out.println("""
                 (♥◠‿◠)ﾉﾞ  网关启动成功   ლ(´ڡ`ლ)ﾞ
                   _   _     _                 _ _       _
@@ -20,7 +26,7 @@ public class Thingslink_GatewayApplication {
                  | __| '_ \\| | '_ \\ / _` / __| | | '_ \\| |/ /
                  | |_| | | | | | | | (_| \\__ \\ | | | | |   <
                   \\__|_| |_|_|_| |_|\\__, |___/_|_|_| |_|_|\\_\\
-                                     __/ |         
-                                    |___/                   """);
+                                     __/ |
+                                    |___/""");
     }
 }

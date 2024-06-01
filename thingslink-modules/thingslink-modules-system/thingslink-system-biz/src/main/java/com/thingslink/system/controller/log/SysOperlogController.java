@@ -3,8 +3,8 @@ package com.thingslink.system.controller.log;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.system.domain.SysOperLog;
 import com.thingslink.system.mapper.SysOperLogMapper;
 import com.thingslink.system.service.SysOperLogService;
@@ -33,7 +33,7 @@ public class SysOperlogController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("list")
-    @PreAuthorize("hasAuthority('operlog:list')")
+    @PreAuthorize("@ps.hasPerms('operlog:list')")
     public Result<Page<SysOperLog>> list(SysOperLog sysOperLog) {
         startPage();
         List<SysOperLog> list = sysOperLogService.list(sysOperLog);
@@ -42,14 +42,14 @@ public class SysOperlogController extends BaseController {
 
     @OperateLog(title = "操作日志", operateType = OperateType.DELETE)
     @DeleteMapping("{operIds}")
-    @PreAuthorize("hasAuthority('operlog:remove')")
+    @PreAuthorize("@ps.hasPerms('operlog:remove')")
     public Result<?> remove(@PathVariable Long[] operIds) {
         return toRes(sysOperLogMapper.deleteBatchIds(Arrays.asList(operIds)));
     }
 
     @OperateLog(title = "操作日志", operateType = OperateType.DELETE)
     @DeleteMapping("clean")
-    @PreAuthorize("hasAuthority('operlog:remove')")
+    @PreAuthorize("@ps.hasPerms('operlog:remove')")
     public Result<?> clean() {
         sysOperLogMapper.clearAll();
         return success();

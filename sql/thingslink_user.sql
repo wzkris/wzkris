@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 25/04/2024 16:47:19
+ Date: 29/05/2024 16:33:57
 */
 
 SET NAMES utf8mb4;
@@ -46,33 +46,6 @@ CREATE TABLE `app_user`  (
 -- Records of app_user
 -- ----------------------------
 INSERT INTO `app_user` VALUES (11111111, NULL, '15888888888', '0', NULL, NULL, 0, '0:0:0:0:0:0:0:1', '2024-04-13 15:33:48', NULL, 1713334134616, 1, NULL, NULL);
-
--- ----------------------------
--- Table structure for oauth2_client
--- ----------------------------
-DROP TABLE IF EXISTS `oauth2_client`;
-CREATE TABLE `oauth2_client`  (
-  `id` bigint NOT NULL,
-  `client_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `client_secret` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `scopes` json NOT NULL COMMENT '权限域',
-  `authorization_grant_types` json NOT NULL COMMENT '授权类型',
-  `redirect_uris` json NOT NULL COMMENT '回调地址',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端状态',
-  `auto_approve` tinyint(1) NOT NULL COMMENT '是否自动放行',
-  `create_at` bigint NOT NULL,
-  `create_id` bigint NOT NULL,
-  `update_at` bigint NULL DEFAULT NULL,
-  `update_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_client_id`(`client_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OAUTH2客户端' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of oauth2_client
--- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, 'server', '$2a$10$jKXqoIKK.w57jS5MKKasH.NQxxpfyUOlvP9yIXYsXelR7dbUGgBn.', '[\"server\"]', '[\"password\", \"sms\", \"refresh_token\", \"client_credentials\"]', '[]', '0', 0, 1713334134616, 1, NULL, NULL);
-INSERT INTO `oauth2_client` VALUES (2, 'messaging-client', '$2a$10$jKXqoIKK.w57jS5MKKasH.NQxxpfyUOlvP9yIXYsXelR7dbUGgBn.', '[\"openid\", \"profile\", \"message.read\", \"message.write\"]', '[\"password\", \"sms\", \"refresh_token\", \"client_credentials\", \"authorization_code\"]', '[\"http://localhost:9000/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, NULL, 1);
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -138,7 +111,7 @@ CREATE TABLE `sys_menu`  (
 -- Records of sys_menu
 -- ----------------------------
 INSERT INTO `sys_menu` VALUES (1, '系统服务', 0, 100, 'basic', NULL, '', 'M', '0', '', 'system', 0, 0, 1, 1713334134616, 1, 20240403111823, 1);
-INSERT INTO `sys_menu` VALUES (2, '用户及权限服务', 0, 99, 'auth', NULL, '', 'M', '0', '', 'peoples', 0, 0, 1, 1713334134616, 1, 20240318155628, 1);
+INSERT INTO `sys_menu` VALUES (2, '用户及权限服务', 0, 99, 'auth', NULL, '', 'M', '0', '', 'peoples', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (3, '租户管理', 0, 50, 'tenant', NULL, '', 'M', '0', '', 'monitor', 0, 0, 1, 1713334134616, 1, 20240318160148, 1);
 INSERT INTO `sys_menu` VALUES (4, '设备管理', 0, 2, 'equipment', NULL, NULL, 'M', '0', '', 'icon', 0, 0, 1, 1713334134616, 1, 20240402165213, 1774671331412627456);
 INSERT INTO `sys_menu` VALUES (5, '订单服务', 0, 4, 'order', NULL, NULL, 'M', '0', '', 'money', 0, 0, 1, 1713334134616, 1, 20230812104653, NULL);
@@ -288,7 +261,6 @@ CREATE TABLE `sys_role`  (
   `tenant_id` bigint NOT NULL COMMENT '租户ID',
   `data_scope` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '5' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
   `role_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
-  `role_key` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色权限字符串',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '状态（0正常，1停用）',
   `role_sort` int NOT NULL COMMENT '显示顺序',
   `is_menu_display` tinyint(1) NULL DEFAULT NULL COMMENT '菜单选项是否关联显示',
@@ -297,17 +269,16 @@ CREATE TABLE `sys_role`  (
   `create_id` bigint NOT NULL COMMENT '创建者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
-  PRIMARY KEY (`role_id`) USING BTREE,
-  UNIQUE INDEX `uk_role_key`(`role_key` ASC) USING BTREE
+  PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', 'DEVOP', '0', 99, 1, 1, 1713334134616, 1, 1713344286148, 1);
-INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', 'OBSERVER', '0', 97, 1, 1, 1713334134616, 1, 20240330133013, 1);
-INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', 'EMPLOYEE', '0', 5, 1, 1, 1713334134616, 1, 20240330133015, 1);
-INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', NULL, '0', 0, 1, 1, 1713334134616, 1774671331412627456, 20240403164848, 1774671331412627456);
+INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1716881662498, 1);
+INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 20240330133013, 1);
+INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '0', 5, 1, 1, 1713334134616, 1, 20240330133015, 1);
+INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 20240403164848, 1774671331412627456);
 
 -- ----------------------------
 -- Table structure for sys_role_dept
@@ -588,11 +559,11 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '0:0:0:0:0:0:0:1', 1713833019643, NULL, 1713334134616, 1, 1713833019681, NULL);
-INSERT INTO `sys_user` VALUES (2, 0, 101, 'ry11', 'ry@qq.com', '若依', '15666666666', '0', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, NULL, NULL, NULL, 1713334134616, 1, 1713750003790, 1);
-INSERT INTO `sys_user` VALUES (3, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, NULL, NULL, NULL, 1713334134616, 1, 20240406110728, 1);
-INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '$2a$10$iTXxZxHJ4ieq6yjTrjJjCuWZYWl.gkpIwybRfqQfvZReY6P.Ertcq', 0, '0:0:0:0:0:0:0:1', 20240416111136, NULL, 1713334134616, 1, 20240416111137, 1774671331412627456);
-INSERT INTO `sys_user` VALUES (1775426395097997313, 0, 1775382319191453698, '111', NULL, '111', NULL, '0', NULL, NULL, '$2a$10$h8xNUbmvRYmWFqyra0x4Ze.IjbOUbvx4mC3t/ePvK3/1qgd9UhBh2', 1, NULL, NULL, NULL, 1713334134616, 3, 20240403162136, 3);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1716971432421, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (2, 0, 101, 'ry11', 'ry@qq.com', '若依', '15666666666', '0', '0', '', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, NULL, NULL, NULL, 1713334134616, 1, 1713750003790, 1);
+INSERT INTO `sys_user` VALUES (3, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1716791222405, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$iTXxZxHJ4ieq6yjTrjJjCuWZYWl.gkpIwybRfqQfvZReY6P.Ertcq', 0, '127.0.0.1', 1716969432522, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1775426395097997313, 0, 1775382319191453698, '111', NULL, '111', NULL, '0', NULL, NULL, '{bcrypt}$2a$10$h8xNUbmvRYmWFqyra0x4Ze.IjbOUbvx4mC3t/ePvK3/1qgd9UhBh2', 1, NULL, NULL, NULL, 1713334134616, 3, 20240403162136, 3);
 
 -- ----------------------------
 -- Table structure for sys_user_post

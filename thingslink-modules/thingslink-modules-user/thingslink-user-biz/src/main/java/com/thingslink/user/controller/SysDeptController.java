@@ -1,16 +1,16 @@
 package com.thingslink.user.controller;
 
 import cn.hutool.core.util.ObjUtil;
-import com.thingslink.user.domain.SysDept;
-import com.thingslink.user.domain.vo.SelectTree;
-import com.thingslink.user.mapper.SysDeptMapper;
-import com.thingslink.user.service.SysDeptService;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.user.domain.SysDept;
+import com.thingslink.user.domain.vo.SelectTree;
+import com.thingslink.user.mapper.SysDeptMapper;
+import com.thingslink.user.service.SysDeptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class SysDeptController extends BaseController {
 
     @Operation(summary = "部门分页")
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('dept:list')")
+    @PreAuthorize("@ps.hasPerms('dept:list')")
     public Result<List<SysDept>> list(SysDept dept) {
         List<SysDept> depts = sysDeptMapper.listChildren(dept);
         return success(depts);
@@ -43,7 +43,7 @@ public class SysDeptController extends BaseController {
 
     @Operation(summary = "查询部门列表（排除节点）")
     @GetMapping("/list/exclude/{deptId}")
-    @PreAuthorize("hasAuthority('dept:list')")
+    @PreAuthorize("@ps.hasPerms('dept:list')")
     public Result<List<SysDept>> excludeChild(@PathVariable Long deptId) {
         List<SysDept> depts = sysDeptMapper.listChildren(new SysDept());
         depts.removeIf(d -> d.getDeptId().intValue() == deptId
@@ -53,7 +53,7 @@ public class SysDeptController extends BaseController {
 
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/{deptId}")
-    @PreAuthorize("hasAuthority('dept:query')")
+    @PreAuthorize("@ps.hasPerms('dept:query')")
     public Result<?> getInfo(@PathVariable Long deptId) {
         // 校验权限
         sysDeptService.checkDataScopes(deptId);
@@ -63,7 +63,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "新增部门")
     @OperateLog(title = "部门管理", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('dept:add')")
+    @PreAuthorize("@ps.hasPerms('dept:add')")
     public Result<?> add(@Validated @RequestBody SysDept dept) {
         // 校验权限
         sysDeptService.checkDataScopes(dept.getParentId());
@@ -75,7 +75,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "修改部门")
     @OperateLog(title = "部门管理", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('dept:edit')")
+    @PreAuthorize("@ps.hasPerms('dept:edit')")
     public Result<?> edit(@Validated @RequestBody SysDept dept) {
         // 校验权限
         sysDeptService.checkDataScopes(dept.getDeptId());
@@ -94,7 +94,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "删除部门")
     @OperateLog(title = "部门管理", operateType = OperateType.DELETE)
     @DeleteMapping("/{deptId}")
-    @PreAuthorize("hasAuthority('dept:remove')")
+    @PreAuthorize("@ps.hasPerms('dept:remove')")
     public Result<?> remove(@PathVariable Long deptId) {
         if (sysDeptService.hasChildByDeptId(deptId)) {
             return fail("存在下级部门,不允许删除");
@@ -108,7 +108,7 @@ public class SysDeptController extends BaseController {
 
     @Operation(summary = "部门树列表")
     @GetMapping("/deptTree")
-    @PreAuthorize("hasAuthority('dept:list')")
+    @PreAuthorize("@ps.hasPerms('dept:list')")
     public Result<List<SelectTree>> deptTree(SysDept deptVo) {
         return success(sysDeptService.listDeptTree(deptVo));
     }

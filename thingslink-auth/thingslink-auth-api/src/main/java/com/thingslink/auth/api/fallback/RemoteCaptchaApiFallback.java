@@ -26,7 +26,7 @@ public class RemoteCaptchaApiFallback implements FallbackFactory<RemoteCaptchaAp
         return new RemoteCaptchaApi() {
             @Override
             public Result<Void> validateSms(SmsDTO smsDTO) {
-                log.error("验证短信发生异常，errMsg：{}", cause.getMessage(), cause);
+                log.error("验证短信发生异常，errMsg：{}", cause.getMessage());
 
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());
             }

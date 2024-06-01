@@ -2,35 +2,45 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.thingslink</groupId>
-        <artifactId>thingslink-common</artifactId>
-        <version>${revision}</version>
-    </parent>
+	<parent>
+		<groupId>com.thingslink</groupId>
+		<artifactId>thingslink-common</artifactId>
+		<version>${revision}</version>
+	</parent>
 
-    <artifactId>thingslink-common-security</artifactId>
+	<artifactId>thingslink-common-security</artifactId>
 
-    <description>
-        thingslink-common-security安全模块
-    </description>
+	<description>
+		thingslink-common-security安全模块
+	</description>
 
 
-    <dependencies>
+	<dependencies>
 
-        <!-- 服务间鉴权-->
-        <dependency>
-            <groupId>com.thingslink</groupId>
-            <artifactId>thingslink-auth-api</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>com.thingslink</groupId>
+			<artifactId>thingslink-common-openfeign</artifactId>
+		</dependency>
 
-        <!-- Spring Oauth2资源服务器 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>com.thingslink</groupId>
+			<artifactId>thingslink-common-redis</artifactId>
+		</dependency>
 
-    </dependencies>
+		<!-- Spring Oauth2资源服务器 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+
+		<!-- Spring Oauth2客户端 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
+	</dependencies>
 
 </project>

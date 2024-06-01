@@ -41,6 +41,22 @@ public class JsonUtil {
     }
 
     /**
+     * 对象转字节数组
+     *
+     * @param obj 对象
+     * @return 字节数组
+     */
+    public static byte[] toByte(Object obj) {
+        try {
+            return objectMapper.writeValueAsBytes(obj);
+        }
+        catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("util.json.error");
+        }
+    }
+
+    /**
      * 对象转字节
      *
      * @param obj 对象
@@ -88,7 +104,7 @@ public class JsonUtil {
     }
 
     /**
-     * Json 转为 Java Bean
+     * Java Bean 转 Java Bean
      *
      * @param obj   对象
      * @param clazz 对象类型

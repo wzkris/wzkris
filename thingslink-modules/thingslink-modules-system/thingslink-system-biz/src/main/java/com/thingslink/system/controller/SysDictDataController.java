@@ -4,8 +4,8 @@ import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.system.domain.SysDictData;
 import com.thingslink.system.mapper.SysDictDataMapper;
 import com.thingslink.system.service.SysDictDataService;
@@ -36,7 +36,7 @@ public class SysDictDataController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('dict:list')")
+    @PreAuthorize("@ps.hasPerms('dict:list')")
     public Result<Page<SysDictData>> list(SysDictData sysDictData) {
         startPage();
         List<SysDictData> list = sysDictDataService.list(sysDictData);
@@ -47,7 +47,7 @@ public class SysDictDataController extends BaseController {
      * 查询字典数据详细
      */
     @GetMapping("/{dictCode}")
-    @PreAuthorize("hasAuthority('dict:query')")
+    @PreAuthorize("@ps.hasPerms('dict:query')")
     public Result<?> getInfo(@PathVariable Long dictCode) {
         return success(sysDictDataMapper.selectById(dictCode));
     }
@@ -69,7 +69,7 @@ public class SysDictDataController extends BaseController {
      */
     @OperateLog(title = "字典数据", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('dict:add')")
+    @PreAuthorize("@ps.hasPerms('dict:add')")
     public Result<?> add(@Validated @RequestBody SysDictData dict) {
         return toRes(sysDictDataService.insertDictData(dict));
     }
@@ -79,7 +79,7 @@ public class SysDictDataController extends BaseController {
      */
     @OperateLog(title = "字典数据", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('dict:edit')")
+    @PreAuthorize("@ps.hasPerms('dict:edit')")
     public Result<?> edit(@Validated @RequestBody SysDictData dict) {
         return toRes(sysDictDataService.updateDictData(dict));
     }
@@ -89,7 +89,7 @@ public class SysDictDataController extends BaseController {
      */
     @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
     @DeleteMapping("/{dictCodes}")
-    @PreAuthorize("hasAuthority('dict:remove')")
+    @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> remove(@PathVariable Long[] dictCodes) {
         sysDictDataService.deleteDictDataByIds(dictCodes);
         return success();

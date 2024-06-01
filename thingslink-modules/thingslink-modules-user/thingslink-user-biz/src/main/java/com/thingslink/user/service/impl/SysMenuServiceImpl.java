@@ -4,16 +4,17 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.security.utils.SysUserUtil;
+import com.thingslink.common.security.utils.SysUtil;
+import com.thingslink.user.api.domain.vo.MetaVO;
+import com.thingslink.user.api.domain.vo.RouterVO;
 import com.thingslink.user.constant.UserConstants;
 import com.thingslink.user.domain.SysMenu;
 import com.thingslink.user.domain.SysUser;
-import com.thingslink.user.api.domain.vo.MetaVO;
-import com.thingslink.user.api.domain.vo.RouterVO;
 import com.thingslink.user.domain.vo.SelectTree;
 import com.thingslink.user.mapper.*;
 import com.thingslink.user.service.SysMenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -44,7 +45,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     public List<SysMenu> list(SysMenu menu) {
         LambdaQueryWrapper<SysMenu> lqw = this.buildQueryWrapper(menu);
         List<SysMenu> menuList;
-        Long userId = SysUserUtil.getUserId();
+        Long userId = SysUtil.getUserId();
 
         if (SysUser.isSuperAdmin(userId)) {
             // 超管查全部
@@ -88,15 +89,28 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @return 权限列表
      */
     @Override
-    public List<String> listPermsByRoleIds(List<Long> roleIds) {
+    public List<String> listPermsByRoleIds(@Nullable List<Long> roleIds) {
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
         List<Long> menuIds = sysRoleMenuMapper.listMenuIdByRoleIds(roleIds.toArray(new Long[0]));
+        return this.listPermsByMenuIds(menuIds);
+    }
+
+    /**
+     * 根据菜单ID集合查询权限
+     *
+     * @param menuIds 菜单ID集合
+     * @return 权限列表
+     */
+    @Override
+    public List<String> listPermsByMenuIds(@Nullable List<Long> menuIds) {
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
-        return sysMenuMapper.listPermsByMenuIds(menuIds);
+        return sysMenuMapper.listPermsByMenuIds(menuIds)
+                .stream()
+                .filter(StringUtil::isNotBlank).toList();
     }
 
     /**
@@ -138,8 +152,8 @@ public class SysMenuServiceImpl implements SysMenuService {
             }
             menus = sysMenuMapper.listRouteTree(menuIds);
         }
-        List<SysMenu> sysMenuList = getChildPerms(menus, 0);
-        return this.buildRouter(sysMenuList);
+        List<SysMenu> list = this.getChildNode(menus, 0);
+        return this.buildRouter(list);
     }
 
     /**
@@ -372,7 +386,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @param parentId 传入的父节点ID
      * @return String
      */
-    public List<SysMenu> getChildPerms(List<SysMenu> list, int parentId) {
+    public List<SysMenu> getChildNode(List<SysMenu> list, int parentId) {
         List<SysMenu> returnList = new ArrayList<>();
         for (SysMenu t : list) {
             // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点

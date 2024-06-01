@@ -1,3 +1,4 @@
-com.thingslink.common.security.config.ResourceServerConfig
-com.thingslink.common.security.config.handler.CustomOpaqueTokenIntrospector
-com.thingslink.common.security.feign.FeignRequestInterceptor
+com.thingslink.common.security.oauth2.ResourceServerConfig
+com.thingslink.common.security.oauth2.config.OAuth2Properties
+com.thingslink.common.security.oauth2.config.PermitUrlProperties
+com.thingslink.common.security.feign.OAuth2FeignInterceptor

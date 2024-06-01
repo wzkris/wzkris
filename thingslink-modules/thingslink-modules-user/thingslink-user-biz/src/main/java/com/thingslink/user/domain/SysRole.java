@@ -11,8 +11,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.io.Serial;
-
 /**
  * 角色表 role
  *
@@ -37,10 +35,6 @@ public class SysRole extends BaseEntity {
     @Size(min = 0, max = 30, message = "[roleName] {validate.size.illegal}")
     @Schema(description = "角色名称")
     private String roleName;
-
-    @Size(min = 0, max = 25, message = "[roleKey] {validate.size.illegal}")
-    @Schema(description = "角色权限")
-    private String roleKey;
 
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;

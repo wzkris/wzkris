@@ -3,7 +3,6 @@ package org.mock.device.util;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.mock.device.util.MqttUtil;
 
 /**
  * @author : wzkris

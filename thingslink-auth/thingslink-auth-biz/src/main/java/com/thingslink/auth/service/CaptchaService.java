@@ -21,7 +21,6 @@ import org.springframework.util.FastByteArrayOutputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +80,7 @@ public class CaptchaService {
         }
 
         // 存入缓存
-        RedisUtil.setCacheObject(PIC_CODE_PREFIX + uuid, code, Duration.ofSeconds(180));
+        RedisUtil.setObj(PIC_CODE_PREFIX + uuid, code, 180);
 
         // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
@@ -102,14 +101,14 @@ public class CaptchaService {
 
             String picKey = PIC_CODE_PREFIX + uuid;
 
-            String realCode = RedisUtil.getCacheObject(picKey);
+            String realCode = RedisUtil.getObj(picKey);
             if (StringUtil.isBlank(realCode)) {
                 throw new CaptchaException("captcha.expired");
             }
             if (!StringUtil.equalsIgnoreCase(code, realCode)) {
                 throw new CaptchaException("captcha.error");
             }
-            RedisUtil.deleteObject(picKey);
+            RedisUtil.delObj(picKey);
         }
     }
 
@@ -127,7 +126,7 @@ public class CaptchaService {
         }
         // TODO 调用SMS发送验证码
         String smsCode = RandomUtil.randomNumbers(6);
-        RedisUtil.setCacheObject(smsKey, smsCode, Duration.ofSeconds(180));
+        RedisUtil.setObj(smsKey, smsCode, 180);
     }
 
     /**
@@ -136,14 +135,14 @@ public class CaptchaService {
     public void validateSmsCode(@NonNull String phoneNumber, @NonNull String smsCode) {
         String smsKey = SMS_CODE_PREFIX + phoneNumber;
 
-        String code = RedisUtil.getCacheObject(smsKey);
+        String code = RedisUtil.getObj(smsKey);
         if (StringUtil.isBlank(code)) {
             throw new CaptchaException("captcha.expired");
         }
         if (ObjUtil.notEqual(smsCode, code)) {
             throw new CaptchaException("captcha.error");
         }
-        RedisUtil.deleteObject(smsKey);
+        RedisUtil.delObj(smsKey);
     }
 
     /**
@@ -152,12 +151,12 @@ public class CaptchaService {
     public void validateMaxTryCount(String username) {
         // 密码重试缓存key
         String lockKey = ACCOUNT_LOCK_PREFIX + username;
-        Integer retryCount = ObjectUtil.defaultIfNull(RedisUtil.getCacheObject(lockKey), 0);
+        Integer retryCount = ObjectUtil.defaultIfNull(RedisUtil.getObj(lockKey), 0);
         if (retryCount > maxRetryCount) {
             throw new BusinessExceptionI18n(BizCode.FREQUENT_RETRY.value(), "frequent.retry");
         }
         ++retryCount;
-        RedisUtil.setCacheObject(lockKey, retryCount, Duration.ofSeconds(300)); // 默认冻结5分钟
+        RedisUtil.setObj(lockKey, retryCount, 300); // 默认冻结5分钟
     }
 
     /**
@@ -166,7 +165,7 @@ public class CaptchaService {
      * @param username 用户名
      */
     public void unlock(String username) {
-        RedisUtil.deleteObject(ACCOUNT_LOCK_PREFIX + username);
+        RedisUtil.delObj(ACCOUNT_LOCK_PREFIX + username);
     }
 
 }

@@ -2,8 +2,8 @@ package com.thingslink.system.controller.log;
 
 import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.system.domain.SysLoginLog;
 import com.thingslink.system.mapper.SysLoginLogMapper;
 import com.thingslink.system.service.SysLoginLogService;
@@ -34,7 +34,7 @@ public class SysLoginlogController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("list")
-    @PreAuthorize("hasAuthority('loginlog:list')")
+    @PreAuthorize("@ps.hasPerms('loginlog:list')")
     public Result<Page<SysLoginLog>> list(SysLoginLog loginLog) {
         startPage();
         List<SysLoginLog> list = sysLoginLogService.list(loginLog);
@@ -42,20 +42,20 @@ public class SysLoginlogController extends BaseController {
     }
 
     @DeleteMapping("{logIds}")
-    @PreAuthorize("hasAuthority('loginlog:remove')")
+    @PreAuthorize("@ps.hasPerms('loginlog:remove')")
     public Result<?> remove(@PathVariable Long[] logIds) {
         return toRes(sysLoginLogMapper.deleteBatchIds(Arrays.asList(logIds)));
     }
 
     @DeleteMapping("clean")
-    @PreAuthorize("hasAuthority('loginlog:remove')")
+    @PreAuthorize("@ps.hasPerms('loginlog:remove')")
     public Result<?> clean() {
         sysLoginLogMapper.clearAll();
         return success();
     }
 
     @GetMapping("unlock/{username}")
-    @PreAuthorize("hasAuthority('loginlog:unlock')")
+    @PreAuthorize("@ps.hasPerms('loginlog:unlock')")
     public Result<?> unlock(@PathVariable String username) {
         RemoteTokenApi.unlockAccount(username);
         return success();

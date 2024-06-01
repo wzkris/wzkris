@@ -1,17 +1,21 @@
 package com.thingslink.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
+import com.thingslink.auth.oauth2.model.UserModel;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.model.LoginAppUser;
-import com.thingslink.common.security.utils.OAuth2EndpointUtil;
+import com.thingslink.common.core.utils.json.JsonUtil;
+import com.thingslink.common.security.oauth2.model.LoginAppUser;
+import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import com.thingslink.user.api.RemoteAppUserApi;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 /**
  * @author : wzkris
@@ -24,7 +28,7 @@ import org.springframework.stereotype.Service;
 public class AppUserDetailsService implements UserDetailsServicePlus {
     private final RemoteAppUserApi remoteAppUserApi;
 
-    public UserDetails loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
+    public UserModel loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
         Result<CustomerDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
         CustomerDTO customerDTO = result.checkData();
 
@@ -34,16 +38,17 @@ public class AppUserDetailsService implements UserDetailsServicePlus {
     /**
      * 构建登录用户
      */
-    private UserDetails checkAndBuildAppUser(CustomerDTO customerDTO) {
+    private UserModel checkAndBuildAppUser(CustomerDTO customerDTO) {
         // 校验用户状态
         this.checkAccount(customerDTO);
-        // 获取权限信息
+
 
         LoginAppUser appUser = new LoginAppUser();
         appUser.setUserId(customerDTO.getUserId());
         appUser.setPhoneNumber(customerDTO.getPhoneNumber());
 
-        return appUser;
+        return new UserModel(customerDTO.getPhoneNumber(),
+                "", AuthorityUtils.NO_AUTHORITIES, JsonUtil.parseObject(appUser, HashMap.class));
     }
 
     /**
@@ -51,10 +56,10 @@ public class AppUserDetailsService implements UserDetailsServicePlus {
      */
     private void checkAccount(CustomerDTO customerDTO) {
         if (customerDTO == null) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");// 不能明说账号不存在
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");// 不能明说账号不存在
         }
         if (ObjUtil.equals(customerDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2EndpointUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 }

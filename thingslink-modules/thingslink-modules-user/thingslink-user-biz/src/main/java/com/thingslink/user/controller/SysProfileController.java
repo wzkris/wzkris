@@ -8,8 +8,8 @@ import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.model.BaseController;
-import com.thingslink.common.security.model.LoginSysUser;
-import com.thingslink.common.security.utils.SysUserUtil;
+import com.thingslink.common.security.oauth2.model.LoginSysUser;
+import com.thingslink.common.security.utils.SysUtil;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.domain.dto.SysUserDTO;
 import com.thingslink.user.mapper.SysDeptMapper;
@@ -20,6 +20,7 @@ import com.thingslink.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -40,11 +41,12 @@ public class SysProfileController extends BaseController {
     private final SysPostService sysPostService;
     private final SysDeptMapper sysDeptMapper;
     private final RemoteCaptchaApi remoteCaptchaApi;
+    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "个人信息")
     @GetMapping
     public Result<?> profile() {
-        SysUser sysUser = userMapper.selectById(SysUserUtil.getUserId());
+        SysUser sysUser = userMapper.selectById(SysUtil.getUserId());
         Map<String, Object> userMap = MapUtil.newHashMap(4);
         userMap.put(SysUser.Fields.username, sysUser.getUsername());
         userMap.put(SysUser.Fields.nickname, sysUser.getNickname());
@@ -63,7 +65,7 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PutMapping
     public Result<?> update(@RequestBody SysUserDTO sysUserDTO) {
-        SysUser user = new SysUser(SysUserUtil.getUserId());
+        SysUser user = new SysUser(SysUtil.getUserId());
         user.setNickname(sysUserDTO.getNickname());
         user.setGender(sysUserDTO.getGender());
         return toRes(userMapper.updateById(user));
@@ -73,7 +75,7 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PutMapping("/phonenumber")
     public Result<?> updatePhoneNumber(String phoneNumber, String smsCode) {
-        Long userId = SysUserUtil.getUserId();
+        Long userId = SysUtil.getUserId();
 
         if (userService.checkUserUnique(new SysUser().setPhoneNumber(phoneNumber), userId)) {
             return fail("该手机号已被使用");
@@ -92,19 +94,21 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PutMapping("/password")
     public Result<?> updatePwd(String oldPassword, String newPassword) {
-        LoginSysUser loginUser = SysUserUtil.getLoginUser();
+        LoginSysUser loginUser = SysUtil.getLoginUser();
 
-        String encryptPassword = SysUserUtil.encryptPassword(newPassword);
         String username = loginUser.getUsername();
         String password = userMapper.selectPwdByUserName(username);
-        if (!SysUserUtil.matchesPassword(oldPassword, password)) {
+
+        if (!passwordEncoder.matches(oldPassword, password)) {
             return fail("修改密码失败，旧密码错误");
         }
-        if (SysUserUtil.matchesPassword(newPassword, password)) {
+
+        if (passwordEncoder.matches(newPassword, password)) {
             return fail("新密码不能与旧密码相同");
         }
+
         SysUser update = new SysUser(loginUser.getUserId());
-        update.setPassword(encryptPassword);
+        update.setPassword(passwordEncoder.encode(password));
         return toRes(userMapper.updateById(update));
     }
 
@@ -112,7 +116,7 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PutMapping("/avatar")
     public Result<?> updateAvatar(@RequestBody String url) {
-        LoginSysUser loginUser = SysUserUtil.getLoginUser();
+        LoginSysUser loginUser = SysUtil.getLoginUser();
         return toRes(userMapper.updateAvatar(loginUser.getUsername(), url) > 0);
     }
 }

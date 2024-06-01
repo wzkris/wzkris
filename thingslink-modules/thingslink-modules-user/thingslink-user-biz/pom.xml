@@ -61,6 +61,12 @@
 			<artifactId>thingslink-system-api</artifactId>
 		</dependency>
 
+		<!-- 认证rpc服务-->
+		<dependency>
+			<groupId>com.thingslink</groupId>
+			<artifactId>thingslink-auth-api</artifactId>
+		</dependency>
+
 		<!-- thingslink Common Security-->
 		<dependency>
 			<groupId>com.thingslink</groupId>

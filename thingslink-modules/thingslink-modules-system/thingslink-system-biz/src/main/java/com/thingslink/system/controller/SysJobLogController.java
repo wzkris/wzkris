@@ -3,8 +3,8 @@ package com.thingslink.system.controller;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.system.domain.SysJobLog;
 import com.thingslink.system.service.SysJobLogService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +30,7 @@ public class SysJobLogController extends BaseController {
      * 查询定时任务调度日志列表
      */
     @GetMapping("list")
-    @PreAuthorize("hasAuthority('job:list')")
+    @PreAuthorize("@ps.hasPerms('job:list')")
     public Result<Page<SysJobLog>> list(SysJobLog sysJobLog) {
         startPage();
         List<SysJobLog> list = sysJobLogService.selectJobLogList(sysJobLog);
@@ -41,7 +41,7 @@ public class SysJobLogController extends BaseController {
      * 根据调度编号获取详细信息
      */
     @GetMapping(value = "{jobLogId}")
-    @PreAuthorize("hasAuthority('job:query')")
+    @PreAuthorize("@ps.hasPerms('job:query')")
     public Result<?> getInfo(@PathVariable Long jobLogId) {
         return success(sysJobLogService.selectJobLogById(jobLogId));
     }
@@ -51,7 +51,7 @@ public class SysJobLogController extends BaseController {
      */
     @OperateLog(title = "定时任务调度日志", operateType = OperateType.DELETE)
     @DeleteMapping("{jobLogIds}")
-    @PreAuthorize("hasAuthority('job:remove')")
+    @PreAuthorize("@ps.hasPerms('job:remove')")
     public Result<?> remove(@PathVariable Long[] jobLogIds) {
         return toRes(sysJobLogService.deleteJobLogByIds(jobLogIds));
     }
@@ -61,7 +61,7 @@ public class SysJobLogController extends BaseController {
      */
     @OperateLog(title = "调度日志", operateType = OperateType.DELETE)
     @DeleteMapping("clean")
-    @PreAuthorize("hasAuthority('job:remove')")
+    @PreAuthorize("@ps.hasPerms('job:remove')")
     public Result<?> clean() {
         sysJobLogService.cleanJobLog();
         return success();

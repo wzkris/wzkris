@@ -4,7 +4,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.thingslink.common.orm.model.BaseEntity;
-import com.thingslink.common.security.utils.CurrentUserHolder;
+import com.thingslink.common.security.oauth2.constants.OAuth2Type;
+import com.thingslink.common.security.utils.OAuth2Holder;
+import com.thingslink.common.security.utils.SysUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 
@@ -18,7 +20,8 @@ import org.apache.ibatis.reflection.MetaObject;
 public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
-        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
+        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
+                && OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
             Long current = DateUtil.current();
             Long createId = this.getUserId();
             this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
@@ -30,7 +33,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
+        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
+                && OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
             Long current = DateUtil.current();
             Long createId = this.getUserId();
             this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
@@ -43,7 +47,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      */
     private Long getUserId() {
         try {
-            return CurrentUserHolder.getPrincipal().getUserId();
+            return SysUtil.getUserId();
         }
         catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");

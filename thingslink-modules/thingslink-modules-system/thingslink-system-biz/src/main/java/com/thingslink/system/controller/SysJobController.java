@@ -6,8 +6,8 @@ import com.thingslink.common.core.exception.job.TaskException;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.model.BaseController;
+import com.thingslink.common.orm.page.Page;
 import com.thingslink.system.domain.SysJob;
 import com.thingslink.system.service.SysJobService;
 import com.thingslink.system.utils.CronUtils;
@@ -36,7 +36,7 @@ public class SysJobController extends BaseController {
      * 查询定时任务列表
      */
     @GetMapping("list")
-    @PreAuthorize("hasAuthority('job:list')")
+    @PreAuthorize("@ps.hasPerms('job:list')")
     public Result<Page<SysJob>> list(SysJob sysJob) {
         startPage();
         List<SysJob> list = sysJobService.selectJobList(sysJob);
@@ -47,7 +47,7 @@ public class SysJobController extends BaseController {
      * 获取定时任务详细信息
      */
     @GetMapping(value = "{jobId}")
-    @PreAuthorize("hasAuthority('job:query')")
+    @PreAuthorize("@ps.hasPerms('job:query')")
     public Result<?> getInfo(@PathVariable("jobId") Long jobId) {
         return success(sysJobService.selectJobById(jobId));
     }
@@ -57,7 +57,7 @@ public class SysJobController extends BaseController {
      */
     @OperateLog(title = "定时任务", operateType = OperateType.INSERT)
     @PostMapping
-    @PreAuthorize("hasAuthority('job:add')")
+    @PreAuthorize("@ps.hasPerms('job:add')")
     public Result<?> add(@RequestBody SysJob sysJob) throws SchedulerException, TaskException {
         if (!CronUtils.isValid(sysJob.getCronExpression())) {
             return fail("新增任务'" + sysJob.getJobName() + "'失败，Cron表达式不正确");
@@ -85,7 +85,7 @@ public class SysJobController extends BaseController {
      */
     @OperateLog(title = "定时任务", operateType = OperateType.UPDATE)
     @PutMapping
-    @PreAuthorize("hasAuthority('job:edit')")
+    @PreAuthorize("@ps.hasPerms('job:edit')")
     public Result<?> edit(@RequestBody SysJob sysJob) throws SchedulerException, TaskException {
         if (!CronUtils.isValid(sysJob.getCronExpression())) {
             return fail("修改任务'" + sysJob.getJobName() + "'失败，Cron表达式不正确");
@@ -113,7 +113,7 @@ public class SysJobController extends BaseController {
      */
     @OperateLog(title = "定时任务", operateType = OperateType.UPDATE)
     @PutMapping("changeStatus")
-    @PreAuthorize("hasAuthority('job:changeStatus')")
+    @PreAuthorize("@ps.hasPerms('job:changeStatus')")
     public Result<?> changeStatus(@RequestBody SysJob sysJob) throws SchedulerException {
         SysJob newSysJob = sysJobService.selectJobById(sysJob.getJobId());
         newSysJob.setStatus(sysJob.getStatus());
@@ -125,7 +125,7 @@ public class SysJobController extends BaseController {
      */
     @OperateLog(title = "定时任务", operateType = OperateType.UPDATE)
     @PutMapping("run")
-    @PreAuthorize("hasAuthority('job:changeStatus')")
+    @PreAuthorize("@ps.hasPerms('job:changeStatus')")
     public Result<?> run(@RequestBody SysJob sysJob) throws SchedulerException {
         boolean result = sysJobService.run(sysJob);
         return result ? success() : fail("任务不存在或已过期！");
@@ -136,7 +136,7 @@ public class SysJobController extends BaseController {
      */
     @OperateLog(title = "定时任务", operateType = OperateType.DELETE)
     @DeleteMapping("{jobIds}")
-    @PreAuthorize("hasAuthority('job:remove')")
+    @PreAuthorize("@ps.hasPerms('job:remove')")
     public Result<?> remove(@PathVariable Long[] jobIds) throws SchedulerException, TaskException {
         sysJobService.deleteJobByIds(jobIds);
         return success();

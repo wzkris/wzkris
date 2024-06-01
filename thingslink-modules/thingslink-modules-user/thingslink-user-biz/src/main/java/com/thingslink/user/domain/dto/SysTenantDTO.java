@@ -1,7 +1,7 @@
 package com.thingslink.user.domain.dto;
 
-import com.thingslink.user.domain.SysTenant;
 import com.thingslink.common.core.annotation.group.ValidationGroups;
+import com.thingslink.user.domain.SysTenant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

@@ -13,19 +13,9 @@ public interface SecurityConstants {
     String TOKEN_HEADER = "Authorization";
 
     /**
-     * 网关IP
-     */
-    String GATEWAY_IP_HEADER = "gateway_ip";
-
-    /**
      * 个人信息
      */
-    String PRINCIPAL_HEADER = "current_principal";
-
-    /**
-     * 内部请求标识
-     */
-    String INNER_REQUEST_HEADER = "inner_request";
+    String PRINCIPAL_HEADER = "Current_Principal";
 
     /**
      * 内部请求路径

@@ -1,9 +1,9 @@
 package com.thingslink.user.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.thingslink.user.domain.SysDept;
 import com.thingslink.common.orm.annotation.DeptScope;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
+import com.thingslink.user.domain.SysDept;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 

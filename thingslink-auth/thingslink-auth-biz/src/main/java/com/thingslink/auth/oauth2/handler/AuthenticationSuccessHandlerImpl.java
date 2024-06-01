@@ -16,6 +16,7 @@
 
 package com.thingslink.auth.oauth2.handler;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.thingslink.auth.listening.event.UserLoginEvent;
@@ -23,8 +24,7 @@ import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.model.LoginUser;
-import com.thingslink.common.security.utils.CurrentUserHolder;
+import com.thingslink.common.security.oauth2.model.OAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -76,13 +76,12 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
 
         // 判断是否携带当前用户信息
-        if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(LoginUser.class.getName())) {
-            LoginUser loginUser = (LoginUser) additionalParameters.get(LoginUser.class.getName());
-            CurrentUserHolder.setAuthentication(loginUser);
+        if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(OAuth2User.class.getName())) {
+            OAuth2User oAuth2User = (OAuth2User) additionalParameters.get(OAuth2User.class.getName());
             // 发布登录事件
-            SpringUtil.publishEvent(new UserLoginEvent(ServletUtil.getClientIP(request),
-                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
-            additionalParameters.remove(LoginUser.class.getName());
+            SpringUtil.publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), Convert.toLong(oAuth2User.getAttribute("userId")),
+                    ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader("User-Agent"))));
+            additionalParameters.remove(OAuth2User.class.getName());
         }
 
         // 构造响应体
@@ -90,8 +89,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
 
         OAuth2AccessTokenResponse.Builder builder = OAuth2AccessTokenResponse.withToken(accessToken.getTokenValue())
-                .tokenType(accessToken.getTokenType())
-                .scopes(accessToken.getScopes());
+                .tokenType(accessToken.getTokenType());
         if (accessToken.getIssuedAt() != null && accessToken.getExpiresAt() != null) {
             builder.expiresIn(ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()));
         }
