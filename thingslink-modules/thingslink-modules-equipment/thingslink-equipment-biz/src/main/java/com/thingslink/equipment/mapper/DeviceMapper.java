@@ -16,15 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeviceMapper extends BaseMapperPlus<Device> {
 
-    @Select("""
-            SELECT d.*, s.station_id, s.station_name
-            FROM device d LEFT JOIN station s
-            ON d.station_id = s.station_id
-            WHERE device_id = #{deviceId}
-            """)
-    DeviceVO selectVOById(Long deviceId);
-
-
     // 设备号修改数据
     default int updateBySerialNo(Device device) {
         LambdaUpdateWrapper<Device> luw = new LambdaUpdateWrapper<Device>()

@@ -1,10 +1,13 @@
 package com.thingslink.equipment.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.common.orm.page.Page;
+import com.thingslink.common.security.utils.SysUtil;
 import com.thingslink.equipment.domain.Device;
 import com.thingslink.equipment.domain.vo.DeviceVO;
+import com.thingslink.equipment.domain.vo.NetworkVO;
 import com.thingslink.equipment.mapper.DeviceMapper;
 import com.thingslink.equipment.service.DeviceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,8 +53,38 @@ public class DeviceController extends BaseController {
      */
     @GetMapping("/{deviceId}")
     @PreAuthorize("@ps.hasPerms('device:query')")
-    public Result<DeviceVO> query(@PathVariable Long deviceId) {
+    public Result<DeviceVO> queryById(@PathVariable Long deviceId) {
         return success(deviceService.getVOById(deviceId));
+    }
+
+    /**
+     * 通过设备号查询设备入网信息
+     *
+     * @param serialNo 设备号
+     * @return 单条数据
+     */
+    @GetMapping("/network_detail/{serialNo}")
+    @PreAuthorize("@ps.hasPerms('device:query')")
+    public Result<NetworkVO> queryNetwork(@PathVariable String serialNo) {
+        return success(deviceService.getNetworkVOBySerialNo(serialNo));
+    }
+
+    /**
+     * 订阅设备信息
+     *
+     * @param deviceId 主键
+     * @return 房间号
+     */
+    @PostMapping("/sub_dev")
+    @PreAuthorize("@ps.hasPerms('device:sub_dev')")
+    public Result<String> subInfo(@RequestBody Long deviceId) {
+        Device device = deviceMapper.selectOne(new QueryWrapper<>(new Device(deviceId).setTenantId(SysUtil.getTenantId())));
+        if (device == null) {
+            return fail("设备不存在");
+        }
+
+        String roomNo = deviceService.subDevice(device.getSerialNo());
+        return success(roomNo);
     }
 
     /**
