@@ -1,4 +1,4 @@
-package com.thingslink.auth.oauth2.service;
+package com.thingslink.auth.oauth2.service.impl;
 
 import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.auth.domain.OAuth2Client;

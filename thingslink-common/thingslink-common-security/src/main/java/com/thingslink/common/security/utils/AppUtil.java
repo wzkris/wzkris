@@ -2,7 +2,7 @@ package com.thingslink.common.security.utils;
 
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.oauth2.constants.OAuth2Type;
-import com.thingslink.common.security.oauth2.model.LoginAppUser;
+import com.thingslink.common.security.oauth2.domain.model.LoginApper;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,8 +29,8 @@ public class AppUtil extends OAuth2Holder {
      *
      * @return 当前用户
      */
-    public static LoginAppUser getAppUser() {
-        return JsonUtil.parseObject(OAuth2Holder.getPrincipal().getAttributes(), LoginAppUser.class);
+    public static LoginApper getAppUser() {
+        return JsonUtil.parseObject(OAuth2Holder.getPrincipal().getDetails(), LoginApper.class);
     }
 
     /**

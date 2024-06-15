@@ -66,7 +66,7 @@ public class OperateLogAspect {
             operLogDTO.setOperUrl(StringUtil.sub(ServletUtil.getRequest().getRequestURI(), 0, 255));
             String username = "";
             if (SysUtil.isLogin()) {
-                username = SysUtil.getLoginUser().getUsername();
+                username = SysUtil.getLoginSyser().getUsername();
             }
             if (StringUtil.isNotBlank(username)) {
                 operLogDTO.setOperName(username);

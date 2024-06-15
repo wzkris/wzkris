@@ -5,7 +5,7 @@ import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.auth.domain.vo.LoginUserVO;
 import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import com.thingslink.common.core.domain.Result;
-import com.thingslink.common.security.oauth2.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.domain.model.LoginSyser;
 import com.thingslink.common.security.utils.SysUtil;
 import com.thingslink.user.api.RemoteSysUserApi;
 import com.thingslink.user.api.domain.vo.RouterVO;
@@ -35,10 +35,10 @@ public class LoginUserController {
     @Operation(summary = "用户信息")
     @GetMapping
     public Result<LoginUserVO> loginUser() {
-        LoginSysUser loginUser = SysUtil.getLoginUser();
+        LoginSyser loginSyser = SysUtil.getLoginSyser();
         LoginUserVO loginUserVO = new LoginUserVO();
-        loginUserVO.setUsername(loginUser.getUsername());
-        loginUserVO.setIsAdmin(loginUser.getIsAdmin());
+        loginUserVO.setUsername(loginSyser.getUsername());
+        loginUserVO.setIsAdmin(loginSyser.getIsAdmin());
         loginUserVO.setAuthorities(SysUtil.getAuthorities());
         return success(loginUserVO);
     }

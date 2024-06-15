@@ -1,5 +1,6 @@
-package com.thingslink.common.security.oauth2.model;
+package com.thingslink.common.security.oauth2.domain.model;
 
+import com.thingslink.common.security.oauth2.domain.Loginer;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -11,7 +12,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class LoginClient {
+public class LoginClient extends Loginer {
 
     private String clientId;
     private String clientName;

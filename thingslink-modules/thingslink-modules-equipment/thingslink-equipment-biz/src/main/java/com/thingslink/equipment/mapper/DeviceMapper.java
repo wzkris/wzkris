@@ -3,8 +3,6 @@ package com.thingslink.equipment.mapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
 import com.thingslink.equipment.domain.Device;
-import com.thingslink.equipment.domain.vo.DeviceVO;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 /**

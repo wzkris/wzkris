@@ -1,4 +1,4 @@
-package com.thingslink.auth.oauth2.service;
+package com.thingslink.auth.oauth2.service.impl;
 
 import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import jakarta.annotation.Nonnull;
