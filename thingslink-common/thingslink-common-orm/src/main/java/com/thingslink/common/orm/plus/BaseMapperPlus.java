@@ -22,14 +22,6 @@ import java.util.List;
 public interface BaseMapperPlus<T> extends BaseMapper<T> {
 
     /**
-     * 批量插入
-     *
-     * @param list 对象集合
-     * @return 影响行数
-     */
-    int insertBatch(@Param(Constants.COLL) List<T> list);
-
-    /**
      * 根据 ID 批量更新
      *
      * @param list 对象集合

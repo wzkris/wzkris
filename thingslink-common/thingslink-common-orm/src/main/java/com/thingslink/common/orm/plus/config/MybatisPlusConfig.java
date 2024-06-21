@@ -4,12 +4,10 @@ import cn.hutool.core.net.NetUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
-import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.thingslink.common.orm.plus.handler.BaseFieldFillHandler;
-import com.thingslink.common.orm.plus.injector.SqlInjectorImpl;
 import com.thingslink.common.orm.plus.interceptor.DeptPermissionHandler;
 import com.thingslink.common.orm.plus.interceptor.PageInterceptor;
 import com.thingslink.common.orm.plus.interceptor.TenantLineHandlerImpl;
@@ -46,14 +44,6 @@ public class MybatisPlusConfig {
         pageInterceptor.setOptimizeJoin(false);// 不优化join
         interceptor.addInnerInterceptor(pageInterceptor);
         return interceptor;
-    }
-
-    /**
-     * 增强SQL
-     */
-    @Bean
-    public ISqlInjector injector() {
-        return new SqlInjectorImpl();
     }
 
     /**
