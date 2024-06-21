@@ -39,8 +39,8 @@ public class ClientTokenUtil {
         RBucket<String> tokenBucket = RedisUtil.getClient().getBucket(client_token_key);
         long ttl = TimeUnit.MILLISECONDS.toSeconds(tokenBucket.remainTimeToLive());
 
-        // 小于等于10s
-        if (ttl <= 10) {
+        // 不存在则重新获取
+        if (ttl <= 0) {
             Map<String, Object> paramMap = Map.of(
                     OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue(),
                     OAuth2ParameterNames.CLIENT_ID, O_AUTH_2_PROPERTIES.getClientid(),

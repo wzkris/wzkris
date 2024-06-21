@@ -3,8 +3,10 @@ package com.thingslink.auth.oauth2.service.impl;
 import com.thingslink.auth.config.TokenConfig;
 import com.thingslink.auth.domain.OAuth2Client;
 import com.thingslink.auth.mapper.OAuth2ClientMapper;
+import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.utils.MessageUtil;
 import com.thingslink.common.redis.util.RedisUtil;
+import com.thingslink.common.security.oauth2.constants.OAuth2SecurityConstants;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -19,6 +21,7 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.stream.Collectors;
 
 /**
  * @author : wzkris
@@ -53,7 +56,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
         if (oauth2Client == null) {
             oauth2Client = oauth2ClientMapper.selectByClientId(clientId);
 
-            if (oauth2Client == null || !"0".equals(oauth2Client.getStatus())) {
+            if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
                 // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
                 throw new OAuth2AuthorizationCodeRequestAuthenticationException(
                         new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, MessageUtil.message("oauth2.client.invalid"), null), null);
@@ -86,7 +89,10 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
                     redirectUris.addAll(oauth2Client.getRedirectUris());
                 })
                 .scopes(scopes -> {// scope
-                    scopes.addAll(oauth2Client.getScopes());
+                    scopes.addAll(oauth2Client.getScopes()
+                            .stream().map(scope -> OAuth2SecurityConstants.SCOPE_PREFIX + scope)
+                            .collect(Collectors.toSet())
+                    );
                 });
 
         builder.tokenSettings(TokenSettings.builder()
