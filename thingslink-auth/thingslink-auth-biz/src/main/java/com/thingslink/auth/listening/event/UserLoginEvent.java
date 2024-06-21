@@ -14,7 +14,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserLoginEvent {
     private String oauth2Type;
-    private Long userId;
+    private Object userinfo;
     private String ip;
     private UserAgent userAgent;
 }
