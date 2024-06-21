@@ -10,12 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 租户工具
+ * @description : 动态租户工具
  * @date : 2023/12/11 10:54
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TenantUtil {
+public class DynamicTenantUtil {
 
     private static final ThreadLocal<Long> LOCAL_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
 
@@ -38,7 +38,7 @@ public class TenantUtil {
      * 设置动态租户，若设置了值则一定会走租户拦截
      * 当前线程内生效
      */
-    public static void setDynamic(Long tenantId) {
+    public static void set(Long tenantId) {
         LOCAL_DYNAMIC_TENANT.set(tenantId);
     }
 
@@ -46,14 +46,14 @@ public class TenantUtil {
      * 获取动态租户
      * 当前线程内生效
      */
-    public static Long getDynamic() {
+    public static Long get() {
         return LOCAL_DYNAMIC_TENANT.get();
     }
 
     /**
      * 清除动态租户
      */
-    public static void clearDynamic() {
+    public static void clear() {
         LOCAL_DYNAMIC_TENANT.remove();
     }
 

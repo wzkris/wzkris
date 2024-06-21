@@ -3,7 +3,7 @@ package com.thingslink.common.orm.plus.interceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.orm.plus.config.TenantProperties;
-import com.thingslink.common.orm.utils.TenantUtil;
+import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.common.security.utils.SysUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
@@ -23,7 +23,7 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
     @Override
     public Expression getTenantId() {
         // 若设置了动态租户则走动态租户
-        Long tenantId = TenantUtil.getDynamic();
+        Long tenantId = DynamicTenantUtil.get();
         if (tenantId != null) {
             return new LongValue(tenantId);
         }
@@ -35,7 +35,7 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
     @Override
     public boolean ignoreTable(String tableName) {
         // 若设置了动态租户则必须走拦截
-        if (TenantUtil.getDynamic() != null) {
+        if (DynamicTenantUtil.get() != null) {
             return this.isIgnoreTable(tableName);
         }
         // 未登录则忽略

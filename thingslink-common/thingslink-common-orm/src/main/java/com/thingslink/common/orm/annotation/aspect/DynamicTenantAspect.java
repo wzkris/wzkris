@@ -4,7 +4,7 @@ package com.thingslink.common.orm.annotation.aspect;
 import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DynamicTenant;
-import com.thingslink.common.orm.utils.TenantUtil;
+import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.common.security.utils.SysUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -47,11 +47,11 @@ public class DynamicTenantAspect {
             tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.value(), Long.class);
         }
         try {
-            TenantUtil.setDynamic(tenantId);
+            DynamicTenantUtil.set(tenantId);
             return point.proceed();
         }
         finally {
-            TenantUtil.clearDynamic();
+            DynamicTenantUtil.clear();
         }
     }
 
