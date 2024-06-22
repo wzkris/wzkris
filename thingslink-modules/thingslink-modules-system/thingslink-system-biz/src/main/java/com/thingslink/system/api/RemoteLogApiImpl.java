@@ -1,8 +1,7 @@
-package com.thingslink.system.api_feign;
+package com.thingslink.system.api;
 
 import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.annotation.InnerAuth;
-import com.thingslink.system.api.RemoteLogApi;
 import com.thingslink.system.api.domain.LoginLogDTO;
 import com.thingslink.system.api.domain.OperLogDTO;
 import com.thingslink.system.domain.SysLoginLog;

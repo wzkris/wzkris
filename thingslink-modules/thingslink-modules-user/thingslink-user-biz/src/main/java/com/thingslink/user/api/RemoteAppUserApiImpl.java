@@ -1,9 +1,8 @@
-package com.thingslink.user.api_feign;
+package com.thingslink.user.api;
 
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.annotation.InnerAuth;
-import com.thingslink.user.api.RemoteAppUserApi;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
 import com.thingslink.user.api.domain.dto.LoginInfoDTO;
 import com.thingslink.user.domain.AppUser;

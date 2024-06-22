@@ -1,6 +1,5 @@
-package com.thingslink.auth.api_feign;
+package com.thingslink.auth.api;
 
-import com.thingslink.auth.api.RemoteCaptchaApi;
 import com.thingslink.auth.api.domain.SmsDTO;
 import com.thingslink.auth.service.CaptchaService;
 import com.thingslink.common.core.domain.Result;

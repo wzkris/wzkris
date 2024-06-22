@@ -1,8 +1,7 @@
-package com.thingslink.file.api_feign;
+package com.thingslink.file.api;
 
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.annotation.InnerAuth;
-import com.thingslink.file.api.RemoteFileApi;
 import com.thingslink.file.api.domain.SysFile;
 import com.thingslink.file.service.SysFileService;
 import lombok.RequiredArgsConstructor;

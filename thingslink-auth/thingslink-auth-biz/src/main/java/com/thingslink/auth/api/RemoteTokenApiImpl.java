@@ -1,6 +1,5 @@
-package com.thingslink.auth.api_feign;
+package com.thingslink.auth.api;
 
-import com.thingslink.auth.api.RemoteTokenApi;
 import com.thingslink.auth.service.CaptchaService;
 import com.thingslink.common.security.annotation.InnerAuth;
 import lombok.RequiredArgsConstructor;
