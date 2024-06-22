@@ -1,6 +1,8 @@
 package com.thingslink.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.thingslink.common.core.exception.job.TaskException;
+import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.system.constant.ScheduleConstants;
 import com.thingslink.system.domain.SysJob;
 import com.thingslink.system.mapper.SysJobMapper;
@@ -27,7 +29,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysJobServiceImpl implements SysJobService {
     private final Scheduler scheduler;
-
     private final SysJobMapper sysJobMapper;
 
     /**
@@ -36,7 +37,7 @@ public class SysJobServiceImpl implements SysJobService {
     @PostConstruct
     public void init() throws SchedulerException, TaskException {
         scheduler.clear();
-        List<SysJob> sysJobList = sysJobMapper.list(new SysJob());
+        List<SysJob> sysJobList = sysJobMapper.selectList(null);
         for (SysJob sysJob : sysJobList) {
             ScheduleUtils.createScheduleJob(scheduler, sysJob);
         }
@@ -46,11 +47,21 @@ public class SysJobServiceImpl implements SysJobService {
      * 获取quartz调度器的计划任务列表
      *
      * @param sysJob 调度信息
-     * @return
+     * @return 任务列表
      */
     @Override
-    public List<SysJob> selectJobList(SysJob sysJob) {
-        return sysJobMapper.list(sysJob);
+    public List<SysJob> list(SysJob sysJob) {
+        LambdaQueryWrapper<SysJob> lqw = this.buildQueryWrapper(sysJob);
+        return sysJobMapper.selectList(lqw);
+    }
+
+    private LambdaQueryWrapper<SysJob> buildQueryWrapper(SysJob sysJob) {
+        return new LambdaQueryWrapper<SysJob>()
+                .like(StringUtil.isNotNull(sysJob.getJobName()), SysJob::getJobName, sysJob.getJobName())
+                .like(StringUtil.isNotNull(sysJob.getInvokeTarget()), SysJob::getInvokeTarget, sysJob.getInvokeTarget())
+                .eq(StringUtil.isNotNull(sysJob.getJobGroup()), SysJob::getJobGroup, sysJob.getJobGroup())
+                .eq(StringUtil.isNotNull(sysJob.getStatus()), SysJob::getStatus, sysJob.getStatus())
+                .orderByDesc(SysJob::getJobId);
     }
 
     /**
@@ -162,7 +173,7 @@ public class SysJobServiceImpl implements SysJobService {
         boolean result = false;
         Long jobId = sysJob.getJobId();
         String jobGroup = sysJob.getJobGroup();
-        SysJob properties = selectJobById(sysJob.getJobId());
+        SysJob properties = sysJobMapper.selectById(sysJob.getJobId());
         // 参数
         JobDataMap dataMap = new JobDataMap();
         dataMap.put(ScheduleConstants.TASK_PROPERTIES, properties);
@@ -198,7 +209,7 @@ public class SysJobServiceImpl implements SysJobService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateJob(SysJob sysJob) throws SchedulerException, TaskException {
-        SysJob properties = selectJobById(sysJob.getJobId());
+        SysJob properties = sysJobMapper.selectById(sysJob.getJobId());
         int rows = sysJobMapper.updateById(sysJob);
         if (rows > 0) {
             updateSchedulerJob(sysJob, properties.getJobGroup());
@@ -209,7 +220,7 @@ public class SysJobServiceImpl implements SysJobService {
     /**
      * 更新任务
      *
-     * @param sysJob      任务对象
+     * @param sysJob   任务对象
      * @param jobGroup 任务组名
      */
     public void updateSchedulerJob(SysJob sysJob, String jobGroup) throws SchedulerException, TaskException {

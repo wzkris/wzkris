@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -158,7 +159,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         if (!CollectionUtils.isEmpty(children)) {
             // 批量更新
-            sysDeptMapper.updateBatchByIds(children);
+            sysDeptMapper.updateById(children);
         }
     }
 
@@ -226,8 +227,9 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public void checkDataScopes(List<Long> deptIds) {
+        deptIds = deptIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(deptIds)) {
-            if (!(sysDeptMapper.checkDataScopes(deptIds) == deptIds.size())) {
+            if (sysDeptMapper.checkDataScopes(deptIds) != deptIds.size()) {
                 throw new AccessDeniedException("没有访问数据权限");
             }
         }

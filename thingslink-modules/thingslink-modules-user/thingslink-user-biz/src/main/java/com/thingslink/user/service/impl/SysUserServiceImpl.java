@@ -25,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -205,6 +206,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @param userIds 被操作的对象id
      */
     public void checkDataScopes(List<Long> userIds) {
+        userIds = userIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(userIds)) {
             if (!(sysUserMapper.checkDataScopes(userIds) == userIds.size())) {
                 throw new AccessDeniedException("当前用户没有权限访问数据");

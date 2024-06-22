@@ -18,7 +18,7 @@ public interface SysJobService {
      * @param sysJob 调度信息
      * @return 调度任务集合
      */
-    List<SysJob> selectJobList(SysJob sysJob);
+    List<SysJob> list(SysJob sysJob);
 
     /**
      * 通过调度任务ID查询调度信息

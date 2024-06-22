@@ -39,7 +39,7 @@ public class SysJobController extends BaseController {
     @PreAuthorize("@ps.hasPerms('job:list')")
     public Result<Page<SysJob>> list(SysJob sysJob) {
         startPage();
-        List<SysJob> list = sysJobService.selectJobList(sysJob);
+        List<SysJob> list = sysJobService.list(sysJob);
         return getDataTable(list);
     }
 

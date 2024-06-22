@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,7 +85,7 @@ public class SysPostServiceImpl implements SysPostService {
         if (sysUserPostMapper.countByPostIds(postIds) > 0) {
             throw new BusinessExceptionI18n("business.allocated");
         }
-        return sysPostMapper.deleteByIds(Arrays.asList(postIds));
+        return sysPostMapper.deleteByIds(postIds);
     }
 
 }

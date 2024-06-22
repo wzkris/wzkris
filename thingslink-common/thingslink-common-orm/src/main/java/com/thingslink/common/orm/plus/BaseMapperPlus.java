@@ -3,9 +3,7 @@ package com.thingslink.common.orm.plus;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.thingslink.common.core.exception.BusinessException;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.BeanUtils;
 
@@ -20,14 +18,6 @@ import java.util.List;
  * @date : 2024/1/4 10:59
  */
 public interface BaseMapperPlus<T> extends BaseMapper<T> {
-
-    /**
-     * 根据 ID 批量更新
-     *
-     * @param list 对象集合
-     * @return 影响行数
-     */
-    int updateBatchByIds(@Param(Constants.COLL) List<T> list);
 
     /**
      * 根据 entity 条件，查询一条记录
