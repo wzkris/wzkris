@@ -3,8 +3,6 @@ package com.thingslink.user.service.impl;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.orm.page.Page;
-import com.thingslink.common.orm.utils.PageUtil;
 import com.thingslink.user.domain.SysTenant;
 import com.thingslink.user.domain.dto.SysTenantDTO;
 import com.thingslink.user.domain.dto.SysUserDTO;
@@ -35,16 +33,10 @@ public class SysTenantServiceImpl implements SysTenantService {
      * @param sysTenant 查询条件
      */
     @Override
-    public Page<SysTenant> listPage(SysTenant sysTenant) {
-        PageUtil.startPage();
+    public List<SysTenant> listPage(SysTenant sysTenant) {
         // 查询
         LambdaQueryWrapper<SysTenant> lqw = this.buildQueryWrapper(sysTenant);
-        List<SysTenant> packages = sysTenantMapper.selectList(lqw);
-
-        // 先获取分页信息，否则总数会有问题
-        Page page = PageUtil.getPage();
-        page.setRows(packages);
-        return page;
+        return sysTenantMapper.selectList(lqw);
     }
 
     /**

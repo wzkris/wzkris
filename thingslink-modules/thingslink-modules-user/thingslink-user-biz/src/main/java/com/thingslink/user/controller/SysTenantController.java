@@ -43,7 +43,9 @@ public class SysTenantController extends BaseController {
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('tenant:list')")
     public Result<Page<SysTenant>> list(SysTenant sysTenant) {
-        return success(sysTenantService.listPage(sysTenant));
+        startPage();
+        List<SysTenant> list = sysTenantService.listPage(sysTenant);
+        return getDataTable(list);
     }
 
     @Operation(summary = "获取租户详细信息")

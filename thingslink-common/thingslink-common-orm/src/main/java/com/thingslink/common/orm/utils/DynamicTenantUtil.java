@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.function.Supplier;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -18,6 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 public class DynamicTenantUtil {
 
     private static final ThreadLocal<Long> LOCAL_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
+
+    @FunctionalInterface
+    public interface ThrowingSupplier<T, E extends Throwable> {
+        T get() throws E;
+    }
 
     /**
      * 开启忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭)
@@ -35,14 +42,6 @@ public class DynamicTenantUtil {
     }
 
     /**
-     * 设置动态租户，若设置了值则一定会走租户拦截
-     * 当前线程内生效
-     */
-    public static void set(Long tenantId) {
-        LOCAL_DYNAMIC_TENANT.set(tenantId);
-    }
-
-    /**
      * 获取动态租户
      * 当前线程内生效
      */
@@ -51,10 +50,52 @@ public class DynamicTenantUtil {
     }
 
     /**
-     * 清除动态租户
+     * 设置动态租户，若设置了值则一定会走租户拦截
+     * 当前线程内生效
      */
-    public static void clear() {
-        LOCAL_DYNAMIC_TENANT.remove();
+    public static void set(Long tenantId) {
+        LOCAL_DYNAMIC_TENANT.set(tenantId);
     }
 
+    /**
+     * 无返回值强制走租户的代码
+     */
+    public static void execute(Long tenantId, Runnable runnable) {
+        try {
+            LOCAL_DYNAMIC_TENANT.set(tenantId);
+
+            runnable.run();
+        }
+        finally {
+            LOCAL_DYNAMIC_TENANT.remove();
+        }
+    }
+
+    /**
+     * 有返回值强制走租户的代码
+     */
+    public static <T> T execute(Long tenantId, Supplier<T> supplier) {
+        try {
+            LOCAL_DYNAMIC_TENANT.set(tenantId);
+
+            return supplier.get();
+        }
+        finally {
+            LOCAL_DYNAMIC_TENANT.remove();
+        }
+    }
+
+    /**
+     * 有返回值强制走租户的代码, 并且会抛出异常
+     */
+    public static <T> T executeWithThrowable(Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+        try {
+            LOCAL_DYNAMIC_TENANT.set(tenantId);
+
+            return supplier.get();
+        }
+        finally {
+            LOCAL_DYNAMIC_TENANT.remove();
+        }
+    }
 }

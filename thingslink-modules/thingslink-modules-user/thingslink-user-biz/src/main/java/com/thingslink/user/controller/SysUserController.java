@@ -72,16 +72,22 @@ public class SysUserController extends BaseController {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(userId));
         SysUser user = sysUserMapper.selectById(userId);
-        Map<String, Object> res = new HashMap<>(8);
-        // 用户信息
-        res.put("user", user);
-        // 可授权角色、岗位、部门
-        res.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
-        res.put("posts", sysPostService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
-        res.put("depts", sysDeptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
-        // 已授权角色与岗位
-        res.put("postIds", sysUserPostMapper.listPostIdByUserId(userId));
-        res.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
+
+        // 返回的角色、岗位、部门必须和该用户的租户id绑定
+        Map<String, Object> res = DynamicTenantUtil.execute(user.getTenantId(), () -> {
+            Map<String, Object> info = new HashMap<>(8);
+            // 用户信息
+            info.put("user", user);
+            // 可授权角色、岗位、部门
+            info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+            info.put("posts", sysPostService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
+            info.put("depts", sysDeptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
+            // 已授权角色与岗位
+            info.put("postIds", sysUserPostMapper.listPostIdByUserId(userId));
+            info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
+            return info;
+        });
+
         return success(res);
     }
 
@@ -90,7 +96,7 @@ public class SysUserController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('user:add')")
     public Result<?> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
-        // 校验租户ID
+        // 校验角色、岗位、部门和该用户的租户id是否一致
         sysUserService.checkTenantId(userDTO);
         if (sysUserService.checkUserUnique(new SysUser().setUsername(userDTO.getUsername()), userDTO.getUserId())) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
@@ -113,7 +119,7 @@ public class SysUserController extends BaseController {
     public Result<?> edit(@Validated @RequestBody SysUserDTO userDTO) {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(userDTO.getUserId()));
-        // 校验租户ID
+        // 校验角色、岗位、部门和该用户的租户id是否一致
         sysUserService.checkTenantId(userDTO);
         if (sysUserService.checkUserUnique(new SysUser().setUsername(userDTO.getUsername()), userDTO.getUserId())) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
@@ -126,6 +132,7 @@ public class SysUserController extends BaseController {
                 && sysUserService.checkUserUnique(new SysUser().setEmail(userDTO.getEmail()), userDTO.getUserId())) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
         }
+
         return toRes(sysUserService.updateUser(userDTO));
     }
 
@@ -171,15 +178,18 @@ public class SysUserController extends BaseController {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(userId));
         SysUser sysUser = sysUserMapper.selectById(userId);
+
         // 可授权角色必须根据租户来
-        DynamicTenantUtil.set(sysUser.getTenantId());
-        Map<String, Object> res = new HashMap<>(4);
-        // 被授权用户信息
-        res.put("user", sysUser);
-        // 用户角色
-        res.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
-        // 可授权角色
-        res.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        Map<String, Object> res = DynamicTenantUtil.execute(sysUser.getTenantId(), () -> {
+            Map<String, Object> info = new HashMap<>(4);
+            // 被授权用户信息
+            info.put("user", sysUser);
+            // 用户角色
+            info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
+            // 可授权角色
+            info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+            return info;
+        });
         return success(res);
     }
 

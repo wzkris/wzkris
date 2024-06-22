@@ -55,5 +55,4 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
     private boolean isIgnoreTable(String tableName) {
         return !tenantProperties.getIncludes().contains(tableName);
     }
-
 }

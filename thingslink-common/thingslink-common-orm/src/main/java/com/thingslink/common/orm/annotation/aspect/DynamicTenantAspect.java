@@ -46,13 +46,8 @@ public class DynamicTenantAspect {
             // 否则解析spel，拿到对应参数
             tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.value(), Long.class);
         }
-        try {
-            DynamicTenantUtil.set(tenantId);
-            return point.proceed();
-        }
-        finally {
-            DynamicTenantUtil.clear();
-        }
+
+        return DynamicTenantUtil.executeWithThrowable(tenantId, point::proceed);
     }
 
     /**
