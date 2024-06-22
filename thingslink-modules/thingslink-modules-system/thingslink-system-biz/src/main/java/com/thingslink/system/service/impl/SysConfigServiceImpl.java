@@ -1,12 +1,11 @@
 package com.thingslink.system.service.impl;
 
-import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.utils.StringUtil;
+import com.thingslink.common.redis.util.RedisUtil;
 import com.thingslink.system.domain.SysConfig;
 import com.thingslink.system.mapper.SysConfigMapper;
 import com.thingslink.system.service.SysConfigService;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 参数配置 服务层实现
@@ -24,11 +24,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysConfigServiceImpl implements SysConfigService {
-    private static final Cache<String, String> configCache = Caffeine.newBuilder()
-            .maximumSize(500)
-            .build();
 
     private final SysConfigMapper sysConfigMapper;
+
+    static class ConfigCache {
+        static final String CONFIG_KEY_PREFIX = "sys_config";
+
+        static String getConfigValueByKey(String configKey) {
+            return RedisUtil.getMapValue(CONFIG_KEY_PREFIX, configKey);
+        }
+
+        static void setConfigValueByKey(String configKey, String configValue) {
+            RedisUtil.setMapValue(CONFIG_KEY_PREFIX, configKey, configValue);
+        }
+
+        static void setConfig(Map<String, Object> map) {
+            RedisUtil.setMap(CONFIG_KEY_PREFIX, map);
+        }
+
+        static void clearAll() {
+            RedisUtil.delObj(CONFIG_KEY_PREFIX);
+        }
+    }
 
     /**
      * 根据键名查询参数配置信息
@@ -38,13 +55,13 @@ public class SysConfigServiceImpl implements SysConfigService {
      */
     @Override
     public String getConfigValueByKey(String configKey) {
-        String configValue = Convert.toStr(configCache.getIfPresent(configKey));
+        String configValue = ConfigCache.getConfigValueByKey(configKey);
         if (StringUtil.isNotEmpty(configValue)) {
             return configValue;
         }
         SysConfig retConfig = sysConfigMapper.selectConfig(configKey);
         if (StringUtil.isNotNull(retConfig)) {
-            configCache.put(configKey, retConfig.getConfigValue());
+            ConfigCache.setConfigValueByKey(configKey, retConfig.getConfigValue());
             return retConfig.getConfigValue();
         }
         return StringUtil.EMPTY;
@@ -79,7 +96,7 @@ public class SysConfigServiceImpl implements SysConfigService {
     public int insertConfig(SysConfig config) {
         int row = sysConfigMapper.insert(config);
         if (row > 0) {
-            configCache.put(config.getConfigKey(), config.getConfigValue());
+            ConfigCache.setConfigValueByKey(config.getConfigKey(), config.getConfigValue());
         }
         return row;
     }
@@ -92,14 +109,9 @@ public class SysConfigServiceImpl implements SysConfigService {
      */
     @Override
     public int updateConfig(SysConfig config) {
-        SysConfig temp = sysConfigMapper.selectById(config.getConfigId());
-        if (!StringUtil.equals(temp.getConfigKey(), config.getConfigKey())) {
-            configCache.invalidate(temp.getConfigKey());
-        }
-
         int row = sysConfigMapper.updateById(config);
         if (row > 0) {
-            configCache.put(config.getConfigKey(), config.getConfigValue());
+            ConfigCache.setConfigValueByKey(config.getConfigKey(), config.getConfigValue());
         }
         return row;
     }
@@ -110,15 +122,15 @@ public class SysConfigServiceImpl implements SysConfigService {
      * @param configIds 需要删除的参数ID
      */
     @Override
-    public void deleteConfigByIds(Long[] configIds) {
-        for (Long configId : configIds) {
-            SysConfig config = sysConfigMapper.selectById(configId);
+    public void deleteConfigByIds(List<Long> configIds) {
+        List<SysConfig> configs = sysConfigMapper.selectBatchIds(configIds);
+        for (SysConfig config : configs) {
             if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
                 throw new BusinessException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
-            sysConfigMapper.deleteById(configId);
-            configCache.invalidate(config.getConfigKey());
         }
+        sysConfigMapper.deleteByIds(configIds);
+        ConfigCache.clearAll();
     }
 
     /**
@@ -129,7 +141,7 @@ public class SysConfigServiceImpl implements SysConfigService {
     public void loadingConfigCache() {
         List<SysConfig> configsList = sysConfigMapper.selectList(null);
         for (SysConfig config : configsList) {
-            configCache.put(config.getConfigKey(), config.getConfigValue());
+            ConfigCache.setConfigValueByKey(config.getConfigKey(), config.getConfigValue());
         }
     }
 
@@ -138,7 +150,7 @@ public class SysConfigServiceImpl implements SysConfigService {
      */
     @Override
     public void clearConfigCache() {
-        configCache.cleanUp();
+        ConfigCache.clearAll();
     }
 
     /**
@@ -160,7 +172,7 @@ public class SysConfigServiceImpl implements SysConfigService {
     public boolean checkConfigKeyUnique(SysConfig config) {
         LambdaQueryWrapper<SysConfig> lqw = new LambdaQueryWrapper<SysConfig>()
                 .eq(SysConfig::getConfigKey, config.getConfigKey())
-                .ne(SysConfig::getConfigId, config.getConfigId());
+                .ne(ObjUtil.isNotNull(config.getConfigId()), SysConfig::getConfigId, config.getConfigId());
         return sysConfigMapper.exists(lqw);
     }
 }

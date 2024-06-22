@@ -4,6 +4,8 @@ import com.thingslink.user.domain.SysUser;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * @description dto
  * @author  wzkris
@@ -15,8 +17,8 @@ import lombok.EqualsAndHashCode;
 public class SysUserDTO extends SysUser {
 
     /** 角色组 */
-    private Long[] roleIds;
+    private List<Long> roleIds;
 
     /** 岗位组 */
-    private Long[] postIds;
+    private List<Long> postIds;
 }

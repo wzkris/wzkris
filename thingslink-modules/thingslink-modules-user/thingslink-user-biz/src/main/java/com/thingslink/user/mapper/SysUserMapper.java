@@ -86,10 +86,10 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     @Select("""
             <script>
                 SELECT COUNT(*) FROM sys_user WHERE user_id IN
-                    <foreach collection="array" item="userId" open="(" separator="," close=")">
+                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
                         #{userId}
                     </foreach>
             </script>
             """)
-    int checkDataScopes(Long[] userIds);
+    int checkDataScopes(@Param("userIds") List<Long> userIds);
 }

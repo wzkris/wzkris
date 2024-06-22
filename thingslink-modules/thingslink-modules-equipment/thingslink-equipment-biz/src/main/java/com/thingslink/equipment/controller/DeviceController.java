@@ -93,7 +93,7 @@ public class DeviceController extends BaseController {
      * @param device 实体
      * @return 新增结果
      */
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('device:add')")
     public Result<?> add(@RequestBody Device device) {
         return toRes(deviceMapper.insert(device));
@@ -105,7 +105,7 @@ public class DeviceController extends BaseController {
      * @param device 实体
      * @return 编辑结果
      */
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('device:edit')")
     public Result<?> edit(@RequestBody Device device) {
         return toRes(deviceMapper.updateById(device));
@@ -117,7 +117,7 @@ public class DeviceController extends BaseController {
      * @param deviceId 主键
      * @return 删除是否成功
      */
-    @DeleteMapping("/{deviceId}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('device:remove')")
     public Result<?> deleteById(@PathVariable Long deviceId) {
         return toRes(deviceMapper.deleteById(deviceId));

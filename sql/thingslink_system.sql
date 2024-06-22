@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 17/04/2024 14:12:09
+ Date: 22/06/2024 13:36:43
 */
 
 SET NAMES utf8mb4;
@@ -315,10 +315,10 @@ INSERT INTO `sys_dict_data` VALUES (29, 2, '失败', '1', 'sys_common_status', '
 INSERT INTO `sys_dict_data` VALUES (30, 0, '管理员', 'admin', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, 20240412105133, 1);
 INSERT INTO `sys_dict_data` VALUES (31, 0, '租户', 'tenant', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_dict_data` VALUES (32, 0, '用户', 'user', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (33, 0, '在线', 'ONLINE', 'device_status', NULL, 'success', 'N', 1713334134616, 1, 20231201153359, NULL);
-INSERT INTO `sys_dict_data` VALUES (34, 0, '离线', 'OFFLINE', 'device_status', NULL, 'info', 'N', 1713334134616, 1, 20231201153404, NULL);
-INSERT INTO `sys_dict_data` VALUES (35, 1, '故障', 'FAULT', 'device_status', NULL, 'danger', 'N', 1713334134616, 1, 20231201153421, NULL);
-INSERT INTO `sys_dict_data` VALUES (36, 2, '检修', 'FIX', 'device_status', NULL, 'warning', 'N', 1713334134616, 1, 20231201153426, NULL);
+INSERT INTO `sys_dict_data` VALUES (33, 0, '在线', '1', 'device_status', NULL, 'success', 'N', 1713334134616, 1, 1714114284613, 1);
+INSERT INTO `sys_dict_data` VALUES (34, 0, '离线', '0', 'device_status', NULL, 'info', 'N', 1713334134616, 1, 1714114287571, 1);
+INSERT INTO `sys_dict_data` VALUES (35, 1, '故障', '2', 'device_status', NULL, 'danger', 'N', 1713334134616, 1, 1714114300372, 1);
+INSERT INTO `sys_dict_data` VALUES (36, 2, '检修', '3', 'device_status', NULL, 'warning', 'N', 1713334134616, 1, 1714114303578, 1);
 INSERT INTO `sys_dict_data` VALUES (37, 0, '未认证', 'NO', 'pay_certification_status', NULL, 'info', 'N', 1713334134616, 1, 20230206172127, NULL);
 INSERT INTO `sys_dict_data` VALUES (38, 0, '微信支付', 'WX', 'pay_certification_status', NULL, 'success', 'N', 1713334134616, 1, 20230206172134, NULL);
 INSERT INTO `sys_dict_data` VALUES (39, 0, '支付宝', 'ALI', 'pay_certification_status', NULL, 'primary', 'N', 1713334134616, 1, 20230206172147, NULL);
@@ -471,6 +471,112 @@ INSERT INTO `sys_login_log` VALUES (1779768079093039105, 1774671331416821762, 17
 INSERT INTO `sys_login_log` VALUES (1779768173334855681, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150613);
 INSERT INTO `sys_login_log` VALUES (1779768345410371585, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150650);
 INSERT INTO `sys_login_log` VALUES (1780477864071372801, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713333976135);
+INSERT INTO `sys_login_log` VALUES (1780497925876137986, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713338759425);
+INSERT INTO `sys_login_log` VALUES (1780515473006968834, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713342943765);
+INSERT INTO `sys_login_log` VALUES (1780834947589402626, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713419111903);
+INSERT INTO `sys_login_log` VALUES (1780834980816678913, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713419120378);
+INSERT INTO `sys_login_log` VALUES (1780837652743516161, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713419757404);
+INSERT INTO `sys_login_log` VALUES (1780840039109554177, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713420326376);
+INSERT INTO `sys_login_log` VALUES (1780840341581787138, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713420398484);
+INSERT INTO `sys_login_log` VALUES (1780841262365732865, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713420618019);
+INSERT INTO `sys_login_log` VALUES (1780841527995199489, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713420681355);
+INSERT INTO `sys_login_log` VALUES (1780842512989745153, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713420916185);
+INSERT INTO `sys_login_log` VALUES (1780842834894188546, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713420992946);
+INSERT INTO `sys_login_log` VALUES (1780843019716194306, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713421037010);
+INSERT INTO `sys_login_log` VALUES (1780845917321752577, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713421727850);
+INSERT INTO `sys_login_log` VALUES (1780846176164835330, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713421789565);
+INSERT INTO `sys_login_log` VALUES (1780847099750576129, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422009762);
+INSERT INTO `sys_login_log` VALUES (1780847444107128834, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422091863);
+INSERT INTO `sys_login_log` VALUES (1780848406997692417, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422321431);
+INSERT INTO `sys_login_log` VALUES (1780848930232922114, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422446183);
+INSERT INTO `sys_login_log` VALUES (1780849544153198593, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422592555);
+INSERT INTO `sys_login_log` VALUES (1780849650617217025, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422617941);
+INSERT INTO `sys_login_log` VALUES (1780849791755546625, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422651591);
+INSERT INTO `sys_login_log` VALUES (1780850131796160514, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422732661);
+INSERT INTO `sys_login_log` VALUES (1780850401619931137, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422796993);
+INSERT INTO `sys_login_log` VALUES (1780850770148257793, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713422884852);
+INSERT INTO `sys_login_log` VALUES (1780852628141043714, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713423327826);
+INSERT INTO `sys_login_log` VALUES (1780855484139106306, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713424008692);
+INSERT INTO `sys_login_log` VALUES (1780857188892995586, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713424415199);
+INSERT INTO `sys_login_log` VALUES (1781203155173412865, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 1713506899127);
+INSERT INTO `sys_login_log` VALUES (1781203569834889217, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 1713506996190);
+INSERT INTO `sys_login_log` VALUES (1781204054650294274, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 1713507094170);
+INSERT INTO `sys_login_log` VALUES (1781205911556755457, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 1713507550283);
+INSERT INTO `sys_login_log` VALUES (1781225880277389313, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713512317903);
+INSERT INTO `sys_login_log` VALUES (1781227165760262145, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713512624570);
+INSERT INTO `sys_login_log` VALUES (1781227862144749570, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713512790600);
+INSERT INTO `sys_login_log` VALUES (1781228206144786433, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713512872615);
+INSERT INTO `sys_login_log` VALUES (1781228299715514370, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713512894923);
+INSERT INTO `sys_login_log` VALUES (1781228820731957250, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713513019145);
+INSERT INTO `sys_login_log` VALUES (1781230701193629697, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713513467481);
+INSERT INTO `sys_login_log` VALUES (1781230890243493890, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713513512555);
+INSERT INTO `sys_login_log` VALUES (1781232213504462849, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713513828043);
+INSERT INTO `sys_login_log` VALUES (1781232569064001537, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713513912818);
+INSERT INTO `sys_login_log` VALUES (1781232891597590529, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713513989714);
+INSERT INTO `sys_login_log` VALUES (1781233201661513730, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514063637);
+INSERT INTO `sys_login_log` VALUES (1781233326869876737, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514093492);
+INSERT INTO `sys_login_log` VALUES (1781234543855570945, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514383645);
+INSERT INTO `sys_login_log` VALUES (1781234846797565953, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514455872);
+INSERT INTO `sys_login_log` VALUES (1781235002376884225, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514492964);
+INSERT INTO `sys_login_log` VALUES (1781236217659691009, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514782710);
+INSERT INTO `sys_login_log` VALUES (1781236533083934721, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514857912);
+INSERT INTO `sys_login_log` VALUES (1781236763485442050, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514912846);
+INSERT INTO `sys_login_log` VALUES (1781236842128642049, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514931597);
+INSERT INTO `sys_login_log` VALUES (1781237121699975169, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713514998249);
+INSERT INTO `sys_login_log` VALUES (1781237403410403330, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515065430);
+INSERT INTO `sys_login_log` VALUES (1781238577953935361, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515345447);
+INSERT INTO `sys_login_log` VALUES (1781240208971960321, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515734315);
+INSERT INTO `sys_login_log` VALUES (1781240348025720834, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515767466);
+INSERT INTO `sys_login_log` VALUES (1781240646538530817, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515838636);
+INSERT INTO `sys_login_log` VALUES (1781240852285919233, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515887690);
+INSERT INTO `sys_login_log` VALUES (1781241167315898369, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515962802);
+INSERT INTO `sys_login_log` VALUES (1781241299537137666, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713515994326);
+INSERT INTO `sys_login_log` VALUES (1781241547525361666, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713516053448);
+INSERT INTO `sys_login_log` VALUES (1781242185529331713, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713516205559);
+INSERT INTO `sys_login_log` VALUES (1781242757129080834, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713516341843);
+INSERT INTO `sys_login_log` VALUES (1782221206790537217, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713749622037);
+INSERT INTO `sys_login_log` VALUES (1783744518771421185, 0, 3, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1714112807797);
+INSERT INTO `sys_login_log` VALUES (1783744659632926722, 1774671331416821762, 1774671331412627456, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1714112841874);
+INSERT INTO `sys_login_log` VALUES (1783745173766516738, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1714112964450);
+INSERT INTO `sys_login_log` VALUES (1783746003102052354, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1714113162183);
+INSERT INTO `sys_login_log` VALUES (1783749901934112769, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1714114091740);
+INSERT INTO `sys_login_log` VALUES (1789899706741727233, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1715580318893);
+INSERT INTO `sys_login_log` VALUES (1789902740188209154, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1715581042645);
+INSERT INTO `sys_login_log` VALUES (1789908316062392322, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1715582372082);
+INSERT INTO `sys_login_log` VALUES (1789909313069424642, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1715582609705);
+INSERT INTO `sys_login_log` VALUES (1792738268411584514, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716257084474);
+INSERT INTO `sys_login_log` VALUES (1793444944714383362, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716425568874);
+INSERT INTO `sys_login_log` VALUES (1794965086065528833, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716787998853);
+INSERT INTO `sys_login_log` VALUES (1794965730457423873, 0, 3, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716788153556);
+INSERT INTO `sys_login_log` VALUES (1794975832941924353, 0, 3, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716790562138);
+INSERT INTO `sys_login_log` VALUES (1794978606039629825, 0, 3, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716791222597);
+INSERT INTO `sys_login_log` VALUES (1794978666076897281, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716791237602);
+INSERT INTO `sys_login_log` VALUES (1794980188051406849, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716791600533);
+INSERT INTO `sys_login_log` VALUES (1795326261919977474, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1716874109532);
+INSERT INTO `sys_login_log` VALUES (1795330093919997953, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716875024517);
+INSERT INTO `sys_login_log` VALUES (1795338319273103361, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1716876985573);
+INSERT INTO `sys_login_log` VALUES (1795342944097243137, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1716878088241);
+INSERT INTO `sys_login_log` VALUES (1797552540547190785, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1717404896216);
+INSERT INTO `sys_login_log` VALUES (1797858811028615169, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1717477916884);
+INSERT INTO `sys_login_log` VALUES (1798171572744884225, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1717552485263);
+INSERT INTO `sys_login_log` VALUES (1798186860269932545, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1717556130732);
+INSERT INTO `sys_login_log` VALUES (1798509425052061698, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1717633035587);
+INSERT INTO `sys_login_log` VALUES (1798509490659364866, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1717633051833);
+INSERT INTO `sys_login_log` VALUES (1798518255743897602, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1717635141592);
+INSERT INTO `sys_login_log` VALUES (1798539987645075458, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1717640322868);
+INSERT INTO `sys_login_log` VALUES (1798555446771683330, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1717644008628);
+INSERT INTO `sys_login_log` VALUES (1798583464265224193, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1717650688517);
+INSERT INTO `sys_login_log` VALUES (1799357102677512193, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1717835137302);
+INSERT INTO `sys_login_log` VALUES (1804048227979984898, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1718953589235);
+INSERT INTO `sys_login_log` VALUES (1804050878557814786, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1718954221585);
+INSERT INTO `sys_login_log` VALUES (1804072701982855169, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1718959424017);
+INSERT INTO `sys_login_log` VALUES (1804074201412980737, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1718959782087);
+INSERT INTO `sys_login_log` VALUES (1804077688691544066, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1718960613622);
+INSERT INTO `sys_login_log` VALUES (1804079332388950017, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1718961005556);
+INSERT INTO `sys_login_log` VALUES (1804079721217708033, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1718961097024);
+INSERT INTO `sys_login_log` VALUES (1804080174319980546, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1718961205249);
+INSERT INTO `sys_login_log` VALUES (1804080646447616002, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1718961318877);
+INSERT INTO `sys_login_log` VALUES (1804324402467844097, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1719019434199);
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -483,9 +589,9 @@ CREATE TABLE `sys_notice`  (
   `notice_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '公告内容',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公告状态（0正常 1关闭）',
   `message_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '消息id',
-  `create_by` bigint NULL DEFAULT NULL COMMENT '创建者',
+  `create_at` bigint NULL DEFAULT NULL COMMENT '创建者',
   `create_id` bigint NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`notice_id`) USING BTREE,
   UNIQUE INDEX `uk_message_id`(`message_id` ASC) USING BTREE
@@ -526,5 +632,60 @@ CREATE TABLE `sys_oper_log`  (
 INSERT INTO `sys_oper_log` VALUES (1778625396790194177, 0, '操作日志', '3', 'com.thingslink.system.controller.log.SysOperlogController.clean()', 'DELETE', 'admin', '/operlog/clean', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 20240412112514);
 INSERT INTO `sys_oper_log` VALUES (1778625872730451970, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, '{\"createAt\":\"2024-04-03 12:38:25\",\"createBy\":\"1774671331412627456\",\"updateAt\":\"2024-04-12 11:27:07\",\"updateBy\":\"1\",\"deptId\":\"1775382319191453698\",\"tenantId\":\"1774671331416821762\",\"parentId\":null,\"ancestors\":null,\"deptName\":\"默认租户部门\",\"status\":\"0\",\"deptSort\":0,\"contact\":null,\"email\":null,\"children\":[]}', NULL, '0', NULL, 20240412112707);
 INSERT INTO `sys_oper_log` VALUES (1778626232891142146, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, NULL, '{\"biz\":0,\"data\":null,\"err_msg\":\"Success\",\"timestamp\":1712892513784}', '0', NULL, 20240412112833);
+INSERT INTO `sys_oper_log` VALUES (1780521103470018562, 0, '角色管理', '2', 'com.thingslink.user.controller.SysRoleController.edit()', 'PUT', 'admin', '/role', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1713344286159);
+INSERT INTO `sys_oper_log` VALUES (1782221287006601217, 0, '菜单管理', '2', 'com.thingslink.user.controller.SysMenuController.edit()', 'PUT', 'admin', '/menu', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1713749641479);
+INSERT INTO `sys_oper_log` VALUES (1782222463068471298, 0, '后台管理', '2', 'com.thingslink.user.controller.SysUserController.edit()', 'PUT', 'admin', '/user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1713749921870);
+INSERT INTO `sys_oper_log` VALUES (1782222568479719425, 0, '后台管理', '2', 'com.thingslink.user.controller.SysUserController.edit()', 'PUT', 'admin', '/user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1713749947059);
+INSERT INTO `sys_oper_log` VALUES (1782222806661660673, 0, '后台管理', '2', 'com.thingslink.user.controller.SysUserController.edit()', 'PUT', 'admin', '/user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1713750003805);
+INSERT INTO `sys_oper_log` VALUES (1783745409394126849, 0, '菜单管理', '2', 'com.thingslink.user.controller.SysMenuController.edit()', 'PUT', 'admin', '/menu', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1714113020593);
+INSERT INTO `sys_oper_log` VALUES (1783750711107629057, 0, '字典数据', '2', 'com.thingslink.system.controller.SysDictDataController.edit()', 'PUT', 'admin', '/dict/data', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1714114284631);
+INSERT INTO `sys_oper_log` VALUES (1783750723359191041, 0, '字典数据', '2', 'com.thingslink.system.controller.SysDictDataController.edit()', 'PUT', 'admin', '/dict/data', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1714114287585);
+INSERT INTO `sys_oper_log` VALUES (1783750777188888577, 0, '字典数据', '2', 'com.thingslink.system.controller.SysDictDataController.edit()', 'PUT', 'admin', '/dict/data', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1714114300420);
+INSERT INTO `sys_oper_log` VALUES (1783750790493220865, 0, '字典数据', '2', 'com.thingslink.system.controller.SysDictDataController.edit()', 'PUT', 'admin', '/dict/data', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1714114303592);
+INSERT INTO `sys_oper_log` VALUES (1795357936230043650, 0, '角色管理', '2', 'com.thingslink.user.controller.SysRoleController.edit()', 'PUT', 'admin', '/role', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1716881662514);
+INSERT INTO `sys_oper_log` VALUES (1795738379936817154, 0, '后台管理', '2', 'com.thingslink.user.controller.SysUserController.edit()', 'PUT', 'admin', '/user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1716972367418);
+INSERT INTO `sys_oper_log` VALUES (1795738418029486081, 0, '后台管理', '2', 'com.thingslink.user.controller.SysUserController.edit()', 'PUT', 'admin', '/user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1716972376710);
+INSERT INTO `sys_oper_log` VALUES (1795738448962478082, 0, '后台管理', '2', 'com.thingslink.user.controller.SysUserController.edit()', 'PUT', 'admin', '/user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1716972384090);
+INSERT INTO `sys_oper_log` VALUES (1804343906774241281, 0, '后台管理', '2', 'com.thingslink.user.controller.SysUserController.edit()', 'POST', 'admin', '/user/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719024084882);
+INSERT INTO `sys_oper_log` VALUES (1804346439001395202, 0, '后台管理', '4', 'com.thingslink.user.controller.SysUserController.authRole()', 'POST', 'admin', '/user/authorize_role', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719024688639);
+INSERT INTO `sys_oper_log` VALUES (1804346508459069441, 0, '后台管理', '4', 'com.thingslink.user.controller.SysUserController.authRole()', 'POST', 'admin', '/user/authorize_role', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719024705410);
+INSERT INTO `sys_oper_log` VALUES (1804346822436278274, 0, '后台管理', '4', 'com.thingslink.user.controller.SysUserController.authRole()', 'POST', 'admin', '/user/authorize_role', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719024780258);
+INSERT INTO `sys_oper_log` VALUES (1804348901091397634, 0, '后台管理', '4', 'com.thingslink.user.controller.SysUserController.authRole()', 'POST', 'admin', '/user/authorize_role', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719025275653);
+INSERT INTO `sys_oper_log` VALUES (1804351415027191810, 0, '菜单管理', '2', 'com.thingslink.user.controller.SysMenuController.edit()', 'POST', 'admin', '/menu/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719025875011);
+INSERT INTO `sys_oper_log` VALUES (1804351457926533122, 0, '岗位管理', '2', 'com.thingslink.user.controller.SysPostController.edit()', 'POST', 'admin', '/post/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719025885445);
+INSERT INTO `sys_oper_log` VALUES (1804351469880299521, 0, '岗位管理', '2', 'com.thingslink.user.controller.SysPostController.edit()', 'POST', 'admin', '/post/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719025888299);
+INSERT INTO `sys_oper_log` VALUES (1804351487471210497, 0, '岗位管理', '2', 'com.thingslink.user.controller.SysPostController.edit()', 'POST', 'admin', '/post/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719025892494);
+INSERT INTO `sys_oper_log` VALUES (1804351523139571714, 0, '角色管理', '2', 'com.thingslink.user.controller.SysRoleController.edit()', 'POST', 'admin', '/role/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719025900999);
+INSERT INTO `sys_oper_log` VALUES (1804352359362154497, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026100366);
+INSERT INTO `sys_oper_log` VALUES (1804352640485380098, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026167391);
+INSERT INTO `sys_oper_log` VALUES (1804352811378102273, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026208143);
+INSERT INTO `sys_oper_log` VALUES (1804353114194268161, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026280333);
+INSERT INTO `sys_oper_log` VALUES (1804353151959781378, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026289339);
+INSERT INTO `sys_oper_log` VALUES (1804353169005432833, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026293398);
+INSERT INTO `sys_oper_log` VALUES (1804353358575390722, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026338599);
+INSERT INTO `sys_oper_log` VALUES (1804353365856702465, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026340336);
+INSERT INTO `sys_oper_log` VALUES (1804353371384795138, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026341652);
+INSERT INTO `sys_oper_log` VALUES (1804353383409864705, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026344522);
+INSERT INTO `sys_oper_log` VALUES (1804353760544903170, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026434433);
+INSERT INTO `sys_oper_log` VALUES (1804353879273066497, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026462743);
+INSERT INTO `sys_oper_log` VALUES (1804353884847296514, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026464074);
+INSERT INTO `sys_oper_log` VALUES (1804353893294624769, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026466088);
+INSERT INTO `sys_oper_log` VALUES (1804353946650365953, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026478808);
+INSERT INTO `sys_oper_log` VALUES (1804353999729283074, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026491463);
+INSERT INTO `sys_oper_log` VALUES (1804354070881456130, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel_batch', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026508441);
+INSERT INTO `sys_oper_log` VALUES (1804354091366436865, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026513311);
+INSERT INTO `sys_oper_log` VALUES (1804354388973277186, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026584267);
+INSERT INTO `sys_oper_log` VALUES (1804354471731089410, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026603995);
+INSERT INTO `sys_oper_log` VALUES (1804354513502162946, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel_batch', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026613958);
+INSERT INTO `sys_oper_log` VALUES (1804354552404332545, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026623231);
+INSERT INTO `sys_oper_log` VALUES (1804354788161966081, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026679439);
+INSERT INTO `sys_oper_log` VALUES (1804354826795700225, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026688651);
+INSERT INTO `sys_oper_log` VALUES (1804354841266049025, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel_batch', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026692102);
+INSERT INTO `sys_oper_log` VALUES (1804354900170854402, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026706144);
+INSERT INTO `sys_oper_log` VALUES (1804354961789374465, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026720836);
+INSERT INTO `sys_oper_log` VALUES (1804355037911797762, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026738984);
+INSERT INTO `sys_oper_log` VALUES (1804355476677939201, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026843595);
+INSERT INTO `sys_oper_log` VALUES (1804355506440720385, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.batchAuth()', 'POST', 'admin', '/role/authorize_user', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026850697);
+INSERT INTO `sys_oper_log` VALUES (1804355545862983681, 0, '角色管理', '4', 'com.thingslink.user.controller.SysRoleController.cancelAuth()', 'POST', 'admin', '/role/authorize/cancel_batch', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719026860098);
 
 SET FOREIGN_KEY_CHECKS = 1;

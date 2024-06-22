@@ -30,7 +30,7 @@ import java.util.Map;
  */
 @Tag(name = "菜单管理")
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/sys_menu")
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
     private final SysRoleMenuMapper sysRoleMenuMapper;
@@ -54,14 +54,14 @@ public class SysMenuController extends BaseController {
     }
 
     @Operation(summary = "菜单下拉树列表")
-    @GetMapping("/treeList")
+    @GetMapping("/tree")
     public Result<?> treeList(SysMenu menu) {
         List<SelectTree> selectTrees = sysMenuService.listMenuSelectTree(menu);
         return success(selectTrees);
     }
 
     @Operation(summary = "角色菜单列表树")
-    @GetMapping("/roleMenuTreeList/{roleId}")
+    @GetMapping("/tree_by_role/{roleId}")
     @PreAuthorize("@ps.hasPerms('menu:list')")
     public Result<?> roleMenuTreeList(@PathVariable Long roleId) {
         Map<String, Object> res = new HashMap<>(2);
@@ -71,7 +71,7 @@ public class SysMenuController extends BaseController {
     }
 
     @Operation(summary = "租户套餐菜单列表树")
-    @GetMapping("/tenantPackageMenuTreeList/{packageId}")
+    @GetMapping("/tree_by_tenant_package/{packageId}")
     @PreAuthorize("@ps.hasPerms('menu:list') && @SysUtil.isSuperTenant()")
     public Result<?> tenantPackageMenuTreeList(@PathVariable Long packageId) {
         Map<String, Object> res = new HashMap<>(2);
@@ -82,7 +82,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('menu:add') && @SysUtil.isSuperTenant()")
     public Result<?> add(@Valid @RequestBody SysMenu menu) {
         if (StringUtil.equals(CommonConstants.NOT_UNIQUE, sysMenuService.checkMenuNameUnique(menu.getMenuName(), menu.getParentId()))) {
@@ -96,7 +96,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('menu:edit') && @SysUtil.isSuperTenant()")
     public Result<?> edit(@Valid @RequestBody SysMenu menu) {
         if (StringUtil.equals(CommonConstants.NOT_UNIQUE, sysMenuService.checkMenuNameUnique(menu.getMenuName(), menu.getParentId()))) {
@@ -113,9 +113,9 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.DELETE)
-    @DeleteMapping("/{menuId}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('menu:remove') && @SysUtil.isSuperTenant()")
-    public Result<?> remove(@PathVariable Long menuId) {
+    public Result<?> remove(@RequestBody Long menuId) {
         if (sysMenuService.hasChildByMenuId(menuId)) {
             return fail("存在子菜单,不允许删除");
         }

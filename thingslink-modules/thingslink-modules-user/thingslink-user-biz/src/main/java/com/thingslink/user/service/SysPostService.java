@@ -38,6 +38,6 @@ public interface SysPostService {
      * @param postIds 需要删除的岗位ID
      * @return 结果
      */
-    int deleteByPostIds(Long... postIds);
+    int deleteByPostIds(List<Long> postIds);
 
 }

@@ -56,14 +56,14 @@ public interface SysUserService {
      * @param userId  管理员ID
      * @param roleIds 角色组
      */
-    void allocateRoles(Long userId, Long[] roleIds);
+    void allocateRoles(Long userId, List<Long> roleIds);
 
     /**
      * 校验是否有数据权限
      *
      * @param userIds 被操作的对象id
      */
-    void checkDataScopes(Long... userIds);
+    void checkDataScopes(List<Long> userIds);
 
     /**
      * 校验用户是否唯一

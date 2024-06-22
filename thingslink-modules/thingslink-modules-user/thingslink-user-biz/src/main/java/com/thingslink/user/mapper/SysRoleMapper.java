@@ -5,6 +5,7 @@ import com.thingslink.common.orm.annotation.DeptScope;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
 import com.thingslink.user.domain.SysRole;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -27,22 +28,6 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
     }
 
     /**
-     * 批量删除角色信息
-     *
-     * @param roleIds 需要删除的角色ID
-     * @return 结果
-     */
-    @Delete("""
-            <script>
-                DELETE FROM sys_role WHERE role_id IN
-                    <foreach collection="array" item="roleId" open="(" separator="," close=")">
-                        #{roleId}
-                    </foreach>
-            </script>
-            """)
-    int deleteByRoleIds(Long[] roleIds);
-
-    /**
      * 校验是否有该角色操作权限
      *
      * @param roleIds 待操作的角色id
@@ -51,11 +36,11 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
     @Select("""
             <script>
                 SELECT COUNT(*) FROM sys_role WHERE role_id IN
-                    <foreach collection="array" item="roleId" open="(" separator="," close=")">
+                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
     @DeptScope
-    int checkDataScopes(Long... roleIds);
+    int checkDataScopes(@Param("roleIds") List<Long> roleIds);
 }

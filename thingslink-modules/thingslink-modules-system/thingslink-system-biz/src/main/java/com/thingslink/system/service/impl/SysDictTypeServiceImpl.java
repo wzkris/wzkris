@@ -1,5 +1,6 @@
 package com.thingslink.system.service.impl;
 
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.thingslink.common.core.exception.BusinessExceptionI18n;
 import com.thingslink.common.core.utils.StringUtil;
@@ -114,7 +115,8 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     public int insertDictType(SysDictType dict) {
         int row = sysDictTypeMapper.insert(dict);
         if (row > 0) {
-            DictUtil.setDictCache(dict.getDictType(), null);
+            List<SysDictData> sysDictData = sysDictDataMapper.listByType(dict.getDictType());
+            DictUtil.setDictCache(dict.getDictType(), sysDictData);
         }
         return row;
     }
@@ -141,14 +143,14 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     /**
      * 校验字典类型称是否唯一
      *
-     * @param sysDictType 字典类型
+     * @param dictType 字典类型
      * @return 结果
      */
     @Override
-    public boolean checkDictTypeUnique(SysDictType sysDictType) {
+    public boolean checkDictTypeUnique(SysDictType dictType) {
         LambdaQueryWrapper<SysDictType> lqw = new LambdaQueryWrapper<SysDictType>()
-                .eq(SysDictType::getDictType, sysDictType.getDictType())
-                .ne(SysDictType::getDictId, sysDictType.getDictId());
+                .eq(SysDictType::getDictType, dictType.getDictType())
+                .ne(ObjUtil.isNotNull(dictType.getDictId()), SysDictType::getDictId, dictType.getDictId());
         return sysDictTypeMapper.exists(lqw);
     }
 }

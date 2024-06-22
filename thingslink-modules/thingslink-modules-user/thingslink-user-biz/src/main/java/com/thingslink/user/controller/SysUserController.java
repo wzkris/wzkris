@@ -8,12 +8,13 @@ import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.common.orm.page.Page;
-import com.thingslink.common.security.utils.SysUtil;
+import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.user.domain.SysDept;
 import com.thingslink.user.domain.SysPost;
 import com.thingslink.user.domain.SysRole;
 import com.thingslink.user.domain.SysUser;
 import com.thingslink.user.domain.dto.SysUserDTO;
+import com.thingslink.user.domain.dto.SysUserRolesDTO;
 import com.thingslink.user.domain.vo.SysUserVO;
 import com.thingslink.user.mapper.SysUserMapper;
 import com.thingslink.user.mapper.SysUserPostMapper;
@@ -24,15 +25,16 @@ import com.thingslink.user.service.SysRoleService;
 import com.thingslink.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +45,7 @@ import java.util.Map;
 @Tag(name = "用户管理")
 @Validated
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/sys_user")
 @RequiredArgsConstructor
 public class SysUserController extends BaseController {
     private final SysUserMapper sysUserMapper;
@@ -68,17 +70,15 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('user:query')")
     public Result<?> getInfo(@PathVariable(required = false) Long userId) {
         // 校验权限
-        sysUserService.checkDataScopes(userId);
+        sysUserService.checkDataScopes(Collections.singletonList(userId));
         SysUser user = sysUserMapper.selectById(userId);
-        // 未指定用户则默认为自身租户
-        Long specifyTenantId = user == null ? SysUtil.getTenantId() : user.getTenantId();
         Map<String, Object> res = new HashMap<>(8);
         // 用户信息
         res.put("user", user);
         // 可授权角色、岗位、部门
-        res.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE).setTenantId(specifyTenantId)));
-        res.put("posts", sysPostService.list(new SysPost(CommonConstants.STATUS_ENABLE).setTenantId(specifyTenantId)));
-        res.put("depts", sysDeptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE).setTenantId(specifyTenantId)));
+        res.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        res.put("posts", sysPostService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
+        res.put("depts", sysDeptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
         // 已授权角色与岗位
         res.put("postIds", sysUserPostMapper.listPostIdByUserId(userId));
         res.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
@@ -87,7 +87,7 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "新增用户")
     @OperateLog(title = "后台管理", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('user:add')")
     public Result<?> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
         // 校验租户ID
@@ -108,11 +108,11 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "修改用户")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> edit(@Validated @RequestBody SysUserDTO userDTO) {
         // 校验权限
-        sysUserService.checkDataScopes(userDTO.getUserId());
+        sysUserService.checkDataScopes(Collections.singletonList(userDTO.getUserId()));
         // 校验租户ID
         sysUserService.checkTenantId(userDTO);
         if (sysUserService.checkUserUnique(new SysUser().setUsername(userDTO.getUsername()), userDTO.getUserId())) {
@@ -131,21 +131,21 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "删除用户")
     @OperateLog(title = "后台管理", operateType = OperateType.DELETE)
-    @DeleteMapping("/{userIds}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('user:remove')")
-    public Result<?> remove(@PathVariable Long[] userIds) {
+    public Result<?> remove(@RequestBody List<Long> userIds) {
         // 校验权限
         sysUserService.checkDataScopes(userIds);
-        return toRes(sysUserMapper.deleteBatchIds(Arrays.asList(userIds)));
+        return toRes(sysUserMapper.deleteByIds(userIds));
     }
 
     @Operation(summary = "重置密码")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
-    @PutMapping("/resetPwd")
+    @PostMapping("/reset_password")
     @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> resetPwd(@RequestBody SysUser user) {
         // 校验权限
-        sysUserService.checkDataScopes(user.getUserId());
+        sysUserService.checkDataScopes(Collections.singletonList(user.getUserId()));
 
         SysUser update = new SysUser(user.getUserId());
         update.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -154,25 +154,28 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "状态修改")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
-    @PutMapping("/changeStatus")
+    @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('user:edit')")
-    public Result<?> changeStatus(@RequestBody SysUser user) {
+    public Result<?> editStatus(@RequestBody SysUser user) {
         // 校验权限
-        sysUserService.checkDataScopes(user.getUserId());
+        sysUserService.checkDataScopes(Collections.singletonList(user.getUserId()));
         SysUser update = new SysUser(user.getUserId());
         update.setStatus(user.getStatus());
         return toRes(sysUserMapper.updateById(update));
     }
 
     @Operation(summary = "根据用户id获取授权角色")
-    @GetMapping("/authRole/{userId}")
+    @GetMapping("/authorize_role/{userId}")
     @PreAuthorize("@ps.hasPerms('user:query')")
     public Result<?> authRole(@PathVariable Long userId) {
         // 校验权限
-        sysUserService.checkDataScopes(userId);
+        sysUserService.checkDataScopes(Collections.singletonList(userId));
+        SysUser sysUser = sysUserMapper.selectById(userId);
+        // 可授权角色必须根据租户来
+        DynamicTenantUtil.set(sysUser.getTenantId());
         Map<String, Object> res = new HashMap<>(4);
         // 被授权用户信息
-        res.put("user", sysUserMapper.selectById(userId));
+        res.put("user", sysUser);
         // 用户角色
         res.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
         // 可授权角色
@@ -182,15 +185,15 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户授权角色")
     @OperateLog(title = "后台管理", operateType = OperateType.GRANT)
-    @PutMapping("/authRole")
+    @PostMapping("/authorize_role")
     @PreAuthorize("@ps.hasPerms('user:edit')")
-    public Result<?> authRole(Long userId, @NotEmpty(message = "[roleIds] {validate.notnull}") Long[] roleIds) {
+    public Result<?> authRole(@RequestBody @Valid SysUserRolesDTO userRolesDTO) {
         // 校验用户可操作权限
-        sysUserService.checkDataScopes(userId);
+        sysUserService.checkDataScopes(Collections.singletonList(userRolesDTO.getUserId()));
         // 校验角色可操作权限
-        sysRoleService.checkDataScopes(roleIds);
+        sysRoleService.checkDataScopes(userRolesDTO.getRoleIds());
         // 分配权限
-        sysUserService.allocateRoles(userId, roleIds);
+        sysUserService.allocateRoles(userRolesDTO.getUserId(), userRolesDTO.getRoleIds());
         return success();
     }
 }

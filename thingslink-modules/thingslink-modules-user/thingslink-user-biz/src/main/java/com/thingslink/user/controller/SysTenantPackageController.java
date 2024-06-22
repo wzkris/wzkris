@@ -20,7 +20,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,22 +31,22 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/tenant/package")
+@RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {
 
     private final SysTenantPackageMapper tenantPackageMapper;
     private final SysTenantPackageService tenantPackageService;
 
     @Operation(summary = "套餐分页")
-    @PreAuthorize("@ps.hasPerms('tenantPackage:list')")
     @GetMapping("/list")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:list')")
     public Result<Page<SysTenantPackage>> list(SysTenantPackage sysTenantPackage) {
         return success(tenantPackageService.listPage(sysTenantPackage));
     }
 
     @Operation(summary = "套餐下拉选列表")
-    @PreAuthorize("@ps.hasPerms('tenantPackage:list')")
     @GetMapping("/selectList")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:list')")
     public Result<List<SysTenantPackage>> selectList() {
         LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
                 .eq(SysTenantPackage::getStatus, CommonConstants.STATUS_ENABLE);
@@ -55,34 +54,34 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "套餐详细信息")
-    @PreAuthorize("@ps.hasPerms('tenantPackage:query')")
     @GetMapping("/{packageId}")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:query')")
     public Result<SysTenantPackage> getInfo(@NotNull(message = "[packageId] {validate.notnull}")
                                             @PathVariable Long packageId) {
         return success(tenantPackageMapper.selectById(packageId));
     }
 
     @Operation(summary = "新增租户套餐")
-    @PreAuthorize("@ps.hasPerms('tenantPackage:add')")
     @OperateLog(title = "租户套餐", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:add')")
     public Result<Void> add(@Valid @RequestBody SysTenantPackage tenantPackage) {
         return toRes(tenantPackageMapper.insert(tenantPackage));
     }
 
     @Operation(summary = "修改租户套餐")
-    @PreAuthorize("@ps.hasPerms('tenantPackage:edit')")
     @OperateLog(title = "租户套餐", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:edit')")
     public Result<Void> edit(@Valid @RequestBody SysTenantPackage tenantPackage) {
         return toRes(tenantPackageMapper.updateById(tenantPackage));
     }
 
     @Operation(summary = "删除租户套餐")
-    @PreAuthorize("@ps.hasPerms('tenantPackage:remove')")
     @OperateLog(title = "租户套餐", operateType = OperateType.DELETE)
-    @DeleteMapping("/{packageIds}")
-    public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @PathVariable Long[] packageIds) {
-        return toRes(tenantPackageMapper.deleteBatchIds(Arrays.asList(packageIds)));
+    @PostMapping("/remove")
+    @PreAuthorize("@ps.hasPerms('tenantPackage:remove')")
+    public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @RequestBody List<Long> packageIds) {
+        return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }
 }

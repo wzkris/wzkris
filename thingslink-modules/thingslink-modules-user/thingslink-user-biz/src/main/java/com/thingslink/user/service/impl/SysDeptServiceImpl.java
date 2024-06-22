@@ -19,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -227,10 +225,9 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @param deptIds 部门id
      */
     @Override
-    public void checkDataScopes(Long... deptIds) {
-        deptIds = Arrays.stream(deptIds).filter(Objects::nonNull).toArray(Long[]::new);
+    public void checkDataScopes(List<Long> deptIds) {
         if (ObjUtil.isNotEmpty(deptIds)) {
-            if (!(sysDeptMapper.checkDataScopes(deptIds) == deptIds.length)) {
+            if (!(sysDeptMapper.checkDataScopes(deptIds) == deptIds.size())) {
                 throw new AccessDeniedException("没有访问数据权限");
             }
         }

@@ -55,7 +55,7 @@ public class SysNoticeController extends BaseController {
      * 新增通知公告
      */
     @OperateLog(title = "通知公告", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('notice:add')")
     public Result<?> add(@Validated @RequestBody SysNotice notice) {
         notice.setMessageId(IdUtil.fastSimpleUUID());
@@ -66,7 +66,7 @@ public class SysNoticeController extends BaseController {
      * 修改通知公告
      */
     @OperateLog(title = "通知公告", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('notice:edit')")
     public Result<?> edit(@Validated @RequestBody SysNotice notice) {
         return toRes(sysNoticeMapper.updateById(notice));
@@ -76,9 +76,9 @@ public class SysNoticeController extends BaseController {
      * 删除通知公告
      */
     @OperateLog(title = "通知公告", operateType = OperateType.DELETE)
-    @DeleteMapping("{noticeIds}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('notice:remove')")
-    public Result<?> remove(@PathVariable Long[] noticeIds) {
-        return toRes(sysNoticeMapper.deleteBatchIds(Arrays.asList(noticeIds)));
+    public Result<?> remove(@RequestBody Long[] noticeIds) {
+        return toRes(sysNoticeMapper.deleteByIds(Arrays.asList(noticeIds)));
     }
 }

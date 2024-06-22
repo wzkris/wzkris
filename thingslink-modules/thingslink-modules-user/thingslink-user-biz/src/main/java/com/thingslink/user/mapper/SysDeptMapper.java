@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.thingslink.common.orm.annotation.DeptScope;
 import com.thingslink.common.orm.plus.BaseMapperPlus;
 import com.thingslink.user.domain.SysDept;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -85,10 +86,10 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
     @Select("""
             <script>
                 SELECT COUNT(*) FROM sys_dept WHERE dept_id IN
-                    <foreach collection="array" item="deptId" open="(" separator="," close=")">
+                    <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
                         #{deptId}
                     </foreach>
             </script>
             """)
-    int checkDataScopes(Long... deptIds);
+    int checkDataScopes(@Param("deptIds") List<Long> deptIds);
 }

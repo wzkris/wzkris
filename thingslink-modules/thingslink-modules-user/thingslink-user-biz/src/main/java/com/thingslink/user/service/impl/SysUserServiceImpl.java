@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -153,7 +155,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void allocateRoles(Long userId, Long[] roleIds) {
+    public void allocateRoles(Long userId, List<Long> roleIds) {
         sysUserRoleMapper.deleteByUserId(userId);
         this.insertUserRole(userId, roleIds);
     }
@@ -161,9 +163,9 @@ public class SysUserServiceImpl implements SysUserService {
     /**
      * 新增用户与角色信息
      */
-    private void insertUserRole(Long userId, Long[] roleIds) {
+    private void insertUserRole(Long userId, List<Long> roleIds) {
         if (ObjUtil.isNotEmpty(roleIds)) {
-            List<SysUserRole> list = Arrays.stream(roleIds)
+            List<SysUserRole> list = roleIds.stream()
                     .map(roleId -> new SysUserRole(userId, roleId))
                     .toList();
             sysUserRoleMapper.insertBatch(list);
@@ -173,9 +175,9 @@ public class SysUserServiceImpl implements SysUserService {
     /**
      * 新增用户部门信息
      */
-    public void insertUserPost(Long userId, Long[] postIds) {
+    public void insertUserPost(Long userId, List<Long> postIds) {
         if (ObjUtil.isNotEmpty(postIds)) {
-            List<SysUserPost> list = Arrays.stream(postIds)
+            List<SysUserPost> list = postIds.stream()
                     .map(postId -> new SysUserPost(userId, postId))
                     .toList();
             sysUserPostMapper.insertBatch(list);
@@ -202,10 +204,9 @@ public class SysUserServiceImpl implements SysUserService {
      *
      * @param userIds 被操作的对象id
      */
-    public void checkDataScopes(Long... userIds) {
-        userIds = Arrays.stream(userIds).filter(Objects::nonNull).toArray(Long[]::new);
+    public void checkDataScopes(List<Long> userIds) {
         if (ObjUtil.isNotEmpty(userIds)) {
-            if (!(sysUserMapper.checkDataScopes(userIds) == userIds.length)) {
+            if (!(sysUserMapper.checkDataScopes(userIds) == userIds.size())) {
                 throw new AccessDeniedException("当前用户没有权限访问数据");
             }
         }
@@ -262,18 +263,18 @@ public class SysUserServiceImpl implements SysUserService {
         if (ObjUtil.isNotEmpty(userDTO.getRoleIds())) {
             Long roleSize = new LambdaQueryChainWrapper<>(sysRoleMapper)
                     .eq(SysRole::getTenantId, tenantId)
-                    .in(SysRole::getRoleId, Arrays.asList(userDTO.getRoleIds()))
+                    .in(SysRole::getRoleId, userDTO.getRoleIds())
                     .count();
-            if (roleSize != userDTO.getRoleIds().length) {
+            if (roleSize != userDTO.getRoleIds().size()) {
                 throw new BusinessException("操作失败，角色归属租户与用户租户不一致");
             }
         }
         if (ObjUtil.isNotEmpty(userDTO.getPostIds())) {
             Long postSize = new LambdaQueryChainWrapper<>(sysPostMapper)
                     .eq(SysPost::getTenantId, tenantId)
-                    .in(SysPost::getPostId, Arrays.asList(userDTO.getPostIds()))
+                    .in(SysPost::getPostId, userDTO.getPostIds())
                     .count();
-            if (postSize != userDTO.getPostIds().length) {
+            if (postSize != userDTO.getPostIds().size()) {
                 throw new BusinessException("操作失败，岗位归属租户与用户租户不一致");
             }
         }

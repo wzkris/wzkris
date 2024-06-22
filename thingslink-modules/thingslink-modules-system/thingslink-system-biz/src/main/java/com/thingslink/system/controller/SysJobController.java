@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Tag(name = "调度任务信息")
 @RestController
-@RequestMapping("job")
+@RequestMapping("/job")
 @RequiredArgsConstructor
 public class SysJobController extends BaseController {
     private final SysJobService sysJobService;
@@ -35,7 +35,7 @@ public class SysJobController extends BaseController {
     /**
      * 查询定时任务列表
      */
-    @GetMapping("list")
+    @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('job:list')")
     public Result<Page<SysJob>> list(SysJob sysJob) {
         startPage();
@@ -46,7 +46,7 @@ public class SysJobController extends BaseController {
     /**
      * 获取定时任务详细信息
      */
-    @GetMapping(value = "{jobId}")
+    @GetMapping("/{jobId}")
     @PreAuthorize("@ps.hasPerms('job:query')")
     public Result<?> getInfo(@PathVariable("jobId") Long jobId) {
         return success(sysJobService.selectJobById(jobId));
@@ -56,7 +56,7 @@ public class SysJobController extends BaseController {
      * 新增定时任务
      */
     @OperateLog(title = "定时任务", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('job:add')")
     public Result<?> add(@RequestBody SysJob sysJob) throws SchedulerException, TaskException {
         if (!CronUtils.isValid(sysJob.getCronExpression())) {
@@ -84,7 +84,7 @@ public class SysJobController extends BaseController {
      * 修改定时任务
      */
     @OperateLog(title = "定时任务", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('job:edit')")
     public Result<?> edit(@RequestBody SysJob sysJob) throws SchedulerException, TaskException {
         if (!CronUtils.isValid(sysJob.getCronExpression())) {
@@ -112,9 +112,9 @@ public class SysJobController extends BaseController {
      * 定时任务状态修改
      */
     @OperateLog(title = "定时任务", operateType = OperateType.UPDATE)
-    @PutMapping("changeStatus")
+    @PostMapping("/edit_Status")
     @PreAuthorize("@ps.hasPerms('job:changeStatus')")
-    public Result<?> changeStatus(@RequestBody SysJob sysJob) throws SchedulerException {
+    public Result<?> editStatus(@RequestBody SysJob sysJob) throws SchedulerException {
         SysJob newSysJob = sysJobService.selectJobById(sysJob.getJobId());
         newSysJob.setStatus(sysJob.getStatus());
         return toRes(sysJobService.changeStatus(newSysJob));
@@ -124,7 +124,7 @@ public class SysJobController extends BaseController {
      * 定时任务立即执行一次
      */
     @OperateLog(title = "定时任务", operateType = OperateType.UPDATE)
-    @PutMapping("run")
+    @PostMapping("/run")
     @PreAuthorize("@ps.hasPerms('job:changeStatus')")
     public Result<?> run(@RequestBody SysJob sysJob) throws SchedulerException {
         boolean result = sysJobService.run(sysJob);
@@ -135,9 +135,9 @@ public class SysJobController extends BaseController {
      * 删除定时任务
      */
     @OperateLog(title = "定时任务", operateType = OperateType.DELETE)
-    @DeleteMapping("{jobIds}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('job:remove')")
-    public Result<?> remove(@PathVariable Long[] jobIds) throws SchedulerException, TaskException {
+    public Result<?> remove(@RequestBody Long[] jobIds) throws SchedulerException {
         sysJobService.deleteJobByIds(jobIds);
         return success();
     }

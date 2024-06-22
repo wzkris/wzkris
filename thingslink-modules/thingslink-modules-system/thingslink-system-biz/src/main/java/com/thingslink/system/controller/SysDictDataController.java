@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -68,7 +69,7 @@ public class SysDictDataController extends BaseController {
      * 新增字典类型
      */
     @OperateLog(title = "字典数据", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dict:add')")
     public Result<?> add(@Validated @RequestBody SysDictData dict) {
         return toRes(sysDictDataService.insertDictData(dict));
@@ -78,7 +79,7 @@ public class SysDictDataController extends BaseController {
      * 修改保存字典类型
      */
     @OperateLog(title = "字典数据", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('dict:edit')")
     public Result<?> edit(@Validated @RequestBody SysDictData dict) {
         return toRes(sysDictDataService.updateDictData(dict));
@@ -88,10 +89,10 @@ public class SysDictDataController extends BaseController {
      * 删除字典类型
      */
     @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
-    @DeleteMapping("/{dictCodes}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('dict:remove')")
-    public Result<?> remove(@PathVariable Long[] dictCodes) {
-        sysDictDataService.deleteDictDataByIds(dictCodes);
+    public Result<?> remove(@RequestBody Long[] dictCodes) {
+        sysDictDataService.deleteDictDataByIds(Arrays.asList(dictCodes));
         return success();
     }
 }
