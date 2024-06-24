@@ -54,12 +54,12 @@ public interface SysUserRoleMapper {
     @Delete("""
             <script>
                 DELETE FROM sys_user_role WHERE user_id IN
-                    <foreach collection="array" item="userId" open="(" separator="," close=")">
+                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
                         #{userId}
                     </foreach>
             </script>
             """)
-    int deleteBatchByUserIds(Long... userIds);
+    int deleteBatchByUserIds(@Param("userIds") List<Long> userIds);
 
     /**
      * 通过角色ID查询角色使用数量
@@ -70,28 +70,28 @@ public interface SysUserRoleMapper {
     @Select("""
             <script>
                 SELECT COUNT(*) FROM sys_user_role WHERE role_id IN
-                    <foreach collection="array" item="roleId" open="(" separator="," close=")">
+                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    int countByRoleIds(Long[] roleIds);
+    int countByRoleIds(@Param("roleIds") List<Long> roleIds);
 
     /**
      * 批量新增用户角色信息
      *
-     * @param sysUserRoleList 用户角色列表
+     * @param list 用户角色列表
      * @return 结果
      */
     @Insert("""
             <script>
                 INSERT INTO sys_user_role(user_id, role_id) VALUES
-                    <foreach item="item" index="index" collection="list" separator=",">
+                    <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.userId}, #{item.roleId})
                     </foreach>
             </script>
             """)
-    int insertBatch(List<SysUserRole> sysUserRoleList);
+    int insertBatch(@Param("list") List<SysUserRole> list);
 
     /**
      * 删除
@@ -116,6 +116,6 @@ public interface SysUserRoleMapper {
                     </foreach>
             </script>
             """)
-    int deleteBatch(@Param("roleId") Long roleId, @Param("userIds") Long[] userIds);
+    int deleteBatch(@Param("roleId") Long roleId, @Param("userIds") List<Long> userIds);
 
 }

@@ -117,6 +117,16 @@ public class RedisUtil {
     }
 
     /**
+     * 缓存HASH
+     *
+     * @param key Redis键
+     * @param map HashMap
+     */
+    public static <T> void setMap(final String key, final Map<String, Object> map) {
+        redissonclient.getMap(key).putAll(map);
+    }
+
+    /**
      * 往Hash中存入数据
      *
      * @param key   Redis键

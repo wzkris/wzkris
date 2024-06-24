@@ -3,11 +3,10 @@ package com.thingslink.auth.oauth2.endpoint;
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.util.StrUtil;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.oauth2.constants.OAuth2SecurityConstants;
 import com.thingslink.common.security.oauth2.constants.OAuth2Type;
-import com.thingslink.common.security.oauth2.model.LoginClient;
-import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.oauth2.domain.OAuth2User;
+import com.thingslink.common.security.oauth2.domain.model.LoginClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +32,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Tag(name = "OAuth2端点")
@@ -99,7 +97,7 @@ public class OAuth2Endpoint {
             OAuth2User oAuth2User = new OAuth2User(
                     OAuth2Type.CLIENT.getValue(),
                     oAuth2Authorization.getPrincipalName(),
-                    JsonUtil.parseObject(loginClient, HashMap.class),
+                    loginClient,
                     AuthorityUtils.createAuthorityList(oAuth2Authorization.getAuthorizedScopes())
             );
             return ResponseEntity.ok(oAuth2User);

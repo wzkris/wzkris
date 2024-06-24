@@ -36,7 +36,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
      * @param dictCodes 需要删除的字典数据ID
      */
     @Override
-    public void deleteDictDataByIds(Long[] dictCodes) {
+    public void deleteDictDataByIds(List<Long> dictCodes) {
         for (Long dictCode : dictCodes) {
             SysDictData data = sysDictDataMapper.selectById(dictCode);
             sysDictDataMapper.deleteById(dictCode);

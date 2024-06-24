@@ -3,6 +3,7 @@ package com.thingslink.user.mapper;
 import com.thingslink.user.domain.SysUserPost;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -43,12 +44,12 @@ public interface SysUserPostMapper {
     @Select("""
             <script>
                 SELECT COUNT(*) FROM sys_user_post WHERE post_id IN
-                    <foreach collection="array" item="postId" open="(" separator="," close=")">
+                    <foreach collection="postIds" item="postId" open="(" separator="," close=")">
                         #{postId}
                     </foreach>
             </script>
             """)
-    int countByPostIds(Long[] postIds);
+    int countByPostIds(@Param("postIds") List<Long> postIds);
 
     /**
      * 批量删除用户和岗位关联
@@ -59,12 +60,12 @@ public interface SysUserPostMapper {
     @Delete("""
             <script>
                 DELETE FROM sys_user_post WHERE user_id IN
-                    <foreach collection="array" item="userId" open="(" separator="," close=")">
+                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
                         #{userId}
                     </foreach>
             </script>
             """)
-    int deleteBatchByUserIds(Long[] userIds);
+    int deleteBatchByUserIds(@Param("userIds") List<Long> userIds);
 
     /**
      * 批量新增用户岗位信息
@@ -80,6 +81,6 @@ public interface SysUserPostMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(List<SysUserPost> sysUserPostList);
+    int insertBatch(@Param("list") List<SysUserPost> sysUserPostList);
 
 }

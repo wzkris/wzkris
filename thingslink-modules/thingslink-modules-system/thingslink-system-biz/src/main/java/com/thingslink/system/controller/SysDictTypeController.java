@@ -52,7 +52,7 @@ public class SysDictTypeController extends BaseController {
      * 新增字典类型
      */
     @OperateLog(title = "字典类型", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dict:add')")
     public Result<?> add(@Validated @RequestBody SysDictType dict) {
         if (sysDictTypeService.checkDictTypeUnique(dict)) {
@@ -65,7 +65,7 @@ public class SysDictTypeController extends BaseController {
      * 修改字典类型
      */
     @OperateLog(title = "字典类型", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('dict:edit')")
     public Result<?> edit(@Validated @RequestBody SysDictType dict) {
         if (sysDictTypeService.checkDictTypeUnique(dict)) {
@@ -78,9 +78,9 @@ public class SysDictTypeController extends BaseController {
      * 删除字典类型
      */
     @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
-    @DeleteMapping("/{dictIds}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('dict:remove')")
-    public Result<?> remove(@PathVariable Long[] dictIds) {
+    public Result<?> remove(@RequestBody Long[] dictIds) {
         sysDictTypeService.deleteDictTypeByIds(dictIds);
         return success();
     }
@@ -89,7 +89,7 @@ public class SysDictTypeController extends BaseController {
      * 刷新字典缓存
      */
     @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
-    @DeleteMapping("/refreshCache")
+    @PostMapping("/refreshCache")
     @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> refreshCache() {
         sysDictTypeService.resetDictCache();

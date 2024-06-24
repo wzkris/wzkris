@@ -6,7 +6,7 @@ import com.thingslink.user.api.domain.dto.LoginInfoDTO;
 import com.thingslink.user.api.fallback.RemoteAppUserApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,6 +32,6 @@ public interface RemoteAppUserApi {
     /**
      * 更新用户登录信息
      */
-    @PutMapping(INNER_REQUEST_PATH + "/update_app_user_logininfo")
+    @PostMapping(INNER_REQUEST_PATH + "/update_app_user_logininfo")
     void updateLoginInfo(@RequestBody LoginInfoDTO loginInfoDTO);
 }

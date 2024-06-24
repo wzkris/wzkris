@@ -8,7 +8,7 @@ import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.system.constant.ScheduleConstants;
 import com.thingslink.system.domain.SysJob;
 import com.thingslink.system.domain.SysJobLog;
-import com.thingslink.system.service.SysJobLogService;
+import com.thingslink.system.mapper.SysJobLogMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 
@@ -77,7 +77,7 @@ public abstract class AbstractQuartzJob implements org.quartz.Job {
         }
 
         // 写入数据库当中
-        SpringUtil.getBean(SysJobLogService.class).addJobLog(sysJobLog);
+        SpringUtil.getBean(SysJobLogMapper.class).insert(sysJobLog);
     }
 
     /**

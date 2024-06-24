@@ -2,20 +2,23 @@ package com.thingslink.common.orm.annotation.aspect;
 
 
 import com.thingslink.common.core.exception.BusinessException;
+import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.annotation.DynamicTenant;
-import com.thingslink.common.orm.utils.TenantUtil;
+import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.common.security.utils.SysUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.security.access.expression.ExpressionUtils;
 
 import java.lang.reflect.Method;
 
@@ -31,28 +34,43 @@ public class DynamicTenantAspect {
     private final ExpressionParser spel = new SpelExpressionParser();
     // 方法参数名解析器
     private final DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
+    // spel标准解析上下文
+    private volatile static StandardEvaluationContext context;
 
     /**
      * 加入@DynamicTenant注解的方法执行前设置动态租户，执行后清除
      */
-    @Around("@annotation(dynamicTenant)")
+    @Around("@annotation(dynamicTenant) || @within(dynamicTenant)")
     public Object around(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
-        Long tenantId;
-        // 为空则走自身租户
-        if (StringUtil.isBlank(dynamicTenant.value())) {
-            tenantId = SysUtil.getTenantId();
+        boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(dynamicTenant.enableIgnore()), this.createContext());
+
+        if (ignore) {
+            return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
         }
         else {
-            // 否则解析spel，拿到对应参数
-            tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.value(), Long.class);
+            // 未启用忽略则必须走租户
+            Long tenantId;
+            // 为空则走自身租户
+            if (StringUtil.isBlank(dynamicTenant.value())) {
+                tenantId = SysUtil.getTenantId();
+            }
+            else {
+                // 否则解析spel，拿到对应参数
+                tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.value(), Long.class);
+            }
+
+            return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);
         }
-        try {
-            TenantUtil.setDynamic(tenantId);
-            return point.proceed();
+    }
+
+    private StandardEvaluationContext createContext() {
+        if (context == null) {
+            synchronized (this) {
+                context = new StandardEvaluationContext();
+                context.setBeanResolver(new BeanFactoryResolver(SpringUtil.getBeanFactory()));
+            }
         }
-        finally {
-            TenantUtil.clearDynamic();
-        }
+        return context;
     }
 
     /**

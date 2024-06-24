@@ -2,8 +2,8 @@ package com.thingslink.auth.api;
 
 import com.thingslink.auth.api.fallback.RemoteTokenApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import static com.thingslink.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
 
@@ -17,7 +17,7 @@ import static com.thingslink.common.core.constant.SecurityConstants.INNER_REQUES
 public interface RemoteTokenApi {
 
     // 解锁账户
-    @PostMapping(INNER_REQUEST_PATH + "/unlock/{username}")
-    void unlockAccount(@PathVariable("username") String username);
+    @PostMapping(INNER_REQUEST_PATH + "/unlock_account")
+    void unlockAccount(@RequestBody String username);
 
 }

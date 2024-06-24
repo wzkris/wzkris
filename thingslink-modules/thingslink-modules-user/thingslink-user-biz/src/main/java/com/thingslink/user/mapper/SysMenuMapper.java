@@ -47,14 +47,4 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
      * @return 结果
      */
     int hasChildByMenuId(Long menuId);
-
-    /**
-     * 校验菜单名称是否唯一
-     *
-     * @param menuName 菜单名称
-     * @param parentId 父菜单ID
-     * @return 结果
-     */
-    SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
-
 }

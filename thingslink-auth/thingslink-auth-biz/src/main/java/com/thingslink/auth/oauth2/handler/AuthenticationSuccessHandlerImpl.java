@@ -16,7 +16,6 @@
 
 package com.thingslink.auth.oauth2.handler;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.thingslink.auth.listening.event.UserLoginEvent;
@@ -24,7 +23,7 @@ import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.SpringUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.oauth2.domain.OAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +78,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(OAuth2User.class.getName())) {
             OAuth2User oAuth2User = (OAuth2User) additionalParameters.get(OAuth2User.class.getName());
             // 发布登录事件
-            SpringUtil.publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), Convert.toLong(oAuth2User.getAttribute("userId")),
+            SpringUtil.publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), oAuth2User.getDetails(),
                     ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader("User-Agent"))));
             additionalParameters.remove(OAuth2User.class.getName());
         }

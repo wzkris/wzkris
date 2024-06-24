@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ import java.util.List;
  */
 @Tag(name = "登录日志")
 @RestController
-@RequestMapping("loginlog")
+@RequestMapping("/loginlog")
 @RequiredArgsConstructor
 public class SysLoginlogController extends BaseController {
 
@@ -33,7 +32,7 @@ public class SysLoginlogController extends BaseController {
     private final SysLoginLogMapper sysLoginLogMapper;
 
     @Operation(summary = "分页")
-    @GetMapping("list")
+    @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('loginlog:list')")
     public Result<Page<SysLoginLog>> list(SysLoginLog loginLog) {
         startPage();
@@ -41,22 +40,22 @@ public class SysLoginlogController extends BaseController {
         return getDataTable(list);
     }
 
-    @DeleteMapping("{logIds}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('loginlog:remove')")
-    public Result<?> remove(@PathVariable Long[] logIds) {
-        return toRes(sysLoginLogMapper.deleteBatchIds(Arrays.asList(logIds)));
+    public Result<?> remove(@RequestBody List<Long> logIds) {
+        return toRes(sysLoginLogMapper.deleteByIds(logIds));
     }
 
-    @DeleteMapping("clean")
+    @PostMapping("/clean")
     @PreAuthorize("@ps.hasPerms('loginlog:remove')")
     public Result<?> clean() {
         sysLoginLogMapper.clearAll();
         return success();
     }
 
-    @GetMapping("unlock/{username}")
+    @PostMapping("/unlock")
     @PreAuthorize("@ps.hasPerms('loginlog:unlock')")
-    public Result<?> unlock(@PathVariable String username) {
+    public Result<?> unlock(@RequestBody String username) {
         RemoteTokenApi.unlockAccount(username);
         return success();
     }

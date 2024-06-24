@@ -36,7 +36,7 @@ public class RemoteSysUserApiFallback implements FallbackFactory<RemoteSysUserAp
             }
 
             @Override
-            public Result<SysPermissionDTO> getPermission(Long userId, Long tenantId, Long deptId) {
+            public Result<SysPermissionDTO> getPermission(Long userId, Long deptId) {
                 log.error("查询系统用户权限发生异常，errMsg：{}", cause.getMessage(), cause);
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());
             }

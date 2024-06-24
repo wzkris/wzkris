@@ -2,15 +2,15 @@ package com.thingslink.user.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.common.orm.page.Page;
+import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.common.orm.utils.PageUtil;
-import com.thingslink.common.security.utils.SysUtil;
-import com.thingslink.user.domain.*;
+import com.thingslink.user.domain.SysDept;
+import com.thingslink.user.domain.SysUser;
+import com.thingslink.user.domain.SysUserPost;
+import com.thingslink.user.domain.SysUserRole;
 import com.thingslink.user.domain.dto.SysUserDTO;
 import com.thingslink.user.domain.vo.SysUserVO;
 import com.thingslink.user.mapper.*;
@@ -22,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -115,7 +118,6 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @DynamicTenant
     public boolean insertUser(SysUserDTO userDTO) {
         // 密码加密
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -153,7 +155,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void allocateRoles(Long userId, Long[] roleIds) {
+    public void allocateRoles(Long userId, List<Long> roleIds) {
         sysUserRoleMapper.deleteByUserId(userId);
         this.insertUserRole(userId, roleIds);
     }
@@ -161,9 +163,9 @@ public class SysUserServiceImpl implements SysUserService {
     /**
      * 新增用户与角色信息
      */
-    private void insertUserRole(Long userId, Long[] roleIds) {
+    private void insertUserRole(Long userId, List<Long> roleIds) {
         if (ObjUtil.isNotEmpty(roleIds)) {
-            List<SysUserRole> list = Arrays.stream(roleIds)
+            List<SysUserRole> list = roleIds.stream()
                     .map(roleId -> new SysUserRole(userId, roleId))
                     .toList();
             sysUserRoleMapper.insertBatch(list);
@@ -173,9 +175,9 @@ public class SysUserServiceImpl implements SysUserService {
     /**
      * 新增用户部门信息
      */
-    public void insertUserPost(Long userId, Long[] postIds) {
+    public void insertUserPost(Long userId, List<Long> postIds) {
         if (ObjUtil.isNotEmpty(postIds)) {
-            List<SysUserPost> list = Arrays.stream(postIds)
+            List<SysUserPost> list = postIds.stream()
                     .map(postId -> new SysUserPost(userId, postId))
                     .toList();
             sysUserPostMapper.insertBatch(list);
@@ -202,10 +204,10 @@ public class SysUserServiceImpl implements SysUserService {
      *
      * @param userIds 被操作的对象id
      */
-    public void checkDataScopes(Long... userIds) {
-        userIds = Arrays.stream(userIds).filter(Objects::nonNull).toArray(Long[]::new);
+    public void checkDataScopes(List<Long> userIds) {
+        userIds = userIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(userIds)) {
-            if (!(sysUserMapper.checkDataScopes(userIds) == userIds.length)) {
+            if (!(sysUserMapper.checkDataScopes(userIds) == userIds.size())) {
                 throw new AccessDeniedException("当前用户没有权限访问数据");
             }
         }
@@ -216,67 +218,14 @@ public class SysUserServiceImpl implements SysUserService {
      *
      * @param user 筛选条件
      */
-    public boolean checkUserUnique(SysUser user, Long userId) {
-        LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<SysUser>()
-                .eq(StringUtil.isNotNull(user.getUsername()), SysUser::getUsername, user.getUsername())
-                .eq(StringUtil.isNotNull(user.getPhoneNumber()), SysUser::getPhoneNumber, user.getPhoneNumber())
-                .eq(StringUtil.isNotNull(user.getEmail()), SysUser::getEmail, user.getEmail())
-                .ne(ObjUtil.isNotNull(userId), SysUser::getUserId, userId);
-        return sysUserMapper.exists(lqw);
+    public boolean checkUserUnique(SysUser user) {
+        return DynamicTenantUtil.ignore(() -> {
+            LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
+                    .eq(StringUtil.isNotNull(user.getUsername()), SysUser::getUsername, user.getUsername())
+                    .eq(StringUtil.isNotNull(user.getPhoneNumber()), SysUser::getPhoneNumber, user.getPhoneNumber())
+                    .eq(StringUtil.isNotNull(user.getEmail()), SysUser::getEmail, user.getEmail())
+                    .ne(ObjUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId());
+            return sysUserMapper.exists(lqw);
+        });
     }
-
-    /**
-     * 校验相关参数的租户ID是否一致
-     *
-     * @param userDTO 用户参数
-     */
-    @Override
-    public void checkTenantId(SysUserDTO userDTO) {
-        Long tenantId;
-        // userid为空则新增操作，判断是否传了租户ID
-        if (userDTO.getUserId() == null) {
-            if (userDTO.getTenantId() == null) {
-                tenantId = SysUtil.getTenantId();
-            }
-            else {
-                tenantId = userDTO.getTenantId();
-            }
-        }
-        else {
-            // 不为空则是更新操作
-            tenantId = new LambdaQueryChainWrapper<>(sysUserMapper)
-                    .select(SysUser::getTenantId)
-                    .eq(SysUser::getUserId, userDTO.getUserId())
-                    .one().getTenantId();
-        }
-        if (userDTO.getDeptId() != null) {
-            Long deptId = new LambdaQueryChainWrapper<>(sysDeptMapper)
-                    .eq(SysDept::getDeptId, userDTO.getDeptId())
-                    .eq(SysDept::getTenantId, tenantId)
-                    .one()
-                    .getDeptId();
-            if (ObjUtil.notEqual(deptId, userDTO.getDeptId())) {
-                throw new BusinessException("操作失败，部门归属租户与用户租户不一致");
-            }
-        }
-        if (ObjUtil.isNotEmpty(userDTO.getRoleIds())) {
-            Long roleSize = new LambdaQueryChainWrapper<>(sysRoleMapper)
-                    .eq(SysRole::getTenantId, tenantId)
-                    .in(SysRole::getRoleId, Arrays.asList(userDTO.getRoleIds()))
-                    .count();
-            if (roleSize != userDTO.getRoleIds().length) {
-                throw new BusinessException("操作失败，角色归属租户与用户租户不一致");
-            }
-        }
-        if (ObjUtil.isNotEmpty(userDTO.getPostIds())) {
-            Long postSize = new LambdaQueryChainWrapper<>(sysPostMapper)
-                    .eq(SysPost::getTenantId, tenantId)
-                    .in(SysPost::getPostId, Arrays.asList(userDTO.getPostIds()))
-                    .count();
-            if (postSize != userDTO.getPostIds().length) {
-                throw new BusinessException("操作失败，岗位归属租户与用户租户不一致");
-            }
-        }
-    }
-
 }

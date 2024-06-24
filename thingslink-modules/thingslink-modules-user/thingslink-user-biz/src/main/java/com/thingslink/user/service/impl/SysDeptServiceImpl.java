@@ -2,12 +2,9 @@ package com.thingslink.user.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.thingslink.common.core.constant.CommonConstants;
-import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.exception.BusinessExceptionI18n;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.security.utils.SysUtil;
 import com.thingslink.user.domain.SysDept;
 import com.thingslink.user.domain.vo.SelectTree;
 import com.thingslink.user.mapper.SysDeptMapper;
@@ -19,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -160,7 +156,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         if (!CollectionUtils.isEmpty(children)) {
             // 批量更新
-            sysDeptMapper.updateBatchByIds(children);
+            sysDeptMapper.updateById(children);
         }
     }
 
@@ -227,46 +223,11 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @param deptIds 部门id
      */
     @Override
-    public void checkDataScopes(Long... deptIds) {
-        deptIds = Arrays.stream(deptIds).filter(Objects::nonNull).toArray(Long[]::new);
+    public void checkDataScopes(List<Long> deptIds) {
+        deptIds = deptIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(deptIds)) {
-            if (!(sysDeptMapper.checkDataScopes(deptIds) == deptIds.length)) {
+            if (sysDeptMapper.checkDataScopes(deptIds) != deptIds.size()) {
                 throw new AccessDeniedException("没有访问数据权限");
-            }
-        }
-    }
-
-    /**
-     * 校验相关参数的租户ID是否一致
-     *
-     * @param dept 部门参数
-     */
-    @Override
-    public void checkTenantId(SysDept dept) {
-        Long tenantId;
-        // deptid为空则新增操作，判断是否传了租户ID
-        if (dept.getDeptId() == null) {
-            if (dept.getTenantId() == null) {
-                tenantId = SysUtil.getTenantId();
-            }
-            else {
-                tenantId = dept.getTenantId();
-            }
-        }
-        else {
-            // 不为空则是更新操作
-            tenantId = new LambdaQueryChainWrapper<>(sysDeptMapper)
-                    .select(SysDept::getTenantId)
-                    .eq(SysDept::getDeptId, dept.getDeptId())
-                    .one().getTenantId();
-        }
-        if (dept.getParentId() != null && dept.getParentId() != 0L) {
-            Long pCount = new LambdaQueryChainWrapper<>(sysDeptMapper)
-                    .eq(SysDept::getTenantId, tenantId)
-                    .eq(SysDept::getDeptId, dept.getParentId())
-                    .count();
-            if (pCount == 0) {
-                throw new BusinessException("操作失败，该部门租户与上级部门租户不一致");
             }
         }
     }

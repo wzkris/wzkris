@@ -8,7 +8,7 @@ import com.thingslink.user.api.domain.vo.RouterVO;
 import com.thingslink.user.api.fallback.RemoteSysUserApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -38,13 +38,12 @@ public interface RemoteSysUserApi {
      */
     @GetMapping(INNER_REQUEST_PATH + "/query_sys_permission")
     Result<SysPermissionDTO> getPermission(@RequestParam("userId") Long userId,
-                                           @RequestParam("tenantId") Long tenantId,
                                            @RequestParam(value = "deptId", required = false) Long deptId);
 
     /**
      * 更新用户登录信息
      */
-    @PutMapping(INNER_REQUEST_PATH + "/update_sys_user_logininfo")
+    @PostMapping(INNER_REQUEST_PATH + "/update_sys_user_logininfo")
     void updateLoginInfo(@RequestBody LoginInfoDTO loginInfoDTO);
 
     /**

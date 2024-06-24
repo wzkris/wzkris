@@ -21,7 +21,8 @@
         <spring-statemachine.version>3.2.0</spring-statemachine.version>
         <lombok.version>1.18.28</lombok.version>
         <mysql.version>8.0.33</mysql.version>
-        <redisson.version>3.27.2</redisson.version>
+        <netty.version>4.1.110.Final</netty.version>
+        <redisson.version>3.31.0</redisson.version>
         <dynamic-ds.version>4.2.0</dynamic-ds.version>
         <hutool.version>5.8.27</hutool.version>
         <mapstruct-plus.version>1.4.0</mapstruct-plus.version>
@@ -173,6 +174,13 @@
                 <version>${mysql.version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+
             <!--认证rpc服务-->
             <dependency>
                 <groupId>com.thingslink</groupId>
@@ -201,12 +209,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 订单rpc服务    -->
-            <dependency>
-                <groupId>com.thingslink</groupId>
-                <artifactId>thingslink-order-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

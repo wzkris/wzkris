@@ -3,9 +3,9 @@ package com.thingslink.auth.oauth2.authenticate.sms;
 import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationProvider;
 import com.thingslink.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.thingslink.auth.oauth2.model.UserModel;
-import com.thingslink.auth.oauth2.service.AppUserDetailsService;
+import com.thingslink.auth.oauth2.service.impl.AppUserDetailsService;
 import com.thingslink.common.security.oauth2.constants.OAuth2Type;
-import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.oauth2.domain.OAuth2User;
 import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -49,8 +49,8 @@ public class SmsAuthenticationProvider extends CommonAuthenticationProvider<Comm
 
         String clientId = ((OAuth2ClientAuthenticationToken) authenticationToken.getPrincipal()).getPrincipal().toString();
 
-        OAuth2User oAuth2User = new OAuth2User(OAuth2Type.APP_USER.getValue(), userModel.getUsername(), userModel.getAttributes(),
-                userModel.getAuthorities());
+        OAuth2User oAuth2User = new OAuth2User(OAuth2Type.APP_USER.getValue(), userModel.getUsername(),
+                userModel.getDetails(), userModel.getAuthorities());
 
         return new OAuth2AuthenticationToken(oAuth2User,
                 AuthorityUtils.createAuthorityList(authenticationToken.getScopes()), clientId);

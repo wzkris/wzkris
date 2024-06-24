@@ -21,12 +21,12 @@ public interface RemoteLogApi {
     /**
      * 新增操作日志
      */
-    @PostMapping(INNER_REQUEST_PATH + "/operlog")
+    @PostMapping(INNER_REQUEST_PATH + "/add_operlog")
     void insertOperlog(@RequestBody OperLogDTO operLogDTO);
 
     /**
      * 新增登录日志
      */
-    @PostMapping(INNER_REQUEST_PATH + "/loginlog")
+    @PostMapping(INNER_REQUEST_PATH + "/add_loginlog")
     void insertLoginlog(@RequestBody LoginLogDTO loginLogDTO);
 }

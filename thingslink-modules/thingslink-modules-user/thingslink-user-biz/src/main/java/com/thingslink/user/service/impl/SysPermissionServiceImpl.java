@@ -1,7 +1,6 @@
 package com.thingslink.user.service.impl;
 
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.user.api.domain.dto.SysPermissionDTO;
 import com.thingslink.user.domain.SysRole;
 import com.thingslink.user.domain.SysUser;
@@ -66,14 +65,12 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     /**
      * 返回已授权码及数据权限
      *
-     * @param userId   用户ID
-     * @param tenantId 租户ID
-     * @param deptId   部门ID
+     * @param userId 用户ID
+     * @param deptId 部门ID
      * @return 权限
      */
     @Override
-    @DynamicTenant(value = "#tenantId")
-    public SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
+    public SysPermissionDTO getPermission(@Nonnull Long userId, @Nullable Long deptId) {
         List<SysRole> roles;
         List<String> grantedAuthority;
         List<Long> deptScopes = Collections.emptyList();

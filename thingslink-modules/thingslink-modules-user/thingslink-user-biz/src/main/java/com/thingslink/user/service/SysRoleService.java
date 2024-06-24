@@ -56,7 +56,7 @@ public interface SysRoleService {
      * @param roleId  角色ID
      * @param userIds 需要删除的用户数据ID
      */
-    void allocateUsers(Long roleId, Long[] userIds);
+    void allocateUsers(Long roleId, List<Long> userIds);
 
     /**
      * 修改部门数据权限信息
@@ -72,19 +72,19 @@ public interface SysRoleService {
      * @param roleIds 需要删除的角色ID
      * @return 结果
      */
-    int deleteBatchByIds(Long... roleIds);
+    int deleteBatchByIds(List<Long> roleIds);
 
     /**
      * 校验角色是否被用户关联
      *
      * @param roleIds 角色组
      */
-    void checkUserUse(Long[] roleIds);
+    void checkUserUse(List<Long> roleIds);
 
     /**
      * 校验是否有角色的数据权限
      *
      * @param roleIds 待操作的角色id数组
      */
-    void checkDataScopes(Long... roleIds);
+    void checkDataScopes(List<Long> roleIds);
 }

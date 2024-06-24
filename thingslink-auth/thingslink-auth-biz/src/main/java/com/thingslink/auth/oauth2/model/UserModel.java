@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author : wzkris
@@ -20,21 +19,21 @@ public class UserModel extends User {
 
     @Getter
     @Setter
-    private Map<String, Object> attributes;// 详细属性
+    private Object details;// 用户详细信息
 
     public UserModel(String username,
                      String password,
                      List<String> authorities,
-                     Map<String, Object> attributes) {
+                     Object details) {
         super(username, password, AuthorityUtils.createAuthorityList(authorities));
-        this.attributes = attributes;
+        this.details = details;
     }
 
     public UserModel(String username,
                      String password,
                      Collection<? extends GrantedAuthority> authorities,
-                     Map<String, Object> attributes) {
+                     Object details) {
         super(username, password, authorities);
-        this.attributes = attributes;
+        this.details = details;
     }
 }

@@ -3,7 +3,7 @@ package com.thingslink.common.security.utils;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.oauth2.constants.OAuth2Type;
-import com.thingslink.common.security.oauth2.model.LoginSysUser;
+import com.thingslink.common.security.oauth2.domain.model.LoginSyser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -32,8 +32,8 @@ public class SysUtil extends OAuth2Holder {
      *
      * @return 当前用户
      */
-    public static LoginSysUser getLoginUser() {
-        return JsonUtil.parseObject(OAuth2Holder.getPrincipal().getAttributes(), LoginSysUser.class);
+    public static LoginSyser getLoginSyser() {
+        return JsonUtil.parseObject(OAuth2Holder.getPrincipal().getDetails(), LoginSyser.class);
     }
 
     /**
@@ -42,7 +42,7 @@ public class SysUtil extends OAuth2Holder {
      * @return 当前用户ID
      */
     public static Long getUserId() {
-        return getLoginUser().getUserId();
+        return getLoginSyser().getUserId();
     }
 
     /**
@@ -51,7 +51,7 @@ public class SysUtil extends OAuth2Holder {
      * @return 当前租户ID
      */
     public static Long getTenantId() {
-        return getLoginUser().getTenantId();
+        return getLoginSyser().getTenantId();
     }
 
     /**
@@ -60,7 +60,7 @@ public class SysUtil extends OAuth2Holder {
      * @return 是否
      */
     public static boolean isAdmin() {
-        return getLoginUser().getIsAdmin();
+        return getLoginSyser().getIsAdmin();
     }
 
     /**

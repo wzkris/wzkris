@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 17/04/2024 14:12:09
+ Date: 24/06/2024 17:14:20
 */
 
 SET NAMES utf8mb4;
@@ -257,10 +257,10 @@ CREATE TABLE `sys_config`  (
 -- ----------------------------
 -- Records of sys_config
 -- ----------------------------
-INSERT INTO `sys_config` VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-yellow', 'Y', 1713334134616, 1, 20230812105204, NULL);
-INSERT INTO `sys_config` VALUES (2, '用户管理-账号初始密码', 'sys.user.initPassword', '123456', 'Y', 1713334134616, 1, 20230531110014, NULL);
-INSERT INTO `sys_config` VALUES (3, '主框架页-侧边栏主题', 'sys.index.sideTheme', 'theme-light', 'Y', 1713334134616, 1, 20231201154324, NULL);
-INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能', 'sys.account.registerUser', 'false', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_config` VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-yellow', 'Y', 1713334134616, 1, 1719036432755, 1);
+INSERT INTO `sys_config` VALUES (2, '用户管理-账号初始密码', 'sys.user.initPassword', '123456', 'Y', 1713334134616, 1, 1719036436632, 1);
+INSERT INTO `sys_config` VALUES (3, '主框架页-侧边栏主题', 'sys.index.sideTheme', 'theme-light', 'Y', 1713334134616, 1, 1719036434181, 1);
+INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能', 'sys.account.registerUser', 'false', 'Y', 1713334134616, 1, 1719036435430, 1);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -315,10 +315,10 @@ INSERT INTO `sys_dict_data` VALUES (29, 2, '失败', '1', 'sys_common_status', '
 INSERT INTO `sys_dict_data` VALUES (30, 0, '管理员', 'admin', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, 20240412105133, 1);
 INSERT INTO `sys_dict_data` VALUES (31, 0, '租户', 'tenant', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_dict_data` VALUES (32, 0, '用户', 'user', 'pre_dict', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (33, 0, '在线', 'ONLINE', 'device_status', NULL, 'success', 'N', 1713334134616, 1, 20231201153359, NULL);
-INSERT INTO `sys_dict_data` VALUES (34, 0, '离线', 'OFFLINE', 'device_status', NULL, 'info', 'N', 1713334134616, 1, 20231201153404, NULL);
-INSERT INTO `sys_dict_data` VALUES (35, 1, '故障', 'FAULT', 'device_status', NULL, 'danger', 'N', 1713334134616, 1, 20231201153421, NULL);
-INSERT INTO `sys_dict_data` VALUES (36, 2, '检修', 'FIX', 'device_status', NULL, 'warning', 'N', 1713334134616, 1, 20231201153426, NULL);
+INSERT INTO `sys_dict_data` VALUES (33, 0, '在线', '1', 'device_status', NULL, 'success', 'N', 1713334134616, 1, 1714114284613, 1);
+INSERT INTO `sys_dict_data` VALUES (34, 0, '离线', '0', 'device_status', NULL, 'info', 'N', 1713334134616, 1, 1714114287571, 1);
+INSERT INTO `sys_dict_data` VALUES (35, 1, '故障', '2', 'device_status', NULL, 'danger', 'N', 1713334134616, 1, 1714114300372, 1);
+INSERT INTO `sys_dict_data` VALUES (36, 2, '检修', '3', 'device_status', NULL, 'warning', 'N', 1713334134616, 1, 1714114303578, 1);
 INSERT INTO `sys_dict_data` VALUES (37, 0, '未认证', 'NO', 'pay_certification_status', NULL, 'info', 'N', 1713334134616, 1, 20230206172127, NULL);
 INSERT INTO `sys_dict_data` VALUES (38, 0, '微信支付', 'WX', 'pay_certification_status', NULL, 'success', 'N', 1713334134616, 1, 20230206172134, NULL);
 INSERT INTO `sys_dict_data` VALUES (39, 0, '支付宝', 'ALI', 'pay_certification_status', NULL, 'primary', 'N', 1713334134616, 1, 20230206172147, NULL);
@@ -358,7 +358,7 @@ CREATE TABLE `sys_dict_type`  (
 -- ----------------------------
 -- Records of sys_dict_type
 -- ----------------------------
-INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'sys_user_sex', 1713334134616, 1, 20230531105954, 1);
+INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'sys_user_sex', 1713334134616, 1, 1719036473930, 1);
 INSERT INTO `sys_dict_type` VALUES (2, '菜单状态', 'sys_show_hide', 1713334134616, 1, NULL, 1);
 INSERT INTO `sys_dict_type` VALUES (3, '系统开关', 'sys_normal_disable', 1713334134616, 1, NULL, 1);
 INSERT INTO `sys_dict_type` VALUES (4, '任务状态', 'sys_job_status', 1713334134616, 1, NULL, 1);
@@ -458,19 +458,12 @@ CREATE TABLE `sys_login_log`  (
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
-INSERT INTO `sys_login_log` VALUES (1779028287854153729, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413140610);
-INSERT INTO `sys_login_log` VALUES (1779039488944349185, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 20240413145040);
-INSERT INTO `sys_login_log` VALUES (1779050294973014017, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413153337);
-INSERT INTO `sys_login_log` VALUES (1779051600932478978, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413153849);
-INSERT INTO `sys_login_log` VALUES (1779056793908649986, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 20240413155927);
-INSERT INTO `sys_login_log` VALUES (1779059212960899073, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413160904);
-INSERT INTO `sys_login_log` VALUES (1779068245444894721, 0, 1, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413164457);
-INSERT INTO `sys_login_log` VALUES (1779069569137876994, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413165013);
-INSERT INTO `sys_login_log` VALUES (1779071944779079682, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240413165939);
-INSERT INTO `sys_login_log` VALUES (1779768079093039105, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150549);
-INSERT INTO `sys_login_log` VALUES (1779768173334855681, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150613);
-INSERT INTO `sys_login_log` VALUES (1779768345410371585, 1774671331416821762, 1774671331412627456, '内网IP', '0:0:0:0:0:0:0:1', 'Unknown', NULL, 20240415150650);
-INSERT INTO `sys_login_log` VALUES (1780477864071372801, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1713333976135);
+INSERT INTO `sys_login_log` VALUES (1805159404271276034, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719218514798);
+INSERT INTO `sys_login_log` VALUES (1805160816996749313, 0, 1774671331412627456, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719218851622);
+INSERT INTO `sys_login_log` VALUES (1805163558100242434, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719219505142);
+INSERT INTO `sys_login_log` VALUES (1805165831853412353, 0, 1774671331412627456, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719220047258);
+INSERT INTO `sys_login_log` VALUES (1805166100678938626, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719220111328);
+INSERT INTO `sys_login_log` VALUES (1805166251137011714, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719220147221);
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -483,9 +476,9 @@ CREATE TABLE `sys_notice`  (
   `notice_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '公告内容',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公告状态（0正常 1关闭）',
   `message_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '消息id',
-  `create_by` bigint NULL DEFAULT NULL COMMENT '创建者',
+  `create_at` bigint NULL DEFAULT NULL COMMENT '创建者',
   `create_id` bigint NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`notice_id`) USING BTREE,
   UNIQUE INDEX `uk_message_id`(`message_id` ASC) USING BTREE
@@ -494,8 +487,8 @@ CREATE TABLE `sys_notice`  (
 -- ----------------------------
 -- Records of sys_notice
 -- ----------------------------
-INSERT INTO `sys_notice` VALUES (1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '<p>&lt;</p>', '0', '1', 1, 20221219100609, 1, 20230608134537);
-INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '<p>&lt;</p>', '0', '2', 1, 20221219100609, 1, 20230612134332);
+INSERT INTO `sys_notice` VALUES (1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '&lt;a href=\"https://www.baidu.com\"/&gt;', '0', '1', 1, 20221219100609, 1719034682683, 1);
+INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '&lt;', '0', '2', 1, 20221219100609, 1719034648745, 1);
 
 -- ----------------------------
 -- Table structure for sys_oper_log
@@ -523,8 +516,6 @@ CREATE TABLE `sys_oper_log`  (
 -- ----------------------------
 -- Records of sys_oper_log
 -- ----------------------------
-INSERT INTO `sys_oper_log` VALUES (1778625396790194177, 0, '操作日志', '3', 'com.thingslink.system.controller.log.SysOperlogController.clean()', 'DELETE', 'admin', '/operlog/clean', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 20240412112514);
-INSERT INTO `sys_oper_log` VALUES (1778625872730451970, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, '{\"createAt\":\"2024-04-03 12:38:25\",\"createBy\":\"1774671331412627456\",\"updateAt\":\"2024-04-12 11:27:07\",\"updateBy\":\"1\",\"deptId\":\"1775382319191453698\",\"tenantId\":\"1774671331416821762\",\"parentId\":null,\"ancestors\":null,\"deptName\":\"默认租户部门\",\"status\":\"0\",\"deptSort\":0,\"contact\":null,\"email\":null,\"children\":[]}', NULL, '0', NULL, 20240412112707);
-INSERT INTO `sys_oper_log` VALUES (1778626232891142146, 0, '部门管理', '2', 'com.thingslink.auth.controller.SysDeptController.edit()', 'PUT', 'admin', '/dept', '127.0.0.1', NULL, NULL, '{\"biz\":0,\"data\":null,\"err_msg\":\"Success\",\"timestamp\":1712892513784}', '0', NULL, 20240412112833);
+INSERT INTO `sys_oper_log` VALUES (1805166771369119745, 0, '菜单管理', '2', 'com.thingslink.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719220271169);
 
 SET FOREIGN_KEY_CHECKS = 1;

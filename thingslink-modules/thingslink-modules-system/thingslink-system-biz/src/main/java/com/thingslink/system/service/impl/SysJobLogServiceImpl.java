@@ -1,12 +1,13 @@
 package com.thingslink.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.system.domain.SysJobLog;
 import com.thingslink.system.mapper.SysJobLogMapper;
 import com.thingslink.system.service.SysJobLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,57 +27,19 @@ public class SysJobLogServiceImpl implements SysJobLogService {
      * @return 调度任务日志集合
      */
     @Override
-    public List<SysJobLog> selectJobLogList(SysJobLog sysJobLog) {
-        return sysJobLogMapper.list(sysJobLog);
+    public List<SysJobLog> list(SysJobLog sysJobLog) {
+        LambdaQueryWrapper<SysJobLog> lqw = this.buildQueryWrapper(sysJobLog);
+        return sysJobLogMapper.selectList(lqw);
     }
 
-    /**
-     * 通过调度任务日志ID查询调度信息
-     *
-     * @param jobLogId 调度任务日志ID
-     * @return 调度任务日志对象信息
-     */
-    @Override
-    public SysJobLog selectJobLogById(Long jobLogId) {
-        return sysJobLogMapper.selectById(jobLogId);
-    }
-
-    /**
-     * 新增任务日志
-     *
-     * @param sysJobLog 调度日志信息
-     */
-    @Override
-    public void addJobLog(SysJobLog sysJobLog) {
-        sysJobLogMapper.insert(sysJobLog);
-    }
-
-    /**
-     * 批量删除调度日志信息
-     *
-     * @param logIds 需要删除的数据ID
-     * @return 结果
-     */
-    @Override
-    public int deleteJobLogByIds(Long[] logIds) {
-        return sysJobLogMapper.deleteBatchIds(Arrays.asList(logIds));
-    }
-
-    /**
-     * 删除任务日志
-     *
-     * @param jobId 调度日志ID
-     */
-    @Override
-    public int deleteJobLogById(Long jobId) {
-        return sysJobLogMapper.deleteById(jobId);
-    }
-
-    /**
-     * 清空任务日志
-     */
-    @Override
-    public void cleanJobLog() {
-        sysJobLogMapper.cleanJobLog();
+    private LambdaQueryWrapper<SysJobLog> buildQueryWrapper(SysJobLog jobLog) {
+        return new LambdaQueryWrapper<SysJobLog>()
+                .like(StringUtil.isNotNull(jobLog.getJobName()), SysJobLog::getJobName, jobLog.getJobName())
+                .like(StringUtil.isNotNull(jobLog.getInvokeTarget()), SysJobLog::getInvokeTarget, jobLog.getInvokeTarget())
+                .eq(StringUtil.isNotNull(jobLog.getJobGroup()), SysJobLog::getJobGroup, jobLog.getJobGroup())
+                .eq(StringUtil.isNotNull(jobLog.getStatus()), SysJobLog::getStatus, jobLog.getStatus())
+                .between(jobLog.getParams().get("beginTime") != null && jobLog.getParams().get("endTime") != null,
+                        SysJobLog::getCreateAt, jobLog.getParams().get("beginTime"), jobLog.getParams().get("endTime"))
+                .orderByDesc(SysJobLog::getJobLogId);
     }
 }

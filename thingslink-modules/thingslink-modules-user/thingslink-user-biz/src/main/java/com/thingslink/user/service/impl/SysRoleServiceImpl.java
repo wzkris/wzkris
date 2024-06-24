@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -137,10 +136,10 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @param userIds 需要授权的用户数据ID
      */
     @Override
-    public void allocateUsers(Long roleId, Long[] userIds) {
+    public void allocateUsers(Long roleId, List<Long> userIds) {
         if (ObjUtil.isNotEmpty(userIds)) {
             // 新增用户与角色管理
-            List<SysUserRole> list = Arrays.stream(userIds)
+            List<SysUserRole> list = userIds.stream()
                     .map(userId -> new SysUserRole(userId, roleId))
                     .toList();
             sysUserRoleMapper.insertBatch(list);
@@ -172,13 +171,12 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     public void insertRoleMenu(Long roleId, List<Long> menuIds) {
         // 新增用户与角色管理
-        if (CollectionUtils.isEmpty(menuIds)) {
-            return;
+        if (!CollectionUtils.isEmpty(menuIds)) {
+            List<SysRoleMenu> list = menuIds.stream()
+                    .map(menuId -> new SysRoleMenu(roleId, menuId))
+                    .toList();
+            sysRoleMenuMapper.insertBatch(list);
         }
-        List<SysRoleMenu> list = menuIds.stream()
-                .map(menuId -> new SysRoleMenu(roleId, menuId))
-                .toList();
-        sysRoleMenuMapper.insertBatch(list);
     }
 
     /**
@@ -188,13 +186,12 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @param deptIds 部门id集合
      */
     public void insertRoleDept(Long roleId, List<Long> deptIds) {
-        if (CollectionUtils.isEmpty(deptIds)) {
-            return;
+        if (!CollectionUtils.isEmpty(deptIds)) {
+            List<SysRoleDept> list = deptIds.stream()
+                    .map(deptId -> new SysRoleDept(roleId, deptId))
+                    .toList();
+            sysRoleDeptMapper.insertBatch(list);
         }
-        List<SysRoleDept> list = deptIds.stream()
-                .map(deptId -> new SysRoleDept(roleId, deptId))
-                .toList();
-        sysRoleDeptMapper.insertBatch(list);
     }
 
     /**
@@ -205,12 +202,12 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteBatchByIds(Long... roleIds) {
+    public int deleteBatchByIds(List<Long> roleIds) {
         // 删除角色与菜单关联
         sysRoleMenuMapper.deleteByRoleIds(roleIds);
         // 删除角色与部门关联
         sysRoleDeptMapper.deleteByRoleIds(roleIds);
-        return sysRoleMapper.deleteByRoleIds(roleIds);
+        return sysRoleMapper.deleteByIds(roleIds);
     }
 
     /**
@@ -219,7 +216,8 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @param roleIds 角色组
      */
     @Override
-    public void checkUserUse(Long[] roleIds) {
+    public void checkUserUse(List<Long> roleIds) {
+        roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
         if (sysUserRoleMapper.countByRoleIds(roleIds) > 0) {
             throw new BusinessExceptionI18n("business.allocated");
@@ -231,10 +229,10 @@ public class SysRoleServiceImpl implements SysRoleService {
      *
      * @param roleIds 待操作的角色id数组
      */
-    public void checkDataScopes(Long... roleIds) {
-        roleIds = Arrays.stream(roleIds).filter(Objects::nonNull).toArray(Long[]::new);
+    public void checkDataScopes(List<Long> roleIds) {
+        roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(roleIds)) {
-            if (!(sysRoleMapper.checkDataScopes(roleIds) == roleIds.length)) {
+            if (!(sysRoleMapper.checkDataScopes(roleIds) == roleIds.size())) {
                 throw new AccessDeniedException("当前部门没有权限访问数据");
             }
         }

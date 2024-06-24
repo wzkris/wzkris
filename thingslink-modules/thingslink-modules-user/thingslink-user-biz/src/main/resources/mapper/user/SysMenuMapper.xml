@@ -64,9 +64,4 @@
         WHERE parent_id = #{menuId}
     </select>
 
-    <select id="checkMenuNameUnique" resultMap="MenuPO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        WHERE menu_name = #{menuName} AND parent_id = #{parentId} LIMIT 1
-    </select>
-
 </mapper>

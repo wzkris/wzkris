@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class SysConfigController extends BaseController {
     /**
      * 根据参数编号获取详细信息
      */
-    @GetMapping(value = "/{configId}")
+    @GetMapping("/{configId}")
     public Result<?> getInfo(@PathVariable Long configId) {
         return success(sysConfigMapper.selectById(configId));
     }
@@ -51,7 +52,7 @@ public class SysConfigController extends BaseController {
     /**
      * 根据参数键名查询参数值
      */
-    @GetMapping(value = "/configKey/{configKey}")
+    @GetMapping("/configKey/{configKey}")
     public Result<String> getConfigKey(@PathVariable String configKey) {
         return Result.success(sysConfigService.getConfigValueByKey(configKey));
     }
@@ -60,7 +61,7 @@ public class SysConfigController extends BaseController {
      * 新增参数配置
      */
     @OperateLog(title = "参数管理", operateType = OperateType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('config:add')")
     public Result<?> add(@Validated @RequestBody SysConfig config) {
         if (sysConfigService.checkConfigKeyUnique(config)) {
@@ -73,7 +74,7 @@ public class SysConfigController extends BaseController {
      * 修改参数配置
      */
     @OperateLog(title = "参数管理", operateType = OperateType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('config:edit')")
     public Result<?> edit(@Validated @RequestBody SysConfig config) {
         if (sysConfigService.checkConfigKeyUnique(config)) {
@@ -86,10 +87,11 @@ public class SysConfigController extends BaseController {
      * 删除参数配置
      */
     @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
-    @DeleteMapping("{configIds}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('config:remove')")
-    public Result<?> remove(@PathVariable Long[] configIds) {
-        sysConfigService.deleteConfigByIds(configIds);
+    public Result<?> remove(@RequestBody Long[] configIds) {
+        List<Long> list = Arrays.asList(configIds);
+        sysConfigService.deleteConfigByIds(list);
         return success();
     }
 
@@ -97,7 +99,7 @@ public class SysConfigController extends BaseController {
      * 刷新参数缓存
      */
     @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
-    @DeleteMapping("refreshCache")
+    @PostMapping("/refresh_cache")
     @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> refreshCache() {
         sysConfigService.resetConfigCache();

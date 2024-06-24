@@ -1,9 +1,10 @@
 package com.thingslink.user.service;
 
 
-import com.thingslink.common.orm.page.Page;
 import com.thingslink.user.domain.SysTenant;
 import com.thingslink.user.domain.dto.SysTenantDTO;
+
+import java.util.List;
 
 /**
  * 租户套餐层
@@ -17,7 +18,7 @@ public interface SysTenantService {
      *
      * @param sysTenant 查询条件
      */
-    Page<SysTenant> listPage(SysTenant sysTenant);
+    List<SysTenant> listPage(SysTenant sysTenant);
 
     /**
      * 添加租户

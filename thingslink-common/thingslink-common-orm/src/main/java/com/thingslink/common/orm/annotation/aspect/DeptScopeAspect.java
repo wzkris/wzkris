@@ -55,7 +55,7 @@ public class DeptScopeAspect {
                 return;
             }
             // 没有部门权限数据则不拼接
-            List<Long> deptScopes = SysUtil.getLoginUser().getDeptScopes();
+            List<Long> deptScopes = SysUtil.getLoginSyser().getDeptScopes();
             if (CollUtil.isEmpty(deptScopes)) {
                 return;
             }

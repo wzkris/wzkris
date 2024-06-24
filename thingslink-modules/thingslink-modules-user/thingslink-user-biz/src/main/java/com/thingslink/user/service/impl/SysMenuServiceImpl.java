@@ -1,8 +1,6 @@
 package com.thingslink.user.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.security.utils.SysUtil;
 import com.thingslink.user.api.domain.vo.MetaVO;
@@ -277,19 +275,6 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public boolean checkMenuExistRole(Long menuId) {
         return sysRoleMenuMapper.checkMenuExistRole(menuId) > 0;
-    }
-
-    /**
-     * 校验菜单名称在统一层级是否唯一
-     *
-     * @param menuName 菜单名称
-     * @param parentId 上级id
-     * @return 结果
-     */
-    @Override
-    public String checkMenuNameUnique(String menuName, Long parentId) {
-        SysMenu info = sysMenuMapper.checkMenuNameUnique(menuName, parentId);
-        return StringUtil.isNotNull(info) && ObjUtil.notEqual(info.getParentId(), parentId) ? CommonConstants.NOT_UNIQUE : CommonConstants.UNIQUE;
     }
 
     /**

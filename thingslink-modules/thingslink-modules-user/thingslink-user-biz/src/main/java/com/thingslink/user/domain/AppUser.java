@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thingslink.common.core.annotation.PhoneNumber;
 import com.thingslink.common.core.annotation.Xss;
 import com.thingslink.common.orm.model.BaseEntity;
-import com.thingslink.common.security.oauth2.model.LoginAppUser;
+import com.thingslink.common.security.oauth2.domain.model.LoginApper;
 import com.thingslink.user.api.domain.dto.CustomerDTO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -28,7 +28,7 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 @AutoMappers({
-        @AutoMapper(target = LoginAppUser.class),
+        @AutoMapper(target = LoginApper.class),
         @AutoMapper(target = CustomerDTO.class)
 })
 @EqualsAndHashCode(callSuper = true)

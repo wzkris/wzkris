@@ -1,6 +1,6 @@
 package com.thingslink.auth.oauth2.authenticate;
 
-import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.oauth2.domain.OAuth2User;
 import com.thingslink.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;

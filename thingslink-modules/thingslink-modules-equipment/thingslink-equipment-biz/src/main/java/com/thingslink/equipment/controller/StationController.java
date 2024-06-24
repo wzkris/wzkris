@@ -72,7 +72,7 @@ public class StationController extends BaseController {
      * @param station 实体
      * @return 新增结果
      */
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('station:add')")
     public Result<?> add(@RequestBody Station station) {
         return toRes(stationMapper.insert(station));
@@ -84,7 +84,7 @@ public class StationController extends BaseController {
      * @param station 实体
      * @return 编辑结果
      */
-    @PutMapping
+    @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('station:edit')")
     public Result<?> edit(@RequestBody Station station) {
         return toRes(stationMapper.updateById(station));
@@ -96,9 +96,9 @@ public class StationController extends BaseController {
      * @param stationId 主键
      * @return 删除是否成功
      */
-    @DeleteMapping("/{stationId}")
+    @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('station:remove')")
-    public Result<?> deleteById(@PathVariable Long stationId) {
+    public Result<?> deleteById(@RequestBody Long stationId) {
         return toRes(stationMapper.deleteById(stationId));
     }
 }

@@ -7,18 +7,25 @@ import java.lang.annotation.*;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 动态租户权限，解决超级租户不走租户权限的需求
+ * @description : 动态租户权限，提供spel动态切换租户的功能
  * @date : 2024/04/13 16:21
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DynamicTenant {
 
     /**
-     * 默认走自身租户
+     * 走租户的情况下该参数有效，默认走自身租户
      *
      * @return spring-el表达式
      */
     String value() default "";
+
+    /**
+     * 忽略租户spel表达式，true则忽略租户，false则走租户
+     *
+     * @return 默认忽略超级租户
+     */
+    String enableIgnore() default "@SysUtil.isSuperTenant()";
 }

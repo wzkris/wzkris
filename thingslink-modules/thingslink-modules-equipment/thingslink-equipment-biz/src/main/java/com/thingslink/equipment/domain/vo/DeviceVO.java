@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import lombok.experimental.FieldNameConstants;
 
 import java.io.Serial;
 
@@ -19,7 +18,6 @@ import java.io.Serial;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@FieldNameConstants
 @EqualsAndHashCode(callSuper = true)
 public class DeviceVO extends Device {
 
@@ -31,4 +29,5 @@ public class DeviceVO extends Device {
 
     @Schema(description = "电站名称")
     private String stationName;
+
 }

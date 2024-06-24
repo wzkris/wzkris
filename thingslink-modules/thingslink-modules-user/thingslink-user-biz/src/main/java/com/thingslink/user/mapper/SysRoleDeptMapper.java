@@ -63,12 +63,12 @@ public interface SysRoleDeptMapper {
     @Delete("""
             <script>
                 DELETE FROM sys_role_dept WHERE role_id IN
-                    <foreach collection="array" item="roleId" open="(" separator="," close=")">
+                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    int deleteByRoleIds(Long[] roleIds);
+    int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
 
     /**
      * 查询部门使用数量

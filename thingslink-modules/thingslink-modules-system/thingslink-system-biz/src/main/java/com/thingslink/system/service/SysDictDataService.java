@@ -18,7 +18,7 @@ public interface SysDictDataService {
      *
      * @param dictCodes 需要删除的字典数据ID
      */
-    void deleteDictDataByIds(Long[] dictCodes);
+    void deleteDictDataByIds(List<Long> dictCodes);
 
     /**
      * 新增保存字典数据信息

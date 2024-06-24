@@ -3,7 +3,7 @@ package com.thingslink.common.security.oauth2.handler;
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.utils.ServletUtil;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.oauth2.model.OAuth2User;
+import com.thingslink.common.security.oauth2.domain.OAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;

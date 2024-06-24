@@ -47,7 +47,7 @@ public interface SysConfigService {
      *
      * @param configIds 需要删除的参数ID
      */
-    void deleteConfigByIds(Long[] configIds);
+    void deleteConfigByIds(List<Long> configIds);
 
     /**
      * 加载参数缓存数据
