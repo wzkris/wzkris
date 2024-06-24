@@ -56,17 +56,16 @@ public class SysUserController extends BaseController {
     private final SysUserRoleMapper sysUserRoleMapper;
     private final PasswordEncoder passwordEncoder;
 
-
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('user:list')")
+    @PreAuthorize("@ps.hasPerms('sys_user:list')")
     public Result<Page<SysUserVO>> listPage(SysUser user) {
         return success(sysUserService.listPage(user));
     }
 
     @Operation(summary = "用户详细信息")
     @GetMapping({"/{userId}", "/"})
-    @PreAuthorize("@ps.hasPerms('user:query')")
+    @PreAuthorize("@ps.hasPerms('sys_user:query')")
     public Result<?> getInfo(@PathVariable(required = false) Long userId) {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(userId));
@@ -90,19 +89,17 @@ public class SysUserController extends BaseController {
     @Operation(summary = "新增用户")
     @OperateLog(title = "后台管理", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('user:add')")
+    @PreAuthorize("@ps.hasPerms('sys_user:add')")
     public Result<?> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
-        // 校验角色、岗位、部门和该用户的租户id是否一致
-        sysUserService.checkTenantId(userDTO);
-        if (sysUserService.checkUserUnique(new SysUser().setUsername(userDTO.getUsername()), userDTO.getUserId())) {
+        if (sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getPhoneNumber())
-                && sysUserService.checkUserUnique(new SysUser().setPhoneNumber(userDTO.getPhoneNumber()), userDTO.getUserId())) {
+                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，手机号码已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getEmail())
-                && sysUserService.checkUserUnique(new SysUser().setEmail(userDTO.getEmail()), userDTO.getUserId())) {
+                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
         }
         return toRes(sysUserService.insertUser(userDTO));
@@ -111,21 +108,19 @@ public class SysUserController extends BaseController {
     @Operation(summary = "修改用户")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('user:edit')")
+    @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> edit(@Validated @RequestBody SysUserDTO userDTO) {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(userDTO.getUserId()));
-        // 校验角色、岗位、部门和该用户的租户id是否一致
-        sysUserService.checkTenantId(userDTO);
-        if (sysUserService.checkUserUnique(new SysUser().setUsername(userDTO.getUsername()), userDTO.getUserId())) {
+        if (sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getPhoneNumber())
-                && sysUserService.checkUserUnique(new SysUser().setPhoneNumber(userDTO.getPhoneNumber()), userDTO.getUserId())) {
+                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，手机号码已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getEmail())
-                && sysUserService.checkUserUnique(new SysUser().setEmail(userDTO.getEmail()), userDTO.getUserId())) {
+                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
         }
 
@@ -135,7 +130,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "删除用户")
     @OperateLog(title = "后台管理", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('user:remove')")
+    @PreAuthorize("@ps.hasPerms('sys_user:remove')")
     public Result<?> remove(@RequestBody List<Long> userIds) {
         // 校验权限
         sysUserService.checkDataScopes(userIds);
@@ -145,7 +140,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "重置密码")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
     @PostMapping("/reset_password")
-    @PreAuthorize("@ps.hasPerms('user:edit')")
+    @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> resetPwd(@RequestBody SysUser user) {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(user.getUserId()));
@@ -158,7 +153,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @PreAuthorize("@ps.hasPerms('user:edit')")
+    @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> editStatus(@RequestBody SysUser user) {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(user.getUserId()));
@@ -169,7 +164,7 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "根据用户id获取授权角色")
     @GetMapping("/authorize_role/{userId}")
-    @PreAuthorize("@ps.hasPerms('user:query')")
+    @PreAuthorize("@ps.hasPerms('sys_user:query')")
     public Result<?> authRole(@PathVariable Long userId) {
         // 校验权限
         sysUserService.checkDataScopes(Collections.singletonList(userId));
@@ -189,17 +184,12 @@ public class SysUserController extends BaseController {
     @Operation(summary = "用户授权角色")
     @OperateLog(title = "后台管理", operateType = OperateType.GRANT)
     @PostMapping("/authorize_role")
-    @PreAuthorize("@ps.hasPerms('user:edit')")
+    @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> authRole(@RequestBody @Valid SysUserRolesDTO userRolesDTO) {
         // 校验用户可操作权限
         sysUserService.checkDataScopes(Collections.singletonList(userRolesDTO.getUserId()));
         // 校验角色可操作权限
         sysRoleService.checkDataScopes(userRolesDTO.getRoleIds());
-        // 校验授权的租户是否一致
-        SysUserDTO sysUserDTO = new SysUserDTO();
-        sysUserDTO.setUserId(userRolesDTO.getUserId());
-        sysUserDTO.setRoleIds(userRolesDTO.getRoleIds());
-        sysUserService.checkTenantId(sysUserDTO);
         // 分配权限
         sysUserService.allocateRoles(userRolesDTO.getUserId(), userRolesDTO.getRoleIds());
         return success();

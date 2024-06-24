@@ -42,12 +42,9 @@ public class DynamicTenantAspect {
      */
     @Around("@annotation(dynamicTenant) || @within(dynamicTenant)")
     public Object around(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
-        if (dynamicTenant.enableIgnore()) {
-            // 启用忽略则解析忽略表达式
-            boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(dynamicTenant.ignoreExpress()), this.createContext());
-            if (!ignore) {
-                return point.proceed();
-            }
+        boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(dynamicTenant.enableIgnore()), this.createContext());
+
+        if (ignore) {
             return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
         }
         else {

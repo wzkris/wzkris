@@ -1,6 +1,5 @@
 package com.thingslink.user.controller;
 
-import com.thingslink.common.core.constant.CommonConstants;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.log.annotation.OperateLog;
@@ -85,10 +84,7 @@ public class SysMenuController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('menu:add') && @SysUtil.isSuperTenant()")
     public Result<?> add(@Valid @RequestBody SysMenu menu) {
-        if (StringUtil.equals(CommonConstants.NOT_UNIQUE, sysMenuService.checkMenuNameUnique(menu.getMenuName(), menu.getParentId()))) {
-            return fail("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        }
-        else if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
+        if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         return toRes(sysMenuMapper.insert(menu));
@@ -99,10 +95,7 @@ public class SysMenuController extends BaseController {
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('menu:edit') && @SysUtil.isSuperTenant()")
     public Result<?> edit(@Valid @RequestBody SysMenu menu) {
-        if (StringUtil.equals(CommonConstants.NOT_UNIQUE, sysMenuService.checkMenuNameUnique(menu.getMenuName(), menu.getParentId()))) {
-            return fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        }
-        else if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
+        if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         else if (menu.getMenuId().equals(menu.getParentId())) {

@@ -82,11 +82,4 @@ public interface SysDeptService {
      * @param deptIds 部门id
      */
     void checkDataScopes(List<Long> deptIds);
-
-    /**
-     * 校验相关参数的租户ID是否一致
-     *
-     * @param dept 部门参数
-     */
-    void checkTenantId(SysDept dept);
 }

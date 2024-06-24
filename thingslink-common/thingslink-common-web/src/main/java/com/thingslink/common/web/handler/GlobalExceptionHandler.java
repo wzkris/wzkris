@@ -194,7 +194,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<?> handledDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到唯一索引异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return resp(BizCode.INTERNAL_ERROR, MessageUtil.message("business.duplicate.key"));
+        return resp(BizCode.BAD_REQUEST, MessageUtil.message("business.duplicate.key"));
     }
 
     /**

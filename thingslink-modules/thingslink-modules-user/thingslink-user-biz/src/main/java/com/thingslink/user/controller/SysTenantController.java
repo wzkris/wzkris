@@ -33,7 +33,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@DynamicTenant(enableIgnore = true)// 超级租户需要看到所有租户信息
+@DynamicTenant// 超级租户需要看到所有租户信息
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
@@ -63,7 +63,7 @@ public class SysTenantController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('tenant:add')")
     public Result<Void> add(@Validated(value = ValidationGroups.Insert.class) @RequestBody SysTenantDTO sysTenantDTO) {
-        if (sysUserService.checkUserUnique(new SysUser().setUsername(sysTenantDTO.getUsername()), null)) {
+        if (sysUserService.checkUserUnique(new SysUser().setUsername(sysTenantDTO.getUsername()))) {
             return fail("登录账号'" + sysTenantDTO.getUsername() + "'已存在");
         }
         return toRes(sysTenantService.insertTenant(sysTenantDTO));

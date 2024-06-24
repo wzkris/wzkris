@@ -80,7 +80,7 @@ public class SysProfileController extends BaseController {
     public Result<?> editPhoneNumber(@RequestBody @Valid EditPhoneDTO phoneDTO) {
         Long userId = SysUtil.getUserId();
 
-        if (userService.checkUserUnique(new SysUser().setPhoneNumber(phoneDTO.getPhoneNumber()), userId)) {
+        if (userService.checkUserUnique(new SysUser(userId).setPhoneNumber(phoneDTO.getPhoneNumber()))) {
             return fail("该手机号已被使用");
         }
         // 验证

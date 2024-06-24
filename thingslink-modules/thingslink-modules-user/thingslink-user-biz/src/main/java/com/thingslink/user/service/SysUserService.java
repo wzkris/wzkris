@@ -70,12 +70,5 @@ public interface SysUserService {
      *
      * @param user 筛选条件
      */
-    boolean checkUserUnique(SysUser user, Long userId);
-
-    /**
-     * 校验相关参数的租户ID是否一致
-     *
-     * @param sysUserDTO 用户参数
-     */
-    void checkTenantId(SysUserDTO sysUserDTO);
+    boolean checkUserUnique(SysUser user);
 }

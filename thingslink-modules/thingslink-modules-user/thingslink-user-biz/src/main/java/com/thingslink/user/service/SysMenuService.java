@@ -93,13 +93,4 @@ public interface SysMenuService {
      * @return 结果 true 存在 false 不存在
      */
     boolean checkMenuExistRole(Long menuId);
-
-    /**
-     * 校验菜单名称在统一层级是否唯一
-     *
-     * @param menuName 菜单名称
-     * @param parentId 上级id
-     * @return 结果
-     */
-    String checkMenuNameUnique(String menuName, Long parentId);
 }

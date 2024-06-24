@@ -2,14 +2,15 @@ package com.thingslink.user.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.core.utils.StringUtil;
 import com.thingslink.common.orm.page.Page;
+import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.common.orm.utils.PageUtil;
-import com.thingslink.common.security.utils.SysUtil;
-import com.thingslink.user.domain.*;
+import com.thingslink.user.domain.SysDept;
+import com.thingslink.user.domain.SysUser;
+import com.thingslink.user.domain.SysUserPost;
+import com.thingslink.user.domain.SysUserRole;
 import com.thingslink.user.domain.dto.SysUserDTO;
 import com.thingslink.user.domain.vo.SysUserVO;
 import com.thingslink.user.mapper.*;
@@ -217,67 +218,14 @@ public class SysUserServiceImpl implements SysUserService {
      *
      * @param user 筛选条件
      */
-    public boolean checkUserUnique(SysUser user, Long userId) {
-        LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<SysUser>()
-                .eq(StringUtil.isNotNull(user.getUsername()), SysUser::getUsername, user.getUsername())
-                .eq(StringUtil.isNotNull(user.getPhoneNumber()), SysUser::getPhoneNumber, user.getPhoneNumber())
-                .eq(StringUtil.isNotNull(user.getEmail()), SysUser::getEmail, user.getEmail())
-                .ne(ObjUtil.isNotNull(userId), SysUser::getUserId, userId);
-        return sysUserMapper.exists(lqw);
+    public boolean checkUserUnique(SysUser user) {
+        return DynamicTenantUtil.ignore(() -> {
+            LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
+                    .eq(StringUtil.isNotNull(user.getUsername()), SysUser::getUsername, user.getUsername())
+                    .eq(StringUtil.isNotNull(user.getPhoneNumber()), SysUser::getPhoneNumber, user.getPhoneNumber())
+                    .eq(StringUtil.isNotNull(user.getEmail()), SysUser::getEmail, user.getEmail())
+                    .ne(ObjUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId());
+            return sysUserMapper.exists(lqw);
+        });
     }
-
-    /**
-     * 校验相关参数的租户ID是否一致
-     *
-     * @param userDTO 用户参数
-     */
-    @Override
-    public void checkTenantId(SysUserDTO userDTO) {
-        Long tenantId;
-        // userid为空则新增操作，判断是否传了租户ID
-        if (userDTO.getUserId() == null) {
-            if (userDTO.getTenantId() == null) {
-                tenantId = SysUtil.getTenantId();
-            }
-            else {
-                tenantId = userDTO.getTenantId();
-            }
-        }
-        else {
-            // 不为空则是更新操作
-            tenantId = new LambdaQueryChainWrapper<>(sysUserMapper)
-                    .select(SysUser::getTenantId)
-                    .eq(SysUser::getUserId, userDTO.getUserId())
-                    .one().getTenantId();
-        }
-        if (userDTO.getDeptId() != null) {
-            Long deptId = new LambdaQueryChainWrapper<>(sysDeptMapper)
-                    .eq(SysDept::getDeptId, userDTO.getDeptId())
-                    .eq(SysDept::getTenantId, tenantId)
-                    .one()
-                    .getDeptId();
-            if (ObjUtil.notEqual(deptId, userDTO.getDeptId())) {
-                throw new BusinessException("操作失败，部门归属租户与用户租户不一致");
-            }
-        }
-        if (ObjUtil.isNotEmpty(userDTO.getRoleIds())) {
-            Long roleSize = new LambdaQueryChainWrapper<>(sysRoleMapper)
-                    .eq(SysRole::getTenantId, tenantId)
-                    .in(SysRole::getRoleId, userDTO.getRoleIds())
-                    .count();
-            if (roleSize != userDTO.getRoleIds().size()) {
-                throw new BusinessException("操作失败，角色归属租户与用户租户不一致");
-            }
-        }
-        if (ObjUtil.isNotEmpty(userDTO.getPostIds())) {
-            Long postSize = new LambdaQueryChainWrapper<>(sysPostMapper)
-                    .eq(SysPost::getTenantId, tenantId)
-                    .in(SysPost::getPostId, userDTO.getPostIds())
-                    .count();
-            if (postSize != userDTO.getPostIds().size()) {
-                throw new BusinessException("操作失败，岗位归属租户与用户租户不一致");
-            }
-        }
-    }
-
 }

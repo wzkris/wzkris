@@ -68,8 +68,6 @@ public class SysDeptController extends BaseController {
     public Result<?> add(@Validated @RequestBody SysDept dept) {
         // 校验权限
         sysDeptService.checkDataScopes(Collections.singletonList(dept.getParentId()));
-        // 校验租户ID
-        sysDeptService.checkTenantId(dept);
         return toRes(sysDeptService.insertDept(dept));
     }
 
@@ -80,8 +78,6 @@ public class SysDeptController extends BaseController {
     public Result<?> edit(@Validated @RequestBody SysDept dept) {
         // 校验权限
         sysDeptService.checkDataScopes(Collections.singletonList(dept.getDeptId()));
-        // 校验租户ID
-        sysDeptService.checkTenantId(dept);
         if (ObjUtil.equals(dept.getParentId(), dept.getDeptId())) {
             return fail("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
         }
