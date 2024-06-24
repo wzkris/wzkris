@@ -42,6 +42,52 @@ public class DynamicTenantUtil {
     }
 
     /**
+     * 在忽略租户中执行
+     *
+     * @param runnable 处理执行方法
+     */
+    public static void ignore(Runnable runnable) {
+        try {
+            enableIgnore();
+
+            runnable.run();
+        }
+        finally {
+            disableIgnore();
+        }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
+     * @param supplier 处理执行方法
+     */
+    public static <T> T ignore(Supplier<T> supplier) {
+        try {
+            enableIgnore();
+
+            return supplier.get();
+        }
+        finally {
+            disableIgnore();
+        }
+    }
+
+    /**
+     * 在忽略租户中执行, 并且会抛出异常
+     */
+    public static <T> T ignoreWithThrowable(ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+        try {
+            enableIgnore();
+
+            return supplier.get();
+        }
+        finally {
+            disableIgnore();
+        }
+    }
+
+    /**
      * 获取动态租户
      * 当前线程内生效
      */

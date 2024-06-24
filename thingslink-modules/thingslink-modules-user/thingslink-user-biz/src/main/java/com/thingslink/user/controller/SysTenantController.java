@@ -4,6 +4,7 @@ import com.thingslink.common.core.annotation.group.ValidationGroups;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
+import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.common.orm.page.Page;
 import com.thingslink.user.domain.SysTenant;
@@ -32,6 +33,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
+@DynamicTenant(enableIgnore = true)// 超级租户需要看到所有租户信息
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
