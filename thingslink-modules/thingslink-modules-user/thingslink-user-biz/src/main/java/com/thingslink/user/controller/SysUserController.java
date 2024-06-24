@@ -8,7 +8,6 @@ import com.thingslink.common.log.annotation.OperateLog;
 import com.thingslink.common.log.enums.OperateType;
 import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.common.orm.page.Page;
-import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.user.domain.SysDept;
 import com.thingslink.user.domain.SysPost;
 import com.thingslink.user.domain.SysRole;
@@ -74,21 +73,18 @@ public class SysUserController extends BaseController {
         SysUser user = sysUserMapper.selectById(userId);
 
         // 返回的角色、岗位、部门必须和该用户的租户id绑定
-        Map<String, Object> res = DynamicTenantUtil.execute(user.getTenantId(), () -> {
-            Map<String, Object> info = new HashMap<>(8);
-            // 用户信息
-            info.put("user", user);
-            // 可授权角色、岗位、部门
-            info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
-            info.put("posts", sysPostService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
-            info.put("depts", sysDeptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
-            // 已授权角色与岗位
-            info.put("postIds", sysUserPostMapper.listPostIdByUserId(userId));
-            info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
-            return info;
-        });
+        Map<String, Object> info = new HashMap<>(8);
+        // 用户信息
+        info.put("user", user);
+        // 可授权角色、岗位、部门
+        info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        info.put("posts", sysPostService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
+        info.put("depts", sysDeptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
+        // 已授权角色与岗位
+        info.put("postIds", sysUserPostMapper.listPostIdByUserId(userId));
+        info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
 
-        return success(res);
+        return success(info);
     }
 
     @Operation(summary = "新增用户")
@@ -180,17 +176,14 @@ public class SysUserController extends BaseController {
         SysUser sysUser = sysUserMapper.selectById(userId);
 
         // 可授权角色必须根据租户来
-        Map<String, Object> res = DynamicTenantUtil.execute(sysUser.getTenantId(), () -> {
-            Map<String, Object> info = new HashMap<>(4);
-            // 被授权用户信息
-            info.put("user", sysUser);
-            // 用户角色
-            info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
-            // 可授权角色
-            info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
-            return info;
-        });
-        return success(res);
+        Map<String, Object> info = new HashMap<>(4);
+        // 被授权用户信息
+        info.put("user", sysUser);
+        // 用户角色
+        info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
+        // 可授权角色
+        info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        return success(info);
     }
 
     @Operation(summary = "用户授权角色")
@@ -202,6 +195,11 @@ public class SysUserController extends BaseController {
         sysUserService.checkDataScopes(Collections.singletonList(userRolesDTO.getUserId()));
         // 校验角色可操作权限
         sysRoleService.checkDataScopes(userRolesDTO.getRoleIds());
+        // 校验授权的租户是否一致
+        SysUserDTO sysUserDTO = new SysUserDTO();
+        sysUserDTO.setUserId(userRolesDTO.getUserId());
+        sysUserDTO.setRoleIds(userRolesDTO.getRoleIds());
+        sysUserService.checkTenantId(sysUserDTO);
         // 分配权限
         sysUserService.allocateRoles(userRolesDTO.getUserId(), userRolesDTO.getRoleIds());
         return success();

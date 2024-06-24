@@ -58,9 +58,9 @@ public class DynamicTenantUtil {
     }
 
     /**
-     * 无返回值强制走租户的代码
+     * 切换租户并执行代码块
      */
-    public static void execute(Long tenantId, Runnable runnable) {
+    public static void switcht(Long tenantId, Runnable runnable) {
         try {
             LOCAL_DYNAMIC_TENANT.set(tenantId);
 
@@ -72,9 +72,9 @@ public class DynamicTenantUtil {
     }
 
     /**
-     * 有返回值强制走租户的代码
+     * 有返回值的切换租户并执行代码块
      */
-    public static <T> T execute(Long tenantId, Supplier<T> supplier) {
+    public static <T> T switcht(Long tenantId, Supplier<T> supplier) {
         try {
             LOCAL_DYNAMIC_TENANT.set(tenantId);
 
@@ -86,9 +86,9 @@ public class DynamicTenantUtil {
     }
 
     /**
-     * 有返回值强制走租户的代码, 并且会抛出异常
+     * 有返回值的切换租户并执行代码块, 并且会抛出异常
      */
-    public static <T> T executeWithThrowable(Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+    public static <T> T switchtWithThrowable(Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
         try {
             LOCAL_DYNAMIC_TENANT.set(tenantId);
 

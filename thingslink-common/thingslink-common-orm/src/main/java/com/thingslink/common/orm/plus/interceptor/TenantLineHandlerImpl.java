@@ -1,7 +1,6 @@
 package com.thingslink.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.orm.plus.config.TenantProperties;
 import com.thingslink.common.orm.utils.DynamicTenantUtil;
 import com.thingslink.common.security.utils.SysUtil;
@@ -40,11 +39,6 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
         }
         // 未登录则忽略
         if (!SysUtil.isLogin()) {
-            return true;
-        }
-        // 为超级租户则忽略
-        Long tenantId = SysUtil.getTenantId();
-        if (SecurityConstants.SUPER_TENANT_ID.equals(tenantId)) {
             return true;
         }
         // 最后再去判断表名是否忽略

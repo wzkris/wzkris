@@ -47,7 +47,7 @@ public class DynamicTenantAspect {
             tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.value(), Long.class);
         }
 
-        return DynamicTenantUtil.executeWithThrowable(tenantId, point::proceed);
+        return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);
     }
 
     /**
