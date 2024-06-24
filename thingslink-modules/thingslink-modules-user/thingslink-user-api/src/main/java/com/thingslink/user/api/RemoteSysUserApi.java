@@ -38,7 +38,6 @@ public interface RemoteSysUserApi {
      */
     @GetMapping(INNER_REQUEST_PATH + "/query_sys_permission")
     Result<SysPermissionDTO> getPermission(@RequestParam("userId") Long userId,
-                                           @RequestParam("tenantId") Long tenantId,
                                            @RequestParam(value = "deptId", required = false) Long deptId);
 
     /**

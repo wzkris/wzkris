@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.thingslink.common.core.exception.BusinessException;
 import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.core.utils.StringUtil;
-import com.thingslink.common.orm.annotation.DynamicTenant;
 import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.utils.PageUtil;
 import com.thingslink.common.security.utils.SysUtil;
@@ -118,7 +117,6 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @DynamicTenant
     public boolean insertUser(SysUserDTO userDTO) {
         // 密码加密
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));

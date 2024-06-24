@@ -43,7 +43,7 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
         this.checkAccount(sysUserDTO);
 
         // 获取权限信息
-        Result<SysPermissionDTO> permissionDTOResult = remoteSysUserApi.getPermission(sysUserDTO.getUserId(), sysUserDTO.getTenantId(), sysUserDTO.getDeptId());
+        Result<SysPermissionDTO> permissionDTOResult = remoteSysUserApi.getPermission(sysUserDTO.getUserId(), sysUserDTO.getDeptId());
         SysPermissionDTO permissions = permissionDTOResult.checkData();
 
         LoginSyser loginSyser = new LoginSyser();

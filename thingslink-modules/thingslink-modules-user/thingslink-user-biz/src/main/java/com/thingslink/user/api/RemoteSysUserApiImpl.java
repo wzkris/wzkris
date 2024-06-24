@@ -49,8 +49,8 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
      * 查询管理员权限
      */
     @Override
-    public Result<SysPermissionDTO> getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
-        SysPermissionDTO permission = sysPermissionService.getPermission(userId, tenantId, deptId);
+    public Result<SysPermissionDTO> getPermission(@Nonnull Long userId, @Nullable Long deptId) {
+        SysPermissionDTO permission = sysPermissionService.getPermission(userId, deptId);
         return success(permission);
     }
 
