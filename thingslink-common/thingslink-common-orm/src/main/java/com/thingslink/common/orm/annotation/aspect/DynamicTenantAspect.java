@@ -65,9 +65,11 @@ public class DynamicTenantAspect {
 
     private StandardEvaluationContext createContext() {
         if (context == null) {
-            synchronized (this) {
-                context = new StandardEvaluationContext();
-                context.setBeanResolver(new BeanFactoryResolver(SpringUtil.getBeanFactory()));
+            synchronized (StandardEvaluationContext.class) {
+                if (context == null) {
+                    context = new StandardEvaluationContext();
+                    context.setBeanResolver(new BeanFactoryResolver(SpringUtil.getBeanFactory()));
+                }
             }
         }
         return context;
