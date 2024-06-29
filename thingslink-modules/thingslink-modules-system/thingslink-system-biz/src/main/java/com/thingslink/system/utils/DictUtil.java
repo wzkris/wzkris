@@ -1,7 +1,6 @@
 package com.thingslink.system.utils;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.thingslink.common.redis.util.RedisUtil;
 import com.thingslink.system.domain.SysDictData;
 
 import java.util.List;
@@ -12,19 +11,17 @@ import java.util.List;
  * @author wzkris
  */
 public class DictUtil {
-    // 字典缓存
-    private static final Cache<String, List<SysDictData>> dictCache = Caffeine.newBuilder()
-            .maximumSize(500)
-            .build();
+
+    private static final String dict_key = "sys_dict";
 
     /**
      * 设置字典缓存
      *
-     * @param key       参数键
+     * @param key         参数键
      * @param sysDictData 字典数据列表
      */
     public static void setDictCache(String key, List<SysDictData> sysDictData) {
-        dictCache.put(key, sysDictData);
+        RedisUtil.setMapValue(dict_key, key, sysDictData);
     }
 
     /**
@@ -33,8 +30,9 @@ public class DictUtil {
      * @param key 参数键
      * @return dictDatas 字典数据列表
      */
-    public static List<SysDictData> getDictCache(String key) {
-        return dictCache.getIfPresent(key);
+    @SuppressWarnings("unchecked")
+    public static <T> T getDictCache(String key) {
+        return (T) RedisUtil.getMapValue(dict_key, key);
     }
 
     /**
@@ -43,14 +41,13 @@ public class DictUtil {
      * @param key 字典键
      */
     public static void removeDictCache(String key) {
-        dictCache.invalidate(key);
+        RedisUtil.delMapValue(dict_key, key);
     }
 
     /**
      * 清空字典缓存
      */
     public static void clearDictCache() {
-        dictCache.cleanUp();
+        RedisUtil.delObj(dict_key);
     }
-
 }

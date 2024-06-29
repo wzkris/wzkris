@@ -42,6 +42,10 @@ public class SysConfigServiceImpl implements SysConfigService {
             RedisUtil.setMap(CONFIG_KEY_PREFIX, map);
         }
 
+        static void deleteByKey(String configKey) {
+            RedisUtil.getMap(CONFIG_KEY_PREFIX).remove(configKey);
+        }
+
         static void clearAll() {
             RedisUtil.delObj(CONFIG_KEY_PREFIX);
         }
@@ -129,6 +133,7 @@ public class SysConfigServiceImpl implements SysConfigService {
                 throw new BusinessException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
         }
+        ConfigCache.clearAll();
         sysConfigMapper.deleteByIds(configIds);
         ConfigCache.clearAll();
     }

@@ -130,7 +130,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateDictType(SysDictType dict) {
-        SysDictType oldDict = sysDictTypeMapper.selectById(dict.getDictId());
+        SysDictType oldDict = sysDictTypeMapper.selectById(dict.getTypeId());
         sysDictDataMapper.updateDictDataType(oldDict.getDictType(), dict.getDictType());
         int row = sysDictTypeMapper.updateById(dict);
         if (row > 0) {
@@ -150,7 +150,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     public boolean checkDictTypeUnique(SysDictType dictType) {
         LambdaQueryWrapper<SysDictType> lqw = new LambdaQueryWrapper<SysDictType>()
                 .eq(SysDictType::getDictType, dictType.getDictType())
-                .ne(ObjUtil.isNotNull(dictType.getDictId()), SysDictType::getDictId, dictType.getDictId());
+                .ne(ObjUtil.isNotNull(dictType.getTypeId()), SysDictType::getTypeId, dictType.getTypeId());
         return sysDictTypeMapper.exists(lqw);
     }
 }

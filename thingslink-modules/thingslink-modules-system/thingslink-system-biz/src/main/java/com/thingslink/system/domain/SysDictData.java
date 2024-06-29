@@ -23,7 +23,7 @@ public class SysDictData extends BaseEntity {
      * 字典编码
      */
     @TableId
-    private Long dictCode;
+    private Long dataId;
 
     /**
      * 字典排序

@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 24/06/2024 17:14:20
+ Date: 29/06/2024 13:44:58
 */
 
 SET NAMES utf8mb4;
@@ -267,7 +267,7 @@ INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dict_data`;
 CREATE TABLE `sys_dict_data`  (
-  `dict_code` bigint NOT NULL COMMENT '字典编码',
+  `data_id` bigint NOT NULL COMMENT '字典编码',
   `dict_sort` int NULL DEFAULT NULL COMMENT '字典排序',
   `dict_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典标签',
   `dict_value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典键值',
@@ -279,7 +279,7 @@ CREATE TABLE `sys_dict_data`  (
   `create_id` bigint NOT NULL COMMENT '创建者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
-  PRIMARY KEY (`dict_code`) USING BTREE,
+  PRIMARY KEY (`data_id`) USING BTREE,
   INDEX `idx_dict_type`(`dict_type` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
 
@@ -344,14 +344,14 @@ INSERT INTO `sys_dict_data` VALUES (55, 0, '占用', '1', 'road_status', NULL, '
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dict_type`;
 CREATE TABLE `sys_dict_type`  (
-  `dict_id` bigint NOT NULL COMMENT '字典主键',
+  `type_id` bigint NOT NULL COMMENT '字典主键',
   `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典名称',
   `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典类型',
   `create_at` bigint NOT NULL COMMENT '创建时间',
   `create_id` bigint NOT NULL COMMENT '创建者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
-  PRIMARY KEY (`dict_id`) USING BTREE,
+  PRIMARY KEY (`type_id`) USING BTREE,
   UNIQUE INDEX `uk_dict_type`(`dict_type` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
 
