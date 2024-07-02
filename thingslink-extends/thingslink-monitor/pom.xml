@@ -5,11 +5,11 @@
 
     <parent>
         <groupId>com.thingslink</groupId>
-        <artifactId>thingslink-visual</artifactId>
+        <artifactId>thingslink-extends</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>thingslink-visual-monitor</artifactId>
+    <artifactId>thingslink-monitor</artifactId>
 
     <description>
         thingslink-visual-monitor监控中心
@@ -40,13 +40,7 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- Sentinel -->
-        <dependency>
-            <groupId>com.thingslink</groupId>
-            <artifactId>thingslink-common-sentinel</artifactId>
-        </dependency>
-
-        <!--仅该模块使用tomcat-->
+        <!--使用web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
