@@ -51,6 +51,12 @@
 			<artifactId>sentinel-datasource-nacos</artifactId>
 		</dependency>
 
+		<!-- SpringBoot Actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 		<!-- 均衡负载-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

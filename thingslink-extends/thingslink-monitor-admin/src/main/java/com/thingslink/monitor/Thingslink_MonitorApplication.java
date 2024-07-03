@@ -3,6 +3,8 @@ package com.thingslink.monitor;
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 
 /**
  * 监控中心
@@ -13,7 +15,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Thingslink_MonitorApplication {
     public static void main(String[] args) {
-        SpringApplication.run(com.thingslink.monitor.Thingslink_MonitorApplication.class, args);
+        SpringApplication springApplication = new SpringApplication(Thingslink_MonitorApplication.class);
+        springApplication.addListeners(new ApplicationPidFileWriter());
+        springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
+        springApplication.run(args);
         System.out.println("""
                 (♥◠‿◠)ﾉﾞ  监控中心启动成功   ლ(´ڡ`ლ)ﾞ \s
                   __  .__    .__                     .__  .__        __   \s

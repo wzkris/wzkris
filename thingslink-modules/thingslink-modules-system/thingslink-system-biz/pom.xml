@@ -51,11 +51,6 @@
 			<artifactId>thingslink-file-api</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.thingslink</groupId>
-			<artifactId>thingslink-common-seata</artifactId>
-		</dependency>
-
 		<!-- thingslink Common DataSource -->
 		<dependency>
 			<groupId>com.thingslink</groupId>
