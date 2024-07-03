@@ -9,7 +9,7 @@ import com.thingslink.common.core.exception.base.BaseException;
  * @author wzkris
  */
 public class BusinessException extends BaseException {
-    
+
 
     public BusinessException(BizCode bizCode) {
         super(bizCode.value(), null, null, bizCode.desc());

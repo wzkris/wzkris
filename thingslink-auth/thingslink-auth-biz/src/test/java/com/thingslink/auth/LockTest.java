@@ -99,6 +99,23 @@ public class LockTest {
         t2.start();
     }
 
+    @Test
+    public void forkJoinTest() throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            boolean interrupted = Thread.interrupted();
+            if (interrupted) {
+                System.out.println("clear resource");
+                System.out.println(Thread.interrupted());
+                return;
+            }
+            System.out.println("1122121");
+        });
+        thread.start();
+
+        thread.interrupt();
+        Thread.sleep(2000);
+    }
+
     class Counter {
         int num;
 
@@ -106,7 +123,6 @@ public class LockTest {
             this.num = num;
         }
     }
-
 
     class Task implements Runnable {
         private Lock lock;
@@ -147,25 +163,6 @@ public class LockTest {
             }
         }
     }
-
-
-    @Test
-    public void forkJoinTest() throws InterruptedException {
-        Thread thread = new Thread(() -> {
-            boolean interrupted = Thread.interrupted();
-            if (interrupted) {
-                System.out.println("clear resource");
-                System.out.println(Thread.interrupted());
-                return;
-            }
-            System.out.println("1122121");
-        });
-        thread.start();
-
-        thread.interrupt();
-        Thread.sleep(2000);
-    }
-
 
     class RTask extends RecursiveTask<Long> {
 

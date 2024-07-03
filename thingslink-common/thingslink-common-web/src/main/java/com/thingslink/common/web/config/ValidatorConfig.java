@@ -17,7 +17,9 @@ public class ValidatorConfig {
 
     private final MessageSource messageSource;
 
-    public ValidatorConfig(MessageSource messageSource) {this.messageSource = messageSource;}
+    public ValidatorConfig(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     /**
      * 配置校验框架 快速返回模式

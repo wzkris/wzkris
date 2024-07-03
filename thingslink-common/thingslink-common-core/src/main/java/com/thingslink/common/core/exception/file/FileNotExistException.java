@@ -6,7 +6,7 @@ package com.thingslink.common.core.exception.file;
  * @description : 文件不存在异常
  * @date : 2023/5/23 16:24
  */
-public final class FileNotExistException extends FileException{
+public final class FileNotExistException extends FileException {
     private static final long serialVersionUID = -4515447597543303483L;
 
     public FileNotExistException(String fileName) {

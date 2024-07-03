@@ -21,11 +21,6 @@ public class DynamicTenantUtil {
 
     private static final ThreadLocal<Long> LOCAL_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
 
-    @FunctionalInterface
-    public interface ThrowingSupplier<T, E extends Throwable> {
-        T get() throws E;
-    }
-
     /**
      * 开启忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭)
      * 开启后则不会再走租户拦截器
@@ -143,5 +138,10 @@ public class DynamicTenantUtil {
         finally {
             LOCAL_DYNAMIC_TENANT.remove();
         }
+    }
+
+    @FunctionalInterface
+    public interface ThrowingSupplier<T, E extends Throwable> {
+        T get() throws E;
     }
 }

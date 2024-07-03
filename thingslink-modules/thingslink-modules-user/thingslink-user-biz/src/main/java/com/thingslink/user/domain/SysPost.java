@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class SysPost extends BaseEntity {
-    
+
 
     @TableId
     private Long postId;

@@ -95,7 +95,8 @@ public class HtmlUtil extends HtmlUtils {
             if (withTagContent) {
                 // 标签及其包含内容
                 regex = StrUtil.format("(?i)<{}(\\s+[^>]*?)?/?>(.*?</{}>)?", tagName, tagName);
-            } else {
+            }
+            else {
                 // 标签不包含内容
                 regex = StrUtil.format("(?i)<{}(\\s+[^>]*?)?/?>|</?{}>", tagName, tagName);
             }
@@ -159,7 +160,8 @@ public class HtmlUtil extends HtmlUtils {
             c = text.charAt(i);
             if (c < 256) {
                 buffer.append(TEXT[c]);
-            } else {
+            }
+            else {
                 buffer.append(c);
             }
         }

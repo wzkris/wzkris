@@ -18,6 +18,7 @@ public class FileException extends BaseException {
     public FileException(String code, Object... args) {
         this(BizCode.FAIL.value(), code, args, null);
     }
+
     public FileException(int biz, String code, Object... args) {
         super(biz, code, args, null);
     }

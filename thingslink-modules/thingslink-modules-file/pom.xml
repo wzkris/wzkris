@@ -2,23 +2,23 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.thingslink</groupId>
-        <artifactId>thingslink-modules</artifactId>
-        <version>${revision}</version>
-    </parent>
+	<parent>
+		<groupId>com.thingslink</groupId>
+		<artifactId>thingslink-modules</artifactId>
+		<version>${revision}</version>
+	</parent>
 
-    <artifactId>thingslink-modules-file</artifactId>
-    <packaging>pom</packaging>
+	<artifactId>thingslink-modules-file</artifactId>
+	<packaging>pom</packaging>
 
-    <description>
-        thingslink-modules-file文件服务
-    </description>
+	<description>
+		thingslink-modules-file文件服务
+	</description>
 
-    <modules>
-        <module>thingslink-file-api</module>
-        <module>thingslink-file-biz</module>
-    </modules>
+	<modules>
+		<module>thingslink-file-api</module>
+		<module>thingslink-file-biz</module>
+	</modules>
 </project>

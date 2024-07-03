@@ -100,19 +100,19 @@ public class SysUser extends BaseEntity {
     @Schema(description = "请求参数")
     private Map<String, Object> params;
 
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(2);
-        }
-        return params;
-    }
-
     public SysUser(Long userId) {
         this.userId = userId;
     }
 
     public static boolean isSuperAdmin(Long userId) {
         return SecurityConstants.SUPER_ADMIN_ID.equals(userId);
+    }
+
+    public Map<String, Object> getParams() {
+        if (params == null) {
+            params = new HashMap<>(2);
+        }
+        return params;
     }
 
     public boolean isSuperAdmin() {

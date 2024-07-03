@@ -12,14 +12,14 @@ import java.util.List;
 @DisplayName("密码测试")
 public class CryptoTest {
 
+    static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
+
     @Test
     @DisplayName("加密测试")
     public void encrypt() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         System.out.println(passwordEncoder.encode("admin123"));
     }
-
-    static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
     @Test
     public void test1() {

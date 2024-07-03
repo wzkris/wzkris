@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thingslink.user.mapper.SysMenuMapper">
 
-    <resultMap id="MenuPO" type="SysMenu">
-        <id column="menu_id" property="menuId"/>
-        <result column="menu_name"  property="menuName"/>
-        <result column="parent_id"  property="parentId"/>
-        <result column="menu_sort"  property="menuSort"/>
-        <result column="path"       property="path"/>
-        <result column="component"  property="component"/>
-        <result column="query"      property="query"/>
-        <result column="menu_type"  property="menuType"/>
-        <result column="status"     property="status"/>
-        <result column="perms"      property="perms"/>
-        <result column="icon"       property="icon"/>
-        <result column="is_frame"   property="isFrame"/>
-        <result column="is_cache"   property="isCache"/>
-        <result column="is_visible" property="isVisible"/>
-        <result column="create_at"  property="createAt"/>
-        <result column="create_id"  property="createId"/>
-        <result column="update_at"  property="updateAt"/>
-        <result column="update_id"  property="updateId"/>
-    </resultMap>
+	<resultMap id="MenuPO" type="SysMenu">
+		<id column="menu_id" property="menuId"/>
+		<result column="menu_name" property="menuName"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="menu_sort" property="menuSort"/>
+		<result column="path" property="path"/>
+		<result column="component" property="component"/>
+		<result column="query" property="query"/>
+		<result column="menu_type" property="menuType"/>
+		<result column="status" property="status"/>
+		<result column="perms" property="perms"/>
+		<result column="icon" property="icon"/>
+		<result column="is_frame" property="isFrame"/>
+		<result column="is_cache" property="isCache"/>
+		<result column="is_visible" property="isVisible"/>
+		<result column="create_at" property="createAt"/>
+		<result column="create_id" property="createId"/>
+		<result column="update_at" property="updateAt"/>
+		<result column="update_id" property="updateId"/>
+	</resultMap>
 
-    <sql id="SELECT_ALL_COLUMN">
-        SELECT menu_id,
-        menu_name,
-        parent_id,
-        menu_sort,
-        path,
-        component,
-        query,
-        is_frame,
-        is_cache,
-        menu_type,
-        is_visible,
-        status,
-        perms,
-        icon,
-        create_at,
-        create_id,
-        update_at,
-        update_id
-        FROM sys_menu
-    </sql>
+	<sql id="SELECT_ALL_COLUMN">
+		SELECT menu_id,
+		menu_name,
+		parent_id,
+		menu_sort,
+		path,
+		component,
+		query,
+		is_frame,
+		is_cache,
+		menu_type,
+		is_visible,
+		status,
+		perms,
+		icon,
+		create_at,
+		create_id,
+		update_at,
+		update_id
+		FROM sys_menu
+	</sql>
 
-    <select id="listRouteTree" resultMap="MenuPO">
-        <include refid="SELECT_ALL_COLUMN"/>
-        WHERE menu_type IN ('M', 'C') AND status = '0' AND is_visible = true
-        <if test="menuIds != null and !menuIds.isEmpty()">
-            AND menu_id IN
-            <foreach collection="menuIds" item="menuId" separator="," open="(" close=")">
-                #{menuId}
-            </foreach>
-        </if>
-    </select>
+	<select id="listRouteTree" resultMap="MenuPO">
+		<include refid="SELECT_ALL_COLUMN"/>
+		WHERE menu_type IN ('M', 'C') AND status = '0' AND is_visible = true
+		<if test="menuIds != null and !menuIds.isEmpty()">
+			AND menu_id IN
+			<foreach collection="menuIds" item="menuId" separator="," open="(" close=")">
+				#{menuId}
+			</foreach>
+		</if>
+	</select>
 
-    <select id="hasChildByMenuId" resultType="Integer">
-        SELECT COUNT(*)
-        FROM sys_menu
-        WHERE parent_id = #{menuId}
-    </select>
+	<select id="hasChildByMenuId" resultType="Integer">
+		SELECT COUNT(*)
+		FROM sys_menu
+		WHERE parent_id = #{menuId}
+	</select>
 
 </mapper>

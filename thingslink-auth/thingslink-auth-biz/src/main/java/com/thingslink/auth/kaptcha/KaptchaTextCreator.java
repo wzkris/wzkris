@@ -25,25 +25,29 @@ public class KaptchaTextCreator extends DefaultTextCreator {
             suChinese.append(CNUMBERS[x]);
             suChinese.append("*");
             suChinese.append(CNUMBERS[y]);
-        } else if (randomoperands == 1) {
+        }
+        else if (randomoperands == 1) {
             if ((x != 0) && y % x == 0) {
                 result = y / x;
                 suChinese.append(CNUMBERS[y]);
                 suChinese.append("/");
                 suChinese.append(CNUMBERS[x]);
-            } else {
+            }
+            else {
                 result = x + y;
                 suChinese.append(CNUMBERS[x]);
                 suChinese.append("+");
                 suChinese.append(CNUMBERS[y]);
             }
-        } else {
+        }
+        else {
             if (x >= y) {
                 result = x - y;
                 suChinese.append(CNUMBERS[x]);
                 suChinese.append("-");
                 suChinese.append(CNUMBERS[y]);
-            } else {
+            }
+            else {
                 result = y - x;
                 suChinese.append(CNUMBERS[y]);
                 suChinese.append("-");

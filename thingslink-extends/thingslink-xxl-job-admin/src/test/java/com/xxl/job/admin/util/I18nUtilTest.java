@@ -16,7 +16,7 @@ public class I18nUtilTest {
     private static Logger logger = LoggerFactory.getLogger(I18nUtilTest.class);
 
     @Test
-    public void test(){
+    public void test() {
         logger.info(I18nUtil.getString("admin_name"));
         logger.info(I18nUtil.getMultString("admin_name", "admin_name_full"));
         logger.info(I18nUtil.getMultString());

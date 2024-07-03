@@ -46,13 +46,13 @@ public class Page<T> {
      */
     private long pages;
 
+    @JsonIgnore
+    private List<OrderItem> orders = new ArrayList<>();
+
     public Page(long pageNum, long pageSize) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
     }
-
-    @JsonIgnore
-    private List<OrderItem> orders = new ArrayList<>();
 
     /**
      * 计算当前分页偏移量

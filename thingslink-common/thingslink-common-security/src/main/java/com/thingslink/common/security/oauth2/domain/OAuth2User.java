@@ -27,6 +27,7 @@ public class OAuth2User implements org.springframework.security.oauth2.core.user
     private String principalName;// 一般为用户名或客户端id
 
     private Object details;// 详细属性
+    private Collection<? extends GrantedAuthority> authorities;
 
     public OAuth2User(String oauth2Type, String principalName, Object details, Collection<? extends GrantedAuthority> authorities) {
         this.oauth2Type = oauth2Type;
@@ -34,8 +35,6 @@ public class OAuth2User implements org.springframework.security.oauth2.core.user
         this.details = details;
         this.authorities = authorities;
     }
-
-    private Collection<? extends GrantedAuthority> authorities;
 
     public Map<String, Object> getAttributes() {
         return Collections.EMPTY_MAP;

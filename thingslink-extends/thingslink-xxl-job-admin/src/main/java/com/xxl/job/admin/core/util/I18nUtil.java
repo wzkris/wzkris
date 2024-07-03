@@ -23,7 +23,8 @@ public class I18nUtil {
     private static Logger logger = LoggerFactory.getLogger(I18nUtil.class);
 
     private static Properties prop = null;
-    public static Properties loadI18nProp(){
+
+    public static Properties loadI18nProp() {
         if (prop != null) {
             return prop;
         }
@@ -34,9 +35,10 @@ public class I18nUtil {
 
             // load prop
             Resource resource = new ClassPathResource(i18nFile);
-            EncodedResource encodedResource = new EncodedResource(resource,"UTF-8");
+            EncodedResource encodedResource = new EncodedResource(resource, "UTF-8");
             prop = PropertiesLoaderUtils.loadProperties(encodedResource);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
         return prop;
@@ -62,12 +64,13 @@ public class I18nUtil {
         Map<String, String> map = new HashMap<String, String>();
 
         Properties prop = loadI18nProp();
-        if (keys!=null && keys.length>0) {
-            for (String key: keys) {
+        if (keys != null && keys.length > 0) {
+            for (String key : keys) {
                 map.put(key, prop.getProperty(key));
             }
-        } else {
-            for (String key: prop.stringPropertyNames()) {
+        }
+        else {
+            for (String key : prop.stringPropertyNames()) {
                 map.put(key, prop.getProperty(key));
             }
         }

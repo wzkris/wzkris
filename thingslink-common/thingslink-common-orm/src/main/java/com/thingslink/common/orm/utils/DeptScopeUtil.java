@@ -13,12 +13,12 @@ public class DeptScopeUtil {
     // sql表达式片段
     private static final ThreadLocal<Expression> LOCAL_DATA_AUTH_SQL = new TransmittableThreadLocal<>();
 
-    public static void setSqlExpression(Expression expression) {
-        LOCAL_DATA_AUTH_SQL.set(expression);
-    }
-
     public static Expression getSqlExpression() {
         return LOCAL_DATA_AUTH_SQL.get();
+    }
+
+    public static void setSqlExpression(Expression expression) {
+        LOCAL_DATA_AUTH_SQL.set(expression);
     }
 
     public static void clear() {

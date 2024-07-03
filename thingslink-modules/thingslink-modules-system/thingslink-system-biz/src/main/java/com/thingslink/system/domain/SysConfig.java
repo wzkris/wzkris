@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 
 public class SysConfig extends BaseEntity {
-    
+
 
     /**
      * 参数主键

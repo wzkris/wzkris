@@ -9,7 +9,7 @@ import com.thingslink.common.core.utils.MessageUtil;
  * @author wzkris
  */
 public class BaseException extends RuntimeException {
-    
+
     /**
      * 状态码
      */

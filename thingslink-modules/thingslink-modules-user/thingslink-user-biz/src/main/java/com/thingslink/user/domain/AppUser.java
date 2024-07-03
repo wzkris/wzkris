@@ -71,15 +71,15 @@ public class AppUser extends BaseEntity {
     @Schema(description = "请求参数")
     private Map<String, Object> params;
 
+    public AppUser(Long userId) {
+        this.userId = userId;
+    }
+
     public Map<String, Object> getParams() {
         if (params == null) {
             params = new HashMap<>(2);
         }
         return params;
-    }
-
-    public AppUser(Long userId) {
-        this.userId = userId;
     }
 
 }

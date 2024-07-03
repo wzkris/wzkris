@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.thingslink</groupId>
-        <artifactId>thingslink-common</artifactId>
-        <version>${revision}</version>
-    </parent>
+	<parent>
+		<groupId>com.thingslink</groupId>
+		<artifactId>thingslink-common</artifactId>
+		<version>${revision}</version>
+	</parent>
 
-    <artifactId>thingslink-common-web</artifactId>
+	<artifactId>thingslink-common-web</artifactId>
 
-    <dependencies>
+	<dependencies>
 
-        <!-- SpringBoot Web -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+		<!-- SpringBoot Web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>io.github.linpeilie</groupId>
-            <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>io.github.linpeilie</groupId>
+			<artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+		</dependency>
 
-        <!-- 持久层-->
-        <dependency>
-            <groupId>com.thingslink</groupId>
-            <artifactId>thingslink-common-orm</artifactId>
-        </dependency>
+		<!-- 持久层-->
+		<dependency>
+			<groupId>com.thingslink</groupId>
+			<artifactId>thingslink-common-orm</artifactId>
+		</dependency>
 
-        <!-- security framwork核心包-->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-        </dependency>
+		<!-- security framwork核心包-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
 
-        <!-- SpringBoot Actuator -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+		<!-- SpringBoot Actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
-        <!-- springBoot test-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-        </dependency>
+		<!-- springBoot test-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 </project>

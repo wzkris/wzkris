@@ -7,6 +7,6 @@ package com.thingslink.auth.oauth2.constants;
  */
 public interface GrantTypeConstant {
     // 短信授权
-    String SMS  = "sms";
+    String SMS = "sms";
 
 }

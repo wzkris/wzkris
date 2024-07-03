@@ -40,18 +40,6 @@ public final class SpringUtil implements BeanFactoryPostProcessor, ApplicationCo
      */
     private static ApplicationContext applicationContext;
 
-    @SuppressWarnings("NullableProblems")
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        SpringUtil.beanFactory = beanFactory;
-    }
-
-    @SuppressWarnings("NullableProblems")
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        SpringUtil.applicationContext = applicationContext;
-    }
-
     /**
      * 获取{@link ListableBeanFactory}，可能为{@link ConfigurableListableBeanFactory} 或 {@link ApplicationContextAware}
      *
@@ -87,8 +75,6 @@ public final class SpringUtil implements BeanFactoryPostProcessor, ApplicationCo
         return factory;
     }
 
-    //通过name获取 Bean.
-
     /**
      * 通过name获取 Bean
      *
@@ -111,6 +97,8 @@ public final class SpringUtil implements BeanFactoryPostProcessor, ApplicationCo
     public static <T> T getBean(Class<T> clazz) {
         return getBeanFactory().getBean(clazz);
     }
+
+    //通过name获取 Bean.
 
     /**
      * 通过name,以及Clazz返回指定的Bean
@@ -288,5 +276,17 @@ public final class SpringUtil implements BeanFactoryPostProcessor, ApplicationCo
     @SuppressWarnings("unchecked")
     public static <T> T getAopProxy(T invoker) {
         return (T) AopContext.currentProxy();
+    }
+
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        SpringUtil.beanFactory = beanFactory;
+    }
+
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        SpringUtil.applicationContext = applicationContext;
     }
 }

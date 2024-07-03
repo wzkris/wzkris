@@ -17,7 +17,8 @@ public class MessageDTO {
     // 数据
     private byte[] data;
 
-    public MessageDTO(){}
+    public MessageDTO() {
+    }
 
     public MessageDTO(String serialNo, String productKey, byte[] data) {
         this.serialNo = serialNo;

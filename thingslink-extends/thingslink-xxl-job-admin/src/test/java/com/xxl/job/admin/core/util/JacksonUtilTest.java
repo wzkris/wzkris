@@ -34,7 +34,7 @@ public class JacksonUtilTest {
 
         //then
         assertEquals(result.get("aaa"), "111");
-        assertEquals(result.get("bbb"),"222");
+        assertEquals(result.get("bbb"), "222");
 
     }
 }

@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 
 public class SysDictType extends BaseEntity {
-    
+
 
     /**
      * 字典主键

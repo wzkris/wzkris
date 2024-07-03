@@ -19,6 +19,16 @@ import java.util.List;
 public class BaseController {
 
     /**
+     * 响应请求分页数据
+     */
+    @SuppressWarnings("unchecked")
+    protected static <T> Result<Page<T>> getDataTable(List<T> list) {
+        Page<T> page = PageUtil.getPage();
+        page.setRows(list);
+        return Result.success(page);
+    }
+
+    /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */
     @InitBinder
@@ -44,16 +54,6 @@ public class BaseController {
      */
     protected void clearPage() {
         PageUtil.clear();
-    }
-
-    /**
-     * 响应请求分页数据
-     */
-    @SuppressWarnings("unchecked")
-    protected static <T> Result<Page<T>> getDataTable(List<T> list) {
-        Page<T> page = PageUtil.getPage();
-        page.setRows(list);
-        return Result.success(page);
     }
 
     /**

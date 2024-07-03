@@ -11,7 +11,6 @@ import com.thingslink.common.core.exception.base.BaseException;
  */
 public final class ThirdServiceException extends BaseException {
 
-    
 
     public ThirdServiceException(String code) {
         this(code, null, null);

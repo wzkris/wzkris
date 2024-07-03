@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 
 public class SysDictData extends BaseEntity {
-    
+
 
     /**
      * 字典编码

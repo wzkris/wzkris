@@ -15,36 +15,36 @@ import javax.servlet.http.Cookie;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class JobInfoControllerTest extends AbstractSpringMvcTest {
-  private static Logger logger = LoggerFactory.getLogger(JobInfoControllerTest.class);
+    private static Logger logger = LoggerFactory.getLogger(JobInfoControllerTest.class);
 
-  private Cookie cookie;
+    private Cookie cookie;
 
-  @BeforeEach
-  public void login() throws Exception {
-    MvcResult ret = mockMvc.perform(
-        post("/login")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("userName", "admin")
-            .param("password", "123456")
-    ).andReturn();
-    cookie = ret.getResponse().getCookie(LoginService.LOGIN_IDENTITY_KEY);
-  }
+    @BeforeEach
+    public void login() throws Exception {
+        MvcResult ret = mockMvc.perform(
+                post("/login")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("userName", "admin")
+                        .param("password", "123456")
+        ).andReturn();
+        cookie = ret.getResponse().getCookie(LoginService.LOGIN_IDENTITY_KEY);
+    }
 
-  @Test
-  public void testAdd() throws Exception {
-    MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-    parameters.add("jobGroup", "1");
-    parameters.add("triggerStatus", "-1");
+    @Test
+    public void testAdd() throws Exception {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+        parameters.add("jobGroup", "1");
+        parameters.add("triggerStatus", "-1");
 
-    MvcResult ret = mockMvc.perform(
-        post("/jobinfo/pageList")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            //.content(paramsJson)
-            .params(parameters)
-            .cookie(cookie)
-    ).andReturn();
+        MvcResult ret = mockMvc.perform(
+                post("/jobinfo/pageList")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        //.content(paramsJson)
+                        .params(parameters)
+                        .cookie(cookie)
+        ).andReturn();
 
-    logger.info(ret.getResponse().getContentAsString());
-  }
+        logger.info(ret.getResponse().getContentAsString());
+    }
 
 }

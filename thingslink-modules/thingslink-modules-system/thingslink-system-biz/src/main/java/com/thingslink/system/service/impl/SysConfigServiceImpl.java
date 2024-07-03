@@ -27,30 +27,6 @@ public class SysConfigServiceImpl implements SysConfigService {
 
     private final SysConfigMapper sysConfigMapper;
 
-    static class ConfigCache {
-        static final String CONFIG_KEY_PREFIX = "sys_config";
-
-        static String getConfigValueByKey(String configKey) {
-            return RedisUtil.getMapValue(CONFIG_KEY_PREFIX, configKey);
-        }
-
-        static void setConfigValueByKey(String configKey, String configValue) {
-            RedisUtil.setMapValue(CONFIG_KEY_PREFIX, configKey, configValue);
-        }
-
-        static void setConfig(Map<String, Object> map) {
-            RedisUtil.setMap(CONFIG_KEY_PREFIX, map);
-        }
-
-        static void deleteByKey(String configKey) {
-            RedisUtil.getMap(CONFIG_KEY_PREFIX).remove(configKey);
-        }
-
-        static void clearAll() {
-            RedisUtil.delObj(CONFIG_KEY_PREFIX);
-        }
-    }
-
     /**
      * 根据键名查询参数配置信息
      *
@@ -179,5 +155,29 @@ public class SysConfigServiceImpl implements SysConfigService {
                 .eq(SysConfig::getConfigKey, config.getConfigKey())
                 .ne(ObjUtil.isNotNull(config.getConfigId()), SysConfig::getConfigId, config.getConfigId());
         return sysConfigMapper.exists(lqw);
+    }
+
+    static class ConfigCache {
+        static final String CONFIG_KEY_PREFIX = "sys_config";
+
+        static String getConfigValueByKey(String configKey) {
+            return RedisUtil.getMapValue(CONFIG_KEY_PREFIX, configKey);
+        }
+
+        static void setConfigValueByKey(String configKey, String configValue) {
+            RedisUtil.setMapValue(CONFIG_KEY_PREFIX, configKey, configValue);
+        }
+
+        static void setConfig(Map<String, Object> map) {
+            RedisUtil.setMap(CONFIG_KEY_PREFIX, map);
+        }
+
+        static void deleteByKey(String configKey) {
+            RedisUtil.getMap(CONFIG_KEY_PREFIX).remove(configKey);
+        }
+
+        static void clearAll() {
+            RedisUtil.delObj(CONFIG_KEY_PREFIX);
+        }
     }
 }

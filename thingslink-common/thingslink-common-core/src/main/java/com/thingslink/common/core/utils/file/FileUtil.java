@@ -74,7 +74,8 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
             writeBytes(file.getBytes(), baseDir + fileName);
             return fileName;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             log.error("捕获异常，异常信息：{}", e.getMessage(), e);
             throw new UtilException(e.getMessage());
         }
@@ -96,7 +97,8 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
             writeBytes(file.getBytes(), absPath);
             return absPath;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error("捕获异常，异常信息：{}", e.getMessage(), e);
             throw new UtilException(e.getMessage());
         }

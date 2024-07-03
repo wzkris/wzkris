@@ -18,6 +18,10 @@ import java.util.regex.Pattern;
  */
 @Component
 public class BlackListUrlFilter extends AbstractGatewayFilterFactory<BlackListUrlFilter.Config> {
+    public BlackListUrlFilter() {
+        super(Config.class);
+    }
+
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
@@ -31,15 +35,10 @@ public class BlackListUrlFilter extends AbstractGatewayFilterFactory<BlackListUr
         };
     }
 
-    public BlackListUrlFilter() {
-        super(Config.class);
-    }
-
     public static class Config {
+        private final List<Pattern> blacklistUrlPattern = new ArrayList<>();
         @Getter
         private List<String> blacklistUrl;
-
-        private final List<Pattern> blacklistUrlPattern = new ArrayList<>();
 
         public boolean matchBlacklist(String url) {
             return !blacklistUrlPattern.isEmpty() && blacklistUrlPattern.stream().anyMatch(p -> p.matcher(url).find());

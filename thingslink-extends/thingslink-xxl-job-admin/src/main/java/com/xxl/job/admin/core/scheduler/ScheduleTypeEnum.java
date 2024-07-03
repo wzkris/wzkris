@@ -30,17 +30,17 @@ public enum ScheduleTypeEnum {
         this.title = title;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public static ScheduleTypeEnum match(String name, ScheduleTypeEnum defaultItem){
-        for (ScheduleTypeEnum item: ScheduleTypeEnum.values()) {
+    public static ScheduleTypeEnum match(String name, ScheduleTypeEnum defaultItem) {
+        for (ScheduleTypeEnum item : ScheduleTypeEnum.values()) {
             if (item.name().equals(name)) {
                 return item;
             }
         }
         return defaultItem;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
 }

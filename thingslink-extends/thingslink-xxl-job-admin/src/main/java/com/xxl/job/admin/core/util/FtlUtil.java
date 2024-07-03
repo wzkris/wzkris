@@ -22,7 +22,8 @@ public class FtlUtil {
             TemplateHashModel staticModels = wrapper.getStaticModels();
             TemplateHashModel fileStatics = (TemplateHashModel) staticModels.get(packageName);
             return fileStatics;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         return null;

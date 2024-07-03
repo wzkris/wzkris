@@ -30,12 +30,12 @@ import java.lang.reflect.Method;
  */
 @Aspect
 public class DynamicTenantAspect {
+    // spel标准解析上下文
+    private volatile static StandardEvaluationContext context;
     // spel解析器
     private final ExpressionParser spel = new SpelExpressionParser();
     // 方法参数名解析器
     private final DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
-    // spel标准解析上下文
-    private volatile static StandardEvaluationContext context;
 
     /**
      * 加入@DynamicTenant注解的方法执行前设置动态租户，执行后清除

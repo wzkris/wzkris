@@ -28,6 +28,26 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysPermissionServiceImpl implements SysPermissionService {
+    /**
+     * 全部数据权限
+     */
+    public static final String DATA_SCOPE_ALL = "1";
+    /**
+     * 自定数据权限
+     */
+    public static final String DATA_SCOPE_CUSTOM = "2";
+    /**
+     * 部门数据权限
+     */
+    public static final String DATA_SCOPE_DEPT = "3";
+    /**
+     * 部门及以下数据权限
+     */
+    public static final String DATA_SCOPE_DEPT_AND_CHILD = "4";
+    /**
+     * 仅本人数据权限
+     */
+    public static final String DATA_SCOPE_SELF = "5";
     private final SysRoleMapper sysRoleMapper;
     private final SysRoleService sysRoleService;
     private final SysMenuMapper sysMenuMapper;
@@ -36,31 +56,6 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysRoleDeptMapper sysRoleDeptMapper;
     private final SysTenantMapper sysTenantMapper;
     private final SysTenantPackageMapper sysTenantPackageMapper;
-
-    /**
-     * 全部数据权限
-     */
-    public static final String DATA_SCOPE_ALL = "1";
-
-    /**
-     * 自定数据权限
-     */
-    public static final String DATA_SCOPE_CUSTOM = "2";
-
-    /**
-     * 部门数据权限
-     */
-    public static final String DATA_SCOPE_DEPT = "3";
-
-    /**
-     * 部门及以下数据权限
-     */
-    public static final String DATA_SCOPE_DEPT_AND_CHILD = "4";
-
-    /**
-     * 仅本人数据权限
-     */
-    public static final String DATA_SCOPE_SELF = "5";
 
     /**
      * 返回已授权码及数据权限

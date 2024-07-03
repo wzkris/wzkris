@@ -9,7 +9,7 @@ import com.thingslink.common.core.exception.base.BaseException;
  * @author wzkris
  */
 public class CaptchaException extends BaseException {
-    
+
 
     public CaptchaException(String code) {
         super(BizCode.PRECONDITION_FAILED.value(), code, null, null);

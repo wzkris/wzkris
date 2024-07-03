@@ -19,8 +19,9 @@ public class XxlJobGroup {
 
     // registry list
     private List<String> registryList;  // 执行器地址列表(系统注册)
+
     public List<String> getRegistryList() {
-        if (addressList!=null && addressList.trim().length()>0) {
+        if (addressList != null && addressList.trim().length() > 0) {
             registryList = new ArrayList<String>(Arrays.asList(addressList.split(",")));
         }
         return registryList;
@@ -62,16 +63,16 @@ public class XxlJobGroup {
         return addressList;
     }
 
+    public void setAddressList(String addressList) {
+        this.addressList = addressList;
+    }
+
     public Date getUpdateTime() {
         return updateTime;
     }
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public void setAddressList(String addressList) {
-        this.addressList = addressList;
     }
 
 }

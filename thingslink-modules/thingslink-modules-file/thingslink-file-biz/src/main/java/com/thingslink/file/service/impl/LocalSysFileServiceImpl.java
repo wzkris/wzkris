@@ -48,7 +48,8 @@ public class LocalSysFileServiceImpl implements SysFileService {
                     byte[] bytes = FileUtil.readBytes(filePath);
                     ost.write(bytes);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new BusinessException(e.getMessage());
             }
             // 删除切片文件

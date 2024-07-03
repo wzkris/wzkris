@@ -35,8 +35,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @AllArgsConstructor
 public class ResourceServerConfig {
 
-    private final OAuth2Properties oAuth2Properties;
-
     // json序列化增强
     static {
         ObjectMapper objectMapper = JsonUtil.getObjectMapper();
@@ -45,6 +43,8 @@ public class ResourceServerConfig {
 
         objectMapper.registerModules(simpleModule);
     }
+
+    private final OAuth2Properties oAuth2Properties;
 
     @Bean
     public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
