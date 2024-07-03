@@ -16,16 +16,16 @@ import java.lang.annotation.*;
 public @interface DynamicTenant {
 
     /**
-     * 走租户的情况下该参数有效，默认走自身租户
-     *
-     * @return spring-el表达式
-     */
-    String value() default "";
-
-    /**
      * 忽略租户spel表达式，true则忽略租户，false则走租户
      *
      * @return 默认忽略超级租户
      */
     String enableIgnore() default "@SysUtil.isSuperTenant()";
+
+    /**
+     * enableIgnore结果为false时，强制切换租户，默认走自身租户
+     *
+     * @return spring-el表达式
+     */
+    String forceTenant() default "";
 }

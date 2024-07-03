@@ -51,12 +51,12 @@ public class DynamicTenantAspect {
             // 未启用忽略则必须走租户
             Long tenantId;
             // 为空则走自身租户
-            if (StringUtil.isBlank(dynamicTenant.value())) {
+            if (StringUtil.isBlank(dynamicTenant.forceTenant())) {
                 tenantId = SysUtil.getTenantId();
             }
             else {
                 // 否则解析spel，拿到对应参数
-                tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.value(), Long.class);
+                tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.forceTenant(), Long.class);
             }
 
             return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);
