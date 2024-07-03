@@ -225,7 +225,6 @@
         <module>thingslink-extends</module>
         <module>thingslink-modules</module>
         <module>thingslink-common</module>
-        <module>mock-device</module>
     </modules>
     <packaging>pom</packaging>
 

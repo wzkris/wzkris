@@ -16,6 +16,7 @@
 package com.thingslink.common.redis.manager;
 
 import com.thingslink.common.redis.util.RedisUtil;
+import lombok.Setter;
 import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 import org.redisson.spring.cache.CacheConfig;
@@ -42,46 +43,43 @@ import java.util.concurrent.ConcurrentMap;
  * @author Nikita Koksharov
  *
  */
-@SuppressWarnings("unchecked")
 public class PlusSpringCacheManager implements CacheManager {
 
     private boolean dynamic = true;
 
+    /**
+     * -- SETTER --
+     *  Defines possibility of storing
+     *  values.
+     *  <p>
+     *  Default is <code>true</code>
+     *
+     * @param allowNullValues stores if <code>true</code>
+     */
+    @Setter
     private boolean allowNullValues = true;
 
+    /**
+     * -- SETTER --
+     *  Defines if cache aware of Spring-managed transactions.
+     *  If
+     *  put/evict operations are executed only for successful transaction in after-commit phase.
+     *  <p>
+     *  Default is <code>false</code>
+     *
+     * @param transactionAware cache is transaction aware if <code>true</code>
+     */
+    @Setter
     private boolean transactionAware = true;
 
     Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
+
     ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
 
     /**
      * Creates CacheManager supplied by Redisson instance
      */
     public PlusSpringCacheManager() {
-    }
-
-
-    /**
-     * Defines possibility of storing {@code null} values.
-     * <p>
-     * Default is <code>true</code>
-     *
-     * @param allowNullValues stores if <code>true</code>
-     */
-    public void setAllowNullValues(boolean allowNullValues) {
-        this.allowNullValues = allowNullValues;
-    }
-
-    /**
-     * Defines if cache aware of Spring-managed transactions.
-     * If {@code true} put/evict operations are executed only for successful transaction in after-commit phase.
-     * <p>
-     * Default is <code>false</code>
-     *
-     * @param transactionAware cache is transaction aware if <code>true</code>
-     */
-    public void setTransactionAware(boolean transactionAware) {
-        this.transactionAware = transactionAware;
     }
 
     /**
