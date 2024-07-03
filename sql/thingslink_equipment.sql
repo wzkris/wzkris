@@ -17,11 +17,11 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+CREATE DATABASE IF NOT EXISTS thingslink_equipment;
+USE thingslink_equipment;
 -- ----------------------------
 -- Table structure for device
 -- ----------------------------
-CREATE DATABASE IF NOT EXISTS thingslink_equipment;
-USE thingslink_equipment;
 DROP TABLE IF EXISTS `device`;
 CREATE TABLE `device`  (
   `device_id` bigint NOT NULL COMMENT '设备id',

@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 24/06/2024 17:13:58
+ Date: 03/07/2024 14:24:25
 */
 
 SET NAMES utf8mb4;
@@ -120,7 +120,6 @@ INSERT INTO `sys_menu` VALUES (101, '控制台入口', 1, 0, 'controller', NULL,
 INSERT INTO `sys_menu` VALUES (102, '字典管理', 1, 6, 'dict', 'system/dict/index', '', 'C', '0', 'dict:list', 'dict', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (103, '参数设置', 1, 7, 'config', 'system/config/index', '', 'C', '0', 'config:list', 'edit', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (104, '日志管理', 1, 1, 'log', '', '', 'M', '0', '', 'log', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (105, '定时任务', 1, 20, 'job', 'system/job/index', '', 'C', '0', 'job:list', 'job', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (150, '操作日志', 104, 1, 'operlog', 'system/operlog/index', '', 'C', '0', 'operlog:list', 'form', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (151, '登录日志', 104, 2, 'loginlog', 'system/loginlog/index', '', 'C', '0', 'loginlog:list', 'logininfor', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (201, '用户管理', 2, 1, 'appuser', 'ur/appuser/index', '', 'C', '0', 'app_user:list', 'user', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
@@ -130,10 +129,11 @@ INSERT INTO `sys_menu` VALUES (205, '部门管理', 2, 70, 'dept', 'ur/dept/inde
 INSERT INTO `sys_menu` VALUES (206, '角色管理', 2, 99, 'role', 'ur/role/index', '', 'C', '0', 'sys_role:list', 'peoples', 0, 0, 1, 1713334134616, 1, 1719217854346, 1);
 INSERT INTO `sys_menu` VALUES (207, '菜单管理', 2, 50, 'menu', 'ur/menu/index', '', 'C', '0', 'menu:list', 'tree-table', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (208, '岗位管理', 2, 8, 'post', 'ur/post/index', '', 'C', '0', 'post:list', 'post', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (300, '定时任务', 101, 20, 'http://localhost:9200/xxl-job-admin', '', '', 'C', '0', 'job:list', 'job', 1, 0, 1, 1713334134616, 1, 1719987477468, 1);
 INSERT INTO `sys_menu` VALUES (301, '系统接口', 101, 2, 'http://localhost:8080/doc.html', '', '', 'C', '0', 'tool:swagger:list', 'swagger', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (302, 'Sentinel控制台', 101, 3, 'http://localhost:8718', '', '', 'C', '0', 'monitor:sentinel:list', 'sentinel', 1, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (303, 'Nacos控制台', 101, 4, 'http://127.0.0.1:8848/nacos', '', '', 'C', '0', 'monitor:nacos:list', 'nacos', 1, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (304, 'Admin控制台', 101, 5, 'http://localhost:9100/login', '', '', 'C', '0', 'monitor:server:list', 'server', 1, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (304, '服务监控', 101, 5, 'http://localhost:9100/', '', '', 'C', '0', 'monitor:server:list', 'server', 1, 0, 1, 1713334134616, 1, 1719987239231, 1);
 INSERT INTO `sys_menu` VALUES (400, '站点管理', 4, 0, 'station', 'equipment/station/index', NULL, 'C', '0', 'station:list', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (401, '设备管理', 4, 1, 'device', 'equipment/device/index', NULL, 'C', '0', 'device:list', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (500, '订单管理', 5, 0, 'order', 'order/order/index', NULL, 'C', '0', 'order:list', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
@@ -186,12 +186,6 @@ INSERT INTO `sys_menu` VALUES (1042, '登录查询', 151, 1, '#', '', '', 'F', '
 INSERT INTO `sys_menu` VALUES (1043, '登录删除', 151, 2, '#', '', '', 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1044, '日志导出', 151, 3, '#', '', '', 'F', '0', 'loginlog:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1045, '账户解锁', 151, 4, '#', '', '', 'F', '0', 'loginlog:unlock', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1049, '任务查询', 105, 1, '#', '', '', 'F', '0', 'job:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1050, '任务新增', 105, 2, '#', '', '', 'F', '0', 'job:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1051, '任务修改', 105, 3, '#', '', '', 'F', '0', 'job:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1052, '任务删除', 105, 4, '#', '', '', 'F', '0', 'job:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1053, '状态修改', 105, 5, '#', '', '', 'F', '0', 'job:changeStatus', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1054, '任务导出', 105, 6, '#', '', '', 'F', '0', 'job:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1063, '用户修改', 203, 3, '', '', NULL, 'F', '0', 'sys_user:edit', '#', 0, 0, 0, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1070, '用户查询', 203, 0, '', '', NULL, 'F', '0', 'sys_user:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1071, '用户添加', 203, 1, '', '', NULL, 'F', '0', 'sys_user:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
@@ -559,7 +553,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1719220147140, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1719987349348, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (2, 0, 101, 'ry11', 'ry@qq.com', '若依', '15666666666', '0', '0', '', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, NULL, NULL, NULL, 1713334134616, 1, 1716972384081, 1);
 INSERT INTO `sys_user` VALUES (3, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1716791222405, NULL, 1713334134616, 1, 1719213933859, 1);
 INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$5TWNPCRZAABWakMQoEZFO.2ZZzZG3Ptc6Z/QEa1DXlOMDRq5zwGHS', 0, '127.0.0.1', 1719220047177, NULL, 1713334134616, 1, NULL, NULL);
