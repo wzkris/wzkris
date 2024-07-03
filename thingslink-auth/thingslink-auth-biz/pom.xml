@@ -44,6 +44,12 @@
 		<dependency>
 			<groupId>com.thingslink</groupId>
 			<artifactId>thingslink-common-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.thingslink</groupId>
+					<artifactId>thingslink-common-orm</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!--本地rpc服务-->

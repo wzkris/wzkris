@@ -1,12 +1,12 @@
-package com.thingslink.auth.service.impl;
+package com.thingslink.user.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.thingslink.auth.domain.OAuth2Client;
-import com.thingslink.auth.mapper.OAuth2ClientMapper;
-import com.thingslink.auth.service.OAuth2ClientService;
 import com.thingslink.common.orm.page.Page;
 import com.thingslink.common.orm.utils.PageUtil;
+import com.thingslink.user.domain.OAuth2Client;
+import com.thingslink.user.mapper.OAuth2ClientMapper;
+import com.thingslink.user.service.OAuth2ClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

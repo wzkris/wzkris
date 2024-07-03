@@ -12,7 +12,6 @@ import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
@@ -31,7 +30,6 @@ import java.util.Map;
         @AutoMapper(target = LoginApper.class),
         @AutoMapper(target = CustomerDTO.class)
 })
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @FieldNameConstants
 public class AppUser extends BaseEntity {

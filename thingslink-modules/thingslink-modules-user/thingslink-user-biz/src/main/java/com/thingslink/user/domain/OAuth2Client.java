@@ -1,17 +1,26 @@
-package com.thingslink.auth.domain;
+package com.thingslink.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.thingslink.common.orm.model.BaseEntity;
+import com.thingslink.user.api.domain.dto.OAuth2ClientDTO;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+/**
+ * OAuth2 表
+ *
+ * @author wzkris
+ */
 @Data
-@EqualsAndHashCode(callSuper = true)
+@AutoMappers({
+        @AutoMapper(target = OAuth2ClientDTO.class),
+})
 @TableName(autoResultMap = true)
 public class OAuth2Client extends BaseEntity {
     @TableId

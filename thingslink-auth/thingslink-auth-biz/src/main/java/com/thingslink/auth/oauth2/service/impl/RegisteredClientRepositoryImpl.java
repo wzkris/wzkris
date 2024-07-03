@@ -1,12 +1,13 @@
 package com.thingslink.auth.oauth2.service.impl;
 
 import com.thingslink.auth.config.TokenConfig;
-import com.thingslink.auth.domain.OAuth2Client;
-import com.thingslink.auth.mapper.OAuth2ClientMapper;
 import com.thingslink.common.core.constant.CommonConstants;
+import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.MessageUtil;
 import com.thingslink.common.redis.util.RedisUtil;
 import com.thingslink.common.security.oauth2.constants.OAuth2SecurityConstants;
+import com.thingslink.user.api.RemoteOAuth2ClientApi;
+import com.thingslink.user.api.domain.dto.OAuth2ClientDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -37,7 +38,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     private final TokenConfig tokenConfig;
 
-    private final OAuth2ClientMapper oauth2ClientMapper;
+    private final RemoteOAuth2ClientApi remoteOAuth2ClientApi;
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -51,10 +52,11 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     @Override
     public RegisteredClient findByClientId(String clientId) {
-        OAuth2Client oauth2Client = RedisUtil.getObj(this.buildRedisKey(clientId));
+        OAuth2ClientDTO oauth2Client = RedisUtil.getObj(this.buildRedisKey(clientId));
 
         if (oauth2Client == null) {
-            oauth2Client = oauth2ClientMapper.selectByClientId(clientId);
+            Result<OAuth2ClientDTO> clientDTOResult = remoteOAuth2ClientApi.getByClientId(clientId);
+            oauth2Client = clientDTOResult.checkData();
 
             if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
                 // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
@@ -72,8 +74,8 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
     /**
      * 构建Spring OAuth2所需要的客户端信息
      */
-    private RegisteredClient buildRegisteredClient(OAuth2Client oauth2Client) {
-        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2Client.getId().toString())
+    private RegisteredClient buildRegisteredClient(OAuth2ClientDTO oauth2Client) {
+        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2Client.getClientId())
                 .clientId(oauth2Client.getClientId())
                 .clientSecret(oauth2Client.getClientSecret())
                 .clientAuthenticationMethods(clientAuthenticationMethods -> {

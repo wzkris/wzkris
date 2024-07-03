@@ -26,7 +26,7 @@ public interface XxlJobUserDao {
 	public int save(XxlJobUser xxlJobUser);
 
 	public int update(XxlJobUser xxlJobUser);
-	
+
 	public int delete(@Param("id") int id);
 
 }

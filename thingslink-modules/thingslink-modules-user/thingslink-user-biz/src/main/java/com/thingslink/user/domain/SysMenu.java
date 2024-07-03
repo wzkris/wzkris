@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -23,7 +22,6 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class SysMenu extends BaseEntity {
 
     @TableId

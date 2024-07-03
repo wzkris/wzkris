@@ -2,7 +2,6 @@ package com.thingslink.user.domain.dto;
 
 import com.thingslink.user.domain.SysUser;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -13,7 +12,6 @@ import java.util.List;
  * @date  2023/1/14 16:20
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 public class SysUserDTO extends SysUser {
 
     /** 角色组 */

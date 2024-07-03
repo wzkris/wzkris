@@ -18,7 +18,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
@@ -37,7 +36,6 @@ import java.util.Map;
         @AutoMapper(target = LoginSyser.class),
         @AutoMapper(target = SysUserDTO.class)
 })
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @FieldNameConstants
 public class SysUser extends BaseEntity {

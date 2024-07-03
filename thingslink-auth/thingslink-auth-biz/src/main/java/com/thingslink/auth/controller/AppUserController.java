@@ -1,6 +1,6 @@
 package com.thingslink.auth.controller;
 
-import com.thingslink.auth.domain.vo.AppUserVO;
+import com.thingslink.auth.model.AppUserVO;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.core.utils.MapstructUtil;
 import com.thingslink.common.security.oauth2.domain.model.LoginApper;

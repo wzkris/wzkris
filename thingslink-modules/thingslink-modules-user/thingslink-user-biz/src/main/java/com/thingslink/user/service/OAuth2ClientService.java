@@ -1,7 +1,7 @@
-package com.thingslink.auth.service;
+package com.thingslink.user.service;
 
-import com.thingslink.auth.domain.OAuth2Client;
 import com.thingslink.common.orm.page.Page;
+import com.thingslink.user.domain.OAuth2Client;
 
 /**
  * OAuth2服务

@@ -1,11 +1,11 @@
-package com.thingslink.auth.controller;
+package com.thingslink.user.controller;
 
-import com.thingslink.auth.domain.OAuth2Client;
-import com.thingslink.auth.mapper.OAuth2ClientMapper;
-import com.thingslink.auth.service.OAuth2ClientService;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.orm.model.BaseController;
 import com.thingslink.common.orm.page.Page;
+import com.thingslink.user.domain.OAuth2Client;
+import com.thingslink.user.mapper.OAuth2ClientMapper;
+import com.thingslink.user.service.OAuth2ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

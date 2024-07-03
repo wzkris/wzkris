@@ -12,7 +12,6 @@ import com.thingslink.user.api.domain.dto.SysPermissionDTO;
 import com.thingslink.user.api.domain.dto.SysUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;

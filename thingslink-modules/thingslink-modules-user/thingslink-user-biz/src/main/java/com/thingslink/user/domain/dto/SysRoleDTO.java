@@ -4,7 +4,6 @@ package com.thingslink.user.domain.dto;
 import com.thingslink.user.domain.SysRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -16,7 +15,6 @@ import java.util.List;
  * @date : 2023/8/12 15:38
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 public class SysRoleDTO extends SysRole {
 
     @Schema(description = "菜单组")

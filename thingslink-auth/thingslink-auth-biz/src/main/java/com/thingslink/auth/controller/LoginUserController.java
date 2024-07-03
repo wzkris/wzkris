@@ -2,7 +2,7 @@ package com.thingslink.auth.controller;
 
 
 import com.thingslink.auth.config.TokenConfig;
-import com.thingslink.auth.domain.vo.LoginUserVO;
+import com.thingslink.auth.model.LoginUserVO;
 import com.thingslink.auth.oauth2.redis.JdkRedisUtil;
 import com.thingslink.common.core.domain.Result;
 import com.thingslink.common.security.oauth2.domain.model.LoginSyser;

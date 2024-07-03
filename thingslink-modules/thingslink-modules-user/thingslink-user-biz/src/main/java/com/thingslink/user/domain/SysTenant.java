@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class SysTenant extends BaseEntity {
 

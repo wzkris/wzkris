@@ -4,7 +4,6 @@ import com.thingslink.user.domain.SysUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -15,10 +14,9 @@ import lombok.experimental.Accessors;
  * @date : 2023/5/26 16:12
  */
 @Data
+@AutoMapper(target = SysUser.class)
 @Accessors(chain = true)
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysUser.class)
 public class SysUserVO extends SysUser {
 
     @Schema(description = "部门名称")

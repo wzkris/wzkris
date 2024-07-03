@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -24,10 +23,9 @@ import java.util.List;
 @Data
 @ToString
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class SysDept extends BaseEntity {
-    
+
 
     @TableId
     private Long deptId;
