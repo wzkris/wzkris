@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.thingslink</groupId>
-	<artifactId>thingslink</artifactId>
+	<groupId>com.wzkris</groupId>
+	<artifactId>wzkris</artifactId>
 	<version>${revision}</version>
 
-	<name>thingslink</name>
-	<description>thingslink物联网系统</description>
+	<name>wzkris</name>
+	<description>wzkris系统</description>
 
 	<properties>
 		<revision>4.1.0</revision>
@@ -44,8 +44,8 @@
 		<dependencies>
 
 			<dependency>
-				<groupId>com.thingslink</groupId>
-				<artifactId>thingslink-common-bom</artifactId>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-common-bom</artifactId>
 				<version>${revision}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -190,29 +190,29 @@
 
 			<!--认证rpc服务-->
 			<dependency>
-				<groupId>com.thingslink</groupId>
-				<artifactId>thingslink-auth-api</artifactId>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-auth-api</artifactId>
 				<version>${revision}</version>
 			</dependency>
 
 			<!--认证rpc服务-->
 			<dependency>
-				<groupId>com.thingslink</groupId>
-				<artifactId>thingslink-user-api</artifactId>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-user-api</artifactId>
 				<version>${revision}</version>
 			</dependency>
 
 			<!--系统rpc服务-->
 			<dependency>
-				<groupId>com.thingslink</groupId>
-				<artifactId>thingslink-system-api</artifactId>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-system-api</artifactId>
 				<version>${revision}</version>
 			</dependency>
 
 			<!--文件rpc服务-->
 			<dependency>
-				<groupId>com.thingslink</groupId>
-				<artifactId>thingslink-file-api</artifactId>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-file-api</artifactId>
 				<version>${revision}</version>
 			</dependency>
 
@@ -220,11 +220,11 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>thingslink-auth</module>
-		<module>thingslink-gateway</module>
-		<module>thingslink-extends</module>
-		<module>thingslink-modules</module>
-		<module>thingslink-common</module>
+		<module>wzkris-auth</module>
+		<module>wzkris-gateway</module>
+		<module>wzkris-extends</module>
+		<module>wzkris-modules</module>
+		<module>wzkris-common</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -237,8 +237,8 @@
 				<nacos.server>localhost:8848</nacos.server>
 				<nacos.username>dev</nacos.username>
 				<nacos.password>nacos</nacos.password>
-				<nacos.namespace>dev</nacos.namespace>
-				<nacos.group>thingslink</nacos.group>
+				<nacos.namespace>wzkris-dev</nacos.namespace>
+				<nacos.group>wzkris</nacos.group>
 			</properties>
 			<activation>
 				<!-- 默认环境 -->
@@ -252,8 +252,8 @@
 				<nacos.server>localhost:8848</nacos.server>
 				<nacos.username>prod</nacos.username>
 				<nacos.password>nacos</nacos.password>
-				<nacos.namespace>prod</nacos.namespace>
-				<nacos.group>thingslink</nacos.group>
+				<nacos.namespace>wzkris-prod</nacos.namespace>
+				<nacos.group>wzkris</nacos.group>
 			</properties>
 		</profile>
 	</profiles>

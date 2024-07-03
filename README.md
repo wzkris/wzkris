@@ -2,29 +2,29 @@
 <h4 align="center">基于SpringCloudAlibaba + JDK17 + Spring-Authorization-Server的微服务框架</h4>
 
 ~~~
-com.thingslink     
-├── thingslink-gateway         // 网关模块 [8080]
-├── thingslink-auth            // 认证服务 + 用户服务 [9000]
-├── thingslink-common          // 通用模块
-│       └── thingslink-common-core                         // 核心模块(工具包)
-│       └── thingslink-common-datascope                    // 数据权限范围
-│       └── thingslink-common-datasource                   // 多数据源
-│       └── thingslink-common-log                          // 日志记录
-│       └── thingslink-common-openfeign                    // rpc
-│       └── thingslink-common-mq                     // 消息队列(rocketmq)
-│       └── thingslink-common-redis                        // 缓存服务
-│       └── thingslink-common-seata                        // 分布式事务
-│       └── thingslink-common-security                     // 微服务权限校验
-│       └── thingslink-common-sms                          // 短信模块
-│       └── thingslink-common-statemachine                 // spring状态机
-│       └── thingslink-common-swagger                      // openAPI3规范
-│       └── thingslink-common-web                          // web服务依赖
-├── thingslink-modules         // 业务模块
-│       └── thingslink-modules-equipment                           // 设备服务 [2000]
-│       └── thingslink-modules-file                                // 文件服务 [9300]
-│       └── thingslink-modules-system                              // 系统服务 [5555]
-├── thingslink-visual          // 图形化管理模块
-│       └── thingslink-visual-monitor                      // 监控中心 [9100]
+com.wzkris     
+├── wzkris-gateway         // 网关模块 [8080]
+├── wzkris-auth            // 认证服务 + 用户服务 [9000]
+├── wzkris-common          // 通用模块
+│       └── wzkris-common-core                         // 核心模块(工具包)
+│       └── wzkris-common-datascope                    // 数据权限范围
+│       └── wzkris-common-datasource                   // 多数据源
+│       └── wzkris-common-log                          // 日志记录
+│       └── wzkris-common-openfeign                    // rpc
+│       └── wzkris-common-mq                     // 消息队列(rocketmq)
+│       └── wzkris-common-redis                        // 缓存服务
+│       └── wzkris-common-seata                        // 分布式事务
+│       └── wzkris-common-security                     // 微服务权限校验
+│       └── wzkris-common-sms                          // 短信模块
+│       └── wzkris-common-statemachine                 // spring状态机
+│       └── wzkris-common-swagger                      // openAPI3规范
+│       └── wzkris-common-web                          // web服务依赖
+├── wzkris-modules         // 业务模块
+│       └── wzkris-modules-equipment                           // 设备服务 [2000]
+│       └── wzkris-modules-file                                // 文件服务 [9300]
+│       └── wzkris-modules-system                              // 系统服务 [5555]
+├── wzkris-visual          // 图形化管理模块
+│       └── wzkris-visual-monitor                      // 监控中心 [9100]
 ├──pom.xml                // 公共依赖
 ~~~
 

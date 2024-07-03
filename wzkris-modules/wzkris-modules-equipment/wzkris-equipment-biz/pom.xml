@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.wzkris</groupId>
+		<artifactId>wzkris-modules-equipment</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+	<artifactId>wzkris-equipment-biz</artifactId>
+
+	<dependencies>
+		<!-- SpringCloud Alibaba Nacos -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+
+		<!-- SpringCloud Alibaba Nacos Config -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+		</dependency>
+
+		<!-- Sentinel -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-sentinel</artifactId>
+		</dependency>
+
+		<!--redis-->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-redis</artifactId>
+		</dependency>
+
+		<!-- 安全模块-->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-security</artifactId>
+		</dependency>
+
+		<!-- wzkris Common DataSource -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-datasource</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-web</artifactId>
+		</dependency>
+
+		<!-- wzkris Common ORM -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-orm</artifactId>
+		</dependency>
+
+		<!-- mqtt消息队列 -->
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-mqtt</artifactId>
+		</dependency>
+
+		<!-- wzkris Common Log -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-log</artifactId>
+		</dependency>
+
+		<!-- wzkris Common Swagger -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-swagger</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

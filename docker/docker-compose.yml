@@ -12,8 +12,8 @@ services:
     ports:
       - "3307:3307"
     volumes:
-      - D:\idea\thingslink-Cloud\docker\mysql\data\:/var/lib/mysql/
-      - D:\idea\thingslink-Cloud\docker\mysql\conf\:/etc/mysql/my.cnf
+      - D:\idea\wzkris-Cloud\docker\mysql\data\:/var/lib/mysql/
+      - D:\idea\wzkris-Cloud\docker\mysql\conf\:/etc/mysql/my.cnf
     privileged: true
     network_mode: "host"
 
@@ -28,9 +28,9 @@ services:
       TZ: Asia/Shanghai
     volumes:
       # 配置文件
-      - D:\idea\thingslink-Cloud\docker\redis\conf:/redis/config
+      - D:\idea\wzkris-Cloud\docker\redis\conf:/redis/config
       # 数据文件
-      - D:\idea\thingslink-Cloud\docker\redis\data\:/redis/data/
+      - D:\idea\wzkris-Cloud\docker\redis\data\:/redis/data/
     command: "redis-server /redis/config/redis.conf"
     privileged: true
     network_mode: "host"
@@ -60,8 +60,8 @@ services:
       # SEATA_IP: 127.0.0.1
       SEATA_PORT: 8091
     volumes:
-      - D:\idea\thingslink-Cloud\docker\seata-server\logs\:/thingslink/seata-server/logs
+      - D:\idea\wzkris-Cloud\docker\seata-server\logs\:/wzkris/seata-server/logs
       # skywalking 探针
-      - D:\idea\thingslink-Cloud\docker\skywalking\agent\:/thingslink/skywalking/agent
+      - D:\idea\wzkris-Cloud\docker\skywalking\agent\:/wzkris/skywalking/agent
     privileged: true
     network_mode: "host"
