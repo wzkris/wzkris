@@ -32,7 +32,8 @@ public class Result<T> implements Serializable {
     // 当前时间戳
     private long timestamp;
 
-    public Result(){}
+    public Result() {
+    }
 
     public Result(int biz, T data, String errMsg) {
         this.biz = biz;
@@ -76,7 +77,6 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> toRes(boolean b) {
         return b ? success() : fail();
     }
-
 
     // 校验返回结果是否正常，若不是则抛出异常
     @JsonIgnore

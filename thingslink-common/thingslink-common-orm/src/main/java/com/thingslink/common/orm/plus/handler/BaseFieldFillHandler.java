@@ -21,24 +21,28 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
-            Long current = DateUtil.current();
-            Long createId = this.getUserId();
-            this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.createId, createId, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
+                && OAuth2Holder.isAuthenticated()) {
+            if (OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
+                Long current = DateUtil.current();
+                Long createId = this.getUserId();
+                this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
+                this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
+                this.setFieldValByName(BaseEntity.Fields.createId, createId, metaObject);
+                this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
+            }
         }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
-            Long current = DateUtil.current();
-            Long createId = this.getUserId();
-            this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-            this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
+                && OAuth2Holder.isAuthenticated()) {
+            if (OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
+                Long current = DateUtil.current();
+                Long createId = this.getUserId();
+                this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
+                this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
+            }
         }
     }
 

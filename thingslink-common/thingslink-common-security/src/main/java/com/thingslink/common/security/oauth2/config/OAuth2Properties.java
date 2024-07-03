@@ -5,22 +5,37 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
+import java.util.List;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : OAuth2 feign请求拦截器
+ * @description : OAuth2 安全配置
  * @date : 2024/5/16 16:57
  */
 @Data
 @RefreshScope
-@ConfigurationProperties(prefix = "security.oauth2")
+@ConfigurationProperties(prefix = "security")
 public class OAuth2Properties {
-    // 自省uri
+    // token自省uri
     private String introspectionUri;
-    // 获取token的客户端地址
-    private String clientTokenUri;
-    // 客户端id
-    private String clientid;
-    // 客户端密钥
-    private String clientSecret;
+    // 身份key
+    private String identityKey;
+    // 身份value
+    private String identityValue;
+    // 白名单url
+    private White white;
+
+    @Data
+    public static class White {
+        /**
+         * 公共配置
+         */
+        private List<String> commonUrls;
+
+        /**
+         * 自定义配置
+         */
+        private List<String> customUrls;
+    }
 }

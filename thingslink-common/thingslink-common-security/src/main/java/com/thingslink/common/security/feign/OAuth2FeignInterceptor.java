@@ -2,7 +2,7 @@ package com.thingslink.common.security.feign;
 
 import com.thingslink.common.core.constant.SecurityConstants;
 import com.thingslink.common.core.utils.json.JsonUtil;
-import com.thingslink.common.security.utils.ClientTokenUtil;
+import com.thingslink.common.security.oauth2.config.OAuth2Properties;
 import com.thingslink.common.security.utils.OAuth2Holder;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -17,13 +17,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class OAuth2FeignInterceptor implements RequestInterceptor {
 
+    private final OAuth2Properties oAuth2Properties;
+
     @Override
     public void apply(RequestTemplate requestTemplate) {
+        requestTemplate.header(oAuth2Properties.getIdentityKey(), oAuth2Properties.getIdentityValue());
+
         if (OAuth2Holder.isAuthenticated()) {
             // 认证过了则追加信息
             requestTemplate.header(SecurityConstants.PRINCIPAL_HEADER, JsonUtil.toJsonString(OAuth2Holder.getPrincipal()));
         }
-        // 追加client_token，否则无法访问feign接口
-        requestTemplate.header(SecurityConstants.TOKEN_HEADER, ClientTokenUtil.getClientToken());
     }
 }

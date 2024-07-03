@@ -47,14 +47,10 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
     private final Converter<String, RequestEntity<?>> requestEntityConverter;
 
-    public CustomOpaqueTokenIntrospector(String introspectionUri, String clientId, String clientSecret) {
+    public CustomOpaqueTokenIntrospector(String introspectionUri) {
         Assert.notNull(introspectionUri, "introspectionUri cannot be null");
-        Assert.notNull(clientId, "clientId cannot be null");
-        Assert.notNull(clientSecret, "clientSecret cannot be null");
         this.requestEntityConverter = this.defaultRequestEntityConverter(URI.create(introspectionUri));
-        RestTemplate restTemplate = this.defaultRestTemplate(new RestTemplate());
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(clientId, clientSecret));
-        this.restOperations = restTemplate;
+        this.restOperations = this.defaultRestTemplate(new RestTemplate());
     }
 
     private Converter<String, RequestEntity<?>> defaultRequestEntityConverter(URI introspectionUri) {

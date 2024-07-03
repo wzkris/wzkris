@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.thingslink.common.core.utils.json.JsonUtil;
 import com.thingslink.common.security.oauth2.config.OAuth2Properties;
-import com.thingslink.common.security.oauth2.config.PermitUrlProperties;
 import com.thingslink.common.security.oauth2.deserializer.GrantedAuthorityDeserializer;
 import com.thingslink.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.thingslink.common.security.oauth2.handler.AuthenticationEntryPointImpl;
@@ -36,7 +35,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @AllArgsConstructor
 public class ResourceServerConfig {
 
-    private final PermitUrlProperties permitUrlProperties;
     private final OAuth2Properties oAuth2Properties;
 
     // json序列化增强
@@ -54,11 +52,11 @@ public class ResourceServerConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
                             // 配置url白名单
-                            if (permitUrlProperties.getCommonUrls() != null) {
-                                authorize.requestMatchers(permitUrlProperties.getCommonUrls().toArray(String[]::new)).permitAll();
+                            if (oAuth2Properties.getWhite() != null && oAuth2Properties.getWhite().getCommonUrls() != null) {
+                                authorize.requestMatchers(oAuth2Properties.getWhite().getCommonUrls().toArray(String[]::new)).permitAll();
                             }
-                            if (permitUrlProperties.getCustomUrls() != null) {
-                                authorize.requestMatchers(permitUrlProperties.getCustomUrls().toArray(String[]::new)).permitAll();
+                            if (oAuth2Properties.getWhite() != null && oAuth2Properties.getWhite().getCustomUrls() != null) {
+                                authorize.requestMatchers(oAuth2Properties.getWhite().getCustomUrls().toArray(String[]::new)).permitAll();
                             }
                             authorize.anyRequest().authenticated();
                         }
@@ -67,14 +65,12 @@ public class ResourceServerConfig {
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
-                                token.introspector(new CustomOpaqueTokenIntrospector(oAuth2Properties.getIntrospectionUri(),
-                                        oAuth2Properties.getClientid(), oAuth2Properties.getClientSecret()));
+                                token.introspector(new CustomOpaqueTokenIntrospector(oAuth2Properties.getIntrospectionUri()));
                             })
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                             .accessDeniedHandler(new AccessDeniedHandlerImpl())
                     ;
                 })
-//                .oauth2Client(Customizer.withDefaults())
         ;
 
         return http.build();
