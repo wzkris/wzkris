@@ -4,9 +4,10 @@ import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.impl.AppUserDetailsService;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
-import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -15,31 +16,32 @@ import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
-import org.springframework.util.Assert;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wzkris
  * @date 2024/3/11
  * @description 短信模式核心处理
  */
+@Component
 public class SmsAuthenticationProvider extends CommonAuthenticationProvider<CommonAuthenticationToken> {
 
     private final AppUserDetailsService userDetailsService;
+    private final CaptchaService captchaService;
 
     public SmsAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                      OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                     AppUserDetailsService userDetailsService) {
+                                     AppUserDetailsService userDetailsService, CaptchaService captchaService) {
         super(tokenGenerator, authorizationService);
-        Assert.notNull(authorizationService, "authorizationService cannot be null");
-        Assert.notNull(tokenGenerator, "tokenGenerator cannot be null");
-        Assert.notNull(userDetailsService, "userDetailsService cannot be null");
         this.userDetailsService = userDetailsService;
+        this.captchaService = captchaService;
     }
 
     @Override
     protected OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
-        // TODO 校验code
+        // 校验验证码
+        captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
 
         UserModel userModel = userDetailsService.loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 

@@ -1,5 +1,6 @@
 package com.wzkris.user.api;
 
+import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.user.api.domain.dto.CustomerDTO;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
@@ -19,7 +20,7 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PA
  * @description : rpc - 系统用户
  * @date : 2024/4/15 16:20
  */
-@FeignClient(value = "wzkris-user", contextId = "RemoteCustomerApi",
+@FeignClient(value = ApplicationNameConstants.USER, contextId = "RemoteCustomerApi",
         fallbackFactory = RemoteAppUserApiFallback.class)
 public interface RemoteAppUserApi {
 

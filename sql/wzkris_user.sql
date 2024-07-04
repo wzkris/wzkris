@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 03/07/2024 16:13:36
+ Date: 04/07/2024 15:58:31
 */
 
 SET NAMES utf8mb4;
@@ -211,7 +211,7 @@ INSERT INTO `sys_menu` VALUES (1041, '日志导出', 150, 3, '#', '', '', 'F', '
 INSERT INTO `sys_menu` VALUES (1042, '登录查询', 151, 1, '#', '', '', 'F', '0', 'loginlog:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1043, '登录删除', 151, 2, '#', '', '', 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1044, '日志导出', 151, 3, '#', '', '', 'F', '0', 'loginlog:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1045, '账户解锁', 151, 4, '#', '', '', 'F', '0', 'loginlog:unlock', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (1045, '账户解锁', 151, 4, '#', '', '', 'F', '0', 'account:unlock', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1063, '用户修改', 203, 3, '', '', NULL, 'F', '0', 'sys_user:edit', '#', 0, 0, 0, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1070, '用户查询', 203, 0, '', '', NULL, 'F', '0', 'sys_user:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1071, '用户添加', 203, 1, '', '', NULL, 'F', '0', 'sys_user:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
@@ -579,7 +579,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1719994230866, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1720079823298, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (2, 0, 101, 'ry11', 'ry@qq.com', '若依', '15666666666', '0', '0', '', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, NULL, NULL, NULL, 1713334134616, 1, 1716972384081, 1);
 INSERT INTO `sys_user` VALUES (3, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1716791222405, NULL, 1713334134616, 1, 1719213933859, 1);
 INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$5TWNPCRZAABWakMQoEZFO.2ZZzZG3Ptc6Z/QEa1DXlOMDRq5zwGHS', 0, '127.0.0.1', 1719220047177, NULL, 1713334134616, 1, NULL, NULL);

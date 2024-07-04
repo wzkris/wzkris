@@ -1,7 +1,7 @@
 package com.wzkris.auth.oauth2.authenticate;
 
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
-import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

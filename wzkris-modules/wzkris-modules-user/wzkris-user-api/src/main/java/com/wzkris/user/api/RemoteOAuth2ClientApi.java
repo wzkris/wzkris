@@ -1,5 +1,6 @@
 package com.wzkris.user.api;
 
+import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.user.api.domain.dto.OAuth2ClientDTO;
 import com.wzkris.user.api.fallback.RemoteOAuth2ClientApiFallback;
@@ -15,7 +16,7 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PA
  * @description : rpc - OAuth2客户端
  * @date : 2024/7/3 14:37
  */
-@FeignClient(value = "wzkris-user", contextId = "RemoteOAuth2ClientApi",
+@FeignClient(value = ApplicationNameConstants.USER, contextId = "RemoteOAuth2ClientApi",
         fallbackFactory = RemoteOAuth2ClientApiFallback.class)
 public interface RemoteOAuth2ClientApi {
 

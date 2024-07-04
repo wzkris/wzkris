@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 03/07/2024 16:11:39
+ Date: 04/07/2024 16:54:42
 */
 
 SET NAMES utf8mb4;
@@ -287,8 +287,8 @@ CREATE TABLE `tenant_info`  (
 -- ----------------------------
 -- Records of tenant_info
 -- ----------------------------
-INSERT INTO `tenant_info` VALUES (1, '1', 'wzkris-dev', 'dev', '开发环境', 'nacos', 1685070991448, 1685071009622);
-INSERT INTO `tenant_info` VALUES (2, '1', 'wzkris-prod', 'prod', '生产环境', 'nacos', 1687141596216, 1687141596216);
+INSERT INTO `tenant_info` VALUES (1, '1', 'wzkris-dev', 'wzkris-dev', '开发环境', 'nacos', 1685070991448, 1685071009622);
+INSERT INTO `tenant_info` VALUES (2, '1', 'wzkris-prod', 'wzkris-prod', '生产环境', 'nacos', 1687141596216, 1687141596216);
 
 -- ----------------------------
 -- Table structure for users

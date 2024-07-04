@@ -1,8 +1,9 @@
-package com.wzkris.common.security.utils;
+package com.wzkris.common.security.oauth2.utils;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.exception.OAuth2AuthenticationI18nException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -37,6 +38,14 @@ public class OAuth2ExceptionUtil {
     public static Result<?> translate(OAuth2Error oAuth2Error) {
         String errorCode = oAuth2Error.getErrorCode();
         String errorMsg = oAuth2Error.getDescription();
+
+        // 自定义异常
+        if (errorCode.equals(CustomErrorCodes.VALIDATE_ERROR)) {
+            return Result.resp(BizCode.PRECONDITION_FAILED, errorMsg);
+        }
+        else if (errorCode.equals(CustomErrorCodes.FREQUENT_RETRY)) {
+            return Result.resp(BizCode.FREQUENT_RETRY, errorMsg);
+        }
 
         // OAuth2异常
         if (errorCode.equals(OAuth2ErrorCodes.SERVER_ERROR)) {

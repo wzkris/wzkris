@@ -15,9 +15,9 @@
  */
 package com.wzkris.common.redis.manager;
 
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.Setter;
-import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 import org.redisson.spring.cache.CacheConfig;
 import org.redisson.spring.cache.RedissonCache;
@@ -44,6 +44,10 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class PlusSpringCacheManager implements CacheManager {
 
+    // 默认过期时间，毫秒
+    private static final long DEFAULT_TTL = 60 * 60 * 1000;
+
+    private static final long DEFAULT_MAXIDLETIME = 60 * 60 * 1000;
     Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
     ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
     private boolean dynamic = true;
@@ -92,6 +96,10 @@ public class PlusSpringCacheManager implements CacheManager {
 
     @Override
     public Cache getCache(String name) {
+        // 重写 cacheName 支持多参数
+        String[] array = StringUtils.delimitedListToStringArray(name, "#");
+        name = array[0];
+
         Cache cache = instanceMap.get(name);
         if (cache != null) {
             return cache;
@@ -106,38 +114,25 @@ public class PlusSpringCacheManager implements CacheManager {
             configMap.put(name, config);
         }
 
-        // 重写 cacheName 支持多参数
-        String[] array = StringUtils.delimitedListToStringArray(name, "#");
-        name = array[0];
-        if (array.length > 1) {
-            config.setTTL(DurationStyle.detectAndParse(array[1]).toMillis());
+        if (array.length > 1 && StringUtil.isNotBlank(array[1])) {
+            config.setTTL(DurationStyle.detectAndParse(array[1]).toMillis() * 1000);
         }
-        if (array.length > 2) {
-            config.setMaxIdleTime(DurationStyle.detectAndParse(array[2]).toMillis());
+        if (array.length > 2 && StringUtil.isNotBlank(array[2])) {
+            config.setMaxIdleTime(DurationStyle.detectAndParse(array[2]).toMillis() * 1000);
         }
-        if (array.length > 3) {
+        if (array.length > 3 && StringUtil.isNotBlank(array[3])) {
             config.setMaxSize(Integer.parseInt(array[3]));
         }
 
-        if (config.getMaxIdleTime() == 0 && config.getTTL() == 0 && config.getMaxSize() == 0) {
-            return createMap(name, config);
+        if (config.getTTL() == 0) {
+            config.setTTL(DEFAULT_TTL);
+        }
+
+        if (config.getMaxIdleTime() == 0) {
+            config.setMaxIdleTime(DEFAULT_MAXIDLETIME);
         }
 
         return createMapCache(name, config);
-    }
-
-    private Cache createMap(String name, CacheConfig config) {
-        RMap<Object, Object> map = RedisUtil.getClient().getMap(name);
-
-        Cache cache = new RedissonCache(map, allowNullValues);
-        if (transactionAware) {
-            cache = new TransactionAwareCacheDecorator(cache);
-        }
-        Cache oldCache = instanceMap.putIfAbsent(name, cache);
-        if (oldCache != null) {
-            cache = oldCache;
-        }
-        return cache;
     }
 
     private Cache createMapCache(String name, CacheConfig config) {
@@ -181,6 +176,5 @@ public class PlusSpringCacheManager implements CacheManager {
             dynamic = true;
         }
     }
-
 
 }

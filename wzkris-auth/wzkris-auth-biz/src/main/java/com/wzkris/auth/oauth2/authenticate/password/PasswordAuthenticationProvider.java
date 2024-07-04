@@ -4,9 +4,10 @@ import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.impl.SysUserDetailsService;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
-import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,33 +17,35 @@ import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
-import org.springframework.util.Assert;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wzkris
  * @date 2024/3/11
  * @description 密码模式核心处理
  */
+@Component //注册成bean方便引用
 public class PasswordAuthenticationProvider extends CommonAuthenticationProvider<CommonAuthenticationToken> {
     private final SysUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final CaptchaService captchaService;
 
     public PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
                                           SysUserDetailsService userDetailsService,
-                                          PasswordEncoder passwordEncoder) {
+                                          PasswordEncoder passwordEncoder,
+                                          CaptchaService captchaService) {
         super(tokenGenerator, authorizationService);
-        Assert.notNull(authorizationService, "authorizationService cannot be null");
-        Assert.notNull(tokenGenerator, "tokenGenerator cannot be null");
-        Assert.notNull(userDetailsService, "userDetailsService cannot be null");
-        Assert.notNull(passwordEncoder, "passwordEncoder cannot be null");
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
+        this.captchaService = captchaService;
     }
 
     @Override
     public OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
+        // 校验最大次数
+        captchaService.validateMaxTryCount(authenticationToken.getPassword());
 
         UserModel userModel = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
 

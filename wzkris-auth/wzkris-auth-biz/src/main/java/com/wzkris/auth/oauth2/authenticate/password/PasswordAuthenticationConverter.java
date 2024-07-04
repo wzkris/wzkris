@@ -2,7 +2,7 @@ package com.wzkris.auth.oauth2.authenticate.password;
 
 import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationConverter;
 import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
-import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;

@@ -1,5 +1,6 @@
 package com.wzkris.file.api;
 
+import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.file.api.domain.SysFile;
 import com.wzkris.file.api.fallback.RemoteFileApiFallback;
@@ -15,7 +16,7 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PA
  * @description : RPC -- 文件服务
  * @date : 2023/3/13 16:24
  */
-@FeignClient(value = "wzkris-file", contextId = "RemoteFileApi", fallbackFactory = RemoteFileApiFallback.class)
+@FeignClient(value = ApplicationNameConstants.FILE, contextId = "RemoteFileApi", fallbackFactory = RemoteFileApiFallback.class)
 public interface RemoteFileApi {
     /**
      * 文件上传

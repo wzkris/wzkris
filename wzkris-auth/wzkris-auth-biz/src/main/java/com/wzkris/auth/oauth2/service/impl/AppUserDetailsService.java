@@ -6,7 +6,7 @@ import com.wzkris.auth.oauth2.service.UserDetailsServicePlus;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
-import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.domain.dto.CustomerDTO;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.wzkris.auth.oauth2.authenticate;
 
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.OAuth2EndpointUtil;
-import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2EndpointUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,6 +1,5 @@
 package com.wzkris.system.controller;
 
-import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
@@ -27,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysLoginlogController extends BaseController {
 
-    private final RemoteTokenApi RemoteTokenApi;
     private final SysLoginLogService sysLoginLogService;
     private final SysLoginLogMapper sysLoginLogMapper;
 
@@ -53,10 +51,4 @@ public class SysLoginlogController extends BaseController {
         return success();
     }
 
-    @PostMapping("/unlock")
-    @PreAuthorize("@ps.hasPerms('loginlog:unlock')")
-    public Result<?> unlock(@RequestBody String username) {
-        RemoteTokenApi.unlockAccount(username);
-        return success();
-    }
 }

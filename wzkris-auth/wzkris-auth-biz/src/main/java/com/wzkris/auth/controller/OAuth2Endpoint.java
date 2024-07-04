@@ -1,6 +1,7 @@
-package com.wzkris.auth.oauth2.endpoint;
+package com.wzkris.auth.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.wzkris.auth.controller.hooks.OAuth2LogoutHook;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
+import java.util.List;
 
 @Tag(name = "OAuth2端点")
 @RestController
@@ -33,6 +35,7 @@ public class OAuth2Endpoint {
     private static final String REDIRECT_URL = "redirect_url";
     private final BearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
+    private final List<OAuth2LogoutHook> oAuth2LogoutHookList;
 
     @Operation(summary = "token内省")
     @RequestMapping("/check_token")
@@ -80,6 +83,8 @@ public class OAuth2Endpoint {
         OAuth2Authorization authorization = oAuth2AuthorizationService.findByToken(accessToken, null);
         if (authorization != null) {
             oAuth2AuthorizationService.remove(authorization);
+            OAuth2AuthenticationToken authenticationToken = authorization.getAttribute(Principal.class.getName());
+            oAuth2LogoutHookList.forEach(hook -> hook.logoutHook((OAuth2User) authenticationToken.getPrincipal()));
         }
 
         // 获取请求参数中是否包含 回调地址
@@ -93,4 +98,5 @@ public class OAuth2Endpoint {
 
         return modelAndView;
     }
+
 }

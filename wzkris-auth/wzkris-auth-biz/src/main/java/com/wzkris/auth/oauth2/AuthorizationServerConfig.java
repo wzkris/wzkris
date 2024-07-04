@@ -8,7 +8,6 @@ import com.wzkris.auth.oauth2.authenticate.sms.SmsAuthenticationConverter;
 import com.wzkris.auth.oauth2.authenticate.sms.SmsAuthenticationProvider;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
-import com.wzkris.auth.oauth2.service.impl.AppUserDetailsService;
 import com.wzkris.auth.oauth2.service.impl.SysUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -42,11 +40,8 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationFilterChain(HttpSecurity http,
-                                                        SysUserDetailsService sysUserDetailsService,
-                                                        AppUserDetailsService appUserDetailsService,
-                                                        OAuth2AuthorizationService authorizationService,
-                                                        OAuth2TokenGenerator<? extends OAuth2Token> oAuth2TokenGenerator,
-                                                        PasswordEncoder passwordEncoder) throws Exception {
+                                                        PasswordAuthenticationProvider passwordAuthenticationProvider,
+                                                        SmsAuthenticationProvider smsAuthenticationProvider) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
@@ -58,15 +53,8 @@ public class AuthorizationServerConfig {
                                 authenticationConverters.add(new SmsAuthenticationConverter());
                             })
                             .authenticationProviders(authenticationProviders -> { // 校验authentication是否合法
-                                authenticationProviders.add(
-                                        new PasswordAuthenticationProvider(authorizationService
-                                                , oAuth2TokenGenerator
-                                                , sysUserDetailsService
-                                                , passwordEncoder));
-                                authenticationProviders.add(
-                                        new SmsAuthenticationProvider(authorizationService,
-                                                oAuth2TokenGenerator,
-                                                appUserDetailsService));
+                                authenticationProviders.add(passwordAuthenticationProvider);
+                                authenticationProviders.add(smsAuthenticationProvider);
                             })
                     ;
                 })
