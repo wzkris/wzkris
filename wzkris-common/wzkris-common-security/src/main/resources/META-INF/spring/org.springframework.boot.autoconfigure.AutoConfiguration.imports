@@ -1,0 +1,4 @@
+com.wzkris.common.security.oauth2.ResourceServerConfig
+com.wzkris.common.security.annotation.aspect.InnerAuthAspect
+com.wzkris.common.security.oauth2.config.OAuth2Properties
+com.wzkris.common.security.feign.OAuth2FeignInterceptor

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.wzkris</groupId>
+		<artifactId>wzkris-common</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+	<artifactId>wzkris-common-datasource</artifactId>
+
+	<description>
+		wzkris-common-datasource多数据源
+	</description>
+
+	<dependencies>
+
+		<!--        <dependency>-->
+		<!--            <groupId>org.apache.shardingsphere</groupId>-->
+		<!--            <artifactId>shardingsphere-jdbc-core</artifactId>-->
+		<!--        </dependency>-->
+
+		<!-- Dynamic DataSource -->
+		<!--        <dependency>-->
+		<!--            <groupId>com.baomidou</groupId>-->
+		<!--            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
+		<!--        </dependency>-->
+
+		<!--        <dependency>-->
+		<!--            <groupId>org.apache.shardingsphere</groupId>-->
+		<!--            <artifactId>shardingsphere-cluster-mode-repository-zookeeper</artifactId>-->
+		<!--        </dependency>-->
+
+	</dependencies>
+</project>
