@@ -1,4 +1,4 @@
-package com.wzkris.auth.model;
+package com.wzkris.auth.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

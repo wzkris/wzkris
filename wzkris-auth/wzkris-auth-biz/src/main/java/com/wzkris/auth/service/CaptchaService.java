@@ -6,7 +6,9 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.google.code.kaptcha.Producer;
-import com.wzkris.auth.kaptcha.CaptchaConfig;
+import com.wzkris.auth.config.CaptchaConfig;
+import com.wzkris.auth.domain.dto.KaptchaDTO;
+import com.wzkris.common.core.exception.param.CaptchaException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
@@ -20,8 +22,6 @@ import org.springframework.util.FastByteArrayOutputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 验证码服务
@@ -30,11 +30,11 @@ import java.util.Map;
  */
 @Service
 public class CaptchaService {
+
     // 短信验证码前缀 + phoneNumber
     private static final String SMS_CODE_PREFIX = "captcha:sms:";
     // 图片验证码前缀 + uuid
     private static final String PIC_CODE_PREFIX = "captcha:pic:";
-
     // 最大重试次数
     private static final int maxRetryCount = 5;
     // 账号冻结缓存前缀 + username
@@ -52,20 +52,16 @@ public class CaptchaService {
     /**
      * 生成验证码
      */
-    public Map<String, Object> createPicCaptcha() throws IOException {
-        Map<String, Object> res = new HashMap<>(2);
+    public KaptchaDTO createPicCaptcha() throws IOException {
         boolean captchaEnabled = captchaConfig.getEnabled();
-        res.put("captchaEnabled", captchaEnabled);
+        KaptchaDTO kaptchaDTO = new KaptchaDTO(captchaEnabled);
         if (!captchaEnabled) {
-            return res;
+            return kaptchaDTO;
         }
-        // 保存验证码信息
-        String uuid = IdUtil.simpleUUID();
-
-        String capStr, code = null;
-        BufferedImage image = null;
 
         String captchaType = captchaConfig.getType();
+        String capStr, code;
+        BufferedImage image;
         // 生成验证码
         if ("math".equals(captchaType)) {
             String capText = captchaProducerMath.createText();
@@ -77,38 +73,43 @@ public class CaptchaService {
             capStr = code = captchaProducer.createText();
             image = captchaProducer.createImage(capStr);
         }
-
-        // 存入缓存
-        RedisUtil.setObj(PIC_CODE_PREFIX + uuid, code, 180);
+        else {
+            throw new CaptchaException("captcha.type.unsupport");
+        }
 
         // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         ImageIO.write(image, "jpg", os);
-        res.put("uuid", uuid);
-        res.put("img", Base64.encode(os.toByteArray()));
-        return res;
+        String base64Img = Base64.encode(os.toByteArray());
+
+        String uuid = IdUtil.simpleUUID();
+
+        // 存入缓存
+        RedisUtil.setObj(PIC_CODE_PREFIX + uuid, code, 180);
+
+        kaptchaDTO.setImg(base64Img);
+        kaptchaDTO.setUuid(uuid);
+        return kaptchaDTO;
     }
 
     /**
      * 验证图片验证码
      */
     public void validatePicCaptcha(String uuid, String code) {
-        if (captchaConfig.getEnabled()) {
-            if (!StringUtil.isAllNotBlank(uuid, code)) {
-                OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
-            }
-
-            String picKey = PIC_CODE_PREFIX + uuid;
-
-            String realCode = RedisUtil.getObj(picKey);
-            if (StringUtil.isBlank(realCode)) {
-                OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
-            }
-            if (!StringUtil.equalsIgnoreCase(code, realCode)) {
-                OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
-            }
-            RedisUtil.delObj(picKey);
+        if (!StringUtil.isAllNotBlank(uuid, code)) {
+            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
         }
+
+        String picKey = PIC_CODE_PREFIX + uuid;
+
+        String realCode = RedisUtil.getObj(picKey);
+        if (StringUtil.isBlank(realCode)) {
+            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
+        }
+        if (!StringUtil.equalsIgnoreCase(code, realCode)) {
+            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
+        }
+        RedisUtil.delObj(picKey);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.wzkris.auth.controller;
 
-import com.wzkris.auth.model.AppUserVO;
+import com.wzkris.auth.domain.vo.AppUserVO;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;

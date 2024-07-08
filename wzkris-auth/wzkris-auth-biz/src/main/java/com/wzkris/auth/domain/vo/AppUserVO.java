@@ -1,4 +1,4 @@
-package com.wzkris.auth.model;
+package com.wzkris.auth.domain.vo;
 
 
 import com.wzkris.common.core.annotation.Sensitive;

@@ -1,4 +1,4 @@
-package com.wzkris.auth.kaptcha;
+package com.wzkris.auth.config;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
@@ -79,7 +79,7 @@ public class CaptchaConfig {
         // KAPTCHA_SESSION_KEY
         properties.setProperty(Constants.KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCodeMath");
         // 验证码文本生成器
-        properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_IMPL, "com.wzkris.auth.config.KaptchaTextCreator");
+        properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_IMPL, "com.wzkris.auth.kaptcha.KaptchaTextCreator");
         // 验证码文本字符间距 默认为2
         properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_SPACE, "3");
         // 验证码文本字符长度 默认为5
