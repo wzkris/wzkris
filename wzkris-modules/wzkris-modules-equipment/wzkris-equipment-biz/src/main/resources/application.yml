@@ -9,6 +9,15 @@ spring:
     # 环境配置
     active: @profiles.active@
   cloud:
+    stream:
+      function:
+        definition: producer;consumer
+      bindings:
+        producer-out-0:
+          destination: demoExchange
+          group: demoGroup
+        consumer-in-0:
+          destination: demoExchange
     nacos:
       # 注册地址
       server-addr: @nacos.server@

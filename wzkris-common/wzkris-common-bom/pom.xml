@@ -53,7 +53,7 @@
 			<!--mq服务 -->
 			<dependency>
 				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-mq</artifactId>
+				<artifactId>wzkris-common-stream</artifactId>
 				<version>${revision}</version>
 			</dependency>
 

@@ -10,17 +10,17 @@
 		<version>${revision}</version>
 	</parent>
 
-	<artifactId>wzkris-common-mq</artifactId>
+	<artifactId>wzkris-common-stream</artifactId>
 
 	<description>消息队列服务，提供基础消息能力</description>
 
 
 	<dependencies>
 
-		<!--消息队列-->
+		<!-- 消息队列 -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
 		</dependency>
 
 	</dependencies>

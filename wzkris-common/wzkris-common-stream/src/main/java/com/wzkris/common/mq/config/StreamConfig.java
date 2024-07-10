@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
  * @description : rabbitMQ配置
  * @date : 2023/12/7 12:38
  */
-public class RabbitConfig {
+public class StreamConfig {
 
     /**
      * 使用jackson序列化
