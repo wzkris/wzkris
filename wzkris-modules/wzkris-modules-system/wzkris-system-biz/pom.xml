@@ -68,6 +68,12 @@
 			<artifactId>wzkris-common-orm</artifactId>
 		</dependency>
 
+		<!-- wzkris Common ORM -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-redis</artifactId>
+		</dependency>
+
 		<!-- wzkris Common Log -->
 		<dependency>
 			<groupId>com.wzkris</groupId>

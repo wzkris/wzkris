@@ -24,11 +24,6 @@
 			<artifactId>wzkris-common-openfeign</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-redis</artifactId>
-		</dependency>
-
 		<!-- Spring Oauth2资源服务器 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -17,20 +17,21 @@ import java.util.concurrent.locks.ReentrantLock;
 @DisplayName("并发测试")
 public class ConcurrentTest {
     final static Integer max = 1000;
+    final static Object obj = new Object();
     static Integer num = 0;
 
     @Test
     @DisplayName("线程交替打印测试")
     public void simpleTest() throws InterruptedException {
         Thread t1 = new Thread(() -> {
-            synchronized (max) {
+            synchronized (obj) {
                 while (num < max) {
                     System.out.println(Thread.currentThread().getName() + num);
                     num++;
-                    max.notify();
+                    obj.notify();
                     try {
                         if (num < max) {
-                            max.wait();
+                            obj.wait();
                         }
                     }
                     catch (InterruptedException e) {
@@ -39,14 +40,14 @@ public class ConcurrentTest {
             }
         });
         Thread t2 = new Thread(() -> {
-            synchronized (max) {
+            synchronized (obj) {
                 while (num < max) {
                     System.out.println(Thread.currentThread().getName() + num);
                     num++;
-                    max.notify();
+                    obj.notify();
                     try {
                         if (num < max) {
-                            max.wait();
+                            obj.wait();
                         }
                     }
                     catch (InterruptedException e) {
