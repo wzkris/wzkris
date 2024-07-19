@@ -46,7 +46,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         this.authorizationService = authorizationService;
     }
 
-    public static OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
+    public final OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
         OAuth2ClientAuthenticationToken clientPrincipal = null;
         if (OAuth2ClientAuthenticationToken.class.isAssignableFrom(authentication.getPrincipal().getClass())) {
             clientPrincipal = (OAuth2ClientAuthenticationToken) authentication.getPrincipal();
@@ -62,7 +62,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
      * 校验客户端模式和scope
      */
     @Nonnull
-    public Set<String> checkClient(CommonAuthenticationToken authenticationToken, RegisteredClient registeredClient) {
+    public final Set<String> checkClient(CommonAuthenticationToken authenticationToken, RegisteredClient registeredClient) {
         if (registeredClient == null) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.client.invalid");
         }

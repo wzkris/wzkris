@@ -38,7 +38,7 @@ public class SmsAuthenticationProvider extends CommonAuthenticationProvider<Comm
     }
 
     @Override
-    protected OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
+    public OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
         // 校验验证码
         captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
