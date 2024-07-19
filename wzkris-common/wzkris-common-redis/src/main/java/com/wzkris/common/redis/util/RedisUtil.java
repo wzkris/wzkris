@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RedisUtil {
 
-    private static final RedissonClient redissonclient = SpringUtil.getBean(RedissonClient.class);
+    private static final RedissonClient redissonclient = SpringUtil.getFactory().getBean(RedissonClient.class);
 
     public static RedissonClient getClient() {
         return redissonclient;

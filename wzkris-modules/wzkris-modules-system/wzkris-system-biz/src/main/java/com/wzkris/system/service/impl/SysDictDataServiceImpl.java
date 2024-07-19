@@ -5,7 +5,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.system.domain.SysDictData;
 import com.wzkris.system.mapper.SysDictDataMapper;
 import com.wzkris.system.service.SysDictDataService;
-import com.wzkris.system.utils.DictUtil;
+import com.wzkris.system.utils.DictCacheUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +41,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             SysDictData data = sysDictDataMapper.selectById(dictCode);
             sysDictDataMapper.deleteById(dictCode);
             List<SysDictData> sysDictData = sysDictDataMapper.listByType(data.getDictType());
-            DictUtil.setDictCache(data.getDictType(), sysDictData);
+            DictCacheUtil.setDictCache(data.getDictType(), sysDictData);
         }
     }
 
@@ -56,7 +56,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         int row = sysDictDataMapper.insert(data);
         if (row > 0) {
             List<SysDictData> sysDictData = sysDictDataMapper.listByType(data.getDictType());
-            DictUtil.setDictCache(data.getDictType(), sysDictData);
+            DictCacheUtil.setDictCache(data.getDictType(), sysDictData);
         }
         return row;
     }
@@ -72,7 +72,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         int row = sysDictDataMapper.updateById(data);
         if (row > 0) {
             List<SysDictData> sysDictData = sysDictDataMapper.listByType(data.getDictType());
-            DictUtil.setDictCache(data.getDictType(), sysDictData);
+            DictCacheUtil.setDictCache(data.getDictType(), sysDictData);
         }
         return row;
     }

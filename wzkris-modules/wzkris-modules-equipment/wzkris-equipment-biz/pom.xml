@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>com.wzkris</groupId>
 			<artifactId>wzkris-common-stream</artifactId>
-<!--			<scope>test</scope>-->
+			<!--			<scope>test</scope>-->
 		</dependency>
 
 		<!-- Sentinel -->

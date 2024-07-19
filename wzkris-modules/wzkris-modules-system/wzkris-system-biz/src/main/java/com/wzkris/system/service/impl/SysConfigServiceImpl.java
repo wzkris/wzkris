@@ -104,11 +104,12 @@ public class SysConfigServiceImpl implements SysConfigService {
     @Override
     public void deleteConfigByIds(List<Long> configIds) {
         List<SysConfig> configs = sysConfigMapper.selectBatchIds(configIds);
-        for (SysConfig config : configs) {
+
+        configs.forEach(config -> {
             if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
                 throw new BusinessException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
-        }
+        });
         ConfigCache.clearAll();
         sysConfigMapper.deleteByIds(configIds);
         ConfigCache.clearAll();
@@ -157,7 +158,10 @@ public class SysConfigServiceImpl implements SysConfigService {
         return sysConfigMapper.exists(lqw);
     }
 
-    static class ConfigCache {
+    /**
+     * 系统配置的缓存操作
+     */
+    private static class ConfigCache {
         static final String CONFIG_KEY_PREFIX = "sys_config";
 
         static String getConfigValueByKey(String configKey) {

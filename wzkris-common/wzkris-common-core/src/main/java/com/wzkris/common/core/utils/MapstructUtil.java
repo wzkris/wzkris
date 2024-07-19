@@ -16,7 +16,7 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapstructUtil {
 
-    private static final Converter CONVERTER = SpringUtil.getBean(Converter.class);
+    private static final Converter CONVERTER = SpringUtil.getFactory().getBean(Converter.class);
 
     /**
      * 将 T 类型对象，转换为 desc 类型的对象并返回

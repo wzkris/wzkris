@@ -21,7 +21,7 @@ public class MqttMsgProducer implements MqttCallback {
     @Override
     public void connectionLost(Throwable cause) {
         log.error("mqtt连接丢失,异常信息：{}", cause.getMessage(), cause);
-        MqttInitialize mqttInitialize = SpringUtil.getBean(MqttInitialize.class);
+        MqttInitialize mqttInitialize = SpringUtil.getFactory().getBean(MqttInitialize.class);
         try {
             mqttInitialize.afterPropertiesSet();
         }

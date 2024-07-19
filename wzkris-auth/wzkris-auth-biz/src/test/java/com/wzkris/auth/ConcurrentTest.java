@@ -19,6 +19,8 @@ public class ConcurrentTest {
     final static Integer max = 1000;
     final static Object obj = new Object();
     static Integer num = 0;
+    static Lock lock = new ReentrantLock();
+    static Condition condition = lock.newCondition();
 
     @Test
     @DisplayName("线程交替打印测试")
@@ -60,9 +62,6 @@ public class ConcurrentTest {
         t1.join();
         t2.join();
     }
-
-    static Lock lock = new ReentrantLock();
-    static Condition condition = lock.newCondition();
 
     public void conditionWait() throws InterruptedException {
         lock.lock();

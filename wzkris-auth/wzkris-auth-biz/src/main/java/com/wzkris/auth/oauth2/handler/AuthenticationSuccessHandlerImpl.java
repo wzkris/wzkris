@@ -78,7 +78,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(OAuth2User.class.getName())) {
             OAuth2User oAuth2User = (OAuth2User) additionalParameters.get(OAuth2User.class.getName());
             // 发布登录事件
-            SpringUtil.publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), oAuth2User.getDetails(),
+            SpringUtil.getContext().publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), oAuth2User.getDetails(),
                     ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader("User-Agent"))));
             additionalParameters.remove(OAuth2User.class.getName());
         }

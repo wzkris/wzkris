@@ -6,11 +6,11 @@ import com.wzkris.system.domain.SysDictData;
 import java.util.List;
 
 /**
- * 字典工具类
+ * 字典缓存工具类
  *
  * @author wzkris
  */
-public class DictUtil {
+public class DictCacheUtil {
 
     private static final String dict_key = "sys_dict";
 
