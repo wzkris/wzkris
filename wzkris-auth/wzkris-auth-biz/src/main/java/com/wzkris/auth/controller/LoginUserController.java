@@ -3,7 +3,7 @@ package com.wzkris.auth.controller;
 
 import com.wzkris.auth.config.TokenConfig;
 import com.wzkris.auth.controller.hooks.OAuth2LogoutHook;
-import com.wzkris.auth.model.LoginUserVO;
+import com.wzkris.auth.domain.vo.LoginUserVO;
 import com.wzkris.auth.oauth2.redis.JdkRedisUtil;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;

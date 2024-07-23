@@ -2,7 +2,7 @@ package com.wzkris.gateway.handler;
 
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BusinessException;
-import com.wzkris.common.core.utils.WebFluxUtil;
+import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

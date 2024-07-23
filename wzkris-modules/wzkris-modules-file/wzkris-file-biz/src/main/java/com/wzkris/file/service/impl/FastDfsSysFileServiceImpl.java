@@ -2,7 +2,7 @@ package com.wzkris.file.service.impl;
 
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
-import com.wzkris.common.core.utils.file.FileUtil;
+import com.wzkris.file.utils.FileUtil;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter;
 
+import cn.hutool.http.HtmlUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.core.utils.html.HtmlUtil;
 import com.wzkris.gateway.config.XssProperties;
 import io.netty.buffer.ByteBufAllocator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

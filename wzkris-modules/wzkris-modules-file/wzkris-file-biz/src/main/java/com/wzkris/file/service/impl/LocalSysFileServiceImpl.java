@@ -1,10 +1,10 @@
 package com.wzkris.file.service.impl;
 
 import com.wzkris.common.core.exception.BusinessException;
-import com.wzkris.common.core.utils.file.FileUtil;
 import com.wzkris.file.config.LocalConfig;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;
+import com.wzkris.file.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

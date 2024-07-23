@@ -20,16 +20,16 @@
 	<modules>
 		<module>wzkris-common-bom</module>
 		<module>wzkris-common-core</module>
-		<module>wzkris-common-orm</module>
 		<module>wzkris-common-datasource</module>
 		<module>wzkris-common-log</module>
-		<module>wzkris-common-mq</module>
 		<module>wzkris-common-openfeign</module>
+		<module>wzkris-common-orm</module>
 		<module>wzkris-common-redis</module>
 		<module>wzkris-common-seata</module>
 		<module>wzkris-common-security</module>
 		<module>wzkris-common-sentinel</module>
 		<module>wzkris-common-statemachine</module>
+		<module>wzkris-common-stream</module>
 		<module>wzkris-common-swagger</module>
 		<module>wzkris-common-web</module>
 	</modules>

@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -61,9 +63,10 @@ public class OperateLogAspect {
             operLogDTO.setStatus(OperateStatus.SUCCESS.value());
             operLogDTO.setOperTime(DateUtil.current());
             // 请求的地址
-            String ip = ServletUtil.getClientIP(ServletUtil.getRequest());
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            String ip = ServletUtil.getClientIP(request);
             operLogDTO.setOperIp(ip);
-            operLogDTO.setOperUrl(StringUtil.sub(ServletUtil.getRequest().getRequestURI(), 0, 255));
+            operLogDTO.setOperUrl(StringUtil.sub(request.getRequestURI(), 0, 255));
             String username = "";
             if (SysUtil.isLogin()) {
                 username = SysUtil.getLoginSyser().getUsername();
@@ -80,7 +83,7 @@ public class OperateLogAspect {
             String methodName = joinPoint.getSignature().getName();
             operLogDTO.setMethod(className + "." + methodName + "()");
             // 设置请求方式
-            operLogDTO.setRequestMethod(ServletUtil.getRequest().getMethod());
+            operLogDTO.setRequestMethod(request.getMethod());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, operateLog, operLogDTO, jsonResult);
             // 保存数据库
@@ -129,7 +132,7 @@ public class OperateLogAspect {
             operLogDTO.setOperParam(StringUtil.sub(params, 0, 2000));
         }
         else {
-            Map<String, String> paramsMap = ServletUtil.getParamMap(ServletUtil.getRequest());
+            Map<String, String> paramsMap = ServletUtil.getParamMap(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
             MapUtil.removeAny(paramsMap, EXCLUDE_PROPERTIES);
             operLogDTO.setOperParam(StringUtil.sub(JsonUtil.toJsonString(paramsMap), 0, 2000));
         }

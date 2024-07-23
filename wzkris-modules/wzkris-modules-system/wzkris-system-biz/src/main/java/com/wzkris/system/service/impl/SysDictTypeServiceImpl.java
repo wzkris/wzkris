@@ -9,7 +9,7 @@ import com.wzkris.system.domain.SysDictType;
 import com.wzkris.system.mapper.SysDictDataMapper;
 import com.wzkris.system.mapper.SysDictTypeMapper;
 import com.wzkris.system.service.SysDictTypeService;
-import com.wzkris.system.utils.DictUtil;
+import com.wzkris.system.utils.DictCacheUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,13 +47,13 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
      */
     @Override
     public List<SysDictData> listDictDataByType(String dictType) {
-        List<SysDictData> sysDictData = DictUtil.getDictCache(dictType);
+        List<SysDictData> sysDictData = DictCacheUtil.getDictCache(dictType);
         if (StringUtil.isNotEmpty(sysDictData)) {
             return sysDictData;
         }
         sysDictData = sysDictDataMapper.listByType(dictType);
         if (StringUtil.isNotEmpty(sysDictData)) {
-            DictUtil.setDictCache(dictType, sysDictData);
+            DictCacheUtil.setDictCache(dictType, sysDictData);
             return sysDictData;
         }
         return null;
@@ -72,7 +72,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                 throw new BusinessExceptionI18n("business.allocated", sysDictType.getDictName());
             }
             sysDictTypeMapper.deleteById(dictId);
-            DictUtil.removeDictCache(sysDictType.getDictType());
+            DictCacheUtil.removeDictCache(sysDictType.getDictType());
         }
     }
 
@@ -84,7 +84,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     public void loadingDictCache() {
         Map<String, List<SysDictData>> dictDataMap = sysDictDataMapper.selectList(null).stream().collect(Collectors.groupingBy(SysDictData::getDictType));
         for (Map.Entry<String, List<SysDictData>> entry : dictDataMap.entrySet()) {
-            DictUtil.setDictCache(entry.getKey(), entry.getValue().stream().sorted(Comparator.comparing(SysDictData::getDictSort)).collect(Collectors.toList()));
+            DictCacheUtil.setDictCache(entry.getKey(), entry.getValue().stream().sorted(Comparator.comparing(SysDictData::getDictSort)).collect(Collectors.toList()));
         }
     }
 
@@ -93,7 +93,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
      */
     @Override
     public void clearDictCache() {
-        DictUtil.clearDictCache();
+        DictCacheUtil.clearDictCache();
     }
 
     /**
@@ -116,7 +116,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         int row = sysDictTypeMapper.insert(dict);
         if (row > 0) {
             List<SysDictData> sysDictData = sysDictDataMapper.listByType(dict.getDictType());
-            DictUtil.setDictCache(dict.getDictType(), sysDictData);
+            DictCacheUtil.setDictCache(dict.getDictType(), sysDictData);
         }
         return row;
     }
@@ -135,7 +135,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         int row = sysDictTypeMapper.updateById(dict);
         if (row > 0) {
             List<SysDictData> sysDictData = sysDictDataMapper.listByType(dict.getDictType());
-            DictUtil.setDictCache(dict.getDictType(), sysDictData);
+            DictCacheUtil.setDictCache(dict.getDictType(), sysDictData);
         }
         return row;
     }

@@ -22,7 +22,7 @@ import java.io.Writer;
 public class JsonUtil {
 
     @Getter
-    private static final ObjectMapper objectMapper = SpringUtil.getBean(ObjectMapper.class);
+    private static final ObjectMapper objectMapper = SpringUtil.getFactory().getBean(ObjectMapper.class);
 
     /**
      * 对象转Json格式字符串

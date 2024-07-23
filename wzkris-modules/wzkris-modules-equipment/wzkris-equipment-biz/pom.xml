@@ -30,6 +30,12 @@
 			<artifactId>netty-all</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-stream</artifactId>
+			<!--			<scope>test</scope>-->
+		</dependency>
+
 		<!-- Sentinel -->
 		<dependency>
 			<groupId>com.wzkris</groupId>

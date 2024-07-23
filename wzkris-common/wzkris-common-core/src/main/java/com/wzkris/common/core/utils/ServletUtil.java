@@ -22,9 +22,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -47,27 +44,6 @@ public class ServletUtil {
     public static final String METHOD_POST = "POST";
     public static final String METHOD_PUT = "PUT";
     public static final String METHOD_TRACE = "TRACE";
-
-    /**
-     * 获取request
-     */
-    public static HttpServletRequest getRequest() {
-        ServletRequestAttributes requestAttributes = getRequestAttributes();
-        return requestAttributes == null ? null : requestAttributes.getRequest();
-    }
-
-    /**
-     * 获取response
-     */
-    public static HttpServletResponse getResponse() {
-        ServletRequestAttributes requestAttributes = getRequestAttributes();
-        return requestAttributes == null ? null : requestAttributes.getResponse();
-    }
-
-    public static ServletRequestAttributes getRequestAttributes() {
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-        return (ServletRequestAttributes) attributes;
-    }
 
     // --------------------------------------------------------- getParam start
 
@@ -378,8 +354,7 @@ public class ServletUtil {
      * @param name 头信息的KEY
      * @return header值
      */
-    public static String getHeader(String name) {
-        HttpServletRequest request = getRequest();
+    public static String getHeader(HttpServletRequest request, String name) {
         return getHeader(request, name, StandardCharsets.UTF_8);
     }
 

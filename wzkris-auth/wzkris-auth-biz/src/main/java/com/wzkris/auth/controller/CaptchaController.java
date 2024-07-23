@@ -1,5 +1,6 @@
 package com.wzkris.auth.controller;
 
+import com.wzkris.auth.domain.dto.KaptchaDTO;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,11 +8,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static com.wzkris.common.core.domain.Result.success;
 
@@ -30,16 +31,18 @@ public class CaptchaController {
 
     private final CaptchaService captchaService;
 
-
     @Operation(summary = "图片验证码")
     @GetMapping("/code")
-    public Result<Map<String, Object>> code() throws IOException {
-        return success(captchaService.createPicCaptcha());
+    public Result<KaptchaDTO> code() throws IOException {
+        KaptchaDTO picCaptcha = captchaService.createPicCaptcha();
+
+        return success(picCaptcha);
     }
 
     @Operation(summary = "短信验证码")
-    @GetMapping("/sms_code")
-    public Result<?> smsCode() {
+    @GetMapping("/sms_code/{phone}")
+    public Result<Void> smsCode(@PathVariable String phone) {
+        captchaService.sendSmsCode(phone);
         return success();
     }
 }

@@ -1,8 +1,10 @@
 package com.wzkris.common.orm.page;
 
 import cn.hutool.core.convert.Convert;
-import com.wzkris.common.core.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * 分页数据处理
@@ -25,10 +27,12 @@ public class PageSupport {
      */
     public static Page initPage() {
         Page page = new Page();
-        HttpServletRequest request = ServletUtil.getRequest();
-        if (request == null) {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
             return page;
         }
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+
         page.setPageNum(Convert.toLong(request.getParameter(PAGE_NUM), page.getPageNum()));
         page.setPageSize(Convert.toLong(request.getParameter(PAGE_SIZE), page.getPageSize()));
         return page;

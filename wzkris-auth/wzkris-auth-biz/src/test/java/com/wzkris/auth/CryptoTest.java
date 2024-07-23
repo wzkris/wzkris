@@ -1,10 +1,10 @@
 package com.wzkris.auth;
 
+import cn.hutool.core.io.checksum.CRC16;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -12,20 +12,13 @@ import java.util.List;
 @DisplayName("密码测试")
 public class CryptoTest {
 
-    static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
-
     @Test
-    @DisplayName("加密测试")
+    @DisplayName("redis_slot算法")
     public void encrypt() {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        System.out.println(passwordEncoder.encode("admin123"));
-    }
-
-    @Test
-    public void test1() {
-        threadLocal.set("123");
-        threadLocal.set("321");
-        System.out.println(threadLocal.get());
+        CRC16 crc16 = new CRC16();
+        crc16.update("user:inf2".getBytes(StandardCharsets.UTF_8));
+        long slot = crc16.getValue() & 16383;
+        System.out.println(slot);
     }
 
     public List<List<Integer>> threeSum(int[] nums) {

@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description :
+ * @description : 超出JS范围的数序列化为Str
  * @date : 2023/8/21 14:44
  */
 @JacksonStdImpl

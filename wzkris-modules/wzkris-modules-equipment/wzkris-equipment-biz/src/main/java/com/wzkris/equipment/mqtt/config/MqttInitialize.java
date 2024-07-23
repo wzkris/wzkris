@@ -8,7 +8,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author : wzkris
@@ -17,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @date : 2023/12/4 14:08
  */
 @Slf4j
-@Configuration
+//@Configuration
 public class MqttInitialize implements InitializingBean {
 
     @Autowired

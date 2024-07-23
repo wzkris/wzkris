@@ -39,7 +39,7 @@ public abstract class CommonAuthenticationConverter<T extends OAuth2Authorizatio
      *
      * @param parameters 请求参数
      */
-    public abstract void checkParams(MultiValueMap<String, String> parameters);
+    protected abstract void checkParams(MultiValueMap<String, String> parameters);
 
     @Override
     public final Authentication convert(HttpServletRequest request) {

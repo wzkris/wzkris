@@ -16,7 +16,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MessageUtil {
 
-    private static final MessageSource MESSAGE_SOURCE = SpringUtil.getBean(MessageSource.class);
+    private static final MessageSource MESSAGE_SOURCE = SpringUtil.getFactory().getBean(MessageSource.class);
 
     /**
      * 根据消息键和参数 获取消息 委托给spring messageSource

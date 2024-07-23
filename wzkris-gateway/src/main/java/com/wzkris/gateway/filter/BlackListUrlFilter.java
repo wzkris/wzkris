@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter;
 
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.WebFluxUtil;
+import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.Getter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;

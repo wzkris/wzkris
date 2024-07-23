@@ -8,8 +8,6 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.json.JsonUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 /**
  * @author : wzkris
@@ -28,8 +26,8 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
         else {
             bizCode = BizCode.LIMIT_FLOW;
         }
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.OK.value());
+        response.setContentType("application/json");
+        response.setStatus(200);
         response.getWriter().write(JsonUtil.toJsonString(Result.resp(bizCode)));
     }
 }
