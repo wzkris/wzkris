@@ -1,7 +1,6 @@
 package com.wzkris.common.core.enums;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 /**
  * @author : wzkris
@@ -14,21 +13,21 @@ public enum BizCode {
     // 通用失败
     FAIL(1, "Operate Fail"),
     OK(0, "Success"),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST),
+    BAD_REQUEST(400, "Bad Request"),
     // 401未认证
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(401, "Unauthorized"),
     // 401子状态 非法token
     UNAUTHORIZED__INVALID_TOKEN(401_02, "Invalid token"),
     // 403禁止访问
-    FORBID(HttpStatus.FORBIDDEN),
-    NOT_FOUND(HttpStatus.NOT_FOUND),
-    BAD_METHOD(HttpStatus.METHOD_NOT_ALLOWED),
+    FORBID(403, "Forbidden"),
+    NOT_FOUND(404, "Not Found"),
+    BAD_METHOD(405, "Method Not Allowed"),
     // 412前置条件不满足
-    PRECONDITION_FAILED(HttpStatus.PRECONDITION_FAILED),
-    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
-    BAD_GATEWAY(HttpStatus.BAD_GATEWAY),
+    PRECONDITION_FAILED(412, "Precondition Failed"),
+    INTERNAL_ERROR(500, "Internal Server Error"),
+    BAD_GATEWAY(502, "Bad Gateway"),
     // 服务不可用
-    SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE),
+    SERVICE_UNAVAILABLE(503, "Service Unavailable"),
     // 频繁重试
     FREQUENT_RETRY(912, "Frequent Retry"),
     // 限流
@@ -42,11 +41,6 @@ public enum BizCode {
     private final int code;
     // 状态码描述
     private final String desc;
-
-    BizCode(HttpStatus httpStatus) {
-        this.code = httpStatus.value();
-        this.desc = httpStatus.getReasonPhrase();
-    }
 
     public int value() {
         return this.code;

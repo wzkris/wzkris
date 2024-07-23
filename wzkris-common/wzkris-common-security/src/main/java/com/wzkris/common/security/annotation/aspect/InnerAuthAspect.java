@@ -1,15 +1,18 @@
 package com.wzkris.common.security.annotation.aspect;
 
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
-import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.security.annotation.InnerAuth;
 import com.wzkris.common.security.oauth2.config.OAuth2Properties;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author : wzkris
@@ -30,10 +33,15 @@ public class InnerAuthAspect implements Ordered {
      */
     @Before("@annotation(innerAuth) || @within(innerAuth)")
     public void before(JoinPoint joinPoint, InnerAuth innerAuth) {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            return;
+        }
+
         if (oAuth2Properties.getIdentityKey() != null && oAuth2Properties.getIdentityValue() != null) {
-            String identityValue = oAuth2Properties.getIdentityValue();
-            String requestIdentityValue = ServletUtil.getHeader(oAuth2Properties.getIdentityKey());
-            if (requestIdentityValue == null || !requestIdentityValue.equals(identityValue)) {
+            HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+            String requestIdentityValue = request.getHeader(oAuth2Properties.getIdentityKey());
+            if (requestIdentityValue == null || !requestIdentityValue.equals(oAuth2Properties.getIdentityValue())) {
                 throw new BusinessExceptionI18n(403, "request.inner.forbid");
             }
         }

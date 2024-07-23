@@ -1,6 +1,6 @@
 package com.wzkris.file.service.impl;
 
-import com.wzkris.common.core.utils.file.FileUtil;
+import com.wzkris.file.utils.FileUtil;
 import com.wzkris.file.config.MinioConfig;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;

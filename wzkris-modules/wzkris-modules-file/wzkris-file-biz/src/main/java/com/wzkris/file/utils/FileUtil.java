@@ -1,9 +1,8 @@
-package com.wzkris.common.core.utils.file;
+package com.wzkris.file.utils;
 
 import cn.hutool.core.date.DateUtil;
 import com.wzkris.common.core.exception.UtilException;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.core.utils.uuid.Seq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,7 +107,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
      * 编码文件名
      */
     public static String extractFilename(MultipartFile file) {
-        return StringUtil.format("{}_{}.{}", getBaseName(file), Seq.getId(Seq.uploadSeqType), getExtension(file));
+        return StringUtil.format("{}_{}.{}", getBaseName(file), System.currentTimeMillis(), getExtension(file));
     }
 
     /**

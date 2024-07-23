@@ -1,4 +1,4 @@
-package com.wzkris.common.core.utils;
+package com.wzkris.gateway.utils;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;

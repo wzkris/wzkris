@@ -1,7 +1,6 @@
 package com.wzkris.common.security.oauth2.handler;
 
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.json.JsonUtil;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +22,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.net.URI;
@@ -97,7 +98,7 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
         // request不会为空
-        HttpServletRequest request = ServletUtil.getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (request.getHeader(SecurityConstants.PRINCIPAL_HEADER) != null) {
             return JsonUtil.parseObject(request.getHeader(SecurityConstants.PRINCIPAL_HEADER), OAuth2User.class);
         }
