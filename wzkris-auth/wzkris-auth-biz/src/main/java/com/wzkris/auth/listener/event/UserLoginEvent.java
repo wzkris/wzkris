@@ -1,4 +1,4 @@
-package com.wzkris.auth.listening.event;
+package com.wzkris.auth.listener.event;
 
 import cn.hutool.http.useragent.UserAgent;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserLoginEvent {
     private String oauth2Type;
-    private Object userinfo;
-    private String ip;
+    private Object loginer;
+    private String ipAddr;
     private UserAgent userAgent;
 }

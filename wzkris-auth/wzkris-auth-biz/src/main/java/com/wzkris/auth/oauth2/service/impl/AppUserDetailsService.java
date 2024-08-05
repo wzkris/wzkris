@@ -10,10 +10,11 @@ import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.domain.dto.CustomerDTO;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 /**
  * @author : wzkris
@@ -40,13 +41,12 @@ public class AppUserDetailsService implements UserDetailsServicePlus {
         // 校验用户状态
         this.checkAccount(customerDTO);
 
-
         LoginApper loginApper = new LoginApper();
         loginApper.setUserId(customerDTO.getUserId());
         loginApper.setPhoneNumber(customerDTO.getPhoneNumber());
 
         return new UserModel(customerDTO.getPhoneNumber(),
-                "", AuthorityUtils.NO_AUTHORITIES, loginApper);
+                "", Collections.emptyList(), loginApper);
     }
 
     /**

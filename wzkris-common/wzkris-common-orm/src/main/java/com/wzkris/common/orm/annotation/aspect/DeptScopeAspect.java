@@ -51,7 +51,7 @@ public class DeptScopeAspect {
     private void handleDataScope(DeptScope deptScope) {
         if (SysUtil.isLogin()) {
             // 租户的最高管理员不查询部门数据权限
-            if (SysUtil.isAdmin()) {
+            if (SysUtil.isAdministrator()) {
                 return;
             }
             // 没有部门权限数据则不拼接

@@ -1,20 +1,19 @@
 package com.wzkris.auth.oauth2.service.impl;
 
-import com.wzkris.auth.oauth2.redis.JdkRedisUtil;
+import com.wzkris.auth.oauth2.model.OAuth2AuthorizationModel;
+import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBatch;
-import org.redisson.api.RedissonClient;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2DeviceCode;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.OAuth2UserCode;
+import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -33,7 +32,9 @@ import java.util.*;
 @AllArgsConstructor
 public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationService {
 
-    private static final String OAUTH2_PREFIX = "Authorization";
+    private static final String OAUTH2_PREFIX = "Authorization:info";
+
+    private final RegisteredClientRepository registeredClientRepository;
 
     @Override
     public void save(@Nonnull OAuth2Authorization authorization) {
@@ -87,7 +88,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
 
         Long maxTimeOut = expiresAtList.stream().max(Comparator.comparing(s -> s)).orElse(0L);
         // 创建批量命令
-        RBatch batch = JdkRedisUtil.getRedissonClient().createBatch();
+        RBatch batch = RedisUtil.getClient().createBatch();
 
         // 存储所有token映射id
         for (Map.Entry<String, Long> entry : tokenMap.entrySet()) {
@@ -95,7 +96,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
         }
 
         // 存储认证本体
-        batch.getBucket(this.buildOAuth2Key(authorization.getId())).setAsync(authorization, Duration.ofSeconds(maxTimeOut));
+        batch.getBucket(this.buildOAuth2Key(authorization.getId())).setAsync(this.buildOAuth2AuthorizationModel(authorization), Duration.ofSeconds(maxTimeOut));
 
         batch.execute();
     }
@@ -137,7 +138,7 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
             keys.add(this.buildOAuth2Key(oidcIdTokenToken.getToken().getTokenValue()));
         }
 
-        JdkRedisUtil.getRedissonClient().getKeys().delete(keys.toArray(String[]::new));
+        RedisUtil.delObj(keys);
     }
 
     @Override
@@ -147,13 +148,40 @@ public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationServic
 
     @Override
     public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
-        RedissonClient redissonClient = JdkRedisUtil.getRedissonClient();
-        Object authorizeId = redissonClient.getBucket(this.buildOAuth2Key(token)).get();
-        if (authorizeId == null) {
+        String tokenKey = RedisUtil.getObj(this.buildOAuth2Key(token));
+        if (tokenKey == null) {
             return null;
         }
+        OAuth2AuthorizationModel authorizationModel = RedisUtil.getObj(this.buildOAuth2Key(tokenKey));
 
-        return (OAuth2Authorization) redissonClient.getBucket(this.buildOAuth2Key(authorizeId.toString())).get();
+        return this.buildOAuth2Authorization(authorizationModel, registeredClientRepository.findByClientId(authorizationModel.getRegisteredClientId()));
+    }
+
+    /**
+     * 构建Redis存储信息
+     */
+    private OAuth2AuthorizationModel buildOAuth2AuthorizationModel(OAuth2Authorization authorization) {
+        return new OAuth2AuthorizationModel()
+                .setId(authorization.getId())
+                .setPrincipalName(authorization.getPrincipalName())
+                .setRegisteredClientId(authorization.getRegisteredClientId())
+                .setAuthorizationGrantType(authorization.getAuthorizationGrantType().getValue())
+                .setAuthorizedScopes(authorization.getAuthorizedScopes())
+                .setAttributes(authorization.getAttributes());
+    }
+
+    /**
+     * 构建Spring OAuth2所需要的认证信息
+     */
+    private OAuth2Authorization buildOAuth2Authorization(OAuth2AuthorizationModel oAuth2AuthorizationModel, RegisteredClient registeredClient) {
+        OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
+                .withRegisteredClient(registeredClient)
+                .id(oAuth2AuthorizationModel.getId())
+                .principalName(oAuth2AuthorizationModel.getPrincipalName())
+                .authorizationGrantType(new AuthorizationGrantType(oAuth2AuthorizationModel.getAuthorizationGrantType()))
+                .authorizedScopes(oAuth2AuthorizationModel.getAuthorizedScopes())
+                .attributes(attr -> attr.putAll(oAuth2AuthorizationModel.getAttributes()));
+        return authorizationBuilder.build();
     }
 
     // 构建OAuth2缓存KEY

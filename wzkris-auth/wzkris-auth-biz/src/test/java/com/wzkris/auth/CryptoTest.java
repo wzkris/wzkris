@@ -12,6 +12,14 @@ import java.util.List;
 @DisplayName("密码测试")
 public class CryptoTest {
 
+    static String str = "wzsss";
+
+    @Test
+    public void encrypt01() {
+        String str1 = "wzsss";
+        System.out.println(str == str1.intern());
+    }
+
     @Test
     @DisplayName("redis_slot算法")
     public void encrypt() {

@@ -30,7 +30,7 @@ public class AppUtil extends OAuth2Holder {
      * @return 当前用户
      */
     public static LoginApper getAppUser() {
-        return JsonUtil.parseObject(getPrincipal().getDetails(), LoginApper.class);
+        return JsonUtil.parseObject(getPrincipal().getPrincipal(), LoginApper.class);
     }
 
     /**

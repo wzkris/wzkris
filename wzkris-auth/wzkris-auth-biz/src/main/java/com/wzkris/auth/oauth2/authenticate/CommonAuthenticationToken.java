@@ -16,12 +16,12 @@ import java.util.Set;
  * @description AuthenticationToken基类，适配多端登录参数
  */
 @Getter
-public class CommonAuthenticationToken extends OAuth2AuthorizationGrantAuthenticationToken {
+public abstract class CommonAuthenticationToken extends OAuth2AuthorizationGrantAuthenticationToken {
     private final Set<String> scopes;
 
     public CommonAuthenticationToken(AuthorizationGrantType authorizationGrantType, Authentication clientPrincipal,
                                      Set<String> scopes, Map<String, Object> additionalParameters) {
         super(authorizationGrantType, clientPrincipal, additionalParameters);
-        this.scopes = Collections.unmodifiableSet(scopes != null ? new HashSet<>(scopes) : Collections.emptySet());
+        this.scopes = (scopes != null ? new HashSet<>(scopes) : Collections.emptySet());
     }
 }

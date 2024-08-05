@@ -42,7 +42,7 @@ public class RegisteredClientRepositoryImpl implements RegisteredClientRepositor
 
     @Override
     public void save(RegisteredClient registeredClient) {
-        throw new UnsupportedOperationException("You have to register app");
+        throw new UnsupportedOperationException("you have to register app client");
     }
 
     @Override

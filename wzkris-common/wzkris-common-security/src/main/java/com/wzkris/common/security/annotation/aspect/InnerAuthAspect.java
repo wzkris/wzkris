@@ -9,7 +9,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,7 +20,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @date : 2024/7/3 13:25
  */
 @Aspect
-@Component
 @AllArgsConstructor
 public class InnerAuthAspect implements Ordered {
 

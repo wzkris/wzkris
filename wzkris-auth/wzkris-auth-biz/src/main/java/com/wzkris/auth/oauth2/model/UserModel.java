@@ -1,12 +1,10 @@
 package com.wzkris.auth.oauth2.model;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.Collection;
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -15,25 +13,19 @@ import java.util.List;
  * @description : 用户模型
  * @date : 2024/5/16 13:08
  */
+@Getter
 public class UserModel extends User {
 
-    @Getter
-    @Setter
-    private Object details;// 用户详细信息
+    @Serial
+    private static final long serialVersionUID = 2518325159639365166L;
+
+    private final Object principal;// 用户详细信息
 
     public UserModel(String username,
                      String password,
                      List<String> authorities,
-                     Object details) {
+                     Object principal) {
         super(username, password, AuthorityUtils.createAuthorityList(authorities));
-        this.details = details;
-    }
-
-    public UserModel(String username,
-                     String password,
-                     Collection<? extends GrantedAuthority> authorities,
-                     Object details) {
-        super(username, password, authorities);
-        this.details = details;
+        this.principal = principal;
     }
 }
