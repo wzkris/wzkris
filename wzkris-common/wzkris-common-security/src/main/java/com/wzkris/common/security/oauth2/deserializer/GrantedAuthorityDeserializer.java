@@ -27,7 +27,8 @@ public class GrantedAuthorityDeserializer extends JsonDeserializer<GrantedAuthor
         // NOTICE: @class GrantedAuthority 有众多实现类，由于只用到了SimpleGrantedAuthority，所以不做多余的处理
         if (node.get("authority") != null) {
             if (node.get("attributes") != null) {
-                return new OAuth2UserAuthority(node.get("authority").asText(), JsonUtil.parseObject(node.get("attributes").asText(), Map.class));
+                return new OAuth2UserAuthority(node.get("authority").asText(),
+                        JsonUtil.toMap(node.get("attributes").toPrettyString(), Map.class, String.class, Object.class));
             }
             else {
                 return new SimpleGrantedAuthority(node.get("authority").asText());

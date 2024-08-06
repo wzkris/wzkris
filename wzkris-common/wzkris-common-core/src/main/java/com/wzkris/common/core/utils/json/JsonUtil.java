@@ -1,8 +1,10 @@
 package com.wzkris.common.core.utils.json;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.exception.UtilException;
 import com.wzkris.common.core.utils.SpringUtil;
 import lombok.Getter;
@@ -11,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author : wzkris
@@ -33,22 +37,6 @@ public class JsonUtil {
     public static String toJsonString(Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
-        }
-        catch (Exception e) {
-            log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
-        }
-    }
-
-    /**
-     * 对象转字节数组
-     *
-     * @param obj 对象
-     * @return 字节数组
-     */
-    public static byte[] toByte(Object obj) {
-        try {
-            return objectMapper.writeValueAsBytes(obj);
         }
         catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
@@ -86,25 +74,7 @@ public class JsonUtil {
     }
 
     /**
-     * Json 转为 Java Bean
-     *
-     * @param text  json字符串
-     * @param clazz 对象类型class
-     * @param <T>   对象类型
-     * @return 对象类型
-     */
-    public static <T> T parseObject(String text, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(text, clazz);
-        }
-        catch (Exception e) {
-            log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
-        }
-    }
-
-    /**
-     * Java Bean 转 Java Bean
+     * obj 转 Java Bean
      *
      * @param obj   对象
      * @param clazz 对象类型
@@ -113,6 +83,43 @@ public class JsonUtil {
     public static <T> T parseObject(Object obj, Class<T> clazz) {
         try {
             return objectMapper.convertValue(obj, clazz);
+        }
+        catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("util.json.error");
+        }
+    }
+
+    /**
+     * String转换成Map
+     */
+    public static <T> T toMap(String content, Class<? extends Map> mapClass,
+                              Class<?> keyClass, Class<?> valueClass) {
+        try {
+            return objectMapper.readValue(content, TypeFactory.defaultInstance().constructMapType(mapClass, keyClass, valueClass));
+        }
+        catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("util.json.error");
+        }
+    }
+
+    /**
+     * String转换成coll
+     */
+    public static <T> T toColl(String content, Class<? extends Collection> collectionClass, Class<?> elementClass) {
+        try {
+            return objectMapper.readValue(content, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
+        }
+        catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("util.json.error");
+        }
+    }
+
+    public static <T> T toColl(JsonParser parser, Class<? extends Collection> collectionClass, Class<?> elementClass) {
+        try {
+            return objectMapper.readValue(parser, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
         }
         catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);

@@ -1,7 +1,7 @@
 package com.wzkris.auth.oauth2.model;
 
+import com.wzkris.common.security.oauth2.domain.Loginer;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -18,22 +18,21 @@ import java.util.List;
 public class UserModel extends User {
 
     @Getter
-    @Setter
-    private Object details;// 用户详细信息
+    private final Loginer principal;// 用户详细信息
 
     public UserModel(String username,
                      String password,
                      List<String> authorities,
-                     Object details) {
+                     Loginer principal) {
         super(username, password, AuthorityUtils.createAuthorityList(authorities));
-        this.details = details;
+        this.principal = principal;
     }
 
     public UserModel(String username,
                      String password,
                      Collection<? extends GrantedAuthority> authorities,
-                     Object details) {
+                     Loginer principal) {
         super(username, password, authorities);
-        this.details = details;
+        this.principal = principal;
     }
 }

@@ -1,12 +1,12 @@
 package com.wzkris.auth.oauth2.authenticate;
 
+import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -87,7 +87,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     /**
      * 认证核心方法
      */
-    protected abstract OAuth2AuthenticationToken doAuthenticate(Authentication authentication);
+    protected abstract WkAuthenticationToken doAuthenticate(Authentication authentication);
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -102,12 +102,12 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         Set<String> authorizedScopes = this.checkClient(customAuthentication, registeredClient);
 
         // 验证并拿到授权
-        OAuth2AuthenticationToken oAuth2AuthenticationToken = this.doAuthenticate(customAuthentication);
+        WkAuthenticationToken wkAuthenticationToken = this.doAuthenticate(customAuthentication);
 
         // @formatter:off
         DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
                     .registeredClient(registeredClient)
-                    .principal(oAuth2AuthenticationToken)
+                    .principal(wkAuthenticationToken)
                     .authorizationServerContext(AuthorizationServerContextHolder.getContext())
                     .authorizedScopes(authorizedScopes)
                     .authorizationGrantType(customAuthentication.getGrantType())
@@ -116,10 +116,10 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .principalName(oAuth2AuthenticationToken.getName())
+                .principalName(wkAuthenticationToken.getName())
                 .authorizationGrantType(customAuthentication.getGrantType())
                 .authorizedScopes(authorizedScopes)
-                .attribute(Principal.class.getName(), oAuth2AuthenticationToken);
+                .attribute(Principal.class.getName(), wkAuthenticationToken);
 
         // ----- Access token -----
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
@@ -186,7 +186,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         // 传递用户信息供OAuth2后续流程使用
-        additionalParameters.put(OAuth2User.class.getName(), oAuth2AuthenticationToken.getPrincipal());
+        additionalParameters.put(OAuth2User.class.getName(), wkAuthenticationToken.getPrincipal());
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);

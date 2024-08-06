@@ -33,7 +33,7 @@ import java.util.*;
 @AllArgsConstructor
 public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationService {
 
-    private static final String OAUTH2_PREFIX = "Authorization";
+    private static final String OAUTH2_PREFIX = "Authorization:info";
 
     @Override
     public void save(@Nonnull OAuth2Authorization authorization) {

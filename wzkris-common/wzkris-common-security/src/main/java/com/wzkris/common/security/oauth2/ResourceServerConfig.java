@@ -1,10 +1,6 @@
 package com.wzkris.common.security.oauth2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.wzkris.common.core.utils.json.JsonUtil;
 import com.wzkris.common.security.oauth2.config.OAuth2Properties;
-import com.wzkris.common.security.oauth2.deserializer.GrantedAuthorityDeserializer;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
@@ -18,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,15 +29,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 @AllArgsConstructor
 public class ResourceServerConfig {
-
-    // json序列化增强
-    static {
-        ObjectMapper objectMapper = JsonUtil.getObjectMapper();
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addDeserializer(GrantedAuthority.class, new GrantedAuthorityDeserializer());
-
-        objectMapper.registerModules(simpleModule);
-    }
 
     private final OAuth2Properties oAuth2Properties;
 

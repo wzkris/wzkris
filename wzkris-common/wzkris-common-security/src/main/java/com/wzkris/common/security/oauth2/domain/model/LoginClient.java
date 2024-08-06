@@ -12,8 +12,9 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class LoginClient extends Loginer {
+public class LoginClient implements Loginer {
 
     private String clientId;
+
     private String clientName;
 }

@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class LoginApper extends Loginer {
+public class LoginApper implements Loginer {
 
     // 登录id
     private Long userId;

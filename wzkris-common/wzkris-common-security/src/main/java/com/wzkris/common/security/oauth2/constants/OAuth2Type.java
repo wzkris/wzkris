@@ -1,5 +1,6 @@
 package com.wzkris.common.security.oauth2.constants;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -9,15 +10,11 @@ import lombok.Getter;
  * @date : 2024/5/16 13:08
  */
 @Getter
+@AllArgsConstructor
 public enum OAuth2Type {
     SYS_USER("sys_user"),
     APP_USER("app_user"),
     CLIENT("client");
 
     private final String value;
-
-    OAuth2Type(String value) {
-        this.value = value;
-    }
-
 }

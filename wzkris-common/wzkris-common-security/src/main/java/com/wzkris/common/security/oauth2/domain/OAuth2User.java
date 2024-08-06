@@ -24,15 +24,16 @@ public class OAuth2User implements org.springframework.security.oauth2.core.user
 
     private String oauth2Type;
 
-    private String principalName;// 一般为用户名或客户端id
+    private String principalName;
 
-    private Object details;// 详细属性
+    private Object principal;// 登录信息
+
     private Collection<? extends GrantedAuthority> authorities;
 
-    public OAuth2User(String oauth2Type, String principalName, Object details, Collection<? extends GrantedAuthority> authorities) {
+    public OAuth2User(String oauth2Type, String principalName, Object principal, Collection<? extends GrantedAuthority> authorities) {
         this.oauth2Type = oauth2Type;
         this.principalName = principalName;
-        this.details = details;
+        this.principal = principal;
         this.authorities = authorities;
     }
 

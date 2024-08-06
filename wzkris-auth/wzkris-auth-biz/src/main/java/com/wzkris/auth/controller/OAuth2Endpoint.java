@@ -1,8 +1,12 @@
 package com.wzkris.auth.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.wzkris.auth.controller.hooks.OAuth2LogoutHook;
+import cn.hutool.http.useragent.UserAgentUtil;
+import com.wzkris.auth.listener.event.UserLogoutEvent;
+import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
@@ -13,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -25,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
-import java.util.List;
 
 @Tag(name = "OAuth2端点")
 @RestController
@@ -35,7 +37,6 @@ public class OAuth2Endpoint {
     private static final String REDIRECT_URL = "redirect_url";
     private final BearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
-    private final List<OAuth2LogoutHook> oAuth2LogoutHookList;
 
     @Operation(summary = "token内省")
     @RequestMapping("/check_token")
@@ -67,8 +68,8 @@ public class OAuth2Endpoint {
         }
 
         // 用户信息
-        if (oAuth2Authorization.getAttribute(Principal.class.getName()) instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
-            OAuth2User oAuth2User = (OAuth2User) oAuth2AuthenticationToken.getPrincipal();
+        if (oAuth2Authorization.getAttribute(Principal.class.getName()) instanceof WkAuthenticationToken wkAuthenticationToken) {
+            OAuth2User oAuth2User = wkAuthenticationToken.getPrincipal();
 
             return ResponseEntity.ok(oAuth2User);
         }
@@ -83,8 +84,12 @@ public class OAuth2Endpoint {
         OAuth2Authorization authorization = oAuth2AuthorizationService.findByToken(accessToken, null);
         if (authorization != null) {
             oAuth2AuthorizationService.remove(authorization);
-            OAuth2AuthenticationToken authenticationToken = authorization.getAttribute(Principal.class.getName());
-            oAuth2LogoutHookList.forEach(hook -> hook.logoutHook((OAuth2User) authenticationToken.getPrincipal()));
+            WkAuthenticationToken authenticationToken = authorization.getAttribute(Principal.class.getName());
+            OAuth2User oAuth2User = authenticationToken.getPrincipal();
+            // 发布登出事件
+            SpringUtil.getContext().publishEvent(new UserLogoutEvent(oAuth2User.getOauth2Type(),
+                    oAuth2User.getPrincipal(), ServletUtil.getClientIP(request),
+                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
         }
 
         // 获取请求参数中是否包含 回调地址

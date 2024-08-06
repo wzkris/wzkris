@@ -22,7 +22,7 @@ public class LoginUserVO {
     private String username;
 
     @Schema(description = "是否当前租户下的最高管理员")
-    private Boolean isAdmin;
+    private boolean administrator;
 
     @Schema(description = "权限")
     private Collection<? extends GrantedAuthority> authorities;

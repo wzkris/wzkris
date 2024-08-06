@@ -33,7 +33,7 @@ public class SysUtil extends OAuth2Holder {
      * @return 当前用户
      */
     public static LoginSyser getLoginSyser() {
-        return JsonUtil.parseObject(getPrincipal().getDetails(), LoginSyser.class);
+        return JsonUtil.parseObject(getPrincipal().getPrincipal(), LoginSyser.class);
     }
 
     /**
@@ -59,8 +59,8 @@ public class SysUtil extends OAuth2Holder {
      *
      * @return 是否
      */
-    public static boolean isAdmin() {
-        return getLoginSyser().getIsAdmin();
+    public static boolean isAdministrator() {
+        return getLoginSyser().isAdministrator();
     }
 
     /**

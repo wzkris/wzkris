@@ -5,12 +5,12 @@ import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.impl.AppUserDetailsService;
 import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -38,7 +38,7 @@ public class SmsAuthenticationProvider extends CommonAuthenticationProvider<Comm
     }
 
     @Override
-    public OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
+    public WkAuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
         // 校验验证码
         captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
@@ -52,9 +52,9 @@ public class SmsAuthenticationProvider extends CommonAuthenticationProvider<Comm
         String clientId = ((OAuth2ClientAuthenticationToken) authenticationToken.getPrincipal()).getPrincipal().toString();
 
         OAuth2User oAuth2User = new OAuth2User(OAuth2Type.APP_USER.getValue(), userModel.getUsername(),
-                userModel.getDetails(), userModel.getAuthorities());
+                userModel.getPrincipal(), userModel.getAuthorities());
 
-        return new OAuth2AuthenticationToken(oAuth2User,
+        return new WkAuthenticationToken(oAuth2User,
                 AuthorityUtils.createAuthorityList(authenticationToken.getScopes()), clientId);
     }
 

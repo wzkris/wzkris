@@ -5,13 +5,13 @@ import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.impl.SysUserDetailsService;
 import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -42,7 +42,7 @@ public class PasswordAuthenticationProvider extends CommonAuthenticationProvider
     }
 
     @Override
-    public OAuth2AuthenticationToken doAuthenticate(Authentication authentication) {
+    public WkAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
         // 校验最大次数
         captchaService.validateMaxTryCount(authenticationToken.getPassword());
@@ -57,9 +57,9 @@ public class PasswordAuthenticationProvider extends CommonAuthenticationProvider
         String clientId = ((OAuth2ClientAuthenticationToken) authenticationToken.getPrincipal()).getPrincipal().toString();
 
         OAuth2User oAuth2User = new OAuth2User(OAuth2Type.SYS_USER.getValue(), userModel.getUsername(),
-                userModel.getDetails(), userModel.getAuthorities());
+                userModel.getPrincipal(), userModel.getAuthorities());
 
-        return new OAuth2AuthenticationToken(oAuth2User,
+        return new WkAuthenticationToken(oAuth2User,
                 AuthorityUtils.createAuthorityList(authenticationToken.getScopes()), clientId);
     }
 

@@ -4,6 +4,7 @@ import com.wzkris.common.security.oauth2.domain.Loginer;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -15,7 +16,10 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class LoginSyser extends Loginer {
+public class LoginSyser implements Loginer {
+
+    @Serial
+    private static final long serialVersionUID = -5126824626495120120L;
 
     // 登录id
     private Long userId;
@@ -24,7 +28,7 @@ public class LoginSyser extends Loginer {
     // 租户id
     private Long tenantId;
     // 是否当前租户下的最高管理员
-    private Boolean isAdmin;
+    private boolean administrator;
     // 用户名
     private String username;
     // 密码

@@ -1,9 +1,12 @@
-package com.wzkris.auth.listening;
+package com.wzkris.auth.listener;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.listening.event.UserLoginEvent;
+import com.wzkris.auth.constant.KeyConstants;
+import com.wzkris.auth.listener.event.UserLoginEvent;
+import com.wzkris.auth.listener.event.UserLogoutEvent;
 import com.wzkris.common.core.utils.ip.AddressUtil;
+import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
@@ -33,30 +36,30 @@ public class LoginEventListener {
     private final RemoteAppUserApi remoteAppUserApi;
 
     /**
-     * 异步记录登录日志
+     * 登录成功事件
      **/
     @Async
     @EventListener
-    public void recordLoginLog(UserLoginEvent event) {
+    public void loginSuccess(UserLoginEvent event) {
         log.info("监听到登录事件：{}", event);
         final String oauth2Type = event.getOauth2Type();
-        final String ip = event.getIp();
+        final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
 
         if (oauth2Type.equals(OAuth2Type.SYS_USER.getValue())) {
-            Long userId = ((LoginSyser) event.getUserinfo()).getUserId();
+            Long userId = ((LoginSyser) event.getLoginer()).getUserId();
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
             loginInfoDTO.setUserId(userId);
-            loginInfoDTO.setLoginIp(ip);
+            loginInfoDTO.setLoginIp(ipAddr);
             loginInfoDTO.setLoginDate(DateUtil.current());
             remoteSysUserApi.updateLoginInfo(loginInfoDTO);
             // 插入后台登陆日志
             final LoginLogDTO loginLogDTO = new LoginLogDTO();
             loginLogDTO.setUserId(userId);
             loginLogDTO.setLoginTime(DateUtil.current());
-            loginLogDTO.setIpAddr(ip);
-            loginLogDTO.setAddress(AddressUtil.getRealAddressByIp(ip));
+            loginLogDTO.setIpAddr(ipAddr);
+            loginLogDTO.setAddress(AddressUtil.getRealAddressByIp(ipAddr));
             // 获取客户端操作系统
             String os = userAgent.getOsVersion();
             // 获取客户端浏览器
@@ -68,11 +71,29 @@ public class LoginEventListener {
         else if (oauth2Type.equals(OAuth2Type.APP_USER.getValue())) {
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
-            loginInfoDTO.setUserId(((LoginApper) event.getUserinfo()).getUserId());
-            loginInfoDTO.setLoginIp(ip);
+            loginInfoDTO.setUserId(((LoginApper) event.getLoginer()).getUserId());
+            loginInfoDTO.setLoginIp(ipAddr);
             loginInfoDTO.setLoginDate(DateUtil.current());
             remoteAppUserApi.updateLoginInfo(loginInfoDTO);
         }
+    }
 
+    /**
+     * 登出成功事件
+     **/
+    @Async
+    @EventListener
+    public void logoutSuccess(UserLogoutEvent event) {
+        log.info("监听到登出事件：{}", event);
+        final String oauth2Type = event.getOauth2Type();
+        final String ipAddr = event.getIpAddr();
+        final UserAgent userAgent = event.getUserAgent();
+        if (oauth2Type.equals(OAuth2Type.SYS_USER.getValue())) {
+            LoginSyser loginer = (LoginSyser) event.getLoginer();
+            RedisUtil.delObj(String.format(KeyConstants.LOGIN_USER_ROUTER, loginer.getUserId()));
+        }
+        else if (oauth2Type.equals(OAuth2Type.APP_USER.getValue())) {
+
+        }
     }
 }
