@@ -2,15 +2,13 @@ package com.wzkris.common.security.oauth2.deserializer.module;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
-import com.wzkris.common.security.oauth2.deserializer.AuthorizationGrantTypeDeserializer;
-import com.wzkris.common.security.oauth2.deserializer.GrantedAuthorityDeserializer;
-import com.wzkris.common.security.oauth2.deserializer.OAuth2UserDeserializer;
+import com.wzkris.common.security.oauth2.deserializer.SimpleGrantedAuthorityDeserializer;
+import com.wzkris.common.security.oauth2.deserializer.UnmodifiableMapDeserializer;
 import com.wzkris.common.security.oauth2.deserializer.WkAuthenticationTokenDeserializer;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serial;
+import java.util.Map;
 
 /**
  * @author : wzkris
@@ -24,17 +22,9 @@ public class OAuth2JacksonModule extends SimpleModule {
 
     public OAuth2JacksonModule() {
         super(OAuth2JacksonModule.class.getName());
-        this.addDeserializer(OAuth2User.class, new OAuth2UserDeserializer());
+        this.addDeserializer(Map.class, new UnmodifiableMapDeserializer());
         this.addDeserializer(WkAuthenticationToken.class, new WkAuthenticationTokenDeserializer());
-        this.addDeserializer(AuthorizationGrantType.class, new AuthorizationGrantTypeDeserializer());
-        this.addDeserializer(GrantedAuthority.class, new GrantedAuthorityDeserializer());
-        this.addDeserializer(GrantedAuthority.class, new GrantedAuthorityDeserializer());
-//        this.addDeserializer(SimpleGrantedAuthority.class, new SimpleGrantedAuthorityDeserializer());
+        this.addDeserializer(SimpleGrantedAuthority.class, new SimpleGrantedAuthorityDeserializer());
     }
 
-//        @Override
-//        public void setupModule(SetupContext context) {
-//            context.setMixInAnnotations(GrantedAuthority.class, SimpleGrantedAuthorityMixin.class);
-//            context.setMixInAnnotations(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class);
-//        }
 }

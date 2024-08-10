@@ -1,6 +1,5 @@
 package com.wzkris.common.security.oauth2.authentication;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -17,7 +16,7 @@ import java.util.Collection;
  * @description : 认证信息类
  * @date : 2024/08/07 15:44
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
+@Getter
 public class WkAuthenticationToken extends AbstractAuthenticationToken {
 
     @Serial
@@ -25,7 +24,6 @@ public class WkAuthenticationToken extends AbstractAuthenticationToken {
 
     private final OAuth2User principal;
 
-    @Getter
     private final String clientId;
 
     public WkAuthenticationToken(OAuth2User principal,
