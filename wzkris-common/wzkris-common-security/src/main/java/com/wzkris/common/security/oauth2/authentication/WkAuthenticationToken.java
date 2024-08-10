@@ -16,6 +16,7 @@ import java.util.Collection;
  * @description : 认证信息类
  * @date : 2024/08/07 15:44
  */
+@Getter
 public class WkAuthenticationToken extends AbstractAuthenticationToken {
 
     @Serial
@@ -23,10 +24,10 @@ public class WkAuthenticationToken extends AbstractAuthenticationToken {
 
     private final OAuth2User principal;
 
-    @Getter
     private final String clientId;
 
-    public WkAuthenticationToken(OAuth2User principal, Collection<? extends GrantedAuthority> authorities,
+    public WkAuthenticationToken(OAuth2User principal,
+                                 Collection<? extends GrantedAuthority> authorities,
                                  String clientId) {
         super(authorities);
         Assert.notNull(principal, "principal cannot be null");

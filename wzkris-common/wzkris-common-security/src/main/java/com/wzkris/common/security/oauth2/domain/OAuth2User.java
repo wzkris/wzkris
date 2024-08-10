@@ -3,6 +3,7 @@ package com.wzkris.common.security.oauth2.domain;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -28,13 +29,14 @@ public class OAuth2User implements org.springframework.security.oauth2.core.user
 
     private Object principal;// 登录信息
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private Collection<SimpleGrantedAuthority> authorities;
 
+    @SuppressWarnings("unchecked")
     public OAuth2User(String oauth2Type, String principalName, Object principal, Collection<? extends GrantedAuthority> authorities) {
         this.oauth2Type = oauth2Type;
         this.principalName = principalName;
         this.principal = principal;
-        this.authorities = authorities;
+        this.authorities = (Collection<SimpleGrantedAuthority>) authorities;
     }
 
     public Map<String, Object> getAttributes() {

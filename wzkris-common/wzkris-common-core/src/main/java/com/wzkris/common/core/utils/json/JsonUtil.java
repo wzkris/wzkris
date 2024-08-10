@@ -153,6 +153,16 @@ public class JsonUtil {
         }
     }
 
+    public static <T> T parseObject(JsonParser jsonParser, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(jsonParser, clazz);
+        }
+        catch (IOException e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("util.json.error");
+        }
+    }
+
     /**
      * @param text json字符串
      * @return 转为ObjectNode
@@ -160,6 +170,16 @@ public class JsonUtil {
     public static ObjectNode parseNode(String text) {
         try {
             return objectMapper.readValue(text, ObjectNode.class);
+        }
+        catch (IOException e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("util.json.error");
+        }
+    }
+
+    public static ObjectNode parseNode(JsonParser jsonParser) {
+        try {
+            return objectMapper.readTree(jsonParser);
         }
         catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);

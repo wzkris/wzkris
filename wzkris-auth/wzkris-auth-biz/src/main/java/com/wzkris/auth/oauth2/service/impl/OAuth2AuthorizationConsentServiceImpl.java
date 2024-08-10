@@ -1,6 +1,6 @@
 package com.wzkris.auth.oauth2.service.impl;
 
-import com.wzkris.auth.oauth2.redis.JdkRedisUtil;
+import com.wzkris.common.redis.util.RedisUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -23,21 +23,20 @@ public class OAuth2AuthorizationConsentServiceImpl implements OAuth2Authorizatio
 
     private static final String PREFIX = "Authorization:consent";
 
-
     @Override
     public void save(OAuth2AuthorizationConsent authorizationConsent) {
-        JdkRedisUtil.getRedissonClient().getBucket(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()))
-                .set(authorizationConsent, Duration.ofSeconds(DEFAULT_TIMEOUT));
+        RedisUtil.setObj(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()),
+                authorizationConsent, Duration.ofSeconds(DEFAULT_TIMEOUT));
     }
 
     @Override
     public void remove(OAuth2AuthorizationConsent authorizationConsent) {
-        JdkRedisUtil.getRedissonClient().getKeys().delete(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()));
+        RedisUtil.delObj(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()));
     }
 
     @Override
     public OAuth2AuthorizationConsent findById(String registeredClientId, String principalName) {
-        return (OAuth2AuthorizationConsent) JdkRedisUtil.getRedissonClient().getBucket(this.buildRedisKey(registeredClientId, principalName)).get();
+        return RedisUtil.getObj(this.buildRedisKey(registeredClientId, principalName));
     }
 
     // 构建客户端缓存KEY
