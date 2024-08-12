@@ -2,10 +2,10 @@ package com.wzkris.auth.oauth2;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.wzkris.auth.oauth2.authenticate.password.PasswordAuthenticationConverter;
-import com.wzkris.auth.oauth2.authenticate.password.PasswordAuthenticationProvider;
-import com.wzkris.auth.oauth2.authenticate.sms.SmsAuthenticationConverter;
-import com.wzkris.auth.oauth2.authenticate.sms.SmsAuthenticationProvider;
+import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationConverter;
+import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationProvider;
+import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationConverter;
+import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationProvider;
 import com.wzkris.auth.oauth2.filter.ValidateCodeFilter;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;

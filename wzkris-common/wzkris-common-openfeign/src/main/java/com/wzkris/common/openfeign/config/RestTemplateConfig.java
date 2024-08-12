@@ -1,6 +1,6 @@
 package com.wzkris.common.openfeign.config;
 
-import com.wzkris.common.core.utils.json.JsonUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
@@ -20,6 +20,8 @@ import java.util.Arrays;
  */
 public class RestTemplateConfig {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
@@ -30,7 +32,7 @@ public class RestTemplateConfig {
         RestTemplateBuilder builder = new RestTemplateBuilder();
 
         // 增强转换器
-        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter(JsonUtil.getObjectMapper());
+        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper);
         jackson2HttpMessageConverter.setDefaultCharset(StandardCharsets.UTF_8);
         jackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(
                 MediaType.TEXT_HTML,

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.IOException;
@@ -12,12 +13,12 @@ import java.io.IOException;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : SimpleGrantedAuthority 反序列化
+ * @description : GrantedAuthority 反序列化, 包含其所有子类；这里只解析了 SimpleGrantedAuthority
  * @date : 2024/08/10 14:44
  */
-public class SimpleGrantedAuthorityDeserializer extends JsonDeserializer<SimpleGrantedAuthority> {
+public class GrantedAuthorityDeserializer extends JsonDeserializer<GrantedAuthority> {
     @Override
-    public SimpleGrantedAuthority deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public GrantedAuthority deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
 
         JsonNode authority = this.readJsonNode(node, "authority");

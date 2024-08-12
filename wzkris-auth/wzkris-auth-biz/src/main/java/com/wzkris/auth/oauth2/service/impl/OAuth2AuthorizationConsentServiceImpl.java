@@ -1,12 +1,18 @@
 package com.wzkris.auth.oauth2.service.impl;
 
+import com.wzkris.auth.oauth2.model.RedisAuthorizationConsent;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author : wzkris
@@ -25,8 +31,10 @@ public class OAuth2AuthorizationConsentServiceImpl implements OAuth2Authorizatio
 
     @Override
     public void save(OAuth2AuthorizationConsent authorizationConsent) {
+        RedisAuthorizationConsent entity = this.toEntity(authorizationConsent);
+
         RedisUtil.setObj(this.buildRedisKey(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName()),
-                authorizationConsent, Duration.ofSeconds(DEFAULT_TIMEOUT));
+                entity, Duration.ofSeconds(DEFAULT_TIMEOUT));
     }
 
     @Override
@@ -36,11 +44,42 @@ public class OAuth2AuthorizationConsentServiceImpl implements OAuth2Authorizatio
 
     @Override
     public OAuth2AuthorizationConsent findById(String registeredClientId, String principalName) {
-        return RedisUtil.getObj(this.buildRedisKey(registeredClientId, principalName));
+        RedisAuthorizationConsent entity = RedisUtil.getObj(this.buildRedisKey(registeredClientId, principalName));
+
+        return this.toObject(entity);
     }
 
     // 构建客户端缓存KEY
     private String buildRedisKey(String clientId, String principalName) {
         return String.format("%s:%s:%s", PREFIX, clientId, principalName);
     }
+
+    private OAuth2AuthorizationConsent toObject(RedisAuthorizationConsent authorizationConsent) {
+        String registeredClientId = authorizationConsent.getRegisteredClientId();
+
+        OAuth2AuthorizationConsent.Builder builder = OAuth2AuthorizationConsent.withId(
+                registeredClientId, authorizationConsent.getPrincipalName());
+        if (authorizationConsent.getAuthorities() != null) {
+            for (String authority : StringUtils.commaDelimitedListToSet(authorizationConsent.getAuthorities())) {
+                builder.authority(new SimpleGrantedAuthority(authority));
+            }
+        }
+
+        return builder.build();
+    }
+
+    private RedisAuthorizationConsent toEntity(OAuth2AuthorizationConsent authorizationConsent) {
+        RedisAuthorizationConsent entity = new RedisAuthorizationConsent();
+        entity.setRegisteredClientId(authorizationConsent.getRegisteredClientId());
+        entity.setPrincipalName(authorizationConsent.getPrincipalName());
+
+        Set<String> authorities = new HashSet<>();
+        for (GrantedAuthority authority : authorizationConsent.getAuthorities()) {
+            authorities.add(authority.getAuthority());
+        }
+        entity.setAuthorities(StringUtils.collectionToCommaDelimitedString(authorities));
+
+        return entity;
+    }
+
 }

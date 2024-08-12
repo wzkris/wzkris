@@ -1,7 +1,12 @@
 package com.wzkris.common.security.oauth2.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,9 +21,11 @@ import java.util.Map;
  * @date : 2024/5/16 09:59
  */
 @Getter
-public class OAuth2User implements org.springframework.security.oauth2.core.user.OAuth2User, Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class OAuth2User implements org.springframework.security.oauth2.core.user.OAuth2User, Serializable {
+
     @Serial
-    private static final long serialVersionUID = 4803666659523397454L;
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     private final String oauth2Type;
 
@@ -26,16 +33,17 @@ public class OAuth2User implements org.springframework.security.oauth2.core.user
 
     private final Object principal;// 登录信息
 
-    private final Collection<? extends GrantedAuthority> authorities;
+    private final Collection<SimpleGrantedAuthority> authorities;// 权限
 
-    public OAuth2User(String oauth2Type,
-                      String principalName,
-                      Object principal,
-                      Collection<? extends GrantedAuthority> authorities) {
+    @JsonCreator
+    public OAuth2User(@JsonProperty("oauth2Type") String oauth2Type,
+                      @JsonProperty("principalName") String principalName,
+                      @JsonProperty("principal") Object principal,
+                      @JsonProperty("authorities") Collection<? extends GrantedAuthority> authorities) {
         this.oauth2Type = oauth2Type;
         this.principalName = principalName;
         this.principal = principal;
-        this.authorities = authorities;
+        this.authorities = (Collection<SimpleGrantedAuthority>) authorities;
     }
 
     public Map<String, Object> getAttributes() {

@@ -1,15 +1,16 @@
-package com.wzkris.auth.oauth2.authenticate.sms;
+package com.wzkris.auth.oauth2.core.sms;
 
-import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationConverter;
-import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.wzkris.auth.oauth2.constants.GrantTypeConstant;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.oauth2.core.CommonAuthenticationConverter;
+import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import java.util.Set;
  * @date 2024/3/11
  * @description 短信模式转换器
  */
-public class SmsAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+public final class SmsAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
     @Override
     protected boolean support(String grantType) {
@@ -44,7 +45,7 @@ public class SmsAuthenticationConverter extends CommonAuthenticationConverter<Co
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
         String phoneNumber = additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER).toString();
         String smsCode = additionalParameters.get(OAuth2ParameterConstant.SMS_CODE).toString();
-        return new SmsAuthenticationToken(phoneNumber, smsCode, clientPrincipal, requestedScopes, additionalParameters);
+        return new SmsAuthenticationToken(phoneNumber, smsCode, clientPrincipal, requestedScopes, new HashMap<>());
     }
 
 }

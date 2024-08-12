@@ -1,9 +1,10 @@
-package com.wzkris.auth.oauth2.authenticate.sms;
+package com.wzkris.auth.oauth2.core.sms;
 
-import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
 import com.wzkris.auth.oauth2.constants.GrantTypeConstant;
+import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
 import lombok.Getter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.Transient;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.util.Assert;
 
@@ -17,7 +18,8 @@ import java.util.Set;
  * @description 短信验证token
  */
 @Getter
-public class SmsAuthenticationToken extends CommonAuthenticationToken {
+@Transient
+public final class SmsAuthenticationToken extends CommonAuthenticationToken {
     private final String phoneNumber;
     private final String smsCode;
 

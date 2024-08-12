@@ -1,20 +1,17 @@
-package com.wzkris.auth.oauth2.authenticate.sms;
+package com.wzkris.auth.oauth2.core.sms;
 
-import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationProvider;
-import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
+import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.impl.AppUserDetailsService;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +21,7 @@ import org.springframework.stereotype.Component;
  * @description 短信模式核心处理
  */
 @Component
-public class SmsAuthenticationProvider extends CommonAuthenticationProvider<CommonAuthenticationToken> {
+public final class SmsAuthenticationProvider extends CommonAuthenticationProvider<SmsAuthenticationToken> {
 
     private final AppUserDetailsService userDetailsService;
     private final CaptchaService captchaService;
@@ -38,7 +35,7 @@ public class SmsAuthenticationProvider extends CommonAuthenticationProvider<Comm
     }
 
     @Override
-    public WkAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
         // 校验验证码
         captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
@@ -49,13 +46,12 @@ public class SmsAuthenticationProvider extends CommonAuthenticationProvider<Comm
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        String clientId = ((OAuth2ClientAuthenticationToken) authenticationToken.getPrincipal()).getPrincipal().toString();
-
         OAuth2User oAuth2User = new OAuth2User(OAuth2Type.APP_USER.getValue(), userModel.getUsername(),
                 userModel.getPrincipal(), userModel.getAuthorities());
 
-        return new WkAuthenticationToken(oAuth2User,
-                AuthorityUtils.createAuthorityList(authenticationToken.getScopes()), clientId);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, null);
+        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
+        return usernamePasswordAuthenticationToken;
     }
 
     @Override

@@ -1,10 +1,10 @@
-package com.wzkris.auth.oauth2.authenticate;
+package com.wzkris.auth.oauth2.core;
 
-import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.*;
@@ -36,7 +36,6 @@ import java.util.Set;
  */
 public abstract class CommonAuthenticationProvider<T extends CommonAuthenticationToken> implements AuthenticationProvider {
 
-    protected static final String ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1";
     private final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
     private final OAuth2AuthorizationService authorizationService;
 
@@ -46,23 +45,24 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         this.authorizationService = authorizationService;
     }
 
-    public final OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
+    protected final OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
         OAuth2ClientAuthenticationToken clientPrincipal = null;
         if (OAuth2ClientAuthenticationToken.class.isAssignableFrom(authentication.getPrincipal().getClass())) {
             clientPrincipal = (OAuth2ClientAuthenticationToken) authentication.getPrincipal();
         }
-        if (clientPrincipal != null && clientPrincipal.isAuthenticated()) {
-            return clientPrincipal;
+
+        if (clientPrincipal == null || !clientPrincipal.isAuthenticated()) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
         }
 
-        throw new OAuth2AuthenticationException(new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, null, ERROR_URI));
+        return clientPrincipal;
     }
 
     /**
      * 校验客户端模式和scope
      */
     @Nonnull
-    public final Set<String> checkClient(CommonAuthenticationToken authenticationToken, RegisteredClient registeredClient) {
+    protected final Set<String> checkClient(CommonAuthenticationToken authenticationToken, RegisteredClient registeredClient) {
         if (registeredClient == null) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.client.invalid");
         }
@@ -87,39 +87,38 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     /**
      * 认证核心方法
      */
-    protected abstract WkAuthenticationToken doAuthenticate(Authentication authentication);
+    protected abstract UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication);
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        T customAuthentication = (T) authentication;
+        T commonAuthenticationToken = (T) authentication;
 
-        OAuth2ClientAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(customAuthentication);
-
+        OAuth2ClientAuthenticationToken clientPrincipal = this.getAuthenticatedClientElseThrowInvalidClient(commonAuthenticationToken);
 
         RegisteredClient registeredClient = clientPrincipal.getRegisteredClient();
 
         // 校验客户端
-        Set<String> authorizedScopes = this.checkClient(customAuthentication, registeredClient);
+        Set<String> authorizedScopes = this.checkClient(commonAuthenticationToken, registeredClient);
 
-        // 验证并拿到授权
-        WkAuthenticationToken wkAuthenticationToken = this.doAuthenticate(customAuthentication);
+        // 验证并拿到用户信息
+        UsernamePasswordAuthenticationToken authenticationToken = this.doAuthenticate(commonAuthenticationToken);
 
         // @formatter:off
         DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
                     .registeredClient(registeredClient)
-                    .principal(wkAuthenticationToken)
+                    .principal(commonAuthenticationToken)
                     .authorizationServerContext(AuthorizationServerContextHolder.getContext())
                     .authorizedScopes(authorizedScopes)
-                    .authorizationGrantType(customAuthentication.getGrantType())
-                    .authorizationGrant(customAuthentication);
+                    .authorizationGrantType(commonAuthenticationToken.getGrantType())
+                    .authorizationGrant(commonAuthenticationToken);
 
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .principalName(wkAuthenticationToken.getName())
-                .authorizationGrantType(customAuthentication.getGrantType())
+                .principalName(authenticationToken.getName())
+                .authorizationGrantType(commonAuthenticationToken.getGrantType())
                 .authorizedScopes(authorizedScopes)
-                .attribute(Principal.class.getName(), wkAuthenticationToken);
+                .attribute(Principal.class.getName(), authenticationToken);
 
         // ----- Access token -----
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
@@ -186,7 +185,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         // 传递用户信息供OAuth2后续流程使用
-        additionalParameters.put(OAuth2User.class.getName(), wkAuthenticationToken.getPrincipal());
+        additionalParameters.put(OAuth2User.class.getName(), authenticationToken.getPrincipal());
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);

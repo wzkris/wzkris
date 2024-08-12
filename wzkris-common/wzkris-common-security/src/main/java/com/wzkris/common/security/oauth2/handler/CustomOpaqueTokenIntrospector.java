@@ -1,7 +1,9 @@
 package com.wzkris.common.security.oauth2.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.json.JsonUtil;
+import com.wzkris.common.security.oauth2.deserializer.module.OAuth2JacksonModule;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +42,9 @@ import java.util.List;
 @Slf4j
 public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private static final ParameterizedTypeReference<OAuth2User> STRING_OBJECT_MAP = new ParameterizedTypeReference<>() {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final ParameterizedTypeReference<OAuth2User> STRING_OBJECT_MAP = new ParameterizedTypeReference<>() {
     };
 
     private final RestOperations restOperations;
@@ -51,6 +55,7 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         Assert.notNull(introspectionUri, "introspectionUri cannot be null");
         this.requestEntityConverter = this.defaultRequestEntityConverter(URI.create(introspectionUri));
         this.restOperations = this.defaultRestTemplate(new RestTemplate());
+        objectMapper.registerModules(new OAuth2JacksonModule());
     }
 
     private Converter<String, RequestEntity<?>> defaultRequestEntityConverter(URI introspectionUri) {
@@ -66,7 +71,7 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
         for (HttpMessageConverter<?> messageConverter : messageConverters) {
             if (messageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
-                mappingJackson2HttpMessageConverter.setObjectMapper(JsonUtil.getObjectMapper());
+                mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
             }
         }
         restTemplate.setErrorHandler(new ResponseErrorHandler() {

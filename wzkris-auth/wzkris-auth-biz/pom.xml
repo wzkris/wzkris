@@ -34,6 +34,12 @@
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
 		</dependency>
 
+		<!-- 引入分布式session -->
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+		</dependency>
+
 		<!-- Sentinel -->
 		<dependency>
 			<groupId>com.wzkris</groupId>

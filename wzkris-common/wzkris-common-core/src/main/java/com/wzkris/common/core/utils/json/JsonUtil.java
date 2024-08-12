@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.exception.UtilException;
-import com.wzkris.common.core.utils.SpringUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +25,7 @@ import java.util.Map;
 public class JsonUtil {
 
     @Getter
-    private static final ObjectMapper objectMapper = SpringUtil.getFactory().getBean(ObjectMapper.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 对象转Json格式字符串

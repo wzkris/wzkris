@@ -1,11 +1,11 @@
-package com.wzkris.auth.oauth2.authenticate;
+package com.wzkris.auth.oauth2.core;
 
-import lombok.Getter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationGrantAuthenticationToken;
 
-import java.util.Collections;
+import java.io.Serial;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -15,13 +15,20 @@ import java.util.Set;
  * @date 2024/3/11
  * @description AuthenticationToken基类，适配多端登录参数
  */
-@Getter
 public abstract class CommonAuthenticationToken extends OAuth2AuthorizationGrantAuthenticationToken {
+
+    @Serial
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+
     private final Set<String> scopes;
 
-    public CommonAuthenticationToken(AuthorizationGrantType authorizationGrantType, Authentication clientPrincipal,
-                                     Set<String> scopes, Map<String, Object> additionalParameters) {
+    protected CommonAuthenticationToken(AuthorizationGrantType authorizationGrantType, Authentication clientPrincipal,
+                                        Set<String> scopes, Map<String, Object> additionalParameters) {
         super(authorizationGrantType, clientPrincipal, additionalParameters);
-        this.scopes = (scopes != null ? new HashSet<>(scopes) : Collections.emptySet());
+        this.scopes = (scopes == null ? new HashSet<>() : scopes);
+    }
+
+    public final Set<String> getScopes() {
+        return this.scopes;
     }
 }

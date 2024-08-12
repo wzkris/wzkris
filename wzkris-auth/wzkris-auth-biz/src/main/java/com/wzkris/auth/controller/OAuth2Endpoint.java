@@ -6,7 +6,6 @@ import com.wzkris.auth.listener.event.UserLogoutEvent;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.authentication.WkAuthenticationToken;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
@@ -16,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -68,10 +68,9 @@ public class OAuth2Endpoint {
         }
 
         // 用户信息
-        if (oAuth2Authorization.getAttribute(Principal.class.getName()) instanceof WkAuthenticationToken wkAuthenticationToken) {
-            OAuth2User oAuth2User = wkAuthenticationToken.getPrincipal();
-
-            return ResponseEntity.ok(oAuth2User);
+        UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());
+        if (authenticationToken != null) {
+            return ResponseEntity.ok((OAuth2User) authenticationToken.getPrincipal());
         }
 
         return ResponseEntity.ok(null);
@@ -84,8 +83,8 @@ public class OAuth2Endpoint {
         OAuth2Authorization authorization = oAuth2AuthorizationService.findByToken(accessToken, null);
         if (authorization != null) {
             oAuth2AuthorizationService.remove(authorization);
-            WkAuthenticationToken authenticationToken = authorization.getAttribute(Principal.class.getName());
-            OAuth2User oAuth2User = authenticationToken.getPrincipal();
+            UsernamePasswordAuthenticationToken authenticationToken = authorization.getAttribute(Principal.class.getName());
+            OAuth2User oAuth2User = (OAuth2User) authenticationToken.getPrincipal();
             // 发布登出事件
             SpringUtil.getContext().publishEvent(new UserLogoutEvent(oAuth2User.getOauth2Type(),
                     oAuth2User.getPrincipal(), ServletUtil.getClientIP(request),
