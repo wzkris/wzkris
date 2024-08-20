@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
@@ -19,11 +20,16 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.info("token校验失败，请求URI：{}，详细信息：{}", request.getRequestURI(), authException.getMessage());
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+        log.info("token校验失败，请求URI：{}，详细信息：{}", request.getRequestURI(), exception.getMessage());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED));
+        if (exception instanceof InvalidBearerTokenException) {
+            JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED__INVALID_TOKEN));
+        }
+        else {
+            JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED));
+        }
     }
 }
