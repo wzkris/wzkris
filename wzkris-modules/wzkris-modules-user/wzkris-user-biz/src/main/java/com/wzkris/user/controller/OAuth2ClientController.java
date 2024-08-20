@@ -59,6 +59,13 @@ public class OAuth2ClientController extends BaseController {
         return toRes(oauth2ClientMapper.insert(client));
     }
 
+    @Operation(summary = "删除客户端")
+    @PostMapping("/remove")
+    @PreAuthorize("@ps.hasPerms('oauth2_client:remove')")
+    public Result<Void> remove(@RequestBody Long id) {
+        return toRes(oauth2ClientMapper.deleteById(id));
+    }
+
     @Operation(summary = "导出")
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('oauth2_client:export')")
