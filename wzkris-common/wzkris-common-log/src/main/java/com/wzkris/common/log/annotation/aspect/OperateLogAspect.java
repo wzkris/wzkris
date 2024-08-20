@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.ip.AddressUtil;
 import com.wzkris.common.core.utils.json.JsonUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -55,6 +57,16 @@ public class OperateLogAspect {
         handleLog(joinPoint, operateLog, null, jsonResult);
     }
 
+    /**
+     * 拦截异常操作
+     *
+     * @param joinPoint 切点
+     */
+    @AfterThrowing(pointcut = "@annotation(operateLog)", throwing = "e")
+    public void doAfterThrowing(JoinPoint joinPoint, OperateLog operateLog, Exception e) {
+        handleLog(joinPoint, operateLog, e, null);
+    }
+
     protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog, final Exception e, Object jsonResult) {
         try {
             // *========数据库日志=========*//
@@ -66,14 +78,9 @@ public class OperateLogAspect {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String ip = ServletUtil.getClientIP(request);
             operLogDTO.setOperIp(ip);
+            operLogDTO.setOperLocation(AddressUtil.getRealAddressByIp(ip));
             operLogDTO.setOperUrl(StringUtil.sub(request.getRequestURI(), 0, 255));
-            String username = "";
-            if (SysUtil.isLogin()) {
-                username = SysUtil.getLoginSyser().getUsername();
-            }
-            if (StringUtil.isNotBlank(username)) {
-                operLogDTO.setOperName(username);
-            }
+            operLogDTO.setOperName(SysUtil.getUsername());
             if (e != null) {
                 operLogDTO.setStatus(OperateStatus.FAIL.value());
                 operLogDTO.setErrorMsg(StringUtil.sub(e.getMessage(), 0, 2000));
@@ -157,7 +164,6 @@ public class OperateLogAspect {
         }
         return params.toString().trim();
     }
-
 
     /**
      * 判断是否需要过滤的对象。

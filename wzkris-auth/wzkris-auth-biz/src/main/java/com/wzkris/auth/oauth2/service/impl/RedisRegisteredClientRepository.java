@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @AllArgsConstructor
-public class RegisteredClientRepositoryImpl implements RegisteredClientRepository {
+public class RedisRegisteredClientRepository implements RegisteredClientRepository {
 
     private static final String PREFIX = "Authorization:client";
 

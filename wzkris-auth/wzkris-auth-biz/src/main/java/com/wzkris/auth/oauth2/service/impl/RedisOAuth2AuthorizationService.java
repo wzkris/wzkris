@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationService {
+public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
     private static final String OAUTH2_PREFIX = "Authorization:info";
 

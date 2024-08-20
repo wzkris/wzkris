@@ -12,9 +12,9 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class UserLoginEvent {
+public class LoginFailEvent {
     private String oauth2Type;
-    private Object loginer;
+    private String username;
     private String ipAddr;
     private UserAgent userAgent;
 }

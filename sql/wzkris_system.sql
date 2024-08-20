@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 04/07/2024 16:54:07
+ Date: 20/08/2024 11:24:11
 */
 
 SET NAMES utf8mb4;
@@ -40,7 +40,7 @@ CREATE TABLE `sys_config`  (
 -- ----------------------------
 -- Records of sys_config
 -- ----------------------------
-INSERT INTO `sys_config` VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-yellow', 'Y', 1713334134616, 1, 1719036432755, 1);
+INSERT INTO `sys_config` VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-yellow', 'Y', 1713334134616, 1, 1722905883482, 1);
 INSERT INTO `sys_config` VALUES (2, '用户管理-账号初始密码', 'sys.user.initPassword', '123456', 'Y', 1713334134616, 1, 1719036436632, 1);
 INSERT INTO `sys_config` VALUES (3, '主框架页-侧边栏主题', 'sys.index.sideTheme', 'theme-light', 'Y', 1713334134616, 1, 1719036434181, 1);
 INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能', 'sys.account.registerUser', 'false', 'Y', 1713334134616, 1, 1719036435430, 1);
@@ -141,7 +141,7 @@ CREATE TABLE `sys_dict_type`  (
 -- ----------------------------
 -- Records of sys_dict_type
 -- ----------------------------
-INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'sys_user_sex', 1713334134616, 1, 1719036473930, 1);
+INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'sys_user_sex', 1713334134616, 1, 1724120372348, 1);
 INSERT INTO `sys_dict_type` VALUES (2, '菜单状态', 'sys_show_hide', 1713334134616, 1, NULL, 1);
 INSERT INTO `sys_dict_type` VALUES (3, '系统开关', 'sys_normal_disable', 1713334134616, 1, NULL, 1);
 INSERT INTO `sys_dict_type` VALUES (4, '任务状态', 'sys_job_status', 1713334134616, 1, NULL, 1);
@@ -166,11 +166,12 @@ DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log`  (
   `log_id` bigint NOT NULL,
   `tenant_id` bigint NOT NULL DEFAULT 0 COMMENT '租户ID',
-  `user_id` bigint NULL DEFAULT NULL COMMENT '用户id',
-  `address` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '地址',
-  `ip_addr` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip地址',
-  `browser` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '浏览器类型',
-  `os` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作系统',
+  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户名',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录状态（0正常 1异常）',
+  `login_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录ip',
+  `login_location` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录地址',
+  `browser` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '浏览器类型',
+  `os` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作系统',
   `login_time` bigint NOT NULL COMMENT '访问时间',
   PRIMARY KEY (`log_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '后台登录日志' ROW_FORMAT = DYNAMIC;
@@ -178,14 +179,9 @@ CREATE TABLE `sys_login_log`  (
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
-INSERT INTO `sys_login_log` VALUES (1805159404271276034, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719218514798);
-INSERT INTO `sys_login_log` VALUES (1805160816996749313, 0, 1774671331412627456, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719218851622);
-INSERT INTO `sys_login_log` VALUES (1805163558100242434, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719219505142);
-INSERT INTO `sys_login_log` VALUES (1805165831853412353, 0, 1774671331412627456, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719220047258);
-INSERT INTO `sys_login_log` VALUES (1805166100678938626, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719220111328);
-INSERT INTO `sys_login_log` VALUES (1805166251137011714, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719220147221);
-INSERT INTO `sys_login_log` VALUES (1808412923522695169, 0, 1, '内网IP', '127.0.0.1', 'Unknown', NULL, 1719994214012);
-INSERT INTO `sys_login_log` VALUES (1808412993060061186, 0, 1, '内网IP', '127.0.0.1', 'MSEdge', '10.0', 1719994230881);
+INSERT INTO `sys_login_log` VALUES (1825727781237587970, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', '10.0', 1724122398010);
+INSERT INTO `sys_login_log` VALUES (1825734638354202626, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', '10.0', 1724124032920);
+INSERT INTO `sys_login_log` VALUES (1825734879577014273, 0, 'admin', '1', '127.0.0.1', '内网IP', 'MSEdge', '10.0', 1724124090399);
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -210,7 +206,7 @@ CREATE TABLE `sys_notice`  (
 -- Records of sys_notice
 -- ----------------------------
 INSERT INTO `sys_notice` VALUES (1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '&lt;a href=\"https://www.baidu.com\"/&gt;', '0', '1', 1, 20221219100609, 1719034682683, 1);
-INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '&lt;', '0', '2', 1, 20221219100609, 1719034648745, 1);
+INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '&lt;', '0', '2', 1, 20221219100609, 1722905797425, 1);
 
 -- ----------------------------
 -- Table structure for sys_oper_log
@@ -219,13 +215,13 @@ DROP TABLE IF EXISTS `sys_oper_log`;
 CREATE TABLE `sys_oper_log`  (
   `oper_id` bigint NOT NULL COMMENT '日志主键',
   `tenant_id` bigint NOT NULL DEFAULT 0 COMMENT '租户ID',
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块标题',
-  `oper_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作类型（0其他 1新增 2修改 3删除）',
+  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '模块标题',
+  `oper_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作类型（0其他 1新增 2修改 3删除）',
   `method` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名称',
   `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
-  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人员',
-  `oper_url` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求URL',
-  `oper_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主机地址',
+  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作人员',
+  `oper_url` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求URL',
+  `oper_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主机地址',
   `oper_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作地点',
   `oper_param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求参数',
   `json_result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回参数',
@@ -239,5 +235,11 @@ CREATE TABLE `sys_oper_log`  (
 -- Records of sys_oper_log
 -- ----------------------------
 INSERT INTO `sys_oper_log` VALUES (1805166771369119745, 0, '菜单管理', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1719220271169);
+INSERT INTO `sys_oper_log` VALUES (1820624989179555842, 0, '通知公告', '2', 'com.wzkris.system.controller.SysNoticeController.edit()', 'POST', 'admin', '/notice/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1722905797442);
+INSERT INTO `sys_oper_log` VALUES (1820625350049071105, 0, '参数管理', '2', 'com.wzkris.system.controller.SysConfigController.edit()', 'POST', 'admin', '/config/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1722905883502);
+INSERT INTO `sys_oper_log` VALUES (1820625424686710785, 0, '后台管理', '2', 'com.wzkris.user.controller.SysUserController.edit()', 'POST', 'admin', '/sys_user/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1722905901272);
+INSERT INTO `sys_oper_log` VALUES (1825711584693592065, 0, '字典类型', '2', 'com.wzkris.system.controller.SysDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', NULL, NULL, NULL, '0', NULL, 1724118536353);
+INSERT INTO `sys_oper_log` VALUES (1825712100504899585, 0, '字典类型', '2', 'com.wzkris.system.controller.SysDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', NULL, '{\"createAt\":null,\"updateAt\":1724118659274,\"typeId\":1,\"dictName\":\"用户性别\",\"dictType\":\"sys_user_sex\"}', '{\"biz\":0,\"data\":null,\"err_msg\":\"Success\",\"timestamp\":1724118659299}', '0', NULL, 1724118659302);
+INSERT INTO `sys_oper_log` VALUES (1825719285989421058, 0, '字典类型', '2', 'com.wzkris.system.controller.SysDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', '内网IP', '{\"createAt\":null,\"updateAt\":1724120372348,\"typeId\":1,\"dictName\":\"用户性别\",\"dictType\":\"sys_user_sex\"}', '{\"biz\":0,\"data\":null,\"err_msg\":\"Success\",\"timestamp\":1724120372459}', '0', NULL, 1724120372461);
 
 SET FOREIGN_KEY_CHECKS = 1;

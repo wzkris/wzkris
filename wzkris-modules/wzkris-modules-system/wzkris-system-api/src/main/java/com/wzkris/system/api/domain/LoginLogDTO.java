@@ -20,19 +20,24 @@ public class LoginLogDTO {
     private Long logId;
 
     /**
-     * 用户id
+     * 用户名
      */
-    private Long userId;
+    private String username;
 
     /**
-     * 地址
+     * 登录状态（0正常 1异常）
      */
-    private String address;
+    private String status;
 
     /**
-     * ip地址
+     * 登录ip
      */
-    private String ipAddr;
+    private String loginIp;
+
+    /**
+     * 登录地址
+     */
+    private String loginLocation;
 
     /**
      * 浏览器类型

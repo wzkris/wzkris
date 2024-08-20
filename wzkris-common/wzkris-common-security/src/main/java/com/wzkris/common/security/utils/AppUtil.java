@@ -23,7 +23,7 @@ public class AppUtil extends OAuth2Holder {
      * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getPrincipal().getOauth2Type().equals(OAuth2Type.APP_USER.getValue());
+        return isAuthenticated() && getOauth2Type().equals(OAuth2Type.APP_USER.getValue());
     }
 
     /**
