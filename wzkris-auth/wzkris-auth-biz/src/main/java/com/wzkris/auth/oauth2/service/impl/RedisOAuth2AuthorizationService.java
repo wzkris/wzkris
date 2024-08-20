@@ -2,7 +2,7 @@ package com.wzkris.auth.oauth2.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.wzkris.auth.oauth2.model.RedisOAuth2Authorization;
-import com.wzkris.auth.oauth2.redis.OAuth2JsonUtil;
+import com.wzkris.auth.oauth2.utils.OAuth2JsonUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class OAuth2AuthorizationServiceImpl implements OAuth2AuthorizationService {
+public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
     private static final String OAUTH2_PREFIX = "Authorization:info";
 

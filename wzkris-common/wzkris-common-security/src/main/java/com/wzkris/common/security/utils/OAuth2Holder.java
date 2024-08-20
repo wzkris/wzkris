@@ -61,4 +61,22 @@ public class OAuth2Holder {
             throw new UserException(401, "user.not.login");
         }
     }
+
+    /**
+     * 获取当前登录用户名,未登录抛出异常
+     *
+     * @return 用户名
+     */
+    public static String getPrincipalName() {
+        return getPrincipal().getPrincipalName();
+    }
+
+    /**
+     * 获取当前登录类型,未登录抛出异常
+     *
+     * @return 登录类型
+     */
+    public static String getOauth2Type() {
+        return getPrincipal().getOauth2Type();
+    }
 }

@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.redis;
+package com.wzkris.auth.oauth2.utils;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;

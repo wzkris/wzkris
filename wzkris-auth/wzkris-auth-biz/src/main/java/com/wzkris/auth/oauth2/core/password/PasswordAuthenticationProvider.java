@@ -1,12 +1,17 @@
 package com.wzkris.auth.oauth2.core.password;
 
+import cn.hutool.http.useragent.UserAgentUtil;
+import com.wzkris.auth.listener.event.LoginFailEvent;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.impl.SysUserDetailsService;
+import com.wzkris.auth.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +20,8 @@ import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author wzkris
@@ -47,6 +54,12 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
         UserModel userModel = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
 
         if (userModel == null || !passwordEncoder.matches(authenticationToken.getPassword(), userModel.getPassword())) {
+            // 发布登录失败事件
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            SpringUtil.getContext().publishEvent(new LoginFailEvent(OAuth2Type.SYS_USER.getValue(), authenticationToken.getUsername(),
+                    ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader("User-Agent"))));
+
+            // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 

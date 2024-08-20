@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.utils;
+package com.wzkris.auth.oauth2.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.LinkedMultiValueMap;
@@ -6,9 +6,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
-public class OAuth2EndpointUtil {
-
-    private static final String ACCESS_TOKEN_REQUEST_ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
+public final class OAuth2EndpointUtil {
 
     public static MultiValueMap<String, String> getParameters(HttpServletRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();

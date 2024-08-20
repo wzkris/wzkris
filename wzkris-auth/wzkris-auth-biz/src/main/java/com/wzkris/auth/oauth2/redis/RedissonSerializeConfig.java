@@ -1,5 +1,6 @@
 package com.wzkris.auth.oauth2.redis;
 
+import com.wzkris.auth.oauth2.utils.OAuth2JsonUtil;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;

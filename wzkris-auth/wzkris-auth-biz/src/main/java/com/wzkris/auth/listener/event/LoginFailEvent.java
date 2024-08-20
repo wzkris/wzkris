@@ -2,7 +2,7 @@ package com.wzkris.auth.listener.event;
 
 import cn.hutool.http.useragent.UserAgent;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author : wzkris
@@ -10,11 +10,11 @@ import lombok.Data;
  * @description : 用户登录事件
  * @date : 2024/2/21 9:09
  */
-@Data
+@Getter
 @AllArgsConstructor
-public class UserLoginEvent {
+public class LoginFailEvent {
     private String oauth2Type;
-    private Object loginer;
+    private String username;
     private String ipAddr;
     private UserAgent userAgent;
 }

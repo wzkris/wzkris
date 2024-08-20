@@ -1,8 +1,9 @@
-package com.wzkris.common.security.oauth2.utils;
+package com.wzkris.auth.oauth2.utils;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.exception.OAuth2AuthenticationI18nException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -65,17 +66,19 @@ public class OAuth2ExceptionUtil {
                 default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
             };
         }
+        else if (errorCode.equals(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT)) {
+            return Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, MessageUtil.message("oauth2.unsupport.granttype")));
+        }
         else if (errorCode.startsWith("invalid_")) {
-            if (errorCode.equals(OAuth2ErrorCodes.INVALID_TOKEN)) { // token不合法则返回子状态
-                return Result.resp(BizCode.UNAUTHORIZED__INVALID_TOKEN);
-            }
-            else if (errorCode.equals(OAuth2ErrorCodes.INVALID_GRANT)) {// refresh_token刷新失败
-                if (errorMsg == null) errorMsg = BizCode.UNAUTHORIZED.desc();
-                return Result.resp(BizCode.UNAUTHORIZED, errorMsg);
-            }
-            else {
-                return Result.resp(BizCode.BAD_REQUEST, errorMsg);
-            }
+            return switch (errorCode) {
+                case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法则返回子状态
+                        Result.resp(BizCode.UNAUTHORIZED__INVALID_TOKEN);
+                case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
+                        Result.resp(BizCode.UNAUTHORIZED, StringUtil.nullToDefault(errorMsg, BizCode.UNAUTHORIZED.desc()));
+                case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
+                        Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, MessageUtil.message("oauth2.scope.invalid")));
+                default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
+            };
         }
         else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
             return Result.resp(BizCode.BAD_GATEWAY, errorMsg);

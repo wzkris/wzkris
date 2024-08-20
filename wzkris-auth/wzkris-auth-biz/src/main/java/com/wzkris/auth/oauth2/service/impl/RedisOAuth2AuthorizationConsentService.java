@@ -23,7 +23,7 @@ import java.util.Set;
  */
 @Service
 @AllArgsConstructor
-public class OAuth2AuthorizationConsentServiceImpl implements OAuth2AuthorizationConsentService {
+public class RedisOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
 
     private final static Long DEFAULT_TIMEOUT = 180L;
 

@@ -3,7 +3,7 @@ package com.wzkris.auth.oauth2.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.wzkris.auth.config.TokenConfig;
 import com.wzkris.auth.oauth2.model.RedisRegisteredClient;
-import com.wzkris.auth.oauth2.redis.OAuth2JsonUtil;
+import com.wzkris.auth.oauth2.utils.OAuth2JsonUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MessageUtil;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @AllArgsConstructor
-public class RegisteredClientRepositoryImpl implements RegisteredClientRepository {
+public class RedisRegisteredClientRepository implements RegisteredClientRepository {
 
     private static final String PREFIX = "Authorization:client";
 

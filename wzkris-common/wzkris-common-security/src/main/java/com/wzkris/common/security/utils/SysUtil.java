@@ -26,7 +26,7 @@ public class SysUtil extends OAuth2Holder {
      * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue());
+        return isAuthenticated() && getOauth2Type().equals(OAuth2Type.SYS_USER.getValue());
     }
 
     /**
@@ -50,6 +50,15 @@ public class SysUtil extends OAuth2Holder {
      */
     public static Long getUserId() {
         return getLoginSyser().getUserId();
+    }
+
+    /**
+     * 获取当前登录用户名,未登录抛出异常
+     *
+     * @return 当前用户名
+     */
+    public static String getUsername() {
+        return getLoginSyser().getUsername();
     }
 
     /**

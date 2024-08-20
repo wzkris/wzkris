@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : dl
+ * @description : 登录日志
  * @date : 2024/1/10 13:55
  */
 @Service
@@ -29,8 +29,9 @@ public class SysLoginLogServiceImpl implements SysLoginLogService {
 
     private LambdaQueryWrapper<SysLoginLog> buildQueryWrapper(SysLoginLog loginLog) {
         return new LambdaQueryWrapper<SysLoginLog>()
-                .eq(StringUtil.isNotNull(loginLog.getUserId()), SysLoginLog::getUserId, loginLog.getUserId())
-                .eq(StringUtil.isNotNull(loginLog.getIpAddr()), SysLoginLog::getIpAddr, loginLog.getIpAddr())
+                .eq(StringUtil.isNotNull(loginLog.getStatus()), SysLoginLog::getStatus, loginLog.getStatus())
+                .like(StringUtil.isNotNull(loginLog.getUsername()), SysLoginLog::getUsername, loginLog.getUsername())
+                .like(StringUtil.isNotNull(loginLog.getLoginIp()), SysLoginLog::getLoginIp, loginLog.getLoginIp())
                 .between(loginLog.getParams().get("beginTime") != null && loginLog.getParams().get("endTime") != null,
                         SysLoginLog::getLoginTime, loginLog.getParams().get("beginTime"), loginLog.getParams().get("endTime"))
                 .orderByDesc(SysLoginLog::getLogId);
