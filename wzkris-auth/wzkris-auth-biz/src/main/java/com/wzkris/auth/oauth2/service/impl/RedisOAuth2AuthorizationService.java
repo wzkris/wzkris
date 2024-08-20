@@ -2,7 +2,7 @@ package com.wzkris.auth.oauth2.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.wzkris.auth.oauth2.model.RedisOAuth2Authorization;
-import com.wzkris.auth.oauth2.redis.OAuth2JsonUtil;
+import com.wzkris.auth.oauth2.utils.OAuth2JsonUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;

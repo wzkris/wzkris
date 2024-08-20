@@ -17,7 +17,7 @@ import com.wzkris.system.api.domain.LoginLogDTO;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginEventListener {
     private final RemoteLogApi remoteLogApi;
     private final RemoteSysUserApi remoteSysUserApi;
