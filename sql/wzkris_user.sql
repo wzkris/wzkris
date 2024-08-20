@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 04/07/2024 15:58:31
+ Date: 20/08/2024 16:59:24
 */
 
 SET NAMES utf8mb4;
@@ -45,7 +45,7 @@ CREATE TABLE `app_user`  (
 -- ----------------------------
 -- Records of app_user
 -- ----------------------------
-INSERT INTO `app_user` VALUES (11111111, NULL, '15888888888', '0', NULL, NULL, 0, '0:0:0:0:0:0:0:1', 20240413153348, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `app_user` VALUES (11111111, NULL, '15888888888', '0', NULL, NULL, 0, '0:0:0:0:0:0:0:1', 1724059238718, NULL, 1713334134616, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for oauth2_client
@@ -53,6 +53,7 @@ INSERT INTO `app_user` VALUES (11111111, NULL, '15888888888', '0', NULL, NULL, 0
 DROP TABLE IF EXISTS `oauth2_client`;
 CREATE TABLE `oauth2_client`  (
   `id` bigint NOT NULL,
+  `client_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端名称',
   `client_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `client_secret` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `scopes` json NOT NULL COMMENT '权限域',
@@ -71,7 +72,7 @@ CREATE TABLE `oauth2_client`  (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, 'server', '{bcrypt}$2a$10$jKXqoIKK.w57jS5MKKasH.NQxxpfyUOlvP9yIXYsXelR7dbUGgBn.', '[]', '[\"password\", \"sms\", \"refresh_token\", \"authorization_code\"]', '[\"http://localhost:8080/auth/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, NULL, 1);
+INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$UCYi5yRd5eS0sXdNlcvtK.Tl0oSIQuf2KKyQi4AltRppD3waUQ/3u', '[]', '[\"password\", \"sms\", \"refresh_token\", \"authorization_code\"]', '[\"http://localhost:8080/auth/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1724142425635, 1);
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -166,7 +167,8 @@ INSERT INTO `sys_menu` VALUES (500, '订单管理', 5, 0, 'order', 'order/order/
 INSERT INTO `sys_menu` VALUES (501, '优惠券管理', 5, 1, 'coupon', 'order/coupon/index', NULL, 'C', '0', 'coupon:list', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (502, '订单投诉', 5, 5, 'feedback', 'order/feedback/index', '', 'C', '0', '', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (600, '租户管理', 3, 100, 'tenant', 'ur/tenant/index', '', 'C', '0', 'tenant:list', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (601, '租户套餐管理', 3, 50, 'package', 'ur/tenant/package/index', NULL, 'C', '0', 'tenantPackage:list', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (601, '租户套餐管理', 3, 50, 'package', 'ur/tenant/package/index', NULL, 'C', '0', 'tenant_package:list', NULL, 0, 0, 1, 1713334134616, 1, 1724144327235, 1);
+INSERT INTO `sys_menu` VALUES (700, '客户端管理', 2, 3, 'client', 'ur/client/index', NULL, 'C', '0', 'oauth2_client:list', 'wechat', 0, 0, 1, 1724135157964, 1, 1724135200246, 1);
 INSERT INTO `sys_menu` VALUES (1000, '用户查询', 201, 1, '', '', '', 'F', '0', 'customer:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1001, '用户新增', 201, 2, '', '', '', 'F', '0', 'customer:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1002, '用户修改', 201, 3, '', '', '', 'F', '0', 'customer:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
@@ -242,10 +244,15 @@ INSERT INTO `sys_menu` VALUES (1110, '租户详情', 600, 9, NULL, NULL, NULL, '
 INSERT INTO `sys_menu` VALUES (1111, '租户新增', 600, 4, NULL, NULL, NULL, 'F', '0', 'tenant:add', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1112, '租户修改', 600, 2, NULL, NULL, NULL, 'F', '0', 'tenant:edit', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1113, '租户删除', 600, 2, NULL, NULL, NULL, 'F', '0', 'tenant:remove', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (1114, '套餐详情', 601, 9, NULL, NULL, NULL, 'F', '0', 'tenantPackage:query', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (1115, '套餐新增', 601, 5, NULL, NULL, NULL, 'F', '0', 'tenantPackage:add', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (1116, '套餐修改', 601, 4, NULL, NULL, NULL, 'F', '0', 'tenantPackage:edit', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (1117, '套餐删除', 601, 2, NULL, NULL, NULL, 'F', '0', 'tenantPackage:remove', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (1114, '套餐详情', 601, 9, NULL, NULL, NULL, 'F', '0', 'tenant_package:query', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (1115, '套餐新增', 601, 5, NULL, NULL, NULL, 'F', '0', 'tenant_package:add', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (1116, '套餐修改', 601, 4, NULL, NULL, NULL, 'F', '0', 'tenant_package:edit', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (1117, '套餐删除', 601, 2, NULL, NULL, NULL, 'F', '0', 'tenant_package:remove', NULL, 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (1118, '客户端详情', 700, 1, NULL, NULL, NULL, 'F', '0', 'oauth2_client:query', NULL, 0, 0, 1, 1724143965889, 1, 1724143965889, 1);
+INSERT INTO `sys_menu` VALUES (1119, '客户端修改', 700, 2, NULL, NULL, NULL, 'F', '0', 'oauth2_client:edit', NULL, 0, 0, 1, 1724143981415, 1, 1724143981415, 1);
+INSERT INTO `sys_menu` VALUES (1120, '客户端添加', 700, 3, NULL, NULL, NULL, 'F', '0', 'oauth2_client:add', NULL, 0, 0, 1, 1724143996446, 1, 1724143996446, 1);
+INSERT INTO `sys_menu` VALUES (1121, '客户端删除', 700, 2, NULL, NULL, NULL, 'F', '0', 'oauth2_client:remove', NULL, 0, 0, 1, 1724144147977, 1, 1724144147977, 1);
+INSERT INTO `sys_menu` VALUES (1122, '客户端导出', 700, 4, NULL, NULL, NULL, 'F', '0', 'oauth2_client:export', NULL, 0, 0, 1, 1724144162238, 1, 1724144162238, 1);
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -579,9 +586,9 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1720079823298, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724142570890, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (2, 0, 101, 'ry11', 'ry@qq.com', '若依', '15666666666', '0', '0', '', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, NULL, NULL, NULL, 1713334134616, 1, 1716972384081, 1);
-INSERT INTO `sys_user` VALUES (3, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1716791222405, NULL, 1713334134616, 1, 1719213933859, 1);
+INSERT INTO `sys_user` VALUES (3, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1723080129568, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$5TWNPCRZAABWakMQoEZFO.2ZZzZG3Ptc6Z/QEa1DXlOMDRq5zwGHS', 0, '127.0.0.1', 1719220047177, NULL, 1713334134616, 1, NULL, NULL);
 
 -- ----------------------------
