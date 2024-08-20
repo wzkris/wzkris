@@ -20,7 +20,7 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PA
  * @description : rpc - 系统用户
  * @date : 2024/4/15 16:20
  */
-@FeignClient(value = ApplicationNameConstants.USER, contextId = "RemoteCustomerApi",
+@FeignClient(value = ApplicationNameConstants.USER, contextId = "RemoteAppUserApi",
         fallbackFactory = RemoteAppUserApiFallback.class)
 public interface RemoteAppUserApi {
 

@@ -1,6 +1,5 @@
 package com.wzkris.common.security.oauth2.domain.model;
 
-import com.wzkris.common.security.oauth2.domain.Loginer;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -14,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class LoginApper extends Loginer {
+public class LoginApper {
 
     // 登录id
     private Long userId;

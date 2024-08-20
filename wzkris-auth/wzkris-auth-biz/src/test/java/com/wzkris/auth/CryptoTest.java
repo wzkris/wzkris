@@ -4,6 +4,8 @@ import cn.hutool.core.io.checksum.CRC16;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,6 +13,22 @@ import java.util.List;
 
 @DisplayName("密码测试")
 public class CryptoTest {
+
+    static String str = "wzsss";
+
+    @Test
+    public void encrypt01() {
+        BigDecimal total_sevice_money = new BigDecimal("764.1700");
+        BigDecimal total_elec_money = new BigDecimal("2308.7200");
+        BigDecimal total = total_sevice_money.add(total_elec_money);
+
+        BigDecimal total_settlement = new BigDecimal("3051.9900");
+
+        BigDecimal serv = total.subtract(total_settlement).divide(total, 30, RoundingMode.HALF_UP).multiply(total_sevice_money);
+        BigDecimal elec = total.subtract(total_settlement).divide(total, 30, RoundingMode.HALF_UP).multiply(total_elec_money);
+        System.out.println(serv);
+        System.out.println(elec);
+    }
 
     @Test
     @DisplayName("redis_slot算法")

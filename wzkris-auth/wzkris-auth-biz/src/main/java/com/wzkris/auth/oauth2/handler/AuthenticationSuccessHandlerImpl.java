@@ -18,11 +18,11 @@ package com.wzkris.auth.oauth2.handler;
 
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
-import com.wzkris.auth.listening.event.UserLoginEvent;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wzkris.auth.listener.event.UserLoginEvent;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.json.JsonUtil;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -78,7 +78,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(OAuth2User.class.getName())) {
             OAuth2User oAuth2User = (OAuth2User) additionalParameters.get(OAuth2User.class.getName());
             // 发布登录事件
-            SpringUtil.getContext().publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), oAuth2User.getDetails(),
+            SpringUtil.getContext().publishEvent(new UserLoginEvent(oAuth2User.getOauth2Type(), oAuth2User.getPrincipal(),
                     ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader("User-Agent"))));
             additionalParameters.remove(OAuth2User.class.getName());
         }
@@ -110,12 +110,14 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
  */
 class ResponseHttpMessageConverter extends OAuth2AccessTokenResponseHttpMessageConverter {
 
-    private static final ParameterizedTypeReference<Map<String, Object>> STRING_OBJECT_MAP = new ParameterizedTypeReference<Map<String, Object>>() {
+    private final ParameterizedTypeReference<Map<String, Object>> STRING_OBJECT_MAP = new ParameterizedTypeReference<>() {
     };
 
-    private final Converter<OAuth2AccessTokenResponse, Map<String, Object>> accessTokenResponseParametersConverter = new DefaultOAuth2AccessTokenResponseMapConverter();
+    private final Converter<OAuth2AccessTokenResponse, Map<String, Object>> accessTokenResponseParametersConverter =
+            new DefaultOAuth2AccessTokenResponseMapConverter();
 
-    private final GenericHttpMessageConverter<Object> jsonMessageConverter = new MappingJackson2HttpMessageConverter(JsonUtil.getObjectMapper());
+    private final GenericHttpMessageConverter<Object> jsonMessageConverter =
+            new MappingJackson2HttpMessageConverter(new ObjectMapper());
 
     @Override
     protected void writeInternal(OAuth2AccessTokenResponse tokenResponse, HttpOutputMessage outputMessage)

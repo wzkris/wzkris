@@ -1,7 +1,7 @@
-package com.wzkris.auth.oauth2.authenticate.password;
+package com.wzkris.auth.oauth2.core.password;
 
-import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationConverter;
-import com.wzkris.auth.oauth2.authenticate.CommonAuthenticationToken;
+import com.wzkris.auth.oauth2.core.CommonAuthenticationConverter;
+import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import java.util.Set;
  * @date 2024/3/11
  * @description 密码模式转换器
  */
-public class PasswordAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
     @Override
     protected boolean support(String grantType) {
@@ -45,7 +46,7 @@ public class PasswordAuthenticationConverter extends CommonAuthenticationConvert
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
         String username = additionalParameters.get(OAuth2ParameterNames.USERNAME).toString();
         String password = additionalParameters.get(OAuth2ParameterNames.PASSWORD).toString();
-        return new PasswordAuthenticationToken(username, password, clientPrincipal, requestedScopes, additionalParameters);
+        return new PasswordAuthenticationToken(username, password, clientPrincipal, requestedScopes, new HashMap<>());
     }
 
 }

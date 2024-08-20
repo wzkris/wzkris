@@ -1,8 +1,10 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.core.utils.json.JsonUtil;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
+import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,7 +35,12 @@ public class SysUtil extends OAuth2Holder {
      * @return 当前用户
      */
     public static LoginSyser getLoginSyser() {
-        return JsonUtil.parseObject(getPrincipal().getDetails(), LoginSyser.class);
+        OAuth2User oAuth2User = getPrincipal();
+        if (!oAuth2User.getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
+            log.warn("获取用户信息失败，当前用户不是系统用户");
+            throw new UserException(401, "user.not.login");
+        }
+        return JsonUtil.parseObject(oAuth2User.getPrincipal(), LoginSyser.class);
     }
 
     /**
@@ -59,8 +66,8 @@ public class SysUtil extends OAuth2Holder {
      *
      * @return 是否
      */
-    public static boolean isAdmin() {
-        return getLoginSyser().getIsAdmin();
+    public static boolean isAdministrator() {
+        return getLoginSyser().isAdministrator();
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.authenticate;
+package com.wzkris.auth.oauth2.core;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2EndpointUtil;

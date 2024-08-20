@@ -7,9 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface UserDetailsServicePlus extends UserDetailsService {
 
-
     default UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         throw new BusinessExceptionI18n("oauth2.unsupport.granttype");
     }
-
 }

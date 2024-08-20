@@ -54,13 +54,11 @@ public class OAuth2Holder {
      * @return 当前用户
      */
     public static OAuth2User getPrincipal() {
-        OAuth2User user;
         try {
-            user = (OAuth2User) getAuthentication().getPrincipal();
+            return (OAuth2User) getAuthentication().getPrincipal();
         }
         catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }
-        return user;
     }
 }
