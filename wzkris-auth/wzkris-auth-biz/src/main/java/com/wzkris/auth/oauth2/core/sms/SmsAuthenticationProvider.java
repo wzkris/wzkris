@@ -2,7 +2,7 @@ package com.wzkris.auth.oauth2.core.sms;
 
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.model.UserModel;
-import com.wzkris.auth.oauth2.service.impl.AppUserDetailsService;
+import com.wzkris.auth.oauth2.service.AppUserDetailsService;
 import com.wzkris.auth.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;

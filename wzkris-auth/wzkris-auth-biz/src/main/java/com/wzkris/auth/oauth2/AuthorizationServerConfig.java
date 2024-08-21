@@ -9,7 +9,7 @@ import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationProvider;
 import com.wzkris.auth.oauth2.filter.ValidateCodeFilter;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
-import com.wzkris.auth.oauth2.service.impl.SysUserDetailsService;
+import com.wzkris.auth.oauth2.service.SysUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

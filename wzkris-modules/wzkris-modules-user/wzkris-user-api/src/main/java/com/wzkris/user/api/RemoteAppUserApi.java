@@ -2,7 +2,7 @@ package com.wzkris.user.api;
 
 import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.user.api.domain.dto.CustomerDTO;
+import com.wzkris.user.api.domain.dto.AppUserDTO;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
 import com.wzkris.user.api.fallback.RemoteAppUserApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -28,7 +28,7 @@ public interface RemoteAppUserApi {
      * 根据手机号查询app用户
      */
     @GetMapping(INNER_REQUEST_PATH + "/query_app_user_by_phonenumber")
-    Result<CustomerDTO> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
+    Result<AppUserDTO> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
 
     /**
      * 更新用户登录信息

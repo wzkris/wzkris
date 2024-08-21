@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.service.impl;
+package com.wzkris.auth.oauth2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.wzkris.auth.oauth2.model.RedisOAuth2Authorization;

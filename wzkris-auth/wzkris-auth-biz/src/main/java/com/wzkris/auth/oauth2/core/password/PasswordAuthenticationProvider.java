@@ -4,7 +4,7 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import com.wzkris.auth.listener.event.LoginFailEvent;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.model.UserModel;
-import com.wzkris.auth.oauth2.service.impl.SysUserDetailsService;
+import com.wzkris.auth.oauth2.service.SysUserDetailsService;
 import com.wzkris.auth.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.utils.ServletUtil;
