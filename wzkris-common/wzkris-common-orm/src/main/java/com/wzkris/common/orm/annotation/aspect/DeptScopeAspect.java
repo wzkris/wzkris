@@ -12,7 +12,6 @@ import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.schema.Column;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
@@ -33,14 +32,13 @@ public class DeptScopeAspect {
      */
     @Before("@annotation(deptScope)")
     public void before(JoinPoint point, DeptScope deptScope) {
-        handleDataScope(deptScope);
+        this.handleDataScope(deptScope);
     }
 
     /**
-     * 加入@DeptScope注解的方法执行完成后执行-用于销毁数据权限sql
+     * 方法执行后销毁数据权限sql
      */
     @After("@annotation(deptScope)")
-    @AfterThrowing("@annotation(deptScope)")
     public void after(JoinPoint point, DeptScope deptScope) {
         DeptScopeUtil.clear();
     }
@@ -54,15 +52,19 @@ public class DeptScopeAspect {
             if (SysUtil.isAdministrator()) {
                 return;
             }
-            // 没有部门权限数据则不拼接
-            List<Long> deptScopes = SysUtil.getLoginSyser().getDeptScopes();
-            if (CollUtil.isEmpty(deptScopes)) {
-                return;
-            }
+
             // 生成权限sql片段
             String aliasColumn = StringUtil.isBlank(deptScope.tableAlias()) ? deptScope.columnAlias() :
                     StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
-            Expression expression = new ExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
+            Expression expression;
+            List<Long> deptScopes = SysUtil.getLoginSyser().getDeptScopes();
+            if (CollUtil.isEmpty(deptScopes)) {
+                // 没有部门权限数据则直接拼接-1, 查不出来即可
+                expression = new ExpressionList<>(new LongValue(-1L));
+            }
+            else {
+                expression = new ExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
+            }
             InExpression inExpression = new InExpression(new Column(aliasColumn), expression);
 
             DeptScopeUtil.setSqlExpression(inExpression);
