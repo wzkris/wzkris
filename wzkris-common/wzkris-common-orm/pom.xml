@@ -22,16 +22,16 @@
 
 	<dependencies>
 
-		<!-- wzkris Common Security -->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-security</artifactId>
-		</dependency>
-
 		<!--工具包-->
 		<dependency>
 			<groupId>com.wzkris</groupId>
 			<artifactId>wzkris-common-core</artifactId>
+		</dependency>
+
+		<!-- wzkris Common Security -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-security</artifactId>
 		</dependency>
 
 		<!-- jdbc驱动-->

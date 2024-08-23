@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * 角色表 role
+ * 角色表 sys_role
  *
  * @author wzkris
  */

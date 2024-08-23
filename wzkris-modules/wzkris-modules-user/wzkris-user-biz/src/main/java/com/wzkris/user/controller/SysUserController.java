@@ -24,6 +24,7 @@ import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -160,6 +161,15 @@ public class SysUserController extends BaseController {
         SysUser update = new SysUser(user.getUserId());
         update.setStatus(user.getStatus());
         return toRes(sysUserMapper.updateById(update));
+    }
+
+    @Operation(summary = "导出")
+    @OperateLog(title = "后台管理", operateType = OperateType.EXPORT)
+    @PostMapping("/export")
+    @PreAuthorize("@ps.hasPerms('sys_user:export')")
+    public void export(HttpServletResponse httpServletResponse, SysUser user) {
+        List<SysUserVO> list = sysUserService.list(user);
+
     }
 
     @Operation(summary = "根据用户id获取授权角色")

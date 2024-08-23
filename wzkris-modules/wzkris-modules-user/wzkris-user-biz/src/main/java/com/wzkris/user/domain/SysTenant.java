@@ -8,12 +8,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-
+/**
+ * 租户表 sys_tenant
+ *
+ * @author wzkris
+ */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 public class SysTenant extends BaseEntity {
 
@@ -53,7 +54,7 @@ public class SysTenant extends BaseEntity {
     private Long packageId;
 
     @Schema(description = "过期时间")
-    private LocalDateTime expireTime;
+    private Long expireTime;
 
     @Schema(description = "用户数量（-1不限制）")
     private Integer accountCount;

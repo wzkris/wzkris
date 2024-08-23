@@ -14,11 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -35,40 +31,13 @@ import static com.wzkris.common.core.domain.Result.fail;
 import static com.wzkris.common.core.domain.Result.resp;
 
 /**
- * 全局异常处理器
+ * Web异常处理器
  *
  * @author wzkris
  */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
-
-    /**
-     * 401异常
-     */
-    @ExceptionHandler(AuthenticationException.class)
-    public Result<?> handleAuthenticationException(AuthenticationException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',401异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return e.getMessage() == null ? resp(BizCode.UNAUTHORIZED) : resp(BizCode.UNAUTHORIZED, e.getMessage());
-    }
-
-    /**
-     * 403异常
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    public Result<?> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',403异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.FORBID, MessageUtil.message("request.forbid"));
-    }
-
-    /**
-     * 404异常
-     */
-    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
-    public Result<?> handleNoHandlerFoundException(ServletException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.NOT_FOUND);
-    }
+public class WebExceptionHandler {
 
     /**
      * 不支持媒体类型
@@ -113,6 +82,15 @@ public class GlobalExceptionHandler {
     public Result<?> handleMultipartException(MultipartException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',文件异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return resp(BizCode.BAD_REQUEST, e.getMessage());
+    }
+
+    /**
+     * 404异常
+     */
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    public Result<?> handleNoHandlerFoundException(ServletException e, HttpServletRequest request) {
+        log.info("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        return resp(BizCode.NOT_FOUND);
     }
 
     /**
@@ -189,47 +167,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 索引异常
-     */
-    @ExceptionHandler(DuplicateKeyException.class)
-    public Result<?> handledDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',捕获到唯一索引异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return resp(BizCode.BAD_REQUEST, MessageUtil.message("business.duplicate.key"));
-    }
-
-    /**
-     * 拦截sql异常
-     */
-    @ExceptionHandler(DataAccessException.class)
-    public Result<?> handleSqlException(DataAccessException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',捕获到sql异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return resp(BizCode.INTERNAL_ERROR, "sql异常，请联系管理员");
-    }
-
-    /**
      * 工具异常
      */
     @ExceptionHandler(UtilException.class)
     public Result<?> handleUtilException(UtilException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',捕获到工具异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.INTERNAL_ERROR, e.getMessage());
-    }
-
-    /**
-     * 拦截未知的运行时异常
-     */
-    @ExceptionHandler(RuntimeException.class)
-    public Result<?> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',发生内部异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return resp(BizCode.INTERNAL_ERROR, e.getMessage());
-    }
-
-    /**
-     * 系统异常
-     */
-    @ExceptionHandler(Exception.class)
-    public Result<?> handleException(Exception e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',发生系统异常，异常类型：{}, 异常信息：{}", request.getMethod(), request.getRequestURI(), e.getClass(), e.getMessage());
         return resp(BizCode.INTERNAL_ERROR, e.getMessage());
     }
 }

@@ -2,6 +2,7 @@ package com.wzkris.common.openfeign.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -18,6 +19,8 @@ import java.util.Arrays;
  * @description : restTemplate配置类
  * @date : 2022/12/1 10:02
  */
+// 开启openfeign
+@EnableFeignClients(basePackages = "com.wzkris.*.api")
 public class RestTemplateConfig {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

@@ -12,7 +12,7 @@ import com.wzkris.common.orm.page.PageSupport;
 public class PageUtil {
     // 线程持有分页数据
     @SuppressWarnings("rawtypes")
-    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<Page>();
+    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<>();
 
     public static void startPage() {
         LOCAL_PAGE.set(PageSupport.initPage());
@@ -22,14 +22,12 @@ public class PageUtil {
         LOCAL_PAGE.set(PageSupport.initPage(pageNum, pageSize));
     }
 
-    @SuppressWarnings("rawtypes")
-    public static Page getPage() {
+    public static <T> Page<T> getPage() {
         return getPage(true);
     }
 
     // 获取当前线程的分页数据并清理
-    @SuppressWarnings("rawtypes")
-    public static Page getPage(boolean clear) {
+    public static <T> Page<T> getPage(boolean clear) {
         if (clear) {
             try {
                 return LOCAL_PAGE.get();

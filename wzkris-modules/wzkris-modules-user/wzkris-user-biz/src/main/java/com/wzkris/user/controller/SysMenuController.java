@@ -52,16 +52,17 @@ public class SysMenuController extends BaseController {
         return success(sysMenuMapper.selectById(menuId));
     }
 
-    @Operation(summary = "菜单下拉树列表")
-    @GetMapping("/tree")
-    public Result<?> treeList(SysMenu menu) {
+    @Operation(summary = "菜单下拉选择树")
+    @GetMapping("/treelist")
+    @PreAuthorize("@ps.hasPerms('menu:selecttree')")
+    public Result<?> menuTree(SysMenu menu) {
         List<SelectTree> selectTrees = sysMenuService.listMenuSelectTree(menu);
         return success(selectTrees);
     }
 
     @Operation(summary = "角色菜单列表树")
     @GetMapping("/tree_by_role/{roleId}")
-    @PreAuthorize("@ps.hasPerms('menu:list')")
+    @PreAuthorize("@ps.hasPerms('menu:selecttree')")
     public Result<?> roleMenuTreeList(@PathVariable Long roleId) {
         Map<String, Object> res = new HashMap<>(2);
         res.put("checkedKeys", sysRoleMenuMapper.listMenuIdByRoleIds(roleId));
@@ -75,7 +76,9 @@ public class SysMenuController extends BaseController {
     public Result<?> tenantPackageMenuTreeList(@PathVariable Long packageId) {
         Map<String, Object> res = new HashMap<>(2);
         res.put("checkedKeys", sysTenantPackageMapper.listMenuIdByPackageId(packageId));
-        res.put("menus", sysMenuService.listMenuSelectTree(new SysMenu()));
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setIsTenant(true);
+        res.put("menus", sysMenuService.listMenuSelectTree(sysMenu));// 查询租户专用菜单
         return success(res);
     }
 

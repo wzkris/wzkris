@@ -13,7 +13,6 @@ import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 import java.util.HashMap;
@@ -25,7 +24,6 @@ import java.util.Map;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 @AutoMappers({
         @AutoMapper(target = LoginApper.class),
         @AutoMapper(target = AppUserDTO.class)

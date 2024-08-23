@@ -37,12 +37,11 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
         if (DynamicTenantUtil.get() != null) {
             return this.isIgnoreTable(tableName);
         }
-        // 未登录则忽略
-        if (!SysUtil.isLogin()) {
-            return true;
+        // 登录了则必须走拦截
+        if (SysUtil.isLogin()) {
+            return this.isIgnoreTable(tableName);
         }
-        // 最后再去判断表名是否忽略
-        return this.isIgnoreTable(tableName);
+        return true;
     }
 
     // 是否忽略表名

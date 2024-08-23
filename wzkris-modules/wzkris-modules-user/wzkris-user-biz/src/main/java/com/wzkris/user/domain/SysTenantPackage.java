@@ -11,12 +11,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 
+/**
+ * 租户套餐表 sys_tenant_package
+ *
+ * @author wzkris
+ */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName(autoResultMap = true)

@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * 租户套餐表 数据层
+ *
+ * @author wzkris
+ */
 @Repository
 public interface SysTenantPackageMapper extends BaseMapperPlus<SysTenantPackage> {
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 菜单权限表 menu
+ * 菜单权限表 sys_menu
  *
  * @author wzkris
  */
@@ -58,6 +58,9 @@ public class SysMenu extends BaseEntity {
 
     @Schema(description = "是否显示")
     private Boolean isVisible;
+
+    @Schema(description = "是否租户专用")
+    private Boolean isTenant;
 
     @NotBlank(message = "[menuType] {validate.notnull}")
     @Schema(description = "菜单类型（M目录 C菜单 F按钮）")

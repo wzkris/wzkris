@@ -1,6 +1,8 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.user.domain.AppUser;
@@ -8,13 +10,11 @@ import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,10 +42,19 @@ public class AppUserController extends BaseController {
         return getDataTable(list);
     }
 
-    @Operation(summary = "用户分页列表")
+    @Operation(summary = "用户详细信息")
     @GetMapping("/{userId}")
     @PreAuthorize("@ps.hasPerms('app_user:query')")
     public Result<AppUser> query(@PathVariable Long userId) {
         return success(appUserMapper.selectById(userId));
+    }
+
+    @Operation(summary = "导出")
+    @OperateLog(title = "用户管理", operateType = OperateType.EXPORT)
+    @PostMapping("/export")
+    @PreAuthorize("@ps.hasPerms('app_user:export')")
+    public void export(HttpServletResponse httpServletResponse, AppUser user) {
+        List<AppUser> list = appUserService.list(user);
+
     }
 }

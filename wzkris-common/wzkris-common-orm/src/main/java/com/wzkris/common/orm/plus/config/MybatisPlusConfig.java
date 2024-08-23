@@ -11,9 +11,8 @@ import com.wzkris.common.orm.plus.handler.BaseFieldFillHandler;
 import com.wzkris.common.orm.plus.interceptor.DeptPermissionHandler;
 import com.wzkris.common.orm.plus.interceptor.PageInterceptor;
 import com.wzkris.common.orm.plus.interceptor.TenantLineHandlerImpl;
-import lombok.AllArgsConstructor;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author : wzkris
@@ -21,11 +20,15 @@ import org.springframework.context.annotation.Configuration;
  * @description : 配置类
  * @date : 2024/1/11 14:54
  */
-@Configuration
-@AllArgsConstructor
+// 指定要扫描的Mapper类的包的路径
+@MapperScan("com.wzkris.*.mapper")
 public class MybatisPlusConfig {
 
     private final TenantProperties tenantProperties;
+
+    public MybatisPlusConfig(TenantProperties tenantProperties) {
+        this.tenantProperties = tenantProperties;
+    }
 
     /**
      * MP插件
