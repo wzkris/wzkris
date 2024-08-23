@@ -103,7 +103,8 @@ public class SysUserController extends BaseController {
                 && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
         }
-        return toRes(sysUserService.insertUser(userDTO));
+        sysUserService.insertUser(userDTO);
+        return success();
     }
 
     @Operation(summary = "修改用户")

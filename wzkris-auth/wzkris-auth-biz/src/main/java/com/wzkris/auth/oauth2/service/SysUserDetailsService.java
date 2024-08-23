@@ -52,7 +52,7 @@ public class SysUserDetailsService implements UserDetailsService {
         loginSyser.setTenantId(sysUserDTO.getTenantId());
         loginSyser.setUsername(sysUserDTO.getUsername());
         loginSyser.setPassword(sysUserDTO.getPassword());
-        loginSyser.setAdministrator(permissions.getIsAdmin());
+        loginSyser.setAdministrator(permissions.getAdministrator());
         loginSyser.setDeptScopes(permissions.getDeptScopes());
 
         return new UserModel(sysUserDTO.getUsername(),

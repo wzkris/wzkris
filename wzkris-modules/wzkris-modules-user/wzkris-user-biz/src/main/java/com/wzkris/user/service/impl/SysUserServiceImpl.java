@@ -122,15 +122,13 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertUser(SysUserDTO userDTO) {
+    public void insertUser(SysUserDTO userDTO) {
         // 密码加密
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         int rows = sysUserMapper.insert(userDTO);
         // 新增用户与角色管理
         this.insertUserRole(userDTO.getUserId(), userDTO.getRoleIds());
         this.insertUserPost(userDTO.getUserId(), userDTO.getPostIds());
-        // 新增用户信息
-        return rows > 0;
     }
 
     @Override

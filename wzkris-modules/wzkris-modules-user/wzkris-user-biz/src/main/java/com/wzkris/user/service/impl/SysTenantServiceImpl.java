@@ -14,6 +14,7 @@ import com.wzkris.user.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
@@ -40,23 +41,22 @@ public class SysTenantServiceImpl implements SysTenantService {
     }
 
     @Override
-    public boolean insertTenant(SysTenantDTO tenantDTO) {
+    @Transactional(rollbackFor = Exception.class)
+    public void insertTenant(SysTenantDTO tenantDTO) {
         long userId = IdUtil.getSnowflakeNextId();
-        tenantDTO.setAdministrator(userId);
 
-        return Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-            sysTenantMapper.insert(tenantDTO);
-            SysTenantWallet wallet = new SysTenantWallet();
-            wallet.setTenantId(tenantDTO.getTenantId());
-            wallet.setPassword(passwordEncoder.encode("123456"));
-            sysTenantWalletMapper.insert(wallet);
-            SysUserDTO sysUserDTO = new SysUserDTO();
-            sysUserDTO.setUserId(userId);
-            sysUserDTO.setTenantId(tenantDTO.getTenantId());
-            sysUserDTO.setUsername(tenantDTO.getUsername());
-            sysUserDTO.setPassword(tenantDTO.getPassword());
-            return sysUserService.insertUser(sysUserDTO);
-        }));
+        tenantDTO.setAdministrator(userId);
+        sysTenantMapper.insert(tenantDTO);
+        SysTenantWallet wallet = new SysTenantWallet();
+        wallet.setTenantId(tenantDTO.getTenantId());
+        wallet.setPassword(passwordEncoder.encode("123456"));
+        sysTenantWalletMapper.insert(wallet);
+        SysUserDTO sysUserDTO = new SysUserDTO();
+        sysUserDTO.setUserId(userId);
+        sysUserDTO.setTenantId(tenantDTO.getTenantId());
+        sysUserDTO.setUsername(tenantDTO.getUsername());
+        sysUserDTO.setPassword(tenantDTO.getPassword());
+        sysUserService.insertUser(sysUserDTO);
     }
 
     @Override

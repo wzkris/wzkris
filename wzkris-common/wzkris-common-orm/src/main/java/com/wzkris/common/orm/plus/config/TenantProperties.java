@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 /**
  * 租户 配置属性
@@ -20,10 +20,10 @@ public class TenantProperties {
     /**
      * 租户表
      */
-    private List<String> includes;
+    private Set<String> includes;
 
 
-    public List<String> getIncludes() {
-        return includes == null ? Collections.emptyList() : includes;
+    public Set<String> getIncludes() {
+        return includes == null ? Collections.EMPTY_SET : includes;
     }
 }

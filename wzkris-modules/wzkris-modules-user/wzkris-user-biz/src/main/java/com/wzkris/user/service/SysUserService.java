@@ -41,9 +41,8 @@ public interface SysUserService {
      * 新增管理员信息
      *
      * @param dto 管理员信息
-     * @return 结果
      */
-    boolean insertUser(SysUserDTO dto);
+    void insertUser(SysUserDTO dto);
 
     /**
      * 修改管理员信息

@@ -25,7 +25,7 @@ public interface SysTenantService {
      *
      * @param tenantDTO 参数
      */
-    boolean insertTenant(SysTenantDTO tenantDTO);
+    void insertTenant(SysTenantDTO tenantDTO);
 
     /**
      * 更新租户, 不会更新租户管理员账号

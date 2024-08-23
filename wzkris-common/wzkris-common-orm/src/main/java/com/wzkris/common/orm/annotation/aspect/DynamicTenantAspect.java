@@ -3,10 +3,8 @@ package com.wzkris.common.orm.annotation.aspect;
 
 import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.SysUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -42,24 +40,36 @@ public class DynamicTenantAspect {
      */
     @Around("@annotation(dynamicTenant) || @within(dynamicTenant)")
     public Object around(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
-        boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(dynamicTenant.enableIgnore()), this.createContext());
-
-        if (ignore) {
-            return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
-        }
-        else {
-            // 未启用忽略则必须走租户
-            Long tenantId;
-            // 为空则走自身租户
-            if (StringUtil.isBlank(dynamicTenant.forceTenant())) {
-                tenantId = SysUtil.getTenantId();
+        String value = dynamicTenant.enableIgnore();
+        String parseType = dynamicTenant.parseType();
+        switch (parseType) {
+            case "0" -> {
+                // bool值则直接转换
+                boolean isIgnore = Boolean.parseBoolean(value);
+                if (isIgnore) {
+                    return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
+                }
+                return point.proceed();
             }
-            else {
-                // 否则解析spel，拿到对应参数
-                tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), dynamicTenant.forceTenant(), Long.class);
+            case "1" -> {
+                // 解析租户ID
+                Long tenantId = Long.valueOf(value);
+                return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);
             }
-
-            return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);
+            case "2" -> {
+                // 解析spel表达式
+                boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(dynamicTenant.enableIgnore()), this.createContext());
+                if (ignore) {
+                    return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
+                }
+                return point.proceed();
+            }
+            case "3" -> {
+                // 解析spel，拿到对应参数
+                Long tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), value, Long.class);
+                return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);
+            }
+            default -> throw new BusinessException("动态租户参数异常, parseType=" + parseType);
         }
     }
 
