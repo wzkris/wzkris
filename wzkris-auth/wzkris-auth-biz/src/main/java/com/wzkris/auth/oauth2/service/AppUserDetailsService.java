@@ -1,15 +1,17 @@
-package com.wzkris.auth.oauth2.service.impl;
+package com.wzkris.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.oauth2.model.UserModel;
-import com.wzkris.auth.oauth2.service.UserDetailsServicePlus;
 import com.wzkris.auth.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.exception.BusinessExceptionI18n;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.user.api.RemoteAppUserApi;
-import com.wzkris.user.api.domain.dto.CustomerDTO;
+import com.wzkris.user.api.domain.dto.AppUserDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
@@ -24,39 +26,44 @@ import java.util.Collections;
  */
 @Service
 @AllArgsConstructor
-public class AppUserDetailsService implements UserDetailsServicePlus {
+public class AppUserDetailsService implements UserDetailsService {
     private final RemoteAppUserApi remoteAppUserApi;
 
-    public UserModel loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
-        Result<CustomerDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
-        CustomerDTO customerDTO = result.checkData();
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        throw new BusinessExceptionI18n("oauth2.unsupport.granttype");
+    }
 
-        return this.checkAndBuild(customerDTO);
+    public UserModel loadUserByPhoneNumber(String phoneNumber) {
+        Result<AppUserDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
+        AppUserDTO appUserDTO = result.checkData();
+
+        return this.checkAndBuild(appUserDTO);
     }
 
     /**
      * 构建登录用户
      */
-    private UserModel checkAndBuild(CustomerDTO customerDTO) {
+    private UserModel checkAndBuild(AppUserDTO appUserDTO) {
         // 校验用户状态
-        this.checkAccount(customerDTO);
+        this.checkAccount(appUserDTO);
 
         LoginApper loginApper = new LoginApper();
-        loginApper.setUserId(customerDTO.getUserId());
-        loginApper.setPhoneNumber(customerDTO.getPhoneNumber());
+        loginApper.setUserId(appUserDTO.getUserId());
+        loginApper.setPhoneNumber(appUserDTO.getPhoneNumber());
 
-        return new UserModel(customerDTO.getPhoneNumber(),
+        return new UserModel(appUserDTO.getPhoneNumber(),
                 "", Collections.emptyList(), loginApper);
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(CustomerDTO customerDTO) {
-        if (customerDTO == null) {
+    private void checkAccount(AppUserDTO appUserDTO) {
+        if (appUserDTO == null) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");// 不能明说账号不存在
         }
-        if (ObjUtil.equals(customerDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
+        if (ObjUtil.equals(appUserDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }

@@ -33,7 +33,8 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@DynamicTenant// 超级租户需要看到所有租户信息
+@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
+@DynamicTenant(enableIgnore = "true")// 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
@@ -50,27 +51,28 @@ public class SysTenantController extends BaseController {
         return getDataTable(list);
     }
 
-    @Operation(summary = "获取租户详细信息")
+    @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/{tenantId}")
     @PreAuthorize("@ps.hasPerms('tenant:query')")
-    public Result<SysTenant> getInfo(@NotNull(message = "[tenantId] {validate.notnull}")
+    public Result<SysTenant> queryid(@NotNull(message = "[tenantId] {validate.notnull}")
                                      @PathVariable Long tenantId) {
         return success(sysTenantMapper.selectById(tenantId));
     }
 
     @Operation(summary = "新增租户")
-    @OperateLog(title = "租户", operateType = OperateType.INSERT)
+    @OperateLog(title = "租户管理", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('tenant:add')")
     public Result<Void> add(@Validated(value = ValidationGroups.Insert.class) @RequestBody SysTenantDTO sysTenantDTO) {
         if (sysUserService.checkUserUnique(new SysUser().setUsername(sysTenantDTO.getUsername()))) {
             return fail("登录账号'" + sysTenantDTO.getUsername() + "'已存在");
         }
-        return toRes(sysTenantService.insertTenant(sysTenantDTO));
+        sysTenantService.insertTenant(sysTenantDTO);
+        return success();
     }
 
     @Operation(summary = "修改租户")
-    @OperateLog(title = "租户", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户管理", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('tenant:edit')")
     public Result<Void> edit(@RequestBody SysTenant sysTenant) {
@@ -78,7 +80,7 @@ public class SysTenantController extends BaseController {
     }
 
     @Operation(summary = "删除租户")
-    @OperateLog(title = "租户", operateType = OperateType.DELETE)
+    @OperateLog(title = "租户管理", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('tenant:remove')")
     public Result<Void> remove(@RequestBody @NotEmpty(message = "[tenantIds] {validate.notnull}") List<Long> tenantIds) {

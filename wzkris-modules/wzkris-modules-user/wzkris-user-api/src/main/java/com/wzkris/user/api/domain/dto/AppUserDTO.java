@@ -12,7 +12,7 @@ import lombok.experimental.FieldNameConstants;
 @Data
 @Accessors(chain = true)
 @FieldNameConstants
-public class CustomerDTO {
+public class AppUserDTO {
 
     private Long userId;
 

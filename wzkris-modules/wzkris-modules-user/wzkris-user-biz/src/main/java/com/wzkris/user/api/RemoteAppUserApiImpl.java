@@ -3,7 +3,7 @@ package com.wzkris.user.api;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.security.annotation.InnerAuth;
-import com.wzkris.user.api.domain.dto.CustomerDTO;
+import com.wzkris.user.api.domain.dto.AppUserDTO;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.mapper.AppUserMapper;
@@ -28,10 +28,10 @@ public class RemoteAppUserApiImpl implements RemoteAppUserApi {
      * 根据手机号查询app用户
      */
     @Override
-    public Result<CustomerDTO> getByPhoneNumber(String phoneNumber) {
+    public Result<AppUserDTO> getByPhoneNumber(String phoneNumber) {
         AppUser appUser = appUserMapper.selectByPhoneNumber(phoneNumber);
-        CustomerDTO customerDTO = MapstructUtil.convert(appUser, CustomerDTO.class);
-        return success(customerDTO);
+        AppUserDTO appUserDTO = MapstructUtil.convert(appUser, AppUserDTO.class);
+        return success(appUserDTO);
     }
 
     /**

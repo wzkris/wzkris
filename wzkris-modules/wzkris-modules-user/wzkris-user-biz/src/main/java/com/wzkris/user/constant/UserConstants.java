@@ -37,4 +37,14 @@ public class UserConstants {
      */
     public final static String INNER_LINK = "InnerLink";
 
+    /**
+     * 收入
+     */
+    public final static String WALLET_INCOME = "0";
+
+    /**
+     * 支出
+     */
+    public final static String WALLET_OUTCOME = "1";
+
 }

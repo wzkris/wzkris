@@ -1,0 +1,51 @@
+package com.wzkris.common.orm.handler;
+
+import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.utils.MessageUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.MyBatisSystemException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static com.wzkris.common.core.domain.Result.resp;
+
+/**
+ * Mybatis异常处理器
+ *
+ * @author wzkris
+ */
+@Slf4j
+@RestControllerAdvice
+public class MybatisExceptionHandler {
+
+    /**
+     * 索引异常
+     */
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Result<?> handledDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
+        log.error("请求地址'{} {}',捕获到唯一索引异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
+        return resp(BizCode.BAD_REQUEST, MessageUtil.message("business.duplicate.key"));
+    }
+
+    /**
+     * Mybatis系统异常 通用处理
+     */
+    @ExceptionHandler(MyBatisSystemException.class)
+    public Result<Void> handleCannotFindDataSourceException(MyBatisSystemException e, HttpServletRequest request) {
+        log.error("请求地址'{} {}',未找到数据源，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
+        return resp(BizCode.INTERNAL_ERROR, "未找到数据源，请联系管理员确认");
+    }
+
+    /**
+     * 拦截sql异常
+     */
+    @ExceptionHandler(DataAccessException.class)
+    public Result<?> handleSqlException(DataAccessException e, HttpServletRequest request) {
+        log.error("请求地址'{} {}',捕获到sql异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
+        return resp(BizCode.INTERNAL_ERROR, "sql异常，请联系管理员");
+    }
+}

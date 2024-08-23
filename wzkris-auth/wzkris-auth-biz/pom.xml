@@ -50,12 +50,6 @@
 		<dependency>
 			<groupId>com.wzkris</groupId>
 			<artifactId>wzkris-common-web</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.wzkris</groupId>
-					<artifactId>wzkris-common-orm</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!--本地rpc服务-->

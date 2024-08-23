@@ -7,12 +7,10 @@ import io.swagger.v3.oas.models.info.License;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author wzkris
  */
-@Configuration
 @ConditionalOnProperty(name = "springdoc.enabled", matchIfMissing = true)
 public class SwaggerConfig {
 
@@ -30,7 +28,6 @@ public class SwaggerConfig {
                 .addOpenApiMethodFilter(it -> it.getAnnotation(Tag.class) != null)
                 .build();
     }
-
 
     @Bean
     public OpenAPI openAPI() {

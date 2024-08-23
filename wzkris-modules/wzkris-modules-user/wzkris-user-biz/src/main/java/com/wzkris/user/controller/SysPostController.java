@@ -10,6 +10,7 @@ import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.service.SysPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -68,5 +69,14 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ps.hasPerms('post:remove')")
     public Result<?> remove(@RequestBody List<Long> postIds) {
         return toRes(sysPostService.deleteByPostIds(postIds));
+    }
+
+    @Operation(summary = "导出")
+    @OperateLog(title = "岗位管理", operateType = OperateType.EXPORT)
+    @PostMapping("/export")
+    @PreAuthorize("@ps.hasPerms('post:export')")
+    public void export(HttpServletResponse httpServletResponse, SysPost sysPost) {
+        List<SysPost> list = sysPostService.list(sysPost);
+
     }
 }

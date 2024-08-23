@@ -13,7 +13,10 @@ import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.vo.SysUserVO;
-import com.wzkris.user.mapper.*;
+import com.wzkris.user.mapper.SysDeptMapper;
+import com.wzkris.user.mapper.SysUserMapper;
+import com.wzkris.user.mapper.SysUserPostMapper;
+import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,13 +41,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysUserServiceImpl implements SysUserService {
     private final SysUserMapper sysUserMapper;
-    private final SysRoleMapper sysRoleMapper;
-    private final SysPostMapper sysPostMapper;
     private final SysDeptMapper sysDeptMapper;
     private final SysUserRoleMapper sysUserRoleMapper;
     private final SysUserPostMapper sysUserPostMapper;
     private final PasswordEncoder passwordEncoder;
-
 
     @Override
     public Page<SysUserVO> listPage(SysUser user) {
@@ -76,12 +76,28 @@ public class SysUserServiceImpl implements SysUserService {
         return page.setRows(userVOS);
     }
 
-    /**
-     * 根据条件分页查询已分配用户角色列表
-     *
-     * @param roleId 角色id
-     * @return 用户信息集合信息
-     */
+    @Override
+    public List<SysUserVO> list(SysUser user) {
+        // 查询
+        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
+        List<SysUser> userList = sysUserMapper.selectListInScope(lqw);
+        List<Long> deptIds = userList.stream().map(SysUser::getDeptId).collect(Collectors.toList());
+        // 仅查出状态正常的部门
+        Map<Long, SysDept> deptMap = sysDeptMapper.selectListInScope(new LambdaQueryWrapper<SysDept>().in(SysDept::getDeptId, deptIds))
+                .stream()
+                .collect(Collectors.toMap(SysDept::getDeptId, Function.identity()));
+        // 转换成vo
+        List<SysUserVO> userVOS = MapstructUtil.convert(userList, SysUserVO.class);
+        for (SysUserVO userVO : userVOS) {
+            SysDept dept = deptMap.get(userVO.getDeptId());
+            if (dept != null) {
+                userVO.setDeptName(dept.getDeptName());
+                userVO.setDeptStatus(dept.getStatus());
+            }
+        }
+        return userVOS;
+    }
+
     @Override
     public List<SysUser> listAllocated(SysUser user, Long roleId) {
         List<Long> userIds = sysUserRoleMapper.listUserIdByRoleId(roleId);
@@ -93,12 +109,6 @@ public class SysUserServiceImpl implements SysUserService {
         return sysUserMapper.selectListInScope(lqw);
     }
 
-    /**
-     * 根据条件分页查询未分配用户角色列表
-     *
-     * @param roleId 角色id
-     * @return 用户信息集合信息
-     */
     @Override
     public List<SysUser> listUnallocated(SysUser user, Long roleId) {
         List<Long> userIds = sysUserRoleMapper.listUserIdByRoleId(roleId);
@@ -110,31 +120,17 @@ public class SysUserServiceImpl implements SysUserService {
         return sysUserMapper.selectListInScope(lqw);
     }
 
-    /**
-     * 新增管理员信息
-     *
-     * @param userDTO 用户信息
-     * @return 结果
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertUser(SysUserDTO userDTO) {
+    public void insertUser(SysUserDTO userDTO) {
         // 密码加密
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         int rows = sysUserMapper.insert(userDTO);
         // 新增用户与角色管理
         this.insertUserRole(userDTO.getUserId(), userDTO.getRoleIds());
         this.insertUserPost(userDTO.getUserId(), userDTO.getPostIds());
-        // 新增用户信息
-        return rows > 0;
     }
 
-    /**
-     * 修改保存用户信息
-     *
-     * @param dto 用户信息
-     * @return 结果
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateUser(SysUserDTO dto) {
@@ -147,12 +143,6 @@ public class SysUserServiceImpl implements SysUserService {
         return sysUserMapper.updateById(dto) > 0;
     }
 
-    /**
-     * 批量授权角色
-     *
-     * @param userId  用户ID
-     * @param roleIds 角色组
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void allocateRoles(Long userId, List<Long> roleIds) {

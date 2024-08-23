@@ -69,10 +69,10 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         List<SysRole> roles;
         List<String> grantedAuthority;
         List<Long> deptScopes = Collections.emptyList();
-        boolean isAdmin = false;
+        boolean administrator;
         if (SysUser.isSuperAdmin(userId)) {
             // 超级管理员查出所有角色
-            isAdmin = true;
+            administrator = true;
             grantedAuthority = Collections.singletonList("*");
         }
         else {
@@ -80,13 +80,14 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             Long tenantPackageId = sysTenantMapper.selectPackageIdByUserId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员查出所有租户角色
-                isAdmin = true;
+                administrator = true;
                 // 查出套餐绑定的所有权限
                 List<Long> menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
                 grantedAuthority = sysMenuService.listPermsByMenuIds(menuIds);
             }
             else {
                 // 否则为普通用户
+                administrator = false;
                 roles = sysRoleService.listByUserId(userId);
                 // 菜单权限
                 List<Long> roleIds = roles.stream().map(SysRole::getRoleId).collect(Collectors.toList());
@@ -95,7 +96,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 deptScopes = this.listDeptScope(roles, deptId);
             }
         }
-        return new SysPermissionDTO(isAdmin, grantedAuthority, deptScopes);
+        return new SysPermissionDTO(administrator, grantedAuthority, deptScopes);
     }
 
     /**

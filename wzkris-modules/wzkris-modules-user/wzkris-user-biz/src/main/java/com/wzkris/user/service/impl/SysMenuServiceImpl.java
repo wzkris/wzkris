@@ -76,6 +76,9 @@ public class SysMenuServiceImpl implements SysMenuService {
                 .like(StringUtil.isNotNull(menu.getMenuName()), SysMenu::getMenuName, menu.getMenuName())
                 .eq(StringUtil.isNotNull(menu.getMenuType()), SysMenu::getMenuType, menu.getMenuType())
                 .eq(StringUtil.isNotNull(menu.getIsVisible()), SysMenu::getIsVisible, menu.getIsVisible())
+                .eq(StringUtil.isNotNull(menu.getIsCache()), SysMenu::getIsCache, menu.getIsCache())
+                .eq(StringUtil.isNotNull(menu.getIsFrame()), SysMenu::getIsFrame, menu.getIsFrame())
+                .eq(StringUtil.isNotNull(menu.getIsTenant()), SysMenu::getIsTenant, menu.getIsTenant())
                 .eq(StringUtil.isNotNull(menu.getStatus()), SysMenu::getStatus, menu.getStatus())
                 .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
     }

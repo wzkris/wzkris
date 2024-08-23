@@ -18,8 +18,11 @@ public interface SysUserService {
      */
     Page<SysUserVO> listPage(SysUser user);
 
+
+    List<SysUserVO> list(SysUser user);
+
     /**
-     * 根据条件分页查询已分配管理员角色列表
+     * 根据条件分页查询已分配用户角色列表
      *
      * @param roleId 管理员信息
      * @return 管理员信息集合信息
@@ -27,7 +30,7 @@ public interface SysUserService {
     List<SysUser> listAllocated(SysUser user, Long roleId);
 
     /**
-     * 根据条件分页查询未分配管理员角色列表
+     * 根据条件分页查询未分配用户角色列表
      *
      * @param roleId 管理员信息
      * @return 管理员信息集合信息
@@ -38,9 +41,8 @@ public interface SysUserService {
      * 新增管理员信息
      *
      * @param dto 管理员信息
-     * @return 结果
      */
-    boolean insertUser(SysUserDTO dto);
+    void insertUser(SysUserDTO dto);
 
     /**
      * 修改管理员信息
@@ -51,7 +53,7 @@ public interface SysUserService {
     boolean updateUser(SysUserDTO dto);
 
     /**
-     * 管理员授权角色
+     * 批量授权角色
      *
      * @param userId  管理员ID
      * @param roleIds 角色组

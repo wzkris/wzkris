@@ -25,8 +25,8 @@ public class PageSupport {
     /**
      * 封装分页对象
      */
-    public static Page initPage() {
-        Page page = new Page();
+    public static <T> Page<T> initPage() {
+        Page<T> page = new Page<>();
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
             return page;
@@ -38,12 +38,12 @@ public class PageSupport {
         return page;
     }
 
-    public static Page initPage(int pageNum, int pageSize) {
-        return new Page(pageNum, pageSize);
+    public static <T> Page<T> initPage(int pageNum, int pageSize) {
+        return new Page<>(pageNum, pageSize);
     }
 
 
-    public static Page buildPageRequest() {
+    public static <T> Page<T> buildPageRequest() {
         return initPage();
     }
 }

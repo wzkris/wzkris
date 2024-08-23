@@ -5,6 +5,11 @@ import com.wzkris.user.domain.SysTenant;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+/**
+ * 租户表 数据层
+ *
+ * @author wzkris
+ */
 @Repository
 public interface SysTenantMapper extends BaseMapperPlus<SysTenant> {
 

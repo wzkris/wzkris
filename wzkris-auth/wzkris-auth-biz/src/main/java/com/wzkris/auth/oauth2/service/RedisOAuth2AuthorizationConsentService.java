@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.service.impl;
+package com.wzkris.auth.oauth2.service;
 
 import com.wzkris.auth.oauth2.model.RedisAuthorizationConsent;
 import com.wzkris.common.redis.util.RedisUtil;

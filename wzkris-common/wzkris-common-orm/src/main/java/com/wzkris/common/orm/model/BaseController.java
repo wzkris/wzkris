@@ -21,7 +21,6 @@ public class BaseController {
     /**
      * 响应请求分页数据
      */
-    @SuppressWarnings("unchecked")
     protected static <T> Result<Page<T>> getDataTable(List<T> list) {
         Page<T> page = PageUtil.getPage();
         page.setRows(list);

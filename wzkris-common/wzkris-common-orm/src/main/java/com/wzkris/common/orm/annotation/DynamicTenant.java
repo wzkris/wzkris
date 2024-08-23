@@ -16,16 +16,21 @@ import java.lang.annotation.*;
 public @interface DynamicTenant {
 
     /**
-     * 忽略租户spel表达式，true则忽略租户，false则走租户
+     * true则忽略租户，false则不处理
+     * <p>
+     * 解析出数字则强制走该租户
      *
-     * @return 默认忽略超级租户
+     * @return 默认走租户
      */
-    String enableIgnore() default "@SysUtil.isSuperTenant()";
+    String enableIgnore() default "false";
 
     /**
-     * enableIgnore结果为false时，强制切换租户，默认走自身租户
-     *
-     * @return spring-el表达式
+     * enableIgnore参数解析类型
+     * <p>
+     * 0：默认，true/false字符串<p>
+     * 1：纯数字，租户ID数字<p>
+     * 2：spel表达式，解析结果布尔值true/false<p>
+     * 3: spel表达式，解析结果租户ID数字
      */
-    String forceTenant() default "";
+    String parseType() default "0";
 }

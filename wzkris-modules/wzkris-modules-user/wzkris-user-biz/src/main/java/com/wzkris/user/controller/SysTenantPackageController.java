@@ -30,6 +30,7 @@ import java.util.List;
 @Tag(name = "租户套餐管理")
 @Validated
 @RequiredArgsConstructor
+@PreAuthorize("@SysUtil.isSuperTenant()")
 @RestController
 @RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {

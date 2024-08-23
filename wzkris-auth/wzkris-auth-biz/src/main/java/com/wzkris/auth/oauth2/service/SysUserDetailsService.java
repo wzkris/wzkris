@@ -1,8 +1,7 @@
-package com.wzkris.auth.oauth2.service.impl;
+package com.wzkris.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.oauth2.model.UserModel;
-import com.wzkris.auth.oauth2.service.UserDetailsServicePlus;
 import com.wzkris.auth.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
@@ -12,6 +11,7 @@ import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class SysUserDetailsService implements UserDetailsServicePlus {
+public class SysUserDetailsService implements UserDetailsService {
     private final RemoteSysUserApi remoteSysUserApi;
 
     @Override
@@ -52,7 +52,7 @@ public class SysUserDetailsService implements UserDetailsServicePlus {
         loginSyser.setTenantId(sysUserDTO.getTenantId());
         loginSyser.setUsername(sysUserDTO.getUsername());
         loginSyser.setPassword(sysUserDTO.getPassword());
-        loginSyser.setAdministrator(permissions.getIsAdmin());
+        loginSyser.setAdministrator(permissions.getAdministrator());
         loginSyser.setDeptScopes(permissions.getDeptScopes());
 
         return new UserModel(sysUserDTO.getUsername(),

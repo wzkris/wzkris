@@ -19,7 +19,7 @@ public class SysPermissionDTO {
     /**
      * 是否当前租户下的超级管理员
      */
-    private Boolean isAdmin;
+    private Boolean administrator;
     /**
      * 已授权限
      */
