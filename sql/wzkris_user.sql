@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 23/08/2024 10:43:02
+ Date: 23/08/2024 16:18:05
 */
 
 SET NAMES utf8mb4;
@@ -45,7 +45,41 @@ CREATE TABLE `app_user`  (
 -- ----------------------------
 -- Records of app_user
 -- ----------------------------
-INSERT INTO `app_user` VALUES (11111111, NULL, '15888888888', '0', NULL, NULL, 0, '0:0:0:0:0:0:0:1', 1724059238718, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `app_user` VALUES (1826896461245968384, NULL, '15888888888', '0', NULL, NULL, 0, '0:0:0:0:0:0:0:1', 1724059238718, NULL, 1713334134616, 1, NULL, NULL);
+
+-- ----------------------------
+-- Table structure for app_user_wallet
+-- ----------------------------
+DROP TABLE IF EXISTS `app_user_wallet`;
+CREATE TABLE `app_user_wallet`  (
+  `user_id` bigint NOT NULL,
+  `balance` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '余额, 元',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '状态',
+  PRIMARY KEY (`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户钱包' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of app_user_wallet
+-- ----------------------------
+INSERT INTO `app_user_wallet` VALUES (1826896461245968384, 0.00, '0');
+
+-- ----------------------------
+-- Table structure for app_user_wallet_record
+-- ----------------------------
+DROP TABLE IF EXISTS `app_user_wallet_record`;
+CREATE TABLE `app_user_wallet_record`  (
+  `record_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
+  `amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '金额',
+  `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '记录类型',
+  `pay_time` bigint NOT NULL COMMENT '时间',
+  `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`record_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户钱包记录' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of app_user_wallet_record
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for oauth2_client
@@ -239,7 +273,6 @@ INSERT INTO `sys_menu` VALUES (2208, '角色查询', 206, 1, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (2209, '角色新增', 206, 2, '#', NULL, NULL, 'F', '0', 'sys_role:add', '#', 0, 0, 1, 1, 1713334134616, 1, 1724316956840, 1);
 INSERT INTO `sys_menu` VALUES (2210, '角色修改', 206, 3, '#', NULL, NULL, 'F', '0', 'sys_role:edit', '#', 0, 0, 1, 1, 1713334134616, 1, 1724316954128, 1);
 INSERT INTO `sys_menu` VALUES (2211, '角色删除', 206, 4, '#', NULL, NULL, 'F', '0', 'sys_role:remove', '#', 0, 0, 1, 1, 1713334134616, 1, 1724316951594, 1);
-INSERT INTO `sys_menu` VALUES (2212, '角色导出', 206, 5, '#', NULL, NULL, 'F', '0', 'sys_role:export', '#', 0, 0, 1, 1, 1713334134616, 1, 1724316949025, 1);
 INSERT INTO `sys_menu` VALUES (4121, '站点查询', 400, 0, '#', NULL, NULL, 'F', '0', 'station:query', '#', 0, 0, 1, 0, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (4122, '站点添加', 400, 1, '#', NULL, NULL, 'F', '0', 'station:add', '#', 0, 0, 1, 0, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (4123, '站点修改', 400, 2, '#', NULL, NULL, 'F', '0', 'station:edit', '#', 0, 0, 1, 0, 1713334134616, 1, 1714113020581, NULL);
@@ -308,7 +341,7 @@ CREATE TABLE `sys_role`  (
 INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1719025900985, 1);
 INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 20240330133013, 1);
 INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '0', 5, 1, 1, 1713334134616, 1, 20240330133015, 1);
-INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1724317950154, 1774671331412627456);
+INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1724393365447, 1774671331412627456);
 
 -- ----------------------------
 -- Table structure for sys_role_dept
@@ -454,7 +487,14 @@ INSERT INTO `sys_role_menu` VALUES (2, 1115);
 INSERT INTO `sys_role_menu` VALUES (2, 1116);
 INSERT INTO `sys_role_menu` VALUES (2, 1117);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 203);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 205);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 208);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2037);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2038);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2039);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2040);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2071);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2141);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2142);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2143);
@@ -585,7 +625,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724380880633, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724400505572, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (2, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1724312689449, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1724373288077, NULL, 1713334134616, 1, NULL, NULL);
 
