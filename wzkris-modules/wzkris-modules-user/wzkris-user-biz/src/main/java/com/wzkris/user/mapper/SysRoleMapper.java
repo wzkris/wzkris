@@ -1,7 +1,5 @@
 package com.wzkris.user.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysRole;
 import org.apache.ibatis.annotations.Param;
@@ -19,14 +17,6 @@ import java.util.List;
 public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
 
     /**
-     * 带权限查询列表
-     */
-    @DeptScope
-    default List<SysRole> selectListInScope(Wrapper<SysRole> queryWrapper) {
-        return this.selectList(queryWrapper);
-    }
-
-    /**
      * 校验是否有该角色操作权限
      *
      * @param roleIds 待操作的角色id
@@ -40,6 +30,5 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
                     </foreach>
             </script>
             """)
-    @DeptScope
     int checkDataScopes(@Param("roleIds") List<Long> roleIds);
 }

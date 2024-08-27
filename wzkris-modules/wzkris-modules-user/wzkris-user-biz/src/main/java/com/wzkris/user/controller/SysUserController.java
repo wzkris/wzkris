@@ -32,7 +32,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,10 +68,9 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
     public Result<?> getInfo(@PathVariable(required = false) Long userId) {
         // 校验权限
-        sysUserService.checkDataScopes(Collections.singletonList(userId));
+        sysUserService.checkDataScopes(userId);
         SysUser user = sysUserMapper.selectById(userId);
 
-        // 返回的角色、岗位、部门必须和该用户的租户id绑定
         Map<String, Object> info = new HashMap<>(8);
         // 用户信息
         info.put("user", user);
@@ -113,7 +111,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> edit(@Validated @RequestBody SysUserDTO userDTO) {
         // 校验权限
-        sysUserService.checkDataScopes(Collections.singletonList(userDTO.getUserId()));
+        sysUserService.checkDataScopes(userDTO.getUserId());
         if (sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
         }
@@ -145,7 +143,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> resetPwd(@RequestBody SysUser user) {
         // 校验权限
-        sysUserService.checkDataScopes(Collections.singletonList(user.getUserId()));
+        sysUserService.checkDataScopes(user.getUserId());
 
         SysUser update = new SysUser(user.getUserId());
         update.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -158,7 +156,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> editStatus(@RequestBody SysUser user) {
         // 校验权限
-        sysUserService.checkDataScopes(Collections.singletonList(user.getUserId()));
+        sysUserService.checkDataScopes(user.getUserId());
         SysUser update = new SysUser(user.getUserId());
         update.setStatus(user.getStatus());
         return toRes(sysUserMapper.updateById(update));
@@ -178,7 +176,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
     public Result<?> authRole(@PathVariable Long userId) {
         // 校验权限
-        sysUserService.checkDataScopes(Collections.singletonList(userId));
+        sysUserService.checkDataScopes(userId);
         SysUser sysUser = sysUserMapper.selectById(userId);
 
         // 可授权角色必须根据租户来
@@ -198,7 +196,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> authRole(@RequestBody @Valid SysUserRolesDTO userRolesDTO) {
         // 校验用户可操作权限
-        sysUserService.checkDataScopes(Collections.singletonList(userRolesDTO.getUserId()));
+        sysUserService.checkDataScopes(userRolesDTO.getUserId());
         // 校验角色可操作权限
         sysRoleService.checkDataScopes(userRolesDTO.getRoleIds());
         // 分配权限

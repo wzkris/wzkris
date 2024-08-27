@@ -59,7 +59,7 @@ public interface SysUserRoleMapper {
                     </foreach>
             </script>
             """)
-    int deleteBatchByUserIds(@Param("userIds") List<Long> userIds);
+    int deleteByUserIds(@Param("userIds") List<Long> userIds);
 
     /**
      * 通过角色ID查询角色使用数量

@@ -68,6 +68,15 @@ public interface SysUserService {
     void checkDataScopes(List<Long> userIds);
 
     /**
+     * 校验是否有数据权限
+     *
+     * @param userId 被操作的对象id
+     */
+    default void checkDataScopes(Long userId) {
+        this.checkDataScopes(List.of(userId));
+    }
+
+    /**
      * 校验用户是否唯一
      *
      * @param user 筛选条件

@@ -65,7 +65,7 @@ public interface SysUserPostMapper {
                     </foreach>
             </script>
             """)
-    int deleteBatchByUserIds(@Param("userIds") List<Long> userIds);
+    int deleteByUserIds(@Param("userIds") List<Long> userIds);
 
     /**
      * 批量新增用户岗位信息
