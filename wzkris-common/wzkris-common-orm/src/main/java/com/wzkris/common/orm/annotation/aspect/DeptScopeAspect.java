@@ -48,27 +48,28 @@ public class DeptScopeAspect {
      */
     private void handleDataScope(DeptScope deptScope) {
         if (SysUtil.isLogin()) {
-            // 租户的最高管理员不查询部门数据权限
-            if (SysUtil.isAdministrator()) {
-                return;
-            }
-
-            // 生成权限sql片段
-            String aliasColumn = StringUtil.isBlank(deptScope.tableAlias()) ? deptScope.columnAlias() :
-                    StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
-            Expression expression;
-            List<Long> deptScopes = SysUtil.getLoginSyser().getDeptScopes();
-            if (CollUtil.isEmpty(deptScopes)) {
-                // 没有部门权限数据则直接拼接-1, 查不出来即可
-                expression = new ExpressionList<>(new LongValue(-1L));
-            }
-            else {
-                expression = new ExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
-            }
-            InExpression inExpression = new InExpression(new Column(aliasColumn), expression);
-
-            DeptScopeUtil.setSqlExpression(inExpression);
+            return;
         }
+        // 租户的最高管理员不查询部门数据权限
+        if (SysUtil.isAdministrator()) {
+            return;
+        }
+
+        // 生成权限sql片段
+        String aliasColumn = StringUtil.isBlank(deptScope.tableAlias()) ? deptScope.columnAlias() :
+                StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
+        Expression expression;
+        List<Long> deptScopes = SysUtil.getLoginSyser().getDeptScopes();
+        if (CollUtil.isEmpty(deptScopes)) {
+            // 没有部门权限数据则直接拼接-1, 查不出来即可
+            expression = new ExpressionList<>(new LongValue(-1L));
+        }
+        else {
+            expression = new ExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
+        }
+        InExpression inExpression = new InExpression(new Column(aliasColumn), expression);
+
+        DeptScopeUtil.setSqlExpression(inExpression);
     }
 
 }

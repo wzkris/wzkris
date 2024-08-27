@@ -27,10 +27,17 @@ public @interface DynamicTenant {
     /**
      * enableIgnore参数解析类型
      * <p>
-     * 0：默认，true/false字符串<p>
-     * 1：纯数字，租户ID数字<p>
-     * 2：spel表达式，解析结果布尔值true/false<p>
-     * 3: spel表达式，解析结果租户ID数字
+     * BOOLEAN：默认，true/false字符串<p>
+     * NUMBER：纯数字，租户ID数字<p>
+     * SPEL_BOOLEAN：spel表达式，解析结果布尔值true/false<p>
+     * SPEL_NUMBER: spel表达式，解析结果租户ID数字
      */
-    String parseType() default "0";
+    ParseType parseType() default ParseType.BOOLEAN;
+
+    enum ParseType {
+        BOOLEAN,
+        NUMBER,
+        SPEL_BOOLEAN,
+        SPEL_NUMBER;
+    }
 }

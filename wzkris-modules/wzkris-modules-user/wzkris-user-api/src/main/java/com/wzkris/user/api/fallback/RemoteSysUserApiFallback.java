@@ -6,12 +6,9 @@ import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
-import com.wzkris.user.api.domain.vo.RouterVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 import static com.wzkris.common.core.domain.Result.resp;
 
@@ -36,7 +33,7 @@ public class RemoteSysUserApiFallback implements FallbackFactory<RemoteSysUserAp
             }
 
             @Override
-            public Result<SysPermissionDTO> getPermission(Long userId, Long deptId) {
+            public Result<SysPermissionDTO> getPermission(Long userId, Long tenantId, Long deptId) {
                 log.error("查询系统用户权限发生异常，errMsg：{}", cause.getMessage(), cause);
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());
             }
@@ -44,12 +41,6 @@ public class RemoteSysUserApiFallback implements FallbackFactory<RemoteSysUserAp
             @Override
             public void updateLoginInfo(LoginInfoDTO loginInfoDTO) {
                 log.error("更新用户登录信息发生异常，errMsg：{}", cause.getMessage(), cause);
-            }
-
-            @Override
-            public Result<List<RouterVO>> getRouter(Long userId) {
-                log.error("查询系统用户前端路由发生异常，errMsg：{}", cause.getMessage(), cause);
-                return resp(BizCode.RPC_INVOCATION, cause.getMessage());
             }
 
         };

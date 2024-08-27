@@ -18,6 +18,6 @@ public interface SysPermissionService {
      * @param deptId 部门ID
      * @return 权限
      */
-    SysPermissionDTO getPermission(@Nonnull Long userId, @Nullable Long deptId);
+    SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId);
 
 }

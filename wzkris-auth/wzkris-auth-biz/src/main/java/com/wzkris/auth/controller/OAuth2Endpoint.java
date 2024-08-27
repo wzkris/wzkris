@@ -1,8 +1,6 @@
 package com.wzkris.auth.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.wzkris.auth.listener.event.UserLogoutEvent;
-import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.OAuth2User;
@@ -81,10 +79,6 @@ public class OAuth2Endpoint {
         OAuth2Authorization authorization = oAuth2AuthorizationService.findByToken(accessToken, null);
         if (authorization != null) {
             oAuth2AuthorizationService.remove(authorization);
-            UsernamePasswordAuthenticationToken authenticationToken = authorization.getAttribute(Principal.class.getName());
-            OAuth2User oAuth2User = (OAuth2User) authenticationToken.getPrincipal();
-            // 发布登出事件
-            SpringUtil.getContext().publishEvent(new UserLogoutEvent(oAuth2User.getOauth2Type(), oAuth2User.getPrincipal()));
         }
 
         // 获取请求参数中是否包含 回调地址

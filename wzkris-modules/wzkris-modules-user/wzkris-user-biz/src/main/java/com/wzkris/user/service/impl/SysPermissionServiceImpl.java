@@ -1,10 +1,16 @@
 package com.wzkris.user.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
+import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.mapper.*;
+import com.wzkris.user.mapper.SysDeptMapper;
+import com.wzkris.user.mapper.SysRoleDeptMapper;
+import com.wzkris.user.mapper.SysTenantMapper;
+import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
 import com.wzkris.user.service.SysRoleService;
@@ -14,10 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,9 +51,8 @@ public class SysPermissionServiceImpl implements SysPermissionService {
      * 仅本人数据权限
      */
     public static final String DATA_SCOPE_SELF = "5";
-    private final SysRoleMapper sysRoleMapper;
+
     private final SysRoleService sysRoleService;
-    private final SysMenuMapper sysMenuMapper;
     private final SysMenuService sysMenuService;
     private final SysDeptMapper sysDeptMapper;
     private final SysRoleDeptMapper sysRoleDeptMapper;
@@ -65,7 +67,8 @@ public class SysPermissionServiceImpl implements SysPermissionService {
      * @return 权限
      */
     @Override
-    public SysPermissionDTO getPermission(@Nonnull Long userId, @Nullable Long deptId) {
+    @DynamicTenant(enableIgnore = "#tenantId", parseType = DynamicTenant.ParseType.SPEL_NUMBER)
+    public SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
         List<SysRole> roles;
         List<String> grantedAuthority;
         List<Long> deptScopes = Collections.emptyList();
@@ -111,7 +114,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         if (deptId == null || CollectionUtils.isEmpty(roles)) {
             return Collections.emptyList();
         }
-        List<Long> deptIds = new ArrayList<>();
+        Set<Long> deptIds = new HashSet<>();
         // 循环每一个角色，拼接所有可访问的部门id
         Map<String, List<SysRole>> datascopeMap = roles
                 .stream()
@@ -119,7 +122,11 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 .collect(Collectors.groupingBy(SysRole::getDataScope));
         for (Map.Entry<String, List<SysRole>> entry : datascopeMap.entrySet()) {
             if (StringUtil.equals(DATA_SCOPE_ALL, entry.getKey())) {
-                continue;
+                deptIds = sysDeptMapper.selectList(Wrappers.lambdaQuery(SysDept.class).select(SysDept::getDeptId))
+                        .stream()
+                        .map(SysDept::getDeptId)
+                        .collect(Collectors.toSet());
+                break;
             }
             else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
@@ -136,12 +143,12 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 List<Long> addDeptIds = sysDeptMapper.listChildrenIdById(deptId);
                 deptIds.addAll(addDeptIds);
             }
-            if (StringUtil.equals(DATA_SCOPE_SELF, entry.getKey())) {
+            else if (StringUtil.equals(DATA_SCOPE_SELF, entry.getKey())) {
                 // 本人数据权限
                 deptIds.add(-999L);
             }
         }
-        return deptIds;
+        return deptIds.stream().toList();
     }
 
 }

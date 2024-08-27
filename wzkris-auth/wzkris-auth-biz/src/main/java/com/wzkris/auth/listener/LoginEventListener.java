@@ -2,13 +2,10 @@ package com.wzkris.auth.listener;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.constant.KeyConstants;
 import com.wzkris.auth.listener.event.LoginFailEvent;
 import com.wzkris.auth.listener.event.LoginSuccessEvent;
-import com.wzkris.auth.listener.event.UserLogoutEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.ip.AddressUtil;
-import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
@@ -109,17 +106,4 @@ public class LoginEventListener {
         }
     }
 
-    /**
-     * 登出成功事件
-     **/
-    @Async
-    @EventListener
-    public void logoutSuccess(UserLogoutEvent event) {
-        log.info("监听到登出事件：{}", event);
-        final String oauth2Type = event.getOauth2Type();
-        if (oauth2Type.equals(OAuth2Type.SYS_USER.getValue())) {
-            LoginSyser loginer = (LoginSyser) event.getLoginer();
-            RedisUtil.delObj(String.format(KeyConstants.LOGIN_USER_ROUTER, loginer.getUserId()));
-        }
-    }
 }

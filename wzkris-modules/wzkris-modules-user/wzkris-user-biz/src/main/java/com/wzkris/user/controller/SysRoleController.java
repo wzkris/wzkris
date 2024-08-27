@@ -5,16 +5,15 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.user.domain.SysDept;
-import com.wzkris.user.domain.SysRole;
-import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.SysUserRole;
+import com.wzkris.user.domain.*;
 import com.wzkris.user.domain.dto.SysRoleDTO;
 import com.wzkris.user.domain.dto.SysRoleUsersDTO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
+import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysDeptService;
+import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +45,9 @@ public class SysRoleController extends BaseController {
     private final SysUserService sysUserService;
     private final SysUserRoleMapper sysUserRoleMapper;
     private final SysRoleDeptMapper sysRoleDeptMapper;
+    private final SysRoleMenuMapper sysRoleMenuMapper;
     private final SysDeptService sysDeptService;
+    private final SysMenuService sysMenuService;
 
     @Operation(summary = "角色分页")
     @GetMapping("/list")
@@ -64,6 +65,16 @@ public class SysRoleController extends BaseController {
         // 权限校验
         sysRoleService.checkDataScopes(roleId);
         return success(sysRoleMapper.selectById(roleId));
+    }
+
+    @Operation(summary = "角色菜单选择树")
+    @GetMapping("/menu_select_tree/{roleId}")
+    @PreAuthorize("@ps.hasPerms('sys_role:list')")
+    public Result<?> roleMenuTreeList(@PathVariable Long roleId) {
+        Map<String, Object> res = new HashMap<>(2);
+        res.put("checkedKeys", sysRoleMenuMapper.listMenuIdByRoleIds(roleId));
+        res.put("menus", sysMenuService.listMenuSelectTree(new SysMenu()));
+        return success(res);
     }
 
     @Operation(summary = "新增角色")

@@ -8,8 +8,6 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.vo.SelectTree;
 import com.wzkris.user.mapper.SysMenuMapper;
-import com.wzkris.user.mapper.SysRoleMenuMapper;
-import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 菜单信息
@@ -32,9 +28,7 @@ import java.util.Map;
 @RequestMapping("/sys_menu")
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
-    private final SysRoleMenuMapper sysRoleMenuMapper;
     private final SysMenuMapper sysMenuMapper;
-    private final SysTenantPackageMapper sysTenantPackageMapper;
     private final SysMenuService sysMenuService;
 
     @Operation(summary = "菜单列表")
@@ -58,28 +52,6 @@ public class SysMenuController extends BaseController {
     public Result<?> menuTree(SysMenu menu) {
         List<SelectTree> selectTrees = sysMenuService.listMenuSelectTree(menu);
         return success(selectTrees);
-    }
-
-    @Operation(summary = "角色菜单列表树")
-    @GetMapping("/tree_by_role/{roleId}")
-    @PreAuthorize("@ps.hasPerms('menu:selecttree')")
-    public Result<?> roleMenuTreeList(@PathVariable Long roleId) {
-        Map<String, Object> res = new HashMap<>(2);
-        res.put("checkedKeys", sysRoleMenuMapper.listMenuIdByRoleIds(roleId));
-        res.put("menus", sysMenuService.listMenuSelectTree(new SysMenu()));
-        return success(res);
-    }
-
-    @Operation(summary = "租户套餐菜单列表树")
-    @GetMapping("/tree_by_tenant_package/{packageId}")
-    @PreAuthorize("@ps.hasPerms('menu:list') && @SysUtil.isSuperTenant()")
-    public Result<?> tenantPackageMenuTreeList(@PathVariable Long packageId) {
-        Map<String, Object> res = new HashMap<>(2);
-        res.put("checkedKeys", sysTenantPackageMapper.listMenuIdByPackageId(packageId));
-        SysMenu sysMenu = new SysMenu();
-        sysMenu.setIsTenant(true);
-        res.put("menus", sysMenuService.listMenuSelectTree(sysMenu));// 查询租户专用菜单
-        return success(res);
     }
 
     @Operation(summary = "新增菜单")
