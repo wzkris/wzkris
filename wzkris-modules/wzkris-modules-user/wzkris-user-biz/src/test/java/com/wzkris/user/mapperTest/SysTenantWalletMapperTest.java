@@ -21,19 +21,15 @@ import java.math.BigDecimal;
 @SpringBootTest
 public class SysTenantWalletMapperTest {
 
+    static String password = "123456";
     @Autowired
     SysTenantWalletMapper sysTenantWalletMapper;
-
     @Autowired
     SysTenantWalletService sysTenantWalletService;
-
     @Autowired
     SysTenantWalletRecordMapper sysTenantWalletRecordMapper;
-
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    static String password = "123456";
 
     @Test
     public void test() {

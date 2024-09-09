@@ -1,4 +1,4 @@
-package com.wzkris.common.security.feign;
+package com.wzkris.common.security.interceptor;
 
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.json.JsonUtil;
@@ -6,7 +6,6 @@ import com.wzkris.common.security.oauth2.config.OAuth2Properties;
 import com.wzkris.common.security.utils.OAuth2Holder;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import lombok.AllArgsConstructor;
 
 /**
  * @author : wzkris
@@ -14,10 +13,13 @@ import lombok.AllArgsConstructor;
  * @description : OAuth2 feign请求拦截器
  * @date : 2023/8/4 10:46
  */
-@AllArgsConstructor
 public class OAuth2FeignInterceptor implements RequestInterceptor {
 
     private final OAuth2Properties oAuth2Properties;
+
+    public OAuth2FeignInterceptor(OAuth2Properties oAuth2Properties) {
+        this.oAuth2Properties = oAuth2Properties;
+    }
 
     @Override
     public void apply(RequestTemplate requestTemplate) {

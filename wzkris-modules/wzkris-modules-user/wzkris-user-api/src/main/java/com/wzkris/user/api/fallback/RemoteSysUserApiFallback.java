@@ -4,6 +4,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
+import com.wzkris.user.api.domain.dto.QueryPermsDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class RemoteSysUserApiFallback implements FallbackFactory<RemoteSysUserAp
             }
 
             @Override
-            public Result<SysPermissionDTO> getPermission(Long userId, Long tenantId, Long deptId) {
+            public Result<SysPermissionDTO> getPermission(QueryPermsDTO queryPermsDTO) {
                 log.error("查询系统用户权限发生异常，errMsg：{}", cause.getMessage(), cause);
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());
             }

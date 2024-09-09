@@ -59,13 +59,6 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysTenantMapper sysTenantMapper;
     private final SysTenantPackageMapper sysTenantPackageMapper;
 
-    /**
-     * 返回已授权码及数据权限
-     *
-     * @param userId 用户ID
-     * @param deptId 部门ID
-     * @return 权限
-     */
     @Override
     @DynamicTenant(enableIgnore = "#tenantId", parseType = DynamicTenant.ParseType.SPEL_NUMBER)
     public SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
@@ -109,7 +102,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
      * @param deptId 自身归属的部门id
      * @return 部门id集合
      */
-    public List<Long> listDeptScope(List<SysRole> roles, Long deptId) {
+    private List<Long> listDeptScope(List<SysRole> roles, Long deptId) {
         // 若部门id为空或者无角色，则代表不存在数据权限
         if (deptId == null || CollectionUtils.isEmpty(roles)) {
             return Collections.emptyList();

@@ -3,6 +3,7 @@ package com.wzkris.user.api;
 import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
+import com.wzkris.user.api.domain.dto.QueryPermsDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
 import com.wzkris.user.api.fallback.RemoteSysUserApiFallback;
@@ -34,10 +35,8 @@ public interface RemoteSysUserApi {
     /**
      * 查询管理员权限
      */
-    @GetMapping(INNER_REQUEST_PATH + "/query_sys_permission")
-    Result<SysPermissionDTO> getPermission(@RequestParam("userId") Long userId,
-                                           @RequestParam("tenantId") Long tenantId,
-                                           @RequestParam(value = "deptId", required = false) Long deptId);
+    @PostMapping(INNER_REQUEST_PATH + "/query_sys_permission")
+    Result<SysPermissionDTO> getPermission(@RequestBody QueryPermsDTO queryPermsDTO);
 
     /**
      * 更新用户登录信息

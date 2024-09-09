@@ -1,1 +1,2 @@
 com.wzkris.common.openfeign.config.RestTemplateConfig
+com.wzkris.common.openfeign.interceptor.HttpHeaderInterceptor

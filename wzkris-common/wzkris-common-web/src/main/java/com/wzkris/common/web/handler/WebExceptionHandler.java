@@ -44,7 +44,7 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Result<?> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',不支持请求类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.info("请求地址'{} {}',不支持媒体类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return resp(BizCode.BAD_REQUEST, MessageUtil.message("request.media.error"));
     }
 

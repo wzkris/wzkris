@@ -14,8 +14,9 @@ public interface SysPermissionService {
     /**
      * 返回已授权码及数据权限
      *
-     * @param userId 用户ID
-     * @param deptId 部门ID
+     * @param userId   用户ID
+     * @param tenantId 租户ID
+     * @param deptId   部门ID
      * @return 权限
      */
     SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId);
