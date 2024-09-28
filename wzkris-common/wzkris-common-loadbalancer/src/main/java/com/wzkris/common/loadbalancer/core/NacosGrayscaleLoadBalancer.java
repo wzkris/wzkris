@@ -35,23 +35,25 @@ import java.util.stream.Collectors;
 public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
     private static final Logger log = LoggerFactory.getLogger(NacosGrayscaleLoadBalancer.class);
-
-    private final String serviceId;
-
-    private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
-
-    private final NacosDiscoveryProperties nacosDiscoveryProperties;
-
     private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
-
     private static final String IPV6_KEY = "IPv6";
     /**
      * Storage local valid IPv6 address, it's a flag whether local machine support IPv6 address stack.
      */
     public static String ipv6;
-
+    private final String serviceId;
+    private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
+    private final NacosDiscoveryProperties nacosDiscoveryProperties;
     @Autowired
     private InetIPv6Utils inetIPv6Utils;
+
+    public NacosGrayscaleLoadBalancer(
+            ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
+            String serviceId, NacosDiscoveryProperties nacosDiscoveryProperties) {
+        this.serviceId = serviceId;
+        this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
+        this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+    }
 
     @PostConstruct
     public void init() {
@@ -105,14 +107,6 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
             }
         }
         return instancesToChoose;
-    }
-
-    public NacosGrayscaleLoadBalancer(
-            ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
-            String serviceId, NacosDiscoveryProperties nacosDiscoveryProperties) {
-        this.serviceId = serviceId;
-        this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
-        this.nacosDiscoveryProperties = nacosDiscoveryProperties;
     }
 
     @Override

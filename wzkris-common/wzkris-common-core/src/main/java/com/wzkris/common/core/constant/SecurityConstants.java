@@ -13,9 +13,14 @@ public interface SecurityConstants {
     String TOKEN_HEADER = "Authorization";
 
     /**
-     * 个人信息
+     * token前缀
      */
-    String PRINCIPAL_HEADER = "Current_Principal";
+    String TOKEN_PREFIX = "Bearer ";
+
+    /**
+     * token请求ID
+     */
+    String TOKEN_REQ_ID_HEADER = "token_req_id";
 
     /**
      * 内部请求路径

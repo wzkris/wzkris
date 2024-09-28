@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * 权限不足处理类
  */
-public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
+public final class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

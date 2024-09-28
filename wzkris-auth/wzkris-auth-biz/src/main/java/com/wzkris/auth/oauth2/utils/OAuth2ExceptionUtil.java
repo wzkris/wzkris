@@ -45,7 +45,7 @@ public class OAuth2ExceptionUtil {
             return Result.resp(BizCode.PRECONDITION_FAILED, errorMsg);
         }
         else if (errorCode.equals(CustomErrorCodes.FREQUENT_RETRY)) {
-            return Result.resp(BizCode.FREQUENT_RETRY, errorMsg);
+            return Result.resp(BizCode.BAD_REQUEST, errorMsg);
         }
 
         // OAuth2异常
@@ -72,7 +72,7 @@ public class OAuth2ExceptionUtil {
         else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法则返回子状态
-                        Result.resp(BizCode.UNAUTHORIZED__INVALID_TOKEN);
+                        Result.resp(BizCode.UNAUTHORIZED);
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
                         Result.resp(BizCode.UNAUTHORIZED, StringUtil.nullToDefault(errorMsg, BizCode.UNAUTHORIZED.desc()));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法

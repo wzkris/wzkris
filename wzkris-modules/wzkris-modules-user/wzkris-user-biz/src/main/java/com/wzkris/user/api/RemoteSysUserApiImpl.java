@@ -2,7 +2,7 @@ package com.wzkris.user.api;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
-import com.wzkris.common.security.annotation.InnerAuth;
+import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
 import com.wzkris.user.api.domain.dto.QueryPermsDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;

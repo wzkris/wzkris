@@ -25,6 +25,6 @@ public class SentinelExceptionHandler implements BlockRequestHandler {
 
         return ServerResponse.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(Result.resp(BizCode.LIMIT_FLOW)));
+                .body(BodyInserters.fromValue(Result.resp(BizCode.BAD_REQUEST, "请求限流")));
     }
 }

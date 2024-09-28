@@ -45,7 +45,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Result<?> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',不支持媒体类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.BAD_REQUEST, MessageUtil.message("request.media.error"));
+        return resp(BizCode.PRECONDITION_FAILED, MessageUtil.message("request.media.error"));
     }
 
     /**
@@ -54,7 +54,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',请求数据格式异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.BAD_REQUEST, MessageUtil.message("request.param.error"));
+        return resp(BizCode.PRECONDITION_FAILED, MessageUtil.message("request.param.error"));
     }
 
     /**
@@ -63,7 +63,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Result<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到方法入参异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.BAD_REQUEST, e.getMessage());
+        return resp(BizCode.PRECONDITION_FAILED, e.getMessage());
     }
 
     /**
@@ -135,7 +135,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(CaptchaException.class)
     public Result<?> handledInvalidParamException(CaptchaException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',捕获到验证码异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.PRECONDITION_FAILED, e.getMessage());
+        return resp(BizCode.BAD_REQUEST, e.getMessage());
     }
 
     /**

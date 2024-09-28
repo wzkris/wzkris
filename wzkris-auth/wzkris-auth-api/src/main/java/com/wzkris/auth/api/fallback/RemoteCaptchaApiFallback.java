@@ -13,7 +13,7 @@ import static com.wzkris.common.core.domain.Result.resp;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description :
+ * @description : 验证码降级
  * @date : 2023/8/21 13:03
  */
 @Slf4j

@@ -1,4 +1,4 @@
-package com.wzkris.common.security.annotation;
+package com.wzkris.common.openfeign.annotation;
 
 import java.lang.annotation.*;
 

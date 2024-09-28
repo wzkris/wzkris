@@ -1,1 +1,2 @@
 com.wzkris.auth.api.fallback.RemoteCaptchaApiFallback
+com.wzkris.auth.api.fallback.RemoteTokenApiFallback
