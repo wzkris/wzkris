@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author wzkris
  */
-@Tag(name = "个人中心")
+@Tag(name = "系统个人中心")
 @RestController
 @RequestMapping("/sys_user/personal_center")
 @RequiredArgsConstructor
@@ -130,7 +130,8 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PostMapping("/edit_avatar")
     public Result<?> updateAvatar(@RequestBody String url) {
-        LoginSyser loginSyser = SysUtil.getLoginSyser();
-        return toRes(userMapper.updateAvatar(loginSyser.getUsername(), url) > 0);
+        SysUser sysUser = new SysUser(SysUtil.getUserId());
+        sysUser.setAvatar(url);
+        return toRes(userMapper.updateById(sysUser));
     }
 }

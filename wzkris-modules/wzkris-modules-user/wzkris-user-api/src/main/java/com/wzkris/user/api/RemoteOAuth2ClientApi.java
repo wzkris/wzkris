@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
+import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQUEST_PATH;
 
 /**
  * @author : wzkris
@@ -21,9 +21,12 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PA
 public interface RemoteOAuth2ClientApi {
 
     /**
-     * 根据手机号查询app用户
+     * 根据clientid查询客户端信息
+     *
+     * @param clientid clientid
+     * @return oauth2客户端
      */
-    @GetMapping(INNER_REQUEST_PATH + "/query_oauth2_client_by_clientid")
+    @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_oauth2_client_by_clientid")
     Result<OAuth2ClientDTO> getByClientId(@RequestParam("clientid") String clientid);
 
 }

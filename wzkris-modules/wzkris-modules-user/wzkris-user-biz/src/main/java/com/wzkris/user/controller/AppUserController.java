@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "用户管理")
+@Tag(name = "app用户管理")
 @Validated
 @RestController
 @RequestMapping("/app_user")

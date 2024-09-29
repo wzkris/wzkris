@@ -6,7 +6,6 @@ import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -57,16 +56,6 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      */
     @Select("select phone_number from sys_user where user_id = #{userId}")
     String selectPhoneNumberById(Long userId);
-
-    /**
-     * 修改用户头像
-     *
-     * @param username 用户名
-     * @param avatar   头像地址
-     * @return 结果
-     */
-    @Update("UPDATE sys_user SET avatar = #{avatar} WHERE username = #{username}")
-    int updateAvatar(@Param("username") String username, @Param("avatar") String avatar);
 
     /**
      * 批量真实删除用户

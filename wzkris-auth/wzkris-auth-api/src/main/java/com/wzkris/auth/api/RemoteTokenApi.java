@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
+import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQUEST_PATH;
 
 /**
  * @author : wzkris
@@ -27,12 +27,12 @@ public interface RemoteTokenApi {
     /**
      * 获取token对应的请求id
      */
-    @GetMapping(INNER_REQUEST_PATH + "/oauth2/token/req_id")
+    @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/oauth2/token/req_id")
     Result<String> getTokenReqId(@RequestParam String token);
 
     /**
      * 校验token
      */
-    @PostMapping(INNER_REQUEST_PATH + "/oauth2/check_token")
+    @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/oauth2/check_token")
     Result<Map<String, Object>> checkToken(@RequestBody @Valid ReqToken reqToken);
 }

@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author wzkris
  */
-@Tag(name = "用户管理")
+@Tag(name = "系统用户管理")
 @Validated
 @RestController
 @RequestMapping("/sys_user")

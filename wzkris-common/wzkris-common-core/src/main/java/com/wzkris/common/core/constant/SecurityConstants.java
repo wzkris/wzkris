@@ -25,7 +25,12 @@ public interface SecurityConstants {
     /**
      * 内部请求路径
      */
-    String INNER_REQUEST_PATH = "inner";
+    String INNER_REQUEST_PATH = "/inner";
+
+    /**
+     * 内部免鉴权请求路径
+     */
+    String INNER_NOAUTH_REQUEST_PATH = "/inner/noauth";
 
     /**
      * 角色前缀

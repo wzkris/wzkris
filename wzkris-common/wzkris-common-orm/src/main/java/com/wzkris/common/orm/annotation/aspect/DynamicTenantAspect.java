@@ -9,6 +9,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
@@ -28,6 +30,7 @@ import java.lang.reflect.Method;
  */
 @Aspect
 public class DynamicTenantAspect {
+    private static final Logger log = LoggerFactory.getLogger(DynamicTenantAspect.class);
     // spel标准解析上下文
     private volatile static StandardEvaluationContext context;
     // spel解析器
@@ -42,6 +45,10 @@ public class DynamicTenantAspect {
     public Object around(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
         String value = dynamicTenant.enableIgnore();
         DynamicTenant.ParseType parseType = dynamicTenant.parseType();
+        return this.processPoint(point, parseType, value);
+    }
+
+    private Object processPoint(ProceedingJoinPoint point, DynamicTenant.ParseType parseType, String value) throws Throwable {
         switch (parseType) {
             case BOOLEAN -> {
                 // bool值则直接转换
@@ -58,7 +65,7 @@ public class DynamicTenantAspect {
             }
             case SPEL_BOOLEAN -> {
                 // 解析spel表达式
-                boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(dynamicTenant.enableIgnore()), this.createContext());
+                boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(value), this.createContext());
                 if (ignore) {
                     return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
                 }

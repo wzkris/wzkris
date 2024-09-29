@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-@Tag(name = "OAuth2端点")
+@Tag(name = "OAuth2自定义端点")
 @RestController
 @RequestMapping("/oauth2")
 @RequiredArgsConstructor

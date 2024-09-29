@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/tenant")
-public class SysTenantController2 extends BaseController {
+public class SysTenantOwnController extends BaseController {
     private final SysTenantMapper sysTenantMapper;
 
     @Operation(summary = "获取自身租户")
