@@ -10,16 +10,15 @@ import com.wzkris.common.core.exception.base.BaseException;
  */
 public class CaptchaException extends BaseException {
 
-
     public CaptchaException(String code) {
-        super(BizCode.PRECONDITION_FAILED.value(), code, null, null);
+        this(code, null);
     }
 
-    public CaptchaException(String code, Object... args) {
-        super(BizCode.PRECONDITION_FAILED.value(), code, args, null);
+    public CaptchaException(String code, Object[] args) {
+        this(BizCode.PRECONDITION_FAILED.value(), code, args);
     }
 
-    public CaptchaException(int biz, String code, Object... args) {
-        super(biz, code, args, null);
+    public CaptchaException(int biz, String code, Object[] args) {
+        super("验证码异常", biz, code, args, null);
     }
 }

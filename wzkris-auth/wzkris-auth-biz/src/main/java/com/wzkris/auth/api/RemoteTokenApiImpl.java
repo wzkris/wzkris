@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,11 +44,11 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     public Result<Map<String, Object>> checkToken(ReqToken reqToken) {
         String reqId = RedisUtil.getObj(TOKEN_REQ_ID_PREFIX + reqToken.getToken());
         if (StringUtil.isBlank(reqId) || !reqId.equals(reqToken.getReqId())) {
-            return fail("reqId check failed");
+            return fail("invalid_request_id");
         }
         OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(reqToken.getToken(), null);
         if (oAuth2Authorization == null) {
-            return fail("token check failed");
+            return fail(OAuth2ErrorCodes.INVALID_TOKEN);
         }
 
         OAuth2User oAuth2User;

@@ -29,7 +29,7 @@ public final class AuthenticationEntryPointImpl implements AuthenticationEntryPo
         if (exception instanceof OAuth2AuthenticationException e) {
             if (e.getError() instanceof BearerTokenError bearerTokenError) {
                 JsonUtil.writeValue(response.getWriter(),
-                        Result.resp(bearerTokenError.getHttpStatus().value(), bearerTokenError.getErrorCode(), bearerTokenError.getDescription()));
+                        Result.resp(bearerTokenError.getHttpStatus().value(), null, bearerTokenError.getDescription()));
             }
             else {
                 JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED));

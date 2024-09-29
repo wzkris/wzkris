@@ -40,6 +40,8 @@ public final class ResourceServerConfig {
     @RefreshScope // 动态更新白名单
     public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .cors(configurer -> configurer.configure(http))
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
                             // 配置url白名单

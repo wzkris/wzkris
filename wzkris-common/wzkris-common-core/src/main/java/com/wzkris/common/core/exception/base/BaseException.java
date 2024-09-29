@@ -1,7 +1,7 @@
 package com.wzkris.common.core.exception.base;
 
-import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.MessageUtil;
+import org.springframework.lang.Nullable;
 
 /**
  * 基础异常
@@ -10,6 +10,10 @@ import com.wzkris.common.core.utils.MessageUtil;
  */
 public class BaseException extends RuntimeException {
 
+    /**
+     * 功能模块
+     */
+    private final String modules;
     /**
      * 状态码
      */
@@ -23,40 +27,40 @@ public class BaseException extends RuntimeException {
      */
     private final Object[] args;
     /**
-     * 异常信息；此异常信息仅为系统日志打印，不会返回给前端，若要返回内容给前端请走国际化
+     * 默认异常信息
      */
     private final String defaultMessage;
 
-    public BaseException(int biz, String code, Object[] args, String defaultMessage) {
+    public BaseException(String modules, int biz, String code, Object[] args, String defaultMessage) {
+        this.modules = modules;
         this.biz = biz;
         this.code = code;
         this.args = args;
         this.defaultMessage = defaultMessage;
     }
 
-    public BaseException(String code, Object[] args) {
-        this(BizCode.FAIL.value(), code, args, null);
-    }
-
     /**
-     * 该构造器生成的异常信息不会被返回给前端
-     */
-    public BaseException(String defaultMessage) {
-        this(BizCode.FAIL.value(), null, null, defaultMessage);
-    }
-
-    /**
-     * 获取返回信息
+     * 国际化信息
      */
     @Override
+    @Nullable
     public String getMessage() {
         if (this.code != null) {
             return MessageUtil.message(this.code, this.args);
         }
-        return this.defaultMessage;
+        return null;
     }
 
-    public int getBiz() {
+    public final String getModules() {
+        return this.modules;
+    }
+
+    public final int getBiz() {
         return this.biz;
+    }
+
+    @Nullable
+    public String getDefaultMessage() {
+        return this.defaultMessage;
     }
 }

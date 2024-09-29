@@ -19,7 +19,7 @@ package com.wzkris.auth.oauth2.handler;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wzkris.auth.listener.event.LoginSuccessEvent;
+import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -78,8 +78,8 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(OAuth2User.class.getName())) {
             OAuth2User oAuth2User = (OAuth2User) additionalParameters.get(OAuth2User.class.getName());
             // 发布登录成功事件
-            SpringUtil.getContext().publishEvent(new LoginSuccessEvent(oAuth2User.getOauth2Type(), oAuth2User.getPrincipal(),
-                    ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader("User-Agent"))));
+            SpringUtil.getContext().publishEvent(new LoginEvent(oAuth2User, ServletUtil.getClientIP(request),
+                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
             additionalParameters.remove(OAuth2User.class.getName());
         }
 

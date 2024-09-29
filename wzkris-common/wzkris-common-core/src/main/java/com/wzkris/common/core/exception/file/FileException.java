@@ -9,18 +9,17 @@ import com.wzkris.common.core.exception.base.BaseException;
  * @author wzkris
  */
 public class FileException extends BaseException {
-    private static final long serialVersionUID = 1L;
 
-    public FileException(String code) {
-        this(code, null, null);
+    public FileException(String code, Object[] args) {
+        this(BizCode.FAIL.value(), code, args);
     }
 
-    public FileException(String code, Object... args) {
-        this(BizCode.FAIL.value(), code, args, null);
+    public FileException(int biz, String code, Object[] args) {
+        this("文件异常", biz, code, args);
     }
 
-    public FileException(int biz, String code, Object... args) {
-        super(biz, code, args, null);
+    public FileException(String modules, int biz, String code, Object[] args) {
+        super(modules, biz, code, args, null);
     }
 
 }

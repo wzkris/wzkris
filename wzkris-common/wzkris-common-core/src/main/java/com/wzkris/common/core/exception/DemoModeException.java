@@ -6,8 +6,8 @@ package com.wzkris.common.core.exception;
  * @author wzkris
  */
 public final class DemoModeException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
 
     public DemoModeException() {
+        super("演示模式，不允许操作");
     }
 }

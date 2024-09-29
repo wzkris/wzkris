@@ -46,7 +46,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String reqId = request.getHeader(SecurityConstants.TOKEN_REQ_ID_HEADER);
         if (StringUtil.isBlank(reqId)) {
-            throw new OAuth2AuthenticationException(BearerTokenErrors.invalidRequest("invalid request id"));
+            throw new OAuth2AuthenticationException(BearerTokenErrors.invalidRequest("invalid_request_id"));
         }
 
         try {
