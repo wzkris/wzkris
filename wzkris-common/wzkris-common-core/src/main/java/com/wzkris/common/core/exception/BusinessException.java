@@ -8,29 +8,26 @@ import com.wzkris.common.core.exception.base.BaseException;
  *
  * @author wzkris
  */
-public class BusinessException extends BaseException {
-
-
-    public BusinessException(BizCode bizCode) {
-        super(bizCode.value(), null, null, bizCode.desc());
-    }
+public final class BusinessException extends BaseException {
 
     // 自定义业务代码及错误信息
     public BusinessException(int biz, String message) {
-        super(biz, null, null, message);
+        super("业务异常", biz, null, null, message);
     }
 
-    // 自定义信息
+    public BusinessException(BizCode bizCode) {
+        this(bizCode.value(), bizCode.desc());
+    }
+
     public BusinessException(String message) {
-        super(BizCode.FAIL.value(), null, null, message);
+        this(BizCode.FAIL.value(), message);
     }
 
-    // 指向国际化信息
-    protected BusinessException(String code, Object[] args) {
-        this(BizCode.FAIL.value(), code, args);
-    }
-
-    protected BusinessException(int biz, String code, Object[] args) {
-        super(biz, code, args, null);
+    /**
+     * @return 返回自定义错误信息
+     */
+    @Override
+    public String getMessage() {
+        return this.getDefaultMessage();
     }
 }

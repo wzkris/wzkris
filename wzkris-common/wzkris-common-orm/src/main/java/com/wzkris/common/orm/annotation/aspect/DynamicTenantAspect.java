@@ -9,6 +9,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
@@ -28,6 +30,7 @@ import java.lang.reflect.Method;
  */
 @Aspect
 public class DynamicTenantAspect {
+    private static final Logger log = LoggerFactory.getLogger(DynamicTenantAspect.class);
     // spel标准解析上下文
     private volatile static StandardEvaluationContext context;
     // spel解析器
@@ -38,12 +41,16 @@ public class DynamicTenantAspect {
     /**
      * 加入@DynamicTenant注解的方法执行前设置动态租户，执行后清除
      */
-    @Around("@annotation(dynamicTenant) || @within(dynamicTenant)")
+    @Around("@annotation(dynamicTenant)")
     public Object around(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
         String value = dynamicTenant.enableIgnore();
-        String parseType = dynamicTenant.parseType();
+        DynamicTenant.ParseType parseType = dynamicTenant.parseType();
+        return this.processPoint(point, parseType, value);
+    }
+
+    private Object processPoint(ProceedingJoinPoint point, DynamicTenant.ParseType parseType, String value) throws Throwable {
         switch (parseType) {
-            case "0" -> {
+            case BOOLEAN -> {
                 // bool值则直接转换
                 boolean isIgnore = Boolean.parseBoolean(value);
                 if (isIgnore) {
@@ -51,20 +58,20 @@ public class DynamicTenantAspect {
                 }
                 return point.proceed();
             }
-            case "1" -> {
+            case NUMBER -> {
                 // 解析租户ID
                 Long tenantId = Long.valueOf(value);
                 return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);
             }
-            case "2" -> {
+            case SPEL_BOOLEAN -> {
                 // 解析spel表达式
-                boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(dynamicTenant.enableIgnore()), this.createContext());
+                boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(value), this.createContext());
                 if (ignore) {
                     return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
                 }
                 return point.proceed();
             }
-            case "3" -> {
+            case SPEL_NUMBER -> {
                 // 解析spel，拿到对应参数
                 Long tenantId = this.parseSpel(this.getMethod(point), point.getArgs(), value, Long.class);
                 return DynamicTenantUtil.switchtWithThrowable(tenantId, point::proceed);

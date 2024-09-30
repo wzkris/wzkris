@@ -50,6 +50,13 @@
 				<version>${revision}</version>
 			</dependency>
 
+			<!-- 日志记录 -->
+			<dependency>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-common-loadbalancer</artifactId>
+				<version>${revision}</version>
+			</dependency>
+
 			<!--mq服务 -->
 			<dependency>
 				<groupId>com.wzkris</groupId>

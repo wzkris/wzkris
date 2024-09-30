@@ -5,16 +5,15 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.user.domain.SysDept;
-import com.wzkris.user.domain.SysRole;
-import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.SysUserRole;
+import com.wzkris.user.domain.*;
 import com.wzkris.user.domain.dto.SysRoleDTO;
 import com.wzkris.user.domain.dto.SysRoleUsersDTO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
+import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysDeptService;
+import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +25,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,9 @@ public class SysRoleController extends BaseController {
     private final SysUserService sysUserService;
     private final SysUserRoleMapper sysUserRoleMapper;
     private final SysRoleDeptMapper sysRoleDeptMapper;
+    private final SysRoleMenuMapper sysRoleMenuMapper;
     private final SysDeptService sysDeptService;
+    private final SysMenuService sysMenuService;
 
     @Operation(summary = "角色分页")
     @GetMapping("/list")
@@ -63,8 +63,18 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:query')")
     public Result<?> getInfo(@PathVariable Long roleId) {
         // 权限校验
-        sysRoleService.checkDataScopes(Collections.singletonList(roleId));
+        sysRoleService.checkDataScopes(roleId);
         return success(sysRoleMapper.selectById(roleId));
+    }
+
+    @Operation(summary = "角色菜单选择树")
+    @GetMapping("/menu_select_tree/{roleId}")
+    @PreAuthorize("@ps.hasPerms('sys_role:list')")
+    public Result<?> roleMenuTreeList(@PathVariable Long roleId) {
+        Map<String, Object> res = new HashMap<>(2);
+        res.put("checkedKeys", sysRoleMenuMapper.listMenuIdByRoleIds(roleId));
+        res.put("menus", sysMenuService.listMenuSelectTree(new SysMenu()));
+        return success(res);
     }
 
     @Operation(summary = "新增角色")
@@ -81,7 +91,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:edit')")
     public Result<?> edit(@Validated @RequestBody SysRoleDTO roleDTO) {
         // 权限校验
-        sysRoleService.checkDataScopes(Collections.singletonList(roleDTO.getRoleId()));
+        sysRoleService.checkDataScopes(roleDTO.getRoleId());
         return toRes(sysRoleService.updateRole(roleDTO));
     }
 
@@ -91,7 +101,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> editStatus(@RequestBody SysRole role) {
         // 校验权限
-        sysRoleService.checkDataScopes(Collections.singletonList(role.getRoleId()));
+        sysRoleService.checkDataScopes(role.getRoleId());
         SysRole update = new SysRole(role.getRoleId());
         update.setStatus(role.getStatus());
         return toRes(sysRoleMapper.updateById(update));
@@ -103,7 +113,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:dataScope')")
     public Result<?> dataScope(@RequestBody SysRoleDTO roleDTO) {
         // 权限校验
-        sysRoleService.checkDataScopes(Collections.singletonList(roleDTO.getRoleId()));
+        sysRoleService.checkDataScopes(roleDTO.getRoleId());
         return toRes(sysRoleService.updateDeptScope(roleDTO));
     }
 
@@ -115,7 +125,7 @@ public class SysRoleController extends BaseController {
         // 权限校验
         sysRoleService.checkDataScopes(roleIds);
         sysRoleService.checkUserUse(roleIds);
-        return toRes(sysRoleService.deleteBatchByIds(roleIds));
+        return toRes(sysRoleService.deleteByIds(roleIds));
     }
 
     @Operation(summary = "查询已授权的用户列表")
@@ -142,9 +152,9 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<?> cancelAuth(@RequestBody @Valid SysUserRole userRole) {
         // 校验角色权限
-        sysRoleService.checkDataScopes(Collections.singletonList(userRole.getRoleId()));
+        sysRoleService.checkDataScopes(userRole.getRoleId());
         // 校验用户权限
-        sysUserService.checkDataScopes(Collections.singletonList(userRole.getUserId()));
+        sysUserService.checkDataScopes(userRole.getUserId());
         return toRes(sysUserRoleMapper.delete(userRole.getUserId(), userRole.getRoleId()));
     }
 
@@ -154,7 +164,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<?> cancelAuth(@RequestBody @Valid SysRoleUsersDTO roleUsersDTO) {
         // 权限校验
-        sysRoleService.checkDataScopes(Collections.singletonList(roleUsersDTO.getRoleId()));
+        sysRoleService.checkDataScopes(roleUsersDTO.getRoleId());
         // 校验用户权限
         sysUserService.checkDataScopes(roleUsersDTO.getUserIds());
         return toRes(sysUserRoleMapper.deleteBatch(roleUsersDTO.getRoleId(), roleUsersDTO.getUserIds()));
@@ -166,7 +176,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<?> batchAuth(@RequestBody @Valid SysRoleUsersDTO roleUsersDTO) {
         // 权限校验
-        sysRoleService.checkDataScopes(Collections.singletonList(roleUsersDTO.getRoleId()));
+        sysRoleService.checkDataScopes(roleUsersDTO.getRoleId());
         sysRoleService.allocateUsers(roleUsersDTO.getRoleId(), roleUsersDTO.getUserIds());
         return success();
     }
@@ -176,7 +186,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:query')")
     public Result<?> deptTree(@PathVariable Long roleId) {
         // 权限校验
-        sysRoleService.checkDataScopes(Collections.singletonList(roleId));
+        sysRoleService.checkDataScopes(roleId);
         Map<String, Object> res = new HashMap<>(2);
         res.put("checkedKeys", sysRoleDeptMapper.listDeptIdByRoleId(roleId));
         res.put("depts", sysDeptService.listDeptTree(new SysDept()));

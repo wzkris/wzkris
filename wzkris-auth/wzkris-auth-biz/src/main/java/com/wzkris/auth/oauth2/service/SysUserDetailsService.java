@@ -2,11 +2,12 @@ package com.wzkris.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.oauth2.model.UserModel;
-import com.wzkris.auth.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteSysUserApi;
+import com.wzkris.user.api.domain.dto.QueryPermsDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,8 @@ public class SysUserDetailsService implements UserDetailsService {
         this.checkAccount(sysUserDTO);
 
         // 获取权限信息
-        Result<SysPermissionDTO> permissionDTOResult = remoteSysUserApi.getPermission(sysUserDTO.getUserId(), sysUserDTO.getDeptId());
+        Result<SysPermissionDTO> permissionDTOResult = remoteSysUserApi
+                .getPermission(new QueryPermsDTO(sysUserDTO.getUserId(), sysUserDTO.getTenantId(), sysUserDTO.getDeptId()));
         SysPermissionDTO permissions = permissionDTOResult.checkData();
 
         LoginSyser loginSyser = new LoginSyser();

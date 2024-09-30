@@ -19,15 +19,15 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, BlockException e) throws Exception {
-        BizCode bizCode;
+        Result<?> result;
         if (e instanceof AuthorityException) {
-            bizCode = BizCode.UNAUTHORIZED;
+            result = Result.resp(BizCode.UNAUTHORIZED);
         }
         else {
-            bizCode = BizCode.LIMIT_FLOW;
+            result = Result.resp(BizCode.BAD_REQUEST, "请求限流");
         }
         response.setContentType("application/json");
         response.setStatus(200);
-        response.getWriter().write(JsonUtil.toJsonString(Result.resp(bizCode)));
+        response.getWriter().write(JsonUtil.toJsonString(result));
     }
 }

@@ -12,8 +12,17 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum OAuth2Type {
+    /**
+     * 系统用户
+     */
     SYS_USER("sys_user"),
+    /**
+     * APP用户
+     */
     APP_USER("app_user"),
+    /**
+     * 客户端
+     */
     CLIENT("client");
 
     private final String value;

@@ -49,7 +49,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public List<SysRole> list(SysRole role) {
         LambdaQueryWrapper<SysRole> lqw = this.buildQueryWrapper(role);
-        return sysRoleMapper.selectListInScope(lqw);
+        return sysRoleMapper.selectList(lqw);
     }
 
     private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRole sysRole) {
@@ -77,7 +77,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         LambdaQueryWrapper<SysRole> lqw = new LambdaQueryWrapper<SysRole>()
                 .in(SysRole::getRoleId, roleIds)
                 .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE);
-        return sysRoleMapper.selectListInScope(lqw);
+        return sysRoleMapper.selectList(lqw);
     }
 
     /**
@@ -202,7 +202,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteBatchByIds(List<Long> roleIds) {
+    public int deleteByIds(List<Long> roleIds) {
         // 删除角色与菜单关联
         sysRoleMenuMapper.deleteByRoleIds(roleIds);
         // 删除角色与部门关联
@@ -232,7 +232,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     public void checkDataScopes(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(roleIds)) {
-            if (!(sysRoleMapper.checkDataScopes(roleIds) == roleIds.size())) {
+            if (sysRoleMapper.checkDataScopes(roleIds) != roleIds.size()) {
                 throw new AccessDeniedException("当前部门没有权限访问数据");
             }
         }

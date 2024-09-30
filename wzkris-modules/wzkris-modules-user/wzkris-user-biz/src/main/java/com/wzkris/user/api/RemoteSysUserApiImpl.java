@@ -2,21 +2,16 @@ package com.wzkris.user.api;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
-import com.wzkris.common.security.annotation.InnerAuth;
+import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
+import com.wzkris.user.api.domain.dto.QueryPermsDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
-import com.wzkris.user.api.domain.vo.RouterVO;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.mapper.SysUserMapper;
-import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 import static com.wzkris.common.core.domain.Result.success;
 
@@ -33,7 +28,6 @@ import static com.wzkris.common.core.domain.Result.success;
 public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     private final SysUserMapper sysUserMapper;
     private final SysPermissionService sysPermissionService;
-    private final SysMenuService sysMenuService;
 
     /**
      * 根据用户名查询系统用户
@@ -49,8 +43,9 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
      * 查询管理员权限
      */
     @Override
-    public Result<SysPermissionDTO> getPermission(@Nonnull Long userId, @Nullable Long deptId) {
-        SysPermissionDTO permission = sysPermissionService.getPermission(userId, deptId);
+    public Result<SysPermissionDTO> getPermission(QueryPermsDTO queryPermsDTO) {
+        SysPermissionDTO permission = sysPermissionService
+                .getPermission(queryPermsDTO.getUserId(), queryPermsDTO.getTenantId(), queryPermsDTO.getDeptId());
         return success(permission);
     }
 
@@ -66,12 +61,4 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
         sysUserMapper.updateById(sysUser);
     }
 
-    /**
-     * 获取系统用户前端路由
-     */
-    @Override
-    public Result<List<RouterVO>> getRouter(Long userId) {
-        List<RouterVO> routerVOS = sysMenuService.listRouteTree(userId);
-        return success(routerVOS);
-    }
 }

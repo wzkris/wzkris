@@ -16,6 +16,8 @@ spring:
       username: @nacos.username@
       password: @nacos.password@
       discovery:
+        metadata:
+          version: 0.1.1
         namespace: @nacos.namespace@
         group: @nacos.group@
       config:

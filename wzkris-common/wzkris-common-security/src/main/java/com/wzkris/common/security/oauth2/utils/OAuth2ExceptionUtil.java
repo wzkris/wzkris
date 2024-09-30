@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.utils;
+package com.wzkris.common.security.oauth2.utils;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
@@ -9,11 +9,12 @@ import com.wzkris.common.security.oauth2.exception.OAuth2AuthenticationI18nExcep
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.security.oauth2.server.resource.BearerTokenError;
 
 /**
  * OAuth2异常工具类
  */
-public class OAuth2ExceptionUtil {
+public final class OAuth2ExceptionUtil {
 
     private static final String ACCESS_TOKEN_REQUEST_ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
 
@@ -36,7 +37,12 @@ public class OAuth2ExceptionUtil {
     /**
      * 将OAuth2异常翻译成通用返回值
      */
-    public static Result<?> translate(OAuth2Error oAuth2Error) {
+    public static Result<Void> translate(OAuth2Error oAuth2Error) {
+        // Bearer Token异常
+        if (oAuth2Error instanceof BearerTokenError bearerTokenError) {
+            return Result.resp(bearerTokenError.getHttpStatus().value(), null, bearerTokenError.getDescription());
+        }
+
         String errorCode = oAuth2Error.getErrorCode();
         String errorMsg = oAuth2Error.getDescription();
 
@@ -45,7 +51,7 @@ public class OAuth2ExceptionUtil {
             return Result.resp(BizCode.PRECONDITION_FAILED, errorMsg);
         }
         else if (errorCode.equals(CustomErrorCodes.FREQUENT_RETRY)) {
-            return Result.resp(BizCode.FREQUENT_RETRY, errorMsg);
+            return Result.resp(BizCode.BAD_REQUEST, errorMsg);
         }
 
         // OAuth2异常
@@ -72,7 +78,7 @@ public class OAuth2ExceptionUtil {
         else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法则返回子状态
-                        Result.resp(BizCode.UNAUTHORIZED__INVALID_TOKEN);
+                        Result.resp(BizCode.UNAUTHORIZED);
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
                         Result.resp(BizCode.UNAUTHORIZED, StringUtil.nullToDefault(errorMsg, BizCode.UNAUTHORIZED.desc()));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法

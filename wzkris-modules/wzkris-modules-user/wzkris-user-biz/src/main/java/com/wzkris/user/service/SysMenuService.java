@@ -1,8 +1,8 @@
 package com.wzkris.user.service;
 
 
-import com.wzkris.user.api.domain.vo.RouterVO;
 import com.wzkris.user.domain.SysMenu;
+import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.domain.vo.SelectTree;
 import org.springframework.lang.Nullable;
 

@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PATH;
+import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQUEST_PATH;
 
 /**
  * @author : wzkris
@@ -22,12 +22,12 @@ public interface RemoteLogApi {
     /**
      * 新增操作日志
      */
-    @PostMapping(INNER_REQUEST_PATH + "/add_operlog")
+    @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/add_operlog")
     void insertOperlog(@RequestBody OperLogDTO operLogDTO);
 
     /**
      * 新增登录日志
      */
-    @PostMapping(INNER_REQUEST_PATH + "/add_loginlog")
+    @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/add_loginlog")
     void insertLoginlog(@RequestBody LoginLogDTO loginLogDTO);
 }

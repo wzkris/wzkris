@@ -12,14 +12,18 @@ import com.wzkris.common.core.exception.base.BaseException;
 public class UserException extends BaseException {
 
     public UserException(String code) {
-        this(code, null, null);
+        this(code, null);
     }
 
-    public UserException(String code, Object... args) {
-        this(BizCode.FAIL.value(), code, args, null);
+    public UserException(String code, Object[] args) {
+        this(BizCode.FAIL.value(), code, args);
     }
 
-    public UserException(int biz, String code, Object... args) {
-        super(biz, code, args, null);
+    public UserException(int biz, String code) {
+        this(biz, code, null);
+    }
+
+    public UserException(int biz, String code, Object[] args) {
+        super("用户异常", biz, code, args, null);
     }
 }

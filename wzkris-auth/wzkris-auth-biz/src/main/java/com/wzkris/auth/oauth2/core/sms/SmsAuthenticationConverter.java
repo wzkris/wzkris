@@ -4,7 +4,7 @@ import com.wzkris.auth.oauth2.constants.GrantTypeConstant;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
-import com.wzkris.auth.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.util.MultiValueMap;

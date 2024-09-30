@@ -21,6 +21,7 @@
 		<module>wzkris-common-bom</module>
 		<module>wzkris-common-core</module>
 		<module>wzkris-common-datasource</module>
+		<module>wzkris-common-loadbalancer</module>
 		<module>wzkris-common-log</module>
 		<module>wzkris-common-openfeign</module>
 		<module>wzkris-common-orm</module>

@@ -13,6 +13,7 @@ import com.wzkris.common.orm.plus.interceptor.PageInterceptor;
 import com.wzkris.common.orm.plus.interceptor.TenantLineHandlerImpl;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author : wzkris
@@ -21,7 +22,8 @@ import org.springframework.context.annotation.Bean;
  * @date : 2024/1/11 14:54
  */
 // 指定要扫描的Mapper类的包的路径
-@MapperScan("com.wzkris.*.mapper")
+@MapperScan("com.wzkris.**.mapper")
+@Configuration
 public class MybatisPlusConfig {
 
     private final TenantProperties tenantProperties;

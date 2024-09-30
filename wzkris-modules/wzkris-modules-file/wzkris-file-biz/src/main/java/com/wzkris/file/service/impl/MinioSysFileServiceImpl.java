@@ -1,9 +1,9 @@
 package com.wzkris.file.service.impl;
 
-import com.wzkris.file.utils.FileUtil;
 import com.wzkris.file.config.MinioConfig;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;
+import com.wzkris.file.utils.FileUtil;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;

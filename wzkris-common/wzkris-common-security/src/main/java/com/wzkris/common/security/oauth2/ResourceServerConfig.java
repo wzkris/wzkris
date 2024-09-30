@@ -1,12 +1,14 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.common.security.oauth2.config.OAuth2Properties;
+import com.wzkris.auth.api.RemoteTokenApi;
+import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
 import com.wzkris.common.security.oauth2.service.PermissionService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -27,22 +29,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @Slf4j
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
-@AllArgsConstructor
-public class ResourceServerConfig {
+@RequiredArgsConstructor
+public final class ResourceServerConfig {
 
-    private final OAuth2Properties oAuth2Properties;
+    private final PermitAllProperties permitAllProperties;
+
+    private final RemoteTokenApi remoteTokenApi;
 
     @Bean
+    @RefreshScope // 动态更新白名单
     public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .cors(configurer -> configurer.configure(http))
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
                             // 配置url白名单
-                            if (oAuth2Properties.getWhite() != null && oAuth2Properties.getWhite().getCommonUrls() != null) {
-                                authorize.requestMatchers(oAuth2Properties.getWhite().getCommonUrls().toArray(String[]::new)).permitAll();
+                            if (permitAllProperties.getCommons() != null) {
+                                authorize.requestMatchers(permitAllProperties.getCommons().toArray(String[]::new)).permitAll();
                             }
-                            if (oAuth2Properties.getWhite() != null && oAuth2Properties.getWhite().getCustomUrls() != null) {
-                                authorize.requestMatchers(oAuth2Properties.getWhite().getCustomUrls().toArray(String[]::new)).permitAll();
+                            if (permitAllProperties.getCustoms() != null) {
+                                authorize.requestMatchers(permitAllProperties.getCustoms().toArray(String[]::new)).permitAll();
                             }
                             authorize.anyRequest().authenticated();
                         }
@@ -51,7 +58,7 @@ public class ResourceServerConfig {
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
-                                token.introspector(new CustomOpaqueTokenIntrospector(oAuth2Properties.getIntrospectionUri()));
+                                token.introspector(new CustomOpaqueTokenIntrospector(remoteTokenApi));
                             })
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                             .accessDeniedHandler(new AccessDeniedHandlerImpl())

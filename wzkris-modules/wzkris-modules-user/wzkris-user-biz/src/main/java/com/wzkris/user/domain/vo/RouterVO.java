@@ -1,4 +1,4 @@
-package com.wzkris.user.api.domain.vo;
+package com.wzkris.user.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

@@ -72,7 +72,7 @@ public interface SysRoleService {
      * @param roleIds 需要删除的角色ID
      * @return 结果
      */
-    int deleteBatchByIds(List<Long> roleIds);
+    int deleteByIds(List<Long> roleIds);
 
     /**
      * 校验角色是否被用户关联
@@ -87,4 +87,13 @@ public interface SysRoleService {
      * @param roleIds 待操作的角色id数组
      */
     void checkDataScopes(List<Long> roleIds);
+
+    /**
+     * 校验是否有角色的数据权限
+     *
+     * @param roleId 待操作的角色id
+     */
+    default void checkDataScopes(Long roleId) {
+        this.checkDataScopes(List.of(roleId));
+    }
 }

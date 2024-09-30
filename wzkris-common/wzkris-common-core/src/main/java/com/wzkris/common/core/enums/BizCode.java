@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum BizCode {
-    // 通用失败
     FAIL(1, "Operate Fail"),
     OK(0, "Success"),
     BAD_REQUEST(400, "Bad Request"),
@@ -28,10 +27,6 @@ public enum BizCode {
     BAD_GATEWAY(502, "Bad Gateway"),
     // 服务不可用
     SERVICE_UNAVAILABLE(503, "Service Unavailable"),
-    // 频繁重试
-    FREQUENT_RETRY(912, "Frequent Retry"),
-    // 限流
-    LIMIT_FLOW(999, "Request Limit"),
     // 远程调用异常
     RPC_INVOCATION(1001, "Rpc Error"),
     // 三方服务异常

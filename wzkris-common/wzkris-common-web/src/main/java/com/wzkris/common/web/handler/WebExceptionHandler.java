@@ -2,12 +2,8 @@ package com.wzkris.common.web.handler;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.exception.DemoModeException;
-import com.wzkris.common.core.exception.ThirdServiceException;
-import com.wzkris.common.core.exception.UtilException;
-import com.wzkris.common.core.exception.param.CaptchaException;
-import com.wzkris.common.core.exception.user.UserException;
+import com.wzkris.common.core.exception.base.BaseException;
 import com.wzkris.common.core.utils.MessageUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,8 +40,8 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Result<?> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',不支持请求类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.BAD_REQUEST, MessageUtil.message("request.media.error"));
+        log.info("请求地址'{} {}',不支持媒体类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        return resp(BizCode.PRECONDITION_FAILED, MessageUtil.message("request.media.error"));
     }
 
     /**
@@ -54,7 +50,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',请求数据格式异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.BAD_REQUEST, MessageUtil.message("request.param.error"));
+        return resp(BizCode.PRECONDITION_FAILED, MessageUtil.message("request.param.error"));
     }
 
     /**
@@ -63,7 +59,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Result<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到方法入参异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.BAD_REQUEST, e.getMessage());
+        return resp(BizCode.PRECONDITION_FAILED, e.getMessage());
     }
 
     /**
@@ -103,39 +99,13 @@ public class WebExceptionHandler {
     }
 
     /**
-     * 用户异常
+     * 自定义异常
      */
-    @ExceptionHandler(UserException.class)
-    public Result<?> handleUserException(UserException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',捕获到用户异常,状态码：{},异常信息：{}", request.getMethod(), request.getRequestURI(), e.getBiz(), e.getMessage());
+    @ExceptionHandler(BaseException.class)
+    public Result<?> handleBaseException(BaseException e, HttpServletRequest request) {
+        log.info("请求地址'{} {}',异常模块：{}, 状态码：{}, 异常信息：{}",
+                request.getMethod(), request.getRequestURI(), e.getModules(), e.getBiz(), e.getMessage());
         return resp(e.getBiz(), null, e.getMessage());
-    }
-
-    /**
-     * 业务异常
-     */
-    @ExceptionHandler(BusinessException.class)
-    public Result<?> handleBusinessException(BusinessException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',捕获到业务异常,业务状态码：{},异常信息：{}", request.getMethod(), request.getRequestURI(), e.getBiz(), e.getMessage());
-        return resp(e.getBiz(), null, e.getMessage());
-    }
-
-    /**
-     * 第三方服务异常
-     */
-    @ExceptionHandler(ThirdServiceException.class)
-    public Result<?> handleThirdServiceException(ThirdServiceException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',捕获到第三方服务异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(e.getBiz(), null, e.getMessage());
-    }
-
-    /**
-     * 验证码异常
-     */
-    @ExceptionHandler(CaptchaException.class)
-    public Result<?> handledInvalidParamException(CaptchaException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',捕获到验证码异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.PRECONDITION_FAILED, e.getMessage());
     }
 
     /**
@@ -162,16 +132,7 @@ public class WebExceptionHandler {
      * 演示模式异常
      */
     @ExceptionHandler(DemoModeException.class)
-    public Result<?> handleDemoModeException() {
-        return fail("DEMO_MODE");
-    }
-
-    /**
-     * 工具异常
-     */
-    @ExceptionHandler(UtilException.class)
-    public Result<?> handleUtilException(UtilException e, HttpServletRequest request) {
-        log.info("请求地址'{} {}',捕获到工具异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.INTERNAL_ERROR, e.getMessage());
+    public Result<?> handleDemoModeException(DemoModeException e, HttpServletRequest request) {
+        return fail(e.getMessage());
     }
 }

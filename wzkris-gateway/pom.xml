@@ -69,6 +69,11 @@
 			<artifactId>wzkris-common-core</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-auth-api</artifactId>
+		</dependency>
+
 		<!-- knife4j网关聚合 -->
 		<dependency>
 			<groupId>com.github.xiaoymin</groupId>

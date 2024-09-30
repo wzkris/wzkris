@@ -1,7 +1,7 @@
 package com.wzkris.system.api;
 
 import com.wzkris.common.core.utils.MapstructUtil;
-import com.wzkris.common.security.annotation.InnerAuth;
+import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.system.api.domain.LoginLogDTO;
 import com.wzkris.system.api.domain.OperLogDTO;
 import com.wzkris.system.domain.SysLoginLog;

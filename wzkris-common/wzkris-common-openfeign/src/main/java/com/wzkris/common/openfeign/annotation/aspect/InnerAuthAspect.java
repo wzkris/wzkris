@@ -1,8 +1,8 @@
-package com.wzkris.common.security.annotation.aspect;
+package com.wzkris.common.openfeign.annotation.aspect;
 
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
-import com.wzkris.common.security.annotation.InnerAuth;
-import com.wzkris.common.security.oauth2.config.OAuth2Properties;
+import com.wzkris.common.openfeign.annotation.InnerAuth;
+import com.wzkris.common.openfeign.config.IdentityProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.aspectj.lang.JoinPoint;
@@ -23,7 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @AllArgsConstructor
 public class InnerAuthAspect implements Ordered {
 
-    private final OAuth2Properties oAuth2Properties;
+    private final IdentityProperties identityProperties;
 
     /**
      * 拦截标记方法或标记类下的所有方法
@@ -36,10 +36,10 @@ public class InnerAuthAspect implements Ordered {
             return;
         }
 
-        if (oAuth2Properties.getIdentityKey() != null && oAuth2Properties.getIdentityValue() != null) {
+        if (identityProperties.getIdentityKey() != null && identityProperties.getIdentityValue() != null) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-            String requestIdentityValue = request.getHeader(oAuth2Properties.getIdentityKey());
-            if (requestIdentityValue == null || !requestIdentityValue.equals(oAuth2Properties.getIdentityValue())) {
+            String requestIdentityValue = request.getHeader(identityProperties.getIdentityKey());
+            if (requestIdentityValue == null || !requestIdentityValue.equals(identityProperties.getIdentityValue())) {
                 throw new BusinessExceptionI18n(403, "request.inner.forbid");
             }
         }

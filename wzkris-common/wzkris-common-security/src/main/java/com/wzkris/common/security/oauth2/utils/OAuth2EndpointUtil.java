@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.utils;
+package com.wzkris.common.security.oauth2.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.LinkedMultiValueMap;

@@ -14,8 +14,10 @@ import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.EditPasswordDTO;
 import com.wzkris.user.domain.dto.EditPhoneDTO;
 import com.wzkris.user.domain.dto.SysUserDTO;
+import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysUserMapper;
+import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysUserService;
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +36,7 @@ import java.util.Map;
  *
  * @author wzkris
  */
-@Tag(name = "个人中心")
+@Tag(name = "系统个人中心")
 @RestController
 @RequestMapping("/sys_user/personal_center")
 @RequiredArgsConstructor
@@ -43,8 +46,16 @@ public class SysProfileController extends BaseController {
     private final SysRoleService sysRoleService;
     private final SysPostService sysPostService;
     private final SysDeptMapper sysDeptMapper;
+    private final SysMenuService sysMenuService;
     private final RemoteCaptchaApi remoteCaptchaApi;
     private final PasswordEncoder passwordEncoder;
+
+    @Operation(summary = "路由树")
+    @GetMapping("/routing")
+    public Result<List<RouterVO>> routers() {
+        List<RouterVO> routerVOS = sysMenuService.listRouteTree(SysUtil.getUserId());
+        return success(routerVOS);
+    }
 
     @Operation(summary = "个人信息")
     @GetMapping
@@ -119,7 +130,8 @@ public class SysProfileController extends BaseController {
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PostMapping("/edit_avatar")
     public Result<?> updateAvatar(@RequestBody String url) {
-        LoginSyser loginSyser = SysUtil.getLoginSyser();
-        return toRes(userMapper.updateAvatar(loginSyser.getUsername(), url) > 0);
+        SysUser sysUser = new SysUser(SysUtil.getUserId());
+        sysUser.setAvatar(url);
+        return toRes(userMapper.updateById(sysUser));
     }
 }
