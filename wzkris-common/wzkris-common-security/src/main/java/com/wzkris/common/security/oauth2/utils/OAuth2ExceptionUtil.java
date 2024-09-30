@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.utils;
+package com.wzkris.common.security.oauth2.utils;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
@@ -9,11 +9,12 @@ import com.wzkris.common.security.oauth2.exception.OAuth2AuthenticationI18nExcep
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.security.oauth2.server.resource.BearerTokenError;
 
 /**
  * OAuth2异常工具类
  */
-public class OAuth2ExceptionUtil {
+public final class OAuth2ExceptionUtil {
 
     private static final String ACCESS_TOKEN_REQUEST_ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
 
@@ -36,7 +37,12 @@ public class OAuth2ExceptionUtil {
     /**
      * 将OAuth2异常翻译成通用返回值
      */
-    public static Result<?> translate(OAuth2Error oAuth2Error) {
+    public static Result<Void> translate(OAuth2Error oAuth2Error) {
+        // Bearer Token异常
+        if (oAuth2Error instanceof BearerTokenError bearerTokenError) {
+            return Result.resp(bearerTokenError.getHttpStatus().value(), null, bearerTokenError.getDescription());
+        }
+
         String errorCode = oAuth2Error.getErrorCode();
         String errorMsg = oAuth2Error.getDescription();
 

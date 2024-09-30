@@ -69,7 +69,7 @@ public class AuthorizationServerConfig {
                 })
                 .oidc(Customizer.withDefaults());  // Enable OpenID Connect 1.0
 
-        // 追加自定义过滤器
+        // 追加验证码过滤器
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling(exceptionHandler -> {
