@@ -15,9 +15,6 @@ import static com.wzkris.common.core.domain.Result.success;
 public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
     private final CaptchaService captchaService;
 
-    /**
-     * 校验手机号
-     */
     @Override
     public Result<Void> validateSms(SmsDTO smsDTO) {
         captchaService.validateSmsCode(smsDTO.getPhoneNumber(), smsDTO.getSmsCode());

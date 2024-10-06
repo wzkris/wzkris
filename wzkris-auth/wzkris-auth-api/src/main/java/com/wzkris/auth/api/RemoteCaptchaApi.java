@@ -20,6 +20,9 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQ
 @FeignClient(value = ApplicationNameConstants.AUTH, contextId = "RemoteCaptchaApi", fallbackFactory = RemoteCaptchaApiFallback.class)
 public interface RemoteCaptchaApi {
 
+    /**
+     * 校验手机号验证码
+     */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/sms/validate")
     Result<Void> validateSms(@RequestBody @Valid SmsDTO smsDTO);
 }
