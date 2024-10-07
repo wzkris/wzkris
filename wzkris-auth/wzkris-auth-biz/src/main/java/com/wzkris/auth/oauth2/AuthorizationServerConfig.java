@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -90,14 +91,19 @@ public class AuthorizationServerConfig {
         return AuthorizationServerSettings.builder().build();
     }
 
+    @Bean
+    public ProviderManager providerManager(DaoAuthenticationProvider daoAuthenticationProvider) {
+        return new ProviderManager(daoAuthenticationProvider);
+    }
+
     /**
      * 默认的表单AuthenticationProvider，由于存在多个UserDetailsService 自动配置会失败
      * 手动对后台用户进行创建
      */
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder, SysUserDetailsService sysUserDetailsService) {
+    public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder, SysUserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
     }
 
