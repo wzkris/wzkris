@@ -3,6 +3,8 @@ package com.wzkris.common.security.oauth2.domain.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * @author : wzkris
  * @version : V1.0.1
@@ -11,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class LoginClient {
+public class LoginClient implements Serializable {
 
     private String clientId;
     private String clientName;

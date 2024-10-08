@@ -29,6 +29,11 @@
 			<artifactId>wzkris-common-openfeign</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-cas</artifactId>
+		</dependency>
+
 		<!-- Spring Oauth2资源服务器 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

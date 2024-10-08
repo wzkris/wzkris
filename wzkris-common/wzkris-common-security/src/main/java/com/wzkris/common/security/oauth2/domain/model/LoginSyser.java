@@ -3,6 +3,7 @@ package com.wzkris.common.security.oauth2.domain.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class LoginSyser {
+public class LoginSyser implements Serializable {
 
     // 登录id
     private Long userId;
