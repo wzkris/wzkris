@@ -8,10 +8,9 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MessageUtil;
 import com.wzkris.common.redis.util.RedisUtil;
-import com.wzkris.common.security.oauth2.constants.OAuth2SecurityConstants;
 import com.wzkris.user.api.RemoteOAuth2ClientApi;
 import com.wzkris.user.api.domain.dto.OAuth2ClientDTO;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
  * @description : 客户端持久化到数据库
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RedisRegisteredClientRepository implements RegisteredClientRepository {
 
     private static final String PREFIX = "Authorization:client";
@@ -106,10 +105,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
                     redirectUris.addAll(oauth2Client.getRedirectUris());
                 })
                 .scopes(scopes -> {// scope
-                    scopes.addAll(oauth2Client.getScopes()
-                            .stream().map(scope -> OAuth2SecurityConstants.SCOPE_PREFIX + scope)
-                            .collect(Collectors.toSet())
-                    );
+                    scopes.addAll(oauth2Client.getScopes());
                 });
 
         builder.tokenSettings(TokenSettings.builder()

@@ -5,7 +5,7 @@ import com.wzkris.auth.oauth2.model.RedisOAuth2Authorization;
 import com.wzkris.auth.oauth2.utils.OAuth2JsonUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nonnull;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBatch;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -24,7 +24,10 @@ import org.springframework.util.StringUtils;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -36,70 +39,72 @@ import java.util.function.Consumer;
  */
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
     private static final String OAUTH2_PREFIX = "Authorization:info";
+
+    private static final long DEFAULT_TIMEOUT = 600L;
 
     private final RegisteredClientRepository registeredClientRepository;
 
     @Override
     public void save(@Nonnull OAuth2Authorization authorization) {
-        // 所有code的过期时间，方便计算最大值
-        List<Long> expiresAtList = new ArrayList<>();
-
         // 判断所有OAuth2的code，如果有就存起来
-        Map<String, Long> tokenMap = new HashMap<>();
+        Map<String, Long> tokenMap = new HashMap<>(16);
 
         OAuth2Authorization.Token<OAuth2AuthorizationCode> authorizationCode = authorization.getToken(OAuth2AuthorizationCode.class);
         if (authorizationCode != null) {
             long between = ChronoUnit.SECONDS.between(authorizationCode.getToken().getIssuedAt(), authorizationCode.getToken().getExpiresAt());
-            expiresAtList.add(between);
             tokenMap.put(this.buildOAuth2Key(authorizationCode.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2AccessToken> accessToken = authorization.getAccessToken();
         if (accessToken != null) {
             long between = ChronoUnit.SECONDS.between(accessToken.getToken().getIssuedAt(), accessToken.getToken().getExpiresAt());
-            expiresAtList.add(between);
             tokenMap.put(this.buildOAuth2Key(accessToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2RefreshToken> refreshToken = authorization.getRefreshToken();
         if (refreshToken != null) {
             long between = ChronoUnit.SECONDS.between(refreshToken.getToken().getIssuedAt(), refreshToken.getToken().getExpiresAt());
-            expiresAtList.add(between);
             tokenMap.put(this.buildOAuth2Key(refreshToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2UserCode> userCodeToken = authorization.getToken(OAuth2UserCode.class);
         if (userCodeToken != null) {
             long between = ChronoUnit.SECONDS.between(userCodeToken.getToken().getIssuedAt(), userCodeToken.getToken().getExpiresAt());
-            expiresAtList.add(between);
             tokenMap.put(this.buildOAuth2Key(userCodeToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OAuth2DeviceCode> deviceCodeToken = authorization.getToken(OAuth2DeviceCode.class);
         if (deviceCodeToken != null) {
             long between = ChronoUnit.SECONDS.between(deviceCodeToken.getToken().getIssuedAt(), deviceCodeToken.getToken().getExpiresAt());
-            expiresAtList.add(between);
             tokenMap.put(this.buildOAuth2Key(deviceCodeToken.getToken().getTokenValue()), between);
         }
 
         OAuth2Authorization.Token<OidcIdToken> oidcIdTokenToken = authorization.getToken(OidcIdToken.class);
         if (oidcIdTokenToken != null) {
             long between = ChronoUnit.SECONDS.between(oidcIdTokenToken.getToken().getIssuedAt(), oidcIdTokenToken.getToken().getExpiresAt());
-            expiresAtList.add(between);
             tokenMap.put(this.buildOAuth2Key(oidcIdTokenToken.getToken().getTokenValue()), between);
         }
 
-        Long maxTimeOut = expiresAtList.stream().max(Comparator.comparing(s -> s)).orElse(0L);
         // 创建批量命令
         RBatch batch = RedisUtil.getClient().createBatch();
 
+        long maxTimeOut = DEFAULT_TIMEOUT;
         // 存储所有token映射id
         for (Map.Entry<String, Long> entry : tokenMap.entrySet()) {
             batch.getBucket(entry.getKey()).setAsync(authorization.getId(), Duration.ofSeconds(entry.getValue()));
+            if (maxTimeOut < entry.getValue()) {
+                maxTimeOut = entry.getValue();
+            }
+        }
+
+        // 判断是否有其他参数存在
+        Object state = authorization.getAttribute(OAuth2ParameterNames.STATE);
+        if (state != null) {
+            batch.getBucket(this.buildOAuth2Key(state.toString())).setAsync(authorization.getId(), Duration.ofSeconds(DEFAULT_TIMEOUT));
         }
 
         // 存储认证本体
@@ -143,6 +148,11 @@ public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationServi
         OAuth2Authorization.Token<OidcIdToken> oidcIdTokenToken = authorization.getToken(OidcIdToken.class);
         if (oidcIdTokenToken != null) {
             keys.add(this.buildOAuth2Key(oidcIdTokenToken.getToken().getTokenValue()));
+        }
+
+        Object state = authorization.getAttribute(OAuth2ParameterNames.STATE);
+        if (state != null) {
+            keys.add(this.buildOAuth2Key(state.toString()));
         }
 
         RedisUtil.delObj(keys);

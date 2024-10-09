@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class OAuth2TestController {
 
     @GetMapping("/oauth2/authorization_code_callback")
-    public ResponseEntity<?> callback(String code) {
+    public ResponseEntity<?> callback(String code, String state) {
+        log.info("code: {}, state: {}", code, state);
         return new ResponseEntity<>(code, HttpStatus.OK);
     }
 
