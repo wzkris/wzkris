@@ -1,13 +1,13 @@
 package com.wzkris.auth.listener;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.ip.AddressUtil;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import com.wzkris.system.api.RemoteLogApi;
@@ -41,13 +41,13 @@ public class LoginEventListener {
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final OAuth2User oAuth2User = event.getOAuth2User();
+        final WzUser wzUser = event.getWzUser();
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
-        log.info("监听到用户’{}‘登录成功事件, 登录IP：{}", oAuth2User.getPrincipalName(), ipAddr);
+        log.info("监听到用户’{}‘登录成功事件, 登录IP：{}", wzUser.getName(), ipAddr);
 
-        if (StringUtil.equals(oAuth2User.getOauth2Type(), OAuth2Type.SYS_USER.getValue())) {
-            LoginSyser loginSyser = (LoginSyser) oAuth2User.getPrincipal();
+        if (ObjUtil.equals(wzUser.getOauth2Type(), OAuth2Type.SYS_USER)) {
+            LoginSyser loginSyser = (LoginSyser) wzUser.getPrincipal();
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
             loginInfoDTO.setUserId(loginSyser.getUserId());
@@ -69,10 +69,10 @@ public class LoginEventListener {
             loginLogDTO.setBrowser(browser);
             remoteLogApi.insertLoginlog(loginLogDTO);
         }
-        else if (StringUtil.equals(oAuth2User.getOauth2Type(), OAuth2Type.APP_USER.getValue())) {
+        else if (ObjUtil.equals(wzUser.getOauth2Type(), OAuth2Type.APP_USER)) {
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
-            loginInfoDTO.setUserId(((LoginApper) oAuth2User.getPrincipal()).getUserId());
+            loginInfoDTO.setUserId(((LoginApper) wzUser.getPrincipal()).getUserId());
             loginInfoDTO.setLoginIp(ipAddr);
             loginInfoDTO.setLoginDate(DateUtil.current());
             remoteAppUserApi.updateLoginInfo(loginInfoDTO);

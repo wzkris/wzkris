@@ -8,7 +8,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.deserializer.module.OAuth2JacksonModule;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -18,8 +18,6 @@ import org.springframework.security.oauth2.server.resource.InvalidBearerTokenExc
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.util.Map;
 
 /**
  * @author : wzkris
@@ -50,10 +48,10 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
 
         try {
-            Result<Map<String, Object>> tokenResult = remoteTokenApi.checkToken(new ReqToken(token, reqId));
-            Map<String, Object> map = tokenResult.checkData();
+            Result<Object> tokenResult = remoteTokenApi.checkToken(new ReqToken(token, reqId));
+            Object res = tokenResult.checkData();
 
-            return this.adaptToCustomResponse(map);
+            return this.adaptToCustomResponse(res);
         }
         catch (BusinessException e) {
             throw new InvalidBearerTokenException(e.getMessage());
@@ -64,8 +62,8 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
     }
 
-    private OAuth2User adaptToCustomResponse(Map<String, Object> responseEntity) {
-        return objectMapper.convertValue(responseEntity, OAuth2User.class);
+    private WzUser adaptToCustomResponse(Object responseEntity) {
+        return objectMapper.convertValue(responseEntity, WzUser.class);
     }
 
 }

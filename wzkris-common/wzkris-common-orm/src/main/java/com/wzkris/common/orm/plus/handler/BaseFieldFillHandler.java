@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.oauth2.constants.OAuth2Type;
-import com.wzkris.common.security.utils.OAuth2Holder;
+import com.wzkris.common.security.utils.SecureUtil;
 import com.wzkris.common.security.utils.SysUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -21,8 +21,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && OAuth2Holder.isAuthenticated()) {
-            if (OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
+                && SecureUtil.isAuthenticated()) {
+            if (SecureUtil.getOauth2Type().equals(OAuth2Type.SYS_USER)) {
                 Long current = DateUtil.current();
                 Long createId = this.getUserId();
                 this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
@@ -36,8 +36,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && OAuth2Holder.isAuthenticated()) {
-            if (OAuth2Holder.getPrincipal().getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
+                && SecureUtil.isAuthenticated()) {
+            if (SecureUtil.getOauth2Type().equals(OAuth2Type.SYS_USER)) {
                 Long current = DateUtil.current();
                 Long createId = this.getUserId();
                 this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);

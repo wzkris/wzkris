@@ -66,8 +66,11 @@ public class AuthorizationServerConfig {
                 .clientAuthentication(clientAuthentication -> { // 客户端认证
                     clientAuthentication.errorResponseHandler(new AuthenticationFailureHandlerImpl());
                 })
-                .authorizationEndpoint(Customizer.withDefaults())// 授权
-                .oidc(Customizer.withDefaults());  // Enable OpenID Connect 1.0
+                .authorizationEndpoint(authorizationEndpoint -> {
+                    authorizationEndpoint.consentPage("/oauth2/confirm_consent"); // 授权
+                })
+                .deviceAuthorizationEndpoint(Customizer.withDefaults()) // 设备授权
+                .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 
         // 追加验证码过滤器
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);

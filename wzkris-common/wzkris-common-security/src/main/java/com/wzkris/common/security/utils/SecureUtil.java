@@ -2,7 +2,8 @@ package com.wzkris.common.security.utils;
 
 
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.constants.OAuth2Type;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,10 +15,10 @@ import java.util.Collection;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 当前登录信息工具类
+ * @description : 安全工具
  * @date : 2024/04/22 12:22
  */
-public class OAuth2Holder {
+public class SecureUtil {
 
     /**
      * 获得当前认证信息，可能登录可能未登录
@@ -45,7 +46,7 @@ public class OAuth2Holder {
         Authentication authentication = getAuthentication();
         return null != authentication && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)
-                && authentication.getPrincipal() instanceof OAuth2User;
+                && authentication.getPrincipal() instanceof WzUser;
     }
 
     /**
@@ -53,9 +54,9 @@ public class OAuth2Holder {
      *
      * @return 当前用户
      */
-    public static OAuth2User getPrincipal() {
+    public static WzUser getPrincipal() {
         try {
-            return (OAuth2User) getAuthentication().getPrincipal();
+            return (WzUser) getAuthentication().getPrincipal();
         }
         catch (Exception e) {
             throw new UserException(401, "user.not.login");
@@ -63,20 +64,11 @@ public class OAuth2Holder {
     }
 
     /**
-     * 获取当前登录用户名,未登录抛出异常
-     *
-     * @return 用户名
-     */
-    public static String getPrincipalName() {
-        return getPrincipal().getPrincipalName();
-    }
-
-    /**
      * 获取当前登录类型,未登录抛出异常
      *
      * @return 登录类型
      */
-    public static String getOauth2Type() {
+    public static OAuth2Type getOauth2Type() {
         return getPrincipal().getOauth2Type();
     }
 }

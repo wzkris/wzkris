@@ -1,11 +1,9 @@
 package com.wzkris.auth.oauth2.core.sms;
 
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
-import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.AppUserDetailsService;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,16 +38,13 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
         // 校验验证码
         captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
 
-        UserModel userModel = userDetailsService.loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        WzUser wzUser = userDetailsService.loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
-        if (userModel == null) {
+        if (wzUser == null) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        OAuth2User oAuth2User = new OAuth2User(OAuth2Type.APP_USER.getValue(), userModel.getUsername(),
-                userModel.getPrincipal(), userModel.getAuthorities());
-
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, null);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(wzUser, null, null);
         usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
         return usernamePasswordAuthenticationToken;
     }

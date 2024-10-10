@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 import static com.wzkris.common.core.domain.Result.resp;
 
 @Slf4j
@@ -27,7 +25,7 @@ public class RemoteTokenApiFallback implements FallbackFactory<RemoteTokenApi> {
             }
 
             @Override
-            public Result<Map<String, Object>> checkToken(ReqToken reqToken) {
+            public Result<Object> checkToken(ReqToken reqToken) {
                 log.error("验证token发生异常，errMsg：{}", cause.getMessage());
 
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());

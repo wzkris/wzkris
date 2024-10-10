@@ -1,8 +1,7 @@
 package com.wzkris.auth.oauth2.redis.mixin;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.wzkris.auth.oauth2.model.UserModel;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
@@ -17,10 +16,9 @@ public final class OAuth2MixinModule extends SimpleModule {
 
     @Override
     public void setupModule(SetupContext context) {
-        context.setMixInAnnotations(OAuth2User.class, OAuth2UserMixin.class);
+        context.setMixInAnnotations(WzUser.class, WzUserMixin.class);
         context.setMixInAnnotations(LoginSyser.class, LoginSyserMixin.class);
         context.setMixInAnnotations(LoginApper.class, LoginApperMixin.class);
         context.setMixInAnnotations(LoginClient.class, LoginClientMixin.class);
-        context.setMixInAnnotations(UserModel.class, UserModelMixin.class);
     }
 }

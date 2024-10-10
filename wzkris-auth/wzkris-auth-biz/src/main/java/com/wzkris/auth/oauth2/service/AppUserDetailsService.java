@@ -1,10 +1,11 @@
 package com.wzkris.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
-import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
+import com.wzkris.common.security.oauth2.constants.OAuth2Type;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
@@ -34,7 +35,7 @@ public class AppUserDetailsService implements UserDetailsService {
         throw new BusinessExceptionI18n("oauth2.unsupport.granttype");
     }
 
-    public UserModel loadUserByPhoneNumber(String phoneNumber) {
+    public WzUser loadUserByPhoneNumber(String phoneNumber) {
         Result<AppUserDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
         AppUserDTO appUserDTO = result.checkData();
 
@@ -44,7 +45,7 @@ public class AppUserDetailsService implements UserDetailsService {
     /**
      * 构建登录用户
      */
-    private UserModel checkAndBuild(AppUserDTO appUserDTO) {
+    private WzUser checkAndBuild(AppUserDTO appUserDTO) {
         // 校验用户状态
         this.checkAccount(appUserDTO);
 
@@ -52,8 +53,7 @@ public class AppUserDetailsService implements UserDetailsService {
         loginApper.setUserId(appUserDTO.getUserId());
         loginApper.setPhoneNumber(appUserDTO.getPhoneNumber());
 
-        return new UserModel(appUserDTO.getPhoneNumber(),
-                "", Collections.emptyList(), loginApper);
+        return new WzUser(OAuth2Type.APP_USER, loginApper.getPhoneNumber(), loginApper, Collections.EMPTY_LIST);
     }
 
     /**
