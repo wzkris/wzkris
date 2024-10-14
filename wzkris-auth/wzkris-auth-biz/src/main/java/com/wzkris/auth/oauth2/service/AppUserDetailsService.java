@@ -3,17 +3,13 @@ package com.wzkris.auth.oauth2.service;
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.exception.BusinessExceptionI18n;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.domain.dto.AppUserDTO;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +22,9 @@ import java.util.Collections;
  * @date : 2024/04/09 10:53
  */
 @Service
-@AllArgsConstructor
-public class AppUserDetailsService implements UserDetailsService {
+@RequiredArgsConstructor
+public class AppUserDetailsService implements UserDetailsServiceExt {
     private final RemoteAppUserApi remoteAppUserApi;
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        throw new BusinessExceptionI18n("oauth2.unsupport.granttype");
-    }
 
     public WzUser loadUserByPhoneNumber(String phoneNumber) {
         Result<AppUserDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
@@ -53,7 +44,7 @@ public class AppUserDetailsService implements UserDetailsService {
         loginApper.setUserId(appUserDTO.getUserId());
         loginApper.setPhoneNumber(appUserDTO.getPhoneNumber());
 
-        return new WzUser(OAuth2Type.APP_USER, loginApper.getPhoneNumber(), loginApper, Collections.EMPTY_LIST);
+        return new WzUser(UserType.APP_USER, loginApper.getPhoneNumber(), loginApper, Collections.emptyList());
     }
 
     /**

@@ -2,6 +2,7 @@ package com.wzkris.auth.oauth2.core.password;
 
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.service.SysUserDetailsService;
+import com.wzkris.auth.oauth2.service.UserDetailsServiceExt;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Component //注册成bean方便引用
 public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider<PasswordAuthenticationToken> {
-    private final SysUserDetailsService userDetailsService;
+    private final UserDetailsServiceExt userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final CaptchaService captchaService;
 
@@ -40,7 +41,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
         // 校验最大次数
-        captchaService.validateMaxTryCount(authenticationToken.getPassword());
+        captchaService.validateMaxTryCount(authenticationToken.getUsername());
 
         WzUser wzUser = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
 
@@ -49,9 +50,9 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(wzUser, null, null);
-        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return usernamePasswordAuthenticationToken;
+        UsernamePasswordAuthenticationToken wzAuthenticationToken = new UsernamePasswordAuthenticationToken(wzUser, null, null);
+        wzAuthenticationToken.setDetails(authenticationToken.getDetails());
+        return wzAuthenticationToken;
     }
 
     @Override

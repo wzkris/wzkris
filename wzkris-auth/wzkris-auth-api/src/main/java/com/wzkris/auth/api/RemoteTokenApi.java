@@ -32,5 +32,5 @@ public interface RemoteTokenApi {
      * 校验token
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/oauth2/check_token")
-    Result<Object> checkToken(@RequestBody @Valid ReqToken reqToken);
+    Result<?> checkToken(@RequestBody @Valid ReqToken reqToken);
 }

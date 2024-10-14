@@ -1,5 +1,6 @@
 package com.wzkris.common.security.oauth2.handler;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.auth.api.domain.ReqToken;
@@ -9,6 +10,9 @@ import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.deserializer.module.OAuth2JacksonModule;
 import com.wzkris.common.security.oauth2.domain.WzUser;
+import com.wzkris.common.security.oauth2.domain.model.LoginApper;
+import com.wzkris.common.security.oauth2.domain.model.LoginClient;
+import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -36,6 +40,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
     public CustomOpaqueTokenIntrospector(RemoteTokenApi remoteTokenApi) {
         this.remoteTokenApi = remoteTokenApi;
         objectMapper.registerModules(new OAuth2JacksonModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override
@@ -48,7 +53,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
 
         try {
-            Result<Object> tokenResult = remoteTokenApi.checkToken(new ReqToken(token, reqId));
+            Result<?> tokenResult = remoteTokenApi.checkToken(new ReqToken(token, reqId));
             Object res = tokenResult.checkData();
 
             return this.adaptToCustomResponse(res);
@@ -63,7 +68,15 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
     }
 
     private WzUser adaptToCustomResponse(Object responseEntity) {
-        return objectMapper.convertValue(responseEntity, WzUser.class);
+        WzUser wzUser = objectMapper.convertValue(responseEntity, WzUser.class);
+
+        switch (wzUser.getUserType()) {
+            case SYS_USER -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginSyser.class));
+            case APP_USER -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginApper.class));
+            case CLIENT -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginClient.class));
+            default -> throw new BusinessException("登录用户/客户端异常");
+        }
+        return wzUser;
     }
 
 }

@@ -2,8 +2,8 @@ package com.wzkris.common.security.utils;
 
 
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.WzUser;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,14 +39,15 @@ public class SecureUtil {
 
     /**
      * 是否认证
-     *
-     * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isAuthenticated() {
-        Authentication authentication = getAuthentication();
-        return null != authentication && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken)
-                && authentication.getPrincipal() instanceof WzUser;
+        try {
+            Authentication authentication = getAuthentication();
+            return authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken);
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -54,7 +55,7 @@ public class SecureUtil {
      *
      * @return 当前用户
      */
-    public static WzUser getPrincipal() {
+    public static WzUser getWzUser() {
         try {
             return (WzUser) getAuthentication().getPrincipal();
         }
@@ -68,7 +69,7 @@ public class SecureUtil {
      *
      * @return 登录类型
      */
-    public static OAuth2Type getOauth2Type() {
-        return getPrincipal().getOauth2Type();
+    public static UserType getUserType() {
+        return getWzUser().getUserType();
     }
 }

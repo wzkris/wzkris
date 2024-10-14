@@ -1,10 +1,10 @@
 package com.wzkris.common.security.oauth2.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
@@ -19,39 +19,39 @@ import java.util.*;
  * @author : wzkris
  * @version : V1.0.1
  * @description : OAuth2用户信息
- * @date : 2024/5/16 09:59
+ * @date : 2024/10/18 15:54
  */
 @Getter
-@JsonIgnoreProperties(ignoreUnknown = true)
 public final class WzUser implements UserDetails, OAuth2User, CredentialsContainer, Serializable {
 
     @Serial
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-    private final OAuth2Type oauth2Type;
+    private final UserType userType;
 
     private final String name;
 
-    private final Object principal;
-
     private final Set<GrantedAuthority> authorities;
+
+    @Setter
+    private Object principal;
 
     private String password;
 
-    public WzUser(OAuth2Type oauth2Type,
+    public WzUser(UserType userType,
                   String name,
                   Object principal,
                   Collection<? extends GrantedAuthority> authorities) {
-        this(oauth2Type, name, principal, "", authorities);
+        this(userType, name, principal, "", authorities);
     }
 
     @JsonCreator
-    public WzUser(@JsonProperty("oauth2Type") OAuth2Type oauth2Type,
+    public WzUser(@JsonProperty("userType") UserType userType,
                   @JsonProperty("name") String name,
                   @JsonProperty("principal") Object principal,
                   @JsonProperty("password") String password,
                   @JsonProperty("authorities") Collection<? extends GrantedAuthority> authorities) {
-        this.oauth2Type = oauth2Type;
+        this.userType = userType;
         this.name = name;
         this.principal = principal;
         this.password = password;
@@ -65,7 +65,7 @@ public final class WzUser implements UserDetails, OAuth2User, CredentialsContain
     }
 
     public Map<String, Object> getAttributes() {
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     @Override

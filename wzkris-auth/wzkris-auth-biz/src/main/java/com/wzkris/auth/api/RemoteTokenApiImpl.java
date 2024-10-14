@@ -5,9 +5,9 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.common.redis.util.RedisUtil;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -38,7 +38,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     }
 
     @Override
-    public Result<Object> checkToken(ReqToken reqToken) {
+    public Result<WzUser> checkToken(ReqToken reqToken) {
         String reqId = RedisUtil.getObj(TOKEN_REQ_ID_PREFIX + reqToken.getToken());
         if (StringUtil.isBlank(reqId) || !reqId.equals(reqToken.getReqId())) {
             return fail("invalid_request_id");
@@ -48,21 +48,24 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
             return fail(OAuth2ErrorCodes.INVALID_TOKEN);
         }
 
-        WzUser wzUser;
-        AuthorizationGrantType authorizationGrantType = oAuth2Authorization.getAuthorizationGrantType();
-        if (authorizationGrantType.equals(AuthorizationGrantType.CLIENT_CREDENTIALS)) {
-            LoginClient loginClient = new LoginClient();
-            loginClient.setClientId(oAuth2Authorization.getRegisteredClientId());
-            loginClient.setClientName(oAuth2Authorization.getPrincipalName());
+        UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());
+        WzUser wzUser = null;
 
-            wzUser = new WzUser(OAuth2Type.CLIENT, loginClient.getClientName(),
-                    loginClient, AuthorityUtils.createAuthorityList(oAuth2Authorization.getAuthorizedScopes()));
-        }
-        else {
-            UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());
+        if (authenticationToken != null) {
             wzUser = (WzUser) authenticationToken.getPrincipal();
         }
+        else {
+            // TODO 为空则为其他授权方式登录，现仅兼容客户端模式，可扩展设备码模式
+            AuthorizationGrantType authorizationGrantType = oAuth2Authorization.getAuthorizationGrantType();
+            if (authorizationGrantType.equals(AuthorizationGrantType.CLIENT_CREDENTIALS)) {
+                LoginClient loginClient = new LoginClient();
+                loginClient.setClientId(oAuth2Authorization.getRegisteredClientId());
+                loginClient.setClientName(oAuth2Authorization.getPrincipalName());
 
+                wzUser = new WzUser(UserType.CLIENT, loginClient.getClientName(),
+                        loginClient, AuthorityUtils.createAuthorityList(oAuth2Authorization.getAuthorizedScopes()));
+            }
+        }
         return success(wzUser);
     }
 }

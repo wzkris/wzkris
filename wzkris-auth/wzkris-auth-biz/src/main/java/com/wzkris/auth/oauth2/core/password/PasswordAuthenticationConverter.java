@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +45,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
         String username = additionalParameters.get(OAuth2ParameterNames.USERNAME).toString();
         String password = additionalParameters.get(OAuth2ParameterNames.PASSWORD).toString();
-        return new PasswordAuthenticationToken(username, password, clientPrincipal, requestedScopes, new HashMap<>());
+        return new PasswordAuthenticationToken(username, password, clientPrincipal, requestedScopes, null);
     }
 
 }

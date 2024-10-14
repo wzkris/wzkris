@@ -25,7 +25,7 @@ public class RemoteTokenApiFallback implements FallbackFactory<RemoteTokenApi> {
             }
 
             @Override
-            public Result<Object> checkToken(ReqToken reqToken) {
+            public Result<?> checkToken(ReqToken reqToken) {
                 log.error("验证token发生异常，errMsg：{}", cause.getMessage());
 
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());

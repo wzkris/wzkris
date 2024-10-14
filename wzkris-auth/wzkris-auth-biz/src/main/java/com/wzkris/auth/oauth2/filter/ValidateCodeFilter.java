@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -37,25 +38,22 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 验证码校验
-        if (!captchaConfig.getEnabled()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        if (captchaConfig.getEnabled()) {
+            // 仅处理登录请求
+            if (StringUtil.containsIgnoreCase(request.getRequestURI(), "/oauth2/token")) {
+                // 刷新token请求，不处理
+                String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
+                if (StringUtil.containsIgnoreCase(grantType, AuthorizationGrantType.REFRESH_TOKEN.getValue())) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
 
-        // 仅处理登录请求
-        if (StringUtil.containsIgnoreCase(request.getRequestURI(), "/oauth2/token")) {
-            // 刷新token请求，不处理
-            String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
-            if (StringUtil.containsIgnoreCase(grantType, OAuth2ParameterNames.REFRESH_TOKEN)) {
-                filterChain.doFilter(request, response);
-                return;
+                String code = request.getParameter(CODE);
+                String uuid = request.getParameter(UUID);
+
+                captchaService.validatePicCaptcha(uuid, code);
             }
-
-            String code = request.getParameter(CODE);
-            String uuid = request.getParameter(UUID);
-
-            captchaService.validatePicCaptcha(uuid, code);
         }
-
+        filterChain.doFilter(request, response);
     }
 }

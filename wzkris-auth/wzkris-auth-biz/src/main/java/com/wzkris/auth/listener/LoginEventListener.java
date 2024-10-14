@@ -6,10 +6,10 @@ import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.ip.AddressUtil;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import com.wzkris.system.api.RemoteLogApi;
 import com.wzkris.system.api.domain.LoginLogDTO;
 import com.wzkris.user.api.RemoteAppUserApi;
@@ -46,7 +46,7 @@ public class LoginEventListener {
         final UserAgent userAgent = event.getUserAgent();
         log.info("监听到用户’{}‘登录成功事件, 登录IP：{}", wzUser.getName(), ipAddr);
 
-        if (ObjUtil.equals(wzUser.getOauth2Type(), OAuth2Type.SYS_USER)) {
+        if (ObjUtil.equals(wzUser.getUserType(), UserType.SYS_USER)) {
             LoginSyser loginSyser = (LoginSyser) wzUser.getPrincipal();
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
@@ -69,7 +69,7 @@ public class LoginEventListener {
             loginLogDTO.setBrowser(browser);
             remoteLogApi.insertLoginlog(loginLogDTO);
         }
-        else if (ObjUtil.equals(wzUser.getOauth2Type(), OAuth2Type.APP_USER)) {
+        else if (ObjUtil.equals(wzUser.getUserType(), UserType.APP_USER)) {
             // 更新用户登录信息
             LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
             loginInfoDTO.setUserId(((LoginApper) wzUser.getPrincipal()).getUserId());

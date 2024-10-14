@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +44,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
         String phoneNumber = additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER).toString();
         String smsCode = additionalParameters.get(OAuth2ParameterConstant.SMS_CODE).toString();
-        return new SmsAuthenticationToken(phoneNumber, smsCode, clientPrincipal, requestedScopes, new HashMap<>());
+        return new SmsAuthenticationToken(phoneNumber, smsCode, clientPrincipal, requestedScopes, null);
     }
 
 }
