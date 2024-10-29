@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 27/08/2024 14:28:48
+ Date: 29/10/2024 17:15:26
 */
 
 SET NAMES utf8mb4;
@@ -106,7 +106,7 @@ CREATE TABLE `oauth2_client`  (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$UCYi5yRd5eS0sXdNlcvtK.Tl0oSIQuf2KKyQi4AltRppD3waUQ/3u', '[]', '[\"password\", \"sms\", \"refresh_token\", \"authorization_code\"]', '[\"http://localhost:8080/auth/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1724142425635, 1);
+INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$UCYi5yRd5eS0sXdNlcvtK.Tl0oSIQuf2KKyQi4AltRppD3waUQ/3u', '[\"openid\"]', '[\"password\", \"sms\", \"refresh_token\", \"authorization_code\", \"client_credentials\"]', '[\"http://localhost:8080/auth/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1724142425635, 1);
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -340,7 +340,7 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1724739883045, 1);
 INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1724739991113, 2);
-INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '0', 5, 1, 1, 1713334134616, 1, 1724739883045, 1);
+INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '0', 5, 1, 1, 1713334134616, 1, 1713334134616, 1);
 INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1724393365447, 1774671331412627456);
 
 -- ----------------------------
@@ -571,9 +571,9 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724737810655, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (2, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1724739889921, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1724373288077, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1730189813703, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (2, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724739889921, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'test', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1730189839334, NULL, 1713334134616, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_user_post

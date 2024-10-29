@@ -66,9 +66,8 @@ public class AuthorizationServerConfig {
                 .clientAuthentication(clientAuthentication -> { // 客户端认证
                     clientAuthentication.errorResponseHandler(new AuthenticationFailureHandlerImpl());
                 })
-                .authorizationEndpoint(authorizationEndpoint -> {
-                    authorizationEndpoint.consentPage("/oauth2/confirm_consent"); // 授权
-                })
+                .authorizationEndpoint(Customizer.withDefaults())
+                .deviceVerificationEndpoint(Customizer.withDefaults())
                 .deviceAuthorizationEndpoint(Customizer.withDefaults()) // 设备授权
                 .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 
