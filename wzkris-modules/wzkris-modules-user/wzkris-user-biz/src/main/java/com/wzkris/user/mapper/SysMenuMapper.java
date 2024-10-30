@@ -40,11 +40,4 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
             """)
     List<String> listPermsByMenuIds(@Param("menuIds") List<Long> menuIds);
 
-    /**
-     * 是否存在菜单子节点
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    int hasChildByMenuId(Long menuId);
 }

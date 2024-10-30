@@ -6,7 +6,6 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysMenu;
-import com.wzkris.user.domain.vo.SelectTree;
 import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +25,7 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/sys_menu")
+@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
     private final SysMenuMapper sysMenuMapper;
@@ -33,7 +33,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('menu:list') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:list')")
     public Result<?> list(SysMenu menu) {
         List<SysMenu> menus = sysMenuService.list(menu);
         return success(menus);
@@ -41,23 +41,15 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @PreAuthorize("@ps.hasPerms('menu:query') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:query')")
     public Result<?> getInfo(@PathVariable Long menuId) {
         return success(sysMenuMapper.selectById(menuId));
-    }
-
-    @Operation(summary = "菜单下拉选择树")
-    @GetMapping("/treelist")
-    @PreAuthorize("@ps.hasPerms('menu:selecttree')")
-    public Result<?> menuTree(SysMenu menu) {
-        List<SelectTree> selectTrees = sysMenuService.listMenuSelectTree(menu);
-        return success(selectTrees);
     }
 
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('menu:add') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:add')")
     public Result<?> add(@Valid @RequestBody SysMenu menu) {
         if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
@@ -68,7 +60,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('menu:edit') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:edit')")
     public Result<?> edit(@Valid @RequestBody SysMenu menu) {
         if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
@@ -82,7 +74,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('menu:remove') && @SysUtil.isSuperTenant()")
+    @PreAuthorize("@ps.hasPerms('menu:remove')")
     public Result<?> remove(@RequestBody Long menuId) {
         if (sysMenuService.hasChildByMenuId(menuId)) {
             return fail("存在子菜单,不允许删除");

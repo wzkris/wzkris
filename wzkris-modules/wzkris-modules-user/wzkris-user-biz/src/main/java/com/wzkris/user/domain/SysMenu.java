@@ -59,14 +59,11 @@ public class SysMenu extends BaseEntity {
     @Schema(description = "是否显示")
     private Boolean isVisible;
 
-    @Schema(description = "是否租户专用")
-    private Boolean isTenant;
-
     @NotBlank(message = "[menuType] {validate.notnull}")
     @Schema(description = "菜单类型（M目录 C菜单 F按钮）")
     private String menuType;
 
-    @Schema(description = "菜单状态（0正常 1停用）")
+    @Schema(description = "菜单状态（0正常 1停用）")// 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
     private String status;
 
     @Size(min = 0, max = 30, message = "[perms] {validate.size.illegal}")
@@ -78,7 +75,7 @@ public class SysMenu extends BaseEntity {
 
     @Schema(description = "子菜单")
     @TableField(exist = false)
-    private List<SysMenu> children = new ArrayList<SysMenu>();
+    private List<SysMenu> children = new ArrayList<>();
 
     public SysMenu(Long menuId) {
         this.menuId = menuId;

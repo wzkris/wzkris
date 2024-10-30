@@ -15,10 +15,4 @@
 		</if>
 	</select>
 
-	<select id="hasChildByMenuId" resultType="Integer">
-		SELECT COUNT(*)
-		FROM sys_menu
-		WHERE parent_id = #{menuId}
-	</select>
-
 </mapper>
