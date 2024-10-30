@@ -41,7 +41,7 @@ public class SysTenantOwnController extends BaseController {
         else {
             SysTenant tenant = sysTenantMapper.selectById(tenantId);
             tenantVO = MapstructUtil.convert(tenant, SysTenantVO.class);
-            tenantVO.setSuperT(false);
+            tenantVO.setSupert(false);
         }
         return success(tenantVO);
     }

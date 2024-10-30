@@ -17,6 +17,8 @@ public class LoginSyser implements Serializable {
 
     // 登录id
     private Long userId;
+    // 头像
+    private String avatar;
     // 用户名
     private String username;
     // 部门id

@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class SysTenantVO {
 
     @Schema(description = "是否超级租户")
-    private boolean superT;
+    private boolean supert;
 
     @Schema(description = "联系电话")
     private String contactPhone;
@@ -40,7 +40,7 @@ public class SysTenantVO {
     @Schema(description = "租户状态")
     private String status;
 
-    public SysTenantVO(boolean superT) {
-        this.superT = superT;
+    public SysTenantVO(boolean supert) {
+        this.supert = supert;
     }
 }

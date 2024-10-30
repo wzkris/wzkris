@@ -19,6 +19,9 @@ import java.util.Collection;
 @AutoMapper(target = LoginSyser.class)
 public class LoginUserVO {
 
+    @Schema(description = "头像")
+    private String avatar;
+
     @Schema(description = "用户名")
     private String username;
 
