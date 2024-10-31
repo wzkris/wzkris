@@ -8,6 +8,7 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.deserializer.module.OAuth2JacksonModule;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
@@ -15,10 +16,10 @@ import com.wzkris.common.security.oauth2.domain.model.LoginClient;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.server.resource.BearerTokenErrors;
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
+import org.springframework.security.oauth2.server.resource.BearerTokenError;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -49,7 +50,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String reqId = request.getHeader(SecurityConstants.TOKEN_REQ_ID_HEADER);
         if (StringUtil.isBlank(reqId)) {
-            throw new OAuth2AuthenticationException(BearerTokenErrors.invalidRequest("invalid_request_id"));
+            throw new OAuth2AuthenticationException(CustomErrorCodes.NOT_FOUND);
         }
 
         try {
@@ -59,7 +60,8 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
             return this.adaptToCustomResponse(res);
         }
         catch (BusinessException e) {
-            throw new InvalidBearerTokenException(e.getMessage());
+            BearerTokenError bearerTokenError = new BearerTokenError(String.valueOf(e.getBiz()), HttpStatus.valueOf(e.getBiz()), e.getMessage(), null);
+            throw new OAuth2AuthenticationException(bearerTokenError);
         }
         catch (Exception e) {
             log.error("token校验发生异常:{}", e.getMessage(), e);
