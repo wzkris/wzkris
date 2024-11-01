@@ -1,18 +1,19 @@
 package com.wzkris.auth.oauth2.service;
 
 import cn.hutool.core.util.ObjUtil;
-import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.dto.QueryPermsDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,12 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@AllArgsConstructor
-public class SysUserDetailsService implements UserDetailsService {
+@RequiredArgsConstructor
+public class SysUserDetailsService implements UserDetailsServiceExt {
     private final RemoteSysUserApi remoteSysUserApi;
 
     @Override
-    public UserModel loadUserByUsername(String username) throws UsernameNotFoundException {
+    public WzUser loadUserByUsername(String username) throws UsernameNotFoundException {
         Result<SysUserDTO> result = remoteSysUserApi.getByUsername(username);
         SysUserDTO sysUserDTO = result.checkData();
         return this.checkAndBuild(sysUserDTO);
@@ -39,7 +40,7 @@ public class SysUserDetailsService implements UserDetailsService {
     /**
      * 构建登录用户
      */
-    private UserModel checkAndBuild(SysUserDTO sysUserDTO) {
+    private WzUser checkAndBuild(SysUserDTO sysUserDTO) {
         // 校验用户状态
         this.checkAccount(sysUserDTO);
 
@@ -50,15 +51,15 @@ public class SysUserDetailsService implements UserDetailsService {
 
         LoginSyser loginSyser = new LoginSyser();
         loginSyser.setUserId(sysUserDTO.getUserId());
+        loginSyser.setAvatar(sysUserDTO.getAvatar());
+        loginSyser.setUsername(sysUserDTO.getUsername());
         loginSyser.setDeptId(sysUserDTO.getDeptId());
         loginSyser.setTenantId(sysUserDTO.getTenantId());
-        loginSyser.setUsername(sysUserDTO.getUsername());
-        loginSyser.setPassword(sysUserDTO.getPassword());
         loginSyser.setAdministrator(permissions.getAdministrator());
         loginSyser.setDeptScopes(permissions.getDeptScopes());
 
-        return new UserModel(sysUserDTO.getUsername(),
-                sysUserDTO.getPassword(), permissions.getGrantedAuthority(), loginSyser);
+        return new WzUser(UserType.SYS_USER, loginSyser.getUsername(),
+                loginSyser, sysUserDTO.getPassword(), AuthorityUtils.createAuthorityList(permissions.getGrantedAuthority()));
     }
 
     /**

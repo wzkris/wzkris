@@ -20,8 +20,8 @@ import lombok.experimental.Accessors;
 @AutoMapper(target = LoginApper.class)
 public class AppUserVO {
 
-    @Schema(description = "登录id")
-    private Long userId;
+    @Schema(description = "头像")
+    private String avatar;
 
     @Sensitive(strategy = SensitiveStrategy.PHONE)
     @Schema(description = "手机号密文")

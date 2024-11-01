@@ -36,7 +36,7 @@ public class MybatisExceptionHandler {
      */
     @ExceptionHandler(MyBatisSystemException.class)
     public Result<Void> handleCannotFindDataSourceException(MyBatisSystemException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',未找到数据源，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
+        log.error("请求地址'{} {}',Mybatis异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
         return resp(BizCode.INTERNAL_ERROR, "未找到数据源，请联系管理员确认");
     }
 

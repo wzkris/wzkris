@@ -1,5 +1,6 @@
 package com.wzkris.user.controller;
 
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -25,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,12 +70,13 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "角色菜单选择树")
-    @GetMapping("/menu_select_tree/{roleId}")
+    @GetMapping({"/menu_select_tree/", "/menu_select_tree/{roleId}"})
     @PreAuthorize("@ps.hasPerms('sys_role:list')")
-    public Result<?> roleMenuTreeList(@PathVariable Long roleId) {
+    public Result<?> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
         Map<String, Object> res = new HashMap<>(2);
-        res.put("checkedKeys", sysRoleMenuMapper.listMenuIdByRoleIds(roleId));
-        res.put("menus", sysMenuService.listMenuSelectTree(new SysMenu()));
+        res.put("checkedKeys", roleId == null ? Collections.emptyList() :
+                sysRoleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
+        res.put("menus", sysMenuService.listMenuSelectTree(new SysMenu(CommonConstants.STATUS_ENABLE)));
         return success(res);
     }
 

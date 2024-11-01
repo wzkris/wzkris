@@ -40,7 +40,7 @@ public interface SysMenuService {
     List<String> listPermsByMenuIds(@Nullable List<Long> menuIds);
 
     /**
-     * 查询菜单选择树（全部）
+     * 查询菜单选择树
      *
      * @return 菜单列表
      */

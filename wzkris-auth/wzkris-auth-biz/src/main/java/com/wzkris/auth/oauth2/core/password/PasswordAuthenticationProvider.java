@@ -1,11 +1,10 @@
 package com.wzkris.auth.oauth2.core.password;
 
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
-import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.SysUserDetailsService;
+import com.wzkris.auth.oauth2.service.UserDetailsServiceExt;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Component //注册成bean方便引用
 public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider<PasswordAuthenticationToken> {
-    private final SysUserDetailsService userDetailsService;
+    private final UserDetailsServiceExt userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final CaptchaService captchaService;
 
@@ -42,21 +41,18 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
         // 校验最大次数
-        captchaService.validateMaxTryCount(authenticationToken.getPassword());
+        captchaService.validateMaxTryCount(authenticationToken.getUsername());
 
-        UserModel userModel = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
+        WzUser wzUser = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
 
-        if (userModel == null || !passwordEncoder.matches(authenticationToken.getPassword(), userModel.getPassword())) {
+        if (wzUser == null || !passwordEncoder.matches(authenticationToken.getPassword(), wzUser.getPassword())) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        OAuth2User oAuth2User = new OAuth2User(OAuth2Type.SYS_USER.getValue(), userModel.getUsername(),
-                userModel.getPrincipal(), userModel.getAuthorities());
-
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, null);
-        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return usernamePasswordAuthenticationToken;
+        UsernamePasswordAuthenticationToken wzAuthenticationToken = new UsernamePasswordAuthenticationToken(wzUser, null, null);
+        wzAuthenticationToken.setDetails(authenticationToken.getDetails());
+        return wzAuthenticationToken;
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.wzkris.common.security.oauth2.domain.model;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 
 /**
@@ -12,11 +13,12 @@ import lombok.experimental.Accessors;
  * @UPDATE： 2024/4/9 09:29
  */
 @Data
-@Accessors(chain = true)
-public class LoginApper {
+public class LoginApper implements Serializable {
 
     // 登录id
     private Long userId;
+    // 头像
+    private String avatar;
     // 手机号
     private String phoneNumber;
 

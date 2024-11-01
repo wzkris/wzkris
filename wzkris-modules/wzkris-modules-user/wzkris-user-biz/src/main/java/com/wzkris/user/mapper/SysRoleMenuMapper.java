@@ -26,12 +26,12 @@ public interface SysRoleMenuMapper {
     @Select("""
             <script>
                 SELECT menu_id FROM sys_role_menu WHERE role_id IN
-                    <foreach collection="array" item="roleId" separator="," open="(" close=")">
+                    <foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    List<Long> listMenuIdByRoleIds(Long... roleIds);
+    List<Long> listMenuIdByRoleIds(@Param("roleIds") List<Long> roleIds);
 
     /**
      * 查询菜单是否使用

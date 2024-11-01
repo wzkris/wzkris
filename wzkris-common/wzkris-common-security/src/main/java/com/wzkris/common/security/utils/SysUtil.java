@@ -2,10 +2,8 @@ package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.core.utils.json.JsonUtil;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,15 +16,13 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component("SysUtil") //加入Spring容器以用于SPEL
-public class SysUtil extends OAuth2Holder {
+public class SysUtil extends SecureUtil {
 
     /**
      * 是否登录
-     *
-     * @description 不能为匿名用户也不能为OAUTH2客户端
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getOauth2Type().equals(OAuth2Type.SYS_USER.getValue());
+        return isAuthenticated() && getUserType().equals(UserType.SYS_USER);
     }
 
     /**
@@ -35,12 +31,12 @@ public class SysUtil extends OAuth2Holder {
      * @return 当前用户
      */
     public static LoginSyser getLoginSyser() {
-        OAuth2User oAuth2User = getPrincipal();
-        if (!oAuth2User.getOauth2Type().equals(OAuth2Type.SYS_USER.getValue())) {
-            log.warn("获取用户信息失败，当前用户不是系统用户");
+        try {
+            return (LoginSyser) getWzUser().getPrincipal();
+        }
+        catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }
-        return JsonUtil.parseObject(oAuth2User.getPrincipal(), LoginSyser.class);
     }
 
     /**

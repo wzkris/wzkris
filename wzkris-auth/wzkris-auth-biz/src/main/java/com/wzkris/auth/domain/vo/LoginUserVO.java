@@ -1,8 +1,9 @@
 package com.wzkris.auth.domain.vo;
 
+import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
+import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
@@ -15,8 +16,11 @@ import java.util.Collection;
  * @date : 2024/4/13 14:13
  */
 @Data
-@Accessors(chain = true)
+@AutoMapper(target = LoginSyser.class)
 public class LoginUserVO {
+
+    @Schema(description = "头像")
+    private String avatar;
 
     @Schema(description = "用户名")
     private String username;

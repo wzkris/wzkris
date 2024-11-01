@@ -21,12 +21,12 @@ import java.util.Map;
  *
  * @author wzkris
  */
-@Tag(name = "app个人中心")
+@Tag(name = "app账户信息")
 @Validated
 @RestController
-@RequestMapping("/app_user/personal_center")
+@RequestMapping("/app/account")
 @RequiredArgsConstructor
-public class AppProfileController extends BaseController {
+public class AppUserOwnController extends BaseController {
 
     private final AppUserMapper appUserMapper;
     private final AppUserService appUserService;

@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationGrantAuthenticationToken;
 
 import java.io.Serial;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +25,7 @@ public abstract class CommonAuthenticationToken extends OAuth2AuthorizationGrant
     protected CommonAuthenticationToken(AuthorizationGrantType authorizationGrantType, Authentication clientPrincipal,
                                         Set<String> scopes, Map<String, Object> additionalParameters) {
         super(authorizationGrantType, clientPrincipal, additionalParameters);
-        this.scopes = (scopes == null ? new HashSet<>() : scopes);
+        this.scopes = (scopes == null ? Collections.emptySet() : scopes);
     }
 
     public final Set<String> getScopes() {

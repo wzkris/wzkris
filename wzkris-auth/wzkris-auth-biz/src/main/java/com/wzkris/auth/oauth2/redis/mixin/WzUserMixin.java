@@ -16,6 +16,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonIgnoreProperties(
         ignoreUnknown = true
 )
-abstract class OAuth2UserMixin {
+abstract class WzUserMixin {
 
 }

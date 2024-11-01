@@ -14,10 +14,8 @@ import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.EditPasswordDTO;
 import com.wzkris.user.domain.dto.EditPhoneDTO;
 import com.wzkris.user.domain.dto.SysUserDTO;
-import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysUserMapper;
-import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysUserService;
@@ -28,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,32 +33,25 @@ import java.util.Map;
  *
  * @author wzkris
  */
-@Tag(name = "系统个人中心")
+@Tag(name = "系统账户信息")
 @RestController
-@RequestMapping("/sys_user/personal_center")
+@RequestMapping("/user/account")
 @RequiredArgsConstructor
-public class SysProfileController extends BaseController {
+public class SysUserOwnController extends BaseController {
     private final SysUserMapper userMapper;
     private final SysUserService userService;
     private final SysRoleService sysRoleService;
     private final SysPostService sysPostService;
     private final SysDeptMapper sysDeptMapper;
-    private final SysMenuService sysMenuService;
     private final RemoteCaptchaApi remoteCaptchaApi;
     private final PasswordEncoder passwordEncoder;
-
-    @Operation(summary = "路由树")
-    @GetMapping("/routing")
-    public Result<List<RouterVO>> routers() {
-        List<RouterVO> routerVOS = sysMenuService.listRouteTree(SysUtil.getUserId());
-        return success(routerVOS);
-    }
 
     @Operation(summary = "个人信息")
     @GetMapping
     public Result<?> info() {
         SysUser sysUser = userMapper.selectById(SysUtil.getUserId());
-        Map<String, Object> userMap = MapUtil.newHashMap(4);
+        Map<String, Object> userMap =
+                MapUtil.newHashMap(4);
         userMap.put(SysUser.Fields.username, sysUser.getUsername());
         userMap.put(SysUser.Fields.nickname, sysUser.getNickname());
         userMap.put(SysUser.Fields.phoneNumber, sysUser.getPhoneNumber());

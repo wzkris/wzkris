@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -64,10 +66,10 @@ public class AuthorizationServerConfig {
                 .clientAuthentication(clientAuthentication -> { // 客户端认证
                     clientAuthentication.errorResponseHandler(new AuthenticationFailureHandlerImpl());
                 })
-                .authorizationEndpoint(authorizationEndpoint -> { // 授权
-                    authorizationEndpoint.consentPage("/oauth2/consent");
-                })
-                .oidc(Customizer.withDefaults());  // Enable OpenID Connect 1.0
+                .authorizationEndpoint(Customizer.withDefaults())
+                .deviceVerificationEndpoint(Customizer.withDefaults())
+                .deviceAuthorizationEndpoint(Customizer.withDefaults()) // 设备授权
+                .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 
         // 追加验证码过滤器
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
@@ -95,10 +97,10 @@ public class AuthorizationServerConfig {
      * 手动对后台用户进行创建
      */
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder, SysUserDetailsService sysUserDetailsService) {
+    public AuthenticationManager providerManager(PasswordEncoder passwordEncoder, SysUserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(sysUserDetailsService);
-        return daoAuthenticationProvider;
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        return new ProviderManager(daoAuthenticationProvider);
     }
 
     /**

@@ -159,13 +159,4 @@ public class CaptchaService {
         RedisUtil.setObj(lockKey, retryCount, 300); // 默认冻结5分钟
     }
 
-    /**
-     * 账户解锁
-     *
-     * @param username 用户名
-     */
-    public void unlock(String username) {
-        RedisUtil.delObj(ACCOUNT_LOCK_PREFIX + username);
-    }
-
 }

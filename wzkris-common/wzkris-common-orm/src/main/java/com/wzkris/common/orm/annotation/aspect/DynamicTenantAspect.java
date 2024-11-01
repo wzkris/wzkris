@@ -5,14 +5,14 @@ import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -28,9 +28,9 @@ import java.lang.reflect.Method;
  * @description : 动态租户权限切面
  * @date : 2024/04/13 16:21
  */
+@Slf4j
 @Aspect
 public class DynamicTenantAspect {
-    private static final Logger log = LoggerFactory.getLogger(DynamicTenantAspect.class);
     // spel标准解析上下文
     private volatile static StandardEvaluationContext context;
     // spel解析器
@@ -41,8 +41,16 @@ public class DynamicTenantAspect {
     /**
      * 加入@DynamicTenant注解的方法执行前设置动态租户，执行后清除
      */
-    @Around("@annotation(dynamicTenant)")
+    @Around("@annotation(dynamicTenant) || @within(dynamicTenant)")
     public Object around(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
+        if (dynamicTenant == null) {// 说明方法为代理对象
+            dynamicTenant = AnnotationUtils.findAnnotation(((MethodSignature) point.getSignature()).getMethod(), DynamicTenant.class);
+            if (dynamicTenant == null) {
+                log.error("动态租户执行失败，获取到的注解为空");
+                return point.proceed();
+            }
+        }
+
         String value = dynamicTenant.enableIgnore();
         DynamicTenant.ParseType parseType = dynamicTenant.parseType();
         return this.processPoint(point, parseType, value);

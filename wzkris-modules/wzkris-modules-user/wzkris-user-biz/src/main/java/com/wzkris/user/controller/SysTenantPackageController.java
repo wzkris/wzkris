@@ -9,6 +9,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysTenantPackage;
+import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysTenantPackageService;
@@ -34,13 +35,14 @@ import java.util.Map;
 @Tag(name = "租户套餐管理")
 @Validated
 @RequiredArgsConstructor
-@PreAuthorize("@SysUtil.isSuperTenant()")
+@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
 @RestController
 @RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {
 
     private final SysTenantPackageMapper tenantPackageMapper;
     private final SysTenantPackageService tenantPackageService;
+    private final SysMenuMapper sysMenuMapper;
     private final SysMenuService sysMenuService;
 
     @Operation(summary = "套餐分页")
@@ -50,7 +52,7 @@ public class SysTenantPackageController extends BaseController {
         return success(tenantPackageService.listPage(sysTenantPackage));
     }
 
-    @Operation(summary = "套餐下拉选列表")
+    @Operation(summary = "套餐选择列表")
     @GetMapping("/selectlist")
     @PreAuthorize("@ps.hasPerms('tenant_package:list')")
     public Result<List<SysTenantPackage>> selectList() {
@@ -60,13 +62,12 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "套餐菜单选择树")
-    @GetMapping("/menu_select_tree/{packageId}")
+    @GetMapping({"/menu_select_tree/", "/menu_select_tree/{packageId}"})
     @PreAuthorize("@ps.hasPerms('tenant_package:list')")
-    public Result<?> tenantPackageMenuTreeList(@PathVariable Long packageId) {
+    public Result<?> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         Map<String, Object> res = new HashMap<>(2);
         res.put("checkedKeys", tenantPackageMapper.listMenuIdByPackageId(packageId));
-        SysMenu sysMenu = new SysMenu();
-        sysMenu.setIsTenant(true);
+        SysMenu sysMenu = new SysMenu(CommonConstants.STATUS_ENABLE);
         res.put("menus", sysMenuService.listMenuSelectTree(sysMenu));// 查询租户专用菜单
         return success(res);
     }
@@ -102,4 +103,5 @@ public class SysTenantPackageController extends BaseController {
     public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @RequestBody List<Long> packageIds) {
         return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }
+
 }

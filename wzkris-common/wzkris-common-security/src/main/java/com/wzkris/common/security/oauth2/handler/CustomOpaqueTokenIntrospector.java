@@ -1,5 +1,6 @@
 package com.wzkris.common.security.oauth2.handler;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.auth.api.domain.ReqToken;
@@ -7,19 +8,21 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.deserializer.module.OAuth2JacksonModule;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.domain.WzUser;
+import com.wzkris.common.security.oauth2.domain.model.LoginApper;
+import com.wzkris.common.security.oauth2.domain.model.LoginClient;
+import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.server.resource.BearerTokenErrors;
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
+import org.springframework.security.oauth2.server.resource.BearerTokenError;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.util.Map;
 
 /**
  * @author : wzkris
@@ -38,6 +41,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
     public CustomOpaqueTokenIntrospector(RemoteTokenApi remoteTokenApi) {
         this.remoteTokenApi = remoteTokenApi;
         objectMapper.registerModules(new OAuth2JacksonModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override
@@ -46,17 +50,18 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String reqId = request.getHeader(SecurityConstants.TOKEN_REQ_ID_HEADER);
         if (StringUtil.isBlank(reqId)) {
-            throw new OAuth2AuthenticationException(BearerTokenErrors.invalidRequest("invalid_request_id"));
+            throw new OAuth2AuthenticationException(CustomErrorCodes.NOT_FOUND);
         }
 
         try {
-            Result<Map<String, Object>> tokenResult = remoteTokenApi.checkToken(new ReqToken(token, reqId));
-            Map<String, Object> map = tokenResult.checkData();
+            Result<?> tokenResult = remoteTokenApi.checkToken(new ReqToken(token, reqId));
+            Object res = tokenResult.checkData();
 
-            return this.adaptToCustomResponse(map);
+            return this.adaptToCustomResponse(res);
         }
         catch (BusinessException e) {
-            throw new InvalidBearerTokenException(e.getMessage());
+            BearerTokenError bearerTokenError = new BearerTokenError(String.valueOf(e.getBiz()), HttpStatus.valueOf(e.getBiz()), e.getMessage(), null);
+            throw new OAuth2AuthenticationException(bearerTokenError);
         }
         catch (Exception e) {
             log.error("token校验发生异常:{}", e.getMessage(), e);
@@ -64,8 +69,16 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
     }
 
-    private OAuth2User adaptToCustomResponse(Map<String, Object> responseEntity) {
-        return objectMapper.convertValue(responseEntity, OAuth2User.class);
+    private WzUser adaptToCustomResponse(Object responseEntity) {
+        WzUser wzUser = objectMapper.convertValue(responseEntity, WzUser.class);
+
+        switch (wzUser.getUserType()) {
+            case SYS_USER -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginSyser.class));
+            case APP_USER -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginApper.class));
+            case CLIENT -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginClient.class));
+            default -> throw new BusinessException("登录用户/客户端异常");
+        }
+        return wzUser;
     }
 
 }

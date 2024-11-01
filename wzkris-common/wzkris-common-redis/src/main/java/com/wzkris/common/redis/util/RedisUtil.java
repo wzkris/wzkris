@@ -17,7 +17,6 @@ import java.util.Set;
  *
  * @author wzkris
  **/
-@SuppressWarnings(value = {"unchecked"})
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RedisUtil {
 
@@ -157,25 +156,18 @@ public class RedisUtil {
     }
 
     /**
-     * 获取有效时间
+     * 获取过期时间
      *
      * @param key Redis键
      * @return 有效时间 秒
      */
-    public static long getTimeToLive(final String key) {
+    public static long getExpire(final String key) {
         long time = redissonclient.getBucket(key).remainTimeToLive();
         return time <= 0 ? time : time / 1000;
     }
 
-    /**
-     * 设置有效时间
-     *
-     * @param key     Redis键
-     * @param timeout 时间，单位秒
-     * @return true=设置成功；false=设置失败
-     */
-    public static boolean setTimeToLive(final String key, final long timeout) {
-        return setTimeToLive(key, Duration.ofSeconds(timeout));
+    public static boolean expire(final String key, final long timeout) {
+        return expire(key, Duration.ofSeconds(timeout));
     }
 
     /**
@@ -185,8 +177,23 @@ public class RedisUtil {
      * @param duration 过期时间
      * @return true=设置成功；false=设置失败
      */
-    public static boolean setTimeToLive(final String key, final Duration duration) {
+    public static boolean expire(final String key, final Duration duration) {
         return redissonclient.getBucket(key).expire(duration);
+    }
+
+    public static boolean expireIfSet(final String key, final long timeout) {
+        return expireIfSet(key, Duration.ofSeconds(timeout));
+    }
+
+    /**
+     * 值存在才设置有效时间，否则不做任何操作
+     *
+     * @param key      Redis键
+     * @param duration 过期时间
+     * @return true=设置成功；false=设置失败
+     */
+    public static boolean expireIfSet(final String key, final Duration duration) {
+        return redissonclient.getBucket(key).expireIfSet(duration);
     }
 
     /**
@@ -195,7 +202,7 @@ public class RedisUtil {
      * @param key 键
      * @return true 存在 false不存在
      */
-    public static boolean hasKey(String key) {
+    public static boolean hasKey(final String key) {
         return redissonclient.getBucket(key).isExists();
     }
 
@@ -203,21 +210,21 @@ public class RedisUtil {
      * @param key 键
      * @return 返回个数
      */
-    public static long countKey(List<String> key) {
+    public static long countKey(final List<String> key) {
         return redissonclient.getKeys().countExists(key.toArray(new String[0]));
     }
 
     /**
      * 模糊匹配key
      */
-    public static List<String> keysByPattern(String keyPattern, int count) {
+    public static List<String> keysByPattern(final String keyPattern, final int count) {
         return redissonclient.getKeys().getKeysStreamByPattern(keyPattern, count).toList();
     }
 
     /**
      * 获取非公平锁
      */
-    public static RLock getLock(String key) {
+    public static RLock getLock(final String key) {
         return redissonclient.getLock(key);
     }
 

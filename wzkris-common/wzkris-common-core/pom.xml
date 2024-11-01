@@ -24,6 +24,12 @@
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 
+		<!-- 注解支持 -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
+
 		<!-- Transmittable ThreadLocal -->
 		<dependency>
 			<groupId>com.alibaba</groupId>

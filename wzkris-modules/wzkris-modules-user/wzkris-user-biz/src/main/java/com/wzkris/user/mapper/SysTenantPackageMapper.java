@@ -3,8 +3,10 @@ package com.wzkris.user.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysTenantPackage;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,7 +17,10 @@ import java.util.List;
 @Repository
 public interface SysTenantPackageMapper extends BaseMapperPlus<SysTenantPackage> {
 
-    default List<Long> listMenuIdByPackageId(Long packageId) {
+    default List<Long> listMenuIdByPackageId(@Nullable Long packageId) {
+        if (packageId == null) {
+            return Collections.emptyList();
+        }
         return this.selectOne(
                 new LambdaQueryWrapper<SysTenantPackage>()
                         .select(SysTenantPackage::getMenuIds)

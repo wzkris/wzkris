@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Map;
-
 import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQUEST_PATH;
 
 /**
@@ -34,5 +32,5 @@ public interface RemoteTokenApi {
      * 校验token
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/oauth2/check_token")
-    Result<Map<String, Object>> checkToken(@RequestBody @Valid ReqToken reqToken);
+    Result<?> checkToken(@RequestBody @Valid ReqToken reqToken);
 }

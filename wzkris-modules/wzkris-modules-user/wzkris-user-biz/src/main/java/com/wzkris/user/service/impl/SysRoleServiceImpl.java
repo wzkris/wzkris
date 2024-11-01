@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
@@ -16,7 +17,6 @@ import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +68,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return 角色列表
      */
     @Override
-    public List<SysRole> listByUserId(@Nullable Long userId) {
+    public List<SysRole> listByUserId(Long userId) {
         List<Long> roleIds = sysUserRoleMapper.listRoleIdByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
@@ -84,8 +84,10 @@ public class SysRoleServiceImpl implements SysRoleService {
      * 根据用户id获取角色
      */
     @Override
-    public String getRoleGroup(@Nullable Long userId) {
-        // 角色组
+    public String getRoleGroup(Long userId) {
+        if (SysUtil.isAdministrator()) {
+            return "超级管理员";
+        }
         List<SysRole> roles = this.listByUserId(userId);
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }

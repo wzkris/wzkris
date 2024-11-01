@@ -1,6 +1,6 @@
 package com.wzkris.common.sentinel;
 
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
 import com.wzkris.common.core.domain.Result;
@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SentinelExceptionHandler implements BlockExceptionHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, BlockException e) throws Exception {
+    public void handle(HttpServletRequest request, HttpServletResponse response, String s, BlockException e) throws Exception {
         Result<?> result;
         if (e instanceof AuthorityException) {
             result = Result.resp(BizCode.UNAUTHORIZED);

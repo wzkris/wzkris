@@ -53,6 +53,9 @@ public final class OAuth2ExceptionUtil {
         else if (errorCode.equals(CustomErrorCodes.FREQUENT_RETRY)) {
             return Result.resp(BizCode.BAD_REQUEST, errorMsg);
         }
+        else if (errorCode.equals(CustomErrorCodes.NOT_FOUND)) {
+            return Result.resp(BizCode.NOT_FOUND, errorMsg);
+        }
 
         // OAuth2异常
         if (errorCode.equals(OAuth2ErrorCodes.SERVER_ERROR)) {

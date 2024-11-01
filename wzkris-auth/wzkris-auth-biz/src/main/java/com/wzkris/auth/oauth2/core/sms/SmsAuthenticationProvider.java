@@ -1,11 +1,10 @@
 package com.wzkris.auth.oauth2.core.sms;
 
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
-import com.wzkris.auth.oauth2.model.UserModel;
 import com.wzkris.auth.oauth2.service.AppUserDetailsService;
+import com.wzkris.auth.oauth2.service.UserDetailsServiceExt;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.common.security.oauth2.constants.OAuth2Type;
-import com.wzkris.common.security.oauth2.domain.OAuth2User;
+import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,12 +22,13 @@ import org.springframework.stereotype.Component;
 @Component
 public final class SmsAuthenticationProvider extends CommonAuthenticationProvider<SmsAuthenticationToken> {
 
-    private final AppUserDetailsService userDetailsService;
+    private final UserDetailsServiceExt userDetailsService;
     private final CaptchaService captchaService;
 
     public SmsAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                      OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                     AppUserDetailsService userDetailsService, CaptchaService captchaService) {
+                                     AppUserDetailsService userDetailsService,
+                                     CaptchaService captchaService) {
         super(tokenGenerator, authorizationService);
         this.userDetailsService = userDetailsService;
         this.captchaService = captchaService;
@@ -37,21 +37,20 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     @Override
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
+        // 校验最大次数
+        captchaService.validateMaxTryCount(authenticationToken.getPhoneNumber());
         // 校验验证码
         captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
 
-        UserModel userModel = userDetailsService.loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        WzUser wzUser = userDetailsService.loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
-        if (userModel == null) {
+        if (wzUser == null) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        OAuth2User oAuth2User = new OAuth2User(OAuth2Type.APP_USER.getValue(), userModel.getUsername(),
-                userModel.getPrincipal(), userModel.getAuthorities());
-
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, null);
-        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return usernamePasswordAuthenticationToken;
+        UsernamePasswordAuthenticationToken wzAuthenticationToken = new UsernamePasswordAuthenticationToken(wzUser, null, null);
+        wzAuthenticationToken.setDetails(authenticationToken.getDetails());
+        return wzAuthenticationToken;
     }
 
     @Override

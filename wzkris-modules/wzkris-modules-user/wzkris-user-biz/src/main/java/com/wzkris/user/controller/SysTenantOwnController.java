@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author wzkris
  */
-@Tag(name = "自身租户信息")
+@Tag(name = "租户信息")
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -31,17 +31,17 @@ public class SysTenantOwnController extends BaseController {
 
     @Operation(summary = "获取自身租户")
     @GetMapping("/getinfo")
-    @PreAuthorize("@ps.hasPerms('tenant:getinfo")
+    @PreAuthorize("@ps.hasPerms('tenant:getinfo')")
     public Result<SysTenantVO> getInfo() {
         Long tenantId = SysUtil.getTenantId();
         SysTenantVO tenantVO;
         if (SysTenant.isSuperTenant(tenantId)) {
-            tenantVO = new SysTenantVO(true);
+            tenantVO = new SysTenantVO(true);// 超级租户不存在信息
         }
         else {
             SysTenant tenant = sysTenantMapper.selectById(tenantId);
             tenantVO = MapstructUtil.convert(tenant, SysTenantVO.class);
-            tenantVO.setSuperT(false);
+            tenantVO.setSupert(false);
         }
         return success(tenantVO);
     }

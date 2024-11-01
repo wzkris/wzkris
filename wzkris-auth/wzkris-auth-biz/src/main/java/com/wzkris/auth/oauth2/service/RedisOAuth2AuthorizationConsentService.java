@@ -2,7 +2,8 @@ package com.wzkris.auth.oauth2.service;
 
 import com.wzkris.auth.oauth2.model.RedisAuthorizationConsent;
 import com.wzkris.common.redis.util.RedisUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
@@ -22,10 +23,10 @@ import java.util.Set;
  * 它主要被实现OAuth2授权请求流程的组件使用，例如：authorization_code grant
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RedisOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
 
-    private final static Long DEFAULT_TIMEOUT = 180L;
+    private final static Long DEFAULT_TIMEOUT = 600L;
 
     private static final String PREFIX = "Authorization:consent";
 
@@ -54,7 +55,11 @@ public class RedisOAuth2AuthorizationConsentService implements OAuth2Authorizati
         return String.format("%s:%s:%s", PREFIX, clientId, principalName);
     }
 
+    @Nullable
     private OAuth2AuthorizationConsent toObject(RedisAuthorizationConsent authorizationConsent) {
+        if (authorizationConsent == null) {
+            return null;
+        }
         String registeredClientId = authorizationConsent.getRegisteredClientId();
 
         OAuth2AuthorizationConsent.Builder builder = OAuth2AuthorizationConsent.withId(
