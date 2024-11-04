@@ -43,7 +43,7 @@ public class SysTenantOwnController extends BaseController {
             tenantVO = sysTenantMapper.selectVOById(tenantId);
             // 查询已有账号
             Long count = sysUserMapper.selectCount(null);
-            tenantVO.setAccountHas(Short.valueOf(count.toString()));
+            tenantVO.setAccountHas(Math.toIntExact(count));
         }
         return success(tenantVO);
     }

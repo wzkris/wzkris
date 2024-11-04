@@ -48,7 +48,7 @@ public class SysTenant extends BaseEntity {
     private Long expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
-    private Short accountLimit;
+    private Integer accountLimit;
 
     @Schema(description = "删除标志")
     private Boolean isDeleted;

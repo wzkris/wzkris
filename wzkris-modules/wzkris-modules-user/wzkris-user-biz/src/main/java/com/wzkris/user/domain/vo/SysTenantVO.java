@@ -39,10 +39,10 @@ public class SysTenantVO {
     private Long expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
-    private Short accountLimit;
+    private Integer accountLimit;
 
     @Schema(description = "已有账号数量")
-    private Short accountHas;
+    private Integer accountHas;
 
     public SysTenantVO() {
         this.supert = false;
