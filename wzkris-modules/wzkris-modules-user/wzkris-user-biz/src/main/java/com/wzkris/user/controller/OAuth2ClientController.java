@@ -17,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * OAuth2客户端
  *
@@ -35,8 +37,10 @@ public class OAuth2ClientController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('oauth2_client:list')")
-    public Result<Page<OAuth2Client>> list(OAuth2Client client) {
-        return success(oAuth2ClientService.listPage(client));
+    public Result<Page<OAuth2Client>> listPage(OAuth2Client client) {
+        startPage();
+        List<OAuth2Client> list = oAuth2ClientService.list(client);
+        return getDataTable(list);
     }
 
     @Operation(summary = "根据id查详情")

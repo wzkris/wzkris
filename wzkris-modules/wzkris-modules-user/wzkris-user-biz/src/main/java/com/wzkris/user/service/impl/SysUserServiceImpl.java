@@ -53,7 +53,7 @@ public class SysUserServiceImpl implements SysUserService {
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
         List<SysUser> userList = sysUserMapper.selectListInScope(lqw);
         // 先获取分页信息，否则总数会有问题
-        Page page = PageUtil.getPage();
+        Page<SysUserVO> page = PageUtil.getPage();
 
         if (CollectionUtils.isEmpty(userList)) {
             return page;

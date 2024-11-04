@@ -2,6 +2,7 @@ package com.wzkris.common.core.annotation.impl.validator;
 
 import cn.hutool.core.util.PhoneUtil;
 import com.wzkris.common.core.annotation.PhoneNumber;
+import com.wzkris.common.core.utils.StringUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -15,7 +16,7 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumber, St
 
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext constraintValidatorContext) {
-        if (phoneNumber == null) {
+        if (StringUtil.isBlank(phoneNumber)) {
             return true;
         }
         return PhoneUtil.isPhone(phoneNumber);

@@ -2,6 +2,7 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysTenant;
+import com.wzkris.user.domain.vo.SysTenantVO;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +22,13 @@ public interface SysTenantMapper extends BaseMapperPlus<SysTenant> {
      */
     @Select("SELECT package_id FROM sys_tenant WHERE administrator = #{userId}")
     Long selectPackageIdByUserId(Long userId);
+
+    @Select("""
+            SELECT u.username AS administrator, t.*
+            FROM sys_tenant t
+            LEFT JOIN sys_user u ON
+            t.administrator = u.user_id
+            WHERE t.tenant_id = #{tenantId}
+           """)
+    SysTenantVO selectVOById(Long tenantId);
 }

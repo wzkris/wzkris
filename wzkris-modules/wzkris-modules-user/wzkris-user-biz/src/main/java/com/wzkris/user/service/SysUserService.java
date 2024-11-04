@@ -5,6 +5,7 @@ import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.vo.SysUserVO;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +18,6 @@ public interface SysUserService {
      * 分页查询
      */
     Page<SysUserVO> listPage(SysUser user);
-
 
     List<SysUserVO> list(SysUser user);
 
@@ -73,7 +73,7 @@ public interface SysUserService {
      * @param userId 被操作的对象id
      */
     default void checkDataScopes(Long userId) {
-        this.checkDataScopes(List.of(userId));
+        this.checkDataScopes(Collections.singletonList(userId));
     }
 
     /**

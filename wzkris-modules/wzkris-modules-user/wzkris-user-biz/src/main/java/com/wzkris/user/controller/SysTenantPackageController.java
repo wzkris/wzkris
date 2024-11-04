@@ -3,13 +3,13 @@ package com.wzkris.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysTenantPackage;
-import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysTenantPackageService;
@@ -42,22 +42,25 @@ public class SysTenantPackageController extends BaseController {
 
     private final SysTenantPackageMapper tenantPackageMapper;
     private final SysTenantPackageService tenantPackageService;
-    private final SysMenuMapper sysMenuMapper;
     private final SysMenuService sysMenuService;
 
     @Operation(summary = "套餐分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('tenant_package:list')")
-    public Result<Page<SysTenantPackage>> list(SysTenantPackage sysTenantPackage) {
-        return success(tenantPackageService.listPage(sysTenantPackage));
+    public Result<Page<SysTenantPackage>> listPage(SysTenantPackage sysTenantPackage) {
+        startPage();
+        List<SysTenantPackage> list = tenantPackageService.list(sysTenantPackage);
+        return getDataTable(list);
     }
 
-    @Operation(summary = "套餐选择列表")
+    @Operation(summary = "套餐选择列表(不带分页)")
     @GetMapping("/selectlist")
     @PreAuthorize("@ps.hasPerms('tenant_package:list')")
-    public Result<List<SysTenantPackage>> selectList() {
+    public Result<List<SysTenantPackage>> selectList(SysTenantPackage sysTenantPackage) {
         LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
-                .eq(SysTenantPackage::getStatus, CommonConstants.STATUS_ENABLE);
+                .select(SysTenantPackage::getPackageId, SysTenantPackage::getPackageName)
+                .eq(SysTenantPackage::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(sysTenantPackage.getPackageName()), SysTenantPackage::getPackageName, sysTenantPackage.getPackageName());
         return success(tenantPackageMapper.selectList(lqw));
     }
 

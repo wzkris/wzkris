@@ -14,11 +14,11 @@ import java.util.List;
 public interface SysTenantService {
 
     /**
-     * 分页查询
+     * 查询
      *
      * @param sysTenant 查询条件
      */
-    List<SysTenant> listPage(SysTenant sysTenant);
+    List<SysTenant> list(SysTenant sysTenant);
 
     /**
      * 添加租户, 会创建租户管理员账号

@@ -1,7 +1,9 @@
 package com.wzkris.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.DynamicTenant;
@@ -45,9 +47,21 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "租户分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('tenant:list')")
-    public Result<Page<SysTenant>> list(SysTenant sysTenant) {
+    public Result<Page<SysTenant>> listPage(SysTenant sysTenant) {
         startPage();
-        List<SysTenant> list = sysTenantService.listPage(sysTenant);
+        List<SysTenant> list = sysTenantService.list(sysTenant);
+        return getDataTable(list);
+    }
+
+    @Operation(summary = "租户选择列表(带分页)")
+    @GetMapping("/selectlist")
+    @PreAuthorize("@ps.hasPerms('tenant:list')")
+    public Result<Page<SysTenant>> selectlist(SysTenant sysTenant) {
+        startPage();
+        LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
+                .select(SysTenant::getTenantId, SysTenant::getTenantName)
+                .like(StringUtil.isNotBlank(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName());
+        List<SysTenant> list = sysTenantMapper.selectList(lqw);
         return getDataTable(list);
     }
 

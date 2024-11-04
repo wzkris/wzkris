@@ -33,11 +33,6 @@ public interface SecurityConstants {
     String INNER_NOAUTH_REQUEST_PATH = "/inner/noauth";
 
     /**
-     * 角色前缀
-     */
-    String ROLE_PREFIX = "ROLE_";
-
-    /**
      * 超级管理员ID
      */
     Long SUPER_ADMIN_ID = 1L;

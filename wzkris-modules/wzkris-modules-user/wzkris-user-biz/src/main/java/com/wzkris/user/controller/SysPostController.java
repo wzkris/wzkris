@@ -34,7 +34,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "岗位分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('post:list')")
-    public Result<Page<SysPost>> list(SysPost sysPost) {
+    public Result<Page<SysPost>> listPage(SysPost sysPost) {
         startPage();
         List<SysPost> list = sysPostService.list(sysPost);
         return getDataTable(list);

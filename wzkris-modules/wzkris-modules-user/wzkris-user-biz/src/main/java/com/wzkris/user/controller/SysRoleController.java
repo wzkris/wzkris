@@ -54,7 +54,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "角色分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('sys_role:list')")
-    public Result<Page<SysRole>> list(SysRole role) {
+    public Result<Page<SysRole>> listPage(SysRole role) {
         startPage();
         List<SysRole> list = sysRoleService.list(role);
         return getDataTable(list);

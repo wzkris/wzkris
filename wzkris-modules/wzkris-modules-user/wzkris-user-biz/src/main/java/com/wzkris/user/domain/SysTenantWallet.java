@@ -25,7 +25,7 @@ public class SysTenantWallet {
     @Schema(description = "状态")
     private String status;
 
-    @Schema(description = "密码")
-    private String password;
-
+    public SysTenantWallet(Long tenantId) {
+        this.tenantId = tenantId;
+    }
 }

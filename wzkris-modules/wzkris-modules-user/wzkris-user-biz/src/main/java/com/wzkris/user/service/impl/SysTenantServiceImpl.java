@@ -34,7 +34,7 @@ public class SysTenantServiceImpl implements SysTenantService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<SysTenant> listPage(SysTenant sysTenant) {
+    public List<SysTenant> list(SysTenant sysTenant) {
         // 查询
         LambdaQueryWrapper<SysTenant> lqw = this.buildQueryWrapper(sysTenant);
         return sysTenantMapper.selectList(lqw);
@@ -47,9 +47,7 @@ public class SysTenantServiceImpl implements SysTenantService {
 
         tenantDTO.setAdministrator(userId);
         sysTenantMapper.insert(tenantDTO);
-        SysTenantWallet wallet = new SysTenantWallet();
-        wallet.setTenantId(tenantDTO.getTenantId());
-        wallet.setPassword(passwordEncoder.encode("123456"));
+        SysTenantWallet wallet = new SysTenantWallet(tenantDTO.getTenantId());
         sysTenantWalletMapper.insert(wallet);
         SysUserDTO sysUserDTO = new SysUserDTO();
         sysUserDTO.setUserId(userId);
@@ -68,8 +66,7 @@ public class SysTenantServiceImpl implements SysTenantService {
 
     private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenant sysTenant) {
         return new LambdaQueryWrapper<SysTenant>()
-                .like(StringUtil.isNotNull(sysTenant.getLicenseNumber()), SysTenant::getLicenseNumber, sysTenant.getLicenseNumber())
-                .like(StringUtil.isNotNull(sysTenant.getCompanyName()), SysTenant::getCompanyName, sysTenant.getCompanyName())
+                .like(StringUtil.isNotNull(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName())
                 .eq(StringUtil.isNotNull(sysTenant.getStatus()), SysTenant::getStatus, sysTenant.getStatus())
                 .eq(StringUtil.isNotNull(sysTenant.getPackageId()), SysTenant::getPackageId, sysTenant.getPackageId())
                 .orderByDesc(SysTenant::getTenantId);
