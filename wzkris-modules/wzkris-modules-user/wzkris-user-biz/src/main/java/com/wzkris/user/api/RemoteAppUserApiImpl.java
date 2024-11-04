@@ -7,6 +7,7 @@ import com.wzkris.user.api.domain.dto.AppUserDTO;
 import com.wzkris.user.api.domain.dto.LoginInfoDTO;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.mapper.AppUserMapper;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import static com.wzkris.common.core.domain.Result.success;
  * @description : 内部app用户接口
  * @date : 2024/4/15 16:20
  */
+@Hidden
 @InnerAuth
 @RestController
 @RequiredArgsConstructor

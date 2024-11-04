@@ -6,6 +6,7 @@ import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.user.api.domain.dto.OAuth2ClientDTO;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +18,7 @@ import static com.wzkris.common.core.domain.Result.success;
  * @description : OAuth2客户端接口
  * @date : 2024/7/3 14:37
  */
+@Hidden
 @InnerAuth
 @RestController
 @RequiredArgsConstructor

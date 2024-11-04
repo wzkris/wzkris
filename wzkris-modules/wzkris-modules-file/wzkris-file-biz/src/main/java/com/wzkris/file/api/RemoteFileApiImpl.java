@@ -4,6 +4,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.file.api.domain.SysFile;
 import com.wzkris.file.service.SysFileService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import static com.wzkris.common.core.domain.Result.success;
  * @description : rpc - 文件rpc调用
  * @date : 2023/3/13 16:26
  */
+@Hidden
 @InnerAuth
 @RestController
 @RequiredArgsConstructor
