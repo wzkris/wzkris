@@ -42,7 +42,7 @@ public class SysTenantPackageController extends BaseController {
 
     private final SysTenantPackageMapper tenantPackageMapper;
     private final SysTenantPackageService tenantPackageService;
-    private final SysMenuService sysMenuService;
+    private final SysMenuService menuService;
 
     @Operation(summary = "套餐分页")
     @GetMapping("/list")
@@ -61,7 +61,7 @@ public class SysTenantPackageController extends BaseController {
                 .select(SysTenantPackage::getPackageId, SysTenantPackage::getPackageName)
                 .eq(SysTenantPackage::getStatus, CommonConstants.STATUS_ENABLE)
                 .like(StringUtil.isNotBlank(sysTenantPackage.getPackageName()), SysTenantPackage::getPackageName, sysTenantPackage.getPackageName());
-        return success(tenantPackageMapper.selectList(lqw));
+        return ok(tenantPackageMapper.selectList(lqw));
     }
 
     @Operation(summary = "套餐菜单选择树")
@@ -71,8 +71,8 @@ public class SysTenantPackageController extends BaseController {
         Map<String, Object> res = new HashMap<>(2);
         res.put("checkedKeys", tenantPackageMapper.listMenuIdByPackageId(packageId));
         SysMenu sysMenu = new SysMenu(CommonConstants.STATUS_ENABLE);
-        res.put("menus", sysMenuService.listMenuSelectTree(sysMenu));// 查询租户专用菜单
-        return success(res);
+        res.put("menus", menuService.listMenuSelectTree(sysMenu));// 查询租户专用菜单
+        return ok(res);
     }
 
     @Operation(summary = "套餐详细信息")
@@ -80,7 +80,7 @@ public class SysTenantPackageController extends BaseController {
     @PreAuthorize("@ps.hasPerms('tenant_package:query')")
     public Result<SysTenantPackage> getInfo(@NotNull(message = "[packageId] {validate.notnull}")
                                             @PathVariable Long packageId) {
-        return success(tenantPackageMapper.selectById(packageId));
+        return ok(tenantPackageMapper.selectById(packageId));
     }
 
     @Operation(summary = "新增租户套餐")

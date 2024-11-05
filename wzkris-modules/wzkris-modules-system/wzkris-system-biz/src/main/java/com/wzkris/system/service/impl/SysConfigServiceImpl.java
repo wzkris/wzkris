@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SysConfigServiceImpl implements SysConfigService {
 
-    private final SysConfigMapper sysConfigMapper;
+    private final SysConfigMapper configMapper;
 
     /**
      * 根据键名查询参数配置信息
@@ -39,7 +39,7 @@ public class SysConfigServiceImpl implements SysConfigService {
         if (StringUtil.isNotEmpty(configValue)) {
             return configValue;
         }
-        SysConfig retConfig = sysConfigMapper.selectConfig(configKey);
+        SysConfig retConfig = configMapper.selectConfig(configKey);
         if (StringUtil.isNotNull(retConfig)) {
             ConfigCache.setConfigValueByKey(configKey, retConfig.getConfigValue());
             return retConfig.getConfigValue();
@@ -56,7 +56,7 @@ public class SysConfigServiceImpl implements SysConfigService {
     @Override
     public List<SysConfig> list(SysConfig config) {
         LambdaQueryWrapper<SysConfig> lqw = this.buildQueryWrapper(config);
-        return sysConfigMapper.selectList(lqw);
+        return configMapper.selectList(lqw);
     }
 
     private LambdaQueryWrapper<SysConfig> buildQueryWrapper(SysConfig config) {
@@ -74,7 +74,7 @@ public class SysConfigServiceImpl implements SysConfigService {
      */
     @Override
     public int insertConfig(SysConfig config) {
-        int row = sysConfigMapper.insert(config);
+        int row = configMapper.insert(config);
         if (row > 0) {
             ConfigCache.setConfigValueByKey(config.getConfigKey(), config.getConfigValue());
         }
@@ -89,7 +89,7 @@ public class SysConfigServiceImpl implements SysConfigService {
      */
     @Override
     public int updateConfig(SysConfig config) {
-        int row = sysConfigMapper.updateById(config);
+        int row = configMapper.updateById(config);
         if (row > 0) {
             ConfigCache.setConfigValueByKey(config.getConfigKey(), config.getConfigValue());
         }
@@ -103,7 +103,7 @@ public class SysConfigServiceImpl implements SysConfigService {
      */
     @Override
     public void deleteConfigByIds(List<Long> configIds) {
-        List<SysConfig> configs = sysConfigMapper.selectBatchIds(configIds);
+        List<SysConfig> configs = configMapper.selectBatchIds(configIds);
 
         configs.forEach(config -> {
             if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
@@ -111,7 +111,7 @@ public class SysConfigServiceImpl implements SysConfigService {
             }
         });
         ConfigCache.clearAll();
-        sysConfigMapper.deleteByIds(configIds);
+        configMapper.deleteByIds(configIds);
         ConfigCache.clearAll();
     }
 
@@ -121,7 +121,7 @@ public class SysConfigServiceImpl implements SysConfigService {
     @Override
     @PostConstruct
     public void loadingConfigCache() {
-        List<SysConfig> configsList = sysConfigMapper.selectList(null);
+        List<SysConfig> configsList = configMapper.selectList(null);
         for (SysConfig config : configsList) {
             ConfigCache.setConfigValueByKey(config.getConfigKey(), config.getConfigValue());
         }
@@ -155,7 +155,7 @@ public class SysConfigServiceImpl implements SysConfigService {
         LambdaQueryWrapper<SysConfig> lqw = new LambdaQueryWrapper<SysConfig>()
                 .eq(SysConfig::getConfigKey, config.getConfigKey())
                 .ne(ObjUtil.isNotNull(config.getConfigId()), SysConfig::getConfigId, config.getConfigId());
-        return sysConfigMapper.exists(lqw);
+        return configMapper.exists(lqw);
     }
 
     /**

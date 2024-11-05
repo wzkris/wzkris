@@ -47,20 +47,20 @@ import java.util.Map;
 @RequestMapping("/sys_user")
 @RequiredArgsConstructor
 public class SysUserController extends BaseController {
-    private final SysUserMapper sysUserMapper;
-    private final SysUserService sysUserService;
-    private final SysDeptService sysDeptService;
-    private final SysRoleService sysRoleService;
-    private final SysPostService sysPostService;
-    private final SysUserPostMapper sysUserPostMapper;
-    private final SysUserRoleMapper sysUserRoleMapper;
+    private final SysUserMapper userMapper;
+    private final SysUserService userService;
+    private final SysDeptService deptService;
+    private final SysRoleService roleService;
+    private final SysPostService postService;
+    private final SysUserPostMapper userPostMapper;
+    private final SysUserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('sys_user:list')")
     public Result<Page<SysUserVO>> listPage(SysUser user) {
-        return success(sysUserService.listPage(user));
+        return ok(userService.listPage(user));
     }
 
     @Operation(summary = "用户详细信息")
@@ -68,21 +68,21 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
     public Result<?> getInfo(@PathVariable(required = false) Long userId) {
         // 校验权限
-        sysUserService.checkDataScopes(userId);
-        SysUser user = sysUserMapper.selectById(userId);
+        userService.checkDataScopes(userId);
+        SysUser user = userMapper.selectById(userId);
 
         Map<String, Object> info = new HashMap<>(8);
         // 用户信息
         info.put("user", user);
         // 可授权角色、岗位、部门
-        info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
-        info.put("posts", sysPostService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
-        info.put("depts", sysDeptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
+        info.put("roles", roleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        info.put("posts", postService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
+        info.put("depts", deptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
         // 已授权角色与岗位
-        info.put("postIds", sysUserPostMapper.listPostIdByUserId(userId));
-        info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
+        info.put("postIds", userPostMapper.listPostIdByUserId(userId));
+        info.put("roleIds", userRoleMapper.listRoleIdByUserId(userId));
 
-        return success(info);
+        return ok(info);
     }
 
     @Operation(summary = "新增用户")
@@ -90,19 +90,19 @@ public class SysUserController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_user:add')")
     public Result<?> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
-        if (sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
+        if (userService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getPhoneNumber())
-                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
+                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，手机号码已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getEmail())
-                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
+                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
         }
-        sysUserService.insertUser(userDTO);
-        return success();
+        userService.insertUser(userDTO);
+        return ok();
     }
 
     @Operation(summary = "修改用户")
@@ -111,20 +111,20 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> edit(@Validated @RequestBody SysUserDTO userDTO) {
         // 校验权限
-        sysUserService.checkDataScopes(userDTO.getUserId());
-        if (sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
+        userService.checkDataScopes(userDTO.getUserId());
+        if (userService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getPhoneNumber())
-                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
+                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，手机号码已存在");
         }
         else if (StringUtil.isNotEmpty(userDTO.getEmail())
-                && sysUserService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
+                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
         }
-
-        return toRes(sysUserService.updateUser(userDTO));
+        userService.updateUser(userDTO);
+        return ok();
     }
 
     @Operation(summary = "删除用户")
@@ -133,8 +133,8 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:remove')")
     public Result<?> remove(@RequestBody List<Long> userIds) {
         // 校验权限
-        sysUserService.checkDataScopes(userIds);
-        return toRes(sysUserMapper.deleteByIds(userIds));
+        userService.checkDataScopes(userIds);
+        return toRes(userMapper.deleteByIds(userIds));// soft delete
     }
 
     @Operation(summary = "重置密码")
@@ -143,11 +143,11 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> resetPwd(@RequestBody SysUser user) {
         // 校验权限
-        sysUserService.checkDataScopes(user.getUserId());
+        userService.checkDataScopes(user.getUserId());
 
         SysUser update = new SysUser(user.getUserId());
         update.setPassword(passwordEncoder.encode(user.getPassword()));
-        return toRes(sysUserMapper.updateById(update));
+        return toRes(userMapper.updateById(update));
     }
 
     @Operation(summary = "状态修改")
@@ -156,10 +156,10 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> editStatus(@RequestBody SysUser user) {
         // 校验权限
-        sysUserService.checkDataScopes(user.getUserId());
+        userService.checkDataScopes(user.getUserId());
         SysUser update = new SysUser(user.getUserId());
         update.setStatus(user.getStatus());
-        return toRes(sysUserMapper.updateById(update));
+        return toRes(userMapper.updateById(update));
     }
 
     @Operation(summary = "导出")
@@ -167,7 +167,7 @@ public class SysUserController extends BaseController {
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('sys_user:export')")
     public void export(HttpServletResponse httpServletResponse, SysUser user) {
-        List<SysUserVO> list = sysUserService.list(user);
+        List<SysUserVO> list = userService.list(user);
 
     }
 
@@ -176,18 +176,18 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
     public Result<?> authRole(@PathVariable Long userId) {
         // 校验权限
-        sysUserService.checkDataScopes(userId);
-        SysUser sysUser = sysUserMapper.selectById(userId);
+        userService.checkDataScopes(userId);
+        SysUser sysUser = userMapper.selectById(userId);
 
         // 可授权角色必须根据租户来
         Map<String, Object> info = new HashMap<>(4);
         // 被授权用户信息
         info.put("user", sysUser);
         // 用户角色
-        info.put("roleIds", sysUserRoleMapper.listRoleIdByUserId(userId));
+        info.put("roleIds", userRoleMapper.listRoleIdByUserId(userId));
         // 可授权角色
-        info.put("roles", sysRoleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
-        return success(info);
+        info.put("roles", roleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        return ok(info);
     }
 
     @Operation(summary = "用户授权角色")
@@ -196,11 +196,11 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> authRole(@RequestBody @Valid SysUserRolesDTO userRolesDTO) {
         // 校验用户可操作权限
-        sysUserService.checkDataScopes(userRolesDTO.getUserId());
+        userService.checkDataScopes(userRolesDTO.getUserId());
         // 校验角色可操作权限
-        sysRoleService.checkDataScopes(userRolesDTO.getRoleIds());
+        roleService.checkDataScopes(userRolesDTO.getRoleIds());
         // 分配权限
-        sysUserService.allocateRoles(userRolesDTO.getUserId(), userRolesDTO.getRoleIds());
-        return success();
+        userService.allocateRoles(userRolesDTO.getUserId(), userRolesDTO.getRoleIds());
+        return ok();
     }
 }

@@ -28,9 +28,9 @@ public interface SysTenantService {
     void insertTenant(SysTenantDTO tenantDTO);
 
     /**
-     * 更新租户, 不会更新租户管理员账号
+     * 删除租户及相关信息(hard delete)
      *
-     * @param sysTenant 参数
+     * @param tenantIds 租户ID集合
      */
-    boolean updateTenant(SysTenant sysTenant);
+    void hardDeleteByIds(List<Long> tenantIds);
 }

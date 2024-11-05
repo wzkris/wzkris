@@ -24,7 +24,7 @@ import java.security.Principal;
 import java.util.List;
 
 import static com.wzkris.common.core.domain.Result.resp;
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
 @Hidden
 @InnerAuth
@@ -51,7 +51,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
 
         reqId = RedisUtil.getClient().getScript().eval(RScript.Mode.READ_WRITE, script,
                 RScript.ReturnType.VALUE, List.of(key), reqId, 60);
-        return success(reqId);
+        return ok(reqId);
     }
 
     @Override
@@ -83,6 +83,6 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
                         loginClient, AuthorityUtils.createAuthorityList(oAuth2Authorization.getAuthorizedScopes()));
             }
         }
-        return success(wzUser);
+        return ok(wzUser);
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysNoticeServiceImpl implements SysNoticeService {
-    private final SysNoticeMapper sysNoticeMapper;
+    private final SysNoticeMapper noticeMapper;
 
     /**
      * 查询公告列表
@@ -29,7 +29,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Override
     public List<SysNotice> list(SysNotice notice) {
         LambdaQueryWrapper<SysNotice> lqw = this.buildQueryWrapper(notice);
-        return sysNoticeMapper.selectList(lqw);
+        return noticeMapper.selectList(lqw);
     }
 
     private LambdaQueryWrapper<SysNotice> buildQueryWrapper(SysNotice notice) {

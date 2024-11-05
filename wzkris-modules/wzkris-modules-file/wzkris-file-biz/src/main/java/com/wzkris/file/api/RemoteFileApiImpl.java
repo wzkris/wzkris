@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
 /**
  * @author : wzkris
@@ -32,6 +32,6 @@ public class RemoteFileApiImpl implements RemoteFileApi {
         SysFile sysFile = new SysFile();
         sysFile.setName(sysFile.getName());
         sysFile.setUrl(url);
-        return success(sysFile);
+        return ok(sysFile);
     }
 }

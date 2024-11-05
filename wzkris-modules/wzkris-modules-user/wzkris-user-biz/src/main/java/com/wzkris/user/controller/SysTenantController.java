@@ -40,16 +40,16 @@ import java.util.List;
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
-    private final SysTenantMapper sysTenantMapper;
-    private final SysTenantService sysTenantService;
-    private final SysUserService sysUserService;
+    private final SysTenantMapper tenantMapper;
+    private final SysTenantService tenantService;
+    private final SysUserService userService;
 
     @Operation(summary = "租户分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('tenant:list')")
     public Result<Page<SysTenant>> listPage(SysTenant sysTenant) {
         startPage();
-        List<SysTenant> list = sysTenantService.list(sysTenant);
+        List<SysTenant> list = tenantService.list(sysTenant);
         return getDataTable(list);
     }
 
@@ -61,7 +61,7 @@ public class SysTenantController extends BaseController {
         LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
                 .select(SysTenant::getTenantId, SysTenant::getTenantName)
                 .like(StringUtil.isNotBlank(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName());
-        List<SysTenant> list = sysTenantMapper.selectList(lqw);
+        List<SysTenant> list = tenantMapper.selectList(lqw);
         return getDataTable(list);
     }
 
@@ -70,7 +70,7 @@ public class SysTenantController extends BaseController {
     @PreAuthorize("@ps.hasPerms('tenant:query')")
     public Result<SysTenant> queryid(@NotNull(message = "[tenantId] {validate.notnull}")
                                      @PathVariable Long tenantId) {
-        return success(sysTenantMapper.selectById(tenantId));
+        return ok(tenantMapper.selectById(tenantId));
     }
 
     @Operation(summary = "新增租户")
@@ -78,11 +78,11 @@ public class SysTenantController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('tenant:add')")
     public Result<Void> add(@Validated(value = ValidationGroups.Insert.class) @RequestBody SysTenantDTO sysTenantDTO) {
-        if (sysUserService.checkUserUnique(new SysUser().setUsername(sysTenantDTO.getUsername()))) {
+        if (userService.checkUserUnique(new SysUser().setUsername(sysTenantDTO.getUsername()))) {
             return fail("登录账号'" + sysTenantDTO.getUsername() + "'已存在");
         }
-        sysTenantService.insertTenant(sysTenantDTO);
-        return success();
+        tenantService.insertTenant(sysTenantDTO);
+        return ok();
     }
 
     @Operation(summary = "修改租户")
@@ -90,7 +90,8 @@ public class SysTenantController extends BaseController {
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('tenant:edit')")
     public Result<Void> edit(@RequestBody SysTenant sysTenant) {
-        return toRes(sysTenantService.updateTenant(sysTenant));
+        sysTenant.setAdministrator(null);
+        return toRes(tenantMapper.updateById(sysTenant));
     }
 
     @Operation(summary = "删除租户")
@@ -98,7 +99,7 @@ public class SysTenantController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('tenant:remove')")
     public Result<Void> remove(@RequestBody @NotEmpty(message = "[tenantIds] {validate.notnull}") List<Long> tenantIds) {
-        return toRes(sysTenantMapper.deleteByIds(tenantIds));
+        return toRes(tenantMapper.deleteByIds(tenantIds));// soft delete
     }
 
 }

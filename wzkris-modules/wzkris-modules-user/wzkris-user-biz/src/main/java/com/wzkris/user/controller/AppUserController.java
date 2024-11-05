@@ -46,7 +46,7 @@ public class AppUserController extends BaseController {
     @GetMapping("/{userId}")
     @PreAuthorize("@ps.hasPerms('app_user:query')")
     public Result<AppUser> query(@PathVariable Long userId) {
-        return success(appUserMapper.selectById(userId));
+        return ok(appUserMapper.selectById(userId));
     }
 
     @Operation(summary = "导出")

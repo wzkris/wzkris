@@ -24,18 +24,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RemoteLogApiImpl implements RemoteLogApi {
-    private final SysOperLogMapper sysOperLogMapper;
-    private final SysLoginLogMapper sysLoginLogMapper;
+    private final SysOperLogMapper operLogMapper;
+    private final SysLoginLogMapper loginLogMapper;
 
     @Override
     public void insertOperlog(@RequestBody OperLogDTO operLogDTO) {
         SysOperLog sysOperLog = MapstructUtil.convert(operLogDTO, SysOperLog.class);
-        sysOperLogMapper.insert(sysOperLog);
+        operLogMapper.insert(sysOperLog);
     }
 
     @Override
     public void insertLoginlog(@RequestBody LoginLogDTO loginLogDTO) {
         SysLoginLog sysLoginLog = MapstructUtil.convert(loginLogDTO, SysLoginLog.class);
-        sysLoginLogMapper.insert(sysLoginLog);
+        loginLogMapper.insert(sysLoginLog);
     }
 }

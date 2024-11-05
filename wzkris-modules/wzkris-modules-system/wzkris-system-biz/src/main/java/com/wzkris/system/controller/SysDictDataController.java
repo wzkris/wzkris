@@ -31,16 +31,16 @@ import java.util.List;
 @RequestMapping("/dict/data")
 @RequiredArgsConstructor
 public class SysDictDataController extends BaseController {
-    private final SysDictDataMapper sysDictDataMapper;
-    private final SysDictDataService sysDictDataService;
-    private final SysDictTypeService sysDictTypeService;
+    private final SysDictDataMapper dictDataMapper;
+    private final SysDictDataService dictDataService;
+    private final SysDictTypeService dictTypeService;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('dict:list')")
     public Result<Page<SysDictData>> list(SysDictData sysDictData) {
         startPage();
-        List<SysDictData> list = sysDictDataService.list(sysDictData);
+        List<SysDictData> list = dictDataService.list(sysDictData);
         return getDataTable(list);
     }
 
@@ -50,7 +50,7 @@ public class SysDictDataController extends BaseController {
     @GetMapping("/{dictCode}")
     @PreAuthorize("@ps.hasPerms('dict:query')")
     public Result<?> getInfo(@PathVariable Long dictCode) {
-        return success(sysDictDataMapper.selectById(dictCode));
+        return ok(dictDataMapper.selectById(dictCode));
     }
 
     /**
@@ -58,11 +58,11 @@ public class SysDictDataController extends BaseController {
      */
     @GetMapping("/type/{dictType}")
     public Result<?> dictType(@PathVariable String dictType) {
-        List<SysDictData> data = sysDictTypeService.listDictDataByType(dictType);
+        List<SysDictData> data = dictTypeService.listDictDataByType(dictType);
         if (StringUtil.isNull(data)) {
             data = new ArrayList<>();
         }
-        return success(data);
+        return ok(data);
     }
 
     /**
@@ -72,7 +72,7 @@ public class SysDictDataController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dict:add')")
     public Result<?> add(@Validated @RequestBody SysDictData dict) {
-        return toRes(sysDictDataService.insertDictData(dict));
+        return toRes(dictDataService.insertDictData(dict));
     }
 
     /**
@@ -82,7 +82,7 @@ public class SysDictDataController extends BaseController {
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('dict:edit')")
     public Result<?> edit(@Validated @RequestBody SysDictData dict) {
-        return toRes(sysDictDataService.updateDictData(dict));
+        return toRes(dictDataService.updateDictData(dict));
     }
 
     /**
@@ -92,7 +92,7 @@ public class SysDictDataController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> remove(@RequestBody Long[] dictCodes) {
-        sysDictDataService.deleteDictDataByIds(Arrays.asList(dictCodes));
-        return success();
+        dictDataService.deleteDictDataByIds(Arrays.asList(dictCodes));
+        return ok();
     }
 }

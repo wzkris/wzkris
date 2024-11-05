@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tenant")
 public class SysTenantOwnController extends BaseController {
-    private final SysUserMapper sysUserMapper;
-    private final SysTenantMapper sysTenantMapper;
+    private final SysUserMapper userMapper;
+    private final SysTenantMapper tenantMapper;
 
     @Operation(summary = "获取自身租户")
     @GetMapping("/getinfo")
@@ -40,12 +40,12 @@ public class SysTenantOwnController extends BaseController {
             tenantVO = new SysTenantVO(true);// 超级租户不存在信息
         }
         else {
-            tenantVO = sysTenantMapper.selectVOById(tenantId);
+            tenantVO = tenantMapper.selectVOById(tenantId);
             // 查询已有账号
-            Long count = sysUserMapper.selectCount(null);
+            Long count = userMapper.selectCount(null);
             tenantVO.setAccountHas(Math.toIntExact(count));
         }
-        return success(tenantVO);
+        return ok(tenantVO);
     }
 
 //    @Operation(summary = "")

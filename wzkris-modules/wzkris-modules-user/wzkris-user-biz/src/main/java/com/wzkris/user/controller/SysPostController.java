@@ -28,15 +28,15 @@ import java.util.List;
 @RequestMapping("/sys_post")
 @RequiredArgsConstructor
 public class SysPostController extends BaseController {
-    private final SysPostMapper sysPostMapper;
-    private final SysPostService sysPostService;
+    private final SysPostMapper postMapper;
+    private final SysPostService postService;
 
     @Operation(summary = "岗位分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('post:list')")
     public Result<Page<SysPost>> listPage(SysPost sysPost) {
         startPage();
-        List<SysPost> list = sysPostService.list(sysPost);
+        List<SysPost> list = postService.list(sysPost);
         return getDataTable(list);
     }
 
@@ -44,7 +44,7 @@ public class SysPostController extends BaseController {
     @GetMapping("/{postId}")
     @PreAuthorize("@ps.hasPerms('post:query')")
     public Result<?> getInfo(@PathVariable Long postId) {
-        return success(sysPostMapper.selectById(postId));
+        return ok(postMapper.selectById(postId));
     }
 
     @Operation(summary = "新增岗位")
@@ -52,7 +52,7 @@ public class SysPostController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('post:add')")
     public Result<?> add(@Validated @RequestBody SysPost sysPost) {
-        return toRes(sysPostMapper.insert(sysPost));
+        return toRes(postMapper.insert(sysPost));
     }
 
     @Operation(summary = "修改岗位")
@@ -60,7 +60,7 @@ public class SysPostController extends BaseController {
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('post:edit')")
     public Result<?> edit(@Validated @RequestBody SysPost sysPost) {
-        return toRes(sysPostMapper.updateById(sysPost));
+        return toRes(postMapper.updateById(sysPost));
     }
 
     @Operation(summary = "修改岗位")
@@ -68,7 +68,7 @@ public class SysPostController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('post:remove')")
     public Result<?> remove(@RequestBody List<Long> postIds) {
-        return toRes(sysPostService.deleteByPostIds(postIds));
+        return toRes(postService.deleteByPostIds(postIds));
     }
 
     @Operation(summary = "导出")
@@ -76,7 +76,7 @@ public class SysPostController extends BaseController {
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('post:export')")
     public void export(HttpServletResponse httpServletResponse, SysPost sysPost) {
-        List<SysPost> list = sysPostService.list(sysPost);
+        List<SysPost> list = postService.list(sysPost);
 
     }
 }

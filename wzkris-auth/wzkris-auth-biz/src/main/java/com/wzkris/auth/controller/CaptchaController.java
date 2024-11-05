@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
 /**
  * @author : wzkris
@@ -37,7 +37,7 @@ public class CaptchaController {
     public Result<KaptchaDTO> code() throws IOException {
         KaptchaDTO picCaptcha = captchaService.createPicCaptcha();
 
-        return success(picCaptcha);
+        return ok(picCaptcha);
     }
 
     @Operation(summary = "短信验证码")
@@ -46,6 +46,6 @@ public class CaptchaController {
                                 @Length(min = 11, max = 11, message = "[phone] {validate.size.illegal}")
                                 String phone) {
         captchaService.sendSmsCode(phone);
-        return success();
+        return Result.ok();
     }
 }

@@ -48,9 +48,15 @@ public interface SysUserService {
      * 修改管理员信息
      *
      * @param dto 管理员信息
-     * @return 结果
      */
-    boolean updateUser(SysUserDTO dto);
+    void updateUser(SysUserDTO dto);
+
+    /**
+     * 硬删除用户
+     *
+     * @param userIds 用户ID
+     */
+    void hardDeleteByIds(List<Long> userIds);
 
     /**
      * 批量授权角色

@@ -54,7 +54,7 @@ public class DeviceController extends BaseController {
     @GetMapping("/{deviceId}")
     @PreAuthorize("@ps.hasPerms('device:query')")
     public Result<DeviceVO> queryById(@PathVariable Long deviceId) {
-        return success(deviceService.getVOById(deviceId));
+        return ok(deviceService.getVOById(deviceId));
     }
 
     /**
@@ -66,7 +66,7 @@ public class DeviceController extends BaseController {
     @GetMapping("/network_detail/{serialNo}")
     @PreAuthorize("@ps.hasPerms('device:query')")
     public Result<NetworkVO> queryNetwork(@PathVariable String serialNo) {
-        return success(deviceService.getNetworkVOBySerialNo(serialNo));
+        return ok(deviceService.getNetworkVOBySerialNo(serialNo));
     }
 
     /**
@@ -84,7 +84,7 @@ public class DeviceController extends BaseController {
         }
 
         String roomNo = deviceService.subDevice(device.getSerialNo());
-        return success(roomNo);
+        return ok(roomNo);
     }
 
     /**

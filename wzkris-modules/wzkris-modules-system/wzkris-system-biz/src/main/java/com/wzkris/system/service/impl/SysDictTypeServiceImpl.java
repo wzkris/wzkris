@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysDictTypeServiceImpl implements SysDictTypeService {
     private final SysDictTypeMapper sysDictTypeMapper;
-    private final SysDictDataMapper sysDictDataMapper;
+    private final SysDictDataMapper dictDataMapper;
 
     @Override
     public List<SysDictType> list(SysDictType sysDictType) {
@@ -51,7 +51,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         if (StringUtil.isNotEmpty(sysDictData)) {
             return sysDictData;
         }
-        sysDictData = sysDictDataMapper.listByType(dictType);
+        sysDictData = dictDataMapper.listByType(dictType);
         if (StringUtil.isNotEmpty(sysDictData)) {
             DictCacheUtil.setDictCache(dictType, sysDictData);
             return sysDictData;
@@ -68,7 +68,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     public void deleteDictTypeByIds(Long[] dictIds) {
         for (Long dictId : dictIds) {
             SysDictType sysDictType = sysDictTypeMapper.selectById(dictId);
-            if (sysDictDataMapper.countByType(sysDictType.getDictType()) > 0) {
+            if (dictDataMapper.countByType(sysDictType.getDictType()) > 0) {
                 throw new BusinessExceptionI18n("business.allocated", sysDictType.getDictName());
             }
             sysDictTypeMapper.deleteById(dictId);
@@ -82,7 +82,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     @PostConstruct
     @Override
     public void loadingDictCache() {
-        Map<String, List<SysDictData>> dictDataMap = sysDictDataMapper.selectList(null).stream().collect(Collectors.groupingBy(SysDictData::getDictType));
+        Map<String, List<SysDictData>> dictDataMap = dictDataMapper.selectList(null).stream().collect(Collectors.groupingBy(SysDictData::getDictType));
         for (Map.Entry<String, List<SysDictData>> entry : dictDataMap.entrySet()) {
             DictCacheUtil.setDictCache(entry.getKey(), entry.getValue().stream().sorted(Comparator.comparing(SysDictData::getDictSort)).collect(Collectors.toList()));
         }
@@ -115,7 +115,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     public int insertDictType(SysDictType dict) {
         int row = sysDictTypeMapper.insert(dict);
         if (row > 0) {
-            List<SysDictData> sysDictData = sysDictDataMapper.listByType(dict.getDictType());
+            List<SysDictData> sysDictData = dictDataMapper.listByType(dict.getDictType());
             DictCacheUtil.setDictCache(dict.getDictType(), sysDictData);
         }
         return row;
@@ -131,10 +131,10 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     @Transactional(rollbackFor = Exception.class)
     public int updateDictType(SysDictType dict) {
         SysDictType oldDict = sysDictTypeMapper.selectById(dict.getTypeId());
-        sysDictDataMapper.updateDictDataType(oldDict.getDictType(), dict.getDictType());
+        dictDataMapper.updateDictDataType(oldDict.getDictType(), dict.getDictType());
         int row = sysDictTypeMapper.updateById(dict);
         if (row > 0) {
-            List<SysDictData> sysDictData = sysDictDataMapper.listByType(dict.getDictType());
+            List<SysDictData> sysDictData = dictDataMapper.listByType(dict.getDictType());
             DictCacheUtil.setDictCache(dict.getDictType(), sysDictData);
         }
         return row;

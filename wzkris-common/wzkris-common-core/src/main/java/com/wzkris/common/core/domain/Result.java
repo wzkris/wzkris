@@ -42,11 +42,11 @@ public class Result<T> implements Serializable {
         this.timestamp = System.currentTimeMillis();
     }
 
-    public static <T> Result<T> success() {
+    public static <T> Result<T> ok() {
         return resp(BizCode.OK, BizCode.OK.desc());
     }
 
-    public static <T> Result<T> success(T data) {
+    public static <T> Result<T> ok(T data) {
         return resp(BizCode.OK.value(), data, BizCode.OK.desc());
     }
 
@@ -71,11 +71,11 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> toRes(int affectRows) {
-        return affectRows > 0 ? success() : fail();
+        return affectRows > 0 ? ok() : fail();
     }
 
     public static <T> Result<T> toRes(boolean b) {
-        return b ? success() : fail();
+        return b ? ok() : fail();
     }
 
     // 校验返回结果是否正常，若不是则抛出异常

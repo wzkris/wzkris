@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
 /**
  * @author : wzkris
@@ -29,6 +29,6 @@ public class RemoteOAuth2ClientApiImpl implements RemoteOAuth2ClientApi {
     public Result<OAuth2ClientDTO> getByClientId(String clientid) {
         OAuth2Client oAuth2Client = oAuth2ClientMapper.selectByClientId(clientid);
         OAuth2ClientDTO clientDTO = MapstructUtil.convert(oAuth2Client, OAuth2ClientDTO.class);
-        return success(clientDTO);
+        return ok(clientDTO);
     }
 }

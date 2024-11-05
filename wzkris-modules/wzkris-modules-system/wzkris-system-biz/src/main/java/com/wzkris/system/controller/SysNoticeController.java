@@ -28,8 +28,8 @@ import java.util.List;
 @RequestMapping("/notice")
 @RequiredArgsConstructor
 public class SysNoticeController extends BaseController {
-    private final SysNoticeMapper sysNoticeMapper;
-    private final SysNoticeService sysNoticeService;
+    private final SysNoticeMapper noticeMapper;
+    private final SysNoticeService noticeService;
 
     /**
      * 获取通知公告列表
@@ -38,7 +38,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ps.hasPerms('notice:list')")
     public Result<Page<SysNotice>> list(SysNotice notice) {
         startPage();
-        List<SysNotice> list = sysNoticeService.list(notice);
+        List<SysNotice> list = noticeService.list(notice);
         return getDataTable(list);
     }
 
@@ -48,7 +48,7 @@ public class SysNoticeController extends BaseController {
     @GetMapping("/{noticeId}")
     @PreAuthorize("@ps.hasPerms('notice:query')")
     public Result<?> getInfo(@PathVariable Long noticeId) {
-        return success(sysNoticeMapper.selectById(noticeId));
+        return ok(noticeMapper.selectById(noticeId));
     }
 
     /**
@@ -59,7 +59,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ps.hasPerms('notice:add')")
     public Result<?> add(@Validated @RequestBody SysNotice notice) {
         notice.setMessageId(IdUtil.fastSimpleUUID());
-        return toRes(sysNoticeMapper.insert(notice));
+        return toRes(noticeMapper.insert(notice));
     }
 
     /**
@@ -69,7 +69,7 @@ public class SysNoticeController extends BaseController {
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('notice:edit')")
     public Result<?> edit(@Validated @RequestBody SysNotice notice) {
-        return toRes(sysNoticeMapper.updateById(notice));
+        return toRes(noticeMapper.updateById(notice));
     }
 
     /**
@@ -79,6 +79,6 @@ public class SysNoticeController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('notice:remove')")
     public Result<?> remove(@RequestBody Long[] noticeIds) {
-        return toRes(sysNoticeMapper.deleteByIds(Arrays.asList(noticeIds)));
+        return toRes(noticeMapper.deleteByIds(Arrays.asList(noticeIds)));
     }
 }

@@ -28,15 +28,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysOperlogController extends BaseController {
 
-    private final SysOperLogService sysOperLogService;
-    private final SysOperLogMapper sysOperLogMapper;
+    private final SysOperLogService operLogService;
+    private final SysOperLogMapper operLogMapper;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('operlog:list')")
     public Result<Page<SysOperLog>> list(SysOperLog sysOperLog) {
         startPage();
-        List<SysOperLog> list = sysOperLogService.list(sysOperLog);
+        List<SysOperLog> list = operLogService.list(sysOperLog);
         return getDataTable(list);
     }
 
@@ -44,14 +44,14 @@ public class SysOperlogController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('operlog:remove')")
     public Result<?> remove(@RequestBody Long[] operIds) {
-        return toRes(sysOperLogMapper.deleteByIds(Arrays.asList(operIds)));
+        return toRes(operLogMapper.deleteByIds(Arrays.asList(operIds)));
     }
 
     @OperateLog(title = "操作日志", operateType = OperateType.DELETE)
     @PostMapping("/clean")
     @PreAuthorize("@ps.hasPerms('operlog:remove')")
     public Result<?> clean() {
-        sysOperLogMapper.clearAll();
-        return success();
+        operLogMapper.clearAll();
+        return ok();
     }
 }

@@ -89,11 +89,6 @@ public interface SysRoleService {
      */
     void checkDataScopes(List<Long> roleIds);
 
-    /**
-     * 校验是否有角色的数据权限
-     *
-     * @param roleId 待操作的角色id
-     */
     default void checkDataScopes(Long roleId) {
         this.checkDataScopes(Collections.singletonList(roleId));
     }

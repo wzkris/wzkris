@@ -25,12 +25,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysMenuOwnController extends BaseController {
 
-    private final SysMenuService sysMenuService;
+    private final SysMenuService menuService;
 
     @Operation(summary = "路由")
     @GetMapping("/router")
     public Result<List<RouterVO>> routers() {
-        List<RouterVO> routerVOS = sysMenuService.listRouteTree(SysUtil.getUserId());
-        return success(routerVOS);
+        List<RouterVO> routerVOS = menuService.listRouteTree(SysUtil.getUserId());
+        return ok(routerVOS);
     }
 }

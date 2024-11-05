@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysRoleServiceImpl implements SysRoleService {
-    private final SysRoleMapper sysRoleMapper;
+    private final SysRoleMapper roleMapper;
     private final SysRoleMenuMapper sysRoleMenuMapper;
-    private final SysUserRoleMapper sysUserRoleMapper;
+    private final SysUserRoleMapper userRoleMapper;
     private final SysRoleDeptMapper sysRoleDeptMapper;
 
     /**
@@ -49,7 +49,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public List<SysRole> list(SysRole role) {
         LambdaQueryWrapper<SysRole> lqw = this.buildQueryWrapper(role);
-        return sysRoleMapper.selectList(lqw);
+        return roleMapper.selectList(lqw);
     }
 
     private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRole sysRole) {
@@ -69,7 +69,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public List<SysRole> listByUserId(Long userId) {
-        List<Long> roleIds = sysUserRoleMapper.listRoleIdByUserId(userId);
+        List<Long> roleIds = userRoleMapper.listRoleIdByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -77,7 +77,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         LambdaQueryWrapper<SysRole> lqw = new LambdaQueryWrapper<SysRole>()
                 .in(SysRole::getRoleId, roleIds)
                 .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE);
-        return sysRoleMapper.selectList(lqw);
+        return roleMapper.selectList(lqw);
     }
 
     /**
@@ -102,7 +102,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Transactional(rollbackFor = Exception.class)
     public int insertRole(SysRoleDTO roleDTO) {
         // 新增角色信息
-        int rows = sysRoleMapper.insert(roleDTO);
+        int rows = roleMapper.insert(roleDTO);
         // 插入角色菜单信息
         this.insertRoleMenu(roleDTO.getRoleId(), roleDTO.getMenuIds());
         // 新增角色和部门信息（数据权限）
@@ -128,7 +128,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         // 插入角色和部门信息（数据权限）
         this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
         // 修改角色信息
-        return sysRoleMapper.updateById(roleDTO);
+        return roleMapper.updateById(roleDTO);
     }
 
     /**
@@ -144,7 +144,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             List<SysUserRole> list = userIds.stream()
                     .map(userId -> new SysUserRole(userId, roleId))
                     .toList();
-            sysUserRoleMapper.insertBatch(list);
+            userRoleMapper.insertBatch(list);
         }
     }
 
@@ -162,7 +162,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         // 新增角色和部门信息（数据权限）
         this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
         // 修改角色信息
-        return sysRoleMapper.updateById(roleDTO);
+        return roleMapper.updateById(roleDTO);
     }
 
     /**
@@ -209,7 +209,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         sysRoleMenuMapper.deleteByRoleIds(roleIds);
         // 删除角色与部门关联
         sysRoleDeptMapper.deleteByRoleIds(roleIds);
-        return sysRoleMapper.deleteByIds(roleIds);
+        return roleMapper.deleteByIds(roleIds);
     }
 
     /**
@@ -221,7 +221,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     public void checkUserUse(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (sysUserRoleMapper.countByRoleIds(roleIds) > 0) {
+        if (userRoleMapper.countByRoleIds(roleIds) > 0) {
             throw new BusinessExceptionI18n("business.allocated");
         }
     }
@@ -234,7 +234,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     public void checkDataScopes(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(roleIds)) {
-            if (sysRoleMapper.checkDataScopes(roleIds) != roleIds.size()) {
+            if (roleMapper.checkDataScopes(roleIds) != roleIds.size()) {
                 throw new AccessDeniedException("当前部门没有权限访问数据");
             }
         }

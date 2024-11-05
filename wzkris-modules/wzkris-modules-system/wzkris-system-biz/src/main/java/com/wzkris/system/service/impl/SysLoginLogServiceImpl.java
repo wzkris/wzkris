@@ -19,12 +19,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysLoginLogServiceImpl implements SysLoginLogService {
-    private final SysLoginLogMapper sysLoginLogMapper;
+    private final SysLoginLogMapper loginLogMapper;
 
     @Override
     public List<SysLoginLog> list(SysLoginLog loginLog) {
         LambdaQueryWrapper<SysLoginLog> lqw = this.buildQueryWrapper(loginLog);
-        return this.sysLoginLogMapper.selectList(lqw);
+        return this.loginLogMapper.selectList(lqw);
     }
 
     private LambdaQueryWrapper<SysLoginLog> buildQueryWrapper(SysLoginLog loginLog) {

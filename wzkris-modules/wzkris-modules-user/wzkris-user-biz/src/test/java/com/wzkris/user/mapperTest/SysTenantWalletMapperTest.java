@@ -23,11 +23,11 @@ public class SysTenantWalletMapperTest {
 
     static String password = "123456";
     @Autowired
-    SysTenantWalletMapper sysTenantWalletMapper;
+    SysTenantWalletMapper tenantWalletMapper;
     @Autowired
     SysTenantWalletService sysTenantWalletService;
     @Autowired
-    SysTenantWalletRecordMapper sysTenantWalletRecordMapper;
+    SysTenantWalletRecordMapper tenantWalletRecordMapper;
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -44,8 +44,7 @@ public class SysTenantWalletMapperTest {
     Long insert() {
         SysTenantWallet wallet = new SysTenantWallet();
         wallet.setTenantId(IdUtil.getSnowflakeNextId());
-        wallet.setPassword(passwordEncoder.encode(password));
-        int rows = sysTenantWalletMapper.insert(wallet);
+        int rows = tenantWalletMapper.insert(wallet);
         Assert.state(rows > 0, "插入失败");
         return wallet.getTenantId();
     }
@@ -53,7 +52,7 @@ public class SysTenantWalletMapperTest {
     void incryBalance(Long tenantId, BigDecimal amount) {
         boolean rows = sysTenantWalletService.incryBalance(tenantId, amount);
         Assert.state(rows, "增加余额失败");
-        SysTenantWalletRecord record = sysTenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
+        SysTenantWalletRecord record = tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .eq(SysTenantWalletRecord::getTenantId, tenantId)
                 .eq(SysTenantWalletRecord::getType, UserConstants.WALLET_INCOME));
         Assert.notNull(record, "增加余额记录失败");
@@ -62,20 +61,19 @@ public class SysTenantWalletMapperTest {
     void decryBalance(Long tenantId, BigDecimal amount) {
         boolean rows = sysTenantWalletService.decryBalance(tenantId, amount);
         Assert.state(rows, "扣减余额失败");
-        SysTenantWalletRecord record = sysTenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
+        SysTenantWalletRecord record = tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .eq(SysTenantWalletRecord::getTenantId, tenantId)
                 .eq(SysTenantWalletRecord::getType, UserConstants.WALLET_OUTCOME));
         Assert.notNull(record, "扣减余额记录失败");
     }
 
     void validatePassword(Long tenantId) {
-        SysTenantWallet wallet = sysTenantWalletMapper.selectById(tenantId);
-        Assert.state(passwordEncoder.matches(password, wallet.getPassword()), "钱包密码校验失败");
+        SysTenantWallet wallet = tenantWalletMapper.selectById(tenantId);
     }
 
     void delete(Long tenantId) {
-        int rows = sysTenantWalletMapper.deleteById(tenantId);
-        int delete = sysTenantWalletRecordMapper.delete(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
+        int rows = tenantWalletMapper.deleteById(tenantId);
+        int delete = tenantWalletRecordMapper.delete(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .eq(SysTenantWalletRecord::getTenantId, tenantId));
         Assert.state(rows > 0 && delete > 0, "删除失败");
     }

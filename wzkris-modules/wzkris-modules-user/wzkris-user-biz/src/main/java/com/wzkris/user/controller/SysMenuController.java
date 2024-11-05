@@ -28,22 +28,22 @@ import java.util.List;
 @PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
-    private final SysMenuMapper sysMenuMapper;
-    private final SysMenuService sysMenuService;
+    private final SysMenuMapper menuMapper;
+    private final SysMenuService menuService;
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('menu:list')")
     public Result<?> list(SysMenu menu) {
-        List<SysMenu> menus = sysMenuService.list(menu);
-        return success(menus);
+        List<SysMenu> menus = menuService.list(menu);
+        return ok(menus);
     }
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
     @PreAuthorize("@ps.hasPerms('menu:query')")
     public Result<?> getInfo(@PathVariable Long menuId) {
-        return success(sysMenuMapper.selectById(menuId));
+        return ok(menuMapper.selectById(menuId));
     }
 
     @Operation(summary = "新增菜单")
@@ -54,7 +54,7 @@ public class SysMenuController extends BaseController {
         if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
-        return toRes(sysMenuMapper.insert(menu));
+        return toRes(menuMapper.insert(menu));
     }
 
     @Operation(summary = "修改菜单")
@@ -68,7 +68,7 @@ public class SysMenuController extends BaseController {
         else if (menu.getMenuId().equals(menu.getParentId())) {
             return fail("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
         }
-        return toRes(sysMenuMapper.updateById(menu));
+        return toRes(menuMapper.updateById(menu));
     }
 
     @Operation(summary = "删除菜单")
@@ -76,12 +76,12 @@ public class SysMenuController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('menu:remove')")
     public Result<?> remove(@RequestBody Long menuId) {
-        if (sysMenuService.hasChildByMenuId(menuId)) {
+        if (menuService.hasChildByMenuId(menuId)) {
             return fail("存在子菜单,不允许删除");
         }
-        if (sysMenuService.checkMenuExistRole(menuId)) {
+        if (menuService.checkMenuExistRole(menuId)) {
             return fail("菜单已分配,不允许删除");
         }
-        return toRes(sysMenuMapper.deleteById(menuId));
+        return toRes(menuMapper.deleteById(menuId));
     }
 }

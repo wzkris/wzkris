@@ -47,7 +47,7 @@ public class OAuth2ClientController extends BaseController {
     @GetMapping("/{id}")
     @PreAuthorize("@ps.hasPerms('oauth2_client:query')")
     public Result<OAuth2Client> query(@PathVariable Long id) {
-        return success(oauth2ClientMapper.selectById(id));
+        return ok(oauth2ClientMapper.selectById(id));
     }
 
     @Operation(summary = "根据id修改客户端")

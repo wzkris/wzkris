@@ -40,9 +40,9 @@ import java.util.Map;
 public class SysUserOwnController extends BaseController {
     private final SysUserMapper userMapper;
     private final SysUserService userService;
-    private final SysRoleService sysRoleService;
-    private final SysPostService sysPostService;
-    private final SysDeptMapper sysDeptMapper;
+    private final SysRoleService roleService;
+    private final SysPostService postService;
+    private final SysDeptMapper deptMapper;
     private final RemoteCaptchaApi remoteCaptchaApi;
     private final PasswordEncoder passwordEncoder;
 
@@ -59,10 +59,10 @@ public class SysUserOwnController extends BaseController {
         // 返回的map
         Map<String, Object> res = MapUtil.newHashMap(4);
         res.put("user", userMap);
-        res.put("deptName", StringUtil.emptyToDefault(sysDeptMapper.selectDeptNameById(sysUser.getDeptId()), StringUtil.EMPTY));
-        res.put("roleGroup", sysRoleService.getRoleGroup(sysUser.getUserId()));
-        res.put("postGroup", sysPostService.getPostGroup(sysUser.getUserId()));
-        return success(res);
+        res.put("deptName", StringUtil.emptyToDefault(deptMapper.selectDeptNameById(sysUser.getDeptId()), StringUtil.EMPTY));
+        res.put("roleGroup", roleService.getRoleGroup(sysUser.getUserId()));
+        res.put("postGroup", postService.getPostGroup(sysUser.getUserId()));
+        return ok(res);
     }
 
     @Operation(summary = "修改昵称、性别")

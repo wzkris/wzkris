@@ -18,12 +18,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysOperLogServiceImpl implements SysOperLogService {
-    private final SysOperLogMapper sysOperLogMapper;
+    private final SysOperLogMapper operLogMapper;
 
     @Override
     public List<SysOperLog> list(SysOperLog sysOperLog) {
         LambdaQueryWrapper<SysOperLog> lqw = this.buildQueryWrapper(sysOperLog);
-        return sysOperLogMapper.selectList(lqw);
+        return operLogMapper.selectList(lqw);
     }
 
     private LambdaQueryWrapper<SysOperLog> buildQueryWrapper(SysOperLog sysOperLog) {

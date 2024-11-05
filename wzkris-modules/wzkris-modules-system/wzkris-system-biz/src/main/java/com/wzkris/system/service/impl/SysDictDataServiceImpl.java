@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysDictDataServiceImpl implements SysDictDataService {
-    private final SysDictDataMapper sysDictDataMapper;
+    private final SysDictDataMapper dictDataMapper;
 
     @Override
     public List<SysDictData> list(SysDictData sysDictData) {
@@ -27,7 +27,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                 .eq(StringUtil.isNotBlank(sysDictData.getDictType()), SysDictData::getDictType, sysDictData.getDictType())
                 .like(StringUtil.isNotBlank(sysDictData.getDictLabel()), SysDictData::getDictLabel, sysDictData.getDictLabel())
                 .orderByAsc(SysDictData::getDictSort);
-        return sysDictDataMapper.selectList(lqw);
+        return dictDataMapper.selectList(lqw);
     }
 
     /**
@@ -38,9 +38,9 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     @Override
     public void deleteDictDataByIds(List<Long> dictCodes) {
         for (Long dictCode : dictCodes) {
-            SysDictData data = sysDictDataMapper.selectById(dictCode);
-            sysDictDataMapper.deleteById(dictCode);
-            List<SysDictData> sysDictData = sysDictDataMapper.listByType(data.getDictType());
+            SysDictData data = dictDataMapper.selectById(dictCode);
+            dictDataMapper.deleteById(dictCode);
+            List<SysDictData> sysDictData = dictDataMapper.listByType(data.getDictType());
             DictCacheUtil.setDictCache(data.getDictType(), sysDictData);
         }
     }
@@ -53,9 +53,9 @@ public class SysDictDataServiceImpl implements SysDictDataService {
      */
     @Override
     public int insertDictData(SysDictData data) {
-        int row = sysDictDataMapper.insert(data);
+        int row = dictDataMapper.insert(data);
         if (row > 0) {
-            List<SysDictData> sysDictData = sysDictDataMapper.listByType(data.getDictType());
+            List<SysDictData> sysDictData = dictDataMapper.listByType(data.getDictType());
             DictCacheUtil.setDictCache(data.getDictType(), sysDictData);
         }
         return row;
@@ -69,9 +69,9 @@ public class SysDictDataServiceImpl implements SysDictDataService {
      */
     @Override
     public int updateDictData(SysDictData data) {
-        int row = sysDictDataMapper.updateById(data);
+        int row = dictDataMapper.updateById(data);
         if (row > 0) {
-            List<SysDictData> sysDictData = sysDictDataMapper.listByType(data.getDictType());
+            List<SysDictData> sysDictData = dictDataMapper.listByType(data.getDictType());
             DictCacheUtil.setDictCache(data.getDictType(), sysDictData);
         }
         return row;

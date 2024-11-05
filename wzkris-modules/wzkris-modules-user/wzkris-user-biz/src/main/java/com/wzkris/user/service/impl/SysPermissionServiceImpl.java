@@ -52,11 +52,11 @@ public class SysPermissionServiceImpl implements SysPermissionService {
      */
     public static final String DATA_SCOPE_SELF = "5";
 
-    private final SysRoleService sysRoleService;
-    private final SysMenuService sysMenuService;
-    private final SysDeptMapper sysDeptMapper;
+    private final SysRoleService roleService;
+    private final SysMenuService menuService;
+    private final SysDeptMapper deptMapper;
     private final SysRoleDeptMapper sysRoleDeptMapper;
-    private final SysTenantMapper sysTenantMapper;
+    private final SysTenantMapper tenantMapper;
     private final SysTenantPackageMapper sysTenantPackageMapper;
 
     @Override
@@ -73,21 +73,21 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         }
         else {
             // 租户最高管理员特殊处理
-            Long tenantPackageId = sysTenantMapper.selectPackageIdByUserId(userId);
+            Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员查出所有租户角色
                 administrator = true;
                 // 查出套餐绑定的所有权限
                 List<Long> menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
-                grantedAuthority = sysMenuService.listPermsByMenuIds(menuIds);
+                grantedAuthority = menuService.listPermsByMenuIds(menuIds);
             }
             else {
                 // 否则为普通用户
                 administrator = false;
-                roles = sysRoleService.listByUserId(userId);
+                roles = roleService.listByUserId(userId);
                 // 菜单权限
                 List<Long> roleIds = roles.stream().map(SysRole::getRoleId).collect(Collectors.toList());
-                grantedAuthority = sysMenuService.listPermsByRoleIds(roleIds);
+                grantedAuthority = menuService.listPermsByRoleIds(roleIds);
                 // 数据权限
                 deptScopes = this.listDeptScope(roles, deptId);
             }
@@ -115,7 +115,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 .collect(Collectors.groupingBy(SysRole::getDataScope));
         for (Map.Entry<String, List<SysRole>> entry : datascopeMap.entrySet()) {
             if (StringUtil.equals(DATA_SCOPE_ALL, entry.getKey())) {
-                deptIds = sysDeptMapper.selectList(Wrappers.lambdaQuery(SysDept.class).select(SysDept::getDeptId))
+                deptIds = deptMapper.selectList(Wrappers.lambdaQuery(SysDept.class).select(SysDept::getDeptId))
                         .stream()
                         .map(SysDept::getDeptId)
                         .collect(Collectors.toSet());
@@ -133,7 +133,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             }
             else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
                 // 部门及以下数据权限
-                List<Long> addDeptIds = sysDeptMapper.listChildrenIdById(deptId);
+                List<Long> addDeptIds = deptMapper.listChildrenIdById(deptId);
                 deptIds.addAll(addDeptIds);
             }
             else if (StringUtil.equals(DATA_SCOPE_SELF, entry.getKey())) {

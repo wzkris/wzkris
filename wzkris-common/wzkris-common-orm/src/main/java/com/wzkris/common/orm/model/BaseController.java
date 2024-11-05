@@ -24,7 +24,7 @@ public class BaseController {
     protected static <T> Result<Page<T>> getDataTable(List<T> list) {
         Page<T> page = PageUtil.getPage();
         page.setRows(list);
-        return Result.success(page);
+        return Result.ok(page);
     }
 
     /**
@@ -58,15 +58,15 @@ public class BaseController {
     /**
      * 返回成功
      */
-    public <T> Result<T> success() {
-        return Result.success();
+    public <T> Result<T> ok() {
+        return Result.ok();
     }
 
     /**
      * 返回成功消息
      */
-    public <T> Result<T> success(T data) {
-        return Result.success(data);
+    public <T> Result<T> ok(T data) {
+        return Result.ok(data);
     }
 
     /**
@@ -87,7 +87,7 @@ public class BaseController {
      * @return 操作结果
      */
     protected <T> Result<T> toRes(int rows) {
-        return rows > 0 ? success() : fail();
+        return rows > 0 ? ok() : fail();
     }
 
     /**
@@ -97,7 +97,7 @@ public class BaseController {
      * @return 操作结果
      */
     protected <T> Result<T> toRes(boolean result) {
-        return result ? success() : fail();
+        return result ? ok() : fail();
     }
 
 }

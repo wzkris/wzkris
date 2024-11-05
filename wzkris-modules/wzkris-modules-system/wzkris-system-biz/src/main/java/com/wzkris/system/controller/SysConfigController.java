@@ -27,8 +27,8 @@ import java.util.List;
 @RequestMapping("/config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
-    private final SysConfigMapper sysConfigMapper;
-    private final SysConfigService sysConfigService;
+    private final SysConfigMapper configMapper;
+    private final SysConfigService configService;
 
     /**
      * 获取参数配置列表
@@ -37,7 +37,7 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ps.hasPerms('config:list')")
     public Result<Page<SysConfig>> list(SysConfig config) {
         startPage();
-        List<SysConfig> list = sysConfigService.list(config);
+        List<SysConfig> list = configService.list(config);
         return getDataTable(list);
     }
 
@@ -46,7 +46,7 @@ public class SysConfigController extends BaseController {
      */
     @GetMapping("/{configId}")
     public Result<?> getInfo(@PathVariable Long configId) {
-        return success(sysConfigMapper.selectById(configId));
+        return ok(configMapper.selectById(configId));
     }
 
     /**
@@ -54,7 +54,7 @@ public class SysConfigController extends BaseController {
      */
     @GetMapping("/configKey/{configKey}")
     public Result<String> getConfigKey(@PathVariable String configKey) {
-        return Result.success(sysConfigService.getConfigValueByKey(configKey));
+        return Result.ok(configService.getConfigValueByKey(configKey));
     }
 
     /**
@@ -64,10 +64,10 @@ public class SysConfigController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('config:add')")
     public Result<?> add(@Validated @RequestBody SysConfig config) {
-        if (sysConfigService.checkConfigKeyUnique(config)) {
+        if (configService.checkConfigKeyUnique(config)) {
             return fail("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        return toRes(sysConfigService.insertConfig(config));
+        return toRes(configService.insertConfig(config));
     }
 
     /**
@@ -77,10 +77,10 @@ public class SysConfigController extends BaseController {
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('config:edit')")
     public Result<?> edit(@Validated @RequestBody SysConfig config) {
-        if (sysConfigService.checkConfigKeyUnique(config)) {
+        if (configService.checkConfigKeyUnique(config)) {
             return fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        return toRes(sysConfigService.updateConfig(config));
+        return toRes(configService.updateConfig(config));
     }
 
     /**
@@ -91,8 +91,8 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> remove(@RequestBody Long[] configIds) {
         List<Long> list = Arrays.asList(configIds);
-        sysConfigService.deleteConfigByIds(list);
-        return success();
+        configService.deleteConfigByIds(list);
+        return ok();
     }
 
     /**
@@ -102,7 +102,7 @@ public class SysConfigController extends BaseController {
     @PostMapping("/refresh_cache")
     @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> refreshCache() {
-        sysConfigService.resetConfigCache();
-        return success();
+        configService.resetConfigCache();
+        return ok();
     }
 }

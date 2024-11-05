@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
 /**
  * @author : wzkris
@@ -33,7 +33,7 @@ public class RemoteAppUserApiImpl implements RemoteAppUserApi {
     public Result<AppUserDTO> getByPhoneNumber(String phoneNumber) {
         AppUser appUser = appUserMapper.selectByPhoneNumber(phoneNumber);
         AppUserDTO appUserDTO = MapstructUtil.convert(appUser, AppUserDTO.class);
-        return success(appUserDTO);
+        return ok(appUserDTO);
     }
 
     /**

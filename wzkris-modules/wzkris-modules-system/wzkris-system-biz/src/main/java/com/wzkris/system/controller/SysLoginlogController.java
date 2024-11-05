@@ -26,29 +26,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysLoginlogController extends BaseController {
 
-    private final SysLoginLogService sysLoginLogService;
-    private final SysLoginLogMapper sysLoginLogMapper;
+    private final SysLoginLogService loginLogService;
+    private final SysLoginLogMapper loginLogMapper;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('loginlog:list')")
     public Result<Page<SysLoginLog>> list(SysLoginLog loginLog) {
         startPage();
-        List<SysLoginLog> list = sysLoginLogService.list(loginLog);
+        List<SysLoginLog> list = loginLogService.list(loginLog);
         return getDataTable(list);
     }
 
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('loginlog:remove')")
     public Result<?> remove(@RequestBody List<Long> logIds) {
-        return toRes(sysLoginLogMapper.deleteByIds(logIds));
+        return toRes(loginLogMapper.deleteByIds(logIds));
     }
 
     @PostMapping("/clean")
     @PreAuthorize("@ps.hasPerms('loginlog:remove')")
     public Result<?> clean() {
-        sysLoginLogMapper.clearAll();
-        return success();
+        loginLogMapper.clearAll();
+        return ok();
     }
 
 }

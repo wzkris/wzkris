@@ -40,10 +40,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysUserServiceImpl implements SysUserService {
-    private final SysUserMapper sysUserMapper;
-    private final SysDeptMapper sysDeptMapper;
-    private final SysUserRoleMapper sysUserRoleMapper;
-    private final SysUserPostMapper sysUserPostMapper;
+    private final SysUserMapper userMapper;
+    private final SysDeptMapper deptMapper;
+    private final SysUserRoleMapper userRoleMapper;
+    private final SysUserPostMapper userPostMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -51,7 +51,7 @@ public class SysUserServiceImpl implements SysUserService {
         PageUtil.startPage();
         // 查询
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
-        List<SysUser> userList = sysUserMapper.selectListInScope(lqw);
+        List<SysUser> userList = userMapper.selectListInScope(lqw);
         // 先获取分页信息，否则总数会有问题
         Page<SysUserVO> page = PageUtil.getPage();
 
@@ -61,7 +61,7 @@ public class SysUserServiceImpl implements SysUserService {
 
         List<Long> deptIds = userList.stream().map(SysUser::getDeptId).collect(Collectors.toList());
         // 仅查出状态正常的部门
-        Map<Long, SysDept> deptMap = sysDeptMapper.selectListInScope(new LambdaQueryWrapper<SysDept>().in(SysDept::getDeptId, deptIds))
+        Map<Long, SysDept> deptMap = deptMapper.selectListInScope(new LambdaQueryWrapper<SysDept>().in(SysDept::getDeptId, deptIds))
                 .stream()
                 .collect(Collectors.toMap(SysDept::getDeptId, Function.identity()));
         // 转换成vo
@@ -80,10 +80,10 @@ public class SysUserServiceImpl implements SysUserService {
     public List<SysUserVO> list(SysUser user) {
         // 查询
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
-        List<SysUser> userList = sysUserMapper.selectListInScope(lqw);
+        List<SysUser> userList = userMapper.selectListInScope(lqw);
         List<Long> deptIds = userList.stream().map(SysUser::getDeptId).collect(Collectors.toList());
         // 仅查出状态正常的部门
-        Map<Long, SysDept> deptMap = sysDeptMapper.selectListInScope(new LambdaQueryWrapper<SysDept>().in(SysDept::getDeptId, deptIds))
+        Map<Long, SysDept> deptMap = deptMapper.selectListInScope(new LambdaQueryWrapper<SysDept>().in(SysDept::getDeptId, deptIds))
                 .stream()
                 .collect(Collectors.toMap(SysDept::getDeptId, Function.identity()));
         // 转换成vo
@@ -100,24 +100,24 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public List<SysUser> listAllocated(SysUser user, Long roleId) {
-        List<Long> userIds = sysUserRoleMapper.listUserIdByRoleId(roleId);
+        List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
         if (CollectionUtils.isEmpty(userIds)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
         lqw.in(SysUser::getUserId, userIds);
-        return sysUserMapper.selectListInScope(lqw);
+        return userMapper.selectListInScope(lqw);
     }
 
     @Override
     public List<SysUser> listUnallocated(SysUser user, Long roleId) {
-        List<Long> userIds = sysUserRoleMapper.listUserIdByRoleId(roleId);
+        List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
 
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
         if (!CollectionUtils.isEmpty(userIds)) {
             lqw.notIn(SysUser::getUserId, userIds);
         }
-        return sysUserMapper.selectListInScope(lqw);
+        return userMapper.selectListInScope(lqw);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SysUserServiceImpl implements SysUserService {
     public void insertUser(SysUserDTO userDTO) {
         // 密码加密
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        int rows = sysUserMapper.insert(userDTO);
+        userMapper.insert(userDTO);
         // 新增用户与角色管理
         this.insertUserRole(userDTO.getUserId(), userDTO.getRoleIds());
         this.insertUserPost(userDTO.getUserId(), userDTO.getPostIds());
@@ -133,20 +133,28 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateUser(SysUserDTO dto) {
+    public void updateUser(SysUserDTO dto) {
         // 删除用户与角色关联
-        sysUserRoleMapper.deleteByUserId(dto.getUserId());
-        sysUserPostMapper.deleteByUserId(dto.getUserId());
+        userRoleMapper.deleteByUserId(dto.getUserId());
+        userPostMapper.deleteByUserId(dto.getUserId());
         // 新增用户与角色管理
         this.insertUserRole(dto.getUserId(), dto.getRoleIds());
         this.insertUserPost(dto.getUserId(), dto.getPostIds());
-        return sysUserMapper.updateById(dto) > 0;
+        userMapper.updateById(dto);
+    }
+
+    @Override
+    public void hardDeleteByIds(List<Long> userIds) {
+        userMapper.hardDeleteByIds(userIds);
+        // 删除用户与角色关联
+        userRoleMapper.deleteByUserIds(userIds);
+        userPostMapper.deleteByUserIds(userIds);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void allocateRoles(Long userId, List<Long> roleIds) {
-        sysUserRoleMapper.deleteByUserId(userId);
+        userRoleMapper.deleteByUserId(userId);
         this.insertUserRole(userId, roleIds);
     }
 
@@ -158,7 +166,7 @@ public class SysUserServiceImpl implements SysUserService {
             List<SysUserRole> list = roleIds.stream()
                     .map(roleId -> new SysUserRole(userId, roleId))
                     .toList();
-            sysUserRoleMapper.insertBatch(list);
+            userRoleMapper.insertBatch(list);
         }
     }
 
@@ -170,7 +178,7 @@ public class SysUserServiceImpl implements SysUserService {
             List<SysUserPost> list = postIds.stream()
                     .map(postId -> new SysUserPost(userId, postId))
                     .toList();
-            sysUserPostMapper.insertBatch(list);
+            userPostMapper.insertBatch(list);
         }
     }
 
@@ -197,7 +205,7 @@ public class SysUserServiceImpl implements SysUserService {
     public void checkDataScopes(List<Long> userIds) {
         userIds = userIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(userIds)) {
-            if (sysUserMapper.checkDataScopes(userIds) != userIds.size()) {
+            if (userMapper.checkDataScopes(userIds) != userIds.size()) {
                 throw new AccessDeniedException("当前用户没有权限访问数据");
             }
         }
@@ -215,7 +223,7 @@ public class SysUserServiceImpl implements SysUserService {
                     .eq(StringUtil.isNotNull(user.getPhoneNumber()), SysUser::getPhoneNumber, user.getPhoneNumber())
                     .eq(StringUtil.isNotNull(user.getEmail()), SysUser::getEmail, user.getEmail())
                     .ne(ObjUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId());
-            return sysUserMapper.exists(lqw);
+            return userMapper.exists(lqw);
         });
     }
 }
