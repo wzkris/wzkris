@@ -2,9 +2,12 @@ package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -30,7 +33,13 @@ public class SysTenant extends BaseEntity {
     private String contactPhone;
 
     @Schema(description = "租户名称")
+    @NotBlank(message = "[tenantName] {validate.notnull}")
     private String tenantName;
+
+    @Schema(description = "操作密码")
+    @Size(min = 6, max = 6, message = "[operPwd] {validate.size.illegal}")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String operPwd;
 
     @Schema(description = "租户状态")
     private String status;
@@ -52,6 +61,10 @@ public class SysTenant extends BaseEntity {
 
     @Schema(description = "删除标志")
     private Boolean isDeleted;
+
+    public SysTenant(Long tenantId) {
+        this.tenantId = tenantId;
+    }
 
     public static boolean isSuperTenant(Long tenantId) {
         return SecurityConstants.SUPER_TENANT_ID.equals(tenantId);

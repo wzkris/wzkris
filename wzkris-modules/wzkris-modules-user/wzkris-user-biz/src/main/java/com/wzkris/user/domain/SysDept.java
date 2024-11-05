@@ -45,7 +45,7 @@ public class SysDept extends BaseEntity {
      * 部门名称
      */
     @NotBlank(message = "[deptName] {validate.notnull}")
-    @Size(min = 0, max = 30, message = "[deptName] {validate.size.illegal}")
+    @Size(min = 2, max = 30, message = "[deptName] {validate.size.illegal}")
     private String deptName;
     /**
      * 0代表存在 1代表停用

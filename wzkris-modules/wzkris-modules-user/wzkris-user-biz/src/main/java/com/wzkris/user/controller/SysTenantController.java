@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -21,6 +21,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ import java.util.List;
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
+    private final PasswordEncoder passwordEncoder;
     private final SysTenantMapper tenantMapper;
     private final SysTenantService tenantService;
     private final SysUserService userService;
@@ -77,7 +79,7 @@ public class SysTenantController extends BaseController {
     @OperateLog(title = "租户管理", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('tenant:add')")
-    public Result<Void> add(@Validated(value = ValidationGroups.Insert.class) @RequestBody SysTenantDTO sysTenantDTO) {
+    public Result<Void> add(@Validated @RequestBody SysTenantDTO sysTenantDTO) {
         if (userService.checkUserUnique(new SysUser().setUsername(sysTenantDTO.getUsername()))) {
             return fail("登录账号'" + sysTenantDTO.getUsername() + "'已存在");
         }
@@ -91,7 +93,21 @@ public class SysTenantController extends BaseController {
     @PreAuthorize("@ps.hasPerms('tenant:edit')")
     public Result<Void> edit(@RequestBody SysTenant sysTenant) {
         sysTenant.setAdministrator(null);
+        sysTenant.setOperPwd(null);
         return toRes(tenantMapper.updateById(sysTenant));
+    }
+
+    @Operation(summary = "修改租户操作密码")
+    @OperateLog(title = "租户管理", operateType = OperateType.UPDATE)
+    @PostMapping("/edit_operpwd")
+    @PreAuthorize("@ps.hasPerms('tenant:edit_operpwd')")
+    public Result<Void> editOperPwd(@RequestBody SysTenant sysTenant) {
+        if (StringUtil.length(sysTenant.getOperPwd()) != 6 || !NumberUtil.isNumber(sysTenant.getOperPwd())) {
+            return fail("操作密码必须为6位数字");
+        }
+        SysTenant update = new SysTenant(sysTenant.getTenantId());
+        update.setOperPwd(passwordEncoder.encode(sysTenant.getOperPwd()));
+        return toRes(tenantMapper.updateById(update));
     }
 
     @Operation(summary = "删除租户")

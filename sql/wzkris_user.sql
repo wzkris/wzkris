@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 02/11/2024 16:59:23
+ Date: 06/11/2024 16:45:21
 */
 
 SET NAMES utf8mb4;
@@ -135,8 +135,8 @@ CREATE TABLE `sys_dept`  (
 -- Records of sys_dept
 -- ----------------------------
 INSERT INTO `sys_dept` VALUES (100, 0, 0, '0', '最高部门', '0', 0, '15888888888', '', 1713334134616, 1, 20240403145415, 1);
-INSERT INTO `sys_dept` VALUES (101, 0, 114, '0,100,114', 'galaxy', '0', 1, '15888888888', 'ry@qq.com', 1713334134616, 1, 20240403145228, 1);
-INSERT INTO `sys_dept` VALUES (105, 0, 100, '0,100', 'jeecg集团', '0', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 20230919093931, NULL);
+INSERT INTO `sys_dept` VALUES (101, 0, 100, '0,100', 'galaxy', '0', 1, '15888888888', 'ry@qq.com', 1713334134616, 1, 1730794132685, 1);
+INSERT INTO `sys_dept` VALUES (105, 0, 114, '0,100,114', 'jeecg集团', '0', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 1730794127045, 1);
 INSERT INTO `sys_dept` VALUES (114, 0, 100, '0,100', 'pig开源联盟', '0', 0, NULL, NULL, 1713334134616, 1, 20240403145228, 1);
 INSERT INTO `sys_dept` VALUES (1775382319191453698, 1774671331416821762, 0, '0', '默认租户部门', '0', 0, NULL, NULL, 1713334134616, 1774671331412627456, 20240412112834, 1);
 INSERT INTO `sys_dept` VALUES (1775387364419072002, 1774671331416821762, 1775382319191453698, '0,1775382319191453698', '默认租户销售部门', '0', 0, '13566699669', NULL, 1713334134616, 1774671331412627456, 20240403132635, 1);
@@ -224,7 +224,8 @@ INSERT INTO `sys_menu` VALUES (1063, '登录查询', 151, 1, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (1064, '登录删除', 151, 2, '#', NULL, NULL, 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1730336330958, 1);
 INSERT INTO `sys_menu` VALUES (1065, '日志导出', 151, 3, '#', NULL, NULL, 'F', '0', 'loginlog:export', '#', 0, 0, 1, 1713334134616, 1, 1730336328228, 1);
 INSERT INTO `sys_menu` VALUES (1066, '账户解锁', 151, 4, '#', NULL, NULL, 'F', '0', 'account:unlock', '#', 0, 0, 1, 1713334134616, 1, 1730336322640, 1);
-INSERT INTO `sys_menu` VALUES (1129, '租户列表', 601, 10, '#', NULL, NULL, 'F', '0', 'tenant:list', '#', 0, 0, 1, 1730530211713, 1, 1730530211713, 1);
+INSERT INTO `sys_menu` VALUES (1128, '租户列表', 601, 10, '#', NULL, NULL, 'F', '0', 'tenant:list', '#', 0, 0, 1, 1730530211713, 1, 1730530211713, 1);
+INSERT INTO `sys_menu` VALUES (1129, '修改操作密码', 601, 11, '#', NULL, NULL, 'F', '0', 'tenant:edit_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1730882615318, 1);
 INSERT INTO `sys_menu` VALUES (1130, '基本信息', 601, 20, '#', '', NULL, 'F', '0', 'tenant:getinfo', '#', 0, 0, 1, 1724380930192, 1, 1730530283937, 1);
 INSERT INTO `sys_menu` VALUES (1131, '租户详情', 601, 9, '#', NULL, NULL, 'F', '0', 'tenant:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1132, '租户新增', 601, 4, '#', NULL, NULL, 'F', '0', 'tenant:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
@@ -455,6 +456,7 @@ CREATE TABLE `sys_tenant`  (
   `tenant_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '租户类型',
   `contact_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话',
   `tenant_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户名称',
+  `oper_pwd` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作密码',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '租户状态',
   `domain` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '域名',
   `remark` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
@@ -473,7 +475,8 @@ CREATE TABLE `sys_tenant`  (
 -- ----------------------------
 -- Records of sys_tenant
 -- ----------------------------
-INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '1111', '测试租户', '0', NULL, NULL, 1773625804122202113, -1, 5, 1, 1713334134616, 1, 1730536148370, 0);
+INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 1, 1713334134616, 1774671331412627456, 1730881892894, 0);
+INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$z3dOAn1gkMyACS1uHYeaOeBm6.fAzX5XA9ecYol6yRRyKRmHDZgz2', '0', NULL, NULL, 1773625804122202113, -1, 5, 1, 1730796054571, 1, 1730882394591, 0);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package
@@ -497,7 +500,7 @@ CREATE TABLE `sys_tenant_package`  (
 -- Records of sys_tenant_package
 -- ----------------------------
 INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '0', '[]', 1, NULL, 1, 1713334134616, 1, 1730271844479);
-INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 151, 1066, 1065, 1064, 1063, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 600, 601, 1131, 1132, 1134, 1133]', 1, NULL, 1, 1713334134616, 1, 1730529243671);
+INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 151, 1066, 1065, 1064, 1063, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130]', 1, NULL, 1, 1713334134616, 1, 1730781523791);
 
 -- ----------------------------
 -- Table structure for sys_tenant_wallet
@@ -514,6 +517,7 @@ CREATE TABLE `sys_tenant_wallet`  (
 -- Records of sys_tenant_wallet
 -- ----------------------------
 INSERT INTO `sys_tenant_wallet` VALUES (1774671331416821762, 0.00, '0');
+INSERT INTO `sys_tenant_wallet` VALUES (1853719125330489346, 0.00, '0');
 
 -- ----------------------------
 -- Table structure for sys_tenant_wallet_record
@@ -521,12 +525,13 @@ INSERT INTO `sys_tenant_wallet` VALUES (1774671331416821762, 0.00, '0');
 DROP TABLE IF EXISTS `sys_tenant_wallet_record`;
 CREATE TABLE `sys_tenant_wallet_record`  (
   `record_id` bigint NOT NULL,
-  `tenant_id` bigint NOT NULL,
+  `tenant_id` bigint NOT NULL COMMENT '租户ID',
   `amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '金额',
   `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '记录类型',
   `pay_time` bigint NOT NULL COMMENT '时间',
   `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`record_id`) USING BTREE
+  PRIMARY KEY (`record_id`) USING BTREE,
+  INDEX `t_id`(`tenant_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '租户钱包记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -565,9 +570,10 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1730517240914, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1730852207981, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (2, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724739889921, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1730517247276, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1730857279183, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$/weEZ1mEGhGDrbiiFPNjK.5V8lcgxWTxTTzvaYckS.LuoR6GGBby.', 0, NULL, NULL, NULL, 1730796054646, 1, 1730796054646, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_post
@@ -583,7 +589,6 @@ CREATE TABLE `sys_user_post`  (
 -- Records of sys_user_post
 -- ----------------------------
 INSERT INTO `sys_user_post` VALUES (1, 1);
-INSERT INTO `sys_user_post` VALUES (3, 4);
 
 -- ----------------------------
 -- Table structure for sys_user_role

@@ -56,6 +56,7 @@ public class SysTenantServiceImpl implements SysTenantService {
         long userId = IdUtil.getSnowflakeNextId();
 
         tenantDTO.setAdministrator(userId);
+        tenantDTO.setOperPwd(passwordEncoder.encode(tenantDTO.getOperPwd()));
         tenantMapper.insert(tenantDTO);
         SysTenantWallet wallet = new SysTenantWallet(tenantDTO.getTenantId());
         tenantWalletMapper.insert(wallet);
