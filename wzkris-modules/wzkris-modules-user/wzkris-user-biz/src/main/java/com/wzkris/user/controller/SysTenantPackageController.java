@@ -84,7 +84,7 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "新增租户套餐")
-    @OperateLog(title = "租户套餐", operateType = OperateType.INSERT)
+    @OperateLog(title = "租户套餐", subTitle = "新增套餐", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('tenant_package:add')")
     public Result<Void> add(@Valid @RequestBody SysTenantPackage tenantPackage) {
@@ -92,7 +92,7 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "修改租户套餐")
-    @OperateLog(title = "租户套餐", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户套餐", subTitle = "修改套餐", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('tenant_package:edit')")
     public Result<Void> edit(@Valid @RequestBody SysTenantPackage tenantPackage) {
@@ -100,7 +100,7 @@ public class SysTenantPackageController extends BaseController {
     }
 
     @Operation(summary = "删除租户套餐")
-    @OperateLog(title = "租户套餐", operateType = OperateType.DELETE)
+    @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('tenant_package:remove')")
     public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @RequestBody List<Long> packageIds) {

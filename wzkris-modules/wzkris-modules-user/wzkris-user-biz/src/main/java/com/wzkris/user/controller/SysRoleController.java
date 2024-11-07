@@ -81,7 +81,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "新增角色")
-    @OperateLog(title = "角色管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "角色管理", subTitle = "新增角色", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_role:add')")
     public Result<?> add(@Validated @RequestBody SysRoleDTO roleDTO) {
@@ -89,7 +89,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "修改角色")
-    @OperateLog(title = "角色管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "角色管理", subTitle = "修改角色", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('sys_role:edit')")
     public Result<?> edit(@Validated @RequestBody SysRoleDTO roleDTO) {
@@ -99,7 +99,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('user:edit')")
     public Result<?> editStatus(@RequestBody SysRole role) {
@@ -111,7 +111,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "修改角色数据权限")
-    @OperateLog(title = "角色管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "角色管理", subTitle = "修改角色数据权限", operateType = OperateType.UPDATE)
     @PostMapping("/data_scope")
     @PreAuthorize("@ps.hasPerms('sys_role:dataScope')")
     public Result<?> dataScope(@RequestBody SysRoleDTO roleDTO) {
@@ -121,7 +121,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "删除角色")
-    @OperateLog(title = "角色管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "角色管理", subTitle = "删除角色", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('sys_role:remove')")
     public Result<?> remove(@RequestBody @NotEmpty(message = "[roleIds] {validate.notnull}") List<Long> roleIds) {
@@ -150,7 +150,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "取消授权")
-    @OperateLog(title = "角色管理", operateType = OperateType.GRANT)
+    @OperateLog(title = "角色管理", subTitle = "取消授权", operateType = OperateType.GRANT)
     @PostMapping("/authorize/cancel")
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<?> cancelAuth(@RequestBody @Valid SysUserRole userRole) {
@@ -162,7 +162,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "批量取消授权")
-    @OperateLog(title = "角色管理", operateType = OperateType.GRANT)
+    @OperateLog(title = "角色管理", subTitle = "批量取消授权", operateType = OperateType.GRANT)
     @PostMapping("/authorize/cancel_batch")
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<?> cancelAuth(@RequestBody @Valid SysRoleUsersDTO roleUsersDTO) {
@@ -174,7 +174,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "批量用户授权")
-    @OperateLog(title = "角色管理", operateType = OperateType.GRANT)
+    @OperateLog(title = "角色管理", subTitle = "批量用户授权", operateType = OperateType.GRANT)
     @PostMapping("/authorize_user")
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<?> batchAuth(@RequestBody @Valid SysRoleUsersDTO roleUsersDTO) {

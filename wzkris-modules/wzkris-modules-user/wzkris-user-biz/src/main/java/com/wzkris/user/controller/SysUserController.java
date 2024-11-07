@@ -86,7 +86,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "新增用户")
-    @OperateLog(title = "后台管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "后台管理", subTitle = "新增用户", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_user:add')")
     public Result<?> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
@@ -106,7 +106,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "修改用户")
-    @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "后台管理", subTitle = "修改用户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> edit(@Validated @RequestBody SysUserDTO userDTO) {
@@ -128,7 +128,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "删除用户")
-    @OperateLog(title = "后台管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "后台管理", subTitle = "删除用户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('sys_user:remove')")
     public Result<?> remove(@RequestBody List<Long> userIds) {
@@ -138,7 +138,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "重置密码")
-    @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "后台管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset_password")
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> resetPwd(@RequestBody SysUser user) {
@@ -151,7 +151,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "后台管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> editStatus(@RequestBody SysUser user) {
@@ -163,7 +163,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "后台管理", operateType = OperateType.EXPORT)
+    @OperateLog(title = "后台管理", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('sys_user:export')")
     public void export(HttpServletResponse httpServletResponse, SysUser user) {
@@ -191,7 +191,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "用户授权角色")
-    @OperateLog(title = "后台管理", operateType = OperateType.GRANT)
+    @OperateLog(title = "后台管理", subTitle = "用户授权角色", operateType = OperateType.GRANT)
     @PostMapping("/authorize_role")
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
     public Result<?> authRole(@RequestBody @Valid SysUserRolesDTO userRolesDTO) {

@@ -78,12 +78,22 @@ public class Result<T> implements Serializable {
         return b ? ok() : fail();
     }
 
-    // 校验返回结果是否正常，若不是则抛出异常
+    /**
+     * 是否成功
+     */
     @JsonIgnore
-    public T checkData() {
-        if (this.biz != BizCode.OK.value()) {
-            throw new BusinessException(this.biz, this.errMsg);
+    public boolean isSuccess() {
+        return this.biz == BizCode.OK.value();
+    }
+
+    /**
+     * 校验返回结果是否正常，若不是则抛出业务异常
+     */
+    @JsonIgnore
+    public T checkData() throws BusinessException {
+        if (this.isSuccess()) {
+            return this.data;
         }
-        return this.data;
+        throw new BusinessException(this.biz, this.errMsg);
     }
 }

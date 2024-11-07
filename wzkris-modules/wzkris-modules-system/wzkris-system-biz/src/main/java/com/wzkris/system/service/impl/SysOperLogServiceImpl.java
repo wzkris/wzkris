@@ -28,11 +28,12 @@ public class SysOperLogServiceImpl implements SysOperLogService {
 
     private LambdaQueryWrapper<SysOperLog> buildQueryWrapper(SysOperLog sysOperLog) {
         return new LambdaQueryWrapper<SysOperLog>()
+                .eq(StringUtil.isNotNull(sysOperLog.getTenantId()), SysOperLog::getTenantId, sysOperLog.getTenantId())
                 .like(StringUtil.isNotBlank(sysOperLog.getOperIp()), SysOperLog::getOperIp, sysOperLog.getOperIp())
                 .eq(StringUtil.isNotBlank(sysOperLog.getStatus()), SysOperLog::getStatus, sysOperLog.getStatus())
                 .like(StringUtil.isNotBlank(sysOperLog.getTitle()), SysOperLog::getTitle, sysOperLog.getTitle())
+                .like(StringUtil.isNotBlank(sysOperLog.getSubTitle()), SysOperLog::getSubTitle, sysOperLog.getSubTitle())
                 .eq(StringUtil.isNotNull(sysOperLog.getOperType()), SysOperLog::getOperType, sysOperLog.getOperType())
-                .eq(StringUtil.isNotNull(sysOperLog.getStatus()), SysOperLog::getStatus, sysOperLog.getStatus())
                 .like(StringUtil.isNotBlank(sysOperLog.getOperName()), SysOperLog::getOperName, sysOperLog.getOperName())
                 .between(sysOperLog.getParams().get("beginTime") != null && sysOperLog.getParams().get("endTime") != null,
                         SysOperLog::getOperTime, sysOperLog.getParams().get("beginTime"), sysOperLog.getParams().get("endTime"))

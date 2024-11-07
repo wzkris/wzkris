@@ -24,6 +24,7 @@ import java.util.List;
  */
 @Tag(name = "系统配置")
 @RestController
+@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
 @RequestMapping("/config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
@@ -60,7 +61,7 @@ public class SysConfigController extends BaseController {
     /**
      * 新增参数配置
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('config:add')")
     public Result<?> add(@Validated @RequestBody SysConfig config) {
@@ -73,7 +74,7 @@ public class SysConfigController extends BaseController {
     /**
      * 修改参数配置
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('config:edit')")
     public Result<?> edit(@Validated @RequestBody SysConfig config) {
@@ -86,7 +87,7 @@ public class SysConfigController extends BaseController {
     /**
      * 删除参数配置
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> remove(@RequestBody Long[] configIds) {
@@ -98,7 +99,6 @@ public class SysConfigController extends BaseController {
     /**
      * 刷新参数缓存
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
     @PostMapping("/refresh_cache")
     @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> refreshCache() {

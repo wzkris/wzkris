@@ -37,7 +37,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
-@DynamicTenant(enableIgnore = "true")// 忽略租户隔离
+@DynamicTenant(value = "true")// 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
@@ -76,7 +76,7 @@ public class SysTenantController extends BaseController {
     }
 
     @Operation(summary = "新增租户")
-    @OperateLog(title = "租户管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('tenant:add')")
     public Result<Void> add(@Validated @RequestBody SysTenantDTO sysTenantDTO) {
@@ -88,7 +88,7 @@ public class SysTenantController extends BaseController {
     }
 
     @Operation(summary = "修改租户")
-    @OperateLog(title = "租户管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户管理", subTitle = "修改租户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('tenant:edit')")
     public Result<Void> edit(@RequestBody SysTenant sysTenant) {
@@ -97,8 +97,8 @@ public class SysTenantController extends BaseController {
         return toRes(tenantMapper.updateById(sysTenant));
     }
 
-    @Operation(summary = "修改租户操作密码")
-    @OperateLog(title = "租户管理", operateType = OperateType.UPDATE)
+    @Operation(summary = "重置租户操作密码")
+    @OperateLog(title = "租户管理", subTitle = "重置操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
     @PreAuthorize("@ps.hasPerms('tenant:edit_operpwd')")
     public Result<Void> editOperPwd(@RequestBody SysTenant sysTenant) {
@@ -111,7 +111,7 @@ public class SysTenantController extends BaseController {
     }
 
     @Operation(summary = "删除租户")
-    @OperateLog(title = "租户管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('tenant:remove')")
     public Result<Void> remove(@RequestBody @NotEmpty(message = "[tenantIds] {validate.notnull}") List<Long> tenantIds) {

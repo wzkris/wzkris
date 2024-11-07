@@ -14,14 +14,24 @@ import java.lang.annotation.*;
 @Documented
 public @interface OperateLog {
     /**
-     * 模块
+     * 标题
      */
     String title() default "";
+
+    /**
+     * 子标题
+     */
+    String subTitle() default "";
 
     /**
      * 操作类型
      */
     OperateType operateType() default OperateType.OTHER;
+
+    /**
+     * 请求参数排除
+     */
+    String[] excludeRequestParam() default {};
 
     /**
      * 是否保存请求的参数

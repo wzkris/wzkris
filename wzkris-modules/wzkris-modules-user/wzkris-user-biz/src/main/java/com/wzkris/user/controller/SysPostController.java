@@ -48,7 +48,7 @@ public class SysPostController extends BaseController {
     }
 
     @Operation(summary = "新增岗位")
-    @OperateLog(title = "岗位管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "岗位管理", subTitle = "新增岗位", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('post:add')")
     public Result<?> add(@Validated @RequestBody SysPost sysPost) {
@@ -56,15 +56,15 @@ public class SysPostController extends BaseController {
     }
 
     @Operation(summary = "修改岗位")
-    @OperateLog(title = "岗位管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "岗位管理", subTitle = "修改岗位", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('post:edit')")
     public Result<?> edit(@Validated @RequestBody SysPost sysPost) {
         return toRes(postMapper.updateById(sysPost));
     }
 
-    @Operation(summary = "修改岗位")
-    @OperateLog(title = "岗位管理", operateType = OperateType.DELETE)
+    @Operation(summary = "删除岗位")
+    @OperateLog(title = "岗位管理", subTitle = "删除岗位", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('post:remove')")
     public Result<?> remove(@RequestBody List<Long> postIds) {
@@ -72,7 +72,7 @@ public class SysPostController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "岗位管理", operateType = OperateType.EXPORT)
+    @OperateLog(title = "岗位管理", subTitle = "导出岗位数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('post:export')")
     public void export(HttpServletResponse httpServletResponse, SysPost sysPost) {

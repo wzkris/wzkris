@@ -12,7 +12,6 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class LoginLogDTO {
-    private static final long serialVersionUID = 1L;
 
     /**
      * ID
@@ -23,6 +22,11 @@ public class LoginLogDTO {
      * 用户名
      */
     private String username;
+
+    /**
+     * 租户ID
+     */
+    private Long tenantId;
 
     /**
      * 登录状态（0正常 1异常）

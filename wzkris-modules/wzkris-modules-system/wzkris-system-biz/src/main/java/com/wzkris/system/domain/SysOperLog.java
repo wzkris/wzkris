@@ -36,6 +36,9 @@ public class SysOperLog implements Serializable {
     @Schema(description = "操作模块")
     private String title;
 
+    @Schema(description = "子模块")
+    private String subTitle;
+
     @Schema(description = "操作类型（0其它 1新增 2修改 3删除）")
     private String operType;
 

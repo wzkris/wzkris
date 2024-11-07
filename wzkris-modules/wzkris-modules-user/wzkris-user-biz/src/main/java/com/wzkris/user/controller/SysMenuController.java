@@ -47,7 +47,7 @@ public class SysMenuController extends BaseController {
     }
 
     @Operation(summary = "新增菜单")
-    @OperateLog(title = "菜单管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('menu:add')")
     public Result<?> add(@Valid @RequestBody SysMenu menu) {
@@ -58,7 +58,7 @@ public class SysMenuController extends BaseController {
     }
 
     @Operation(summary = "修改菜单")
-    @OperateLog(title = "菜单管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('menu:edit')")
     public Result<?> edit(@Valid @RequestBody SysMenu menu) {
@@ -72,7 +72,7 @@ public class SysMenuController extends BaseController {
     }
 
     @Operation(summary = "删除菜单")
-    @OperateLog(title = "菜单管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('menu:remove')")
     public Result<?> remove(@RequestBody Long menuId) {

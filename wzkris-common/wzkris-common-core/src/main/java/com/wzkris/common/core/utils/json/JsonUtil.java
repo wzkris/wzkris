@@ -2,7 +2,10 @@ package com.wzkris.common.core.utils.json;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.exception.UtilException;
@@ -26,6 +29,21 @@ public class JsonUtil {
 
     @Getter
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * 配置MAPPER提升兼容性
+     */
+    static {
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);// 允许空Bean序列化
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);// 允许不存在的属性反序列化
+        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);// 允许使用无引号字段
+        objectMapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);// 忽略未定义的属性
+        objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);// 是否允许使用注释
+        objectMapper.configure(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature(), true);// 忽略json最后的逗号
+        objectMapper.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true);// 允许反斜杠
+        objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);// 允许出现特殊字符和转义符
+        objectMapper.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES.mappedFeature(), true);// 允许出现单引号
+    }
 
     /**
      * 对象转Json格式字符串

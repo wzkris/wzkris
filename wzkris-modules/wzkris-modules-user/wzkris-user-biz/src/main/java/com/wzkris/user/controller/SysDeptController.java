@@ -61,7 +61,7 @@ public class SysDeptController extends BaseController {
     }
 
     @Operation(summary = "新增部门")
-    @OperateLog(title = "部门管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "部门管理", subTitle = "新增部门", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dept:add')")
     public Result<?> add(@Validated @RequestBody SysDept dept) {
@@ -71,7 +71,7 @@ public class SysDeptController extends BaseController {
     }
 
     @Operation(summary = "修改部门")
-    @OperateLog(title = "部门管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "部门管理", subTitle = "修改部门", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('dept:edit')")
     public Result<?> edit(@Validated @RequestBody SysDept dept) {
@@ -88,7 +88,7 @@ public class SysDeptController extends BaseController {
     }
 
     @Operation(summary = "删除部门")
-    @OperateLog(title = "部门管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "部门管理", subTitle = "删除部门", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('dept:remove')")
     public Result<?> remove(@RequestBody Long deptId) {

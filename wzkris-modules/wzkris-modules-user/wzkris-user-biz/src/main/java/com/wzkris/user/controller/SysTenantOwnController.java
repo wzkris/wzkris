@@ -3,6 +3,8 @@ package com.wzkris.user.controller;
 import cn.hutool.core.util.NumberUtil;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.user.domain.SysTenant;
@@ -52,6 +54,7 @@ public class SysTenantOwnController extends BaseController {
     }
 
     @Operation(summary = "修改操作密码")
+    @OperateLog(title = "租户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
     @PreAuthorize("@SysUtil.isAdministrator()")// 只允许租户的超级管理员修改
     public Result<?> editOperPwd(@RequestBody EditPasswordDTO dto) {

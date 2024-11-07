@@ -65,7 +65,7 @@ public class SysNoticeController extends BaseController {
     /**
      * 修改通知公告
      */
-    @OperateLog(title = "通知公告", operateType = OperateType.UPDATE)
+    @OperateLog(title = "通知公告", subTitle = "修改通知", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('notice:edit')")
     public Result<?> edit(@Validated @RequestBody SysNotice notice) {
@@ -75,7 +75,7 @@ public class SysNoticeController extends BaseController {
     /**
      * 删除通知公告
      */
-    @OperateLog(title = "通知公告", operateType = OperateType.DELETE)
+    @OperateLog(title = "通知公告", subTitle = "删除通知", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('notice:remove')")
     public Result<?> remove(@RequestBody Long[] noticeIds) {

@@ -10,4 +10,5 @@ public class EditPasswordDTO {
 
     @NotBlank(message = "[newPassword] {validate.notnull}")
     private String newPassword;
+
 }

@@ -60,7 +60,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysTenantPackageMapper sysTenantPackageMapper;
 
     @Override
-    @DynamicTenant(enableIgnore = "#tenantId", parseType = DynamicTenant.ParseType.SPEL_NUMBER)
+    @DynamicTenant(value = "#tenantId", parseType = DynamicTenant.ParseType.SPEL_NUMBER)
     public SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
         List<SysRole> roles;
         List<String> grantedAuthority;

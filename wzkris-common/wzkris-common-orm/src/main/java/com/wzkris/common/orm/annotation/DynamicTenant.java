@@ -22,7 +22,7 @@ public @interface DynamicTenant {
      *
      * @return 默认走租户
      */
-    String enableIgnore() default "false";
+    String value() default "false";
 
     /**
      * enableIgnore参数解析类型

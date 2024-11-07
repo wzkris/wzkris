@@ -68,7 +68,7 @@ public class SysDictDataController extends BaseController {
     /**
      * 新增字典类型
      */
-    @OperateLog(title = "字典数据", operateType = OperateType.INSERT)
+    @OperateLog(title = "字典数据", subTitle = "新增字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dict:add')")
     public Result<?> add(@Validated @RequestBody SysDictData dict) {
@@ -78,7 +78,7 @@ public class SysDictDataController extends BaseController {
     /**
      * 修改保存字典类型
      */
-    @OperateLog(title = "字典数据", operateType = OperateType.UPDATE)
+    @OperateLog(title = "字典数据", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('dict:edit')")
     public Result<?> edit(@Validated @RequestBody SysDictData dict) {
@@ -88,7 +88,7 @@ public class SysDictDataController extends BaseController {
     /**
      * 删除字典类型
      */
-    @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
+    @OperateLog(title = "字典类型", subTitle = "删除字典", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> remove(@RequestBody Long[] dictCodes) {

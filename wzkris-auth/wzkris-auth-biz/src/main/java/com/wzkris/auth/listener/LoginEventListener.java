@@ -57,6 +57,7 @@ public class LoginEventListener {
             // 插入后台登陆日志
             final LoginLogDTO loginLogDTO = new LoginLogDTO();
             loginLogDTO.setUsername(loginSyser.getUsername());
+            loginLogDTO.setTenantId(loginSyser.getTenantId());
             loginLogDTO.setLoginTime(DateUtil.current());
             loginLogDTO.setLoginIp(ipAddr);
             loginLogDTO.setStatus(CommonConstants.STATUS_ENABLE);

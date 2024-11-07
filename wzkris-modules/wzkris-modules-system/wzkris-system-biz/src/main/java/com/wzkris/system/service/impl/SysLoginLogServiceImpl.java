@@ -29,6 +29,7 @@ public class SysLoginLogServiceImpl implements SysLoginLogService {
 
     private LambdaQueryWrapper<SysLoginLog> buildQueryWrapper(SysLoginLog loginLog) {
         return new LambdaQueryWrapper<SysLoginLog>()
+                .eq(StringUtil.isNotNull(loginLog.getTenantId()), SysLoginLog::getTenantId, loginLog.getTenantId())
                 .eq(StringUtil.isNotNull(loginLog.getStatus()), SysLoginLog::getStatus, loginLog.getStatus())
                 .like(StringUtil.isNotNull(loginLog.getUsername()), SysLoginLog::getUsername, loginLog.getUsername())
                 .like(StringUtil.isNotNull(loginLog.getLoginIp()), SysLoginLog::getLoginIp, loginLog.getLoginIp())
