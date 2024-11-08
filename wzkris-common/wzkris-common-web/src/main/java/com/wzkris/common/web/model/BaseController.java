@@ -1,4 +1,4 @@
-package com.wzkris.common.orm.model;
+package com.wzkris.common.web.model;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.wzkris.common.core.domain.Result;
@@ -76,6 +76,9 @@ public class BaseController {
         return Result.fail();
     }
 
+    /**
+     * 返回失败消息
+     */
     public <T> Result<T> fail(String errMsg) {
         return Result.fail(errMsg);
     }

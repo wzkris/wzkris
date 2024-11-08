@@ -2,8 +2,8 @@ package com.wzkris.user.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.AppUtil;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.domain.dto.AppUserDTO;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.mapper.AppUserMapper;
