@@ -1,6 +1,7 @@
 package com.wzkris.common.log.annotation.aspect;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -151,20 +153,32 @@ public class OperateLogAspect {
      * @param operLogDTO 操作日志
      */
     private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperLogDTO operLogDTO) throws JsonProcessingException {
-        Map<String, String> paramsMap;
-        String requestMethod = operLogDTO.getRequestMethod();
+        final String operParams;
+        final String requestMethod = operLogDTO.getRequestMethod();
         if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
             String params = this.argsArrayToString(joinPoint.getArgs());
             if (StringUtil.isBlank(params)) {
-                params = "{}";
+                operParams = "-";
             }
-            paramsMap = objectMapper.readValue(params, TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, String.class));
+            else if (NumberUtil.isNumber(params)) {
+                operParams = params;
+            }
+            else if (params.startsWith("[")) {
+                List<?> list = objectMapper.readValue(params, TypeFactory.defaultInstance().constructCollectionType(List.class, Object.class));
+                operParams = objectMapper.writeValueAsString(list);
+            }
+            else {
+                Map<String, String> paramsMap = objectMapper.readValue(params, TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, Object.class));
+                this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
+                operParams = StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000);
+            }
         }
         else {
-            paramsMap = ServletUtil.getParamMap(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+            Map<String, String> paramsMap = ServletUtil.getParamMap(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+            this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
+            operParams = StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000);
         }
-        this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
-        operLogDTO.setOperParam(StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000));
+        operLogDTO.setOperParam(operParams);
     }
 
     /**
