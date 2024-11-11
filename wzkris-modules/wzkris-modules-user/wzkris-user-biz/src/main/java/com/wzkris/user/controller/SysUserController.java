@@ -3,7 +3,9 @@ package com.wzkris.user.controller;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
@@ -14,6 +16,7 @@ import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.dto.SysUserRolesDTO;
+import com.wzkris.user.domain.export.SysUserExport;
 import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
@@ -166,9 +169,10 @@ public class SysUserController extends BaseController {
     @OperateLog(title = "后台管理", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('sys_user:export')")
-    public void export(HttpServletResponse httpServletResponse, SysUser user) {
+    public void export(HttpServletResponse response, SysUser user) {
         List<SysUserVO> list = userService.list(user);
-
+        List<SysUserExport> convert = MapstructUtil.convert(list, SysUserExport.class);
+        ExcelUtil.exportExcel(convert, "后台用户数据", SysUserExport.class, response);
     }
 
     @Operation(summary = "根据用户id获取授权角色")

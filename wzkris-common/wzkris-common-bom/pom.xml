@@ -43,6 +43,13 @@
 				<version>${revision}</version>
 			</dependency>
 
+			<!-- excel导入导出-->
+			<dependency>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-common-excel</artifactId>
+				<version>${revision}</version>
+			</dependency>
+
 			<!-- 日志记录 -->
 			<dependency>
 				<groupId>com.wzkris</groupId>
