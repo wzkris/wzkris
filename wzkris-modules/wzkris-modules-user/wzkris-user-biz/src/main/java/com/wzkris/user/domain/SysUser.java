@@ -1,6 +1,5 @@
 package com.wzkris.user.domain;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,9 +20,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 用户对象 sys_user
@@ -60,7 +56,7 @@ public class SysUser extends BaseEntity {
     private String nickname;
 
     @Email(message = "[email] {validate.email.illegal}")
-    @Size(min = 0, max = 50, message = "[email] {validate.size.illegal}")
+    @Size(min = 5, max = 50, message = "[email] {validate.size.illegal}")
     @Schema(description = "用户邮箱")
     private String email;
 
@@ -95,24 +91,12 @@ public class SysUser extends BaseEntity {
     @Schema(description = "用户额外信息")
     private String remark;
 
-    @JsonIgnore
-    @TableField(exist = false)
-    @Schema(description = "请求参数")
-    private Map<String, Object> params;
-
     public SysUser(Long userId) {
         this.userId = userId;
     }
 
     public static boolean isSuperAdmin(Long userId) {
         return SecurityConstants.SUPER_ADMIN_ID.equals(userId);
-    }
-
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(2);
-        }
-        return params;
     }
 
     @JsonIgnore

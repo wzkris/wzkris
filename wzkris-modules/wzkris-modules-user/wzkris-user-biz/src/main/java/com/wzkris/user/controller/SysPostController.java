@@ -5,6 +5,7 @@ import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysPost;
@@ -28,6 +29,7 @@ import java.util.List;
  */
 @Tag(name = "岗位管理")
 @RestController
+@DynamicTenant(value = "@SysUtil.isSuperTenant()", parseType = DynamicTenant.ParseType.SPEL_BOOLEAN)// 超级租户才允许忽略隔离
 @RequestMapping("/sys_post")
 @RequiredArgsConstructor
 public class SysPostController extends BaseController {
@@ -46,7 +48,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "岗位详细信息")
     @GetMapping("/{postId}")
     @PreAuthorize("@ps.hasPerms('post:query')")
-    public Result<?> getInfo(@PathVariable Long postId) {
+    public Result<SysPost> getInfo(@PathVariable Long postId) {
         return ok(postMapper.selectById(postId));
     }
 
@@ -54,7 +56,7 @@ public class SysPostController extends BaseController {
     @OperateLog(title = "岗位管理", subTitle = "新增岗位", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('post:add')")
-    public Result<?> add(@Validated @RequestBody SysPost sysPost) {
+    public Result<Void> add(@Validated @RequestBody SysPost sysPost) {
         return toRes(postMapper.insert(sysPost));
     }
 
@@ -62,7 +64,7 @@ public class SysPostController extends BaseController {
     @OperateLog(title = "岗位管理", subTitle = "修改岗位", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('post:edit')")
-    public Result<?> edit(@Validated @RequestBody SysPost sysPost) {
+    public Result<Void> edit(@Validated @RequestBody SysPost sysPost) {
         return toRes(postMapper.updateById(sysPost));
     }
 
@@ -70,7 +72,7 @@ public class SysPostController extends BaseController {
     @OperateLog(title = "岗位管理", subTitle = "删除岗位", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('post:remove')")
-    public Result<?> remove(@RequestBody List<Long> postIds) {
+    public Result<Void> remove(@RequestBody List<Long> postIds) {
         return toRes(postService.deleteByPostIds(postIds));
     }
 

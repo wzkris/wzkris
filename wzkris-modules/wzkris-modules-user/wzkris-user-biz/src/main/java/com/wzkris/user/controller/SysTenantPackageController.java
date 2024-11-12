@@ -10,6 +10,7 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysTenantPackage;
+import com.wzkris.user.domain.resp.SysMenuCheckSelectTreeResp;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysTenantPackageService;
@@ -23,9 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 租户套餐管理
@@ -67,12 +66,11 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{packageId}"})
     @PreAuthorize("@ps.hasPerms('tenant_package:list')")
-    public Result<?> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
-        Map<String, Object> res = new HashMap<>(2);
-        res.put("checkedKeys", tenantPackageMapper.listMenuIdByPackageId(packageId));
-        SysMenu sysMenu = new SysMenu(CommonConstants.STATUS_ENABLE);
-        res.put("menus", menuService.listMenuSelectTree(sysMenu));// 查询租户专用菜单
-        return ok(res);
+    public Result<SysMenuCheckSelectTreeResp> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
+        SysMenuCheckSelectTreeResp resp = new SysMenuCheckSelectTreeResp();
+        resp.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
+        resp.setMenus(menuService.listMenuSelectTree(new SysMenu(CommonConstants.STATUS_ENABLE)));
+        return ok(resp);
     }
 
     @Operation(summary = "套餐详细信息")

@@ -8,12 +8,13 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
-import com.wzkris.user.domain.dto.EditPasswordDTO;
+import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.domain.vo.SysTenantVO;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysUserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,19 +58,19 @@ public class SysTenantOwnController extends BaseController {
     @OperateLog(title = "租户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
     @PreAuthorize("@SysUtil.isAdministrator()")// 只允许租户的超级管理员修改
-    public Result<?> editOperPwd(@RequestBody EditPasswordDTO dto) {
-        if (StringUtil.length(dto.getOldPassword()) != 6 || StringUtil.length(dto.getNewPassword()) != 6) {
+    public Result<Void> editOperPwd(@RequestBody @Valid EditPwdReq req) {
+        if (StringUtil.length(req.getOldPassword()) != 6 || StringUtil.length(req.getNewPassword()) != 6) {
             return fail("密码长度不正确");
         }
-        if (!NumberUtil.isNumber(dto.getOldPassword()) || !NumberUtil.isNumber(dto.getNewPassword())) {
+        if (!NumberUtil.isNumber(req.getOldPassword()) || !NumberUtil.isNumber(req.getNewPassword())) {
             return fail("密码不正确");
         }
         SysTenant sysTenant = tenantMapper.selectById(SysUtil.getTenantId());
-        if (!passwordEncoder.matches(dto.getOldPassword(), sysTenant.getOperPwd())) {
+        if (!passwordEncoder.matches(req.getOldPassword(), sysTenant.getOperPwd())) {
             return fail("密码错误");
         }
         SysTenant update = new SysTenant(sysTenant.getTenantId());
-        update.setOperPwd(passwordEncoder.encode(dto.getNewPassword()));
+        update.setOperPwd(passwordEncoder.encode(req.getNewPassword()));
         return toRes(tenantMapper.updateById(update));
     }
 

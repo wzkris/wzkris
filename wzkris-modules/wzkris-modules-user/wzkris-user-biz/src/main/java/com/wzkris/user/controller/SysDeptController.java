@@ -6,9 +6,10 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
-import com.wzkris.user.domain.vo.SelectTree;
+import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.service.SysDeptService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,7 @@ import java.util.List;
  */
 @Tag(name = "部门管理")
 @RestController
+@DynamicTenant(value = "@SysUtil.isSuperTenant()", parseType = DynamicTenant.ParseType.SPEL_BOOLEAN)// 超级租户才允许忽略隔离
 @RequestMapping("/sys_dept")
 @RequiredArgsConstructor
 public class SysDeptController extends BaseController {
@@ -105,7 +107,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "部门树列表")
     @GetMapping("/tree")
     @PreAuthorize("@ps.hasPerms('dept:list')")
-    public Result<List<SelectTree>> deptTree(SysDept deptVo) {
-        return ok(deptService.listDeptTree(deptVo));
+    public Result<List<SelectTreeVO>> deptTree(SysDept sysDept) {
+        return ok(deptService.listDeptTree(sysDept));
     }
 }

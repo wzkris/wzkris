@@ -3,7 +3,7 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.vo.RouterVO;
-import com.wzkris.user.domain.vo.SelectTree;
+import com.wzkris.user.domain.vo.SelectTreeVO;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public interface SysMenuService {
      *
      * @return 菜单列表
      */
-    List<SelectTree> listMenuSelectTree(SysMenu menu);
+    List<SelectTreeVO> listMenuSelectTree(SysMenu menu);
 
     /**
      * 根据用户ID查询前端路由
@@ -76,7 +76,7 @@ public interface SysMenuService {
      * @param menus 菜单列表
      * @return 下拉树结构列表
      */
-    List<SelectTree> buildSelectTree(List<SysMenu> menus);
+    List<SelectTreeVO> buildSelectTree(List<SysMenu> menus);
 
     /**
      * 是否存在菜单子节点

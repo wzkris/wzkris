@@ -1,4 +1,4 @@
-package com.wzkris.user.domain.dto;
+package com.wzkris.user.domain.req;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2024/6/22 09:49
  */
 @Data
-public class SysRoleUsersDTO {
+public class SysRole2UsersReq {
     @NotNull(message = "[roleId] {validate.notnull}")
     private Long roleId;
 

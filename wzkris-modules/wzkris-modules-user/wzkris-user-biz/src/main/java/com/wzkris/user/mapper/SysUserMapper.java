@@ -1,9 +1,11 @@
 package com.wzkris.user.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysUser;
+import com.wzkris.user.domain.vo.SysUserVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,17 @@ import java.util.List;
  */
 @Repository
 public interface SysUserMapper extends BaseMapperPlus<SysUser> {
+
+    /**
+     * 带权限查询分页数据
+     */
+    @Select("""
+            SELECT u.*, d.dept_name, d.status AS deptStatus
+            		FROM sys_user u LEFT JOIN sys_dept d ON u.dept_id = d.dept_id
+            ${ew.customSqlSegment}
+            """)
+    @DeptScope(tableAlias = "d")
+    List<SysUserVO> selectVOInScope(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
     /**
      * 带权限查询列表

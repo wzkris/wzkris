@@ -57,12 +57,11 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "租户选择列表(带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPerms('tenant:list')")
-    public Result<Page<SysTenant>> selectlist(SysTenant sysTenant) {
+    public Result<Page<SysTenant>> selectlist(String tenantName) {
         startPage();
         LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
                 .select(SysTenant::getTenantId, SysTenant::getTenantName)
-                .like(StringUtil.isNotBlank(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName());
+                .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName);
         List<SysTenant> list = tenantMapper.selectList(lqw);
         return getDataTable(list);
     }

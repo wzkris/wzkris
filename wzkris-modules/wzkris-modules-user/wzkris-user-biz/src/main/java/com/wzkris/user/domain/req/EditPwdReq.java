@@ -1,10 +1,13 @@
-package com.wzkris.user.domain.dto;
+package com.wzkris.user.domain.req;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+/**
+ * 修改密码
+ */
 @Data
-public class EditPasswordDTO {
+public class EditPwdReq {
     @NotBlank(message = "[oldPassword] {validate.notnull}")
     private String oldPassword;
 
