@@ -36,20 +36,18 @@ public interface SysRoleService {
     String getRoleGroup(@Nullable Long userId);
 
     /**
-     * 新增保存角色信息
+     * 新增角色信息
      *
      * @param roleDTO 角色信息
-     * @return 结果
      */
-    int insertRole(SysRoleDTO roleDTO);
+    void insertRole(SysRoleDTO roleDTO);
 
     /**
-     * 修改保存角色信息
+     * 修改角色信息
      *
      * @param roleDTO 角色信息
-     * @return 结果
      */
-    int updateRole(SysRoleDTO roleDTO);
+    void updateRole(SysRoleDTO roleDTO);
 
     /**
      * 批量授权用户

@@ -5,7 +5,6 @@ import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysPost;
@@ -29,7 +28,6 @@ import java.util.List;
  */
 @Tag(name = "岗位管理")
 @RestController
-@DynamicTenant(value = "@SysUtil.isSuperTenant()", parseType = DynamicTenant.ParseType.SPEL_BOOLEAN)// 超级租户才允许忽略隔离
 @RequestMapping("/sys_post")
 @RequiredArgsConstructor
 public class SysPostController extends BaseController {

@@ -4,7 +4,6 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
@@ -148,13 +147,6 @@ public class SysUserServiceImpl implements SysUserService {
             if (userMapper.checkDataScopes(userIds) != userIds.size()) {
                 throw new AccessDeniedException("当前用户没有权限访问数据");
             }
-        }
-    }
-
-    @Override
-    public void checkTenantParams(SysUserDTO userDTO) {
-        if (SysUtil.isSuperTenant()) {
-
         }
     }
 

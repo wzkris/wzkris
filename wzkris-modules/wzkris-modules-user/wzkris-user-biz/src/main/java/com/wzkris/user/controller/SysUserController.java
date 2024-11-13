@@ -9,7 +9,6 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
@@ -50,7 +49,6 @@ import java.util.List;
 @Tag(name = "用户管理")
 @Validated
 @RestController
-@DynamicTenant(value = "@SysUtil.isSuperTenant()", parseType = DynamicTenant.ParseType.SPEL_BOOLEAN)// 超级租户才允许忽略隔离
 @RequestMapping("/sys_user")
 @RequiredArgsConstructor
 public class SysUserController extends BaseController {
@@ -139,7 +137,6 @@ public class SysUserController extends BaseController {
     public Result<Void> edit(@Validated @RequestBody SysUserDTO userDTO) {
         // 校验权限
         userService.checkDataScopes(userDTO.getUserId());
-        userService.checkTenantParams(userDTO);
         if (userService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
         }

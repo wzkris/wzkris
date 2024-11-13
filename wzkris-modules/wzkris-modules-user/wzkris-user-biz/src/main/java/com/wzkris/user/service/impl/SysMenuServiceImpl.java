@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 public class SysMenuServiceImpl implements SysMenuService {
     private final SysMenuMapper menuMapper;
     private final SysTenantMapper tenantMapper;
-    private final SysTenantPackageMapper sysTenantPackageMapper;
+    private final SysTenantPackageMapper tenantPackageMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleMenuMapper sysRoleMenuMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
 
     /**
      * 查询系统菜单列表
@@ -51,7 +51,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
-                menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
+                menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
             }
             else {
                 menuIds = this.listMenuIdByUserId(userId);
@@ -87,7 +87,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
-        List<Long> menuIds = sysRoleMenuMapper.listMenuIdByRoleIds(roleIds);
+        List<Long> menuIds = roleMenuMapper.listMenuIdByRoleIds(roleIds);
         return this.listPermsByMenuIds(menuIds);
     }
 
@@ -132,7 +132,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
-                menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
+                menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
             }
             else {
                 menuIds = this.listMenuIdByUserId(userId);
@@ -154,7 +154,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
-        return sysRoleMenuMapper.listMenuIdByRoleIds(roleIds);
+        return roleMenuMapper.listMenuIdByRoleIds(roleIds);
     }
 
     /**
@@ -268,7 +268,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      */
     @Override
     public boolean checkMenuExistRole(Long menuId) {
-        return sysRoleMenuMapper.checkMenuExistRole(menuId) > 0;
+        return roleMenuMapper.checkMenuExistRole(menuId) > 0;
     }
 
     /**

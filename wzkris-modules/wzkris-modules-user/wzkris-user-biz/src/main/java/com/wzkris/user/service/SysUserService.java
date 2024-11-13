@@ -87,10 +87,4 @@ public interface SysUserService {
         this.checkDataScopes(Collections.singletonList(userId));
     }
 
-    /**
-     * 超级租户可以访问所有数据，所以要校验租户相关参数
-     *
-     * @param userDTO 参数
-     */
-    void checkTenantParams(SysUserDTO userDTO);
 }

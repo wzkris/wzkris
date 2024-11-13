@@ -62,6 +62,22 @@ public interface SysUserRoleMapper {
     int deleteByUserIds(@Param("userIds") List<Long> userIds);
 
     /**
+     * 批量删除用户和角色关联
+     *
+     * @param roleIds 需要删除的数据ID
+     * @return 结果
+     */
+    @Delete("""
+            <script>
+                DELETE FROM sys_user_role WHERE role_id IN
+                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                        #{roleId}
+                    </foreach>
+            </script>
+            """)
+    int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
+
+    /**
      * 通过角色ID查询角色使用数量
      *
      * @param roleIds 角色ID

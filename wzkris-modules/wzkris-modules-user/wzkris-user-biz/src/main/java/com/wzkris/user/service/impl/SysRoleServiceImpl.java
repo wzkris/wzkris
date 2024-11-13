@@ -36,9 +36,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysRoleServiceImpl implements SysRoleService {
     private final SysRoleMapper roleMapper;
-    private final SysRoleMenuMapper sysRoleMenuMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleDeptMapper sysRoleDeptMapper;
+    private final SysRoleDeptMapper roleDeptMapper;
 
     /**
      * 根据条件查询角色列表
@@ -96,39 +96,36 @@ public class SysRoleServiceImpl implements SysRoleService {
      * 新增保存角色信息
      *
      * @param roleDTO 角色信息
-     * @return 结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertRole(SysRoleDTO roleDTO) {
+    public void insertRole(SysRoleDTO roleDTO) {
         // 新增角色信息
-        int rows = roleMapper.insert(roleDTO);
+        roleMapper.insert(roleDTO);
         // 插入角色菜单信息
         this.insertRoleMenu(roleDTO.getRoleId(), roleDTO.getMenuIds());
         // 新增角色和部门信息（数据权限）
         this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
-        return rows;
     }
 
     /**
      * 修改保存角色信息
      *
      * @param roleDTO 角色信息
-     * @return 结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateRole(SysRoleDTO roleDTO) {
+    public void updateRole(SysRoleDTO roleDTO) {
         // 删除角色与菜单关联
-        sysRoleMenuMapper.deleteByRoleId(roleDTO.getRoleId());
+        roleMenuMapper.deleteByRoleId(roleDTO.getRoleId());
         // 插入角色菜单信息
         this.insertRoleMenu(roleDTO.getRoleId(), roleDTO.getMenuIds());
         // 删除角色与部门关联
-        sysRoleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
+        roleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
         // 插入角色和部门信息（数据权限）
         this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
         // 修改角色信息
-        return roleMapper.updateById(roleDTO);
+        roleMapper.updateById(roleDTO);
     }
 
     /**
@@ -158,7 +155,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Transactional(rollbackFor = Exception.class)
     public int updateDeptScope(SysRoleDTO roleDTO) {
         // 删除角色与部门关联
-        sysRoleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
+        roleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
         // 新增角色和部门信息（数据权限）
         this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
         // 修改角色信息
@@ -177,7 +174,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             List<SysRoleMenu> list = menuIds.stream()
                     .map(menuId -> new SysRoleMenu(roleId, menuId))
                     .toList();
-            sysRoleMenuMapper.insertBatch(list);
+            roleMenuMapper.insertBatch(list);
         }
     }
 
@@ -192,7 +189,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             List<SysRoleDept> list = deptIds.stream()
                     .map(deptId -> new SysRoleDept(roleId, deptId))
                     .toList();
-            sysRoleDeptMapper.insertBatch(list);
+            roleDeptMapper.insertBatch(list);
         }
     }
 
@@ -206,9 +203,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Transactional(rollbackFor = Exception.class)
     public int deleteByIds(List<Long> roleIds) {
         // 删除角色与菜单关联
-        sysRoleMenuMapper.deleteByRoleIds(roleIds);
+        roleMenuMapper.deleteByRoleIds(roleIds);
         // 删除角色与部门关联
-        sysRoleDeptMapper.deleteByRoleIds(roleIds);
+        roleDeptMapper.deleteByRoleIds(roleIds);
+        // 删除角色与用户关联
+        userRoleMapper.deleteByRoleIds(roleIds);
         return roleMapper.deleteByIds(roleIds);
     }
 

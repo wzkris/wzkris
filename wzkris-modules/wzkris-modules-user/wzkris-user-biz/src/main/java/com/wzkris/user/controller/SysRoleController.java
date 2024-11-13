@@ -4,7 +4,6 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.*;
@@ -40,7 +39,6 @@ import java.util.List;
 @Tag(name = "角色管理")
 @Validated
 @RestController
-@DynamicTenant(value = "@SysUtil.isSuperTenant()", parseType = DynamicTenant.ParseType.SPEL_BOOLEAN)// 超级租户才允许忽略隔离
 @RequestMapping("/sys_role")
 @RequiredArgsConstructor
 public class SysRoleController extends BaseController {
@@ -48,8 +46,8 @@ public class SysRoleController extends BaseController {
     private final SysRoleService roleService;
     private final SysUserService userService;
     private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleDeptMapper sysRoleDeptMapper;
-    private final SysRoleMenuMapper sysRoleMenuMapper;
+    private final SysRoleDeptMapper roleDeptMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
     private final SysDeptService deptService;
     private final SysMenuService menuService;
 
@@ -77,7 +75,7 @@ public class SysRoleController extends BaseController {
     public Result<SysMenuCheckSelectTreeResp> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
         SysMenuCheckSelectTreeResp resp = new SysMenuCheckSelectTreeResp();
         resp.setCheckedKeys(roleId == null ? Collections.emptyList() :
-                sysRoleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
+                roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
         resp.setMenus(menuService.listMenuSelectTree(new SysMenu(CommonConstants.STATUS_ENABLE)));
         return ok(resp);
     }
@@ -87,7 +85,8 @@ public class SysRoleController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_role:add')")
     public Result<Void> add(@Validated @RequestBody SysRoleDTO roleDTO) {
-        return toRes(roleService.insertRole(roleDTO));
+        roleService.insertRole(roleDTO);
+        return ok();
     }
 
     @Operation(summary = "修改角色")
@@ -97,7 +96,8 @@ public class SysRoleController extends BaseController {
     public Result<Void> edit(@Validated @RequestBody SysRoleDTO roleDTO) {
         // 权限校验
         roleService.checkDataScopes(roleDTO.getRoleId());
-        return toRes(roleService.updateRole(roleDTO));
+        roleService.updateRole(roleDTO);
+        return ok();
     }
 
     @Operation(summary = "状态修改")
@@ -193,7 +193,7 @@ public class SysRoleController extends BaseController {
         // 权限校验
         roleService.checkDataScopes(roleId);
         SysDeptCheckSelectTreeResp resp = new SysDeptCheckSelectTreeResp();
-        resp.setCheckedKeys(roleId == null ? Collections.emptyList() : sysRoleDeptMapper.listDeptIdByRoleId(roleId));
+        resp.setCheckedKeys(roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
         resp.setDepts(deptService.listDeptTree(sysDept));
         return ok(resp);
     }

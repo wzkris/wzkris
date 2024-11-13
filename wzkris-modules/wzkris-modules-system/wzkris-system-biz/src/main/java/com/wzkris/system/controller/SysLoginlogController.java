@@ -3,7 +3,6 @@ package com.wzkris.system.controller;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysLoginLog;
@@ -25,7 +24,6 @@ import java.util.List;
  */
 @Tag(name = "登录日志")
 @RestController
-@DynamicTenant(value = "@SysUtil.isSuperTenant()", parseType = DynamicTenant.ParseType.SPEL_BOOLEAN)// 超级租户才允许忽略隔离
 @RequestMapping("/loginlog")
 @RequiredArgsConstructor
 public class SysLoginlogController extends BaseController {

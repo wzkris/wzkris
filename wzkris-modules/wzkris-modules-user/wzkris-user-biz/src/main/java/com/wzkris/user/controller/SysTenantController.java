@@ -6,7 +6,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.DynamicTenant;
+import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
@@ -37,7 +37,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
-@DynamicTenant(value = "true")// 忽略租户隔离
+@IgnoreTenant// 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
