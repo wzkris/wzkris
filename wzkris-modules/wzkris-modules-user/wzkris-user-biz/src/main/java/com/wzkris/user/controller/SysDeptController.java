@@ -6,11 +6,13 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.service.SysDeptService;
+import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ import java.util.List;
 public class SysDeptController extends BaseController {
     private final SysDeptMapper deptMapper;
     private final SysDeptService deptService;
+    private final SysTenantService tenantService;
 
     @Operation(summary = "部门分页")
     @GetMapping("/list")
@@ -65,6 +68,9 @@ public class SysDeptController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dept:add')")
     public Result<?> add(@Validated @RequestBody SysDept dept) {
+        if (!tenantService.checkDeptLimit(SysUtil.getTenantId())) {
+            return fail("部门数量已达上限，请联系管理员");
+        }
         // 校验权限
         deptService.checkDataScopes(dept.getParentId());
         return toRes(deptService.insertDept(dept));

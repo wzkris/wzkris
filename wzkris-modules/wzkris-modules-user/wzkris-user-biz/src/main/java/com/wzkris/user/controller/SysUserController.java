@@ -10,6 +10,7 @@ import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.SysPost;
@@ -25,10 +26,7 @@ import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
-import com.wzkris.user.service.SysDeptService;
-import com.wzkris.user.service.SysPostService;
-import com.wzkris.user.service.SysRoleService;
-import com.wzkris.user.service.SysUserService;
+import com.wzkris.user.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,6 +57,7 @@ public class SysUserController extends BaseController {
     private final SysPostService postService;
     private final SysUserPostMapper userPostMapper;
     private final SysUserRoleMapper userRoleMapper;
+    private final SysTenantService tenantService;
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "用户分页列表")
@@ -111,6 +110,9 @@ public class SysUserController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_user:add')")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
+        if (!tenantService.checkAccountLimit(SysUtil.getTenantId())) {
+            return fail("账号数量已达上限，请联系管理员");
+        }
         if (userService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
             return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
         }

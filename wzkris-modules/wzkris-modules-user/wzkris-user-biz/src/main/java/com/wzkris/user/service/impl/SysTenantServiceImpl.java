@@ -5,6 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.domain.*;
 import com.wzkris.user.domain.dto.SysTenantDTO;
 import com.wzkris.user.domain.dto.SysUserDTO;
@@ -42,9 +43,16 @@ public class SysTenantServiceImpl implements SysTenantService {
 
     @Override
     public List<SysTenant> list(SysTenant sysTenant) {
-        // 查询
         LambdaQueryWrapper<SysTenant> lqw = this.buildQueryWrapper(sysTenant);
         return tenantMapper.selectList(lqw);
+    }
+
+    private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenant sysTenant) {
+        return new LambdaQueryWrapper<SysTenant>()
+                .like(StringUtil.isNotNull(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName())
+                .eq(StringUtil.isNotNull(sysTenant.getStatus()), SysTenant::getStatus, sysTenant.getStatus())
+                .eq(StringUtil.isNotNull(sysTenant.getPackageId()), SysTenant::getPackageId, sysTenant.getPackageId())
+                .orderByDesc(SysTenant::getTenantId);
     }
 
     @Override
@@ -100,11 +108,64 @@ public class SysTenantServiceImpl implements SysTenantService {
         postMapper.delete(postw);
     }
 
-    private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenant sysTenant) {
-        return new LambdaQueryWrapper<SysTenant>()
-                .like(StringUtil.isNotNull(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName())
-                .eq(StringUtil.isNotNull(sysTenant.getStatus()), SysTenant::getStatus, sysTenant.getStatus())
-                .eq(StringUtil.isNotNull(sysTenant.getPackageId()), SysTenant::getPackageId, sysTenant.getPackageId())
-                .orderByDesc(SysTenant::getTenantId);
+    @Override
+    public boolean checkAccountLimit(Long tenantId) {
+        if (SysTenant.isSuperTenant(tenantId)) {
+            return true;
+        }
+        return DynamicTenantUtil.ignore(() -> {
+            SysTenant tenant = tenantMapper.selectById(tenantId);
+            if (tenant.getAccountLimit() == -1) {
+                return true;
+            }
+            Long count = userMapper.selectCount(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getTenantId, tenantId));
+            return tenant.getAccountLimit() - count > 0;
+        });
     }
+
+    @Override
+    public boolean checkRoleLimit(Long tenantId) {
+        if (SysTenant.isSuperTenant(tenantId)) {
+            return true;
+        }
+        return DynamicTenantUtil.ignore(() -> {
+            SysTenant tenant = tenantMapper.selectById(tenantId);
+            if (tenant.getRoleLimit() == -1) {
+                return true;
+            }
+            Long count = roleMapper.selectCount(Wrappers.lambdaQuery(SysRole.class).eq(SysRole::getTenantId, tenantId));
+            return tenant.getRoleLimit() - count > 0;
+        });
+    }
+
+    @Override
+    public boolean checkPostLimit(Long tenantId) {
+        if (SysTenant.isSuperTenant(tenantId)) {
+            return true;
+        }
+        return DynamicTenantUtil.ignore(() -> {
+            SysTenant tenant = tenantMapper.selectById(tenantId);
+            if (tenant.getPostLimit() == -1) {
+                return true;
+            }
+            Long count = postMapper.selectCount(Wrappers.lambdaQuery(SysPost.class).eq(SysPost::getTenantId, tenantId));
+            return tenant.getPostLimit() - count > 0;
+        });
+    }
+
+    @Override
+    public boolean checkDeptLimit(Long tenantId) {
+        if (SysTenant.isSuperTenant(tenantId)) {
+            return true;
+        }
+        return DynamicTenantUtil.ignore(() -> {
+            SysTenant tenant = tenantMapper.selectById(tenantId);
+            if (tenant.getDeptLimit() == -1) {
+                return true;
+            }
+            Long count = deptMapper.selectCount(Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getTenantId, tenantId));
+            return tenant.getDeptLimit() - count > 0;
+        });
+    }
+
 }

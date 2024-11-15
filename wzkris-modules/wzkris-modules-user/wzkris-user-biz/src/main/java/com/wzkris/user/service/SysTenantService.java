@@ -33,4 +33,36 @@ public interface SysTenantService {
      * @param tenantIds 租户ID集合
      */
     void hardDeleteByIds(List<Long> tenantIds);
+
+    /**
+     * 校验租户账号数量
+     *
+     * @param tenantId 租户ID
+     * @return true通过 false不通过
+     */
+    boolean checkAccountLimit(Long tenantId);
+
+    /**
+     * 校验租户角色数量
+     *
+     * @param tenantId 租户ID
+     * @return true通过 false不通过
+     */
+    boolean checkRoleLimit(Long tenantId);
+
+    /**
+     * 校验租户岗位数量
+     *
+     * @param tenantId 租户ID
+     * @return true通过 false不通过
+     */
+    boolean checkPostLimit(Long tenantId);
+
+    /**
+     * 校验租户部门数量
+     *
+     * @param tenantId 租户ID
+     * @return true通过 false不通过
+     */
+    boolean checkDeptLimit(Long tenantId);
 }

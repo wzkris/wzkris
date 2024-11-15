@@ -5,6 +5,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.*;
 import com.wzkris.user.domain.dto.SysRoleDTO;
@@ -15,10 +16,7 @@ import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
-import com.wzkris.user.service.SysDeptService;
-import com.wzkris.user.service.SysMenuService;
-import com.wzkris.user.service.SysRoleService;
-import com.wzkris.user.service.SysUserService;
+import com.wzkris.user.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -50,6 +48,7 @@ public class SysRoleController extends BaseController {
     private final SysRoleMenuMapper roleMenuMapper;
     private final SysDeptService deptService;
     private final SysMenuService menuService;
+    private final SysTenantService tenantService;
 
     @Operation(summary = "角色分页")
     @GetMapping("/list")
@@ -85,6 +84,9 @@ public class SysRoleController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_role:add')")
     public Result<Void> add(@Validated @RequestBody SysRoleDTO roleDTO) {
+        if (!tenantService.checkRoleLimit(SysUtil.getTenantId())) {
+            return fail("角色数量已达上限，请联系管理员");
+        }
         roleService.insertRole(roleDTO);
         return ok();
     }

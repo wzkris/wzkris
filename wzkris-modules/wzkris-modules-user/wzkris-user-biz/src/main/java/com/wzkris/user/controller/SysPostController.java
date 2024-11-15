@@ -6,11 +6,13 @@ import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.domain.export.SysPostExport;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.service.SysPostService;
+import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,6 +35,7 @@ import java.util.List;
 public class SysPostController extends BaseController {
     private final SysPostMapper postMapper;
     private final SysPostService postService;
+    private final SysTenantService tenantService;
 
     @Operation(summary = "岗位分页")
     @GetMapping("/list")
@@ -55,6 +58,9 @@ public class SysPostController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('post:add')")
     public Result<Void> add(@Validated @RequestBody SysPost sysPost) {
+        if (!tenantService.checkPostLimit(SysUtil.getTenantId())) {
+            return fail("岗位数量已达上限，请联系管理员");
+        }
         return toRes(postMapper.insert(sysPost));
     }
 
