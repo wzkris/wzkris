@@ -3,11 +3,14 @@
 
 ~~~
 com.wzkris     
-├── wzkris-gateway         // 网关模块 [8080]
-├── wzkris-auth            // OAuth2认证服务 [9000]
+├── wzkris-gateway         // 网关模块 
+├── wzkris-auth            // OAuth2认证服务
 ├── wzkris-common          // 模块控制
+│       └── wzkris-common-bom                          // 模块版本控制
 │       └── wzkris-common-core                         // 核心模块(工具包)
 │       └── wzkris-common-datasource                   // 多数据源
+│       └── wzkris-common-excel                        // excel处理
+│       └── wzkris-common-loadbanlancer                // rpc均衡负载
 │       └── wzkris-common-log                          // 日志记录
 │       └── wzkris-common-openfeign                    // rpc
 │       └── wzkris-common-orm                          // 持久层框架
@@ -20,13 +23,13 @@ com.wzkris
 │       └── wzkris-common-swagger                      // openAPI3规范
 │       └── wzkris-common-web                          // web服务依赖
 ├── wzkris-modules         // 业务模块
-│       └── wzkris-modules-equipment                           // 设备服务 [2000]
-│       └── wzkris-modules-file                                // 文件服务 [9300]
-│       └── wzkris-modules-system                              // 系统服务 [5555]
-│       └── wzkris-modules-user                                // 用户服务 [8000]
+│       └── wzkris-modules-equipment                           // 设备服务 
+│       └── wzkris-modules-file                                // 文件服务 
+│       └── wzkris-modules-system                              // 系统服务 
+│       └── wzkris-modules-user                                // 用户服务 
 ├── wzkris-extends        // 扩展模块
-│       └── wzkris-monitor-admin                               // 监控中心 [9100]
-│       └── wzkris-xxl-job-admin                               // xxl-job控制台 [9200]
+│       └── wzkris-monitor-admin                               // 监控中心 
+│       └── wzkris-xxl-job-admin                               // xxl-job控制台 
 ├──pom.xml                // 依赖管理
 ~~~
 
@@ -36,9 +39,9 @@ com.wzkris
 
 ## 内置功能
 
-1. 用户管理：c端用户。
-2. 后台管理：后台用户。
-2. 租户管理：租户。
+1. 用户管理：c端用户信息。
+2. 后台管理：租户下的登录账户信息（管理员属于特殊租户）。
+2. 租户管理：租户信息，租户套餐，租户钱包。
 2. 客户端管理：OAuth2客户端。
 3. 部门管理：配置部门，树结构展现支持数据权限。
 4. 岗位管理：配置系统用户所属担任职务。
@@ -48,8 +51,7 @@ com.wzkris
 8. 参数管理：对系统动态配置常用参数。
 9. 通知公告：系统通知公告信息发布维护。
 10. 操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-11. 登录日志：系统登录日志记录查询包含登录异常。
-12. 在线用户：当前系统中活跃用户状态监控。
+11. 登录日志：系统登录日志记录查询（只记录登录成功的）。
 13. 定时任务：xxl-job。
 14. 系统接口：根据业务代码自动生成相关的api接口文档。
 15. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
@@ -57,9 +59,9 @@ com.wzkris
 ## 技术架构
 
 - JDK版本：17
-- 后端框架：SpringCloud2023.0.1 + SringCloudAlibaba2023.0.1.0
+- 后端框架：SpringCloud + SringCloudAlibaba + SpringBoot
 - 安全框架：Spring-Authorization-Server
-- 持久层框架：Mybatis-Plus3.5.7
+- 持久层框架：Mybatis-Plus
 - RPC框架：OpenFeign
 - 定时任务：xxl-job
 - 中间件：Nacos + Mysql + Redis（至少需要这三个组件项目才可以运行，MQ根据需要自行搭配Spring-stream）
