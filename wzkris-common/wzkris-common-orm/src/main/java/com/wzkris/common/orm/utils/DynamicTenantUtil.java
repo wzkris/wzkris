@@ -1,6 +1,5 @@
 package com.wzkris.common.orm.utils;
 
-import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import lombok.AccessLevel;
@@ -19,7 +18,7 @@ import java.util.function.Supplier;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DynamicTenantUtil {
 
-    private static final ThreadLocal<Long> LOCAL_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
+    private static final ThreadLocal<Long> LOCAL_DYNAMIC_TENANT = new ThreadLocal<>();
 
     /**
      * 获取动态租户
