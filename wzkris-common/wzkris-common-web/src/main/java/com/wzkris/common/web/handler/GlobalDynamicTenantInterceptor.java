@@ -5,6 +5,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import com.wzkris.common.security.utils.SysUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,9 +28,18 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     // 动态租户ID切换
     private static final String DYNAMIC_TENANT = "dynamicTenant";
 
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // handle login request
+        if (!SysUtil.isLogin()) {
+            return true;
+        }
+
+        // handle super tenant request
+        if (!SysUtil.isSuperTenant()) {
+            return true;
+        }
+
         Cookie[] cookies = request.getCookies();
         String tenantId = null;
         String globalIgnore = null;
@@ -55,6 +65,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
             request.setAttribute(DYNAMIC_TENANT, request.getRequestId());
             return true;
         }
+
 
         return true;
     }
