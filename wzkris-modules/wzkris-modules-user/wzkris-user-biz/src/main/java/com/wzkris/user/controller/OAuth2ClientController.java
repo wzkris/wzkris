@@ -1,11 +1,14 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.OAuth2Client;
+import com.wzkris.user.domain.export.OAuth2ClientExport;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
 import com.wzkris.user.service.OAuth2ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,7 +54,7 @@ public class OAuth2ClientController extends BaseController {
     }
 
     @Operation(summary = "根据id修改客户端")
-    @OperateLog(title = "OAuth2客户端管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('oauth2_client:edit')")
     public Result<Void> edit(@RequestBody @Valid OAuth2Client client) {
@@ -60,7 +63,7 @@ public class OAuth2ClientController extends BaseController {
     }
 
     @Operation(summary = "添加客户端")
-    @OperateLog(title = "OAuth2客户端管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('oauth2_client:add')")
     public Result<Void> add(@RequestBody @Valid OAuth2Client client) {
@@ -68,7 +71,7 @@ public class OAuth2ClientController extends BaseController {
     }
 
     @Operation(summary = "删除客户端")
-    @OperateLog(title = "OAuth2客户端管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "删除客户端", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('oauth2_client:remove')")
     public Result<Void> remove(@RequestBody Long id) {
@@ -76,10 +79,12 @@ public class OAuth2ClientController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "OAuth2客户端管理", operateType = OperateType.EXPORT)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "导出客户端数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('oauth2_client:export')")
     public void export(HttpServletResponse response, OAuth2Client client) {
-
+        List<OAuth2Client> list = oAuth2ClientService.list(client);
+        List<OAuth2ClientExport> convert = MapstructUtil.convert(list, OAuth2ClientExport.class);
+        ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, response);
     }
 }

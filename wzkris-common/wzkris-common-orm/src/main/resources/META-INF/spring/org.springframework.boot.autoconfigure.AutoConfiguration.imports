@@ -1,5 +1,5 @@
 com.wzkris.common.orm.annotation.aspect.DeptScopeAspect
-com.wzkris.common.orm.annotation.aspect.DynamicTenantAspect
+com.wzkris.common.orm.annotation.aspect.IgnoreTenantAspect
 com.wzkris.common.orm.handler.MybatisExceptionHandler
 com.wzkris.common.orm.plus.config.MybatisPlusConfig
 com.wzkris.common.orm.plus.config.TenantProperties

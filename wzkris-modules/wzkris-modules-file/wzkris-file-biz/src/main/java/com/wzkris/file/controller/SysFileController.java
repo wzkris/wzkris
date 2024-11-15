@@ -1,7 +1,7 @@
 package com.wzkris.file.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.file.api.domain.SysFile;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;
@@ -36,7 +36,7 @@ public class SysFileController extends BaseController {
         SysFile sysFile = new SysFile();
         sysFile.setName(sysFile.getName());
         sysFile.setUrl(url);
-        return success(sysFile);
+        return ok(sysFile);
     }
 
     @Operation(summary = "切片文件上传")
@@ -45,6 +45,6 @@ public class SysFileController extends BaseController {
     public Result<?> sliceUpload(FileChunk fileChunk) {
         // TODO 查询文件是否存在，存在则秒传
         fileService.sliceUpload(fileChunk);
-        return success();
+        return ok();
     }
 }

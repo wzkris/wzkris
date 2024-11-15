@@ -79,6 +79,12 @@
 			<artifactId>wzkris-common-redis</artifactId>
 		</dependency>
 
+		<!-- excel处理-->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-excel</artifactId>
+		</dependency>
+
 		<!-- 接口文档 -->
 		<dependency>
 			<groupId>com.wzkris</groupId>

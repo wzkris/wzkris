@@ -2,7 +2,7 @@ package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.annotation.DynamicTenant;
+import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.SysRole;
@@ -55,44 +55,45 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysRoleService roleService;
     private final SysMenuService menuService;
     private final SysDeptMapper deptMapper;
-    private final SysRoleDeptMapper sysRoleDeptMapper;
+    private final SysRoleDeptMapper roleDeptMapper;
     private final SysTenantMapper tenantMapper;
-    private final SysTenantPackageMapper sysTenantPackageMapper;
+    private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override
-    @DynamicTenant(value = "#tenantId", parseType = DynamicTenant.ParseType.SPEL_NUMBER)
     public SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
-        List<SysRole> roles;
-        List<String> grantedAuthority;
-        List<Long> deptScopes = Collections.emptyList();
-        boolean administrator;
-        if (SysUser.isSuperAdmin(userId)) {
-            // 超级管理员查出所有角色
-            administrator = true;
-            grantedAuthority = Collections.singletonList("*");
-        }
-        else {
-            // 租户最高管理员特殊处理
-            Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
-            if (tenantPackageId != null) {
-                // 租户最高管理员查出所有租户角色
+        return DynamicTenantUtil.switcht(tenantId, () -> {
+            List<SysRole> roles;
+            List<String> grantedAuthority;
+            List<Long> deptScopes = Collections.emptyList();
+            boolean administrator;
+            if (SysUser.isSuperAdmin(userId)) {
+                // 超级管理员查出所有角色
                 administrator = true;
-                // 查出套餐绑定的所有权限
-                List<Long> menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
-                grantedAuthority = menuService.listPermsByMenuIds(menuIds);
+                grantedAuthority = Collections.singletonList("*");
             }
             else {
-                // 否则为普通用户
-                administrator = false;
-                roles = roleService.listByUserId(userId);
-                // 菜单权限
-                List<Long> roleIds = roles.stream().map(SysRole::getRoleId).collect(Collectors.toList());
-                grantedAuthority = menuService.listPermsByRoleIds(roleIds);
-                // 数据权限
-                deptScopes = this.listDeptScope(roles, deptId);
+                // 租户最高管理员特殊处理
+                Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
+                if (tenantPackageId != null) {
+                    // 租户最高管理员查出所有租户角色
+                    administrator = true;
+                    // 查出套餐绑定的所有权限
+                    List<Long> menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
+                    grantedAuthority = menuService.listPermsByMenuIds(menuIds);
+                }
+                else {
+                    // 否则为普通用户
+                    administrator = false;
+                    roles = roleService.listByUserId(userId);
+                    // 菜单权限
+                    List<Long> roleIds = roles.stream().map(SysRole::getRoleId).collect(Collectors.toList());
+                    grantedAuthority = menuService.listPermsByRoleIds(roleIds);
+                    // 数据权限
+                    deptScopes = this.listDeptScope(roles, deptId);
+                }
             }
-        }
-        return new SysPermissionDTO(administrator, grantedAuthority, deptScopes);
+            return new SysPermissionDTO(administrator, grantedAuthority, deptScopes);
+        });
     }
 
     /**
@@ -124,7 +125,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
                 List<Long> roleIds = entry.getValue().stream().map(SysRole::getRoleId).collect(Collectors.toList());
-                List<Long> addDeptIds = sysRoleDeptMapper.listDeptIdByRoleIds(roleIds);
+                List<Long> addDeptIds = roleDeptMapper.listDeptIdByRoleIds(roleIds);
                 deptIds.addAll(addDeptIds);
             }
             else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {

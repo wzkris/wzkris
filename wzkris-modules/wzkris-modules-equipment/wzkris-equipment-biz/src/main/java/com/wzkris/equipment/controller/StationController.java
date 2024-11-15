@@ -1,7 +1,7 @@
 package com.wzkris.equipment.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.equipment.domain.Station;
 import com.wzkris.equipment.domain.dto.LocationDTO;

@@ -1,9 +1,7 @@
 package com.wzkris.user.service;
 
-import com.wzkris.common.orm.page.Page;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysUserDTO;
-import com.wzkris.user.domain.vo.SysUserVO;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,11 +13,11 @@ import java.util.List;
  */
 public interface SysUserService {
     /**
-     * 分页查询
+     * 列表查询
+     *
+     * @param user 筛选条件
      */
-    Page<SysUserVO> listPage(SysUser user);
-
-    List<SysUserVO> list(SysUser user);
+    List<SysUser> list(SysUser user);
 
     /**
      * 根据条件分页查询已分配用户角色列表
@@ -67,6 +65,13 @@ public interface SysUserService {
     void allocateRoles(Long userId, List<Long> roleIds);
 
     /**
+     * 校验用户是否唯一
+     *
+     * @param user 筛选条件
+     */
+    boolean checkUserUnique(SysUser user);
+
+    /**
      * 校验是否有数据权限
      *
      * @param userIds 被操作的对象id
@@ -82,10 +87,4 @@ public interface SysUserService {
         this.checkDataScopes(Collections.singletonList(userId));
     }
 
-    /**
-     * 校验用户是否唯一
-     *
-     * @param user 筛选条件
-     */
-    boolean checkUserUnique(SysUser user);
 }

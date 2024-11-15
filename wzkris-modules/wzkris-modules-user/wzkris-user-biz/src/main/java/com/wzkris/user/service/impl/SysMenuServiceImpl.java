@@ -9,7 +9,7 @@ import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.vo.MetaVO;
 import com.wzkris.user.domain.vo.RouterVO;
-import com.wzkris.user.domain.vo.SelectTree;
+import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.*;
 import com.wzkris.user.service.SysMenuService;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 public class SysMenuServiceImpl implements SysMenuService {
     private final SysMenuMapper menuMapper;
     private final SysTenantMapper tenantMapper;
-    private final SysTenantPackageMapper sysTenantPackageMapper;
+    private final SysTenantPackageMapper tenantPackageMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleMenuMapper sysRoleMenuMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
 
     /**
      * 查询系统菜单列表
@@ -51,7 +51,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
-                menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
+                menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
             }
             else {
                 menuIds = this.listMenuIdByUserId(userId);
@@ -87,7 +87,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
-        List<Long> menuIds = sysRoleMenuMapper.listMenuIdByRoleIds(roleIds);
+        List<Long> menuIds = roleMenuMapper.listMenuIdByRoleIds(roleIds);
         return this.listPermsByMenuIds(menuIds);
     }
 
@@ -113,7 +113,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @return 菜单列表
      */
     @Override
-    public List<SelectTree> listMenuSelectTree(SysMenu menu) {
+    public List<SelectTreeVO> listMenuSelectTree(SysMenu menu) {
         List<SysMenu> list = this.list(menu);
         return this.buildSelectTree(list);
     }
@@ -132,7 +132,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
-                menuIds = sysTenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
+                menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
             }
             else {
                 menuIds = this.listMenuIdByUserId(userId);
@@ -154,7 +154,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
-        return sysRoleMenuMapper.listMenuIdByRoleIds(roleIds);
+        return roleMenuMapper.listMenuIdByRoleIds(roleIds);
     }
 
     /**
@@ -242,9 +242,9 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @return 下拉树结构列表
      */
     @Override
-    public List<SelectTree> buildSelectTree(List<SysMenu> menus) {
+    public List<SelectTreeVO> buildSelectTree(List<SysMenu> menus) {
         List<SysMenu> menuTrees = this.buildTree(menus);
-        return menuTrees.stream().map(SelectTree::new).collect(Collectors.toList());
+        return menuTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
     }
 
     /**
@@ -268,7 +268,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      */
     @Override
     public boolean checkMenuExistRole(Long menuId) {
-        return sysRoleMenuMapper.checkMenuExistRole(menuId) > 0;
+        return roleMenuMapper.checkMenuExistRole(menuId) > 0;
     }
 
     /**

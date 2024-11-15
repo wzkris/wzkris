@@ -2,7 +2,7 @@ package com.wzkris.equipment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.equipment.domain.Device;

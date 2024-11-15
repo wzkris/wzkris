@@ -6,9 +6,9 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.DynamicTenant;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysTenantDTO;
@@ -37,7 +37,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
-@DynamicTenant(value = "true")// 忽略租户隔离
+@IgnoreTenant// 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
@@ -57,12 +57,11 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "租户选择列表(带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPerms('tenant:list')")
-    public Result<Page<SysTenant>> selectlist(SysTenant sysTenant) {
+    public Result<Page<SysTenant>> selectlist(String tenantName) {
         startPage();
         LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
                 .select(SysTenant::getTenantId, SysTenant::getTenantName)
-                .like(StringUtil.isNotBlank(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName());
+                .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName);
         List<SysTenant> list = tenantMapper.selectList(lqw);
         return getDataTable(list);
     }

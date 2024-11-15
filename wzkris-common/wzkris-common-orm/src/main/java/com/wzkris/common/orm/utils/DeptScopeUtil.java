@@ -1,6 +1,5 @@
 package com.wzkris.common.orm.utils;
 
-import com.alibaba.ttl.TransmittableThreadLocal;
 import net.sf.jsqlparser.expression.Expression;
 
 /**
@@ -11,7 +10,7 @@ import net.sf.jsqlparser.expression.Expression;
  */
 public class DeptScopeUtil {
     // sql表达式片段
-    private static final ThreadLocal<Expression> LOCAL_DATA_AUTH_SQL = new TransmittableThreadLocal<>();
+    private static final ThreadLocal<Expression> LOCAL_DATA_AUTH_SQL = new ThreadLocal<>();
 
     public static Expression getSqlExpression() {
         return LOCAL_DATA_AUTH_SQL.get();

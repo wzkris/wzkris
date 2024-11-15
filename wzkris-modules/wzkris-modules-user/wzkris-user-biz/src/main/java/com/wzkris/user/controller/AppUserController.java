@@ -1,11 +1,14 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
+import com.wzkris.user.domain.export.AppUserExport;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,8 +56,9 @@ public class AppUserController extends BaseController {
     @OperateLog(title = "用户管理", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('app_user:export')")
-    public void export(HttpServletResponse httpServletResponse, AppUser user) {
+    public void export(HttpServletResponse response, AppUser user) {
         List<AppUser> list = appUserService.list(user);
-
+        List<AppUserExport> convert = MapstructUtil.convert(list, AppUserExport.class);
+        ExcelUtil.exportExcel(convert, "用户数据", AppUserExport.class, response);
     }
 }

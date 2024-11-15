@@ -47,7 +47,7 @@ public class DeptScopeAspect {
      * 处理部门数据权限
      */
     private void handleDataScope(DeptScope deptScope) {
-        if (SysUtil.isLogin()) {
+        if (!SysUtil.isLogin()) {
             return;
         }
         // 租户的最高管理员不查询部门数据权限

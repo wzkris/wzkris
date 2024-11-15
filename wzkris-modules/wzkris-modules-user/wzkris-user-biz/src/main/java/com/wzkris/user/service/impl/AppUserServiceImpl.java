@@ -22,8 +22,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public List<AppUser> list(AppUser user) {
         LambdaQueryWrapper<AppUser> lqw = this.buildQueryWrapper(user);
-        List<AppUser> appUsers = appUserMapper.selectList(lqw);
-        return appUsers;
+        return appUserMapper.selectList(lqw);
     }
 
     @Override
@@ -38,7 +37,6 @@ public class AppUserServiceImpl implements AppUserService {
         return new LambdaQueryWrapper<AppUser>()
                 .eq(StringUtil.isNotBlank(user.getStatus()), AppUser::getStatus, user.getStatus())
                 .like(StringUtil.isNotBlank(user.getNickname()), AppUser::getNickname, user.getNickname())
-                .like(StringUtil.isNotBlank(user.getPhoneNumber()), AppUser::getPhoneNumber, user.getPhoneNumber())
-                ;
+                .like(StringUtil.isNotBlank(user.getPhoneNumber()), AppUser::getPhoneNumber, user.getPhoneNumber());
     }
 }

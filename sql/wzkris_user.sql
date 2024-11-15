@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 06/11/2024 16:45:21
+ Date: 14/11/2024 13:34:06
 */
 
 SET NAMES utf8mb4;
@@ -28,7 +28,7 @@ CREATE TABLE `app_user`  (
   `nickname` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户昵称',
   `phone_number` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '手机号码',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '状态值',
-  `gender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户性别（0男 1女 2未知）',
+  `gender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '2' COMMENT '用户性别（0男 1女 2未知）',
   `avatar` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像地址',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标志',
   `login_ip` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录ip',
@@ -45,7 +45,7 @@ CREATE TABLE `app_user`  (
 -- ----------------------------
 -- Records of app_user
 -- ----------------------------
-INSERT INTO `app_user` VALUES (1826896461245968384, NULL, '15888888888', '0', NULL, NULL, 0, '0:0:0:0:0:0:0:1', 1724059238718, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `app_user` VALUES (1826896461245968384, NULL, '15888888888', '0', '2', NULL, 0, '0:0:0:0:0:0:0:1', 1724059238718, NULL, 1713334134616, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for app_user_wallet
@@ -217,13 +217,8 @@ INSERT INTO `sys_menu` VALUES (1056, '公告查询', 100, 1, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (1057, '公告新增', 100, 2, '#', NULL, NULL, 'F', '0', 'message:notice:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1058, '公告修改', 100, 3, '#', NULL, NULL, 'F', '0', 'message:notice:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1059, '公告删除', 100, 4, '#', NULL, NULL, 'F', '0', 'message:notice:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1060, '操作查询', 150, 1, '#', NULL, NULL, 'F', '0', 'operlog:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1061, '操作删除', 150, 2, '#', NULL, NULL, 'F', '0', 'operlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1062, '日志导出', 150, 3, '#', NULL, NULL, 'F', '0', 'operlog:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1063, '登录查询', 151, 1, '#', NULL, NULL, 'F', '0', 'loginlog:query', '#', 0, 0, 1, 1713334134616, 1, 1730336335387, 1);
 INSERT INTO `sys_menu` VALUES (1064, '登录删除', 151, 2, '#', NULL, NULL, 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1730336330958, 1);
-INSERT INTO `sys_menu` VALUES (1065, '日志导出', 151, 3, '#', NULL, NULL, 'F', '0', 'loginlog:export', '#', 0, 0, 1, 1713334134616, 1, 1730336328228, 1);
-INSERT INTO `sys_menu` VALUES (1066, '账户解锁', 151, 4, '#', NULL, NULL, 'F', '0', 'account:unlock', '#', 0, 0, 1, 1713334134616, 1, 1730336322640, 1);
 INSERT INTO `sys_menu` VALUES (1128, '租户列表', 601, 10, '#', NULL, NULL, 'F', '0', 'tenant:list', '#', 0, 0, 1, 1730530211713, 1, 1730530211713, 1);
 INSERT INTO `sys_menu` VALUES (1129, '修改操作密码', 601, 11, '#', NULL, NULL, 'F', '0', 'tenant:edit_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1730882615318, 1);
 INSERT INTO `sys_menu` VALUES (1130, '基本信息', 601, 20, '#', '', NULL, 'F', '0', 'tenant:getinfo', '#', 0, 0, 1, 1724380930192, 1, 1730530283937, 1);
@@ -342,6 +337,7 @@ INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134
 INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1724739991113, 2);
 INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '0', 5, 1, 1, 1713334134616, 1, 1713334134616, 1);
 INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1724393365447, 1774671331412627456);
+INSERT INTO `sys_role` VALUES (1856232880907972609, 0, '5', '11', '0', 0, 1, 1, 1731395380608, 1, 1731395380608, 1);
 
 -- ----------------------------
 -- Table structure for sys_role_dept
@@ -463,6 +459,9 @@ CREATE TABLE `sys_tenant`  (
   `package_id` bigint NOT NULL COMMENT '租户套餐编号',
   `expire_time` bigint NOT NULL DEFAULT -1 COMMENT '过期时间（-1不限制）',
   `account_limit` smallint NOT NULL DEFAULT 5 COMMENT '账号数量（-1不限制）',
+  `role_limit` smallint NOT NULL DEFAULT 5 COMMENT '角色数量（-1不限制）',
+  `post_limit` smallint NOT NULL DEFAULT 5 COMMENT '岗位数量（-1不限制）',
+  `dept_limit` smallint NOT NULL DEFAULT 5 COMMENT '部门数量（-1不限制）',
   `create_id` bigint NOT NULL COMMENT '创建者',
   `create_at` bigint NOT NULL COMMENT '创建时间',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
@@ -475,8 +474,8 @@ CREATE TABLE `sys_tenant`  (
 -- ----------------------------
 -- Records of sys_tenant
 -- ----------------------------
-INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 1, 1713334134616, 1774671331412627456, 1730881892894, 0);
-INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$z3dOAn1gkMyACS1uHYeaOeBm6.fAzX5XA9ecYol6yRRyKRmHDZgz2', '0', NULL, NULL, 1773625804122202113, -1, 5, 1, 1730796054571, 1, 1730882394591, 0);
+INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1774671331412627456, 1730881892894, 0);
+INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$5VkAMC0ynugNbd4cbail4.6xb8HuhiodlxiIQwU2w0Cpe8OqII.Lm', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1730962049110, 0);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package
@@ -551,7 +550,7 @@ CREATE TABLE `sys_user`  (
   `nickname` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户昵称',
   `phone_number` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '手机号码',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '状态值',
-  `gender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户性别（0男 1女 2未知）',
+  `gender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '2' COMMENT '用户性别（0男 1女 2未知）',
   `avatar` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像地址',
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标志',
@@ -570,10 +569,12 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1730852207981, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1731545424847, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (2, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724739889921, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1730857279183, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', NULL, NULL, '{bcrypt}$2a$10$/weEZ1mEGhGDrbiiFPNjK.5V8lcgxWTxTTzvaYckS.LuoR6GGBby.', 0, NULL, NULL, NULL, 1730796054646, 1, 1730796054646, 1);
+INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1731545828563, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$/weEZ1mEGhGDrbiiFPNjK.5V8lcgxWTxTTzvaYckS.LuoR6GGBby.', 0, NULL, NULL, NULL, 1730796054646, 1, 1730796054646, 1);
+INSERT INTO `sys_user` VALUES (1856251200466030593, 1774671331416821762, 1775382319191453698, '___sub_', NULL, 'xxxxxx', NULL, '0', '2', NULL, '{bcrypt}$2a$10$nRc3b1tgQQCQ/58unpvsHuP9q02lQVJru0JgBR/oePVUcjyc/Pl8a', 0, NULL, NULL, NULL, 1731399748330, 1774671331412627456, 1731399941611, 1774671331412627456);
+INSERT INTO `sys_user` VALUES (1856869914760638466, 1774671331416821762, NULL, 'ccccccc', NULL, 'zzzz', NULL, '0', '2', NULL, '{bcrypt}$2a$10$NnSa6nPOcCQkJI8u19EgKuIND0rggfB3qAucSA7mAJwDzTc2uJBEu', 0, NULL, NULL, NULL, 1731547261314, 1, 1731547261314, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_post
@@ -604,5 +605,7 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES (2, 2);
+INSERT INTO `sys_user_role` VALUES (1856251200466030593, 1775445330027577345);
+INSERT INTO `sys_user_role` VALUES (1856869914760638466, 1775445330027577345);
 
 SET FOREIGN_KEY_CHECKS = 1;

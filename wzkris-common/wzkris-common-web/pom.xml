@@ -19,6 +19,12 @@
 			<artifactId>wzkris-common-core</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-orm</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- SpringBoot Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

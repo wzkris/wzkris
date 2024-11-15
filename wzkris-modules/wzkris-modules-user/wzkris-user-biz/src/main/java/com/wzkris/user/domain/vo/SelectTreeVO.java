@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-public class SelectTree implements Serializable {
+public class SelectTreeVO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -3890661499660226052L;
@@ -34,18 +34,18 @@ public class SelectTree implements Serializable {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Schema(description = "子节点")
-    private List<SelectTree> children;
+    private List<SelectTreeVO> children;
 
-    public SelectTree(SysDept dept) {
+    public SelectTreeVO(SysDept dept) {
         this.id = dept.getDeptId();
         this.label = dept.getDeptName();
-        this.children = dept.getChildren().stream().map(SelectTree::new).collect(Collectors.toList());
+        this.children = dept.getChildren().stream().map(SelectTreeVO::new).collect(Collectors.toList());
     }
 
-    public SelectTree(SysMenu menu) {
+    public SelectTreeVO(SysMenu menu) {
         this.id = menu.getMenuId();
         this.label = menu.getMenuName();
-        this.children = menu.getChildren().stream().map(SelectTree::new).collect(Collectors.toList());
+        this.children = menu.getChildren().stream().map(SelectTreeVO::new).collect(Collectors.toList());
     }
 
 }

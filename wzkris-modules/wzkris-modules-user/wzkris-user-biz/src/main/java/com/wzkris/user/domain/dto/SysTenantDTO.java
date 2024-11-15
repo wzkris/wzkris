@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 
+/**
+ * @author : wzkris
+ * @version : V1.0.0
+ * @description : 租户传输层
+ */
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor

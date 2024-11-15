@@ -7,13 +7,13 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.dto.EditPasswordDTO;
-import com.wzkris.user.domain.dto.EditPhoneDTO;
-import com.wzkris.user.domain.dto.SysUserDTO;
+import com.wzkris.user.domain.req.EditOwnSysUserReq;
+import com.wzkris.user.domain.req.EditPhoneReq;
+import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPostService;
@@ -68,46 +68,46 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "修改昵称、性别")
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PostMapping
-    public Result<?> editInfo(@RequestBody SysUserDTO sysUserDTO) {
+    public Result<?> editInfo(@RequestBody EditOwnSysUserReq req) {
         SysUser user = new SysUser(SysUtil.getUserId());
-        user.setNickname(sysUserDTO.getNickname());
-        user.setGender(sysUserDTO.getGender());
+        user.setNickname(req.getNickname());
+        user.setGender(req.getGender());
         return toRes(userMapper.updateById(user));
     }
 
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PostMapping("/edit_phonenumber")
-    public Result<?> editPhoneNumber(@RequestBody @Valid EditPhoneDTO phoneDTO) {
+    public Result<?> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = SysUtil.getUserId();
 
-        if (userService.checkUserUnique(new SysUser(userId).setPhoneNumber(phoneDTO.getPhoneNumber()))) {
+        if (userService.checkUserUnique(new SysUser(userId).setPhoneNumber(req.getPhoneNumber()))) {
             return fail("该手机号已被使用");
         }
         // 验证
-        SmsDTO smsDTO = new SmsDTO(userMapper.selectPhoneNumberById(userId), phoneDTO.getSmsCode());
+        SmsDTO smsDTO = new SmsDTO(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
         Result<Void> result = remoteCaptchaApi.validateSms(smsDTO);
         result.checkData();
 
         SysUser user = new SysUser(userId);
-        user.setPhoneNumber(phoneDTO.getPhoneNumber());
+        user.setPhoneNumber(req.getPhoneNumber());
         return toRes(userMapper.updateById(user));
     }
 
     @Operation(summary = "修改密码")
     @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
     @PostMapping("/edit_password")
-    public Result<?> editPwd(@RequestBody @Valid EditPasswordDTO passwordDTO) {
+    public Result<?> editPwd(@RequestBody @Valid EditPwdReq req) {
         LoginSyser loginUser = SysUtil.getLoginSyser();
 
         String username = loginUser.getUsername();
         String password = userMapper.selectPwdByUserName(username);
 
-        if (!passwordEncoder.matches(passwordDTO.getOldPassword(), password)) {
+        if (!passwordEncoder.matches(req.getOldPassword(), password)) {
             return fail("修改密码失败，旧密码错误");
         }
 
-        if (passwordEncoder.matches(passwordDTO.getNewPassword(), password)) {
+        if (passwordEncoder.matches(req.getNewPassword(), password)) {
             return fail("新密码不能与旧密码相同");
         }
 

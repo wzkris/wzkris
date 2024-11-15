@@ -6,7 +6,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.user.domain.SysDept;
-import com.wzkris.user.domain.vo.SelectTree;
+import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.service.SysDeptService;
 import lombok.RequiredArgsConstructor;
@@ -37,15 +37,16 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return 部门树信息集合
      */
     @Override
-    public List<SelectTree> listDeptTree(SysDept dept) {
+    public List<SelectTreeVO> listDeptTree(SysDept dept) {
         LambdaQueryWrapper<SysDept> lqw = this.buildQueryWrapper(dept);
+        lqw.select(SysDept::getDeptId, SysDept::getParentId, SysDept::getDeptName);
         List<SysDept> depts = deptMapper.selectListInScope(lqw);
         return this.buildDeptTreeSelect(depts);
     }
 
     private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDept sysDept) {
         return new LambdaQueryWrapper<SysDept>()
-                .eq(ObjUtil.isNotNull(sysDept.getTenantId()), SysDept::getTenantId, sysDept.getTenantId())
+                .eq(StringUtil.isNotNull(sysDept.getTenantId()), SysDept::getTenantId, sysDept.getTenantId())
                 .like(StringUtil.isNotEmpty(sysDept.getDeptName()), SysDept::getDeptName, sysDept.getDeptName())
                 .like(StringUtil.isNotEmpty(sysDept.getContact()), SysDept::getContact, sysDept.getContact())
                 .like(StringUtil.isNotEmpty(sysDept.getEmail()), SysDept::getEmail, sysDept.getEmail())
@@ -82,9 +83,9 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return 下拉树结构列表
      */
     @Override
-    public List<SelectTree> buildDeptTreeSelect(List<SysDept> depts) {
+    public List<SelectTreeVO> buildDeptTreeSelect(List<SysDept> depts) {
         List<SysDept> deptTrees = this.buildDeptTree(depts);
-        return deptTrees.stream().map(SelectTree::new).collect(Collectors.toList());
+        return deptTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
     }
 
     /**

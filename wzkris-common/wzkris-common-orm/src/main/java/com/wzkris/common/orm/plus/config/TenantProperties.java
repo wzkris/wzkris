@@ -24,6 +24,6 @@ public class TenantProperties {
 
 
     public Set<String> getIncludes() {
-        return includes == null ? Collections.EMPTY_SET : includes;
+        return includes == null ? Collections.emptySet() : includes;
     }
 }

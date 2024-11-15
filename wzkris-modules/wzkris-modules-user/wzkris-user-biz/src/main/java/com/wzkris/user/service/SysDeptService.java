@@ -1,7 +1,7 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysDept;
-import com.wzkris.user.domain.vo.SelectTree;
+import com.wzkris.user.domain.vo.SelectTreeVO;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +19,7 @@ public interface SysDeptService {
      * @param dept 部门信息
      * @return 部门树信息集合
      */
-    List<SelectTree> listDeptTree(SysDept dept);
+    List<SelectTreeVO> listDeptTree(SysDept dept);
 
     /**
      * 构建树结构
@@ -35,7 +35,7 @@ public interface SysDeptService {
      * @param depts 部门列表
      * @return 下拉树结构列表
      */
-    List<SelectTree> buildDeptTreeSelect(List<SysDept> depts);
+    List<SelectTreeVO> buildDeptTreeSelect(List<SysDept> depts);
 
     /**
      * 是否存在部门子节点

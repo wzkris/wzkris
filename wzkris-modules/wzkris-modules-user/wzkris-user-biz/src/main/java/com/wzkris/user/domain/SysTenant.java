@@ -59,6 +59,15 @@ public class SysTenant extends BaseEntity {
     @Schema(description = "账号数量（-1不限制）")
     private Integer accountLimit;
 
+    @Schema(description = "角色数量（-1不限制）")
+    private Integer roleLimit;
+
+    @Schema(description = "岗位数量（-1不限制）")
+    private Integer postLimit;
+
+    @Schema(description = "部门数量（-1不限制）")
+    private Integer deptLimit;
+
     @Schema(description = "删除标志")
     private Boolean isDeleted;
 
