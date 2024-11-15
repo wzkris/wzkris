@@ -63,7 +63,7 @@ public class StationController extends BaseController {
     @GetMapping("/{stationId}")
     @PreAuthorize("@ps.hasPerms('station:query')")
     public Result<Station> query(@PathVariable Long stationId) {
-        return success(stationMapper.selectById(stationId));
+        return ok(stationMapper.selectById(stationId));
     }
 
     /**

@@ -15,21 +15,21 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
-    private final SysTenantWalletMapper sysTenantWalletMapper;
-    private final SysTenantWalletRecordMapper sysTenantWalletRecordMapper;
+    private final SysTenantWalletMapper tenantWalletMapper;
+    private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean incryBalance(Long tenantId, BigDecimal amount) {
         amount = amount.abs();
-        boolean suc = sysTenantWalletMapper.incryBalance(tenantId, amount) > 0;
+        boolean suc = tenantWalletMapper.incryBalance(tenantId, amount) > 0;
         if (suc) {
             SysTenantWalletRecord record = new SysTenantWalletRecord();
             record.setTenantId(tenantId);
             record.setAmount(amount);
             record.setType(UserConstants.WALLET_INCOME);
             record.setPayTime(System.currentTimeMillis());
-            sysTenantWalletRecordMapper.insert(record);
+            tenantWalletRecordMapper.insert(record);
         }
         return suc;
     }
@@ -37,14 +37,14 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
     @Override
     public boolean decryBalance(Long tenantId, BigDecimal amount) {
         amount = amount.abs();
-        boolean suc = sysTenantWalletMapper.decryBalance(tenantId, amount) > 0;
+        boolean suc = tenantWalletMapper.decryBalance(tenantId, amount) > 0;
         if (suc) {
             SysTenantWalletRecord record = new SysTenantWalletRecord();
             record.setTenantId(tenantId);
             record.setAmount(amount);
             record.setType(UserConstants.WALLET_OUTCOME);
             record.setPayTime(System.currentTimeMillis());
-            sysTenantWalletRecordMapper.insert(record);
+            tenantWalletRecordMapper.insert(record);
         }
         return suc;
     }

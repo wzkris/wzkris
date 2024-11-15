@@ -51,7 +51,7 @@ public class DynamicTenantAspect {
             }
         }
 
-        String value = dynamicTenant.enableIgnore();
+        String value = dynamicTenant.value();
         DynamicTenant.ParseType parseType = dynamicTenant.parseType();
         return this.processPoint(point, parseType, value);
     }
@@ -60,11 +60,7 @@ public class DynamicTenantAspect {
         switch (parseType) {
             case BOOLEAN -> {
                 // bool值则直接转换
-                boolean isIgnore = Boolean.parseBoolean(value);
-                if (isIgnore) {
-                    return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
-                }
-                return point.proceed();
+                return DynamicTenantUtil.ignoreIfWithThrowable(Boolean.parseBoolean(value), point::proceed);
             }
             case NUMBER -> {
                 // 解析租户ID
@@ -74,10 +70,7 @@ public class DynamicTenantAspect {
             case SPEL_BOOLEAN -> {
                 // 解析spel表达式
                 boolean ignore = ExpressionUtils.evaluateAsBoolean(spel.parseExpression(value), this.createContext());
-                if (ignore) {
-                    return DynamicTenantUtil.ignoreWithThrowable(point::proceed);
-                }
-                return point.proceed();
+                return DynamicTenantUtil.ignoreIfWithThrowable(ignore, point::proceed);
             }
             case SPEL_NUMBER -> {
                 // 解析spel，拿到对应参数

@@ -58,12 +58,20 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     String selectPhoneNumberById(Long userId);
 
     /**
-     * 批量真实删除用户
+     * 硬删除用户
      *
-     * @param userIds 需要删除的用户ID
+     * @param userIds 删除的用户ID
      * @return 结果
      */
-    int realDeleteBatchById(Long... userIds);
+    int hardDeleteByIds(@Param("userIds") List<Long> userIds);
+
+    /**
+     * 硬删除用户
+     *
+     * @param tenantIds 租户ID
+     * @return 结果
+     */
+    int hardDeleteByTenantIds(@Param("tenantIds") List<Long> tenantIds);
 
     /**
      * 检验权限
@@ -81,4 +89,5 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
             </script>
             """)
     int checkDataScopes(@Param("userIds") List<Long> userIds);
+
 }

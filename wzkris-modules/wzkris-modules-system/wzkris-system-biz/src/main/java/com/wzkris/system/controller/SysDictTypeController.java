@@ -28,14 +28,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysDictTypeController extends BaseController {
     private final SysDictTypeMapper sysDictTypeMapper;
-    private final SysDictTypeService sysDictTypeService;
+    private final SysDictTypeService dictTypeService;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('dict:list')")
     public Result<Page<SysDictType>> list(SysDictType sysDictType) {
         startPage();
-        List<SysDictType> list = sysDictTypeService.list(sysDictType);
+        List<SysDictType> list = dictTypeService.list(sysDictType);
         return getDataTable(list);
     }
 
@@ -45,55 +45,54 @@ public class SysDictTypeController extends BaseController {
     @GetMapping("/{dictId}")
     @PreAuthorize("@ps.hasPerms('dict:query')")
     public Result<?> getInfo(@PathVariable Long dictId) {
-        return success(sysDictTypeMapper.selectById(dictId));
+        return ok(sysDictTypeMapper.selectById(dictId));
     }
 
     /**
      * 新增字典类型
      */
-    @OperateLog(title = "字典类型", operateType = OperateType.INSERT)
+    @OperateLog(title = "字典类型", subTitle = "添加字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dict:add')")
     public Result<?> add(@Validated @RequestBody SysDictType dict) {
-        if (sysDictTypeService.checkDictTypeUnique(dict)) {
+        if (dictTypeService.checkDictTypeUnique(dict)) {
             return fail("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
-        return toRes(sysDictTypeService.insertDictType(dict));
+        return toRes(dictTypeService.insertDictType(dict));
     }
 
     /**
      * 修改字典类型
      */
-    @OperateLog(title = "字典类型", operateType = OperateType.UPDATE)
+    @OperateLog(title = "字典类型", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('dict:edit')")
     public Result<?> edit(@Validated @RequestBody SysDictType dict) {
-        if (sysDictTypeService.checkDictTypeUnique(dict)) {
+        if (dictTypeService.checkDictTypeUnique(dict)) {
             return fail("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
-        return toRes(sysDictTypeService.updateDictType(dict));
+        return toRes(dictTypeService.updateDictType(dict));
     }
 
     /**
      * 删除字典类型
      */
-    @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
+    @OperateLog(title = "字典类型", subTitle = "删除字典", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> remove(@RequestBody Long[] dictIds) {
-        sysDictTypeService.deleteDictTypeByIds(dictIds);
-        return success();
+        dictTypeService.deleteDictTypeByIds(dictIds);
+        return ok();
     }
 
     /**
      * 刷新字典缓存
      */
-    @OperateLog(title = "字典类型", operateType = OperateType.DELETE)
     @PostMapping("/refreshCache")
     @PreAuthorize("@ps.hasPerms('dict:remove')")
     public Result<?> refreshCache() {
-        sysDictTypeService.resetDictCache();
-        return success();
+        dictTypeService.resetDictCache();
+        return ok();
     }
 
     /**
@@ -102,6 +101,6 @@ public class SysDictTypeController extends BaseController {
     @GetMapping("/optionselect")
     public Result<?> optionselect() {
         List<SysDictType> sysDictTypes = sysDictTypeMapper.selectList(null);
-        return success(sysDictTypes);
+        return ok(sysDictTypes);
     }
 }

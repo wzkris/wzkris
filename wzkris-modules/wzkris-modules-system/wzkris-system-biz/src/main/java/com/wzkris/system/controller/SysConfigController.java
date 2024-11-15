@@ -24,11 +24,12 @@ import java.util.List;
  */
 @Tag(name = "系统配置")
 @RestController
+@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
 @RequestMapping("/config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
-    private final SysConfigMapper sysConfigMapper;
-    private final SysConfigService sysConfigService;
+    private final SysConfigMapper configMapper;
+    private final SysConfigService configService;
 
     /**
      * 获取参数配置列表
@@ -37,7 +38,7 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ps.hasPerms('config:list')")
     public Result<Page<SysConfig>> list(SysConfig config) {
         startPage();
-        List<SysConfig> list = sysConfigService.list(config);
+        List<SysConfig> list = configService.list(config);
         return getDataTable(list);
     }
 
@@ -46,7 +47,7 @@ public class SysConfigController extends BaseController {
      */
     @GetMapping("/{configId}")
     public Result<?> getInfo(@PathVariable Long configId) {
-        return success(sysConfigMapper.selectById(configId));
+        return ok(configMapper.selectById(configId));
     }
 
     /**
@@ -54,55 +55,54 @@ public class SysConfigController extends BaseController {
      */
     @GetMapping("/configKey/{configKey}")
     public Result<String> getConfigKey(@PathVariable String configKey) {
-        return Result.success(sysConfigService.getConfigValueByKey(configKey));
+        return Result.ok(configService.getConfigValueByKey(configKey));
     }
 
     /**
      * 新增参数配置
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.INSERT)
+    @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('config:add')")
     public Result<?> add(@Validated @RequestBody SysConfig config) {
-        if (sysConfigService.checkConfigKeyUnique(config)) {
+        if (configService.checkConfigKeyUnique(config)) {
             return fail("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        return toRes(sysConfigService.insertConfig(config));
+        return toRes(configService.insertConfig(config));
     }
 
     /**
      * 修改参数配置
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.UPDATE)
+    @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('config:edit')")
     public Result<?> edit(@Validated @RequestBody SysConfig config) {
-        if (sysConfigService.checkConfigKeyUnique(config)) {
+        if (configService.checkConfigKeyUnique(config)) {
             return fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        return toRes(sysConfigService.updateConfig(config));
+        return toRes(configService.updateConfig(config));
     }
 
     /**
      * 删除参数配置
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
+    @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> remove(@RequestBody Long[] configIds) {
         List<Long> list = Arrays.asList(configIds);
-        sysConfigService.deleteConfigByIds(list);
-        return success();
+        configService.deleteConfigByIds(list);
+        return ok();
     }
 
     /**
      * 刷新参数缓存
      */
-    @OperateLog(title = "参数管理", operateType = OperateType.DELETE)
     @PostMapping("/refresh_cache")
     @PreAuthorize("@ps.hasPerms('config:remove')")
     public Result<?> refreshCache() {
-        sysConfigService.resetConfigCache();
-        return success();
+        configService.resetConfigCache();
+        return ok();
     }
 }

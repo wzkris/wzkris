@@ -43,7 +43,7 @@ public class AppUserOwnController extends BaseController {
         // 返回的map
         Map<String, Object> res = MapUtil.newHashMap(4);
         res.put("user", userMap);
-        return success(res);
+        return ok(res);
     }
 
     @Operation(summary = "修改昵称、性别")

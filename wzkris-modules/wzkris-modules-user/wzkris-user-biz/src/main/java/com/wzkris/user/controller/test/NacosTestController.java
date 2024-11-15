@@ -36,6 +36,6 @@ public class NacosTestController {
     public Result result() throws NacosException {
         List<Instance> allInstances = namingservice.getAllInstances(serviceName, group);
 
-        return Result.success(allInstances);
+        return Result.ok(allInstances);
     }
 }

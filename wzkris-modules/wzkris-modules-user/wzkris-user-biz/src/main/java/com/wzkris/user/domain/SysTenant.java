@@ -1,10 +1,12 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,22 +26,20 @@ public class SysTenant extends BaseEntity {
     @Schema(description = "管理员ID")
     private Long administrator;
 
+    @Schema(description = "租户类型 0-个人 1-企业")
+    private String tenantType;
+
     @Schema(description = "联系电话")
     private String contactPhone;
 
-    @NotNull(message = "[companyName] {validate.notnull}")
-    @Size(min = 0, max = 30, message = "[companyName] {validate.size.illegal}")
-    @Schema(description = "企业名称")
-    private String companyName;
+    @Schema(description = "租户名称")
+    @NotBlank(message = "[tenantName] {validate.notnull}")
+    private String tenantName;
 
-    @Schema(description = "统一社会信用代码")
-    private String licenseNumber;
-
-    @Schema(description = "地址")
-    private String address;
-
-    @Schema(description = "企业简介")
-    private String intro;
+    @Schema(description = "操作密码")
+    @Size(min = 6, max = 6, message = "[operPwd] {validate.size.illegal}")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String operPwd;
 
     @Schema(description = "租户状态")
     private String status;
@@ -53,19 +53,24 @@ public class SysTenant extends BaseEntity {
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
-    @Schema(description = "过期时间")
+    @Schema(description = "过期时间（-1不限制）")
     private Long expireTime;
 
-    @Schema(description = "用户数量（-1不限制）")
-    private Integer accountCount;
+    @Schema(description = "账号数量（-1不限制）")
+    private Integer accountLimit;
 
     @Schema(description = "删除标志")
     private Boolean isDeleted;
+
+    public SysTenant(Long tenantId) {
+        this.tenantId = tenantId;
+    }
 
     public static boolean isSuperTenant(Long tenantId) {
         return SecurityConstants.SUPER_TENANT_ID.equals(tenantId);
     }
 
+    @JsonIgnore
     public boolean isSuperTenant() {
         return isSuperTenant(this.tenantId);
     }

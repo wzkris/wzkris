@@ -10,10 +10,11 @@ import com.wzkris.user.api.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPermissionService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
 
 /**
@@ -22,11 +23,12 @@ import static com.wzkris.common.core.domain.Result.success;
  * @description : 内部系统用户接口
  * @date : 2024/4/15 16:20
  */
+@Hidden
 @InnerAuth
 @RestController
 @RequiredArgsConstructor
 public class RemoteSysUserApiImpl implements RemoteSysUserApi {
-    private final SysUserMapper sysUserMapper;
+    private final SysUserMapper userMapper;
     private final SysPermissionService sysPermissionService;
 
     /**
@@ -34,9 +36,9 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
      */
     @Override
     public Result<SysUserDTO> getByUsername(String username) {
-        SysUser sysUser = sysUserMapper.selectByUsername(username);
+        SysUser sysUser = userMapper.selectByUsername(username);
         SysUserDTO sysUserDTO = MapstructUtil.convert(sysUser, SysUserDTO.class);
-        return success(sysUserDTO);
+        return ok(sysUserDTO);
     }
 
     /**
@@ -46,7 +48,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     public Result<SysPermissionDTO> getPermission(QueryPermsDTO queryPermsDTO) {
         SysPermissionDTO permission = sysPermissionService
                 .getPermission(queryPermsDTO.getUserId(), queryPermsDTO.getTenantId(), queryPermsDTO.getDeptId());
-        return success(permission);
+        return ok(permission);
     }
 
     /**
@@ -58,7 +60,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
         sysUser.setLoginIp(loginInfoDTO.getLoginIp());
         sysUser.setLoginDate(loginInfoDTO.getLoginDate());
 
-        sysUserMapper.updateById(sysUser);
+        userMapper.updateById(sysUser);
     }
 
 }

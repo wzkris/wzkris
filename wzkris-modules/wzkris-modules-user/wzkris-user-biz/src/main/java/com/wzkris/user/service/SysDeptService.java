@@ -3,6 +3,7 @@ package com.wzkris.user.service;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.vo.SelectTree;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,14 +62,6 @@ public interface SysDeptService {
     int updateDept(SysDept dept);
 
     /**
-     * 删除部门管理信息
-     *
-     * @param deptId 部门ID
-     * @return 结果
-     */
-    int deleteDeptById(Long deptId);
-
-    /**
      * 查询部门是否存在用户
      *
      * @param deptId 部门ID
@@ -82,4 +75,8 @@ public interface SysDeptService {
      * @param deptIds 部门id
      */
     void checkDataScopes(List<Long> deptIds);
+
+    default void checkDataScopes(Long deptId) {
+        this.checkDataScopes(Collections.singletonList(deptId));
+    }
 }

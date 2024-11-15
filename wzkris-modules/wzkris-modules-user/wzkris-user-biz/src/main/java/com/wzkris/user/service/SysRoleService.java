@@ -4,6 +4,7 @@ import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.dto.SysRoleDTO;
 import org.springframework.lang.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -88,12 +89,7 @@ public interface SysRoleService {
      */
     void checkDataScopes(List<Long> roleIds);
 
-    /**
-     * 校验是否有角色的数据权限
-     *
-     * @param roleId 待操作的角色id
-     */
     default void checkDataScopes(Long roleId) {
-        this.checkDataScopes(List.of(roleId));
+        this.checkDataScopes(Collections.singletonList(roleId));
     }
 }

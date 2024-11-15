@@ -5,6 +5,7 @@ import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.vo.SysUserVO;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +18,6 @@ public interface SysUserService {
      * 分页查询
      */
     Page<SysUserVO> listPage(SysUser user);
-
 
     List<SysUserVO> list(SysUser user);
 
@@ -48,9 +48,15 @@ public interface SysUserService {
      * 修改管理员信息
      *
      * @param dto 管理员信息
-     * @return 结果
      */
-    boolean updateUser(SysUserDTO dto);
+    void updateUser(SysUserDTO dto);
+
+    /**
+     * 硬删除用户
+     *
+     * @param userIds 用户ID
+     */
+    void hardDeleteByIds(List<Long> userIds);
 
     /**
      * 批量授权角色
@@ -73,7 +79,7 @@ public interface SysUserService {
      * @param userId 被操作的对象id
      */
     default void checkDataScopes(Long userId) {
-        this.checkDataScopes(List.of(userId));
+        this.checkDataScopes(Collections.singletonList(userId));
     }
 
     /**

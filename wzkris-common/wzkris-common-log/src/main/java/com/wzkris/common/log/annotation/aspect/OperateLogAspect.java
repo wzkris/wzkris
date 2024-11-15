@@ -1,7 +1,11 @@
 package com.wzkris.common.log.annotation.aspect;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapUtil;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.ip.AddressUtil;
@@ -26,6 +30,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,12 +43,19 @@ import java.util.Map;
 public class OperateLogAspect {
 
     /**
-     * 排除敏感属性字段
+     * 敏感属性字段
      */
-    public static final String[] EXCLUDE_PROPERTIES = {"password", "oldPassword", "newPassword", "confirmPassword"};
+    public static final String[] EXCLUDE_PROPERTIES =
+            {"pwd", "passwd", "password", "oldPassword", "newPassword", "confirmPassword"};
 
     @Autowired
     private RemoteLogApi remoteLogApi;
+
+    private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
+
+    public OperateLogAspect() {
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);// 配置null不序列化, 避免大量无用参数存入DB
+    }
 
     /**
      * 处理完请求后执行
@@ -69,6 +81,8 @@ public class OperateLogAspect {
         try {
             // *========数据库日志=========*//
             OperLogDTO operLogDTO = new OperLogDTO();
+            operLogDTO.setOperName(SysUtil.getUsername());
+            operLogDTO.setTenantId(SysUtil.getTenantId());
             operLogDTO.setOperType(operateLog.operateType().getValue());
             operLogDTO.setStatus(OperateStatus.SUCCESS.value());
             operLogDTO.setOperTime(DateUtil.current());
@@ -78,10 +92,15 @@ public class OperateLogAspect {
             operLogDTO.setOperIp(ip);
             operLogDTO.setOperLocation(AddressUtil.getRealAddressByIp(ip));
             operLogDTO.setOperUrl(StringUtil.sub(request.getRequestURI(), 0, 255));
-            operLogDTO.setOperName(SysUtil.getUsername());
             if (e != null) {
                 operLogDTO.setStatus(OperateStatus.FAIL.value());
                 operLogDTO.setErrorMsg(StringUtil.sub(e.getMessage(), 0, 2000));
+            }
+            else if (jsonResult instanceof Result<?> result) {
+                if (!result.isSuccess()) {
+                    operLogDTO.setStatus(OperateStatus.FAIL.value());
+                    operLogDTO.setErrorMsg(StringUtil.sub(result.getErrMsg(), 0, 2000));
+                }
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
@@ -107,21 +126,22 @@ public class OperateLogAspect {
      * @param operLogDTO 操作日志
      */
     public void getControllerMethodDescription(JoinPoint joinPoint, OperateLog log, OperLogDTO operLogDTO,
-                                               Object jsonResult) {
+                                               Object jsonResult) throws JsonProcessingException {
         // 设置action动作
         operLogDTO.setOperType(log.operateType().getValue());
         // 设置标题
         operLogDTO.setTitle(log.title());
+        operLogDTO.setSubTitle(log.subTitle());
         // 设置操作人类别
         operLogDTO.setOperatorType(log.operateType().getValue());
         // 是否需要保存request，参数和值
         if (log.isSaveRequestData()) {
             // 获取参数的信息，传入到数据库中。
-            setRequestValue(joinPoint, operLogDTO);
+            setRequestValue(joinPoint, log.excludeRequestParam(), operLogDTO);
         }
         // 是否需要保存response，参数和值
         if (log.isSaveResponseData() && StringUtil.isNotNull(jsonResult)) {
-            operLogDTO.setJsonResult(StringUtil.sub(JsonUtil.toJsonString(jsonResult), 0, 2000));
+            operLogDTO.setJsonResult(StringUtil.sub(objectMapper.writeValueAsString(jsonResult), 0, 2000));
         }
     }
 
@@ -130,16 +150,38 @@ public class OperateLogAspect {
      *
      * @param operLogDTO 操作日志
      */
-    private void setRequestValue(JoinPoint joinPoint, OperLogDTO operLogDTO) {
+    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperLogDTO operLogDTO) throws JsonProcessingException {
+        Map<String, String> paramsMap;
         String requestMethod = operLogDTO.getRequestMethod();
         if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
-            String params = argsArrayToString(joinPoint.getArgs());
-            operLogDTO.setOperParam(StringUtil.sub(params, 0, 2000));
+            String params = this.argsArrayToString(joinPoint.getArgs());
+            if (StringUtil.isBlank(params)) {
+                params = "{}";
+            }
+            paramsMap = objectMapper.readValue(params, TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, String.class));
         }
         else {
-            Map<String, String> paramsMap = ServletUtil.getParamMap(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
-            MapUtil.removeAny(paramsMap, EXCLUDE_PROPERTIES);
-            operLogDTO.setOperParam(StringUtil.sub(JsonUtil.toJsonString(paramsMap), 0, 2000));
+            paramsMap = ServletUtil.getParamMap(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+        }
+        this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
+        operLogDTO.setOperParam(StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000));
+    }
+
+    /**
+     * 敏感字段模糊处理
+     */
+    private void fuzzyParams(Map<String, String> paramsMap, String[] excludeRequestParam) {
+        for (String property : OperateLogAspect.EXCLUDE_PROPERTIES) {
+            String value = paramsMap.get(property);
+            if (value != null) {
+                paramsMap.put(property, "**");
+            }
+        }
+        for (String property : excludeRequestParam) {
+            String value = paramsMap.get(property);
+            if (value != null) {
+                paramsMap.put(property, "**");
+            }
         }
     }
 
@@ -152,7 +194,7 @@ public class OperateLogAspect {
             for (Object o : paramsArray) {
                 if (StringUtil.isNotNull(o) && !isFilterObject(o)) {
                     try {
-                        String jsonObj = JsonUtil.toJsonString(o);
+                        String jsonObj = objectMapper.writeValueAsString(o);
                         params.append(jsonObj).append(" ");
                     }
                     catch (Exception ignored) {

@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
 @Tag(name = "登录态")
 @RestController
@@ -26,7 +26,7 @@ public class LoginController {
     public Result<AppUserVO> appUser() {
         LoginApper loginApper = AppUtil.getAppUser();
         AppUserVO appUserVO = MapstructUtil.convert(loginApper, AppUserVO.class);
-        return success(appUserVO);
+        return ok(appUserVO);
     }
 
     @Operation(summary = "系统用户信息")
@@ -35,6 +35,6 @@ public class LoginController {
         LoginSyser loginSyser = SysUtil.getLoginSyser();
         LoginUserVO loginUserVO = MapstructUtil.convert(loginSyser, LoginUserVO.class);
         loginUserVO.setAuthorities(SysUtil.getAuthorities());
-        return success(loginUserVO);
+        return ok(loginUserVO);
     }
 }

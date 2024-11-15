@@ -1,6 +1,9 @@
 package com.wzkris.system.controller;
 
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.DynamicTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.system.domain.SysLoginLog;
@@ -17,38 +20,41 @@ import java.util.List;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 登录日志
+ * @description : 登录日志， 该模块租户也可访问，需要手动切换租户ID
  * @date : 2023/8/26 16:25
  */
 @Tag(name = "登录日志")
 @RestController
+@DynamicTenant(value = "@SysUtil.isSuperTenant()", parseType = DynamicTenant.ParseType.SPEL_BOOLEAN)// 超级租户才允许忽略隔离
 @RequestMapping("/loginlog")
 @RequiredArgsConstructor
 public class SysLoginlogController extends BaseController {
 
-    private final SysLoginLogService sysLoginLogService;
-    private final SysLoginLogMapper sysLoginLogMapper;
+    private final SysLoginLogService loginLogService;
+    private final SysLoginLogMapper loginLogMapper;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('loginlog:list')")
     public Result<Page<SysLoginLog>> list(SysLoginLog loginLog) {
         startPage();
-        List<SysLoginLog> list = sysLoginLogService.list(loginLog);
+        List<SysLoginLog> list = loginLogService.list(loginLog);
         return getDataTable(list);
     }
 
+    @OperateLog(title = "登录日志", subTitle = "删除日志", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('loginlog:remove')")
     public Result<?> remove(@RequestBody List<Long> logIds) {
-        return toRes(sysLoginLogMapper.deleteByIds(logIds));
+        return toRes(loginLogMapper.deleteByIds(logIds));
     }
 
+    @OperateLog(title = "登录日志", subTitle = "清空日志", operateType = OperateType.DELETE)
     @PostMapping("/clean")
     @PreAuthorize("@ps.hasPerms('loginlog:remove')")
     public Result<?> clean() {
-        sysLoginLogMapper.clearAll();
-        return success();
+        loginLogMapper.clearAll();
+        return ok();
     }
 
 }

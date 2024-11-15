@@ -9,6 +9,7 @@ import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
 import com.wzkris.common.security.oauth2.enums.UserType;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScript;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,8 +24,9 @@ import java.security.Principal;
 import java.util.List;
 
 import static com.wzkris.common.core.domain.Result.resp;
-import static com.wzkris.common.core.domain.Result.success;
+import static com.wzkris.common.core.domain.Result.ok;
 
+@Hidden
 @InnerAuth
 @RestController
 @RequiredArgsConstructor
@@ -49,7 +51,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
 
         reqId = RedisUtil.getClient().getScript().eval(RScript.Mode.READ_WRITE, script,
                 RScript.ReturnType.VALUE, List.of(key), reqId, 60);
-        return success(reqId);
+        return ok(reqId);
     }
 
     @Override
@@ -81,6 +83,6 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
                         loginClient, AuthorityUtils.createAuthorityList(oAuth2Authorization.getAuthorizedScopes()));
             }
         }
-        return success(wzUser);
+        return ok(wzUser);
     }
 }

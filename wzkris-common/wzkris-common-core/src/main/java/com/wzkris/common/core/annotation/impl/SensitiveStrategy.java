@@ -17,7 +17,7 @@ public enum SensitiveStrategy {
     /**
      * 身份证脱敏
      */
-    ID_CARD(s -> DesensitizedUtil.idCardNum(s, 3, 4)),
+    ID_CARD(s -> DesensitizedUtil.idCardNum(s, 2, 2)),
 
     /**
      * 手机号脱敏
@@ -27,7 +27,12 @@ public enum SensitiveStrategy {
     /**
      * 地址脱敏
      */
-    ADDRESS(s -> DesensitizedUtil.address(s, 8)),
+    ADDRESS(s -> DesensitizedUtil.address(s, 6)),
+
+    /**
+     * 中文名脱敏
+     */
+    CHINESE_NAME(DesensitizedUtil::chineseName),
 
     /**
      * 邮箱脱敏

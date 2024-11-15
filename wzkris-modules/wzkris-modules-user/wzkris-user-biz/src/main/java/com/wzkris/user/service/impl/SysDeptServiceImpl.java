@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysDeptServiceImpl implements SysDeptService {
-    private final SysDeptMapper sysDeptMapper;
+    private final SysDeptMapper deptMapper;
 
     /**
      * 查询部门树结构信息
@@ -39,7 +39,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public List<SelectTree> listDeptTree(SysDept dept) {
         LambdaQueryWrapper<SysDept> lqw = this.buildQueryWrapper(dept);
-        List<SysDept> depts = sysDeptMapper.selectListInScope(lqw);
+        List<SysDept> depts = deptMapper.selectListInScope(lqw);
         return this.buildDeptTreeSelect(depts);
     }
 
@@ -95,7 +95,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public boolean hasChildByDeptId(Long deptId) {
-        int result = sysDeptMapper.hasChildByDeptId(deptId);
+        int result = deptMapper.hasChildByDeptId(deptId);
         return result > 0;
     }
 
@@ -108,14 +108,14 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public int insertDept(SysDept dept) {
         if (StringUtil.isNotNull(dept.getParentId()) && dept.getParentId() != 0) {
-            SysDept info = sysDeptMapper.selectById(dept.getParentId());
+            SysDept info = deptMapper.selectById(dept.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点
             if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
                 throw new BusinessExceptionI18n("business.disabled");
             }
             dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
         }
-        return sysDeptMapper.insert(dept);
+        return deptMapper.insert(dept);
     }
 
     /**
@@ -127,8 +127,8 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateDept(SysDept dept) {
-        SysDept parentDept = sysDeptMapper.selectById(dept.getParentId());
-        SysDept curDept = sysDeptMapper.selectById(dept.getDeptId());
+        SysDept parentDept = deptMapper.selectById(dept.getParentId());
+        SysDept curDept = deptMapper.selectById(dept.getDeptId());
         if (StringUtil.isNotNull(parentDept) && StringUtil.isNotNull(curDept)) {
             String newAncestors = parentDept.getAncestors() + "," + parentDept.getDeptId();
             dept.setAncestors(newAncestors);
@@ -139,7 +139,7 @@ public class SysDeptServiceImpl implements SysDeptService {
             dept.setParentId(null);
             dept.setAncestors(null);
         }
-        return sysDeptMapper.updateById(dept);
+        return deptMapper.updateById(dept);
     }
 
     /**
@@ -150,25 +150,17 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @param oldAncestors 旧的父ID集合
      */
     public void updateDeptChildren(Long deptId, String newAncestors, String oldAncestors) {
-        List<SysDept> children = sysDeptMapper.listChildren(new SysDept(deptId));
-        for (SysDept child : children) {
-            child.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
-        }
-        if (!CollectionUtils.isEmpty(children)) {
+        List<SysDept> children = deptMapper.listChildren(new SysDept(deptId));
+        List<SysDept> updateList = children.stream().map(child -> {
+            String ancestors = child.getAncestors().replaceFirst(oldAncestors, newAncestors);
+            SysDept sysDept = new SysDept(child.getDeptId());
+            sysDept.setAncestors(ancestors);
+            return sysDept;
+        }).toList();
+        if (!CollectionUtils.isEmpty(updateList)) {
             // 批量更新
-            sysDeptMapper.updateById(children);
+            deptMapper.updateById(updateList);
         }
-    }
-
-    /**
-     * 删除部门管理信息
-     *
-     * @param deptId 部门ID
-     * @return 结果
-     */
-    @Override
-    public int deleteDeptById(Long deptId) {
-        return sysDeptMapper.deleteById(deptId);
     }
 
     /**
@@ -213,7 +205,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public boolean checkDeptExistUser(Long deptId) {
-        int result = sysDeptMapper.checkDeptExistUser(deptId);
+        int result = deptMapper.checkDeptExistUser(deptId);
         return result > 0;
     }
 
@@ -226,7 +218,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     public void checkDataScopes(List<Long> deptIds) {
         deptIds = deptIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(deptIds)) {
-            if (sysDeptMapper.checkDataScopes(deptIds) != deptIds.size()) {
+            if (deptMapper.checkDataScopes(deptIds) != deptIds.size()) {
                 throw new AccessDeniedException("没有访问数据权限");
             }
         }

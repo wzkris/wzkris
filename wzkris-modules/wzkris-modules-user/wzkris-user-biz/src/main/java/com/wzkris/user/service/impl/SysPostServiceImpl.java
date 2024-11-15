@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysPostServiceImpl implements SysPostService {
-    private final SysPostMapper sysPostMapper;
-    private final SysUserPostMapper sysUserPostMapper;
+    private final SysPostMapper postMapper;
+    private final SysUserPostMapper userPostMapper;
 
     /**
      * 根据条件查询岗位集合
@@ -35,7 +35,7 @@ public class SysPostServiceImpl implements SysPostService {
     @Override
     public List<SysPost> list(SysPost sysPost) {
         LambdaQueryWrapper<SysPost> lqw = this.buildQueryWrapper(sysPost);
-        return sysPostMapper.selectList(lqw);
+        return postMapper.selectList(lqw);
     }
 
     private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPost sysPost) {
@@ -55,13 +55,13 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public List<SysPost> listByUserId(Long userId) {
-        List<Long> postIds = sysUserPostMapper.listPostIdByUserId(userId);
+        List<Long> postIds = userPostMapper.listPostIdByUserId(userId);
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<SysPost> lqw = new LambdaQueryWrapper<SysPost>()
                 .in(SysPost::getPostId, postIds);
-        return sysPostMapper.selectList(lqw);
+        return postMapper.selectList(lqw);
     }
 
     /**
@@ -82,10 +82,10 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public int deleteByPostIds(List<Long> postIds) {
-        if (sysUserPostMapper.countByPostIds(postIds) > 0) {
+        if (userPostMapper.countByPostIds(postIds) > 0) {
             throw new BusinessExceptionI18n("business.allocated");
         }
-        return sysPostMapper.deleteByIds(postIds);
+        return postMapper.deleteByIds(postIds);
     }
 
 }

@@ -51,7 +51,7 @@ public class SysUser extends BaseEntity {
 
     @Xss
     @NotBlank(message = "[username] {validate.notnull}")
-    @Size(min = 0, max = 30, message = "[username] {validate.size.illegal}")
+    @Size(min = 6, max = 20, message = "[username] {validate.size.illegal}")
     @Schema(description = "用户名")
     private String username;
 
@@ -78,7 +78,7 @@ public class SysUser extends BaseEntity {
     private String avatar;
 
     @NotBlank(message = "[password] {validate.notnull}", groups = ValidationGroups.Insert.class)
-    @Size(min = 6, max = 32, message = "[password] {validate.size.illegal}")
+    @Size(min = 8, max = 32, message = "[password] {validate.size.illegal}")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "密码")
     private String password;
@@ -115,6 +115,7 @@ public class SysUser extends BaseEntity {
         return params;
     }
 
+    @JsonIgnore
     public boolean isSuperAdmin() {
         return isSuperAdmin(this.userId);
     }
