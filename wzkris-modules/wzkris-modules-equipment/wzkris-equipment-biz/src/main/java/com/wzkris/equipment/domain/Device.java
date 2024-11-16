@@ -20,7 +20,6 @@ import java.io.Serial;
 @Accessors(chain = true)
 @NoArgsConstructor
 @FieldNameConstants
-
 public class Device extends BaseEntity {
     @Serial
     private static final long serialVersionUID = 253601802815121784L;

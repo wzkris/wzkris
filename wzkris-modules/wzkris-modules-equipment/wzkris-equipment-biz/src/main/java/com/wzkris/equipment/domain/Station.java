@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @NoArgsConstructor
 @FieldNameConstants
-
 public class Station extends BaseEntity implements Serializable {
 
     @TableId

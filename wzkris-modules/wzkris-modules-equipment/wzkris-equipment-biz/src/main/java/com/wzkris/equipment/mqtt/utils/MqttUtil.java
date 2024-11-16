@@ -1,79 +1,187 @@
 package com.wzkris.equipment.mqtt.utils;
 
-import cn.hutool.core.util.ObjUtil;
-import com.wzkris.equipment.mqtt.constants.MqttTopic;
+import cn.hutool.core.net.NetUtil;
+import com.wzkris.equipment.mqtt.MqttReceive;
+import com.wzkris.equipment.mqtt.properties.MqttProperties;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : mqtt服务
+ * @description : MQTT工具
  * @date : 2023/4/29 14:36
+ * @update: 2024/11/16 14:45
  */
 @Slf4j
+@Component
+@ConditionalOnProperty("mqtt.enable")
 public class MqttUtil {
-    private static MqttClient mqttClient;
 
-    public static void setClient(MqttClient mqttClient) {
-        MqttUtil.mqttClient = mqttClient;
-    }
+    @Autowired
+    private MqttProperties mqttProperties;
 
-    /**
-     * 发布，默认qos为0，非持久化
-     */
-    public static <T> void publish(String topic, T message) {
-        publish(topic, message, 0);
-    }
+    private static final Map<String, MqttClientPool> mqttPools = new HashMap<>();
 
-    /**
-     * 发布消息，非持久化
-     */
-    public static <T> void publish(String topic, T message, int qos) {
-        try {
-            if (StringUtils.isEmpty(topic) || ObjUtil.isEmpty(message)) {
-                log.error("消息主题和发送消息不能为空");
-                return;
+    @PostConstruct
+    public void init() throws MqttException {
+        Map<String, MqttProperties.GeneralSetting> settings = mqttProperties.getSettings();
+
+        for (Map.Entry<String, MqttProperties.GeneralSetting> setting : settings.entrySet()) {
+            MqttProperties.GeneralSetting generalSetting = setting.getValue();
+            String clientidPref = generalSetting.getClientId() + "_" + setting.getKey() + "_" + NetUtil.getLocalMacAddress();// 解决集群部署clientid冲突
+            final MqttClientPool pool = new MqttClientPool();
+            for (int i = 0; i < generalSetting.getClientNum(); i++) {
+                MqttClient mqttClient = new MqttClient(generalSetting.getHost(), clientidPref + "_" + i, new MemoryPersistence());
+                // 创建链接参数
+                MqttConnectOptions connectOptions = new MqttConnectOptions();
+                connectOptions.setAutomaticReconnect(generalSetting.getAutomaticReconnect());// 自动重连
+                connectOptions.setMaxReconnectDelay(generalSetting.getMaxReconnectDelay());//重连最大间隔
+                // 在重新启动和重新连接时记住状态
+                connectOptions.setCleanSession(generalSetting.getCleanSession());
+                // 设置连接的用户名
+                connectOptions.setUserName(generalSetting.getUsername());
+                connectOptions.setPassword(generalSetting.getPassword().toCharArray());
+                connectOptions.setConnectionTimeout(generalSetting.getConnectTimeout());
+                connectOptions.setKeepAliveInterval(generalSetting.getKeepAlive());
+                connectOptions.setMaxInflight(generalSetting.getMaxInFlight());
+                mqttClient.setCallback(new MqttReceive());
+                // 建立连接
+                mqttClient.connect(connectOptions);
+                log.info("-------------------mqtt客户端：{}, 第{}个连接初始化-------------------", setting.getKey(), i + 1);
+                pool.add(mqttClient);
             }
-            mqttClient.publish(topic, message.toString().getBytes(StandardCharsets.UTF_8), qos, false);
-        }
-        catch (MqttException e) {
-            log.error("发布消息时发生异常，errmsg：{}", e.getMessage());
+            mqttPools.put(setting.getKey(), pool);
         }
     }
 
     /**
-     * 订阅默认主题
+     * 轮询方式获取客户端
      */
-    public static void subDefaultTopic() {
-        // 订阅队列 加号为占位符
-        try {
-            mqttClient.subscribe(String.format(MqttTopic.CAR_ATTR, "+", "+"), 1);
-            mqttClient.subscribe(String.format(MqttTopic.CAR_SERVICE_REPLY, "+", "+"), 1);
-            mqttClient.subscribe(String.format(MqttTopic.CAR_EVENT, "+", "+"), 1);
-            mqttClient.subscribe("$SYS/brokers/+/clients/+/+", 2);// 上下线
-            mqttClient.subscribe("$SYS/brokers/+/alarms/#", 2);// 系统告警
-        }
-        catch (MqttException e) {
-            log.error("订阅主题时发生异常，errmsg：{}", e.getMessage());
-        }
+    @Nonnull
+    private static MqttClientPool get(final String key) {
+        return mqttPools.get(key);
     }
 
     /**
-     * 重连
+     * 订阅主题
      */
-    public static void reconnect() {
-        try {
-            mqttClient.reconnect();
+    public static void sub(final String key, final String topic, final int qos) {
+        get(key).sub(topic, qos);
+    }
+
+    /**
+     * MQTT客户端池
+     */
+    public static class MqttClientPool {
+
+        private int round = 0;
+
+        private final List<MqttClient> instance = new ArrayList<>();
+
+        private void add(MqttClient client) {
+            instance.add(client);
         }
-        catch (MqttException e) {
-            log.error("重连时发生异常，errmsg：{}", e.getMessage());
+
+        /**
+         * 轮询获取MQTT客户端
+         */
+        private synchronized MqttClient getClient() {
+            MqttClient mqttClient = instance.get(round);
+            if (round < mqttPools.size() - 1) round++;
+            else round = 0;
+            return mqttClient;
         }
+
+        /**
+         * 发布qos0
+         */
+        public boolean pub0(final String topic, final String message) {
+            return pub0(topic, message, -1);
+        }
+
+        /**
+         * 发布qos1
+         */
+        public boolean pub1(final String topic, final String message) {
+            return pub1(topic, message, -1);
+        }
+
+        /**
+         * 发布qos2
+         */
+        public boolean pub2(final String topic, final String message) {
+            return pub2(topic, message, -1);
+        }
+
+        /**
+         * 发布qos0
+         */
+        public boolean pub0(final String topic, final String message, long sendTimeout) {
+            return pub(topic, message, 0, sendTimeout);
+        }
+
+        /**
+         * 发布qos1
+         */
+        public boolean pub1(final String topic, final String message, long sendTimeout) {
+            return pub(topic, message, 1, sendTimeout);
+        }
+
+        /**
+         * 发布qos2
+         */
+        public boolean pub2(final String topic, final String message, long sendTimeout) {
+            return pub(topic, message, 2, sendTimeout);
+        }
+
+        /**
+         * 发布消息
+         */
+        public boolean pub(final String topic, final String msg, final int qos, long sendTimeout) {
+            try {
+                org.eclipse.paho.client.mqttv3.MqttTopic mqttTopic = getClient().getTopic(topic);
+                MqttMessage message = new MqttMessage();
+                message.setRetained(false);
+                message.setQos(qos);
+                message.setPayload(msg.getBytes(StandardCharsets.UTF_8));
+                MqttDeliveryToken deliveryToken = mqttTopic.publish(message);
+                deliveryToken.waitForCompletion(sendTimeout);// 等待操作完成
+                return deliveryToken.getException() == null;// 为空代表发送成功
+            }
+            catch (MqttException e) {
+                log.error("发布消息时发生异常，errmsg：{}", e.getMessage());
+                return false;
+            }
+        }
+
+        /**
+         * 订阅主题
+         */
+        public void sub(final String topic, final int qos) {
+            try {
+                for (MqttClient mqttClient : instance) {
+                    mqttClient.subscribe(topic, qos);
+                }
+            }
+            catch (MqttException e) {
+                log.error("订阅主题时发生异常，errmsg：{}", e.getMessage());
+            }
+        }
+
     }
 
 }
