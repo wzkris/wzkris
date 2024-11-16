@@ -2,7 +2,6 @@ package com.wzkris.common.web.handler;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.utils.SysUtil;
@@ -56,13 +55,13 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
         if (BooleanUtil.isTrue(Boolean.valueOf(globalIgnore))) {
             DynamicTenantUtil.enableIgnore();
-            request.setAttribute(GLOBAL_IGNORE_TENANT, request.getRequestId());
+            request.setAttribute(GLOBAL_IGNORE_TENANT, globalIgnore);
             return true;
         }
 
         if (NumberUtil.isNumber(tenantId)) {
             DynamicTenantUtil.set(Long.valueOf(tenantId));
-            request.setAttribute(DYNAMIC_TENANT, request.getRequestId());
+            request.setAttribute(DYNAMIC_TENANT, tenantId);
             return true;
         }
 
@@ -73,10 +72,10 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     // 请求完成后的回调
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        if (ObjUtil.equals(request.getRequestId(), request.getAttribute(GLOBAL_IGNORE_TENANT))) {
+        if (request.getAttribute(GLOBAL_IGNORE_TENANT) != null) {
             DynamicTenantUtil.disableIgnore();
         }
-        if (ObjUtil.equals(request.getRequestId(), request.getAttribute(DYNAMIC_TENANT))) {
+        if (request.getAttribute(DYNAMIC_TENANT) != null) {
             DynamicTenantUtil.remove();
         }
     }
