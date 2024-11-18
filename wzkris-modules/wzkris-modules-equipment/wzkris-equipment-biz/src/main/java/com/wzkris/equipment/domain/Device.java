@@ -27,20 +27,14 @@ public class Device extends BaseEntity {
     @TableId
     private Long deviceId;
 
-    @Schema(description = "设备名称")
-    private String deviceName;
-
     @Schema(description = "租户id")
     private Long tenantId;
 
-    @Schema(description = "电站id")
-    private Long stationId;
+    @Schema(description = "设备名称")
+    private String deviceName;
 
     @Schema(description = "设备号")
     private String serialNo;
-
-    @Schema(description = "协议版本")
-    private String version;
 
     @Schema(description = "上线时间")
     private Long onlineTime;
@@ -48,11 +42,11 @@ public class Device extends BaseEntity {
     @Schema(description = "下线时间")
     private Long offlineTime;
 
+    @Schema(description = "连接状态")
+    private String connStatus;
+
     @Schema(description = "状态")
     private String status;
-
-    @Schema(description = "通道状态 0-空闲 1-使用")
-    private String roadStatus;
 
     public Device(Long deviceId) {
         this.deviceId = deviceId;

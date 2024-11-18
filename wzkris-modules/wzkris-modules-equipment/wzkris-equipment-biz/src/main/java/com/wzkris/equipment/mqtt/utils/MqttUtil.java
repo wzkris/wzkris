@@ -31,10 +31,24 @@ import java.util.Map;
 @ConditionalOnProperty("mqtt.enable")
 public class MqttUtil {
 
+    private static final Map<String, MqttClientPool> mqttPools = new HashMap<>();
     @Autowired
     private MqttProperties mqttProperties;
 
-    private static final Map<String, MqttClientPool> mqttPools = new HashMap<>();
+    /**
+     * 轮询方式获取客户端
+     */
+    @Nonnull
+    private static MqttClientPool get(final String key) {
+        return mqttPools.get(key);
+    }
+
+    /**
+     * 订阅主题
+     */
+    public static void sub(final String key, final String topic, final int qos) {
+        get(key).sub(topic, qos);
+    }
 
     @PostConstruct
     public void init() throws MqttException {
@@ -69,28 +83,12 @@ public class MqttUtil {
     }
 
     /**
-     * 轮询方式获取客户端
-     */
-    @Nonnull
-    private static MqttClientPool get(final String key) {
-        return mqttPools.get(key);
-    }
-
-    /**
-     * 订阅主题
-     */
-    public static void sub(final String key, final String topic, final int qos) {
-        get(key).sub(topic, qos);
-    }
-
-    /**
      * MQTT客户端池
      */
     public static class MqttClientPool {
 
-        private int round = 0;
-
         private final List<MqttClient> instance = new ArrayList<>();
+        private int round = 0;
 
         private void add(MqttClient client) {
             instance.add(client);
