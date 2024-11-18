@@ -1,7 +1,8 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.mapper.SysPostMapper;
@@ -26,25 +27,10 @@ public class SysPostServiceImpl implements SysPostService {
     private final SysPostMapper postMapper;
     private final SysUserPostMapper userPostMapper;
 
-    /**
-     * 根据条件查询岗位集合
-     *
-     * @param sysPost 筛选条件
-     * @return 岗位列表
-     */
     @Override
-    public List<SysPost> list(SysPost sysPost) {
-        LambdaQueryWrapper<SysPost> lqw = this.buildQueryWrapper(sysPost);
-        return postMapper.selectList(lqw);
-    }
-
-    private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPost sysPost) {
-        return new LambdaQueryWrapper<SysPost>()
-                .eq(ObjUtil.isNotNull(sysPost.getTenantId()), SysPost::getTenantId, sysPost.getTenantId())
-                .like(ObjUtil.isNotEmpty(sysPost.getPostName()), SysPost::getPostName, sysPost.getPostName())
-                .like(ObjUtil.isNotEmpty(sysPost.getPostCode()), SysPost::getPostCode, sysPost.getPostCode())
-                .eq(ObjUtil.isNotEmpty(sysPost.getStatus()), SysPost::getStatus, sysPost.getStatus())
-                .orderByDesc(SysPost::getPostSort);
+    public List<SysPost> listCanGranted() {
+        return postMapper.selectList(Wrappers.lambdaQuery(SysPost.class)
+                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE));
     }
 
     /**
@@ -60,8 +46,22 @@ public class SysPostServiceImpl implements SysPostService {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<SysPost> lqw = new LambdaQueryWrapper<SysPost>()
-                .in(SysPost::getPostId, postIds);
+                .in(SysPost::getPostId, postIds)
+                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE);
         return postMapper.selectList(lqw);
+    }
+
+    @Override
+    public List<Long> listIdByUserId(Long userId) {
+        List<Long> postIds = userPostMapper.listPostIdByUserId(userId);
+        if (CollectionUtils.isEmpty(postIds)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<SysPost> lqw = new LambdaQueryWrapper<SysPost>()
+                .select(SysPost::getPostId)
+                .in(SysPost::getPostId, postIds)
+                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE);
+        return postMapper.selectList(lqw).stream().map(SysPost::getPostId).toList();
     }
 
     /**

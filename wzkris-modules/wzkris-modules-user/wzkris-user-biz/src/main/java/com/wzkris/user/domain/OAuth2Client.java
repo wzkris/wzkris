@@ -9,6 +9,7 @@ import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.user.api.domain.dto.OAuth2ClientDTO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -26,30 +27,39 @@ import java.util.List;
 })
 @TableName(autoResultMap = true, value = "oauth2_client")
 public class OAuth2Client extends BaseEntity {
+
     @TableId
     private Long id;
-    // 客户端名称
+
     @NotBlank(message = "[clientName] {validate.notnull}")
+    @Schema(description = "客户端名称")
     private String clientName;
-    // 客户端id 等价于app_id
+
+    @Schema(description = "客户端状态")
+    private String status;
+
     @NotBlank(message = "[clientId] {validate.notnull}")
+    @Schema(description = "客户端id 等价于app_id")
     private String clientId;
-    // 客户端密钥 等价于app_secret
+
     @NotBlank(message = "[clientSecret] {validate.notnull}")
     @Length(min = 6, max = 6, message = "[clientSecret] {validate.size.illegal}")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(description = "客户端密钥 等价于app_secret")
     private String clientSecret;
-    // 权限域
+
     @TableField(typeHandler = JacksonTypeHandler.class)
+    @Schema(description = "权限域")
     private List<String> scopes;
-    // 授权类型
+
     @TableField(typeHandler = JacksonTypeHandler.class)
+    @Schema(description = "授权类型")
     private List<String> authorizationGrantTypes;
-    // 回调地址
+
     @TableField(typeHandler = JacksonTypeHandler.class)
+    @Schema(description = "回调地址")
     private List<String> redirectUris;
-    // 客户端状态
-    private String status;
-    // 是否自动放行
+
+    @Schema(description = "是否自动放行")
     private Boolean autoApprove;
 }

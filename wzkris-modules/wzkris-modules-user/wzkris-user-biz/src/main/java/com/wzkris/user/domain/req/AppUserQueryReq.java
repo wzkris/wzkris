@@ -6,25 +6,11 @@ import lombok.Data;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 前端查询条件
- */
 @Data
-public class SysUserQueryReq {
-    @Schema(description = "租户ID")
-    private Long tenantId;
-
-    @Schema(description = "部门ID")
-    private Long deptId;
-
-    @Schema(description = "用户名")
-    private String username;
+public class AppUserQueryReq {
 
     @Schema(description = "用户昵称")
     private String nickname;
-
-    @Schema(description = "用户邮箱")
-    private String email;
 
     @Schema(description = "手机号码")
     private String phoneNumber;

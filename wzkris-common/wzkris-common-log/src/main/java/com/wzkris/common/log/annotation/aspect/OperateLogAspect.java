@@ -7,10 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.AddressUtil;
+import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.core.utils.ip.AddressUtil;
-import com.wzkris.common.core.utils.json.JsonUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
 import com.wzkris.common.security.utils.SysUtil;
@@ -49,11 +49,9 @@ public class OperateLogAspect {
      */
     public static final String[] EXCLUDE_PROPERTIES =
             {"pwd", "passwd", "password", "oldPassword", "newPassword", "confirmPassword"};
-
+    private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
     @Autowired
     private RemoteLogApi remoteLogApi;
-
-    private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
     public OperateLogAspect() {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);// 配置null不序列化, 避免大量无用参数存入DB

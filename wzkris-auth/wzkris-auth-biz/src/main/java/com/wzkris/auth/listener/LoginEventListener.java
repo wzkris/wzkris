@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.utils.ip.AddressUtil;
+import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;

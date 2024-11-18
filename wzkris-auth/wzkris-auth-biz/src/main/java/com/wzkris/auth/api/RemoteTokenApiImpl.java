@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
-import static com.wzkris.common.core.domain.Result.resp;
 import static com.wzkris.common.core.domain.Result.ok;
+import static com.wzkris.common.core.domain.Result.resp;
 
 @Hidden
 @InnerAuth

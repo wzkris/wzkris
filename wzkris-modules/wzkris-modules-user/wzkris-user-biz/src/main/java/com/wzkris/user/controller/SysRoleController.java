@@ -1,17 +1,23 @@
 package com.wzkris.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
-import com.wzkris.user.domain.*;
+import com.wzkris.user.domain.SysMenu;
+import com.wzkris.user.domain.SysRole;
+import com.wzkris.user.domain.SysUser;
+import com.wzkris.user.domain.SysUserRole;
 import com.wzkris.user.domain.dto.SysRoleDTO;
 import com.wzkris.user.domain.req.SysRole2UsersReq;
-import com.wzkris.user.domain.resp.SysDeptCheckSelectTreeResp;
-import com.wzkris.user.domain.resp.SysMenuCheckSelectTreeResp;
+import com.wzkris.user.domain.req.SysRoleQueryReq;
+import com.wzkris.user.domain.vo.SysDeptCheckSelectTreeVO;
+import com.wzkris.user.domain.vo.SysMenuCheckSelectTreeVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -53,10 +59,17 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "角色分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('sys_role:list')")
-    public Result<Page<SysRole>> listPage(SysRole role) {
+    public Result<Page<SysRole>> listPage(SysRoleQueryReq req) {
         startPage();
-        List<SysRole> list = roleService.list(role);
+        List<SysRole> list = roleMapper.selectList(this.buildQueryWrapper(req));
         return getDataTable(list);
+    }
+
+    private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRoleQueryReq req) {
+        return new LambdaQueryWrapper<SysRole>()
+                .like(StringUtil.isNotNull(req.getRoleName()), SysRole::getRoleName, req.getRoleName())
+                .eq(StringUtil.isNotNull(req.getStatus()), SysRole::getStatus, req.getStatus())
+                .orderByDesc(SysRole::getRoleSort, SysRole::getRoleId);
     }
 
     @Operation(summary = "角色详细信息")
@@ -71,8 +84,8 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "角色菜单选择树")
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{roleId}"})
     @PreAuthorize("@ps.hasPerms('sys_role:list')")
-    public Result<SysMenuCheckSelectTreeResp> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
-        SysMenuCheckSelectTreeResp resp = new SysMenuCheckSelectTreeResp();
+    public Result<SysMenuCheckSelectTreeVO> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
+        SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
         resp.setCheckedKeys(roleId == null ? Collections.emptyList() :
                 roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
         resp.setMenus(menuService.listMenuSelectTree(new SysMenu(CommonConstants.STATUS_ENABLE)));
@@ -191,12 +204,12 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "角色部门树列表")
     @GetMapping("/dept_tree/{roleId}")
     @PreAuthorize("@ps.hasPerms('sys_role:query')")
-    public Result<SysDeptCheckSelectTreeResp> deptTree(@PathVariable Long roleId, SysDept sysDept) {
+    public Result<SysDeptCheckSelectTreeVO> deptTree(@PathVariable Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
-        SysDeptCheckSelectTreeResp resp = new SysDeptCheckSelectTreeResp();
+        SysDeptCheckSelectTreeVO resp = new SysDeptCheckSelectTreeVO();
         resp.setCheckedKeys(roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
-        resp.setDepts(deptService.listDeptTree(sysDept));
+        resp.setDepts(deptService.listSelectTree(null));
         return ok(resp);
     }
 }

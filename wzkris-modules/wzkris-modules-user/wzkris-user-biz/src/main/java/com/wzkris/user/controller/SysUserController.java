@@ -2,7 +2,6 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -12,16 +11,13 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
-import com.wzkris.user.domain.SysDept;
-import com.wzkris.user.domain.SysPost;
-import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.export.SysUserExport;
 import com.wzkris.user.domain.req.ResetPwdReq;
 import com.wzkris.user.domain.req.SysUser2RolesReq;
 import com.wzkris.user.domain.req.SysUserQueryReq;
-import com.wzkris.user.domain.resp.SysUserGrantResp;
+import com.wzkris.user.domain.vo.SysUserGrantVO;
 import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
@@ -87,20 +83,19 @@ public class SysUserController extends BaseController {
     @Operation(summary = "用户详细信息")
     @GetMapping({"/{userId}", "/"})
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
-    public Result<SysUserGrantResp> getInfo(@PathVariable(required = false) Long userId) {
+    public Result<SysUserGrantVO> getInfo(@PathVariable(required = false) Long userId) {
         // 校验权限
         userService.checkDataScopes(userId);
 
-        SysUserGrantResp resp = new SysUserGrantResp();
+        SysUserGrantVO resp = new SysUserGrantVO();
         // 可授权角色、岗位、部门
-        resp.setRoles(roleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
-        resp.setPosts(postService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
-        resp.setDepts(deptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
+        resp.setRoles(roleService.listCanGranted());
+        resp.setPosts(postService.listCanGranted());
         if (StringUtil.isNotNull(userId)) {
-            resp.setUser(userMapper.selectById(userId));// 用户信息
+            resp.setUser(userMapper.selectById(userId));
             // 已授权角色与岗位
-            resp.setRoleIds(userRoleMapper.listRoleIdByUserId(userId));
-            resp.setPostIds(userPostMapper.listPostIdByUserId(userId));
+            resp.setRoleIds(roleService.listIdByUserId(userId));
+            resp.setPostIds(postService.listIdByUserId(userId));
         }
         return ok(resp);
     }
@@ -202,14 +197,14 @@ public class SysUserController extends BaseController {
     @Operation(summary = "根据用户id获取授权角色")
     @GetMapping("/authorize_role/{userId}")
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
-    public Result<SysUserGrantResp> authRole(@PathVariable Long userId) {
+    public Result<SysUserGrantVO> authRole(@PathVariable Long userId) {
         // 校验权限
         userService.checkDataScopes(userId);
 
-        SysUserGrantResp resp = new SysUserGrantResp();
+        SysUserGrantVO resp = new SysUserGrantVO();
         resp.setUser(userMapper.selectById(userId));
         resp.setRoleIds(userRoleMapper.listRoleIdByUserId(userId));
-        resp.setRoles(roleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        resp.setRoles(roleService.listCanGranted());
         return ok(resp);
     }
 

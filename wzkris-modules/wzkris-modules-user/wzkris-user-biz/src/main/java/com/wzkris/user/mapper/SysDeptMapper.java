@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysDept;
+import com.wzkris.user.domain.req.SysDeptQueryReq;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -33,12 +34,12 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
     String selectDeptNameById(Long deptId);
 
     /**
-     * 根据ID查询所有子部门（包括自身）
+     * 根据条件查询所有子部门（包括自身）
      *
-     * @param dept 部门ID
+     * @param queryReq 查询条件
      * @return 部门列表
      */
-    List<SysDept> listChildren(SysDept dept);
+    List<SysDept> listChildren(SysDeptQueryReq queryReq);
 
     /**
      * 根据ID查询所有子部门id（包括自身）
@@ -46,7 +47,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * @param deptId 部门ID
      * @return 部门列表
      */
-    @Select("SELECT dept_id FROM sys_dept WHERE find_in_set(#{deptId}, ancestors) OR dept_id = #{deptId}")
+    @Select("SELECT dept_id FROM sys_dept WHERE FIND_IN_SET(#{deptId}, ancestors) OR dept_id = #{deptId}")
     List<Long> listChildrenIdById(Long deptId);
 
     /**

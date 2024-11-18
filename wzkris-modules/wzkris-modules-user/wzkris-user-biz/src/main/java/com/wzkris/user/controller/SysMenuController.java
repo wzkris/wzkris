@@ -1,5 +1,6 @@
 package com.wzkris.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -35,8 +36,20 @@ public class SysMenuController extends BaseController {
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('menu:list')")
     public Result<?> list(SysMenu menu) {
-        List<SysMenu> menus = menuService.list(menu);
+        List<SysMenu> menus = menuMapper.selectList(this.buildQueryWrapper(menu));
         return ok(menus);
+    }
+
+    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenu menu) {
+        return new LambdaQueryWrapper<SysMenu>()
+                .eq(StringUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId())
+                .like(StringUtil.isNotNull(menu.getMenuName()), SysMenu::getMenuName, menu.getMenuName())
+                .eq(StringUtil.isNotNull(menu.getMenuType()), SysMenu::getMenuType, menu.getMenuType())
+                .eq(StringUtil.isNotNull(menu.getIsVisible()), SysMenu::getIsVisible, menu.getIsVisible())
+                .eq(StringUtil.isNotNull(menu.getIsCache()), SysMenu::getIsCache, menu.getIsCache())
+                .eq(StringUtil.isNotNull(menu.getIsFrame()), SysMenu::getIsFrame, menu.getIsFrame())
+                .eq(StringUtil.isNotNull(menu.getStatus()), SysMenu::getStatus, menu.getStatus())
+                .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
     }
 
     @Operation(summary = "菜单详细信息")

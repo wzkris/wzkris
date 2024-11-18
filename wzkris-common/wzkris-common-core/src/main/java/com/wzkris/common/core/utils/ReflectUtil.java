@@ -1,4 +1,4 @@
-package com.wzkris.common.core.utils.reflect;
+package com.wzkris.common.core.utils;
 
 import lombok.extern.slf4j.Slf4j;
 

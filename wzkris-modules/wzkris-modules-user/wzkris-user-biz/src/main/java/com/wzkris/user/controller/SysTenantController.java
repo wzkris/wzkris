@@ -12,6 +12,7 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysTenantDTO;
+import com.wzkris.user.domain.req.SysTenantQueryReq;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
@@ -41,18 +42,26 @@ import java.util.List;
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
-    private final PasswordEncoder passwordEncoder;
     private final SysTenantMapper tenantMapper;
     private final SysTenantService tenantService;
     private final SysUserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "租户分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('tenant:list')")
-    public Result<Page<SysTenant>> listPage(SysTenant sysTenant) {
+    public Result<Page<SysTenant>> listPage(SysTenantQueryReq req) {
         startPage();
-        List<SysTenant> list = tenantService.list(sysTenant);
+        List<SysTenant> list = tenantMapper.selectList(this.buildQueryWrapper(req));
         return getDataTable(list);
+    }
+
+    private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenantQueryReq req) {
+        return new LambdaQueryWrapper<SysTenant>()
+                .like(StringUtil.isNotNull(req.getTenantName()), SysTenant::getTenantName, req.getTenantName())
+                .eq(StringUtil.isNotNull(req.getStatus()), SysTenant::getStatus, req.getStatus())
+                .eq(StringUtil.isNotNull(req.getPackageId()), SysTenant::getPackageId, req.getPackageId())
+                .orderByDesc(SysTenant::getTenantId);
     }
 
     @Operation(summary = "租户选择列表(带分页)")

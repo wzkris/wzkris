@@ -18,10 +18,9 @@ public interface SysMenuService {
     /**
      * 查询系统菜单列表
      *
-     * @param menu 菜单信息
      * @return 菜单列表
      */
-    List<SysMenu> list(SysMenu menu);
+    List<SysMenu> list();
 
     /**
      * 根据角色ID集合查询权限

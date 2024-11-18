@@ -2,9 +2,9 @@ package com.wzkris.user.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
@@ -40,33 +40,12 @@ public class SysRoleServiceImpl implements SysRoleService {
     private final SysUserRoleMapper userRoleMapper;
     private final SysRoleDeptMapper roleDeptMapper;
 
-    /**
-     * 根据条件查询角色列表
-     *
-     * @param role 条件
-     * @return 角色列表
-     */
     @Override
-    public List<SysRole> list(SysRole role) {
-        LambdaQueryWrapper<SysRole> lqw = this.buildQueryWrapper(role);
-        return roleMapper.selectList(lqw);
+    public List<SysRole> listCanGranted() {
+        return roleMapper.selectList(Wrappers.lambdaQuery(SysRole.class).
+                eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE));
     }
 
-    private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRole sysRole) {
-        return new LambdaQueryWrapper<SysRole>()
-                .eq(ObjUtil.isNotNull(sysRole.getRoleId()), SysRole::getRoleId, sysRole.getRoleId())
-                .eq(ObjUtil.isNotNull(sysRole.getTenantId()), SysRole::getTenantId, sysRole.getTenantId())
-                .like(StringUtil.isNotNull(sysRole.getRoleName()), SysRole::getRoleName, sysRole.getRoleName())
-                .eq(StringUtil.isNotNull(sysRole.getStatus()), SysRole::getStatus, sysRole.getStatus())
-                .orderByDesc(SysRole::getRoleSort, SysRole::getRoleId);
-    }
-
-    /**
-     * 根据用户ID查询角色
-     *
-     * @param userId 用户ID
-     * @return 角色列表
-     */
     @Override
     public List<SysRole> listByUserId(Long userId) {
         List<Long> roleIds = userRoleMapper.listRoleIdByUserId(userId);
@@ -80,9 +59,20 @@ public class SysRoleServiceImpl implements SysRoleService {
         return roleMapper.selectList(lqw);
     }
 
-    /**
-     * 根据用户id获取角色
-     */
+    @Override
+    public List<Long> listIdByUserId(Long userId) {
+        List<Long> roleIds = userRoleMapper.listRoleIdByUserId(userId);
+        if (CollectionUtils.isEmpty(roleIds)) {
+            return Collections.emptyList();
+        }
+        // 只能查出状态正常的角色
+        LambdaQueryWrapper<SysRole> lqw = new LambdaQueryWrapper<SysRole>()
+                .select(SysRole::getRoleId)
+                .in(SysRole::getRoleId, roleIds)
+                .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE);
+        return roleMapper.selectList(lqw).stream().map(SysRole::getRoleId).toList();
+    }
+
     @Override
     public String getRoleGroup(Long userId) {
         if (SysUtil.isAdministrator()) {
@@ -92,11 +82,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }
 
-    /**
-     * 新增保存角色信息
-     *
-     * @param roleDTO 角色信息
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertRole(SysRoleDTO roleDTO) {
@@ -108,11 +93,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
     }
 
-    /**
-     * 修改保存角色信息
-     *
-     * @param roleDTO 角色信息
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateRole(SysRoleDTO roleDTO) {
@@ -128,12 +108,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         roleMapper.updateById(roleDTO);
     }
 
-    /**
-     * 批量选择授权用户角色
-     *
-     * @param roleId  角色ID
-     * @param userIds 需要授权的用户数据ID
-     */
     @Override
     public void allocateUsers(Long roleId, List<Long> userIds) {
         if (ObjUtil.isNotEmpty(userIds)) {
@@ -145,12 +119,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
     }
 
-    /**
-     * 修改部门数据权限信息
-     *
-     * @param roleDTO 角色信息
-     * @return 结果
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateDeptScope(SysRoleDTO roleDTO) {
@@ -193,12 +161,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
     }
 
-    /**
-     * 批量删除角色信息
-     *
-     * @param roleIds 需要删除的角色ID
-     * @return 结果
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteByIds(List<Long> roleIds) {
@@ -211,11 +173,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         return roleMapper.deleteByIds(roleIds);
     }
 
-    /**
-     * 校验角色是否被用户关联
-     *
-     * @param roleIds 角色组
-     */
     @Override
     public void checkUserUse(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();

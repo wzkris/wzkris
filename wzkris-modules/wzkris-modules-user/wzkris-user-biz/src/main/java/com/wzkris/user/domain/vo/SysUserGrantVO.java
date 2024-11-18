@@ -1,9 +1,8 @@
-package com.wzkris.user.domain.resp;
+package com.wzkris.user.domain.vo;
 
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.vo.SelectTreeVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * 用户授权信息
  */
 @Data
-public class SysUserGrantResp {
+public class SysUserGrantVO {
     @Schema(description = "用户信息")
     private SysUser user;
 

@@ -56,7 +56,7 @@ public class SysUser extends BaseEntity {
     private String nickname;
 
     @Email(message = "[email] {validate.email.illegal}")
-    @Size(min = 5, max = 50, message = "[email] {validate.size.illegal}")
+    @Size(min = 0, max = 50, message = "[email] {validate.size.illegal}")
     @Schema(description = "用户邮箱")
     private String email;
 

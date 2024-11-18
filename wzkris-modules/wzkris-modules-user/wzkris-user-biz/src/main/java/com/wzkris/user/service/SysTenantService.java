@@ -1,7 +1,6 @@
 package com.wzkris.user.service;
 
 
-import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.dto.SysTenantDTO;
 
 import java.util.List;
@@ -12,13 +11,6 @@ import java.util.List;
  * @author wzkris
  */
 public interface SysTenantService {
-
-    /**
-     * 查询
-     *
-     * @param sysTenant 查询条件
-     */
-    List<SysTenant> list(SysTenant sysTenant);
 
     /**
      * 添加租户, 会创建租户管理员账号

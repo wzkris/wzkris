@@ -1,6 +1,5 @@
-package com.wzkris.user.domain.resp;
+package com.wzkris.user.domain.vo;
 
-import com.wzkris.user.domain.vo.SelectTreeVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * 菜单节点选择树
  */
 @Data
-public class SysMenuCheckSelectTreeResp {
+public class SysMenuCheckSelectTreeVO {
     @Schema(description = "已选中节点")
     private List<Long> checkedKeys;
 

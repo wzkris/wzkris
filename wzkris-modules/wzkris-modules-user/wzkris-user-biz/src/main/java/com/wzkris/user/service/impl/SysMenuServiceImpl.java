@@ -34,17 +34,10 @@ public class SysMenuServiceImpl implements SysMenuService {
     private final SysUserRoleMapper userRoleMapper;
     private final SysRoleMenuMapper roleMenuMapper;
 
-    /**
-     * 查询系统菜单列表
-     *
-     * @param menu 菜单信息
-     * @return 菜单列表
-     */
     @Override
-    public List<SysMenu> list(SysMenu menu) {
-        LambdaQueryWrapper<SysMenu> lqw = this.buildQueryWrapper(menu);
-
+    public List<SysMenu> list() {
         Long userId = SysUtil.getUserId();
+        LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class);
         if (!SysUser.isSuperAdmin(userId)) {
             // 去关联表中查绑定的菜单ID
             List<Long> menuIds;
@@ -64,24 +57,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         return menuMapper.selectList(lqw);
     }
 
-    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenu menu) {
-        return new LambdaQueryWrapper<SysMenu>()
-                .eq(StringUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId())
-                .like(StringUtil.isNotNull(menu.getMenuName()), SysMenu::getMenuName, menu.getMenuName())
-                .eq(StringUtil.isNotNull(menu.getMenuType()), SysMenu::getMenuType, menu.getMenuType())
-                .eq(StringUtil.isNotNull(menu.getIsVisible()), SysMenu::getIsVisible, menu.getIsVisible())
-                .eq(StringUtil.isNotNull(menu.getIsCache()), SysMenu::getIsCache, menu.getIsCache())
-                .eq(StringUtil.isNotNull(menu.getIsFrame()), SysMenu::getIsFrame, menu.getIsFrame())
-                .eq(StringUtil.isNotNull(menu.getStatus()), SysMenu::getStatus, menu.getStatus())
-                .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
-    }
-
-    /**
-     * 根据角色ID集合查询权限
-     *
-     * @param roleIds 角色ID集合
-     * @return 权限列表
-     */
     @Override
     public List<String> listPermsByRoleIds(@Nullable List<Long> roleIds) {
         if (CollectionUtils.isEmpty(roleIds)) {
@@ -91,12 +66,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         return this.listPermsByMenuIds(menuIds);
     }
 
-    /**
-     * 根据菜单ID集合查询权限
-     *
-     * @param menuIds 菜单ID集合
-     * @return 权限列表
-     */
     @Override
     public List<String> listPermsByMenuIds(@Nullable List<Long> menuIds) {
         if (CollectionUtils.isEmpty(menuIds)) {
@@ -107,23 +76,12 @@ public class SysMenuServiceImpl implements SysMenuService {
                 .filter(StringUtil::isNotBlank).toList();
     }
 
-    /**
-     * 查询菜单选择树
-     *
-     * @return 菜单列表
-     */
     @Override
     public List<SelectTreeVO> listMenuSelectTree(SysMenu menu) {
-        List<SysMenu> list = this.list(menu);
+        List<SysMenu> list = this.list();
         return this.buildSelectTree(list);
     }
 
-    /**
-     * 根据用户ID查询前端路由
-     *
-     * @param userId 用户ID
-     * @return 前端路由
-     */
     @Override
     public List<RouterVO> listRouteTree(Long userId) {
         List<Long> menuIds = null;

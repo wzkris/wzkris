@@ -1,5 +1,7 @@
 package com.wzkris.user.controller;
 
+import cn.hutool.core.util.ObjUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
@@ -9,6 +11,7 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.domain.export.OAuth2ClientExport;
+import com.wzkris.user.domain.req.OAuth2ClientQueryReq;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
 import com.wzkris.user.service.OAuth2ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,10 +43,16 @@ public class OAuth2ClientController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('oauth2_client:list')")
-    public Result<Page<OAuth2Client>> listPage(OAuth2Client client) {
+    public Result<Page<OAuth2Client>> listPage(OAuth2ClientQueryReq req) {
         startPage();
-        List<OAuth2Client> list = oAuth2ClientService.list(client);
+        List<OAuth2Client> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
         return getDataTable(list);
+    }
+
+    private LambdaQueryWrapper<OAuth2Client> buildQueryWrapper(OAuth2ClientQueryReq req) {
+        return new LambdaQueryWrapper<OAuth2Client>()
+                .eq(ObjUtil.isNotEmpty(req.getStatus()), OAuth2Client::getStatus, req.getStatus())
+                .like(ObjUtil.isNotEmpty(req.getClientId()), OAuth2Client::getClientId, req.getClientId());
     }
 
     @Operation(summary = "根据id查详情")
@@ -82,8 +91,8 @@ public class OAuth2ClientController extends BaseController {
     @OperateLog(title = "OAuth2客户端管理", subTitle = "导出客户端数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('oauth2_client:export')")
-    public void export(HttpServletResponse response, OAuth2Client client) {
-        List<OAuth2Client> list = oAuth2ClientService.list(client);
+    public void export(HttpServletResponse response, OAuth2ClientQueryReq req) {
+        List<OAuth2Client> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
         List<OAuth2ClientExport> convert = MapstructUtil.convert(list, OAuth2ClientExport.class);
         ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, response);
     }

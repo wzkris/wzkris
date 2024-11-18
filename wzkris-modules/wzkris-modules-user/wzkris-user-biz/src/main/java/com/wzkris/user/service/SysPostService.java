@@ -12,20 +12,25 @@ import java.util.List;
 public interface SysPostService {
 
     /**
-     * 根据条件查询岗位集合
-     *
-     * @param sysPost 筛选条件
-     * @return 岗位列表
+     * 查询可以授权的岗位
      */
-    List<SysPost> list(SysPost sysPost);
+    List<SysPost> listCanGranted();
 
     /**
-     * 根据用户id查询岗位集合
+     * 根据用户id查询关联岗位(正常状态)
      *
      * @param userId 用户id
      * @return 岗位列表
      */
     List<SysPost> listByUserId(Long userId);
+
+    /**
+     * 根据用户id查询岗位ID(正常状态)
+     *
+     * @param userId 用户id
+     * @return 岗位列表
+     */
+    List<Long> listIdByUserId(Long userId);
 
     /**
      * 根据用户id获取岗位

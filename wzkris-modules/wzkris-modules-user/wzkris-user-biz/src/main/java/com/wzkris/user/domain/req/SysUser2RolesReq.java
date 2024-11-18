@@ -7,10 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @author wzkris
- * @version V1.0.0
- * @description 用户对多角色传输层
- * @date 2024/6/22 09:49
+ * 用户对角色 一对多
  */
 @Data
 public class SysUser2RolesReq {

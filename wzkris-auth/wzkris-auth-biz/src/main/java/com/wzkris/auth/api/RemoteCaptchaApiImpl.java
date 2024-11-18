@@ -20,6 +20,6 @@ public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
     @Override
     public Result<Void> validateSms(SmsDTO smsDTO) {
         captchaService.validateSmsCode(smsDTO.getPhoneNumber(), smsDTO.getSmsCode());
-        return Result.ok();
+        return ok();
     }
 }

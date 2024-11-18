@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.domain.*;
 import com.wzkris.user.domain.dto.SysTenantDTO;
@@ -40,20 +39,6 @@ public class SysTenantServiceImpl implements SysTenantService {
     private final SysUserRoleMapper userRoleMapper;
     private final SysUserPostMapper userPostMapper;
     private final PasswordEncoder passwordEncoder;
-
-    @Override
-    public List<SysTenant> list(SysTenant sysTenant) {
-        LambdaQueryWrapper<SysTenant> lqw = this.buildQueryWrapper(sysTenant);
-        return tenantMapper.selectList(lqw);
-    }
-
-    private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenant sysTenant) {
-        return new LambdaQueryWrapper<SysTenant>()
-                .like(StringUtil.isNotNull(sysTenant.getTenantName()), SysTenant::getTenantName, sysTenant.getTenantName())
-                .eq(StringUtil.isNotNull(sysTenant.getStatus()), SysTenant::getStatus, sysTenant.getStatus())
-                .eq(StringUtil.isNotNull(sysTenant.getPackageId()), SysTenant::getPackageId, sysTenant.getPackageId())
-                .orderByDesc(SysTenant::getTenantId);
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

@@ -1,4 +1,4 @@
-package com.wzkris.common.core.utils.json;
+package com.wzkris.common.core.utils;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
