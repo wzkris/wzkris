@@ -42,7 +42,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public List<SysRole> listCanGranted() {
-        return roleMapper.selectList(Wrappers.lambdaQuery(SysRole.class).
+        return roleMapper.selectListInScope(Wrappers.lambdaQuery(SysRole.class).
                 eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE));
     }
 

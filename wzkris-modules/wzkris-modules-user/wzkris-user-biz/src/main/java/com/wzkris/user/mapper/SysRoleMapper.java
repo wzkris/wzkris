@@ -1,5 +1,8 @@
 package com.wzkris.user.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysRole;
 import org.apache.ibatis.annotations.Param;
@@ -15,6 +18,16 @@ import java.util.List;
  */
 @Repository
 public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
+
+    /**
+     * 带权限查询列表
+     */
+    @Select("""
+            SELECT DISTINCT r.* FROM sys_role r LEFT JOIN sys_role_dept rd ON r.role_id = rd.role_id
+            ${ew.customSqlSegment}
+            """)
+    @DeptScope(tableAlias = "rd")
+    List<SysRole> selectListInScope(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
 
     /**
      * 校验是否有该角色操作权限
