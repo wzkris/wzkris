@@ -3,7 +3,7 @@ package com.wzkris.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.exception.BusinessExceptionI18n;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
@@ -33,12 +33,6 @@ public class SysPostServiceImpl implements SysPostService {
                 .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE));
     }
 
-    /**
-     * 根据用户id查询岗位集合
-     *
-     * @param userId 用户id
-     * @return 岗位列表
-     */
     @Override
     public List<SysPost> listByUserId(Long userId) {
         List<Long> postIds = userPostMapper.listPostIdByUserId(userId);
@@ -64,28 +58,24 @@ public class SysPostServiceImpl implements SysPostService {
         return postMapper.selectList(lqw).stream().map(SysPost::getPostId).toList();
     }
 
-    /**
-     * 根据用户id获取岗位
-     */
     @Override
     public String getPostGroup(Long userId) {
-        // 岗位组
+        if (SysUtil.isAdministrator()) {
+            return "超管";
+        }
         List<SysPost> sysPosts = this.listByUserId(userId);
         return sysPosts.stream().map(SysPost::getPostName).collect(Collectors.joining(","));
     }
 
-    /**
-     * 批量删除岗位信息
-     *
-     * @param postIds 需要删除的岗位ID
-     * @return 结果
-     */
     @Override
-    public int deleteByPostIds(List<Long> postIds) {
-        if (userPostMapper.countByPostIds(postIds) > 0) {
-            throw new BusinessExceptionI18n("business.allocated");
-        }
-        return postMapper.deleteByIds(postIds);
+    public void deleteByPostIds(List<Long> postIds) {
+        postMapper.deleteByIds(postIds);
+        userPostMapper.deleteByPostIds(postIds);
+    }
+
+    @Override
+    public boolean checkPostUse(List<Long> postIds) {
+        return userPostMapper.countByPostIds(postIds) > 0;
     }
 
 }

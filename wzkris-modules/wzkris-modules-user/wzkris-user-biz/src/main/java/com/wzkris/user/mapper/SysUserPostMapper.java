@@ -68,6 +68,22 @@ public interface SysUserPostMapper {
     int deleteByUserIds(@Param("userIds") List<Long> userIds);
 
     /**
+     * 批量删除用户和岗位关联
+     *
+     * @param postIds 岗位id集合
+     * @return 结果
+     */
+    @Delete("""
+            <script>
+                DELETE FROM sys_user_post WHERE post_id IN
+                    <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+                        #{postId}
+                    </foreach>
+            </script>
+            """)
+    int deleteByPostIds(@Param("postIds") List<Long> postIds);
+
+    /**
      * 批量新增用户岗位信息
      *
      * @param sysUserPostList 用户角色列表

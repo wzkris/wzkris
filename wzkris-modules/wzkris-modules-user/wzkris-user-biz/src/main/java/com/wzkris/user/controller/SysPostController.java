@@ -57,7 +57,6 @@ public class SysPostController extends BaseController {
                 .orderByDesc(SysPost::getPostSort);
     }
 
-
     @Operation(summary = "岗位详细信息")
     @GetMapping("/{postId}")
     @PreAuthorize("@ps.hasPerms('post:query')")
@@ -89,7 +88,11 @@ public class SysPostController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('post:remove')")
     public Result<Void> remove(@RequestBody List<Long> postIds) {
-        return toRes(postService.deleteByPostIds(postIds));
+        if (postService.checkPostUse(postIds)) {
+            return fail("岗位已被使用,不允许删除");
+        }
+        postService.deleteByPostIds(postIds);
+        return ok();
     }
 
     @Operation(summary = "导出")

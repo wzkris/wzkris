@@ -7,8 +7,8 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
-import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysTenantPackage;
 import com.wzkris.user.domain.vo.SysMenuCheckSelectTreeVO;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
@@ -69,7 +69,7 @@ public class SysTenantPackageController extends BaseController {
     public Result<SysMenuCheckSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
         resp.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
-        resp.setMenus(menuService.listMenuSelectTree(new SysMenu(CommonConstants.STATUS_ENABLE)));
+        resp.setMenus(menuService.listMenuSelectTree(SysUtil.getUserId()));
         return ok(resp);
     }
 

@@ -121,13 +121,13 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateDeptScope(SysRoleDTO roleDTO) {
+    public void updateDeptScope(SysRoleDTO roleDTO) {
         // 删除角色与部门关联
         roleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
         // 新增角色和部门信息（数据权限）
         this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
         // 修改角色信息
-        return roleMapper.updateById(roleDTO);
+        roleMapper.updateById(roleDTO);
     }
 
     /**
@@ -163,18 +163,18 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteByIds(List<Long> roleIds) {
+    public void deleteByIds(List<Long> roleIds) {
         // 删除角色与菜单关联
         roleMenuMapper.deleteByRoleIds(roleIds);
         // 删除角色与部门关联
         roleDeptMapper.deleteByRoleIds(roleIds);
         // 删除角色与用户关联
         userRoleMapper.deleteByRoleIds(roleIds);
-        return roleMapper.deleteByIds(roleIds);
+        roleMapper.deleteByIds(roleIds);
     }
 
     @Override
-    public void checkUserUse(List<Long> roleIds) {
+    public void checkRoleUse(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
         if (userRoleMapper.countByRoleIds(roleIds) > 0) {

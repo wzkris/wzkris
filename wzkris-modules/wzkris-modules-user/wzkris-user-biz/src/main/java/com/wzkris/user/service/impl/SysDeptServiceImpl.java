@@ -10,6 +10,7 @@ import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.SysDeptMapper;
+import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.service.SysDeptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysDeptServiceImpl implements SysDeptService {
     private final SysDeptMapper deptMapper;
+    private final SysRoleDeptMapper roleDeptMapper;
 
     @Override
     public List<SelectTreeVO> listSelectTree(String deptName) {
@@ -82,7 +84,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public int insertDept(SysDept dept) {
+    public void insertDept(SysDept dept) {
         if (StringUtil.isNotNull(dept.getParentId()) && dept.getParentId() != 0) {
             SysDept info = deptMapper.selectById(dept.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点
@@ -91,12 +93,12 @@ public class SysDeptServiceImpl implements SysDeptService {
             }
             dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
         }
-        return deptMapper.insert(dept);
+        deptMapper.insert(dept);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateDept(SysDept dept) {
+    public void updateDept(SysDept dept) {
         SysDept parentDept = deptMapper.selectById(dept.getParentId());
         SysDept curDept = deptMapper.selectById(dept.getDeptId());
         if (StringUtil.isNotNull(parentDept) && StringUtil.isNotNull(curDept)) {
@@ -109,7 +111,13 @@ public class SysDeptServiceImpl implements SysDeptService {
             dept.setParentId(null);
             dept.setAncestors(null);
         }
-        return deptMapper.updateById(dept);
+        deptMapper.updateById(dept);
+    }
+
+    @Override
+    public void deleteById(Long deptId) {
+        deptMapper.deleteById(deptId);
+        roleDeptMapper.deleteByDeptId(deptId);
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -9,7 +8,6 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
-import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserRole;
@@ -61,7 +59,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ps.hasPerms('sys_role:list')")
     public Result<Page<SysRole>> listPage(SysRoleQueryReq req) {
         startPage();
-        List<SysRole> list = roleMapper.selectList(this.buildQueryWrapper(req));
+        List<SysRole> list = roleMapper.selectListInScope(this.buildQueryWrapper(req));
         return getDataTable(list);
     }
 
@@ -88,7 +86,7 @@ public class SysRoleController extends BaseController {
         SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
         resp.setCheckedKeys(roleId == null ? Collections.emptyList() :
                 roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        resp.setMenus(menuService.listMenuSelectTree(new SysMenu(CommonConstants.STATUS_ENABLE)));
+        resp.setMenus(menuService.listMenuSelectTree(SysUtil.getUserId()));
         return ok(resp);
     }
 
@@ -134,7 +132,8 @@ public class SysRoleController extends BaseController {
     public Result<Void> dataScope(@RequestBody SysRoleDTO roleDTO) {
         // 权限校验
         roleService.checkDataScopes(roleDTO.getRoleId());
-        return toRes(roleService.updateDeptScope(roleDTO));
+        roleService.updateDeptScope(roleDTO);
+        return ok();
     }
 
     @Operation(summary = "删除角色")
@@ -144,8 +143,9 @@ public class SysRoleController extends BaseController {
     public Result<Void> remove(@RequestBody @NotEmpty(message = "[roleIds] {validate.notnull}") List<Long> roleIds) {
         // 权限校验
         roleService.checkDataScopes(roleIds);
-        roleService.checkUserUse(roleIds);
-        return toRes(roleService.deleteByIds(roleIds));
+        roleService.checkRoleUse(roleIds);
+        roleService.deleteByIds(roleIds);
+        return ok();
     }
 
     @Operation(summary = "查询已授权的用户列表")

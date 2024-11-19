@@ -68,24 +68,22 @@ public interface SysRoleService {
      * 修改部门数据权限信息
      *
      * @param roleDTO 角色信息
-     * @return 结果
      */
-    int updateDeptScope(SysRoleDTO roleDTO);
+    void updateDeptScope(SysRoleDTO roleDTO);
 
     /**
      * 批量删除角色信息
      *
      * @param roleIds 需要删除的角色ID
-     * @return 结果
      */
-    int deleteByIds(List<Long> roleIds);
+    void deleteByIds(List<Long> roleIds);
 
     /**
      * 校验角色是否被用户关联
      *
      * @param roleIds 角色组
      */
-    void checkUserUse(List<Long> roleIds);
+    void checkRoleUse(List<Long> roleIds);
 
     /**
      * 校验是否有角色的数据权限

@@ -41,8 +41,12 @@ public interface SysPostService {
      * 批量删除岗位信息
      *
      * @param postIds 需要删除的岗位ID
-     * @return 结果
      */
-    int deleteByPostIds(List<Long> postIds);
+    void deleteByPostIds(List<Long> postIds);
+
+    /**
+     * 校验岗位是否被用户关联
+     */
+    boolean checkPostUse(List<Long> postIds);
 
 }

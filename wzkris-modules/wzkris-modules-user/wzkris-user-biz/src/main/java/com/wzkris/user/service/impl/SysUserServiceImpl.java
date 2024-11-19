@@ -2,6 +2,7 @@ package com.wzkris.user.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.domain.SysUser;
@@ -144,6 +145,9 @@ public class SysUserServiceImpl implements SysUserService {
     public void checkDataScopes(List<Long> userIds) {
         userIds = userIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(userIds)) {
+            if (userIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
+                throw new AccessDeniedException("无法访问超级管理员数据");
+            }
             if (userMapper.checkDataScopes(userIds) != userIds.size()) {
                 throw new AccessDeniedException("当前用户没有权限访问数据");
             }

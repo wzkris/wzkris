@@ -28,18 +28,19 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
     }
 
     /**
-     * 根据部门ID查询名称
-     */
-    @Select("SELECT dept_name FROM sys_dept WHERE dept_id = #{deptId}")
-    String selectDeptNameById(Long deptId);
-
-    /**
      * 根据条件查询所有子部门（包括自身）
      *
      * @param queryReq 查询条件
      * @return 部门列表
      */
+    @DeptScope
     List<SysDept> listChildren(SysDeptQueryReq queryReq);
+
+    /**
+     * 根据部门ID查询名称
+     */
+    @Select("SELECT dept_name FROM sys_dept WHERE dept_id = #{deptId}")
+    String selectDeptNameById(Long deptId);
 
     /**
      * 根据ID查询所有子部门id（包括自身）
@@ -83,7 +84,6 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * @param deptIds 待操作的部门id
      * @return 影响行数，可访问数量
      */
-    @DeptScope
     @Select("""
             <script>
                 SELECT COUNT(*) FROM sys_dept WHERE dept_id IN
@@ -92,5 +92,6 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
                     </foreach>
             </script>
             """)
+    @DeptScope
     int checkDataScopes(@Param("deptIds") List<Long> deptIds);
 }

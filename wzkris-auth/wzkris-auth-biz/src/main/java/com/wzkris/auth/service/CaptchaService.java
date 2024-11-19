@@ -116,7 +116,6 @@ public class CaptchaService {
      * 发送短信验证码
      *
      * @param phoneNumber 手机号
-     * @return 验证码id
      */
     public void sendSmsCode(String phoneNumber) {
         String smsKey = SMS_CODE_PREFIX + phoneNumber;

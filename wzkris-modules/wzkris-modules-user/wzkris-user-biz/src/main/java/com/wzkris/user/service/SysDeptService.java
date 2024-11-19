@@ -33,17 +33,22 @@ public interface SysDeptService {
      * 新增保存部门信息
      *
      * @param dept 部门信息
-     * @return 结果
      */
-    int insertDept(SysDept dept);
+    void insertDept(SysDept dept);
 
     /**
      * 修改保存部门信息
      *
      * @param dept 部门信息
-     * @return 结果
      */
-    int updateDept(SysDept dept);
+    void updateDept(SysDept dept);
+
+    /**
+     * 删除部门信息
+     *
+     * @param deptId 部门ID
+     */
+    void deleteById(Long deptId);
 
     /**
      * 查询部门是否存在用户

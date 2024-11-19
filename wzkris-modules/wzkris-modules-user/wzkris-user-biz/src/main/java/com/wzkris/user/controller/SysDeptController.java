@@ -10,7 +10,6 @@ import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
-import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.service.SysDeptService;
 import com.wzkris.user.service.SysTenantService;
@@ -69,12 +68,13 @@ public class SysDeptController extends BaseController {
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('dept:add')")
     public Result<?> add(@Validated @RequestBody SysDept dept) {
+        // 校验权限
+        deptService.checkDataScopes(dept.getParentId());
         if (!tenantService.checkDeptLimit(SysUtil.getTenantId())) {
             return fail("部门数量已达上限，请联系管理员");
         }
-        // 校验权限
-        deptService.checkDataScopes(dept.getParentId());
-        return toRes(deptService.insertDept(dept));
+        deptService.insertDept(dept);
+        return ok();
     }
 
     @Operation(summary = "修改部门")
@@ -91,7 +91,8 @@ public class SysDeptController extends BaseController {
                 && deptMapper.listNormalChildrenById(dept.getDeptId()) > 0) {
             return fail("该部门包含未停用的子部门");
         }
-        return toRes(deptService.updateDept(dept));
+        deptService.updateDept(dept);
+        return ok();
     }
 
     @Operation(summary = "删除部门")
@@ -106,13 +107,8 @@ public class SysDeptController extends BaseController {
             return fail("部门存在用户,不允许删除");
         }
         deptService.checkDataScopes(deptId);
-        return toRes(deptMapper.deleteById(deptId));
+        deptService.deleteById(deptId);
+        return ok();
     }
 
-    @Operation(summary = "部门树列表")
-    @GetMapping("/tree")
-    @PreAuthorize("@ps.hasPerms('dept:list')")
-    public Result<List<SelectTreeVO>> deptTree(String deptName) {
-        return ok(deptService.listSelectTree(deptName));
-    }
 }

@@ -68,6 +68,15 @@ public interface SysRoleMenuMapper {
     int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
 
     /**
+     * 通过菜单ID删除角色和菜单关联
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    @Delete("DELETE FROM sys_role_menu WHERE menu_id = #{menuId}")
+    int deleteByMenuId(Long menuId);
+
+    /**
      * 批量新增角色菜单信息
      *
      * @param sysRoleMenuList 角色菜单列表
@@ -82,4 +91,5 @@ public interface SysRoleMenuMapper {
             </script>
             """)
     int insertBatch(List<SysRoleMenu> sysRoleMenuList);
+
 }

@@ -47,10 +47,6 @@ public class SysPermissionServiceImpl implements SysPermissionService {
      * 部门及以下数据权限
      */
     public static final String DATA_SCOPE_DEPT_AND_CHILD = "4";
-    /**
-     * 仅本人数据权限
-     */
-    public static final String DATA_SCOPE_SELF = "5";
 
     private final SysRoleService roleService;
     private final SysMenuService menuService;
@@ -106,15 +102,15 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private List<Long> listDeptScope(List<SysRole> roles, Long deptId) {
         // 若部门id为空或者无角色，则代表不存在数据权限
         if (deptId == null || CollectionUtils.isEmpty(roles)) {
-            return Collections.emptyList();
+            return Collections.singletonList(-999L);
         }
         Set<Long> deptIds = new HashSet<>();
         // 循环每一个角色，拼接所有可访问的部门id
-        Map<String, List<SysRole>> datascopeMap = roles
+        Map<String, List<Long>> datascopeMap = roles
                 .stream()
                 // 根据权限作用域分组
-                .collect(Collectors.groupingBy(SysRole::getDataScope));
-        for (Map.Entry<String, List<SysRole>> entry : datascopeMap.entrySet()) {
+                .collect(Collectors.groupingBy(SysRole::getDataScope, Collectors.mapping(SysRole::getRoleId, Collectors.toList())));
+        for (Map.Entry<String, List<Long>> entry : datascopeMap.entrySet()) {
             if (StringUtil.equals(DATA_SCOPE_ALL, entry.getKey())) {
                 deptIds = deptMapper.selectList(Wrappers.lambdaQuery(SysDept.class).select(SysDept::getDeptId))
                         .stream()
@@ -124,9 +120,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             }
             else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
-                List<Long> roleIds = entry.getValue().stream().map(SysRole::getRoleId).collect(Collectors.toList());
-                List<Long> addDeptIds = roleDeptMapper.listDeptIdByRoleIds(roleIds);
-                deptIds.addAll(addDeptIds);
+                deptIds.addAll(roleDeptMapper.listDeptIdByRoleIds(entry.getValue()));
             }
             else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
                 // 部门自身数据权限
@@ -134,10 +128,9 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             }
             else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
                 // 部门及以下数据权限
-                List<Long> addDeptIds = deptMapper.listChildrenIdById(deptId);
-                deptIds.addAll(addDeptIds);
+                deptIds.addAll(deptMapper.listChildrenIdById(deptId));
             }
-            else if (StringUtil.equals(DATA_SCOPE_SELF, entry.getKey())) {
+            else {
                 // 本人数据权限
                 deptIds.add(-999L);
             }

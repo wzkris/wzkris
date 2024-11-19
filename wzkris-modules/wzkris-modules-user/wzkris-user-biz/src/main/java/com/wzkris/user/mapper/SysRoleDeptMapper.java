@@ -71,6 +71,15 @@ public interface SysRoleDeptMapper {
     int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
 
     /**
+     * 通过部门ID删除角色和部门关联
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    @Delete("DELETE FROM sys_role_dept WHERE dept_id = #{deptId}")
+    int deleteByDeptId(Long deptId);
+
+    /**
      * 查询部门使用数量
      *
      * @param deptId 部门ID

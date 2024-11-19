@@ -17,6 +17,7 @@ import com.wzkris.user.domain.export.SysUserExport;
 import com.wzkris.user.domain.req.ResetPwdReq;
 import com.wzkris.user.domain.req.SysUser2RolesReq;
 import com.wzkris.user.domain.req.SysUserQueryReq;
+import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.domain.vo.SysUserGrantVO;
 import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.mapper.SysUserMapper;
@@ -78,6 +79,13 @@ public class SysUserController extends BaseController {
                 .between(queryReq.getParams().get("beginTime") != null && queryReq.getParams().get("endTime") != null,
                         "u.create_id", queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
                 .orderByDesc("u.user_id");
+    }
+
+    @Operation(summary = "部门选择树")
+    @GetMapping("/dept_tree")
+    @PreAuthorize("@ps.hasPerms('sys_user:list')")
+    public Result<List<SelectTreeVO>> deptTree(String deptName) {
+        return ok(deptService.listSelectTree(deptName));
     }
 
     @Operation(summary = "用户详细信息")
@@ -221,4 +229,5 @@ public class SysUserController extends BaseController {
         userService.allocateRoles(req.getUserId(), req.getRoleIds());
         return ok();
     }
+
 }

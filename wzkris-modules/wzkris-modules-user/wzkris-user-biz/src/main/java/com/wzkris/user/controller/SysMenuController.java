@@ -35,7 +35,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('menu:list')")
-    public Result<?> list(SysMenu menu) {
+    public Result<List<SysMenu>> list(SysMenu menu) {
         List<SysMenu> menus = menuMapper.selectList(this.buildQueryWrapper(menu));
         return ok(menus);
     }
@@ -55,7 +55,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
     @PreAuthorize("@ps.hasPerms('menu:query')")
-    public Result<?> getInfo(@PathVariable Long menuId) {
+    public Result<SysMenu> getInfo(@PathVariable Long menuId) {
         return ok(menuMapper.selectById(menuId));
     }
 
@@ -63,7 +63,7 @@ public class SysMenuController extends BaseController {
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('menu:add')")
-    public Result<?> add(@Valid @RequestBody SysMenu menu) {
+    public Result<Void> add(@Valid @RequestBody SysMenu menu) {
         if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
@@ -74,7 +74,7 @@ public class SysMenuController extends BaseController {
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('menu:edit')")
-    public Result<?> edit(@Valid @RequestBody SysMenu menu) {
+    public Result<Void> edit(@Valid @RequestBody SysMenu menu) {
         if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
@@ -88,13 +88,14 @@ public class SysMenuController extends BaseController {
     @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('menu:remove')")
-    public Result<?> remove(@RequestBody Long menuId) {
+    public Result<Void> remove(@RequestBody Long menuId) {
         if (menuService.hasChildByMenuId(menuId)) {
             return fail("存在子菜单,不允许删除");
         }
         if (menuService.checkMenuExistRole(menuId)) {
             return fail("菜单已分配,不允许删除");
         }
-        return toRes(menuMapper.deleteById(menuId));
+        menuService.deleteById(menuId);
+        return ok();
     }
 }

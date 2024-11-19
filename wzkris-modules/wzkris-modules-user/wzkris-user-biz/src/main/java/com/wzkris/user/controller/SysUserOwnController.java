@@ -56,6 +56,7 @@ public class SysUserOwnController extends BaseController {
         userMap.put(SysUser.Fields.nickname, sysUser.getNickname());
         userMap.put(SysUser.Fields.phoneNumber, sysUser.getPhoneNumber());
         userMap.put(SysUser.Fields.email, sysUser.getEmail());
+        userMap.put(SysUser.Fields.gender, sysUser.getGender());
         // 返回的map
         Map<String, Object> res = MapUtil.newHashMap(4);
         res.put("user", userMap);
