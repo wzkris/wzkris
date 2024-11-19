@@ -93,10 +93,19 @@ public class DeviceController extends BaseController {
         return toRes(deviceMapper.updateById(device));
     }
 
+    @Operation(summary = "修改设备状态")
+    @PostMapping("/edit_status")
+    @PreAuthorize("@ps.hasPerms('device:edit')")
+    public Result<?> editStatus(@RequestBody Device device) {
+        Device update = new Device(device.getDeviceId());
+        update.setStatus(device.getStatus());
+        return toRes(deviceMapper.updateById(update));
+    }
+
     @Operation(summary = "删除设备")
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('device:remove')")
-    public Result<?> deleteById(@PathVariable Long deviceId) {
+    public Result<?> deleteById(@RequestBody Long deviceId) {
         return toRes(deviceMapper.deleteById(deviceId));
     }
 

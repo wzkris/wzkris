@@ -3,6 +3,7 @@ package com.wzkris.equipment.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -33,6 +34,7 @@ public class Device extends BaseEntity {
     @Schema(description = "设备名称")
     private String deviceName;
 
+    @NotBlank(message = "[serialNo] {validate.notnull}")
     @Schema(description = "设备号")
     private String serialNo;
 

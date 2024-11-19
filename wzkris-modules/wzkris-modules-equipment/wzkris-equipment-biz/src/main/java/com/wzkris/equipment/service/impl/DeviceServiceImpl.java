@@ -24,7 +24,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public DeviceVO getVOById(Long deviceId) {
-        return deviceMapper.selectVoById(deviceId, DeviceVO.class);
+        return deviceMapper.selectById2VO(deviceId, DeviceVO.class);
     }
 
     @Override

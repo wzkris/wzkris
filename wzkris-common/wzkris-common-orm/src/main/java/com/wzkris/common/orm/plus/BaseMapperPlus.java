@@ -41,7 +41,7 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
     /**
      * 根据 ID 查询
      */
-    default <C> C selectVoById(Serializable id, Class<C> voClass) {
+    default <C> C selectById2VO(Serializable id, Class<C> voClass) {
         T obj = this.selectById(id);
         if (ObjectUtil.isNull(obj)) {
             return null;
@@ -59,7 +59,7 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
     /**
      * 根据 entity 条件,查询一条记录
      */
-    default <C> C selectVoOne(AbstractWrapper<T, ?, ?> wrapper, Class<C> voClass) {
+    default <C> C selectOne2VO(AbstractWrapper<T, ?, ?> wrapper, Class<C> voClass) {
         T obj = this.selectOne(wrapper);
         if (ObjectUtil.isNull(obj)) {
             return null;
