@@ -9,6 +9,7 @@ import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Device;
 import com.wzkris.equipment.domain.req.DeviceQueryReq;
+import com.wzkris.equipment.domain.req.EditStatusReq;
 import com.wzkris.equipment.domain.vo.DeviceVO;
 import com.wzkris.equipment.domain.vo.NetworkVO;
 import com.wzkris.equipment.mapper.DeviceMapper;
@@ -96,9 +97,9 @@ public class DeviceController extends BaseController {
     @Operation(summary = "修改设备状态")
     @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('device:edit')")
-    public Result<?> editStatus(@RequestBody Device device) {
-        Device update = new Device(device.getDeviceId());
-        update.setStatus(device.getStatus());
+    public Result<?> editStatus(@RequestBody EditStatusReq statusReq) {
+        Device update = new Device(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
         return toRes(deviceMapper.updateById(update));
     }
 

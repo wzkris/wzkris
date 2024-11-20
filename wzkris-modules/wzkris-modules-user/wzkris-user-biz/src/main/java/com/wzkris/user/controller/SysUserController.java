@@ -14,6 +14,7 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.export.SysUserExport;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.ResetPwdReq;
 import com.wzkris.user.domain.req.SysUser2RolesReq;
 import com.wzkris.user.domain.req.SysUserQueryReq;
@@ -184,11 +185,11 @@ public class SysUserController extends BaseController {
     @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
-    public Result<Void> editStatus(@RequestBody SysUser user) {
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
-        userService.checkDataScopes(user.getUserId());
-        SysUser update = new SysUser(user.getUserId());
-        update.setStatus(user.getStatus());
+        userService.checkDataScopes(statusReq.getId());
+        SysUser update = new SysUser(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
         return toRes(userMapper.updateById(update));
     }
 

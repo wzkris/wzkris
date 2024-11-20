@@ -12,6 +12,7 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.export.AppUserExport;
 import com.wzkris.user.domain.req.AppUserQueryReq;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,6 +64,17 @@ public class AppUserController extends BaseController {
     @PreAuthorize("@ps.hasPerms('app_user:query')")
     public Result<AppUser> query(@PathVariable Long userId) {
         return ok(appUserMapper.selectById(userId));
+    }
+
+    @Operation(summary = "状态修改")
+    @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @PostMapping("/edit_status")
+    @PreAuthorize("@ps.hasPerms('app_user:edit')")
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
+        // 校验权限
+        AppUser update = new AppUser(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
+        return toRes(appUserMapper.updateById(update));
     }
 
     @Operation(summary = "导出")

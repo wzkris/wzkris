@@ -43,14 +43,14 @@ public class ClassCompiler {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
             // 建立DiagnosticCollector对象, 用于搜集编辑期间的错误信息
-            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
             // 建立用于保存被编译文件名的对象 
             // 每个文件被保存在一个从JavaFileObject继承的类中 
             ClassFileManager fileManager = new ClassFileManager(compiler.getStandardFileManager(diagnostics, null, null));
 
             //設置需要被編譯的源碼
-            List<JavaFileObject> jfiles = new ArrayList<JavaFileObject>();
+            List<JavaFileObject> jfiles = new ArrayList<>();
             jfiles.add(new SourceJavaFileObject(fullClassName, code));
 
             JavaCompiler.CompilationTask task = compiler.getTask(out, fileManager, diagnostics, options, null, jfiles);

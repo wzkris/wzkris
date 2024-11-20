@@ -12,6 +12,7 @@ import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserRole;
 import com.wzkris.user.domain.dto.SysRoleDTO;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.SysRole2UsersReq;
 import com.wzkris.user.domain.req.SysRoleQueryReq;
 import com.wzkris.user.domain.vo.SysDeptCheckSelectTreeVO;
@@ -117,11 +118,11 @@ public class SysRoleController extends BaseController {
     @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('user:edit')")
-    public Result<Void> editStatus(@RequestBody SysRole role) {
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
-        roleService.checkDataScopes(role.getRoleId());
-        SysRole update = new SysRole(role.getRoleId());
-        update.setStatus(role.getStatus());
+        roleService.checkDataScopes(statusReq.getId());
+        SysRole update = new SysRole(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
         return toRes(roleMapper.updateById(update));
     }
 
