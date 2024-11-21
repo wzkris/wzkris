@@ -1,7 +1,7 @@
 package com.wzkris.system.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
-import com.wzkris.system.domain.SysDictType;
+import com.wzkris.system.domain.GlobalDictType;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @author wzkris
  */
 @Repository
-public interface SysDictTypeMapper extends BaseMapperPlus<SysDictType> {
+public interface GlobalDictTypeMapper extends BaseMapperPlus<GlobalDictType> {
 
     /**
      * 根据字典类型查询信息
@@ -20,6 +20,6 @@ public interface SysDictTypeMapper extends BaseMapperPlus<SysDictType> {
      * @return 字典类型
      */
     @Select("SELECT * FROM sys_dict_type WHERE dict_type = #{dictType}")
-    SysDictType selectByType(String dictType);
+    GlobalDictType selectByType(String dictType);
 
 }

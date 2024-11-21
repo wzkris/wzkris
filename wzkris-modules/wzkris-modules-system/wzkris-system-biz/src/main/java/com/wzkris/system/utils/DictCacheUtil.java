@@ -1,7 +1,7 @@
 package com.wzkris.system.utils;
 
 import com.wzkris.common.redis.util.RedisUtil;
-import com.wzkris.system.domain.SysDictData;
+import com.wzkris.system.domain.GlobalDictData;
 
 import java.util.List;
 
@@ -12,16 +12,16 @@ import java.util.List;
  */
 public class DictCacheUtil {
 
-    private static final String dict_key = "sys_dict";
+    public static final String DICT_KEY = "global_dict";
 
     /**
      * 设置字典缓存
      *
-     * @param key         参数键
-     * @param sysDictData 字典数据列表
+     * @param key      参数键
+     * @param dictData 字典数据列表
      */
-    public static void setDictCache(String key, List<SysDictData> sysDictData) {
-        RedisUtil.setMapValue(dict_key, key, sysDictData);
+    public static void setDictCache(String key, List<GlobalDictData> dictData) {
+        RedisUtil.setMapValue(DICT_KEY, key, dictData);
     }
 
     /**
@@ -30,9 +30,8 @@ public class DictCacheUtil {
      * @param key 参数键
      * @return dictDatas 字典数据列表
      */
-    @SuppressWarnings("unchecked")
     public static <T> T getDictCache(String key) {
-        return (T) RedisUtil.getMapValue(dict_key, key);
+        return RedisUtil.getMapValue(DICT_KEY, key);
     }
 
     /**
@@ -41,13 +40,13 @@ public class DictCacheUtil {
      * @param key 字典键
      */
     public static void removeDictCache(String key) {
-        RedisUtil.delMapValue(dict_key, key);
+        RedisUtil.delMapValue(DICT_KEY, key);
     }
 
     /**
      * 清空字典缓存
      */
-    public static void clearDictCache() {
-        RedisUtil.delObj(dict_key);
+    public static void clearAll() {
+        RedisUtil.delObj(DICT_KEY);
     }
 }

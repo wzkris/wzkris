@@ -1,11 +1,11 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.map.MapUtil;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.utils.AppUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.domain.dto.AppUserDTO;
 import com.wzkris.user.domain.AppUser;
+import com.wzkris.user.domain.vo.AppUserAccountVO;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,8 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 用户个人信息
@@ -31,19 +29,27 @@ public class AppUserOwnController extends BaseController {
     private final AppUserMapper appUserMapper;
     private final AppUserService appUserService;
 
+    @Operation(summary = "新用户注册")
+    @PostMapping("register")
+    public Result<Void> register() {
+
+        return ok();
+    }
+
     @Operation(summary = "个人信息")
     @GetMapping
-    public Result<?> info() {
+    public Result<AppUserAccountVO> accountVO() {
         AppUser appUser = appUserMapper.selectById(AppUtil.getUserId());
-        Map<String, Object> userMap = MapUtil.newHashMap(4);
-        userMap.put(AppUser.Fields.nickname, appUser.getNickname());
-        userMap.put(AppUser.Fields.phoneNumber, appUser.getPhoneNumber());
-        userMap.put(AppUser.Fields.gender, appUser.getGender());
-        userMap.put(AppUser.Fields.avatar, appUser.getAvatar());
-        // 返回的map
-        Map<String, Object> res = MapUtil.newHashMap(4);
-        res.put("user", userMap);
-        return ok(res);
+
+        AppUserAccountVO accountVO = new AppUserAccountVO();
+        AppUserAccountVO.UserInfo userInfo = new AppUserAccountVO.UserInfo();
+        userInfo.setNickname(appUser.getNickname());
+        userInfo.setPhoneNumber(appUser.getPhoneNumber());
+        userInfo.setGender(appUser.getGender());
+        userInfo.setAvatar(appUser.getAvatar());
+
+        accountVO.setUser(userInfo);
+        return ok(accountVO);
     }
 
     @Operation(summary = "修改昵称、性别")

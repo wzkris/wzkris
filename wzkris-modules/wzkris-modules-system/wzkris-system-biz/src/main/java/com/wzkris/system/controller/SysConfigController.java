@@ -1,20 +1,25 @@
 package com.wzkris.system.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysConfig;
+import com.wzkris.system.domain.req.SysConfigQueryReq;
 import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
+import com.wzkris.system.utils.ConfigCacheUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,78 +36,85 @@ public class SysConfigController extends BaseController {
     private final SysConfigMapper configMapper;
     private final SysConfigService configService;
 
-    /**
-     * 获取参数配置列表
-     */
+    @Operation(summary = "分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('config:list')")
-    public Result<Page<SysConfig>> list(SysConfig config) {
+    public Result<Page<SysConfig>> list(SysConfigQueryReq queryReq) {
         startPage();
-        List<SysConfig> list = configService.list(config);
+        List<SysConfig> list = configMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
     }
 
-    /**
-     * 根据参数编号获取详细信息
-     */
+    private LambdaQueryWrapper<SysConfig> buildQueryWrapper(SysConfigQueryReq queryReq) {
+        return new LambdaQueryWrapper<SysConfig>()
+                .like(StringUtil.isNotNull(queryReq.getConfigKey()), SysConfig::getConfigKey, queryReq.getConfigKey())
+                .like(StringUtil.isNotNull(queryReq.getConfigName()), SysConfig::getConfigName, queryReq.getConfigName())
+                .like(StringUtil.isNotNull(queryReq.getConfigType()), SysConfig::getConfigType, queryReq.getConfigType())
+                .orderByDesc(SysConfig::getConfigId);
+    }
+
+    @Operation(summary = "详情")
     @GetMapping("/{configId}")
     public Result<?> getInfo(@PathVariable Long configId) {
         return ok(configMapper.selectById(configId));
     }
 
-    /**
-     * 根据参数键名查询参数值
-     */
+    @Operation(summary = "键名查询参数值")
     @GetMapping("/configKey/{configKey}")
     public Result<String> getConfigKey(@PathVariable String configKey) {
-        return Result.ok(configService.getConfigValueByKey(configKey));
+        String configValue = ConfigCacheUtil.getConfigValueByKey(configKey);
+        if (StringUtil.isNotEmpty(configValue)) {
+            return ok(configValue);
+        }
+        return ok(configMapper.selectValueByKey(configKey));
     }
 
-    /**
-     * 新增参数配置
-     */
+    @Operation(summary = "添加参数")
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('config:add')")
-    public Result<?> add(@Validated @RequestBody SysConfig config) {
+    public Result<Void> add(@Validated @RequestBody SysConfig config) {
         if (configService.checkConfigKeyUnique(config)) {
             return fail("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        return toRes(configService.insertConfig(config));
-    }
-
-    /**
-     * 修改参数配置
-     */
-    @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
-    @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('config:edit')")
-    public Result<?> edit(@Validated @RequestBody SysConfig config) {
-        if (configService.checkConfigKeyUnique(config)) {
-            return fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
-        }
-        return toRes(configService.updateConfig(config));
-    }
-
-    /**
-     * 删除参数配置
-     */
-    @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
-    @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('config:remove')")
-    public Result<?> remove(@RequestBody Long[] configIds) {
-        List<Long> list = Arrays.asList(configIds);
-        configService.deleteConfigByIds(list);
+        configService.insertConfig(config);
         return ok();
     }
 
-    /**
-     * 刷新参数缓存
-     */
+    @Operation(summary = "修改参数")
+    @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
+    @PostMapping("/edit")
+    @PreAuthorize("@ps.hasPerms('config:edit')")
+    public Result<Void> edit(@Validated @RequestBody SysConfig config) {
+        if (configService.checkConfigKeyUnique(config)) {
+            return fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
+        }
+        configService.updateConfig(config);
+        return ok();
+    }
+
+    @Operation(summary = "删除参数")
+    @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
+    @PostMapping("/remove")
+    @PreAuthorize("@ps.hasPerms('config:remove')")
+    public Result<Void> remove(@RequestBody List<Long> configIds) {
+        List<SysConfig> configs = configMapper.selectByIds(configIds);
+
+        for (SysConfig config : configs) {
+            if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
+                return fail(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
+            }
+        }
+        configService.deleteByIds(configIds);
+        return ok();
+    }
+
+    @Operation(summary = "刷新参数缓存")
     @PostMapping("/refresh_cache")
     @PreAuthorize("@ps.hasPerms('config:remove')")
-    public Result<?> refreshCache() {
-        configService.resetConfigCache();
+    public Result<Void> refreshCache() {
+        ConfigCacheUtil.clearAll();
+        configService.loadingConfigCache();
         return ok();
     }
 }

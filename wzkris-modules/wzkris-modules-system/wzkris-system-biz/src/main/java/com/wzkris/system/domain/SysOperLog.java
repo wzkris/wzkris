@@ -1,8 +1,6 @@
 package com.wzkris.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wzkris.system.api.domain.OperLogDTO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,8 +9,6 @@ import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 操作日志记录表 sys_oper_log
@@ -75,14 +71,4 @@ public class SysOperLog implements Serializable {
     @Schema(description = "操作时间")
     private Long operTime;
 
-    @JsonIgnore
-    @TableField(exist = false)
-    private Map<String, Object> params;
-
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(2);
-        }
-        return params;
-    }
 }

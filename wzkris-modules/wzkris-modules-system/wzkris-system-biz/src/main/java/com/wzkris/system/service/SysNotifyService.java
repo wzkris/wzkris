@@ -1,10 +1,10 @@
 package com.wzkris.system.service;
 
 /**
- * 操作日志 服务层
+ * 通知公告 服务层
  *
  * @author wzkris
  */
-public interface SysOperLogService {
+public interface SysNotifyService {
 
 }

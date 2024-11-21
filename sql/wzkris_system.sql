@@ -11,14 +11,131 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 20/11/2024 14:34:44
+ Date: 21/11/2024 13:22:39
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+
 CREATE DATABASE IF NOT EXISTS wzkris_system;
 USE wzkris_system;
+-- ----------------------------
+-- Table structure for global_dict_data
+-- ----------------------------
+DROP TABLE IF EXISTS `global_dict_data`;
+CREATE TABLE `global_dict_data`  (
+  `data_id` bigint NOT NULL COMMENT '字典编码',
+  `dict_sort` int NOT NULL DEFAULT 0 COMMENT '字典排序',
+  `dict_label` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典标签',
+  `dict_value` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典键值',
+  `dict_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型',
+  `css_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
+  `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '表格回显样式',
+  `is_default` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  `create_id` bigint NOT NULL COMMENT '创建者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
+  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  PRIMARY KEY (`data_id`) USING BTREE,
+  INDEX `idx_dict_type`(`dict_type` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of global_dict_data
+-- ----------------------------
+INSERT INTO `global_dict_data` VALUES (1, 1, '男', '0', 'user_sex', '', '', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (2, 2, '女', '1', 'user_sex', '', '', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (3, 3, '未知', '2', 'user_sex', '', '', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (4, 1, '显示', '1', 'menu_visible', '', 'primary', 'Y', 1713334134616, 1, 20230531110000, NULL);
+INSERT INTO `global_dict_data` VALUES (5, 2, '隐藏', '0', 'menu_visible', '', 'danger', 'N', 1713334134616, 1, 20230531110005, NULL);
+INSERT INTO `global_dict_data` VALUES (6, 1, '正常', '0', 'common_disable', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (7, 2, '停用', '1', 'common_disable', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (8, 1, '正常', '0', 'sys_job_status', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (9, 2, '暂停', '1', 'sys_job_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (10, 1, '默认', 'DEFAULT', 'sys_job_group', '', '', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (11, 2, '系统', 'SYSTEM', 'sys_job_group', '', '', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (12, 1, '是', 'Y', 'sys_yes_no', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (13, 2, '否', 'N', 'sys_yes_no', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (14, 1, '通知', '1', 'notify_type', '', 'warning', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (15, 2, '公告', '2', 'notify_type', '', 'success', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (16, 1, '正常', '0', 'notify_status', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (17, 2, '关闭', '1', 'notify_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (18, 0, '其他', '0', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, 20240412103337, 1);
+INSERT INTO `global_dict_data` VALUES (19, 1, '新增', '1', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (20, 2, '修改', '2', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (21, 3, '删除', '3', 'sys_oper_type', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (22, 4, '授权', '4', 'sys_oper_type', '', 'primary', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (23, 5, '导出', '5', 'sys_oper_type', '', 'warning', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (24, 6, '导入', '6', 'sys_oper_type', '', 'warning', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (28, 1, '成功', '0', 'sys_oper_status', '', 'primary', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (29, 2, '失败', '1', 'sys_oper_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (30, 0, '密码模式', 'password', 'authorization_grant_types', NULL, 'primary', 'N', 1713334134616, 1, 1724138711360, 1);
+INSERT INTO `global_dict_data` VALUES (31, 0, '客户端模式', 'client_credentials', 'authorization_grant_types', NULL, 'primary', 'N', 1713334134616, 1, 1724138730253, 1);
+INSERT INTO `global_dict_data` VALUES (32, 0, '授权码模式', 'authorization_code', 'authorization_grant_types', NULL, 'primary', 'N', 1713334134616, 1, 1724138742722, 1);
+INSERT INTO `global_dict_data` VALUES (33, 0, '在线', '1', 'conn_status', NULL, 'success', 'N', 1713334134616, 1, 1714114284613, 1);
+INSERT INTO `global_dict_data` VALUES (34, 0, '离线', '0', 'conn_status', NULL, 'info', 'N', 1713334134616, 1, 1714114287571, 1);
+INSERT INTO `global_dict_data` VALUES (35, 1, '故障', '2', 'conn_status', NULL, 'danger', 'N', 1713334134616, 1, 1714114300372, 1);
+INSERT INTO `global_dict_data` VALUES (36, 2, '检修', '3', 'conn_status', NULL, 'warning', 'N', 1713334134616, 1, 1714114303578, 1);
+INSERT INTO `global_dict_data` VALUES (37, 0, '未认证', 'NO', 'pay_certification_status', NULL, 'info', 'N', 1713334134616, 1, 20230206172127, NULL);
+INSERT INTO `global_dict_data` VALUES (38, 0, '微信支付', 'WX', 'pay_certification_status', NULL, 'success', 'N', 1713334134616, 1, 20230206172134, NULL);
+INSERT INTO `global_dict_data` VALUES (39, 0, '支付宝', 'ALI', 'pay_certification_status', NULL, 'primary', 'N', 1713334134616, 1, 20230206172147, NULL);
+INSERT INTO `global_dict_data` VALUES (41, 0, '全部数据权限', '1', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (42, 0, '自定数据权限', '2', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (43, 0, '本部门数据权限', '3', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (44, 0, '本部门及以下数据权限', '4', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (45, 0, '支付成功', 'SUCCESS', 'pay_status', NULL, 'success', 'N', 1713334134616, 1, 20231201153601, NULL);
+INSERT INTO `global_dict_data` VALUES (46, 0, '订单关闭', 'CLOSED', 'pay_status', NULL, 'info', 'N', 1713334134616, 1, 20231201153606, NULL);
+INSERT INTO `global_dict_data` VALUES (49, 0, '未支付', 'NOTPAY', 'pay_status', NULL, 'primary', 'N', 1713334134616, 1, 20231201153556, NULL);
+INSERT INTO `global_dict_data` VALUES (50, 0, '支付异常', 'ERROR', 'pay_status', NULL, 'danger', 'N', 1713334134616, 1, 20231201153755, NULL);
+INSERT INTO `global_dict_data` VALUES (51, 0, '钱包支付', 'WALLET', 'pay_type', NULL, 'info', 'Y', 1713334134616, 1, 20231201154027, NULL);
+INSERT INTO `global_dict_data` VALUES (52, 0, '微信支付', 'WECHAT', 'pay_type', NULL, 'success', 'N', 1713334134616, 1, 20231201154033, NULL);
+INSERT INTO `global_dict_data` VALUES (53, 0, '支付宝', 'ZFB', 'pay_type', NULL, 'primary', 'N', 1713334134616, 1, 20231201154038, NULL);
+INSERT INTO `global_dict_data` VALUES (54, 0, 'mqtt', 'MQTT', 'protocol_type', NULL, 'primary', 'N', 1713334134616, 1, 1732083154010, 1);
+INSERT INTO `global_dict_data` VALUES (55, 0, 'http', 'HTTP', 'protocol_type', NULL, 'primary', 'N', 1713334134616, 1, 1732083038284, 1);
+INSERT INTO `global_dict_data` VALUES (56, 0, '刷新模式', 'refresh_token', 'authorization_grant_types', NULL, 'primary', 'N', 1724138765564, 1, 1724138765564, 1);
+INSERT INTO `global_dict_data` VALUES (57, 1, '短信模式', 'sms', 'authorization_grant_types', NULL, 'primary', 'N', 1724138776721, 1, 1724139440459, 1);
+INSERT INTO `global_dict_data` VALUES (1859117521415385089, 0, 'java', 'java', 'protocol_language', NULL, 'primary', 'Y', 1732083132495, 1, 1732083487053, 1);
+INSERT INTO `global_dict_data` VALUES (1859117545696210946, 0, 'lua', 'lua', 'protocol_language', NULL, 'primary', 'N', 1732083138284, 1, 1732083489674, 1);
+
+-- ----------------------------
+-- Table structure for global_dict_type
+-- ----------------------------
+DROP TABLE IF EXISTS `global_dict_type`;
+CREATE TABLE `global_dict_type`  (
+  `type_id` bigint NOT NULL COMMENT '字典主键',
+  `dict_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典名称',
+  `dict_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  `create_id` bigint NOT NULL COMMENT '创建者',
+  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
+  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  PRIMARY KEY (`type_id`) USING BTREE,
+  UNIQUE INDEX `uk_dict_type`(`dict_type` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of global_dict_type
+-- ----------------------------
+INSERT INTO `global_dict_type` VALUES (1, '用户性别', 'user_sex', 1713334134616, 1, 1732084160647, 1);
+INSERT INTO `global_dict_type` VALUES (2, '菜单可见状态', 'menu_visible', 1713334134616, 1, 1732084210201, 1);
+INSERT INTO `global_dict_type` VALUES (3, '是否禁用', 'common_disable', 1713334134616, 1, 1732084443416, 1);
+INSERT INTO `global_dict_type` VALUES (4, '任务状态', 'sys_job_status', 1713334134616, 1, NULL, 1);
+INSERT INTO `global_dict_type` VALUES (5, '任务分组', 'sys_job_group', 1713334134616, 1, NULL, 1);
+INSERT INTO `global_dict_type` VALUES (6, '系统是否', 'sys_yes_no', 1713334134616, 1, NULL, 1);
+INSERT INTO `global_dict_type` VALUES (7, '通知类型', 'notify_type', 1713334134616, 1, 1732084382928, 1);
+INSERT INTO `global_dict_type` VALUES (8, '通知状态', 'notify_status', 1713334134616, 1, 1732084358017, 1);
+INSERT INTO `global_dict_type` VALUES (9, '操作类型', 'sys_oper_type', 1713334134616, 1, 1732083989997, 1);
+INSERT INTO `global_dict_type` VALUES (10, '操作状态', 'sys_oper_status', 1713334134616, 1, 1732083226583, 1);
+INSERT INTO `global_dict_type` VALUES (11, '授权类型', 'authorization_grant_types', 1713334134616, 1, 1724138651758, 1);
+INSERT INTO `global_dict_type` VALUES (12, '设备连接状态', 'conn_status', 1713334134616, 1, 1732082771289, 1);
+INSERT INTO `global_dict_type` VALUES (13, '支付认证状态', 'pay_certification_status', 1713334134616, 1, NULL, 1);
+INSERT INTO `global_dict_type` VALUES (14, '数据权限', 'data_scope', 1713334134616, 1, 1732084039645, 1);
+INSERT INTO `global_dict_type` VALUES (15, '支付状态', 'pay_status', 1713334134616, 1, 1732082605137, 1);
+INSERT INTO `global_dict_type` VALUES (16, '支付方式', 'pay_type', 1713334134616, 1, 1732084044525, 1);
+INSERT INTO `global_dict_type` VALUES (17, '协议类型', 'protocol_type', 1713334134616, 1, 1732083004677, 1);
+INSERT INTO `global_dict_type` VALUES (18, '协议语言', 'protocol_language', 1732083121999, 1, 1732083121999, 1);
+
 -- ----------------------------
 -- Table structure for sys_config
 -- ----------------------------
@@ -26,8 +143,8 @@ DROP TABLE IF EXISTS `sys_config`;
 CREATE TABLE `sys_config`  (
   `config_id` bigint NOT NULL COMMENT '参数主键',
   `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数名称',
-  `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数键名',
-  `config_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '参数键值',
+  `config_key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数键名',
+  `config_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数键值',
   `config_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Y' COMMENT '系统内置（Y是 N否）',
   `create_at` bigint NOT NULL COMMENT '创建时间',
   `create_id` bigint NOT NULL COMMENT '创建者',
@@ -43,123 +160,7 @@ CREATE TABLE `sys_config`  (
 INSERT INTO `sys_config` VALUES (1, '主框架页-默认皮肤样式名称', 'sys.index.skinName', 'skin-yellow', 'Y', 1713334134616, 1, 1722905883482, 1);
 INSERT INTO `sys_config` VALUES (2, '用户管理-账号初始密码', 'sys.user.initPassword', '123456', 'Y', 1713334134616, 1, 1719036436632, 1);
 INSERT INTO `sys_config` VALUES (3, '主框架页-侧边栏主题', 'sys.index.sideTheme', 'theme-light', 'Y', 1713334134616, 1, 1719036434181, 1);
-INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能', 'sys.account.registerUser', 'false', 'Y', 1713334134616, 1, 1719036435430, 1);
-
--- ----------------------------
--- Table structure for sys_dict_data
--- ----------------------------
-DROP TABLE IF EXISTS `sys_dict_data`;
-CREATE TABLE `sys_dict_data`  (
-  `data_id` bigint NOT NULL COMMENT '字典编码',
-  `dict_sort` int NULL DEFAULT NULL COMMENT '字典排序',
-  `dict_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典标签',
-  `dict_value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典键值',
-  `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典类型',
-  `css_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
-  `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '表格回显样式',
-  `is_default` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '是否默认（Y是 N否）',
-  `create_at` bigint NOT NULL COMMENT '创建时间',
-  `create_id` bigint NOT NULL COMMENT '创建者',
-  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
-  PRIMARY KEY (`data_id`) USING BTREE,
-  INDEX `idx_dict_type`(`dict_type` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_dict_data
--- ----------------------------
-INSERT INTO `sys_dict_data` VALUES (1, 1, '男', '0', 'user_sex', '', '', 'Y', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (2, 2, '女', '1', 'user_sex', '', '', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (3, 3, '未知', '2', 'user_sex', '', '', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (4, 1, '显示', '1', 'menu_visible', '', 'primary', 'Y', 1713334134616, 1, 20230531110000, NULL);
-INSERT INTO `sys_dict_data` VALUES (5, 2, '隐藏', '0', 'menu_visible', '', 'danger', 'N', 1713334134616, 1, 20230531110005, NULL);
-INSERT INTO `sys_dict_data` VALUES (6, 1, '正常', '0', 'common_disable', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (7, 2, '停用', '1', 'common_disable', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (8, 1, '正常', '0', 'sys_job_status', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (9, 2, '暂停', '1', 'sys_job_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (10, 1, '默认', 'DEFAULT', 'sys_job_group', '', '', 'Y', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (11, 2, '系统', 'SYSTEM', 'sys_job_group', '', '', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (12, 1, '是', 'Y', 'sys_yes_no', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (13, 2, '否', 'N', 'sys_yes_no', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (14, 1, '通知', '1', 'notify_type', '', 'warning', 'Y', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (15, 2, '公告', '2', 'notify_type', '', 'success', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (16, 1, '正常', '0', 'notify_status', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (17, 2, '关闭', '1', 'notify_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (18, 0, '其他', '0', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, 20240412103337, 1);
-INSERT INTO `sys_dict_data` VALUES (19, 1, '新增', '1', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (20, 2, '修改', '2', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (21, 3, '删除', '3', 'sys_oper_type', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (22, 4, '授权', '4', 'sys_oper_type', '', 'primary', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (23, 5, '导出', '5', 'sys_oper_type', '', 'warning', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (24, 6, '导入', '6', 'sys_oper_type', '', 'warning', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (28, 1, '成功', '0', 'sys_oper_status', '', 'primary', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (29, 2, '失败', '1', 'sys_oper_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (30, 0, '密码模式', 'password', 'authorization_grant_types', NULL, 'primary', 'N', 1713334134616, 1, 1724138711360, 1);
-INSERT INTO `sys_dict_data` VALUES (31, 0, '客户端模式', 'client_credentials', 'authorization_grant_types', NULL, 'primary', 'N', 1713334134616, 1, 1724138730253, 1);
-INSERT INTO `sys_dict_data` VALUES (32, 0, '授权码模式', 'authorization_code', 'authorization_grant_types', NULL, 'primary', 'N', 1713334134616, 1, 1724138742722, 1);
-INSERT INTO `sys_dict_data` VALUES (33, 0, '在线', '1', 'conn_status', NULL, 'success', 'N', 1713334134616, 1, 1714114284613, 1);
-INSERT INTO `sys_dict_data` VALUES (34, 0, '离线', '0', 'conn_status', NULL, 'info', 'N', 1713334134616, 1, 1714114287571, 1);
-INSERT INTO `sys_dict_data` VALUES (35, 1, '故障', '2', 'conn_status', NULL, 'danger', 'N', 1713334134616, 1, 1714114300372, 1);
-INSERT INTO `sys_dict_data` VALUES (36, 2, '检修', '3', 'conn_status', NULL, 'warning', 'N', 1713334134616, 1, 1714114303578, 1);
-INSERT INTO `sys_dict_data` VALUES (37, 0, '未认证', 'NO', 'pay_certification_status', NULL, 'info', 'N', 1713334134616, 1, 20230206172127, NULL);
-INSERT INTO `sys_dict_data` VALUES (38, 0, '微信支付', 'WX', 'pay_certification_status', NULL, 'success', 'N', 1713334134616, 1, 20230206172134, NULL);
-INSERT INTO `sys_dict_data` VALUES (39, 0, '支付宝', 'ALI', 'pay_certification_status', NULL, 'primary', 'N', 1713334134616, 1, 20230206172147, NULL);
-INSERT INTO `sys_dict_data` VALUES (41, 0, '全部数据权限', '1', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (42, 0, '自定数据权限', '2', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (43, 0, '本部门数据权限', '3', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (44, 0, '本部门及以下数据权限', '4', 'data_scope', NULL, 'default', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (45, 0, '支付成功', 'SUCCESS', 'pay_status', NULL, 'success', 'N', 1713334134616, 1, 20231201153601, NULL);
-INSERT INTO `sys_dict_data` VALUES (46, 0, '订单关闭', 'CLOSED', 'pay_status', NULL, 'info', 'N', 1713334134616, 1, 20231201153606, NULL);
-INSERT INTO `sys_dict_data` VALUES (49, 0, '未支付', 'NOTPAY', 'pay_status', NULL, 'primary', 'N', 1713334134616, 1, 20231201153556, NULL);
-INSERT INTO `sys_dict_data` VALUES (50, 0, '支付异常', 'ERROR', 'pay_status', NULL, 'danger', 'N', 1713334134616, 1, 20231201153755, NULL);
-INSERT INTO `sys_dict_data` VALUES (51, 0, '钱包支付', 'WALLET', 'pay_type', NULL, 'info', 'N', 1713334134616, 1, 20231201154027, NULL);
-INSERT INTO `sys_dict_data` VALUES (52, 0, '微信支付', 'WECHAT', 'pay_type', NULL, 'success', 'N', 1713334134616, 1, 20231201154033, NULL);
-INSERT INTO `sys_dict_data` VALUES (53, 0, '支付宝', 'ZFB', 'pay_type', NULL, 'primary', 'N', 1713334134616, 1, 20231201154038, NULL);
-INSERT INTO `sys_dict_data` VALUES (54, 0, 'mqtt', 'MQTT', 'protocol_type', NULL, 'primary', 'N', 1713334134616, 1, 1732083154010, 1);
-INSERT INTO `sys_dict_data` VALUES (55, 0, 'http', 'HTTP', 'protocol_type', NULL, 'primary', 'N', 1713334134616, 1, 1732083038284, 1);
-INSERT INTO `sys_dict_data` VALUES (56, 0, '刷新模式', 'refresh_token', 'authorization_grant_types', NULL, 'primary', 'N', 1724138765564, 1, 1724138765564, 1);
-INSERT INTO `sys_dict_data` VALUES (57, 1, '短信模式', 'sms', 'authorization_grant_types', NULL, 'primary', 'N', 1724138776721, 1, 1724139440459, 1);
-INSERT INTO `sys_dict_data` VALUES (1859117521415385089, 0, 'java', 'java', 'protocol_language', NULL, 'primary', NULL, 1732083132495, 1, 1732083487053, 1);
-INSERT INTO `sys_dict_data` VALUES (1859117545696210946, 0, 'lua', 'lua', 'protocol_language', NULL, 'primary', NULL, 1732083138284, 1, 1732083489674, 1);
-
--- ----------------------------
--- Table structure for sys_dict_type
--- ----------------------------
-DROP TABLE IF EXISTS `sys_dict_type`;
-CREATE TABLE `sys_dict_type`  (
-  `type_id` bigint NOT NULL COMMENT '字典主键',
-  `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典名称',
-  `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字典类型',
-  `create_at` bigint NOT NULL COMMENT '创建时间',
-  `create_id` bigint NOT NULL COMMENT '创建者',
-  `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
-  PRIMARY KEY (`type_id`) USING BTREE,
-  UNIQUE INDEX `uk_dict_type`(`dict_type` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_dict_type
--- ----------------------------
-INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'user_sex', 1713334134616, 1, 1732084160647, 1);
-INSERT INTO `sys_dict_type` VALUES (2, '菜单可见状态', 'menu_visible', 1713334134616, 1, 1732084210201, 1);
-INSERT INTO `sys_dict_type` VALUES (3, '是否禁用', 'common_disable', 1713334134616, 1, 1732084443416, 1);
-INSERT INTO `sys_dict_type` VALUES (4, '任务状态', 'sys_job_status', 1713334134616, 1, NULL, 1);
-INSERT INTO `sys_dict_type` VALUES (5, '任务分组', 'sys_job_group', 1713334134616, 1, NULL, 1);
-INSERT INTO `sys_dict_type` VALUES (6, '系统是否', 'sys_yes_no', 1713334134616, 1, NULL, 1);
-INSERT INTO `sys_dict_type` VALUES (7, '通知类型', 'notify_type', 1713334134616, 1, 1732084382928, 1);
-INSERT INTO `sys_dict_type` VALUES (8, '通知状态', 'notify_status', 1713334134616, 1, 1732084358017, 1);
-INSERT INTO `sys_dict_type` VALUES (9, '操作类型', 'sys_oper_type', 1713334134616, 1, 1732083989997, 1);
-INSERT INTO `sys_dict_type` VALUES (10, '操作状态', 'sys_oper_status', 1713334134616, 1, 1732083226583, 1);
-INSERT INTO `sys_dict_type` VALUES (11, '授权类型', 'authorization_grant_types', 1713334134616, 1, 1724138651758, 1);
-INSERT INTO `sys_dict_type` VALUES (12, '设备连接状态', 'conn_status', 1713334134616, 1, 1732082771289, 1);
-INSERT INTO `sys_dict_type` VALUES (13, '支付认证状态', 'pay_certification_status', 1713334134616, 1, NULL, 1);
-INSERT INTO `sys_dict_type` VALUES (14, '数据权限', 'data_scope', 1713334134616, 1, 1732084039645, 1);
-INSERT INTO `sys_dict_type` VALUES (15, '支付状态', 'pay_status', 1713334134616, 1, 1732082605137, 1);
-INSERT INTO `sys_dict_type` VALUES (16, '支付方式', 'pay_type', 1713334134616, 1, 1732084044525, 1);
-INSERT INTO `sys_dict_type` VALUES (17, '协议类型', 'protocol_type', 1713334134616, 1, 1732083004677, 1);
-INSERT INTO `sys_dict_type` VALUES (18, '协议语言', 'protocol_language', 1732083121999, 1, 1732083121999, 1);
+INSERT INTO `sys_config` VALUES (4, '账号自助-是否开启用户注册功能', 'sys.account.registerUser', 'false', 'Y', 1713334134616, 1, 1732164651631, 1);
 
 -- ----------------------------
 -- Table structure for sys_login_log
@@ -224,31 +225,52 @@ INSERT INTO `sys_login_log` VALUES (1858735902640762881, 0, 'wzkris', '0', '127.
 INSERT INTO `sys_login_log` VALUES (1858735929450754049, 0, 'wzkris', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1731992153879);
 INSERT INTO `sys_login_log` VALUES (1858735957401595906, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1731992160543);
 INSERT INTO `sys_login_log` VALUES (1859032827386605570, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732062938782);
+INSERT INTO `sys_login_log` VALUES (1859392370083815425, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732148660594);
+INSERT INTO `sys_login_log` VALUES (1859392423951261697, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732148674362);
+INSERT INTO `sys_login_log` VALUES (1859394916106035202, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732149268541);
+INSERT INTO `sys_login_log` VALUES (1859395641682878466, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732149441536);
+INSERT INTO `sys_login_log` VALUES (1859397487327633410, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732149881577);
+INSERT INTO `sys_login_log` VALUES (1859398459189813250, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732150113268);
+INSERT INTO `sys_login_log` VALUES (1859398744796749825, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732150181365);
+INSERT INTO `sys_login_log` VALUES (1859400003280887810, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732150481413);
+INSERT INTO `sys_login_log` VALUES (1859401296141541377, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732150789656);
+INSERT INTO `sys_login_log` VALUES (1859401382959439874, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732150810353);
+INSERT INTO `sys_login_log` VALUES (1859402337260068865, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732151037874);
+INSERT INTO `sys_login_log` VALUES (1859403739889852417, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732151372294);
+INSERT INTO `sys_login_log` VALUES (1859405209385230338, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732151722598);
+INSERT INTO `sys_login_log` VALUES (1859405359281266690, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732151758390);
+INSERT INTO `sys_login_log` VALUES (1859406811051565058, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732152103895);
+INSERT INTO `sys_login_log` VALUES (1859406892815327234, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732152124017);
+INSERT INTO `sys_login_log` VALUES (1859407997137784834, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732152386637);
+INSERT INTO `sys_login_log` VALUES (1859417197469462530, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732154580073);
+INSERT INTO `sys_login_log` VALUES (1859417446229438465, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732154640135);
+INSERT INTO `sys_login_log` VALUES (1859417934500950017, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732154756562);
+INSERT INTO `sys_login_log` VALUES (1859418883369955330, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732154982779);
+INSERT INTO `sys_login_log` VALUES (1859419178355298305, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732155052756);
+INSERT INTO `sys_login_log` VALUES (1859424686701187074, 1774671331416821762, 'testtt', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1732156366368);
 
 -- ----------------------------
--- Table structure for sys_notice
+-- Table structure for sys_notify
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_notice`;
-CREATE TABLE `sys_notice`  (
-  `notice_id` bigint NOT NULL COMMENT '公告ID',
-  `notice_title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告标题',
-  `notice_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告类型（1通知 2公告）',
-  `notice_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '公告内容',
+DROP TABLE IF EXISTS `sys_notify`;
+CREATE TABLE `sys_notify`  (
+  `notify_id` bigint NOT NULL COMMENT '公告ID',
+  `notify_title` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告标题',
+  `notify_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公告类型（1通知 2公告）',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '公告内容',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公告状态（0正常 1关闭）',
-  `message_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '消息id',
   `create_at` bigint NULL DEFAULT NULL COMMENT '创建者',
   `create_id` bigint NULL DEFAULT NULL COMMENT '创建时间',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`notice_id`) USING BTREE,
-  UNIQUE INDEX `uk_message_id`(`message_id` ASC) USING BTREE
+  PRIMARY KEY (`notify_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '通知公告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of sys_notice
+-- Records of sys_notify
 -- ----------------------------
-INSERT INTO `sys_notice` VALUES (1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '&lt;a href=\"https://www.baidu.com\"/&gt;', '0', '1', 1, 20221219100609, 1719034682683, 1);
-INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '&lt;', '0', '2', 1, 20221219100609, 1722905797425, 1);
+INSERT INTO `sys_notify` VALUES (1, '温馨提醒：2018-07-01 若依新版本发布啦', '2', '&lt;a href=\"https://www.baidu.com\"/&gt;', '0', 1, 20221219100609, 1719034682683, 1);
+INSERT INTO `sys_notify` VALUES (2, '维护通知：2018-07-01 若依系统凌晨维护', '1', '&lt;', '0', 1, 20221219100609, 1722905797425, 1);
 
 -- ----------------------------
 -- Table structure for sys_oper_log
@@ -486,5 +508,20 @@ INSERT INTO `sys_oper_log` VALUES (1859122292998221825, 0, '字典类型', '修�
 INSERT INTO `sys_oper_log` VALUES (1859122661664960514, 0, '字典类型', '修改字典', '2', 'com.wzkris.system.controller.SysDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', '内网IP', '{\"updateAt\":1732084358017,\"typeId\":8,\"dictName\":\"通知状态\",\"dictType\":\"notify_status\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732084358023}', '0', NULL, 1732084358023);
 INSERT INTO `sys_oper_log` VALUES (1859122766149267457, 0, '字典类型', '修改字典', '2', 'com.wzkris.system.controller.SysDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', '内网IP', '{\"updateAt\":1732084382928,\"typeId\":7,\"dictName\":\"通知类型\",\"dictType\":\"notify_type\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732084382935}', '0', NULL, 1732084382935);
 INSERT INTO `sys_oper_log` VALUES (1859123019858522114, 0, '字典类型', '修改字典', '2', 'com.wzkris.system.controller.SysDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', '内网IP', '{\"updateAt\":1732084443416,\"typeId\":3,\"dictName\":\"是否禁用\",\"dictType\":\"common_disable\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732084443423}', '0', NULL, 1732084443423);
+INSERT INTO `sys_oper_log` VALUES (1859135879267446786, 0, '字典类型', '删除字典', '3', 'com.wzkris.system.controller.SysDictTypeController.remove()', 'POST', 'admin', '/dict/type/remove', '127.0.0.1', '内网IP', '[2]', NULL, '1', '操作失败，正在使用中', 1732087509289);
+INSERT INTO `sys_oper_log` VALUES (1859421847971037186, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"guide\",\"updateAt\":1732155689519,\"menuName\":\"通知公告\",\"isVisible\":true,\"parentId\":1,\"path\":\"notify\",\"isCache\":false,\"component\":\"system/notify/index\",\"children\":[],\"isFrame\":false,\"menuId\":100,\"menuType\":\"C\",\"perms\":\"notify:list\",\"menuSort\":15,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732155689531}', '0', NULL, 1732155689532);
+INSERT INTO `sys_oper_log` VALUES (1859422242319527937, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1732155783581,\"menuName\":\"公告删除\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1059,\"menuType\":\"F\",\"perms\":\"notify:remove\",\"menuSort\":4,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732155783591}', '0', NULL, 1732155783591);
+INSERT INTO `sys_oper_log` VALUES (1859422263890833410, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1732155788748,\"menuName\":\"公告修改\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1058,\"menuType\":\"F\",\"perms\":\"notify:edit\",\"menuSort\":3,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732155788758}', '0', NULL, 1732155788758);
+INSERT INTO `sys_oper_log` VALUES (1859422277224525825, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1732155791931,\"menuName\":\"公告新增\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1057,\"menuType\":\"F\",\"perms\":\"notify:add\",\"menuSort\":2,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732155791942}', '0', NULL, 1732155791942);
+INSERT INTO `sys_oper_log` VALUES (1859422290893762562, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1732155795196,\"menuName\":\"公告查询\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1056,\"menuType\":\"F\",\"perms\":\"notify:query\",\"menuSort\":1,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732155795207}', '0', NULL, 1732155795207);
+INSERT INTO `sys_oper_log` VALUES (1859437008484286465, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"information\",\"updateAt\":1732159304112,\"menuName\":\"商户信息\",\"isVisible\":true,\"parentId\":3,\"path\":\"info\",\"isCache\":false,\"component\":\"user/tenant/index\",\"children\":[],\"isFrame\":false,\"menuId\":601,\"menuType\":\"C\",\"perms\":\"\",\"menuSort\":100,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732159304123}', '0', NULL, 1732159304123);
+INSERT INTO `sys_oper_log` VALUES (1859437028080074753, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"package\",\"updateAt\":1732159308804,\"menuName\":\"租户套餐管理\",\"isVisible\":true,\"parentId\":3,\"path\":\"package\",\"isCache\":false,\"component\":\"user/tenant/package/index\",\"children\":[],\"isFrame\":false,\"menuId\":602,\"menuType\":\"C\",\"perms\":\"tenant_package:list\",\"menuSort\":50,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732159308815}', '0', NULL, 1732159308815);
+INSERT INTO `sys_oper_log` VALUES (1859459444403556354, 0, '参数管理', '修改参数', '2', 'com.wzkris.system.controller.SysConfigController.edit()', 'POST', 'admin', '/config/edit', '127.0.0.1', '内网IP', '{\"configName\":\"账号自助-是否开启用户注册功能\",\"configKey\":\"sys.account.registerUser\",\"configId\":4,\"updateAt\":1732164651631,\"configValue\":\"false\",\"configType\":\"Y\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732164653227}', '0', NULL, 1732164653229);
+INSERT INTO `sys_oper_log` VALUES (1859462899968913410, 0, '参数管理', '添加参数', '1', 'com.wzkris.system.controller.SysConfigController.add()', 'POST', 'admin', '/config/add', '127.0.0.1', '内网IP', '{\"configName\":\"11\",\"configKey\":\"111\",\"configId\":1859462899666923521,\"updateAt\":1732165477091,\"configValue\":\"11\",\"configType\":\"N\",\"createAt\":1732165477091}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732165477103}', '0', NULL, 1732165477105);
+INSERT INTO `sys_oper_log` VALUES (1859462912321138690, 0, '参数管理', '删除参数', '3', 'com.wzkris.system.controller.SysConfigController.remove()', 'POST', 'admin', '/config/remove', '127.0.0.1', '内网IP', '[1859462899666923521]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732165480097}', '0', NULL, 1732165480097);
+INSERT INTO `sys_oper_log` VALUES (1859462927445798914, 0, '参数管理', '添加参数', '1', 'com.wzkris.system.controller.SysConfigController.add()', 'POST', 'admin', '/config/add', '127.0.0.1', '内网IP', '{\"configName\":\"11\",\"configKey\":\"1111\",\"configId\":1859462927378690050,\"updateAt\":1732165483696,\"configValue\":\"111\",\"configType\":\"Y\",\"createAt\":1732165483696}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732165483706}', '0', NULL, 1732165483706);
+INSERT INTO `sys_oper_log` VALUES (1859463028553691137, 0, '参数管理', '删除参数', '3', 'com.wzkris.system.controller.SysConfigController.remove()', 'POST', 'admin', '/config/remove', '127.0.0.1', '内网IP', '[1859462927378690050]', '{\"biz\":1,\"err_msg\":\"内置参数【1111】不能删除 \",\"timestamp\":1732165507810}', '1', '内置参数【1111】不能删除 ', 1732165507810);
+INSERT INTO `sys_oper_log` VALUES (1859463043045011458, 0, '参数管理', '修改参数', '2', 'com.wzkris.system.controller.SysConfigController.edit()', 'POST', 'admin', '/config/edit', '127.0.0.1', '内网IP', '{\"configName\":\"11\",\"configKey\":\"1111\",\"configId\":1859462927378690050,\"updateAt\":1732165511254,\"configValue\":\"111\",\"configType\":\"N\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732165511266}', '0', NULL, 1732165511266);
+INSERT INTO `sys_oper_log` VALUES (1859463102679625730, 0, '参数管理', '删除参数', '3', 'com.wzkris.system.controller.SysConfigController.remove()', 'POST', 'admin', '/config/remove', '127.0.0.1', '内网IP', '[1859462927378690050]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1732165525483}', '0', NULL, 1732165525483);
 
 SET FOREIGN_KEY_CHECKS = 1;

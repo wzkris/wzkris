@@ -51,9 +51,7 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
 
         LoginSyser loginSyser = new LoginSyser();
         loginSyser.setUserId(sysUserDTO.getUserId());
-        loginSyser.setAvatar(sysUserDTO.getAvatar());
         loginSyser.setUsername(sysUserDTO.getUsername());
-        loginSyser.setDeptId(sysUserDTO.getDeptId());
         loginSyser.setTenantId(sysUserDTO.getTenantId());
         loginSyser.setAdministrator(permissions.getAdministrator());
         loginSyser.setDeptScopes(permissions.getDeptScopes());

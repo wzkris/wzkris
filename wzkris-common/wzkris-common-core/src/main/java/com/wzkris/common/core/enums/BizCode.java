@@ -16,7 +16,7 @@ public enum BizCode {
     // 401未认证
     UNAUTHORIZED(401, "Unauthorized"),
     // 401子状态 非法token
-    UNAUTHORIZED__INVALID_TOKEN(401_02, "Invalid token"),
+    INVALID_TOKEN(450, "Invalid token"),
     // 403禁止访问
     FORBID(403, "Forbidden"),
     NOT_FOUND(404, "Not Found"),
@@ -33,12 +33,12 @@ public enum BizCode {
     THIRD_SERVICE(3003, "Third Service Error");
 
     // 状态码
-    private final int code;
+    private final int biz;
     // 状态码描述
     private final String desc;
 
     public int value() {
-        return this.code;
+        return this.biz;
     }
 
     public String desc() {

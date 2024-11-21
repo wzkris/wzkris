@@ -6,6 +6,7 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.common.redis.util.RedisUtil;
+import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
 import com.wzkris.common.security.oauth2.enums.UserType;
@@ -40,7 +41,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
         String key = TOKEN_REQ_ID_PREFIX + token;
         String reqId = String.valueOf(System.currentTimeMillis());
 
-        String script = """
+        String lua = """
                 local reqId = redis.call('GET', KEYS[1])
                 if not reqId then
                     reqId = ARGV[1]
@@ -49,7 +50,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
                 return reqId
                 """;
 
-        reqId = RedisUtil.getClient().getScript().eval(RScript.Mode.READ_WRITE, script,
+        reqId = RedisUtil.getClient().getScript().eval(RScript.Mode.READ_WRITE, lua,
                 RScript.ReturnType.VALUE, List.of(key), reqId, 60);
         return ok(reqId);
     }
@@ -58,11 +59,11 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     public Result<WzUser> checkToken(ReqToken reqToken) {
         String reqId = RedisUtil.getObj(TOKEN_REQ_ID_PREFIX + reqToken.getToken());
         if (StringUtil.isBlank(reqId) || !reqId.equals(reqToken.getReqId())) {
-            return resp(BizCode.NOT_FOUND, "invalid_request_id");
+            return resp(BizCode.NOT_FOUND, CustomErrorCodes.INVALID_REQUEST_ID);
         }
         OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(reqToken.getToken(), null);
         if (oAuth2Authorization == null) {
-            return resp(BizCode.UNAUTHORIZED, OAuth2ErrorCodes.INVALID_TOKEN);
+            return resp(BizCode.INVALID_TOKEN, OAuth2ErrorCodes.INVALID_TOKEN);
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());

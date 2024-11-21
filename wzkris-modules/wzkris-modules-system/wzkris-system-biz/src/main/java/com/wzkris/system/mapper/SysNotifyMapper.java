@@ -1,7 +1,7 @@
 package com.wzkris.system.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
-import com.wzkris.system.domain.SysNotice;
+import com.wzkris.system.domain.SysNotify;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * @author wzkris
  */
 @Repository
-public interface SysNoticeMapper extends BaseMapperPlus<SysNotice> {
+public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
 }

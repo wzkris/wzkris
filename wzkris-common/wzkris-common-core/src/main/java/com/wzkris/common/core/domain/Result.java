@@ -12,7 +12,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 响应信息部门，服务间调用使用
+ * 响应信息
  *
  * @author wzkris
  */
