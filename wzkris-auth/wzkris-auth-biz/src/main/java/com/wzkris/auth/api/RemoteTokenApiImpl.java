@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScript;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -81,7 +80,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
                 loginClient.setClientName(oAuth2Authorization.getPrincipalName());
 
                 wzUser = new WzUser(UserType.CLIENT, loginClient.getClientName(),
-                        loginClient, AuthorityUtils.createAuthorityList(oAuth2Authorization.getAuthorizedScopes()));
+                        loginClient, oAuth2Authorization.getAuthorizedScopes());
             }
         }
         return ok(wzUser);

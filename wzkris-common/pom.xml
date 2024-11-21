@@ -34,5 +34,6 @@
 		<module>wzkris-common-stream</module>
 		<module>wzkris-common-swagger</module>
 		<module>wzkris-common-web</module>
+		<module>wzkris-common-weixin-sdk</module>
 	</modules>
 </project>

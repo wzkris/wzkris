@@ -1,13 +1,15 @@
 package com.wzkris.common.security.oauth2.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.security.oauth2.enums.UserType;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -22,6 +24,7 @@ import java.util.*;
  * @date : 2024/10/18 15:54
  */
 @Getter
+@FieldNameConstants
 public final class WzUser implements UserDetails, OAuth2User, CredentialsContainer, Serializable {
 
     @Serial
@@ -31,41 +34,46 @@ public final class WzUser implements UserDetails, OAuth2User, CredentialsContain
 
     private final String name;
 
-    private final Set<GrantedAuthority> authorities;
+    private final Set<String> grantedAuthority;
 
-    @Setter
-    private Object principal;
+    private final Object principal;
 
     private String password;
 
     public WzUser(UserType userType,
                   String name,
                   Object principal,
-                  Collection<? extends GrantedAuthority> authorities) {
-        this(userType, name, principal, "", authorities);
+                  Collection<String> grantedAuthority) {
+        this(userType, name, principal, "", grantedAuthority);
     }
 
     @JsonCreator
-    public WzUser(@JsonProperty("userType") UserType userType,
-                  @JsonProperty("name") String name,
-                  @JsonProperty("principal") Object principal,
-                  @JsonProperty("password") String password,
-                  @JsonProperty("authorities") Collection<? extends GrantedAuthority> authorities) {
+    public WzUser(@JsonProperty(Fields.userType) UserType userType,
+                  @JsonProperty(Fields.name) String name,
+                  @JsonProperty(Fields.principal) Object principal,
+                  @JsonProperty(Fields.password) String password,
+                  @JsonProperty(Fields.grantedAuthority) Collection<String> grantedAuthority) {
         this.userType = userType;
         this.name = name;
         this.principal = principal;
         this.password = password;
-        this.authorities = this.toSet(authorities);
+        this.grantedAuthority = this.toSet(grantedAuthority);
     }
 
-    private Set<GrantedAuthority> toSet(Collection<? extends GrantedAuthority> authorities) {
-        Set<GrantedAuthority> set = new HashSet<>(authorities.size());
-        set.addAll(authorities);
+    private Set<String> toSet(Collection<String> grantedAuthority) {
+        Set<String> set = new HashSet<>(grantedAuthority.size());
+        set.addAll(grantedAuthority);
         return set;
     }
 
     public Map<String, Object> getAttributes() {
         return Collections.emptyMap();
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return AuthorityUtils.createAuthorityList(this.grantedAuthority);
     }
 
     @Override

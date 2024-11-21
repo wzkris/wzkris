@@ -13,7 +13,6 @@ import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
@@ -57,7 +56,7 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
         loginSyser.setDeptScopes(permissions.getDeptScopes());
 
         return new WzUser(UserType.SYS_USER, loginSyser.getUsername(),
-                loginSyser, sysUserDTO.getPassword(), AuthorityUtils.createAuthorityList(permissions.getGrantedAuthority()));
+                loginSyser, sysUserDTO.getPassword(), permissions.getGrantedAuthority());
     }
 
     /**

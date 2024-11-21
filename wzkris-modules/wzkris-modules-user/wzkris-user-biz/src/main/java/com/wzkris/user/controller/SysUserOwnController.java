@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author wzkris
  */
-@Tag(name = "系统账户信息")
+@Tag(name = "系统账户")
 @RestController
 @RequestMapping("/user/account")
 @RequiredArgsConstructor
@@ -43,13 +43,14 @@ public class SysUserOwnController extends BaseController {
     private final RemoteCaptchaApi remoteCaptchaApi;
     private final PasswordEncoder passwordEncoder;
 
-    @Operation(summary = "个人信息")
+    @Operation(summary = "账户信息")
     @GetMapping
     public Result<SysUserAccountVO> accountVO() {
         SysUser sysUser = userMapper.selectById(SysUtil.getUserId());
 
         SysUserAccountVO.UserInfo userInfo = new SysUserAccountVO.UserInfo();
         userInfo.setUsername(sysUser.getUsername());
+        userInfo.setAvatar(sysUser.getAvatar());
         userInfo.setNickname(sysUser.getNickname());
         userInfo.setPhoneNumber(sysUser.getPhoneNumber());
         userInfo.setGender(sysUser.getGender());
@@ -63,7 +64,7 @@ public class SysUserOwnController extends BaseController {
     }
 
     @Operation(summary = "修改昵称、性别")
-    @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping
     public Result<Void> editInfo(@RequestBody EditOwnSysUserReq req) {
         SysUser user = new SysUser(SysUtil.getUserId());
@@ -73,7 +74,7 @@ public class SysUserOwnController extends BaseController {
     }
 
     @Operation(summary = "修改手机号")
-    @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/edit_phonenumber")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = SysUtil.getUserId();
@@ -92,7 +93,7 @@ public class SysUserOwnController extends BaseController {
     }
 
     @Operation(summary = "修改密码")
-    @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/edit_password")
     public Result<Void> editPwd(@RequestBody @Valid EditPwdReq req) {
         LoginSyser loginUser = SysUtil.getLoginSyser();
@@ -114,7 +115,7 @@ public class SysUserOwnController extends BaseController {
     }
 
     @Operation(summary = "更新头像")
-    @OperateLog(title = "个人中心", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/edit_avatar")
     public Result<Void> updateAvatar(@RequestBody String url) {
         SysUser sysUser = new SysUser(SysUtil.getUserId());

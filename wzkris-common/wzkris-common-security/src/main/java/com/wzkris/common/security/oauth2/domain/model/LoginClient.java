@@ -12,7 +12,12 @@ import java.io.Serializable;
  */
 @Data
 public class LoginClient implements Serializable {
-
+    /**
+     * 客户端ID
+     */
     private String clientId;
+    /**
+     * 客户端名称
+     */
     private String clientName;
 }

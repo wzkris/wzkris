@@ -65,7 +65,6 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
             return true;
         }
 
-
         return true;
     }
 
