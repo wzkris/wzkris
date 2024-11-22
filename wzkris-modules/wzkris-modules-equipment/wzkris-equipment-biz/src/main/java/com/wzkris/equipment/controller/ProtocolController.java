@@ -41,7 +41,7 @@ public class ProtocolController extends BaseController {
 
     private LambdaQueryWrapper<Protocol> buildQueryWrapper(ProtocolQueryReq queryReq) {
         return new LambdaQueryWrapper<Protocol>()
-                .select(Protocol.class, fieldInfo -> !fieldInfo.getColumn().equals("content")) // 不查协议内容
+                .select(Protocol.class, fieldInfo -> !fieldInfo.getColumn().equals("content") && !fieldInfo.getColumn().equals("parameter")) // 不查协议内容
                 .like(StringUtil.isNotBlank(queryReq.getPtcName()), Protocol::getPtcName, queryReq.getPtcName())
                 .like(StringUtil.isNotBlank(queryReq.getPtcVersion()), Protocol::getPtcVersion, queryReq.getPtcVersion())
                 .eq(StringUtil.isNotBlank(queryReq.getStatus()), Protocol::getStatus, queryReq.getStatus());

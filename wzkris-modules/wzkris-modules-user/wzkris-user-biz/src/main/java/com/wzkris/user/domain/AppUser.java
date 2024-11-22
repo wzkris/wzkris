@@ -47,9 +47,6 @@ public class AppUser extends BaseEntity {
     @Schema(description = "用户头像")
     private String avatar;
 
-    @Schema(description = "删除标志")
-    private Boolean isDeleted;
-
     @Schema(description = "最近登录ip")
     private String loginIp;
 

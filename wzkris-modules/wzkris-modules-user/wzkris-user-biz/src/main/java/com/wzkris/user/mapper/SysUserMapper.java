@@ -73,18 +73,10 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     /**
      * 硬删除用户
      *
-     * @param userIds 删除的用户ID
-     * @return 结果
-     */
-    int hardDeleteByIds(@Param("userIds") List<Long> userIds);
-
-    /**
-     * 硬删除用户
-     *
      * @param tenantIds 租户ID
      * @return 结果
      */
-    int hardDeleteByTenantIds(@Param("tenantIds") List<Long> tenantIds);
+    int deleteByTenantIds(@Param("tenantIds") List<Long> tenantIds);
 
     /**
      * 检验权限

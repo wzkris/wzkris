@@ -79,9 +79,6 @@ public class SysUser extends BaseEntity {
     @Schema(description = "密码")
     private String password;
 
-    @Schema(description = "删除标志")
-    private Boolean isDeleted;
-
     @Schema(description = "最近登录ip")
     private String loginIp;
 

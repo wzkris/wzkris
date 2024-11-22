@@ -9,6 +9,7 @@ import com.wzkris.user.domain.*;
 import com.wzkris.user.domain.dto.SysTenantDTO;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.mapper.*;
+import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +33,9 @@ public class SysTenantServiceImpl implements SysTenantService {
     private final SysUserMapper userMapper;
     private final SysUserService userService;
     private final SysRoleMapper roleMapper;
+    private final SysRoleService roleService;
     private final SysDeptMapper deptMapper;
     private final SysPostMapper postMapper;
-    private final SysRoleDeptMapper roleDeptMapper;
-    private final SysRoleMenuMapper roleMenuMapper;
-    private final SysUserRoleMapper userRoleMapper;
-    private final SysUserPostMapper userPostMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -60,8 +58,8 @@ public class SysTenantServiceImpl implements SysTenantService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void hardDeleteByIds(List<Long> tenantIds) {
-        tenantMapper.hardDeleteByIds(tenantIds);
+    public void deleteByIds(List<Long> tenantIds) {
+        tenantMapper.deleteByIds(tenantIds);
         tenantWalletMapper.deleteByIds(tenantIds);
         LambdaQueryWrapper<SysTenantWalletRecord> recordw = Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .in(SysTenantWalletRecord::getTenantId, tenantIds);
@@ -72,18 +70,14 @@ public class SysTenantServiceImpl implements SysTenantService {
                 .in(SysUser::getTenantId, tenantIds);
         List<Long> userIds = userMapper.selectList(userw).stream().map(SysUser::getUserId).toList();
         if (CollUtil.isNotEmpty(userIds)) {
-            userMapper.hardDeleteByIds(userIds);
-            userRoleMapper.deleteByUserIds(userIds);
-            userPostMapper.deleteByUserIds(userIds);
+            userService.deleteByIds(userIds);
         }
         LambdaQueryWrapper<SysRole> rolew = Wrappers.lambdaQuery(SysRole.class)
                 .select(SysRole::getRoleId)
                 .in(SysRole::getTenantId, tenantIds);
         List<Long> roleIds = roleMapper.selectList(rolew).stream().map(SysRole::getRoleId).toList();
         if (CollUtil.isNotEmpty(roleIds)) {
-            roleMapper.deleteByIds(roleIds);
-            roleDeptMapper.deleteByRoleIds(roleIds);
-            roleMenuMapper.deleteByRoleIds(roleIds);
+            roleService.deleteByIds(roleIds);
         }
         LambdaQueryWrapper<SysDept> deptw = Wrappers.lambdaQuery(SysDept.class)
                 .in(SysDept::getTenantId, tenantIds);
@@ -150,6 +144,15 @@ public class SysTenantServiceImpl implements SysTenantService {
             }
             Long count = deptMapper.selectCount(Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getTenantId, tenantId));
             return tenant.getDeptLimit() - count > 0;
+        });
+    }
+
+    @Override
+    public boolean checkAdministrator(List<Long> userIds) {
+        return DynamicTenantUtil.ignore(() -> {
+            LambdaQueryWrapper<SysTenant> lqw = Wrappers.lambdaQuery(SysTenant.class)
+                    .in(SysTenant::getAdministrator, userIds);
+            return tenantMapper.exists(lqw);
         });
     }
 

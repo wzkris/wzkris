@@ -85,9 +85,8 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public void hardDeleteByIds(List<Long> userIds) {
-        userMapper.hardDeleteByIds(userIds);
-        // 删除用户与角色关联
+    public void deleteByIds(List<Long> userIds) {
+        userMapper.deleteByIds(userIds);
         userRoleMapper.deleteByUserIds(userIds);
         userPostMapper.deleteByUserIds(userIds);
     }

@@ -123,7 +123,8 @@ public class SysTenantController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('tenant:remove')")
     public Result<Void> remove(@RequestBody @NotEmpty(message = "[tenantIds] {validate.notnull}") List<Long> tenantIds) {
-        return toRes(tenantMapper.deleteByIds(tenantIds));// soft delete
+        tenantService.deleteByIds(tenantIds);
+        return ok();
     }
 
 }

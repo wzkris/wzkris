@@ -84,10 +84,23 @@ public class SysRoleController extends BaseController {
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{roleId}"})
     @PreAuthorize("@ps.hasPerms('sys_role:list')")
     public Result<SysMenuCheckSelectTreeVO> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
+        // 权限校验
+        roleService.checkDataScopes(roleId);
         SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
-        resp.setCheckedKeys(roleId == null ? Collections.emptyList() :
-                roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
+        resp.setCheckedKeys(roleId == null ? Collections.emptyList() : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
         resp.setMenus(menuService.listMenuSelectTree(SysUtil.getUserId()));
+        return ok(resp);
+    }
+
+    @Operation(summary = "角色部门选择树")
+    @GetMapping({"/dept_select_tree/{roleId}", "/dept_select_tree/{roleId}"})
+    @PreAuthorize("@ps.hasPerms('sys_role:query')")
+    public Result<SysDeptCheckSelectTreeVO> deptTree(@PathVariable(required = false) Long roleId) {
+        // 权限校验
+        roleService.checkDataScopes(roleId);
+        SysDeptCheckSelectTreeVO resp = new SysDeptCheckSelectTreeVO();
+        resp.setCheckedKeys(roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
+        resp.setDepts(deptService.listSelectTree(null));
         return ok(resp);
     }
 
@@ -124,17 +137,6 @@ public class SysRoleController extends BaseController {
         SysRole update = new SysRole(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(roleMapper.updateById(update));
-    }
-
-    @Operation(summary = "修改角色数据权限")
-    @OperateLog(title = "角色管理", subTitle = "修改角色数据权限", operateType = OperateType.UPDATE)
-    @PostMapping("/data_scope")
-    @PreAuthorize("@ps.hasPerms('sys_role:dataScope')")
-    public Result<Void> dataScope(@RequestBody SysRoleDTO roleDTO) {
-        // 权限校验
-        roleService.checkDataScopes(roleDTO.getRoleId());
-        roleService.updateDeptScope(roleDTO);
-        return ok();
     }
 
     @Operation(summary = "删除角色")
@@ -202,15 +204,4 @@ public class SysRoleController extends BaseController {
         return ok();
     }
 
-    @Operation(summary = "角色部门树列表")
-    @GetMapping("/dept_tree/{roleId}")
-    @PreAuthorize("@ps.hasPerms('sys_role:query')")
-    public Result<SysDeptCheckSelectTreeVO> deptTree(@PathVariable Long roleId) {
-        // 权限校验
-        roleService.checkDataScopes(roleId);
-        SysDeptCheckSelectTreeVO resp = new SysDeptCheckSelectTreeVO();
-        resp.setCheckedKeys(roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
-        resp.setDepts(deptService.listSelectTree(null));
-        return ok(resp);
-    }
 }

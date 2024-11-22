@@ -33,9 +33,6 @@ import java.io.PrintWriter;
 @RequestMapping("/protocol_compile")
 public class CompileXcodeController extends BaseController {
 
-    /**
-     * 动态编译代码
-     */
     @Operation(summary = "动态代码编译")
     @PostMapping("/dynamicallyXcode")
     public Result<?> compileXcode(@RequestBody DynamicCodeReq codeReq) {

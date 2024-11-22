@@ -24,7 +24,7 @@ public interface SysTenantService {
      *
      * @param tenantIds 租户ID集合
      */
-    void hardDeleteByIds(List<Long> tenantIds);
+    void deleteByIds(List<Long> tenantIds);
 
     /**
      * 校验租户账号数量
@@ -57,4 +57,12 @@ public interface SysTenantService {
      * @return true通过 false不通过
      */
     boolean checkDeptLimit(Long tenantId);
+
+    /**
+     * 校验是否租户超管
+     *
+     * @param userIds 用户ID
+     * @return true通过 false不通过
+     */
+    boolean checkAdministrator(List<Long> userIds);
 }

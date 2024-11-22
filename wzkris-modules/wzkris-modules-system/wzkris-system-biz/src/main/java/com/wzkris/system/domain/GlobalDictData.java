@@ -22,17 +22,17 @@ public class GlobalDictData extends BaseEntity {
     private Long dictSort;
 
     @NotBlank(message = "字典标签不能为空")
-    @Size(min = 2, max = 50, message = "字典标签长度不能超过100个字符")
+    @Size(min = 1, max = 50, message = "字典标签长度不能超过100个字符")
     @Schema(description = "标签")
     private String dictLabel;
 
     @NotBlank(message = "字典键值不能为空")
-    @Size(min = 2, max = 50, message = "字典键值长度不能超过100个字符")
+    @Size(min = 1, max = 50, message = "字典键值长度不能超过100个字符")
     @Schema(description = "键值")
     private String dictValue;
 
     @NotBlank(message = "字典类型不能为空")
-    @Size(min = 2, max = 50, message = "字典类型长度不能超过100个字符")
+    @Size(min = 1, max = 50, message = "字典类型长度不能超过100个字符")
     @Schema(description = "字典类型")
     private String dictType;
 

@@ -119,17 +119,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateDeptScope(SysRoleDTO roleDTO) {
-        // 删除角色与部门关联
-        roleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
-        // 新增角色和部门信息（数据权限）
-        this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
-        // 修改角色信息
-        roleMapper.updateById(roleDTO);
-    }
-
     /**
      * 新增角色菜单信息
      *

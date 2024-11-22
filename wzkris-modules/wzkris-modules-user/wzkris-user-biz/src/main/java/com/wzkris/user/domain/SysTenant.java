@@ -68,9 +68,6 @@ public class SysTenant extends BaseEntity {
     @Schema(description = "部门数量（-1不限制）")
     private Integer deptLimit;
 
-    @Schema(description = "删除标志")
-    private Boolean isDeleted;
-
     public SysTenant(Long tenantId) {
         this.tenantId = tenantId;
     }

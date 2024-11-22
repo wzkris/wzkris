@@ -165,7 +165,11 @@ public class SysUserController extends BaseController {
     public Result<Void> remove(@RequestBody List<Long> userIds) {
         // 校验权限
         userService.checkDataScopes(userIds);
-        return toRes(userMapper.deleteByIds(userIds));// soft delete
+        if (tenantService.checkAdministrator(userIds)) {
+            return fail("删除失败，用户包含租户超级管理员");
+        }
+        userService.deleteByIds(userIds);
+        return ok();
     }
 
     @Operation(summary = "重置密码")

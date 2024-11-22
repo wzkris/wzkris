@@ -51,7 +51,7 @@ public class SysNotifyController extends BaseController {
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/{noticeId}")
+    @GetMapping("/{notifyId}")
     @PreAuthorize("@ps.hasPerms('notify:query')")
     public Result<?> getInfo(@PathVariable Long notifyId) {
         return ok(noticeMapper.selectById(notifyId));

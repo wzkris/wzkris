@@ -65,13 +65,6 @@ public interface SysRoleService {
     void allocateUsers(Long roleId, List<Long> userIds);
 
     /**
-     * 修改部门数据权限信息
-     *
-     * @param roleDTO 角色信息
-     */
-    void updateDeptScope(SysRoleDTO roleDTO);
-
-    /**
      * 批量删除角色信息
      *
      * @param roleIds 需要删除的角色ID

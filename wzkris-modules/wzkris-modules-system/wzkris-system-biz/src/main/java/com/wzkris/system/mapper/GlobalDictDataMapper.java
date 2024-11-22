@@ -17,13 +17,14 @@ import java.util.List;
 @Repository
 public interface GlobalDictDataMapper extends BaseMapperPlus<GlobalDictData> {
 
-
     @Select("""
-            SELECT * FROM global_dict_data WHERE dict_type in
-            <foreach collection="dictTypes" item="dictType" open="(" close=")" separator=",">
-             	#{dictType}
-            </foreach>
-            ORDER BY dict_sort
+            <script>
+                SELECT * FROM global_dict_data WHERE dict_type IN
+                <foreach collection="dictTypes" item="dictType" open="(" close=")" separator=",">
+             	    #{dictType}
+                </foreach>
+                ORDER BY dict_sort
+            </script>
             """)
     List<GlobalDictData> listByTypes(@Param("dictTypes") List<String> dictTypes);
 
