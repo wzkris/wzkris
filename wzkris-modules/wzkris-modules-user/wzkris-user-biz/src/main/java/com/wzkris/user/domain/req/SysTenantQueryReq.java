@@ -14,7 +14,4 @@ public class SysTenantQueryReq {
 
     @Schema(description = "租户状态")
     private String status;
-
-    @Schema(description = "租户套餐编号")
-    private Long packageId;
 }
