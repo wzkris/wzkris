@@ -10,7 +10,6 @@ import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -31,13 +30,6 @@ public class AppUserOwnController extends BaseController {
 
     private final AppUserMapper appUserMapper;
     private final AppUserService appUserService;
-
-    @Operation(summary = "新用户注册")
-    @PostMapping("register")
-    public Result<Void> register(@NotBlank(message = "[xcxCode] {validate.notnull}") String xcxCode) {
-        appUserService.registerByXcx(xcxCode);
-        return ok();
-    }
 
     @Operation(summary = "账户信息")
     @GetMapping

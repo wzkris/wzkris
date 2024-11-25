@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
  */
 @Slf4j
-@ConditionalOnProperty("weixin.miniapp.enable")
+@ConditionalOnProperty(value = "weixin.miniapp.enable")
 public class WxMaConfiguration {
     private final WxMaProperties properties;
     private final WxMaMessageHandler subscribeMsgHandler = (wxMessage, context, service, sessionManager) -> {

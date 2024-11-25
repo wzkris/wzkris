@@ -34,5 +34,12 @@
 			<version>${weixin-java.version}</version>
 		</dependency>
 
+		<!--微信小程序-->
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-mp</artifactId>
+			<version>${weixin-java.version}</version>
+		</dependency>
+
 	</dependencies>
 </project>

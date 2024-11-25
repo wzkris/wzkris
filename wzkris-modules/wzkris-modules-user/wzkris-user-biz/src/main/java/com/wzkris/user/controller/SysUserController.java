@@ -69,7 +69,6 @@ public class SysUserController extends BaseController {
 
     private QueryWrapper<SysUser> buildPageWrapper(SysUserQueryReq queryReq) {
         return new QueryWrapper<SysUser>()
-                .eq("u.is_deleted", 0)
                 .eq(StringUtil.isNotNull(queryReq.getTenantId()), "u.tenant_id", queryReq.getTenantId())
                 .like(StringUtil.isNotNull(queryReq.getUsername()), "username", queryReq.getUsername())
                 .like(StringUtil.isNotNull(queryReq.getNickname()), "nickname", queryReq.getNickname())

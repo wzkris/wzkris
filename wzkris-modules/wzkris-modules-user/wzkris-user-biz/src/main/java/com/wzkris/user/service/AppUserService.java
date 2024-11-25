@@ -12,7 +12,15 @@ public interface AppUserService {
     /**
      * 小程序注册
      *
-     * @param xcxCode jscode
+     * @param jscode openid code
+     * @param code   手机号code
      */
-    void registerByXcx(String xcxCode);
+    void registerByXcx(String jscode, String code);
+
+    /**
+     * 公众号注册
+     *
+     * @param code code
+     */
+    void registerByGzh(String code);
 }

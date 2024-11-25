@@ -95,6 +95,11 @@
 			<artifactId>wzkris-common-swagger</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-weixin-sdk</artifactId>
+		</dependency>
+
 		<!-- springBoot test-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
