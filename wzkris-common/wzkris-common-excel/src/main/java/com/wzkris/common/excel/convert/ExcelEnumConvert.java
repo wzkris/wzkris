@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.wzkris.common.core.utils.reflect.ReflectUtil;
+import com.wzkris.common.core.utils.ReflectUtil;
 import com.wzkris.common.excel.annotation.ExcelEnumFormat;
 import lombok.extern.slf4j.Slf4j;
 

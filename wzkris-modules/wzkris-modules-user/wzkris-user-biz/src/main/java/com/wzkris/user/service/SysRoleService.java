@@ -2,7 +2,7 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.dto.SysRoleDTO;
-import org.springframework.lang.Nullable;
+import jakarta.annotation.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,20 +15,27 @@ import java.util.List;
 public interface SysRoleService {
 
     /**
-     * 根据条件查询角色列表
+     * 查询可授权角色
      *
-     * @param role 条件
      * @return 角色列表
      */
-    List<SysRole> list(SysRole role);
+    List<SysRole> listCanGranted();
 
     /**
-     * 根据用户ID查询角色列表
+     * 根据用户ID查询关联角色(正常状态)
      *
      * @param userId 用户ID
      * @return 角色列表
      */
     List<SysRole> listByUserId(@Nullable Long userId);
+
+    /**
+     * 根据用户ID查询关联角色ID(正常状态)
+     *
+     * @param userId 用户ID
+     * @return 角色列表
+     */
+    List<Long> listIdByUserId(@Nullable Long userId);
 
     /**
      * 根据用户id获取角色
@@ -58,27 +65,18 @@ public interface SysRoleService {
     void allocateUsers(Long roleId, List<Long> userIds);
 
     /**
-     * 修改部门数据权限信息
-     *
-     * @param roleDTO 角色信息
-     * @return 结果
-     */
-    int updateDeptScope(SysRoleDTO roleDTO);
-
-    /**
      * 批量删除角色信息
      *
      * @param roleIds 需要删除的角色ID
-     * @return 结果
      */
-    int deleteByIds(List<Long> roleIds);
+    void deleteByIds(List<Long> roleIds);
 
     /**
      * 校验角色是否被用户关联
      *
      * @param roleIds 角色组
      */
-    void checkUserUse(List<Long> roleIds);
+    void checkRoleUse(List<Long> roleIds);
 
     /**
      * 校验是否有角色的数据权限
@@ -90,4 +88,5 @@ public interface SysRoleService {
     default void checkDataScopes(Long roleId) {
         this.checkDataScopes(Collections.singletonList(roleId));
     }
+
 }

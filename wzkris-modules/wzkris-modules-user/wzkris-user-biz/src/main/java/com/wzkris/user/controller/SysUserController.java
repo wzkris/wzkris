@@ -2,7 +2,6 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -12,16 +11,15 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
-import com.wzkris.user.domain.SysDept;
-import com.wzkris.user.domain.SysPost;
-import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.export.SysUserExport;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.ResetPwdReq;
 import com.wzkris.user.domain.req.SysUser2RolesReq;
 import com.wzkris.user.domain.req.SysUserQueryReq;
-import com.wzkris.user.domain.resp.SysUserGrantResp;
+import com.wzkris.user.domain.vo.SelectTreeVO;
+import com.wzkris.user.domain.vo.SysUserGrantVO;
 import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
@@ -71,7 +69,6 @@ public class SysUserController extends BaseController {
 
     private QueryWrapper<SysUser> buildPageWrapper(SysUserQueryReq queryReq) {
         return new QueryWrapper<SysUser>()
-                .eq("u.is_deleted", 0)
                 .eq(StringUtil.isNotNull(queryReq.getTenantId()), "u.tenant_id", queryReq.getTenantId())
                 .like(StringUtil.isNotNull(queryReq.getUsername()), "username", queryReq.getUsername())
                 .like(StringUtil.isNotNull(queryReq.getNickname()), "nickname", queryReq.getNickname())
@@ -84,23 +81,29 @@ public class SysUserController extends BaseController {
                 .orderByDesc("u.user_id");
     }
 
+    @Operation(summary = "部门选择树")
+    @GetMapping("/dept_tree")
+    @PreAuthorize("@ps.hasPerms('sys_user:list')")
+    public Result<List<SelectTreeVO>> deptTree(String deptName) {
+        return ok(deptService.listSelectTree(deptName));
+    }
+
     @Operation(summary = "用户详细信息")
     @GetMapping({"/{userId}", "/"})
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
-    public Result<SysUserGrantResp> getInfo(@PathVariable(required = false) Long userId) {
+    public Result<SysUserGrantVO> getInfo(@PathVariable(required = false) Long userId) {
         // 校验权限
         userService.checkDataScopes(userId);
 
-        SysUserGrantResp resp = new SysUserGrantResp();
+        SysUserGrantVO resp = new SysUserGrantVO();
         // 可授权角色、岗位、部门
-        resp.setRoles(roleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
-        resp.setPosts(postService.list(new SysPost(CommonConstants.STATUS_ENABLE)));
-        resp.setDepts(deptService.listDeptTree(new SysDept(CommonConstants.STATUS_ENABLE)));
+        resp.setRoles(roleService.listCanGranted());
+        resp.setPosts(postService.listCanGranted());
         if (StringUtil.isNotNull(userId)) {
-            resp.setUser(userMapper.selectById(userId));// 用户信息
+            resp.setUser(userMapper.selectById(userId));
             // 已授权角色与岗位
-            resp.setRoleIds(userRoleMapper.listRoleIdByUserId(userId));
-            resp.setPostIds(userPostMapper.listPostIdByUserId(userId));
+            resp.setRoleIds(roleService.listIdByUserId(userId));
+            resp.setPostIds(postService.listIdByUserId(userId));
         }
         return ok(resp);
     }
@@ -161,7 +164,11 @@ public class SysUserController extends BaseController {
     public Result<Void> remove(@RequestBody List<Long> userIds) {
         // 校验权限
         userService.checkDataScopes(userIds);
-        return toRes(userMapper.deleteByIds(userIds));// soft delete
+        if (tenantService.checkAdministrator(userIds)) {
+            return fail("删除失败，用户包含租户超级管理员");
+        }
+        userService.deleteByIds(userIds);
+        return ok();
     }
 
     @Operation(summary = "重置密码")
@@ -181,11 +188,11 @@ public class SysUserController extends BaseController {
     @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
-    public Result<Void> editStatus(@RequestBody SysUser user) {
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
-        userService.checkDataScopes(user.getUserId());
-        SysUser update = new SysUser(user.getUserId());
-        update.setStatus(user.getStatus());
+        userService.checkDataScopes(statusReq.getId());
+        SysUser update = new SysUser(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
         return toRes(userMapper.updateById(update));
     }
 
@@ -202,14 +209,14 @@ public class SysUserController extends BaseController {
     @Operation(summary = "根据用户id获取授权角色")
     @GetMapping("/authorize_role/{userId}")
     @PreAuthorize("@ps.hasPerms('sys_user:query')")
-    public Result<SysUserGrantResp> authRole(@PathVariable Long userId) {
+    public Result<SysUserGrantVO> authRole(@PathVariable Long userId) {
         // 校验权限
         userService.checkDataScopes(userId);
 
-        SysUserGrantResp resp = new SysUserGrantResp();
+        SysUserGrantVO resp = new SysUserGrantVO();
         resp.setUser(userMapper.selectById(userId));
         resp.setRoleIds(userRoleMapper.listRoleIdByUserId(userId));
-        resp.setRoles(roleService.list(new SysRole(CommonConstants.STATUS_ENABLE)));
+        resp.setRoles(roleService.listCanGranted());
         return ok(resp);
     }
 
@@ -226,4 +233,5 @@ public class SysUserController extends BaseController {
         userService.allocateRoles(req.getUserId(), req.getRoleIds());
         return ok();
     }
+
 }

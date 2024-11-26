@@ -4,14 +4,7 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzkris.user.mapper.SysUserMapper">
 
-	<delete id="hardDeleteByIds">
-		DELETE FROM sys_user WHERE user_id IN
-		<foreach collection="userIds" item="userId" open="(" separator="," close=")">
-			#{userId}
-		</foreach>
-	</delete>
-
-	<delete id="hardDeleteByTenantIds">
+	<delete id="deleteByTenantIds">
 		DELETE FROM sys_user WHERE tenant_id IN
 		<foreach collection="tenantIds" item="tenantId" open="(" separator="," close=")">
 			#{tenantId}

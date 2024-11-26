@@ -42,7 +42,6 @@ public class AppUserDetailsService implements UserDetailsServiceExt {
 
         LoginApper loginApper = new LoginApper();
         loginApper.setUserId(appUserDTO.getUserId());
-        loginApper.setAvatar(appUserDTO.getAvatar());
         loginApper.setPhoneNumber(appUserDTO.getPhoneNumber());
 
         return new WzUser(UserType.APP_USER, loginApper.getPhoneNumber(), loginApper, Collections.emptyList());

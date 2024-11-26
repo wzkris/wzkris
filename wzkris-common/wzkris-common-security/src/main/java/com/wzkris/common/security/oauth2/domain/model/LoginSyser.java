@@ -15,19 +15,25 @@ import java.util.List;
 @Data
 public class LoginSyser implements Serializable {
 
-    // 是否当前租户下的最高管理员
+    /**
+     * 是否当前租户下的最高管理员
+     */
     private boolean administrator;
-    // 登录id
+    /**
+     * 登录id
+     */
     private Long userId;
-    // 部门id
-    private Long deptId;
-    // 租户id
-    private Long tenantId;
-    // 头像
-    private String avatar;
-    // 用户名
+    /**
+     * 用户名
+     */
     private String username;
-    // 部门数据权限， 最终会拼接到SQL中
+    /**
+     * 租户id
+     */
+    private Long tenantId;
+    /**
+     * 部门数据权限， 最终会拼接到SQL中
+     */
     private List<Long> deptScopes;
 
 }

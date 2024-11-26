@@ -7,8 +7,8 @@ import com.wzkris.common.orm.utils.DeptScopeUtil;
 import com.wzkris.common.security.utils.SysUtil;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
+import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -58,14 +58,15 @@ public class DeptScopeAspect {
         // 生成权限sql片段
         String aliasColumn = StringUtil.isBlank(deptScope.tableAlias()) ? deptScope.columnAlias() :
                 StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
-        Expression expression;
         List<Long> deptScopes = SysUtil.getLoginSyser().getDeptScopes();
+
+        Expression expression;
         if (CollUtil.isEmpty(deptScopes)) {
             // 没有部门权限数据则直接拼接-1, 查不出来即可
-            expression = new ExpressionList<>(new LongValue(-1L));
+            expression = new ParenthesedExpressionList<>(new LongValue(-1L));
         }
         else {
-            expression = new ExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
+            expression = new ParenthesedExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
         }
         InExpression inExpression = new InExpression(new Column(aliasColumn), expression);
 

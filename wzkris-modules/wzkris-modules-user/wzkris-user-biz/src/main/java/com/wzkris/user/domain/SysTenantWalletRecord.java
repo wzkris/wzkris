@@ -28,7 +28,7 @@ public class SysTenantWalletRecord {
     private String type;
 
     @Schema(description = "时间")
-    private Long payTime;
+    private Long createAt;
 
     @Schema(description = "备注")
     private String remark;

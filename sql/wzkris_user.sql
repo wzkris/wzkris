@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 14/11/2024 13:34:06
+ Date: 26/11/2024 13:37:24
 */
 
 SET NAMES utf8mb4;
@@ -30,7 +30,6 @@ CREATE TABLE `app_user`  (
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '状态值',
   `gender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '2' COMMENT '用户性别（0男 1女 2未知）',
   `avatar` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像地址',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标志',
   `login_ip` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录ip',
   `login_date` bigint NULL DEFAULT NULL COMMENT '登录时间',
   `remark` json NULL COMMENT '用户额外信息',
@@ -39,13 +38,30 @@ CREATE TABLE `app_user`  (
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`user_id`) USING BTREE,
-  UNIQUE INDEX `ad_phoneNumber`(`phone_number` ASC, `is_deleted` ASC) USING BTREE
+  UNIQUE INDEX `ad_phoneNumber`(`phone_number` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of app_user
 -- ----------------------------
-INSERT INTO `app_user` VALUES (1826896461245968384, NULL, '15888888888', '0', '2', NULL, 0, '0:0:0:0:0:0:0:1', 1724059238718, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `app_user` VALUES (1826896461245968384, NULL, '15888888888', '0', '2', NULL, '0:0:0:0:0:0:0:1', 1724059238718, NULL, 1713334134616, 1, 1732082045876, 1);
+
+-- ----------------------------
+-- Table structure for app_user_thirdinfo
+-- ----------------------------
+DROP TABLE IF EXISTS `app_user_thirdinfo`;
+CREATE TABLE `app_user_thirdinfo`  (
+  `user_id` bigint NOT NULL,
+  `openid` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `app_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'appid',
+  `channel` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '渠道',
+  PRIMARY KEY (`user_id`) USING BTREE,
+  UNIQUE INDEX `uk_openid`(`openid` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '第三方信息' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of app_user_thirdinfo
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for app_user_wallet
@@ -90,11 +106,11 @@ CREATE TABLE `oauth2_client`  (
   `client_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端名称',
   `client_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `client_secret` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `scopes` json NOT NULL COMMENT '权限域',
-  `authorization_grant_types` json NOT NULL COMMENT '授权类型',
-  `redirect_uris` json NOT NULL COMMENT '回调地址',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端状态',
-  `auto_approve` tinyint(1) NOT NULL COMMENT '是否自动放行',
+  `scopes` json NULL COMMENT '权限域',
+  `authorization_grant_types` json NULL COMMENT '授权类型',
+  `redirect_uris` json NULL COMMENT '回调地址',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '客户端状态',
+  `auto_approve` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否自动放行',
   `create_at` bigint NOT NULL,
   `create_id` bigint NOT NULL,
   `update_at` bigint NULL DEFAULT NULL,
@@ -106,7 +122,8 @@ CREATE TABLE `oauth2_client`  (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$UCYi5yRd5eS0sXdNlcvtK.Tl0oSIQuf2KKyQi4AltRppD3waUQ/3u', '[\"openid\"]', '[\"password\", \"sms\", \"refresh_token\", \"authorization_code\", \"client_credentials\"]', '[\"http://localhost:8080/auth/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1724142425635, 1);
+INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$A9K4w9XB.Q.mTLTSBu/EEeIoHhqI9tUbTLgb2LScgAcD2MpyYj6xC', '[\"openid\"]', '[\"password\", \"refresh_token\", \"authorization_code\", \"client_credentials\", \"sms\"]', '[\"http://localhost:8080/auth/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1732517240710, 1);
+INSERT INTO `oauth2_client` VALUES (1860941790147440642, '12312312', '312312', '{bcrypt}$2a$10$7DFDT0MWGy0vVokcS.3OmeHUDKhqGjzpMJiiP.Lh.1rxTFflaETLq', NULL, '[\"password\"]', NULL, '0', 0, 1732518072056, 1, 1732519422958, 1);
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -135,11 +152,13 @@ CREATE TABLE `sys_dept`  (
 -- Records of sys_dept
 -- ----------------------------
 INSERT INTO `sys_dept` VALUES (100, 0, 0, '0', '最高部门', '0', 0, '15888888888', '', 1713334134616, 1, 20240403145415, 1);
-INSERT INTO `sys_dept` VALUES (101, 0, 100, '0,100', 'galaxy', '0', 1, '15888888888', 'ry@qq.com', 1713334134616, 1, 1730794132685, 1);
-INSERT INTO `sys_dept` VALUES (105, 0, 114, '0,100,114', 'jeecg集团', '0', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 1730794127045, 1);
+INSERT INTO `sys_dept` VALUES (105, 0, 114, '0,100,114', 'jeecg集团', '1', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 1731919947405, 1);
 INSERT INTO `sys_dept` VALUES (114, 0, 100, '0,100', 'pig开源联盟', '0', 0, NULL, NULL, 1713334134616, 1, 20240403145228, 1);
 INSERT INTO `sys_dept` VALUES (1775382319191453698, 1774671331416821762, 0, '0', '默认租户部门', '0', 0, NULL, NULL, 1713334134616, 1774671331412627456, 20240412112834, 1);
 INSERT INTO `sys_dept` VALUES (1775387364419072002, 1774671331416821762, 1775382319191453698, '0,1775382319191453698', '默认租户销售部门', '0', 0, '13566699669', NULL, 1713334134616, 1774671331412627456, 20240403132635, 1);
+INSERT INTO `sys_dept` VALUES (1857293481839091714, 1853719125330489346, 0, '0', '2号', '0', 0, NULL, NULL, 1731648247581, 1, 1731648247581, 1);
+INSERT INTO `sys_dept` VALUES (1857293508972044290, 1853719125330489346, 1857293481839091714, '0,1857293481839091714', 'xx', '0', 0, NULL, NULL, 1731648254040, 1, 1731648254040, 1);
+INSERT INTO `sys_dept` VALUES (1858433026613760002, 0, 100, '0,100', 'xxx', '0', 0, NULL, NULL, 1731919936222, 1, 1731919936222, 1);
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -171,38 +190,39 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 100, 'system', NULL, NULL, 'M', '0', NULL, 'system', 0, 0, 1, 1713334134616, 1, 1730336391721, 1);
-INSERT INTO `sys_menu` VALUES (2, '用户权限管理', 0, 99, 'ur', NULL, NULL, 'M', '0', NULL, 'peoples', 0, 0, 1, 1713334134616, 1, 1724317616273, 1);
+INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 100, 'system', NULL, NULL, 'M', '0', NULL, 'system', 0, 0, 1, 1713334134616, 1, 1732349257371, 1);
+INSERT INTO `sys_menu` VALUES (2, '用户权限管理', 0, 99, 'user', NULL, NULL, 'M', '0', NULL, 'peoples', 0, 0, 1, 1713334134616, 1, 1731996088642, 1);
 INSERT INTO `sys_menu` VALUES (3, '商户管理', 0, 50, 'tenant', NULL, NULL, 'M', '0', NULL, 'merchant', 0, 0, 1, 1713334134616, 1, 1730344304191, 1);
-INSERT INTO `sys_menu` VALUES (4, '设备管理', 0, 10, 'equipment', NULL, NULL, 'M', '0', NULL, 'icon', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (4, '设备管理', 0, 10, 'equipment', NULL, NULL, 'M', '0', NULL, 'device', 0, 0, 1, 1713334134616, 1, 1731995658381, 1);
 INSERT INTO `sys_menu` VALUES (5, '订单服务', 0, 4, 'order', NULL, NULL, 'M', '0', NULL, 'order', 0, 0, 1, 1713334134616, 1, 1730270879847, 1);
-INSERT INTO `sys_menu` VALUES (100, '通知公告', 1, 15, 'notice', 'system/notice/index', NULL, 'C', '0', 'notice:list', 'guide', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
+INSERT INTO `sys_menu` VALUES (100, '通知公告', 1, 15, 'notify', 'system/notify/index', NULL, 'C', '0', 'notify:list', 'guide', 0, 0, 1, 1713334134616, 1, 1732155689519, 1);
 INSERT INTO `sys_menu` VALUES (101, '控制台入口', 1, 0, 'controller', NULL, NULL, 'M', '0', NULL, 'dashboard', 0, 0, 1, 1713334134616, 1, 1730270954332, 1);
 INSERT INTO `sys_menu` VALUES (102, '字典管理', 1, 6, 'dict', 'system/dict/index', NULL, 'C', '0', 'dict:list', 'dict', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (103, '参数设置', 1, 7, 'config', 'system/config/index', NULL, 'C', '0', 'config:list', 'edit', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (104, '日志管理', 1, 1, 'log', NULL, NULL, 'M', '0', NULL, 'log', 0, 0, 1, 1713334134616, 1, 1730336344130, 1);
 INSERT INTO `sys_menu` VALUES (150, '操作日志', 104, 1, 'operlog', 'system/operlog/index', NULL, 'C', '0', 'operlog:list', 'form', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (151, '登录日志', 104, 2, 'loginlog', 'system/loginlog/index', NULL, 'C', '0', 'loginlog:list', 'logininfor', 0, 0, 1, 1713334134616, 1, 1730336338258, 1);
-INSERT INTO `sys_menu` VALUES (201, '用户管理', 2, 1, 'appuser', 'ur/appuser/index', NULL, 'C', '0', 'app_user:list', 'user2', 0, 0, 1, 1713334134616, 1, 1730340519415, 1);
-INSERT INTO `sys_menu` VALUES (202, '会员体系', 2, 2, 'vip', 'ur/vip/index', NULL, 'C', '0', 'vip:list', 'build', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (203, '后台管理', 2, 100, 'user', 'ur/user/index', NULL, 'C', '0', 'sys_user:list', 'user', 0, 0, 1, 1713334134616, 1, 1730340469318, 1);
-INSERT INTO `sys_menu` VALUES (205, '部门管理', 2, 70, 'dept', 'ur/dept/index', NULL, 'C', '0', 'dept:list', 'tree', 0, 0, 1, 1713334134616, 1, 1724316964256, 1);
-INSERT INTO `sys_menu` VALUES (206, '角色管理', 2, 99, 'role', 'ur/role/index', NULL, 'C', '0', 'sys_role:list', 'role', 0, 0, 1, 1713334134616, 1, 1730340413450, 1);
-INSERT INTO `sys_menu` VALUES (207, '菜单管理', 2, 50, 'menu', 'ur/menu/index', NULL, 'C', '0', 'menu:list', 'tree-table', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
-INSERT INTO `sys_menu` VALUES (208, '岗位管理', 2, 8, 'post', 'ur/post/index', NULL, 'C', '0', 'post:list', 'post', 0, 0, 1, 1713334134616, 1, 1724316987719, 1);
+INSERT INTO `sys_menu` VALUES (201, '顾客管理', 2, 1, 'appuser', 'user/appuser/index', NULL, 'C', '0', 'app_user:list', 'user2', 0, 0, 1, 1713334134616, 1, 1731996271184, 1);
+INSERT INTO `sys_menu` VALUES (202, '会员体系', 2, 2, 'vip', 'user/vip/index', NULL, 'C', '0', 'vip:list', 'build', 0, 0, 1, 1713334134616, 1, 1731996267958, 1);
+INSERT INTO `sys_menu` VALUES (203, '后台管理', 2, 100, 'sysuser', 'user/sysuser/index', NULL, 'C', '0', 'sys_user:list', 'user', 0, 0, 1, 1713334134616, 1, 1731996306849, 1);
+INSERT INTO `sys_menu` VALUES (205, '部门管理', 2, 70, 'dept', 'user/dept/index', NULL, 'C', '0', 'dept:list', 'tree', 0, 0, 1, 1713334134616, 1, 1731996252876, 1);
+INSERT INTO `sys_menu` VALUES (206, '角色管理', 2, 99, 'role', 'user/role/index', NULL, 'C', '0', 'sys_role:list', 'role', 0, 0, 1, 1713334134616, 1, 1731996255985, 1);
+INSERT INTO `sys_menu` VALUES (207, '菜单管理', 2, 50, 'menu', 'user/menu/index', NULL, 'C', '0', 'menu:list', 'tree-table', 0, 0, 1, 1713334134616, 1, 1731996177723, 1);
+INSERT INTO `sys_menu` VALUES (208, '岗位管理', 2, 8, 'post', 'user/post/index', NULL, 'C', '0', 'post:list', 'post', 0, 0, 1, 1713334134616, 1, 1731996261504, 1);
 INSERT INTO `sys_menu` VALUES (300, '定时任务', 101, 20, 'http://localhost:9200/xxl-job-admin', NULL, NULL, 'C', '0', 'job:list', 'job', 1, 0, 1, 1713334134616, 1, 1719987477468, 1);
 INSERT INTO `sys_menu` VALUES (301, '系统接口', 101, 2, 'http://localhost:8080/doc.html', NULL, NULL, 'C', '0', 'tool:swagger:list', 'swagger', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (302, 'Sentinel控制台', 101, 3, 'http://localhost:8718', NULL, NULL, 'C', '0', 'monitor:sentinel:list', 'sentinel', 1, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (303, 'Nacos控制台', 101, 4, 'http://127.0.0.1:8848/nacos', NULL, NULL, 'C', '0', 'monitor:nacos:list', 'nacos', 1, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (304, '服务监控', 101, 5, 'http://localhost:9100/', NULL, NULL, 'C', '0', 'monitor:server:list', 'server', 1, 0, 1, 1713334134616, 1, 1719987239231, 1);
 INSERT INTO `sys_menu` VALUES (400, '站点管理', 4, 0, 'station', 'equipment/station/index', NULL, 'C', '0', 'station:list', 'location', 0, 0, 1, 1713334134616, 1, 1730270990702, 1);
-INSERT INTO `sys_menu` VALUES (401, '充电桩管理', 4, 1, 'device', 'equipment/device/index', NULL, 'C', '0', 'device:list', 'chargePile', 0, 0, 1, 1713334134616, 1, 1730270576992, 1);
+INSERT INTO `sys_menu` VALUES (401, '物联网设备管理', 4, 1, 'device', 'equipment/device/index', NULL, 'C', '0', 'device:list', 'chargePile', 0, 0, 1, 1713334134616, 1, 1731996025784, 1);
+INSERT INTO `sys_menu` VALUES (402, '协议管理', 4, 50, 'protocol', 'equipment/protocol/index', NULL, 'C', '0', 'protocol:list', 'protocol', 0, 0, 1, 1732063013229, 1, 1732063154322, 1);
 INSERT INTO `sys_menu` VALUES (500, '订单管理', 5, 0, 'order', 'order/order/index', NULL, 'C', '0', 'order:list', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (501, '优惠券管理', 5, 1, 'coupon', 'order/coupon/index', NULL, 'C', '0', 'coupon:list', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (502, '订单投诉', 5, 5, 'feedback', 'order/feedback/index', NULL, 'C', '0', NULL, '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (601, '商户信息', 3, 100, 'info', 'ur/tenant/index', NULL, 'C', '0', '', 'information', 0, 0, 1, 1713334134616, 1, 1730530371801, 1);
-INSERT INTO `sys_menu` VALUES (602, '租户套餐管理', 3, 50, 'package', 'ur/tenant/package/index', NULL, 'C', '0', 'tenant_package:list', 'package', 0, 0, 1, 1713334134616, 1, 1730270346371, 1);
-INSERT INTO `sys_menu` VALUES (700, '客户端管理', 2, 3, 'client', 'ur/client/index', NULL, 'C', '0', 'oauth2_client:list', 'wechat', 0, 0, 1, 1724135157964, 1, 1724135200246, 1);
+INSERT INTO `sys_menu` VALUES (601, '商户信息', 3, 100, 'info', 'user/tenant/index', NULL, 'C', '0', '', 'information', 0, 0, 1, 1713334134616, 1, 1732159304112, 1);
+INSERT INTO `sys_menu` VALUES (602, '租户套餐管理', 3, 50, 'package', 'user/tenant/package/index', NULL, 'C', '0', 'tenant_package:list', 'package', 0, 0, 1, 1713334134616, 1, 1732159308804, 1);
+INSERT INTO `sys_menu` VALUES (700, '客户端管理', 2, 3, 'client', 'user/client/index', NULL, 'C', '0', 'oauth2_client:list', 'wechat', 0, 0, 1, 1724135157964, 1, 1731996264887, 1);
 INSERT INTO `sys_menu` VALUES (1046, '字典查询', 102, 1, '#', NULL, NULL, 'F', '0', 'dict:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1047, '字典新增', 102, 2, '#', NULL, NULL, 'F', '0', 'dict:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1048, '字典修改', 102, 3, '#', NULL, NULL, 'F', '0', 'dict:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
@@ -213,15 +233,18 @@ INSERT INTO `sys_menu` VALUES (1052, '参数新增', 103, 2, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (1053, '参数修改', 103, 3, '#', NULL, NULL, 'F', '0', 'config:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1054, '参数删除', 103, 4, '#', NULL, NULL, 'F', '0', 'config:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1055, '参数导出', 103, 5, '#', NULL, NULL, 'F', '0', 'config:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1056, '公告查询', 100, 1, '#', NULL, NULL, 'F', '0', 'message:notice:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1057, '公告新增', 100, 2, '#', NULL, NULL, 'F', '0', 'message:notice:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1058, '公告修改', 100, 3, '#', NULL, NULL, 'F', '0', 'message:notice:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1059, '公告删除', 100, 4, '#', NULL, NULL, 'F', '0', 'message:notice:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (1056, '公告查询', 100, 1, '#', NULL, NULL, 'F', '0', 'notify:query', '#', 0, 0, 1, 1713334134616, 1, 1732155795196, 1);
+INSERT INTO `sys_menu` VALUES (1057, '公告新增', 100, 2, '#', NULL, NULL, 'F', '0', 'notify:add', '#', 0, 0, 1, 1713334134616, 1, 1732155791931, 1);
+INSERT INTO `sys_menu` VALUES (1058, '公告修改', 100, 3, '#', NULL, NULL, 'F', '0', 'notify:edit', '#', 0, 0, 1, 1713334134616, 1, 1732155788748, 1);
+INSERT INTO `sys_menu` VALUES (1059, '公告删除', 100, 4, '#', NULL, NULL, 'F', '0', 'notify:remove', '#', 0, 0, 1, 1713334134616, 1, 1732155783581, 1);
 INSERT INTO `sys_menu` VALUES (1061, '操作删除', 150, 2, '#', NULL, NULL, 'F', '0', 'operlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1064, '登录删除', 151, 2, '#', NULL, NULL, 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1730336330958, 1);
+INSERT INTO `sys_menu` VALUES (1125, '商户余额记录', 601, 3, '#', NULL, NULL, 'F', '0', 'wallet_record:list', '#', 0, 0, 1, 1732598092738, 1, 1732598285979, 1);
+INSERT INTO `sys_menu` VALUES (1126, '商户提现', 601, 1, '#', NULL, NULL, 'F', '0', 'tenant:withdrawal', '#', 0, 0, 1, 1732598071539, 1, 1732598191196, 1);
+INSERT INTO `sys_menu` VALUES (1127, '商户余额信息', 601, 0, '#', NULL, NULL, 'F', '0', 'tenant:wallet_info', '#', 0, 0, 1, 1732597687278, 1, 1732598171530, 1);
 INSERT INTO `sys_menu` VALUES (1128, '租户列表', 601, 10, '#', NULL, NULL, 'F', '0', 'tenant:list', '#', 0, 0, 1, 1730530211713, 1, 1730530211713, 1);
-INSERT INTO `sys_menu` VALUES (1129, '修改操作密码', 601, 11, '#', NULL, NULL, 'F', '0', 'tenant:edit_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1730882615318, 1);
-INSERT INTO `sys_menu` VALUES (1130, '基本信息', 601, 20, '#', '', NULL, 'F', '0', 'tenant:getinfo', '#', 0, 0, 1, 1724380930192, 1, 1730530283937, 1);
+INSERT INTO `sys_menu` VALUES (1129, '重置租户操作密码', 601, 11, '#', NULL, NULL, 'F', '0', 'tenant:edit_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1732598183996, 1);
+INSERT INTO `sys_menu` VALUES (1130, '商户基本信息', 601, 20, '#', '', NULL, 'F', '0', 'tenant:getinfo', '#', 0, 0, 1, 1724380930192, 1, 1732597854658, 1);
 INSERT INTO `sys_menu` VALUES (1131, '租户详情', 601, 9, '#', NULL, NULL, 'F', '0', 'tenant:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1132, '租户新增', 601, 4, '#', NULL, NULL, 'F', '0', 'tenant:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1133, '租户修改', 601, 2, '#', NULL, NULL, 'F', '0', 'tenant:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
@@ -249,41 +272,44 @@ INSERT INTO `sys_menu` VALUES (2038, '部门新增', 205, 2, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (2039, '部门修改', 205, 3, '#', NULL, NULL, 'F', '0', 'dept:edit', '#', 0, 0, 1, 1713334134616, 1, 1724316969623, 1);
 INSERT INTO `sys_menu` VALUES (2040, '部门删除', 205, 4, '#', NULL, NULL, 'F', '0', 'dept:remove', '#', 0, 0, 1, 1713334134616, 1, 1724316967034, 1);
 INSERT INTO `sys_menu` VALUES (2062, '重置密码', 203, 7, '#', NULL, NULL, 'F', '0', 'sys_user:resetPwd', '#', 0, 0, 1, 1713334134616, 1, 1724316833128, 1);
-INSERT INTO `sys_menu` VALUES (2064, '用户修改', 203, 3, '#', NULL, NULL, 'F', '0', 'sys_user:edit', '#', 0, 0, 0, 1713334134616, 1, 1724316835983, 1);
+INSERT INTO `sys_menu` VALUES (2064, '用户修改', 203, 3, '#', NULL, NULL, 'F', '0', 'sys_user:edit', '#', 0, 0, 1, 1713334134616, 1, 1732352143516, 1);
 INSERT INTO `sys_menu` VALUES (2071, '用户查询', 203, 0, '#', NULL, NULL, 'F', '0', 'sys_user:query', '#', 0, 0, 1, 1713334134616, 1, 1724316844479, 1);
 INSERT INTO `sys_menu` VALUES (2072, '用户添加', 203, 1, '#', NULL, NULL, 'F', '0', 'sys_user:add', '#', 0, 0, 1, 1713334134616, 1, 1724316841529, 1);
 INSERT INTO `sys_menu` VALUES (2077, '用户导出', 203, 1, '#', NULL, NULL, 'F', '0', 'sys_user:export', '#', 0, 0, 1, 1713334134616, 1, 1724316838713, 1);
 INSERT INTO `sys_menu` VALUES (2078, '用户删除', 203, 8, '#', NULL, NULL, 'F', '0', 'sys_user:remove', '#', 0, 0, 1, 1713334134616, 1, 1724316829679, 1);
-INSERT INTO `sys_menu` VALUES (2112, '等级查询', 202, 0, '#', NULL, NULL, 'F', '0', 'level:query', '#', 0, 0, 0, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (2113, '等级修改', 202, 1, '#', NULL, NULL, 'F', '0', 'level:edit', '#', 0, 0, 0, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (2114, '等级添加', 202, 2, '#', NULL, NULL, 'F', '0', 'level:add', '#', 0, 0, 0, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (2115, '等级删除', 202, 3, '#', NULL, NULL, 'F', '0', 'level:remove', '#', 0, 0, 0, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (2112, '等级查询', 202, 0, '#', NULL, NULL, 'F', '0', 'level:query', '#', 0, 0, 1, 1713334134616, 1, 1732352184748, 1);
+INSERT INTO `sys_menu` VALUES (2113, '等级修改', 202, 1, '#', NULL, NULL, 'F', '0', 'level:edit', '#', 0, 0, 1, 1713334134616, 1, 1732352180655, 1);
+INSERT INTO `sys_menu` VALUES (2114, '等级添加', 202, 2, '#', NULL, NULL, 'F', '0', 'level:add', '#', 0, 0, 1, 1713334134616, 1, 1732352175359, 1);
+INSERT INTO `sys_menu` VALUES (2115, '等级删除', 202, 3, '#', NULL, NULL, 'F', '0', 'level:remove', '#', 0, 0, 1, 1713334134616, 1, 1732352168566, 1);
 INSERT INTO `sys_menu` VALUES (2141, '岗位查询', 208, 1, '#', NULL, NULL, 'F', '0', 'post:query', '#', 0, 0, 1, 1713334134616, 1, 1724317000834, 1);
 INSERT INTO `sys_menu` VALUES (2142, '岗位新增', 208, 2, '#', NULL, NULL, 'F', '0', 'post:add', '#', 0, 0, 1, 1713334134616, 1, 1724316998231, 1);
 INSERT INTO `sys_menu` VALUES (2143, '岗位修改', 208, 3, '#', NULL, NULL, 'F', '0', 'post:edit', '#', 0, 0, 1, 1713334134616, 1, 1724316995704, 1);
 INSERT INTO `sys_menu` VALUES (2144, '岗位删除', 208, 4, '#', NULL, NULL, 'F', '0', 'post:remove', '#', 0, 0, 1, 1713334134616, 1, 1724316993025, 1);
 INSERT INTO `sys_menu` VALUES (2145, '岗位导出', 208, 5, '#', NULL, NULL, 'F', '0', 'post:export', '#', 0, 0, 1, 1713334134616, 1, 1724316990336, 1);
-INSERT INTO `sys_menu` VALUES (2207, '角色权限', 206, 6, '#', NULL, NULL, 'F', '0', 'sys_role:auth', '#', 0, 0, 0, 1713334134616, 1, 1724316946562, 1);
+INSERT INTO `sys_menu` VALUES (2207, '权限授予', 206, 6, '#', NULL, NULL, 'F', '0', 'sys_role:auth', '#', 0, 0, 1, 1713334134616, 1, 1732352108035, 1);
 INSERT INTO `sys_menu` VALUES (2208, '角色查询', 206, 1, '#', NULL, NULL, 'F', '0', 'sys_role:query', '#', 0, 0, 1, 1713334134616, 1, 1724316959450, 1);
 INSERT INTO `sys_menu` VALUES (2209, '角色新增', 206, 2, '#', NULL, NULL, 'F', '0', 'sys_role:add', '#', 0, 0, 1, 1713334134616, 1, 1724316956840, 1);
 INSERT INTO `sys_menu` VALUES (2210, '角色修改', 206, 3, '#', NULL, NULL, 'F', '0', 'sys_role:edit', '#', 0, 0, 1, 1713334134616, 1, 1724316954128, 1);
 INSERT INTO `sys_menu` VALUES (2211, '角色删除', 206, 4, '#', NULL, NULL, 'F', '0', 'sys_role:remove', '#', 0, 0, 1, 1713334134616, 1, 1724316951594, 1);
-INSERT INTO `sys_menu` VALUES (4121, '站点查询', 400, 0, '#', NULL, NULL, 'F', '0', 'station:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (4122, '站点添加', 400, 1, '#', NULL, NULL, 'F', '0', 'station:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (4123, '站点修改', 400, 2, '#', NULL, NULL, 'F', '0', 'station:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (4124, '站点删除', 400, 3, '#', NULL, NULL, 'F', '0', 'station:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (4125, '站点导出', 400, 5, '#', NULL, NULL, 'F', '0', 'station:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (4126, '充电桩查询', 401, 0, '#', NULL, NULL, 'F', '0', 'device:query', '#', 0, 0, 1, 1713334134616, 1, 1730270539086, 1);
-INSERT INTO `sys_menu` VALUES (4127, '充电桩添加', 401, 1, '#', NULL, NULL, 'F', '0', 'device:add', '#', 0, 0, 1, 1713334134616, 1, 1730270535325, 1);
-INSERT INTO `sys_menu` VALUES (4128, '充电桩修改', 401, 2, '#', NULL, NULL, 'F', '0', 'device:edit', '#', 0, 0, 1, 1713334134616, 1, 1730270532461, 1);
-INSERT INTO `sys_menu` VALUES (4129, '充电桩删除', 401, 3, '#', NULL, NULL, 'F', '0', 'device:remove', '#', 0, 0, 1, 1713334134616, 1, 1730270529143, 1);
-INSERT INTO `sys_menu` VALUES (4130, '充电桩导出', 401, 4, '#', NULL, NULL, 'F', '0', 'device:export', '#', 0, 0, 1, 1713334134616, 1, 1730270525758, 1);
-INSERT INTO `sys_menu` VALUES (5102, '交易查询', 500, 0, '#', NULL, NULL, 'F', '0', 'order:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (5103, '交易删除', 500, 2, '#', NULL, NULL, 'F', '0', 'order:remove', '#', 0, 0, 0, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (5204, '优惠券查询', 501, 0, '#', NULL, NULL, 'F', '0', 'coupon:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (5205, '优惠券编辑', 501, 1, '#', NULL, NULL, 'F', '0', 'coupon:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (5206, '优惠券添加', 501, 1, '#', NULL, NULL, 'F', '0', 'coupon:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (5207, '优惠券删除', 501, 2, '#', NULL, NULL, 'F', '0', 'coupon:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (3121, '站点查询', 400, 0, '#', NULL, NULL, 'F', '0', 'station:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (3122, '站点添加', 400, 1, '#', NULL, NULL, 'F', '0', 'station:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (3123, '站点修改', 400, 2, '#', NULL, NULL, 'F', '0', 'station:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (3124, '站点删除', 400, 3, '#', NULL, NULL, 'F', '0', 'station:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (3125, '站点导出', 400, 5, '#', NULL, NULL, 'F', '0', 'station:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (3126, '充电桩查询', 401, 0, '#', NULL, NULL, 'F', '0', 'device:query', '#', 0, 0, 1, 1713334134616, 1, 1730270539086, 1);
+INSERT INTO `sys_menu` VALUES (3127, '充电桩添加', 401, 1, '#', NULL, NULL, 'F', '0', 'device:add', '#', 0, 0, 1, 1713334134616, 1, 1730270535325, 1);
+INSERT INTO `sys_menu` VALUES (3128, '充电桩修改', 401, 2, '#', NULL, NULL, 'F', '0', 'device:edit', '#', 0, 0, 1, 1713334134616, 1, 1730270532461, 1);
+INSERT INTO `sys_menu` VALUES (3129, '充电桩删除', 401, 3, '#', NULL, NULL, 'F', '0', 'device:remove', '#', 0, 0, 1, 1713334134616, 1, 1730270529143, 1);
+INSERT INTO `sys_menu` VALUES (3130, '充电桩导出', 401, 4, '#', NULL, NULL, 'F', '0', 'device:export', '#', 0, 0, 1, 1713334134616, 1, 1730270525758, 1);
+INSERT INTO `sys_menu` VALUES (3301, '详情', 402, 10, '#', NULL, NULL, 'F', '0', 'protocol:query', '#', 0, 0, 1, 1732063192917, 1, 1732063192917, 1);
+INSERT INTO `sys_menu` VALUES (3302, '添加', 402, 5, '#', NULL, NULL, 'F', '0', 'protocol:add', '#', 0, 0, 1, 1732063208719, 1, 1732063208719, 1);
+INSERT INTO `sys_menu` VALUES (3303, '修改', 402, 4, '#', NULL, NULL, 'F', '0', 'protocol:edit', '#', 0, 0, 1, 1732063222263, 1, 1732063222263, 1);
+INSERT INTO `sys_menu` VALUES (3304, '删除', 402, 1, '#', NULL, NULL, 'F', '0', 'protocol:remove', '#', 0, 0, 1, 1732063237210, 1, 1732063261984, 1);
+INSERT INTO `sys_menu` VALUES (4102, '交易查询', 500, 0, '#', NULL, NULL, 'F', '0', 'order:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (4204, '优惠券查询', 501, 0, '#', NULL, NULL, 'F', '0', 'coupon:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (4205, '优惠券编辑', 501, 1, '#', NULL, NULL, 'F', '0', 'coupon:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (4206, '优惠券添加', 501, 1, '#', NULL, NULL, 'F', '0', 'coupon:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
+INSERT INTO `sys_menu` VALUES (4207, '优惠券删除', 501, 2, '#', NULL, NULL, 'F', '0', 'coupon:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -309,6 +335,7 @@ CREATE TABLE `sys_post`  (
 INSERT INTO `sys_post` VALUES (1, 0, 'CEO', '执行总裁', '0', 1, 1713334134616, 1, 1719041786749, 1);
 INSERT INTO `sys_post` VALUES (4, 0, 'CTO', '首席技术官', '1', 3, 1713334134616, 1, 1724740002367, 2);
 INSERT INTO `sys_post` VALUES (1776484907454525442, 1774671331416821762, NULL, 'CEO', '0', 0, 1713334134616, 1774671331412627456, 20240406133942, 1774671331412627456);
+INSERT INTO `sys_post` VALUES (1857295398191411202, 1853719125330489346, NULL, 'xx', '0', 0, 1731648704471, 1853719125066248192, 1731648704471, 1853719125066248192);
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -317,7 +344,7 @@ DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`  (
   `role_id` bigint NOT NULL COMMENT '角色ID',
   `tenant_id` bigint NOT NULL COMMENT '租户ID',
-  `data_scope` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '5' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
+  `data_scope` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '4' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
   `role_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '状态（0正常，1停用）',
   `role_sort` int NOT NULL COMMENT '显示顺序',
@@ -333,11 +360,11 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1730275764590, 1);
-INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1724739991113, 2);
-INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '0', 5, 1, 1, 1713334134616, 1, 1713334134616, 1);
+INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1732351091887, 1);
+INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1732349385269, 1);
+INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '1', 5, 1, 1, 1713334134616, 1, 1732348738671, 1);
 INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1724393365447, 1774671331412627456);
-INSERT INTO `sys_role` VALUES (1856232880907972609, 0, '5', '11', '0', 0, 1, 1, 1731395380608, 1, 1731395380608, 1);
+INSERT INTO `sys_role` VALUES (1858701878891327490, 0, '4', 'xxx', '0', 0, 1, 1, 1731984035599, 2, 1731984035599, 2);
 
 -- ----------------------------
 -- Table structure for sys_role_dept
@@ -378,8 +405,8 @@ INSERT INTO `sys_role_menu` VALUES (2, 205);
 INSERT INTO `sys_role_menu` VALUES (2, 206);
 INSERT INTO `sys_role_menu` VALUES (2, 207);
 INSERT INTO `sys_role_menu` VALUES (2, 208);
-INSERT INTO `sys_role_menu` VALUES (2, 600);
 INSERT INTO `sys_role_menu` VALUES (2, 601);
+INSERT INTO `sys_role_menu` VALUES (2, 602);
 INSERT INTO `sys_role_menu` VALUES (2, 1051);
 INSERT INTO `sys_role_menu` VALUES (2, 1052);
 INSERT INTO `sys_role_menu` VALUES (2, 1053);
@@ -427,6 +454,20 @@ INSERT INTO `sys_role_menu` VALUES (2, 2208);
 INSERT INTO `sys_role_menu` VALUES (2, 2209);
 INSERT INTO `sys_role_menu` VALUES (2, 2210);
 INSERT INTO `sys_role_menu` VALUES (2, 2211);
+INSERT INTO `sys_role_menu` VALUES (3, 2);
+INSERT INTO `sys_role_menu` VALUES (3, 203);
+INSERT INTO `sys_role_menu` VALUES (3, 206);
+INSERT INTO `sys_role_menu` VALUES (3, 2062);
+INSERT INTO `sys_role_menu` VALUES (3, 2064);
+INSERT INTO `sys_role_menu` VALUES (3, 2071);
+INSERT INTO `sys_role_menu` VALUES (3, 2072);
+INSERT INTO `sys_role_menu` VALUES (3, 2077);
+INSERT INTO `sys_role_menu` VALUES (3, 2078);
+INSERT INTO `sys_role_menu` VALUES (3, 2207);
+INSERT INTO `sys_role_menu` VALUES (3, 2208);
+INSERT INTO `sys_role_menu` VALUES (3, 2209);
+INSERT INTO `sys_role_menu` VALUES (3, 2210);
+INSERT INTO `sys_role_menu` VALUES (3, 2211);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 203);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 205);
@@ -466,7 +507,6 @@ CREATE TABLE `sys_tenant`  (
   `create_at` bigint NOT NULL COMMENT '创建时间',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标志',
   PRIMARY KEY (`tenant_id`) USING BTREE,
   UNIQUE INDEX `uk_administrator`(`administrator` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '租户表' ROW_FORMAT = DYNAMIC;
@@ -474,8 +514,8 @@ CREATE TABLE `sys_tenant`  (
 -- ----------------------------
 -- Records of sys_tenant
 -- ----------------------------
-INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1774671331412627456, 1730881892894, 0);
-INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$5VkAMC0ynugNbd4cbail4.6xb8HuhiodlxiIQwU2w0Cpe8OqII.Lm', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1730962049110, 0);
+INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1774671331412627456, 1730881892894);
+INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$5VkAMC0ynugNbd4cbail4.6xb8HuhiodlxiIQwU2w0Cpe8OqII.Lm', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1730962049110);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package
@@ -499,7 +539,7 @@ CREATE TABLE `sys_tenant_package`  (
 -- Records of sys_tenant_package
 -- ----------------------------
 INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '0', '[]', 1, NULL, 1, 1713334134616, 1, 1730271844479);
-INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 151, 1066, 1065, 1064, 1063, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130]', 1, NULL, 1, 1713334134616, 1, 1730781523791);
+INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 151, 1064, 203, 2062, 2064, 2071, 2072, 2077, 2078, 205, 2037, 2038, 2039, 2040, 206, 2207, 2208, 2209, 2210, 2211, 208, 2141, 2142, 2143, 2144, 2145, 1125, 1126, 1127, 1130]', 1, NULL, 1, 1713334134616, 1, 1732598349291);
 
 -- ----------------------------
 -- Table structure for sys_tenant_wallet
@@ -527,7 +567,7 @@ CREATE TABLE `sys_tenant_wallet_record`  (
   `tenant_id` bigint NOT NULL COMMENT '租户ID',
   `amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '金额',
   `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '记录类型',
-  `pay_time` bigint NOT NULL COMMENT '时间',
+  `create_at` bigint NOT NULL COMMENT '时间',
   `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`record_id`) USING BTREE,
   INDEX `t_id`(`tenant_id` ASC) USING BTREE
@@ -536,6 +576,8 @@ CREATE TABLE `sys_tenant_wallet_record`  (
 -- ----------------------------
 -- Records of sys_tenant_wallet_record
 -- ----------------------------
+INSERT INTO `sys_tenant_wallet_record` VALUES (1, 1774671331416821762, 1.00, '1', 1731996255985, NULL);
+INSERT INTO `sys_tenant_wallet_record` VALUES (2, 1853719125330489346, 2.00, '0', 1732006255985, NULL);
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -553,7 +595,6 @@ CREATE TABLE `sys_user`  (
   `gender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '2' COMMENT '用户性别（0男 1女 2未知）',
   `avatar` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像地址',
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标志',
   `login_ip` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录ip',
   `login_date` bigint NULL DEFAULT NULL COMMENT '登录时间',
   `remark` json NULL COMMENT '用户额外信息',
@@ -562,19 +603,19 @@ CREATE TABLE `sys_user`  (
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`user_id`) USING BTREE,
-  UNIQUE INDEX `ad_username`(`username` ASC, `is_deleted` ASC) USING BTREE,
-  UNIQUE INDEX `ad_phoneNumber`(`phone_number` ASC, `is_deleted` ASC) USING BTREE
+  UNIQUE INDEX `ad_username`(`username` ASC) USING BTREE,
+  UNIQUE INDEX `ad_phoneNumber`(`phone_number` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'ry@163.com', 'nick_admin', '15888888888', '0', '0', '/uploadPath/2023/06/10/blob_20230610111344A003.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1731545424847, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (2, 0, 105, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', 0, '127.0.0.1', 1724739889921, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', 0, '127.0.0.1', 1731545828563, NULL, 1713334134616, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$/weEZ1mEGhGDrbiiFPNjK.5V8lcgxWTxTTzvaYckS.LuoR6GGBby.', 0, NULL, NULL, NULL, 1730796054646, 1, 1730796054646, 1);
-INSERT INTO `sys_user` VALUES (1856251200466030593, 1774671331416821762, 1775382319191453698, '___sub_', NULL, 'xxxxxx', NULL, '0', '2', NULL, '{bcrypt}$2a$10$nRc3b1tgQQCQ/58unpvsHuP9q02lQVJru0JgBR/oePVUcjyc/Pl8a', 0, NULL, NULL, NULL, 1731399748330, 1774671331412627456, 1731399941611, 1774671331412627456);
-INSERT INTO `sys_user` VALUES (1856869914760638466, 1774671331416821762, NULL, 'ccccccc', NULL, 'zzzz', NULL, '0', '2', NULL, '{bcrypt}$2a$10$NnSa6nPOcCQkJI8u19EgKuIND0rggfB3qAucSA7mAJwDzTc2uJBEu', 0, NULL, NULL, NULL, 1731547261314, 1, 1731547261314, 1);
+INSERT INTO `sys_user` VALUES (1, 0, NULL, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1732584066327, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (2, 0, 100, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1731992153861, NULL, 1713334134616, 1, 1732081703443, 1);
+INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', '127.0.0.1', 1732598359333, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$v544q0b/1YjPbVQJDRKZrOnXoRxRcR.eyxIUd33TMRNCNXdVh.1Eu', '127.0.0.1', 1731648341626, NULL, 1730796054646, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1856251200466030593, 1774671331416821762, 1775382319191453698, '___sub_', NULL, 'xxxxxx', NULL, '0', '2', NULL, '{bcrypt}$2a$10$nRc3b1tgQQCQ/58unpvsHuP9q02lQVJru0JgBR/oePVUcjyc/Pl8a', NULL, NULL, NULL, 1731399748330, 1774671331412627456, 1731399941611, 1774671331412627456);
+INSERT INTO `sys_user` VALUES (1856869914760638466, 1774671331416821762, NULL, 'ccccccc', NULL, 'zzzz', NULL, '0', '2', NULL, '{bcrypt}$2a$10$NnSa6nPOcCQkJI8u19EgKuIND0rggfB3qAucSA7mAJwDzTc2uJBEu', NULL, NULL, NULL, 1731547261314, 1, 1731547261314, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_post
@@ -589,7 +630,6 @@ CREATE TABLE `sys_user_post`  (
 -- ----------------------------
 -- Records of sys_user_post
 -- ----------------------------
-INSERT INTO `sys_user_post` VALUES (1, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -604,7 +644,6 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES (2, 2);
 INSERT INTO `sys_user_role` VALUES (1856251200466030593, 1775445330027577345);
 INSERT INTO `sys_user_role` VALUES (1856869914760638466, 1775445330027577345);
 

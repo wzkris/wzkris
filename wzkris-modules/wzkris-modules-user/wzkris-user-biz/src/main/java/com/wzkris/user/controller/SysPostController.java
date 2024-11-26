@@ -1,5 +1,7 @@
 package com.wzkris.user.controller;
 
+import cn.hutool.core.util.ObjUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
@@ -10,6 +12,7 @@ import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.domain.export.SysPostExport;
+import com.wzkris.user.domain.req.SysPostQueryReq;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysTenantService;
@@ -40,10 +43,18 @@ public class SysPostController extends BaseController {
     @Operation(summary = "岗位分页")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('post:list')")
-    public Result<Page<SysPost>> listPage(SysPost sysPost) {
+    public Result<Page<SysPost>> listPage(SysPostQueryReq req) {
         startPage();
-        List<SysPost> list = postService.list(sysPost);
+        List<SysPost> list = postMapper.selectList(this.buildQueryWrapper(req));
         return getDataTable(list);
+    }
+
+    private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPostQueryReq req) {
+        return new LambdaQueryWrapper<SysPost>()
+                .like(ObjUtil.isNotEmpty(req.getPostName()), SysPost::getPostName, req.getPostName())
+                .like(ObjUtil.isNotEmpty(req.getPostCode()), SysPost::getPostCode, req.getPostCode())
+                .eq(ObjUtil.isNotEmpty(req.getStatus()), SysPost::getStatus, req.getStatus())
+                .orderByDesc(SysPost::getPostSort);
     }
 
     @Operation(summary = "岗位详细信息")
@@ -77,15 +88,19 @@ public class SysPostController extends BaseController {
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('post:remove')")
     public Result<Void> remove(@RequestBody List<Long> postIds) {
-        return toRes(postService.deleteByPostIds(postIds));
+        if (postService.checkPostUse(postIds)) {
+            return fail("岗位已被使用,不允许删除");
+        }
+        postService.deleteByPostIds(postIds);
+        return ok();
     }
 
     @Operation(summary = "导出")
     @OperateLog(title = "岗位管理", subTitle = "导出岗位数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('post:export')")
-    public void export(HttpServletResponse response, SysPost sysPost) {
-        List<SysPost> list = postService.list(sysPost);
+    public void export(HttpServletResponse response, SysPostQueryReq req) {
+        List<SysPost> list = postMapper.selectList(this.buildQueryWrapper(req));
         List<SysPostExport> convert = MapstructUtil.convert(list, SysPostExport.class);
         ExcelUtil.exportExcel(convert, "岗位数据", SysPostExport.class, response);
     }

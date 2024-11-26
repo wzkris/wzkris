@@ -12,6 +12,10 @@
 
 	<artifactId>wzkris-user-biz</artifactId>
 
+	<properties>
+		<weixin-java.version>4.6.0</weixin-java.version>
+	</properties>
+
 	<dependencies>
 		<!-- SpringCloud Alibaba Nacos -->
 		<dependency>
@@ -89,6 +93,11 @@
 		<dependency>
 			<groupId>com.wzkris</groupId>
 			<artifactId>wzkris-common-swagger</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-weixin-sdk</artifactId>
 		</dependency>
 
 		<!-- springBoot test-->

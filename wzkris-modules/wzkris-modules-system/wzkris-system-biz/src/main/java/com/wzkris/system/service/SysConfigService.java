@@ -10,44 +10,6 @@ import java.util.List;
  * @author wzkris
  */
 public interface SysConfigService {
-    /**
-     * 根据键名查询参数配置信息
-     *
-     * @param configKey 参数键名
-     * @return 参数键值
-     */
-    String getConfigValueByKey(String configKey);
-
-    /**
-     * 查询参数配置列表
-     *
-     * @param config 参数配置信息
-     * @return 参数配置集合
-     */
-    List<SysConfig> list(SysConfig config);
-
-    /**
-     * 新增参数配置
-     *
-     * @param config 参数配置信息
-     * @return 结果
-     */
-    int insertConfig(SysConfig config);
-
-    /**
-     * 修改参数配置
-     *
-     * @param config 参数配置信息
-     * @return 结果
-     */
-    int updateConfig(SysConfig config);
-
-    /**
-     * 批量删除参数信息
-     *
-     * @param configIds 需要删除的参数ID
-     */
-    void deleteConfigByIds(List<Long> configIds);
 
     /**
      * 加载参数缓存数据
@@ -55,14 +17,25 @@ public interface SysConfigService {
     void loadingConfigCache();
 
     /**
-     * 清空参数缓存数据
+     * 新增参数配置
+     *
+     * @param config 参数配置信息
      */
-    void clearConfigCache();
+    void insertConfig(SysConfig config);
 
     /**
-     * 重置参数缓存数据
+     * 修改参数配置
+     *
+     * @param config 参数配置信息
      */
-    void resetConfigCache();
+    void updateConfig(SysConfig config);
+
+    /**
+     * 批量删除参数信息
+     *
+     * @param configIds 需要删除的参数ID
+     */
+    void deleteByIds(List<Long> configIds);
 
     /**
      * 校验参数键名是否唯一

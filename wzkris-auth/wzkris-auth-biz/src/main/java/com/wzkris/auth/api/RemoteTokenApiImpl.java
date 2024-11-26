@@ -6,6 +6,7 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.common.redis.util.RedisUtil;
+import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
 import com.wzkris.common.security.oauth2.enums.UserType;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScript;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
-import static com.wzkris.common.core.domain.Result.resp;
 import static com.wzkris.common.core.domain.Result.ok;
+import static com.wzkris.common.core.domain.Result.resp;
 
 @Hidden
 @InnerAuth
@@ -40,7 +40,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
         String key = TOKEN_REQ_ID_PREFIX + token;
         String reqId = String.valueOf(System.currentTimeMillis());
 
-        String script = """
+        String lua = """
                 local reqId = redis.call('GET', KEYS[1])
                 if not reqId then
                     reqId = ARGV[1]
@@ -49,7 +49,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
                 return reqId
                 """;
 
-        reqId = RedisUtil.getClient().getScript().eval(RScript.Mode.READ_WRITE, script,
+        reqId = RedisUtil.getClient().getScript().eval(RScript.Mode.READ_WRITE, lua,
                 RScript.ReturnType.VALUE, List.of(key), reqId, 60);
         return ok(reqId);
     }
@@ -58,11 +58,11 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     public Result<WzUser> checkToken(ReqToken reqToken) {
         String reqId = RedisUtil.getObj(TOKEN_REQ_ID_PREFIX + reqToken.getToken());
         if (StringUtil.isBlank(reqId) || !reqId.equals(reqToken.getReqId())) {
-            return resp(BizCode.NOT_FOUND, "invalid_request_id");
+            return resp(BizCode.NOT_FOUND, CustomErrorCodes.INVALID_REQUEST_ID);
         }
         OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(reqToken.getToken(), null);
         if (oAuth2Authorization == null) {
-            return resp(BizCode.UNAUTHORIZED, OAuth2ErrorCodes.INVALID_TOKEN);
+            return resp(BizCode.INVALID_TOKEN, OAuth2ErrorCodes.INVALID_TOKEN);
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());
@@ -80,7 +80,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
                 loginClient.setClientName(oAuth2Authorization.getPrincipalName());
 
                 wzUser = new WzUser(UserType.CLIENT, loginClient.getClientName(),
-                        loginClient, AuthorityUtils.createAuthorityList(oAuth2Authorization.getAuthorizedScopes()));
+                        loginClient, oAuth2Authorization.getAuthorizedScopes());
             }
         }
         return ok(wzUser);

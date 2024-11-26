@@ -1,17 +1,23 @@
 package com.wzkris.user.controller;
 
 import cn.hutool.core.util.NumberUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
+import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.req.EditPwdReq;
-import com.wzkris.user.domain.vo.SysTenantVO;
-import com.wzkris.user.mapper.SysTenantMapper;
-import com.wzkris.user.mapper.SysUserMapper;
+import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
+import com.wzkris.user.domain.req.WithdrawalReq;
+import com.wzkris.user.domain.vo.SysTenantLimitVO;
+import com.wzkris.user.domain.vo.SysTenantOwnVO;
+import com.wzkris.user.domain.vo.SysTenantWalletVO;
+import com.wzkris.user.mapper.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,6 +26,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 自身租户信息
@@ -32,26 +40,64 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/tenant")
 public class SysTenantOwnController extends BaseController {
-    private final PasswordEncoder passwordEncoder;
     private final SysUserMapper userMapper;
+    private final SysRoleMapper roleMapper;
+    private final SysPostMapper postMapper;
+    private final SysDeptMapper deptMapper;
     private final SysTenantMapper tenantMapper;
+    private final SysTenantWalletMapper tenantWalletMapper;
+    private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "获取自身租户")
     @GetMapping("/getinfo")
     @PreAuthorize("@ps.hasPerms('tenant:getinfo')")
-    public Result<SysTenantVO> getInfo() {
+    public Result<SysTenantOwnVO> getInfo() {
         Long tenantId = SysUtil.getTenantId();
-        SysTenantVO tenantVO;
+        SysTenantOwnVO tenantVO;
         if (SysTenant.isSuperTenant(tenantId)) {
-            tenantVO = new SysTenantVO(true);// 超级租户不存在信息
+            tenantVO = new SysTenantOwnVO(true);// 超级租户不存在信息
         }
         else {
             tenantVO = tenantMapper.selectVOById(tenantId);
-            // 查询已有账号
-            Long count = userMapper.selectCount(null);
-            tenantVO.setAccountHas(Math.toIntExact(count));
         }
         return ok(tenantVO);
+    }
+
+    @Operation(summary = "获取租户限制信息")
+    @GetMapping("/limit_info")
+    @PreAuthorize("@ps.hasPerms('tenant:getinfo')")
+    public Result<SysTenantLimitVO> limitInfo() {
+        SysTenantLimitVO limitVO = new SysTenantLimitVO();
+        limitVO.setAccountHas(Math.toIntExact(userMapper.selectCount(null)));
+        limitVO.setRoleHas(Math.toIntExact(roleMapper.selectCount(null)));
+        limitVO.setPostHas(Math.toIntExact(postMapper.selectCount(null)));
+        limitVO.setDeptHas(Math.toIntExact(deptMapper.selectCount(null)));
+        return ok(limitVO);
+    }
+
+    @Operation(summary = "获取余额信息")
+    @GetMapping("/wallet_info")
+    @PreAuthorize("@ps.hasPerms('tenant:wallet_info')")
+    public Result<SysTenantWalletVO> walletInfo() {
+        return ok(tenantWalletMapper.selectById2VO(SysUtil.getTenantId(), SysTenantWalletVO.class));
+    }
+
+    @Operation(summary = "获取租户钱包记录")
+    @GetMapping("/wallet_record/list")
+    @PreAuthorize("@ps.hasPerms('wallet_record:list')")
+    public Result<Page<SysTenantWalletRecord>> listWalletPage(SysTenantWalletRecordQueryReq queryReq) {
+        startPage();
+        List<SysTenantWalletRecord> recordList = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
+        return getDataTable(recordList);
+    }
+
+    private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
+        return new LambdaQueryWrapper<SysTenantWalletRecord>()
+                .like(StringUtil.isNotBlank(queryReq.getType()), SysTenantWalletRecord::getType, queryReq.getType())
+                .between(queryReq.getParams().get("beginTime") != null && queryReq.getParams().get("endTime") != null,
+                        SysTenantWalletRecord::getCreateAt, queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
+                .orderByDesc(SysTenantWalletRecord::getRecordId);
     }
 
     @Operation(summary = "修改操作密码")
@@ -72,6 +118,19 @@ public class SysTenantOwnController extends BaseController {
         SysTenant update = new SysTenant(sysTenant.getTenantId());
         update.setOperPwd(passwordEncoder.encode(req.getNewPassword()));
         return toRes(tenantMapper.updateById(update));
+    }
+
+    @Operation(summary = "提现")
+    @OperateLog(title = "租户信息", subTitle = "提现", operateType = OperateType.OTHER)
+    @PostMapping("/wallet/withdrawal")
+    @PreAuthorize("@ps.hasPerms('tenant:withdrawal')")
+    public Result<Void> withdrawal(@RequestBody @Valid WithdrawalReq req) {
+        SysTenant sysTenant = tenantMapper.selectById(SysUtil.getTenantId());
+        if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
+            return fail("密码错误");
+        }
+        // TODO 实际提现
+        return ok();
     }
 
 }

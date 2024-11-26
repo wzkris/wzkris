@@ -48,9 +48,13 @@ public class PlusSpringCacheManager implements CacheManager {
     private static final long DEFAULT_TTL = 60 * 60 * 1000;
 
     private static final long DEFAULT_MAXIDLETIME = 60 * 60 * 1000;
+
     Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
+
     ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
+
     private boolean dynamic = true;
+
     /**
      * -- SETTER --
      * Defines possibility of storing

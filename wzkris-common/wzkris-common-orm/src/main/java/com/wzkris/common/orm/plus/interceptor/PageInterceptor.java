@@ -79,7 +79,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
      * 改改SQL啥的
      */
     @Override
-    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         Page<?> page = PageUtil.getPage(false);
         if (page == null) {
             return;

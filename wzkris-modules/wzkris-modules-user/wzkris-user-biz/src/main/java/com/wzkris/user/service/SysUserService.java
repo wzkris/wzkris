@@ -54,7 +54,7 @@ public interface SysUserService {
      *
      * @param userIds 用户ID
      */
-    void hardDeleteByIds(List<Long> userIds);
+    void deleteByIds(List<Long> userIds);
 
     /**
      * 批量授权角色

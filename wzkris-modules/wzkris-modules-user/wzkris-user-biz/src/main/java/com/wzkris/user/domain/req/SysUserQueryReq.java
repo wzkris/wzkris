@@ -1,11 +1,6 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.PhoneNumber;
-import com.wzkris.common.core.annotation.Xss;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -22,22 +17,15 @@ public class SysUserQueryReq {
     @Schema(description = "部门ID")
     private Long deptId;
 
-    @Xss
-    @NotBlank(message = "[username] {validate.notnull}")
-    @Size(min = 6, max = 20, message = "[username] {validate.size.illegal}")
     @Schema(description = "用户名")
     private String username;
 
-    @Xss
     @Schema(description = "用户昵称")
     private String nickname;
 
-    @Email(message = "[email] {validate.email.illegal}")
-    @Size(min = 0, max = 50, message = "[email] {validate.size.illegal}")
     @Schema(description = "用户邮箱")
     private String email;
 
-    @PhoneNumber
     @Schema(description = "手机号码")
     private String phoneNumber;
 

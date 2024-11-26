@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+/**
+ * 重置密码
+ */
 @Data
 public class ResetPwdReq {
     @NotNull(message = "[userId] {validate.notnull}")

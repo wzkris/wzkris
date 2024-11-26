@@ -30,7 +30,7 @@ public class SysMenuOwnController extends BaseController {
     @Operation(summary = "路由")
     @GetMapping("/router")
     public Result<List<RouterVO>> routers() {
-        List<RouterVO> routerVOS = menuService.listRouteTree(SysUtil.getUserId());
+        List<RouterVO> routerVOS = menuService.listRouterTree(SysUtil.getUserId());
         return ok(routerVOS);
     }
 }

@@ -6,6 +6,7 @@ import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.auth.api.domain.ReqToken;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
@@ -14,12 +15,13 @@ import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.domain.model.LoginClient;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.server.resource.BearerTokenError;
+import org.springframework.security.oauth2.core.OAuth2Error;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -60,8 +62,12 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
             return this.adaptToCustomResponse(res);
         }
         catch (BusinessException e) {
-            BearerTokenError bearerTokenError = new BearerTokenError(String.valueOf(e.getBiz()), HttpStatus.valueOf(e.getBiz()), e.getMessage(), null);
-            throw new OAuth2AuthenticationException(bearerTokenError);
+            if (e.getBiz() == BizCode.NOT_FOUND.value()) {
+                throw new OAuth2AuthenticationException(new OAuth2Error(CustomErrorCodes.NOT_FOUND));
+            }
+            else {
+                throw new OAuth2AuthenticationException(new OAuth2Error(OAuth2ErrorCodes.INVALID_TOKEN));
+            }
         }
         catch (Exception e) {
             log.error("token校验发生异常:{}", e.getMessage(), e);
@@ -72,13 +78,22 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
     private WzUser adaptToCustomResponse(Object responseEntity) {
         WzUser wzUser = objectMapper.convertValue(responseEntity, WzUser.class);
 
-        switch (wzUser.getUserType()) {
-            case SYS_USER -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginSyser.class));
-            case APP_USER -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginApper.class));
-            case CLIENT -> wzUser.setPrincipal(objectMapper.convertValue(wzUser.getPrincipal(), LoginClient.class));
-            default -> throw new BusinessException("登录用户/客户端异常");
-        }
-        return wzUser;
+        return new WzUser(wzUser.getUserType(), wzUser.getName(),
+                this.convertPrincipal(wzUser.getUserType(), wzUser.getPrincipal()), wzUser.getGrantedAuthority());
     }
 
+    private Object convertPrincipal(UserType userType, Object principal) {
+        switch (userType) {
+            case SYS_USER -> {
+                return objectMapper.convertValue(principal, LoginSyser.class);
+            }
+            case APP_USER -> {
+                return objectMapper.convertValue(principal, LoginApper.class);
+            }
+            case CLIENT -> {
+                return objectMapper.convertValue(principal, LoginClient.class);
+            }
+            default -> throw new BusinessException("登录用户/客户端异常");
+        }
+    }
 }

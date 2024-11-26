@@ -7,10 +7,10 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
-import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysTenantPackage;
-import com.wzkris.user.domain.resp.SysMenuCheckSelectTreeResp;
+import com.wzkris.user.domain.vo.SysMenuCheckSelectTreeVO;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysTenantPackageService;
@@ -66,10 +66,10 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{packageId}"})
     @PreAuthorize("@ps.hasPerms('tenant_package:list')")
-    public Result<SysMenuCheckSelectTreeResp> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
-        SysMenuCheckSelectTreeResp resp = new SysMenuCheckSelectTreeResp();
+    public Result<SysMenuCheckSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
+        SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
         resp.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
-        resp.setMenus(menuService.listMenuSelectTree(new SysMenu(CommonConstants.STATUS_ENABLE)));
+        resp.setMenus(menuService.listMenuSelectTree(SysUtil.getUserId()));
         return ok(resp);
     }
 

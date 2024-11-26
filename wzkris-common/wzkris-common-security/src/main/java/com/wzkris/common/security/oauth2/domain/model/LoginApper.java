@@ -15,11 +15,13 @@ import java.io.Serializable;
 @Data
 public class LoginApper implements Serializable {
 
-    // 登录id
+    /**
+     * 登录id
+     */
     private Long userId;
-    // 头像
-    private String avatar;
-    // 手机号
+    /**
+     * 手机号
+     */
     private String phoneNumber;
 
 }

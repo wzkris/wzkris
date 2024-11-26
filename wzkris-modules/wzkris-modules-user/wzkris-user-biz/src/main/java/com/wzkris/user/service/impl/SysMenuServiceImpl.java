@@ -2,19 +2,24 @@ package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.vo.MetaVO;
 import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.domain.vo.SelectTreeVO;
-import com.wzkris.user.mapper.*;
+import com.wzkris.user.mapper.SysMenuMapper;
+import com.wzkris.user.mapper.SysRoleMenuMapper;
+import com.wzkris.user.mapper.SysTenantMapper;
+import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
+import com.wzkris.user.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -31,57 +36,9 @@ public class SysMenuServiceImpl implements SysMenuService {
     private final SysMenuMapper menuMapper;
     private final SysTenantMapper tenantMapper;
     private final SysTenantPackageMapper tenantPackageMapper;
-    private final SysUserRoleMapper userRoleMapper;
+    private final SysRoleService roleService;
     private final SysRoleMenuMapper roleMenuMapper;
 
-    /**
-     * 查询系统菜单列表
-     *
-     * @param menu 菜单信息
-     * @return 菜单列表
-     */
-    @Override
-    public List<SysMenu> list(SysMenu menu) {
-        LambdaQueryWrapper<SysMenu> lqw = this.buildQueryWrapper(menu);
-
-        Long userId = SysUtil.getUserId();
-        if (!SysUser.isSuperAdmin(userId)) {
-            // 去关联表中查绑定的菜单ID
-            List<Long> menuIds;
-            Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
-            if (tenantPackageId != null) {
-                // 租户最高管理员，去查套餐绑定菜单
-                menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
-            }
-            else {
-                menuIds = this.listMenuIdByUserId(userId);
-            }
-            if (CollectionUtils.isEmpty(menuIds)) {
-                return Collections.emptyList();
-            }
-            lqw.in(SysMenu::getMenuId, menuIds);
-        }
-        return menuMapper.selectList(lqw);
-    }
-
-    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenu menu) {
-        return new LambdaQueryWrapper<SysMenu>()
-                .eq(StringUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId())
-                .like(StringUtil.isNotNull(menu.getMenuName()), SysMenu::getMenuName, menu.getMenuName())
-                .eq(StringUtil.isNotNull(menu.getMenuType()), SysMenu::getMenuType, menu.getMenuType())
-                .eq(StringUtil.isNotNull(menu.getIsVisible()), SysMenu::getIsVisible, menu.getIsVisible())
-                .eq(StringUtil.isNotNull(menu.getIsCache()), SysMenu::getIsCache, menu.getIsCache())
-                .eq(StringUtil.isNotNull(menu.getIsFrame()), SysMenu::getIsFrame, menu.getIsFrame())
-                .eq(StringUtil.isNotNull(menu.getStatus()), SysMenu::getStatus, menu.getStatus())
-                .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
-    }
-
-    /**
-     * 根据角色ID集合查询权限
-     *
-     * @param roleIds 角色ID集合
-     * @return 权限列表
-     */
     @Override
     public List<String> listPermsByRoleIds(@Nullable List<Long> roleIds) {
         if (CollectionUtils.isEmpty(roleIds)) {
@@ -91,12 +48,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         return this.listPermsByMenuIds(menuIds);
     }
 
-    /**
-     * 根据菜单ID集合查询权限
-     *
-     * @param menuIds 菜单ID集合
-     * @return 权限列表
-     */
     @Override
     public List<String> listPermsByMenuIds(@Nullable List<Long> menuIds) {
         if (CollectionUtils.isEmpty(menuIds)) {
@@ -107,25 +58,8 @@ public class SysMenuServiceImpl implements SysMenuService {
                 .filter(StringUtil::isNotBlank).toList();
     }
 
-    /**
-     * 查询菜单选择树
-     *
-     * @return 菜单列表
-     */
     @Override
-    public List<SelectTreeVO> listMenuSelectTree(SysMenu menu) {
-        List<SysMenu> list = this.list(menu);
-        return this.buildSelectTree(list);
-    }
-
-    /**
-     * 根据用户ID查询前端路由
-     *
-     * @param userId 用户ID
-     * @return 前端路由
-     */
-    @Override
-    public List<RouterVO> listRouteTree(Long userId) {
+    public List<SelectTreeVO> listMenuSelectTree(Long userId) {
         List<Long> menuIds = null;
         if (!SysUser.isSuperAdmin(userId)) {
             // 去关联表中查绑定的菜单ID
@@ -141,8 +75,30 @@ public class SysMenuServiceImpl implements SysMenuService {
                 return Collections.emptyList();
             }
         }
-        List<SysMenu> menus = menuMapper.listRouteTree(menuIds);
-        List<SysMenu> list = this.getChildNode(menus, 0);
+        LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class)
+                .eq(SysMenu::getStatus, CommonConstants.STATUS_ENABLE)
+                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds);
+        return this.buildSelectTree(menuMapper.selectList(lqw));
+    }
+
+    @Override
+    public List<RouterVO> listRouterTree(Long userId) {
+        List<Long> menuIds = null;
+        if (!SysUser.isSuperAdmin(userId)) {
+            // 去关联表中查绑定的菜单ID
+            Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
+            if (tenantPackageId != null) {
+                // 租户最高管理员，去查套餐绑定菜单
+                menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
+            }
+            else {
+                menuIds = this.listMenuIdByUserId(userId);
+            }
+            if (CollectionUtils.isEmpty(menuIds)) {
+                return Collections.emptyList();
+            }
+        }
+        List<SysMenu> list = this.getChildNode(menuMapper.listRouteTree(menuIds), 0);
         return this.buildRouter(list);
     }
 
@@ -150,7 +106,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * 查询用户对应菜单id
      */
     private List<Long> listMenuIdByUserId(Long userId) {
-        List<Long> roleIds = userRoleMapper.listRoleIdByUserId(userId);
+        List<Long> roleIds = roleService.listIdByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -163,8 +119,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @param menus 菜单列表
      * @return 路由列表
      */
-    @Override
-    public List<RouterVO> buildRouter(List<SysMenu> menus) {
+    private List<RouterVO> buildRouter(List<SysMenu> menus) {
         menus = menus.stream().sorted(Comparator.comparing(SysMenu::getMenuSort, Comparator.reverseOrder()).
                 thenComparing(SysMenu::getMenuId, Comparator.reverseOrder())).toList();
         List<RouterVO> routers = new LinkedList<>();
@@ -218,8 +173,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @param menus 菜单列表
      * @return 树结构列表
      */
-    @Override
-    public List<SysMenu> buildTree(List<SysMenu> menus) {
+    private List<SysMenu> buildTree(List<SysMenu> menus) {
         List<SysMenu> returnList = new ArrayList<>();
         List<Long> tempList = menus.stream().map(SysMenu::getMenuId).toList();
         for (SysMenu menu : menus) {
@@ -235,24 +189,11 @@ public class SysMenuServiceImpl implements SysMenuService {
         return returnList;
     }
 
-    /**
-     * 构建前端所需要下拉树结构
-     *
-     * @param menus 菜单列表
-     * @return 下拉树结构列表
-     */
-    @Override
-    public List<SelectTreeVO> buildSelectTree(List<SysMenu> menus) {
+    private List<SelectTreeVO> buildSelectTree(List<SysMenu> menus) {
         List<SysMenu> menuTrees = this.buildTree(menus);
         return menuTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
     }
 
-    /**
-     * 是否存在菜单子节点
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
     @Override
     public boolean hasChildByMenuId(Long menuId) {
         LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class)
@@ -260,15 +201,16 @@ public class SysMenuServiceImpl implements SysMenuService {
         return menuMapper.exists(lqw);
     }
 
-    /**
-     * 查询菜单使用数量
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
     @Override
     public boolean checkMenuExistRole(Long menuId) {
         return roleMenuMapper.checkMenuExistRole(menuId) > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteById(Long menuId) {
+        menuMapper.deleteById(menuId);
+        roleMenuMapper.deleteByMenuId(menuId);
     }
 
     /**

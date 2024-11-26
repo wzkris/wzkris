@@ -56,7 +56,7 @@ public class SysUser extends BaseEntity {
     private String nickname;
 
     @Email(message = "[email] {validate.email.illegal}")
-    @Size(min = 5, max = 50, message = "[email] {validate.size.illegal}")
+    @Size(min = 0, max = 50, message = "[email] {validate.size.illegal}")
     @Schema(description = "用户邮箱")
     private String email;
 
@@ -78,9 +78,6 @@ public class SysUser extends BaseEntity {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "密码")
     private String password;
-
-    @Schema(description = "删除标志")
-    private Boolean isDeleted;
 
     @Schema(description = "最近登录ip")
     private String loginIp;

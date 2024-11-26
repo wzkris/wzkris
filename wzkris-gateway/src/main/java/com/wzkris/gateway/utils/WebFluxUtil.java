@@ -2,7 +2,7 @@ package com.wzkris.gateway.utils;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.json.JsonUtil;
+import com.wzkris.common.core.utils.JsonUtil;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

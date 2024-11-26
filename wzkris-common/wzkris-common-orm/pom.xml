@@ -17,7 +17,7 @@
 	</description>
 
 	<properties>
-		<mybatis-plus.version>3.5.7</mybatis-plus.version>
+		<mybatis-plus.version>3.5.9</mybatis-plus.version>
 	</properties>
 
 	<dependencies>
@@ -38,6 +38,13 @@
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-jsqlparser -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-jsqlparser</artifactId>
+			<version>${mybatis-plus.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-spring-boot3-starter -->

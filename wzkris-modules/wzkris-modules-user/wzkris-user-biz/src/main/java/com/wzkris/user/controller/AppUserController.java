@@ -1,7 +1,9 @@
 package com.wzkris.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -9,6 +11,8 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.export.AppUserExport;
+import com.wzkris.user.domain.req.AppUserQueryReq;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,10 +43,20 @@ public class AppUserController extends BaseController {
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('app_user:list')")
-    public Result<Page<AppUser>> listPage(AppUser user) {
+    public Result<Page<AppUser>> listPage(AppUserQueryReq req) {
         startPage();
-        List<AppUser> list = appUserService.list(user);
+        List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
         return getDataTable(list);
+    }
+
+    private LambdaQueryWrapper<AppUser> buildQueryWrapper(AppUserQueryReq req) {
+        return new LambdaQueryWrapper<AppUser>()
+                .eq(StringUtil.isNotBlank(req.getStatus()), AppUser::getStatus, req.getStatus())
+                .like(StringUtil.isNotBlank(req.getNickname()), AppUser::getNickname, req.getNickname())
+                .like(StringUtil.isNotBlank(req.getPhoneNumber()), AppUser::getPhoneNumber, req.getPhoneNumber())
+                .between(req.getParams().get("beginTime") != null && req.getParams().get("endTime") != null,
+                        AppUser::getCreateAt, req.getParams().get("beginTime"), req.getParams().get("endTime"))
+                .orderByDesc(AppUser::getUserId);
     }
 
     @Operation(summary = "用户详细信息")
@@ -52,12 +66,23 @@ public class AppUserController extends BaseController {
         return ok(appUserMapper.selectById(userId));
     }
 
+    @Operation(summary = "状态修改")
+    @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @PostMapping("/edit_status")
+    @PreAuthorize("@ps.hasPerms('app_user:edit')")
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
+        // 校验权限
+        AppUser update = new AppUser(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
+        return toRes(appUserMapper.updateById(update));
+    }
+
     @Operation(summary = "导出")
     @OperateLog(title = "用户管理", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @PreAuthorize("@ps.hasPerms('app_user:export')")
-    public void export(HttpServletResponse response, AppUser user) {
-        List<AppUser> list = appUserService.list(user);
+    public void export(HttpServletResponse response, AppUserQueryReq req) {
+        List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
         List<AppUserExport> convert = MapstructUtil.convert(list, AppUserExport.class);
         ExcelUtil.exportExcel(convert, "用户数据", AppUserExport.class, response);
     }

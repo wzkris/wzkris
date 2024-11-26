@@ -127,6 +127,14 @@
 				<version>${revision}</version>
 			</dependency>
 
+			<!-- weixin sdk-->
+			<dependency>
+				<groupId>com.wzkris</groupId>
+				<artifactId>wzkris-common-weixin-sdk</artifactId>
+				<version>${revision}</version>
+			</dependency>
+
+
 		</dependencies>
 
 	</dependencyManagement>

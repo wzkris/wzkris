@@ -1,8 +1,6 @@
 package com.wzkris.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wzkris.system.api.domain.LoginLogDTO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,8 +9,6 @@ import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author : wzkris
@@ -55,14 +51,4 @@ public class SysLoginLog implements Serializable {
     @Schema(description = "登录时间")
     private Long loginTime;
 
-    @JsonIgnore
-    @TableField(exist = false)
-    private Map<String, Object> params;
-
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(2);
-        }
-        return params;
-    }
 }

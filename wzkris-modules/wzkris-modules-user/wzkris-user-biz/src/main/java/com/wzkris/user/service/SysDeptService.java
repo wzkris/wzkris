@@ -14,28 +14,12 @@ import java.util.List;
 public interface SysDeptService {
 
     /**
-     * 查询部门树结构信息
+     * 查询部门选择树
      *
-     * @param dept 部门信息
+     * @param deptName 筛选条件
      * @return 部门树信息集合
      */
-    List<SelectTreeVO> listDeptTree(SysDept dept);
-
-    /**
-     * 构建树结构
-     *
-     * @param depts 部门列表
-     * @return 树结构列表
-     */
-    List<SysDept> buildDeptTree(List<SysDept> depts);
-
-    /**
-     * 构建下拉树结构
-     *
-     * @param depts 部门列表
-     * @return 下拉树结构列表
-     */
-    List<SelectTreeVO> buildDeptTreeSelect(List<SysDept> depts);
+    List<SelectTreeVO> listSelectTree(String deptName);
 
     /**
      * 是否存在部门子节点
@@ -49,17 +33,22 @@ public interface SysDeptService {
      * 新增保存部门信息
      *
      * @param dept 部门信息
-     * @return 结果
      */
-    int insertDept(SysDept dept);
+    void insertDept(SysDept dept);
 
     /**
      * 修改保存部门信息
      *
      * @param dept 部门信息
-     * @return 结果
      */
-    int updateDept(SysDept dept);
+    void updateDept(SysDept dept);
+
+    /**
+     * 删除部门信息
+     *
+     * @param deptId 部门ID
+     */
+    void deleteById(Long deptId);
 
     /**
      * 查询部门是否存在用户
@@ -79,4 +68,5 @@ public interface SysDeptService {
     default void checkDataScopes(Long deptId) {
         this.checkDataScopes(Collections.singletonList(deptId));
     }
+
 }
