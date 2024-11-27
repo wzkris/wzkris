@@ -4,6 +4,7 @@ import com.wzkris.auth.oauth2.constants.GrantTypeConstant;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -42,8 +43,8 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
 
     @Override
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
-        String phoneNumber = additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER).toString();
-        String smsCode = additionalParameters.get(OAuth2ParameterConstant.SMS_CODE).toString();
+        String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
+        String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
         return new SmsAuthenticationToken(phoneNumber, smsCode, clientPrincipal, requestedScopes, null);
     }
 
