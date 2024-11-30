@@ -33,6 +33,12 @@ public interface RemoteSysUserApi {
     Result<SysUserDTO> getByUsername(@RequestParam("username") String username);
 
     /**
+     * 根据手机号查询系统用户
+     */
+    @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_sys_user_by_phonenumber")
+    Result<SysUserDTO> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
+
+    /**
      * 查询管理员权限
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/query_sys_permission")
@@ -43,4 +49,5 @@ public interface RemoteSysUserApi {
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/update_sys_user_logininfo")
     void updateLoginInfo(@RequestBody LoginInfoDTO loginInfoDTO);
+
 }

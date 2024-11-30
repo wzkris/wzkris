@@ -34,6 +34,12 @@ public class RemoteSysUserApiFallback implements FallbackFactory<RemoteSysUserAp
             }
 
             @Override
+            public Result<SysUserDTO> getByPhoneNumber(String phoneNumber) {
+                log.error("查询系统用户信息发生异常，errMsg：{}", cause.getMessage(), cause);
+                return resp(BizCode.RPC_INVOCATION, cause.getMessage());
+            }
+
+            @Override
             public Result<SysPermissionDTO> getPermission(QueryPermsDTO queryPermsDTO) {
                 log.error("查询系统用户权限发生异常，errMsg：{}", cause.getMessage(), cause);
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());

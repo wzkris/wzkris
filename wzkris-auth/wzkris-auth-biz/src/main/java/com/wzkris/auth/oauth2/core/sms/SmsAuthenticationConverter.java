@@ -1,10 +1,11 @@
 package com.wzkris.auth.oauth2.core.sms;
 
-import com.wzkris.auth.oauth2.constants.GrantTypeConstant;
+import com.wzkris.auth.oauth2.constants.OAuth2GrantTypeConstant;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.oauth2.enums.UserType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -23,7 +24,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
 
     @Override
     protected boolean support(String grantType) {
-        return GrantTypeConstant.SMS.equals(grantType);
+        return OAuth2GrantTypeConstant.SMS.equals(grantType);
     }
 
     @Override
@@ -45,7 +46,17 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
         String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
         String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
-        return new SmsAuthenticationToken(phoneNumber, smsCode, clientPrincipal, requestedScopes, null);
+        String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.USER_TYPE));
+        UserType userTypeEm;
+        try {
+            userTypeEm = UserType.valueOf(userType);
+        }
+        catch (Exception e) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
+            return null;// never run this line
+        }
+        return new SmsAuthenticationToken(userTypeEm, phoneNumber, smsCode,
+                clientPrincipal, requestedScopes, null);
     }
 
 }

@@ -45,7 +45,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
         // 验证码校验
         if (captchaConfig.getEnabled()) {
-            captchaService.validatePicCaptcha(authenticationToken.getUuid(), authenticationToken.getCode());
+            captchaService.validatePicCode(authenticationToken.getUuid(), authenticationToken.getCode());
         }
         // 校验最大次数
         captchaService.validateMaxTryCount(authenticationToken.getUsername());

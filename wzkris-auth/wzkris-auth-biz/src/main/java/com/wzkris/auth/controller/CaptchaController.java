@@ -1,17 +1,15 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.dto.KaptchaDTO;
+import com.wzkris.auth.domain.req.SmsCodeReq;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -35,17 +33,15 @@ public class CaptchaController {
     @Operation(summary = "图片验证码")
     @GetMapping("/code")
     public Result<KaptchaDTO> code() throws IOException {
-        KaptchaDTO picCaptcha = captchaService.createPicCaptcha();
+        KaptchaDTO picCaptcha = captchaService.createPicCode();
 
         return ok(picCaptcha);
     }
 
     @Operation(summary = "短信验证码")
-    @GetMapping("/sms_code")
-    public Result<Void> smsCode(@NotBlank(message = "[phone] {validate.notnull}")
-                                @Length(min = 11, max = 11, message = "[phone] {validate.size.illegal}")
-                                String phone) {
-        captchaService.sendSmsCode(phone);
-        return Result.ok();
+    @PostMapping("/sms_code")
+    public Result<Integer> smsCode(@RequestBody @Valid SmsCodeReq req) {
+        captchaService.validatePicCode(req.getUuid(), req.getCode());
+        return ok(captchaService.createSmsCode(req.getPhone()));
     }
 }

@@ -31,9 +31,6 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     private final SysUserMapper userMapper;
     private final SysPermissionService sysPermissionService;
 
-    /**
-     * 根据用户名查询系统用户
-     */
     @Override
     public Result<SysUserDTO> getByUsername(String username) {
         SysUser sysUser = userMapper.selectByUsername(username);
@@ -41,9 +38,13 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
         return ok(sysUserDTO);
     }
 
-    /**
-     * 查询管理员权限
-     */
+    @Override
+    public Result<SysUserDTO> getByPhoneNumber(String phoneNumber) {
+        SysUser sysUser = userMapper.selectByPhoneNumber(phoneNumber);
+        SysUserDTO sysUserDTO = MapstructUtil.convert(sysUser, SysUserDTO.class);
+        return ok(sysUserDTO);
+    }
+
     @Override
     public Result<SysPermissionDTO> getPermission(QueryPermsDTO queryPermsDTO) {
         SysPermissionDTO permission = sysPermissionService
@@ -51,9 +52,6 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
         return ok(permission);
     }
 
-    /**
-     * 更新用户登录信息
-     */
     @Override
     public void updateLoginInfo(LoginInfoDTO loginInfoDTO) {
         SysUser sysUser = new SysUser(loginInfoDTO.getUserId());

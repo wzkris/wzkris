@@ -32,7 +32,6 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
 
     @Override
     public void checkParams(MultiValueMap<String, String> parameters) {
-
         // username (REQUIRED)
         String username = parameters.getFirst(OAuth2ParameterNames.USERNAME);
         if (!StringUtils.hasText(username) || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {

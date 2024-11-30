@@ -36,6 +36,13 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
         return this.checkAndBuild(sysUserDTO);
     }
 
+    @Override
+    public WzUser loadUserByPhoneNumber(String phoneNumber) {
+        Result<SysUserDTO> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
+        SysUserDTO sysUserDTO = result.checkData();
+        return this.checkAndBuild(sysUserDTO);
+    }
+
     /**
      * 构建登录用户
      */

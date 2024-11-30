@@ -14,6 +14,9 @@ public class KaptchaDTO {
     @Schema(description = "图片base64")
     private String img;
 
+    @Schema(description = "过期时间")
+    private int expired;
+
     public KaptchaDTO(boolean captchaEnabled) {
         this.captchaEnabled = captchaEnabled;
     }
