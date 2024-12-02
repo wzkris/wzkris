@@ -11,6 +11,7 @@ import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.dto.QueryPermsDTO;
 import com.wzkris.user.api.domain.dto.SysPermissionDTO;
 import com.wzkris.user.api.domain.dto.SysUserDTO;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,48 +33,45 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
     @Override
     public WzUser loadUserByUsername(String username) throws UsernameNotFoundException {
         Result<SysUserDTO> result = remoteSysUserApi.getByUsername(username);
-        SysUserDTO sysUserDTO = result.checkData();
-        return this.checkAndBuild(sysUserDTO);
+        SysUserDTO userDTO = result.checkData();
+        return this.checkAndBuild(userDTO);
     }
 
     @Override
     public WzUser loadUserByPhoneNumber(String phoneNumber) {
         Result<SysUserDTO> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
-        SysUserDTO sysUserDTO = result.checkData();
-        return this.checkAndBuild(sysUserDTO);
+        SysUserDTO userDTO = result.checkData();
+        return userDTO == null ? null : this.checkAndBuild(userDTO);
     }
 
     /**
      * 构建登录用户
      */
-    private WzUser checkAndBuild(SysUserDTO sysUserDTO) {
+    private WzUser checkAndBuild(@Nonnull SysUserDTO userDTO) {
         // 校验用户状态
-        this.checkAccount(sysUserDTO);
+        this.checkAccount(userDTO);
 
         // 获取权限信息
         Result<SysPermissionDTO> permissionDTOResult = remoteSysUserApi
-                .getPermission(new QueryPermsDTO(sysUserDTO.getUserId(), sysUserDTO.getTenantId(), sysUserDTO.getDeptId()));
+                .getPermission(new QueryPermsDTO(userDTO.getUserId(), userDTO.getTenantId(), userDTO.getDeptId()));
         SysPermissionDTO permissions = permissionDTOResult.checkData();
 
         LoginSyser loginSyser = new LoginSyser();
-        loginSyser.setUserId(sysUserDTO.getUserId());
-        loginSyser.setUsername(sysUserDTO.getUsername());
-        loginSyser.setTenantId(sysUserDTO.getTenantId());
+        loginSyser.setUserId(userDTO.getUserId());
+        loginSyser.setUsername(userDTO.getUsername());
+        loginSyser.setTenantId(userDTO.getTenantId());
         loginSyser.setAdministrator(permissions.getAdministrator());
         loginSyser.setDeptScopes(permissions.getDeptScopes());
 
         return new WzUser(UserType.SYS_USER, loginSyser.getUsername(),
-                loginSyser, sysUserDTO.getPassword(), permissions.getGrantedAuthority());
+                loginSyser, userDTO.getPassword(), permissions.getGrantedAuthority());
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(SysUserDTO sysUserDTO) {
-        if (sysUserDTO == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");// 不能明说账号不存在
-        }
-        if (ObjUtil.equals(sysUserDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
+    private void checkAccount(SysUserDTO userDTO) {
+        if (ObjUtil.equals(userDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }

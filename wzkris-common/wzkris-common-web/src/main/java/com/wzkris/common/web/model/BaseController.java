@@ -84,6 +84,13 @@ public class BaseController {
     }
 
     /**
+     * 自定义失败消息
+     */
+    public static <T> Result<T> resp(int biz, String errMsg) {
+        return Result.resp(biz, null, errMsg);
+    }
+
+    /**
      * 响应返回结果
      *
      * @param rows 影响行数

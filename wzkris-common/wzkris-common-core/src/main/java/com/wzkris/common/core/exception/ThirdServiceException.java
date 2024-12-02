@@ -11,16 +11,24 @@ import com.wzkris.common.core.exception.base.BaseException;
  */
 public final class ThirdServiceException extends BaseException {
 
-    public ThirdServiceException(String code) {
-        this(code, null);
+    // 自定义业务代码及错误信息
+    public ThirdServiceException(int biz, String message) {
+        super("第三方服务异常", biz, null, null, message);
     }
 
-    public ThirdServiceException(String code, Object[] args) {
-        this(BizCode.THIRD_SERVICE.value(), code, args);
+    public ThirdServiceException(BizCode bizCode) {
+        this(bizCode.value(), bizCode.desc());
     }
 
-    public ThirdServiceException(int biz, String code, Object[] args) {
-        super("第三方服务异常", biz, code, args, null);
+    public ThirdServiceException(String message) {
+        this(BizCode.THIRD_SERVICE.value(), message);
     }
 
+    /**
+     * @return 返回自定义错误信息
+     */
+    @Override
+    public String getMessage() {
+        return this.getDefaultMessage();
+    }
 }

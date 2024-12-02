@@ -34,11 +34,18 @@
 			<version>${weixin-java.version}</version>
 		</dependency>
 
-		<!--微信小程序-->
+		<!--微信公众号-->
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-mp</artifactId>
 			<version>${weixin-java.version}</version>
+		</dependency>
+
+		<!-- Redisson所需依赖 -->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-redis</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 	</dependencies>

@@ -32,6 +32,7 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
                                   Set<String> scopes,
                                   Map<String, Object> additionalParameters) {
         super(new AuthorizationGrantType(OAuth2GrantTypeConstant.SMS), clientPrincipal, scopes, additionalParameters);
+        Assert.notNull(userType, "userType cannot be null");
         Assert.notNull(phoneNumber, "phoneNumber cannot be null");
         Assert.notNull(smsCode, "smsCode cannot be null");
         this.userType = userType;

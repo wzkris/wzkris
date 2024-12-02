@@ -1,6 +1,6 @@
 package com.wzkris.auth.api;
 
-import com.wzkris.auth.api.domain.SmsDTO;
+import com.wzkris.auth.api.domain.dto.SmsDTO;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.openfeign.annotation.InnerAuth;

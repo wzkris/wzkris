@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.auth.api.RemoteCaptchaApi;
-import com.wzkris.auth.api.domain.SmsDTO;
+import com.wzkris.auth.api.domain.dto.SmsDTO;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;

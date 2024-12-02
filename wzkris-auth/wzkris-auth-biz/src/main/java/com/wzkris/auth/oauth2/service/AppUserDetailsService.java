@@ -30,7 +30,7 @@ public class AppUserDetailsService implements UserDetailsServiceExt {
         Result<AppUserDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
         AppUserDTO appUserDTO = result.checkData();
 
-        return this.checkAndBuild(appUserDTO);
+        return appUserDTO == null ? null : this.checkAndBuild(appUserDTO);
     }
 
     /**
@@ -51,9 +51,6 @@ public class AppUserDetailsService implements UserDetailsServiceExt {
      * 校验用户账号
      */
     private void checkAccount(AppUserDTO appUserDTO) {
-        if (appUserDTO == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");// 不能明说账号不存在
-        }
         if (ObjUtil.equals(appUserDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }

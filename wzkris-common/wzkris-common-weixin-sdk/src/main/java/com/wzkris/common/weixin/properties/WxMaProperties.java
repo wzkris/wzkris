@@ -1,4 +1,4 @@
-package com.wzkris.common.weixin.config;
+package com.wzkris.common.weixin.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,8 +12,19 @@ import java.util.List;
 @ConfigurationProperties(prefix = "weixin.miniapp")
 public class WxMaProperties {
 
+    /**
+     * 是否启用
+     */
     private boolean enable = false;
 
+    /**
+     * 是否使用redis存储access token
+     */
+    private boolean useRedis = false;
+
+    /**
+     * 多个小程序配置信息
+     */
     private List<Config> configs;
 
     @Data

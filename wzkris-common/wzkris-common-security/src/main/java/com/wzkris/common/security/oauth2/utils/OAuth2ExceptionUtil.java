@@ -51,7 +51,7 @@ public final class OAuth2ExceptionUtil {
             return Result.resp(BizCode.PRECONDITION_FAILED, errorMsg);
         }
         else if (errorCode.equals(CustomErrorCodes.FREQUENT_RETRY)) {
-            return Result.resp(BizCode.BAD_REQUEST, errorMsg);
+            return Result.resp(BizCode.TOO_MANY_REQUESTS, errorMsg);
         }
         else if (errorCode.equals(CustomErrorCodes.NOT_FOUND)) {
             return Result.resp(BizCode.NOT_FOUND, errorMsg);

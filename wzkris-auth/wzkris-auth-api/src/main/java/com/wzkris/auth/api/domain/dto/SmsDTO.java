@@ -1,4 +1,4 @@
-package com.wzkris.auth.api.domain;
+package com.wzkris.auth.api.domain.dto;
 
 import com.wzkris.common.core.annotation.PhoneNumber;
 import lombok.AllArgsConstructor;

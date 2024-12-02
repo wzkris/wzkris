@@ -1,7 +1,7 @@
 package com.wzkris.auth.api.fallback;
 
 import com.wzkris.auth.api.RemoteCaptchaApi;
-import com.wzkris.auth.api.domain.SmsDTO;
+import com.wzkris.auth.api.domain.dto.SmsDTO;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import lombok.extern.slf4j.Slf4j;
