@@ -1,4 +1,4 @@
-package com.wzkris.auth.domain.vo;
+package com.wzkris.user.domain.vo;
 
 
 import com.wzkris.common.core.annotation.Sensitive;
@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @AutoMapper(target = LoginApper.class)
-public class AppUserVO {
+public class AppUserOwnVO {
 
     @Schema(description = "头像")
     private String avatar;

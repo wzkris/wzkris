@@ -7,7 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.google.code.kaptcha.Producer;
 import com.wzkris.auth.config.CaptchaConfig;
-import com.wzkris.auth.domain.dto.KaptchaDTO;
+import com.wzkris.auth.domain.vo.KaptchaVO;
 import com.wzkris.common.core.exception.param.CaptchaException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -55,11 +55,11 @@ public class CaptchaService {
     /**
      * 生成验证码
      */
-    public KaptchaDTO createPicCode() throws IOException {
+    public KaptchaVO createPicCode() throws IOException {
         boolean captchaEnabled = captchaConfig.getEnabled();
-        KaptchaDTO kaptchaDTO = new KaptchaDTO(captchaEnabled);
+        KaptchaVO kaptchaVO = new KaptchaVO(captchaEnabled);
         if (!captchaEnabled) {
-            return kaptchaDTO;
+            return kaptchaVO;
         }
 
         String captchaType = captchaConfig.getType();
@@ -90,9 +90,9 @@ public class CaptchaService {
         // 存入缓存
         RedisUtil.setObj(PIC_CODE_PREFIX + uuid, code, 90);
 
-        kaptchaDTO.setImg(base64Img);
-        kaptchaDTO.setUuid(uuid);
-        return kaptchaDTO;
+        kaptchaVO.setImg(base64Img);
+        kaptchaVO.setUuid(uuid);
+        return kaptchaVO;
     }
 
     /**

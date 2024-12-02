@@ -3,10 +3,10 @@ package com.wzkris.user.api;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
-import com.wzkris.user.api.domain.dto.LoginInfoDTO;
-import com.wzkris.user.api.domain.dto.QueryPermsDTO;
-import com.wzkris.user.api.domain.dto.SysPermissionDTO;
-import com.wzkris.user.api.domain.dto.SysUserDTO;
+import com.wzkris.user.api.domain.request.LoginInfoReq;
+import com.wzkris.user.api.domain.request.QueryPermsReq;
+import com.wzkris.user.api.domain.response.SysPermissionResp;
+import com.wzkris.user.api.domain.response.SysUserResp;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPermissionService;
@@ -32,31 +32,31 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     private final SysPermissionService sysPermissionService;
 
     @Override
-    public Result<SysUserDTO> getByUsername(String username) {
+    public Result<SysUserResp> getByUsername(String username) {
         SysUser sysUser = userMapper.selectByUsername(username);
-        SysUserDTO sysUserDTO = MapstructUtil.convert(sysUser, SysUserDTO.class);
-        return ok(sysUserDTO);
+        SysUserResp sysUserResp = MapstructUtil.convert(sysUser, SysUserResp.class);
+        return ok(sysUserResp);
     }
 
     @Override
-    public Result<SysUserDTO> getByPhoneNumber(String phoneNumber) {
+    public Result<SysUserResp> getByPhoneNumber(String phoneNumber) {
         SysUser sysUser = userMapper.selectByPhoneNumber(phoneNumber);
-        SysUserDTO sysUserDTO = MapstructUtil.convert(sysUser, SysUserDTO.class);
-        return ok(sysUserDTO);
+        SysUserResp sysUserResp = MapstructUtil.convert(sysUser, SysUserResp.class);
+        return ok(sysUserResp);
     }
 
     @Override
-    public Result<SysPermissionDTO> getPermission(QueryPermsDTO queryPermsDTO) {
-        SysPermissionDTO permission = sysPermissionService
-                .getPermission(queryPermsDTO.getUserId(), queryPermsDTO.getTenantId(), queryPermsDTO.getDeptId());
+    public Result<SysPermissionResp> getPermission(QueryPermsReq queryPermsReq) {
+        SysPermissionResp permission = sysPermissionService
+                .getPermission(queryPermsReq.getUserId(), queryPermsReq.getTenantId(), queryPermsReq.getDeptId());
         return ok(permission);
     }
 
     @Override
-    public void updateLoginInfo(LoginInfoDTO loginInfoDTO) {
-        SysUser sysUser = new SysUser(loginInfoDTO.getUserId());
-        sysUser.setLoginIp(loginInfoDTO.getLoginIp());
-        sysUser.setLoginDate(loginInfoDTO.getLoginDate());
+    public void updateLoginInfo(LoginInfoReq loginInfoReq) {
+        SysUser sysUser = new SysUser(loginInfoReq.getUserId());
+        sysUser.setLoginIp(loginInfoReq.getLoginIp());
+        sysUser.setLoginDate(loginInfoReq.getLoginDate());
 
         userMapper.updateById(sysUser);
     }

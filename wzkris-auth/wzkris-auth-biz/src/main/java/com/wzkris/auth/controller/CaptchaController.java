@@ -1,7 +1,7 @@
 package com.wzkris.auth.controller;
 
-import com.wzkris.auth.domain.dto.KaptchaDTO;
 import com.wzkris.auth.domain.req.SmsCodeReq;
+import com.wzkris.auth.domain.vo.KaptchaVO;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,8 +32,8 @@ public class CaptchaController {
 
     @Operation(summary = "图片验证码")
     @GetMapping("/code")
-    public Result<KaptchaDTO> code() throws IOException {
-        KaptchaDTO picCaptcha = captchaService.createPicCode();
+    public Result<KaptchaVO> code() throws IOException {
+        KaptchaVO picCaptcha = captchaService.createPicCode();
 
         return ok(picCaptcha);
     }

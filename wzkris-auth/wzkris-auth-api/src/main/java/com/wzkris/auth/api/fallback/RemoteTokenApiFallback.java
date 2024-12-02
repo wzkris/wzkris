@@ -1,7 +1,7 @@
 package com.wzkris.auth.api.fallback;
 
 import com.wzkris.auth.api.RemoteTokenApi;
-import com.wzkris.auth.api.domain.ReqToken;
+import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class RemoteTokenApiFallback implements FallbackFactory<RemoteTokenApi> {
             }
 
             @Override
-            public Result<?> checkToken(ReqToken reqToken) {
+            public Result<?> checkToken(TokenReq tokenReq) {
                 log.error("验证token发生异常，errMsg：{}", cause.getMessage());
 
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());

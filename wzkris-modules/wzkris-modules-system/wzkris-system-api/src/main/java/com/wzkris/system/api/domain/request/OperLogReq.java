@@ -1,10 +1,9 @@
-package com.wzkris.system.api.domain;
+package com.wzkris.system.api.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ import java.util.Map;
  */
 @Data
 @Accessors(chain = true)
-public class OperLogDTO implements Serializable {
+public class OperLogReq {
 
     /**
      * 日志主键

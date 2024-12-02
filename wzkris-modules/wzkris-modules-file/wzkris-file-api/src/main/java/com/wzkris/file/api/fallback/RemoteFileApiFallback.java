@@ -3,7 +3,7 @@ package com.wzkris.file.api.fallback;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.file.api.RemoteFileApi;
-import com.wzkris.file.api.domain.SysFile;
+import com.wzkris.file.api.domain.request.SysFileUploadReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class RemoteFileApiFallback implements FallbackFactory<RemoteFileApi> {
         log.error("-------openfeign触发熔断，文件服务调用失败-------");
         return new RemoteFileApi() {
             @Override
-            public Result<SysFile> upload(MultipartFile file) {
+            public Result<SysFileUploadReq> upload(MultipartFile file) {
                 log.error("上传文件失败，errMsg：{}", cause.getMessage(), cause);
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());
             }

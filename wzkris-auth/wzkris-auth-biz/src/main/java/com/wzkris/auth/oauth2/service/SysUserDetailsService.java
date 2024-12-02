@@ -8,9 +8,9 @@ import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import com.wzkris.common.security.oauth2.enums.UserType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteSysUserApi;
-import com.wzkris.user.api.domain.dto.QueryPermsDTO;
-import com.wzkris.user.api.domain.dto.SysPermissionDTO;
-import com.wzkris.user.api.domain.dto.SysUserDTO;
+import com.wzkris.user.api.domain.request.QueryPermsReq;
+import com.wzkris.user.api.domain.response.SysPermissionResp;
+import com.wzkris.user.api.domain.response.SysUserResp;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,29 +32,29 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
 
     @Override
     public WzUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        Result<SysUserDTO> result = remoteSysUserApi.getByUsername(username);
-        SysUserDTO userDTO = result.checkData();
+        Result<SysUserResp> result = remoteSysUserApi.getByUsername(username);
+        SysUserResp userDTO = result.checkData();
         return this.checkAndBuild(userDTO);
     }
 
     @Override
     public WzUser loadUserByPhoneNumber(String phoneNumber) {
-        Result<SysUserDTO> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
-        SysUserDTO userDTO = result.checkData();
+        Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
+        SysUserResp userDTO = result.checkData();
         return userDTO == null ? null : this.checkAndBuild(userDTO);
     }
 
     /**
      * 构建登录用户
      */
-    private WzUser checkAndBuild(@Nonnull SysUserDTO userDTO) {
+    private WzUser checkAndBuild(@Nonnull SysUserResp userDTO) {
         // 校验用户状态
         this.checkAccount(userDTO);
 
         // 获取权限信息
-        Result<SysPermissionDTO> permissionDTOResult = remoteSysUserApi
-                .getPermission(new QueryPermsDTO(userDTO.getUserId(), userDTO.getTenantId(), userDTO.getDeptId()));
-        SysPermissionDTO permissions = permissionDTOResult.checkData();
+        Result<SysPermissionResp> permissionDTOResult = remoteSysUserApi
+                .getPermission(new QueryPermsReq(userDTO.getUserId(), userDTO.getTenantId(), userDTO.getDeptId()));
+        SysPermissionResp permissions = permissionDTOResult.checkData();
 
         LoginSyser loginSyser = new LoginSyser();
         loginSyser.setUserId(userDTO.getUserId());
@@ -70,7 +70,7 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
     /**
      * 校验用户账号
      */
-    private void checkAccount(SysUserDTO userDTO) {
+    private void checkAccount(SysUserResp userDTO) {
         if (ObjUtil.equals(userDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }

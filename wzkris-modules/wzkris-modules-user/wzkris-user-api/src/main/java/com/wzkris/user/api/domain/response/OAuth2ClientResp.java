@@ -1,4 +1,4 @@
-package com.wzkris.user.api.domain.dto;
+package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author wzkris
  */
 @Data
-public class OAuth2ClientDTO {
+public class OAuth2ClientResp {
     // 客户端id 等价于app_id
     private String clientId;
     // 客户端密钥 等价于app_secret

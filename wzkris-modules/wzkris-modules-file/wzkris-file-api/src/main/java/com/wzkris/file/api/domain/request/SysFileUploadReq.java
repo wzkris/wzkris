@@ -1,4 +1,4 @@
-package com.wzkris.file.api.domain;
+package com.wzkris.file.api.domain.request;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
-public class SysFile {
+public class SysFileUploadReq {
     /**
      * 文件名称
      */

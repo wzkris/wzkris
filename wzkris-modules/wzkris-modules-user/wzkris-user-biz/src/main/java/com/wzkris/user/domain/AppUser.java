@@ -5,7 +5,7 @@ import com.wzkris.common.core.annotation.PhoneNumber;
 import com.wzkris.common.core.annotation.Xss;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
-import com.wzkris.user.api.domain.dto.AppUserDTO;
+import com.wzkris.user.api.domain.response.AppUserResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +21,7 @@ import lombok.experimental.FieldNameConstants;
 @Data
 @AutoMappers({
         @AutoMapper(target = LoginApper.class),
-        @AutoMapper(target = AppUserDTO.class)
+        @AutoMapper(target = AppUserResp.class)
 })
 @NoArgsConstructor
 @FieldNameConstants

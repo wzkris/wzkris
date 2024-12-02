@@ -1,4 +1,4 @@
-package com.wzkris.user.api.domain.dto;
+package com.wzkris.user.api.domain.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysPermissionDTO {
+public class SysPermissionResp {
     /**
      * 是否当前租户下的超级管理员
      */

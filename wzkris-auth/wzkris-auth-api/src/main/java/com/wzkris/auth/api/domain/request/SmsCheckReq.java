@@ -1,4 +1,4 @@
-package com.wzkris.auth.api.domain.dto;
+package com.wzkris.auth.api.domain.request;
 
 import com.wzkris.common.core.annotation.PhoneNumber;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SmsDTO {
+public class SmsCheckReq {
 
     @PhoneNumber
     private String phoneNumber;

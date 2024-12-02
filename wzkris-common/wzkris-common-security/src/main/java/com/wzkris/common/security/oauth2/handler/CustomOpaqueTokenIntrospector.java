@@ -3,7 +3,7 @@ package com.wzkris.common.security.oauth2.handler;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.api.RemoteTokenApi;
-import com.wzkris.auth.api.domain.ReqToken;
+import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
@@ -56,7 +56,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
 
         try {
-            Result<?> tokenResult = remoteTokenApi.checkToken(new ReqToken(token, reqId));
+            Result<?> tokenResult = remoteTokenApi.checkToken(new TokenReq(token, reqId));
             Object res = tokenResult.checkData();
 
             return this.adaptToCustomResponse(res);

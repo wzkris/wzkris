@@ -28,6 +28,13 @@ public class BaseController {
     }
 
     /**
+     * 自定义失败消息
+     */
+    public static <T> Result<T> resp(int biz, String errMsg) {
+        return Result.resp(biz, null, errMsg);
+    }
+
+    /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */
     @InitBinder
@@ -81,13 +88,6 @@ public class BaseController {
      */
     public <T> Result<T> fail(String errMsg) {
         return Result.fail(errMsg);
-    }
-
-    /**
-     * 自定义失败消息
-     */
-    public static <T> Result<T> resp(int biz, String errMsg) {
-        return Result.resp(biz, null, errMsg);
     }
 
     /**

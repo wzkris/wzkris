@@ -1,4 +1,4 @@
-package com.wzkris.system.api.domain;
+package com.wzkris.system.api.domain.request;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class LoginLogDTO {
+public class LoginLogReq {
 
     /**
      * ID

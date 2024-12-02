@@ -15,7 +15,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.system.api.RemoteLogApi;
-import com.wzkris.system.api.domain.OperLogDTO;
+import com.wzkris.system.api.domain.request.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -80,38 +80,38 @@ public class OperateLogAspect {
     protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog, final Exception e, Object jsonResult) {
         try {
             // *========数据库日志=========*//
-            OperLogDTO operLogDTO = new OperLogDTO();
-            operLogDTO.setOperName(SysUtil.getUsername());
-            operLogDTO.setTenantId(SysUtil.getTenantId());
-            operLogDTO.setOperType(operateLog.operateType().getValue());
-            operLogDTO.setStatus(OperateStatus.SUCCESS.value());
-            operLogDTO.setOperTime(DateUtil.current());
+            OperLogReq operLogReq = new OperLogReq();
+            operLogReq.setOperName(SysUtil.getUsername());
+            operLogReq.setTenantId(SysUtil.getTenantId());
+            operLogReq.setOperType(operateLog.operateType().getValue());
+            operLogReq.setStatus(OperateStatus.SUCCESS.value());
+            operLogReq.setOperTime(DateUtil.current());
             // 请求的地址
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String ip = ServletUtil.getClientIP(request);
-            operLogDTO.setOperIp(ip);
-            operLogDTO.setOperLocation(AddressUtil.getRealAddressByIp(ip));
-            operLogDTO.setOperUrl(StringUtil.sub(request.getRequestURI(), 0, 255));
+            operLogReq.setOperIp(ip);
+            operLogReq.setOperLocation(AddressUtil.getRealAddressByIp(ip));
+            operLogReq.setOperUrl(StringUtil.sub(request.getRequestURI(), 0, 255));
             if (e != null) {
-                operLogDTO.setStatus(OperateStatus.FAIL.value());
-                operLogDTO.setErrorMsg(StringUtil.sub(e.getMessage(), 0, 2000));
+                operLogReq.setStatus(OperateStatus.FAIL.value());
+                operLogReq.setErrorMsg(StringUtil.sub(e.getMessage(), 0, 2000));
             }
             else if (jsonResult instanceof Result<?> result) {
                 if (!result.isSuccess()) {
-                    operLogDTO.setStatus(OperateStatus.FAIL.value());
-                    operLogDTO.setErrorMsg(StringUtil.sub(result.getErrMsg(), 0, 2000));
+                    operLogReq.setStatus(OperateStatus.FAIL.value());
+                    operLogReq.setErrorMsg(StringUtil.sub(result.getErrMsg(), 0, 2000));
                 }
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();
-            operLogDTO.setMethod(className + "." + methodName + "()");
+            operLogReq.setMethod(className + "." + methodName + "()");
             // 设置请求方式
-            operLogDTO.setRequestMethod(request.getMethod());
+            operLogReq.setRequestMethod(request.getMethod());
             // 处理设置注解上的参数
-            getControllerMethodDescription(joinPoint, operateLog, operLogDTO, jsonResult);
+            getControllerMethodDescription(joinPoint, operateLog, operLogReq, jsonResult);
             // 保存数据库
-            remoteLogApi.insertOperlog(operLogDTO);
+            remoteLogApi.insertOperlog(operLogReq);
         }
         catch (Exception exp) {
             // 记录本地异常日志
@@ -123,36 +123,36 @@ public class OperateLogAspect {
      * 获取注解中对方法的描述信息 用于Controller层注解
      *
      * @param log        日志
-     * @param operLogDTO 操作日志
+     * @param operLogReq 操作日志
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, OperateLog log, OperLogDTO operLogDTO,
+    public void getControllerMethodDescription(JoinPoint joinPoint, OperateLog log, OperLogReq operLogReq,
                                                Object jsonResult) throws JsonProcessingException {
         // 设置action动作
-        operLogDTO.setOperType(log.operateType().getValue());
+        operLogReq.setOperType(log.operateType().getValue());
         // 设置标题
-        operLogDTO.setTitle(log.title());
-        operLogDTO.setSubTitle(log.subTitle());
+        operLogReq.setTitle(log.title());
+        operLogReq.setSubTitle(log.subTitle());
         // 设置操作人类别
-        operLogDTO.setOperatorType(log.operateType().getValue());
+        operLogReq.setOperatorType(log.operateType().getValue());
         // 是否需要保存request，参数和值
         if (log.isSaveRequestData()) {
             // 获取参数的信息，传入到数据库中。
-            setRequestValue(joinPoint, log.excludeRequestParam(), operLogDTO);
+            setRequestValue(joinPoint, log.excludeRequestParam(), operLogReq);
         }
         // 是否需要保存response，参数和值
         if (log.isSaveResponseData() && StringUtil.isNotNull(jsonResult)) {
-            operLogDTO.setJsonResult(StringUtil.sub(objectMapper.writeValueAsString(jsonResult), 0, 2000));
+            operLogReq.setJsonResult(StringUtil.sub(objectMapper.writeValueAsString(jsonResult), 0, 2000));
         }
     }
 
     /**
      * 获取请求的参数，放到log中
      *
-     * @param operLogDTO 操作日志
+     * @param operLogReq 操作日志
      */
-    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperLogDTO operLogDTO) throws JsonProcessingException {
+    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperLogReq operLogReq) throws JsonProcessingException {
         final String operParams;
-        final String requestMethod = operLogDTO.getRequestMethod();
+        final String requestMethod = operLogReq.getRequestMethod();
         if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
             String params = this.argsArrayToString(joinPoint.getArgs());
             if (StringUtil.isBlank(params)) {
@@ -176,7 +176,7 @@ public class OperateLogAspect {
             this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
             operParams = StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000);
         }
-        operLogDTO.setOperParam(operParams);
+        operLogReq.setOperParam(operParams);
     }
 
     /**

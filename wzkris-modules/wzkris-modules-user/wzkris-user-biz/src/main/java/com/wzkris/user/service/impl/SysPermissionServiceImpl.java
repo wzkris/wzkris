@@ -3,7 +3,7 @@ package com.wzkris.user.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.user.api.domain.dto.SysPermissionDTO;
+import com.wzkris.user.api.domain.response.SysPermissionResp;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
@@ -56,7 +56,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override
-    public SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
+    public SysPermissionResp getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
         return DynamicTenantUtil.switcht(tenantId, () -> {
             List<SysRole> roles;
             List<String> grantedAuthority;
@@ -88,7 +88,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                     deptScopes = this.listDeptScope(roles, deptId);
                 }
             }
-            return new SysPermissionDTO(administrator, grantedAuthority, deptScopes);
+            return new SysPermissionResp(administrator, grantedAuthority, deptScopes);
         });
     }
 

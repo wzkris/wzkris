@@ -1,8 +1,8 @@
 package com.wzkris.system.api.fallback;
 
 import com.wzkris.system.api.RemoteLogApi;
-import com.wzkris.system.api.domain.LoginLogDTO;
-import com.wzkris.system.api.domain.OperLogDTO;
+import com.wzkris.system.api.domain.request.LoginLogReq;
+import com.wzkris.system.api.domain.request.OperLogReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -22,12 +22,12 @@ public class RemoteLogFallback implements FallbackFactory<RemoteLogApi> {
         log.error("-------openfeign触发熔断，系统服务调用失败-------");
         return new RemoteLogApi() {
             @Override
-            public void insertOperlog(OperLogDTO operLogDTO) {
+            public void insertOperlog(OperLogReq operLogReq) {
                 log.error("插入操作日志发生异常，errMsg：{}", cause.getMessage(), cause);
             }
 
             @Override
-            public void insertLoginlog(LoginLogDTO loginLogDTO) {
+            public void insertLoginlog(LoginLogReq loginLogReq) {
                 log.error("插入登录日志发生异常，errMsg：{}", cause.getMessage(), cause);
             }
         };

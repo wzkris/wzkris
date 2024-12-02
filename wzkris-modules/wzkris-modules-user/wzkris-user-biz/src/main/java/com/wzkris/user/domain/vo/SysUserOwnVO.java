@@ -1,4 +1,4 @@
-package com.wzkris.auth.domain.vo;
+package com.wzkris.user.domain.vo;
 
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 @Data
 @AutoMapper(target = LoginSyser.class)
-public class LoginUserVO {
+public class SysUserOwnVO {
 
     @Schema(description = "用户名")
     private String username;

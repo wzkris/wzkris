@@ -1,14 +1,14 @@
-package com.wzkris.user.api.domain.dto;
+package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
 
 /**
- * sys用户传输层
+ * sys用户信息
  *
  * @author wzkris
  */
 @Data
-public class SysUserDTO {
+public class SysUserResp {
 
     private Long userId;
 
@@ -25,10 +25,6 @@ public class SysUserDTO {
     private String phoneNumber;
 
     private String status;
-
-    private String gender;
-
-    private String avatar;
 
     private String password;
 }

@@ -1,4 +1,4 @@
-package com.wzkris.user.api.domain.dto;
+package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -12,7 +12,7 @@ import lombok.experimental.FieldNameConstants;
 @Data
 @Accessors(chain = true)
 @FieldNameConstants
-public class AppUserDTO {
+public class AppUserResp {
 
     private Long userId;
 
@@ -21,8 +21,4 @@ public class AppUserDTO {
     private String phoneNumber;
 
     private String status;
-
-    private String gender;
-
-    private String avatar;
 }

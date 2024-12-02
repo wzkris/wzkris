@@ -1,6 +1,6 @@
 package com.wzkris.auth.api;
 
-import com.wzkris.auth.api.domain.dto.SmsDTO;
+import com.wzkris.auth.api.domain.request.SmsCheckReq;
 import com.wzkris.auth.api.fallback.RemoteCaptchaApiFallback;
 import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
@@ -24,5 +24,5 @@ public interface RemoteCaptchaApi {
      * 校验手机号验证码
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/sms/validate")
-    Result<Void> validateSms(@RequestBody @Valid SmsDTO smsDTO);
+    Result<Void> validateSms(@RequestBody @Valid SmsCheckReq smsCheckReq);
 }

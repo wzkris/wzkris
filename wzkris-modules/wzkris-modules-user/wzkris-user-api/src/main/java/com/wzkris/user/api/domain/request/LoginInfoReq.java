@@ -1,5 +1,6 @@
-package com.wzkris.user.api.domain.dto;
+package com.wzkris.user.api.domain.request;
 
+import jakarta.annotation.Nonnull;
 import lombok.Data;
 
 /**
@@ -8,8 +9,12 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
-public class LoginInfoDTO {
+public class LoginInfoReq {
+
+    @Nonnull
     private Long userId;
+
     private String loginIp;
+
     private Long loginDate;
 }

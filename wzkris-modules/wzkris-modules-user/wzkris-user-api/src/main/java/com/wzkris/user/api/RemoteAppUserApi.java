@@ -2,8 +2,8 @@ package com.wzkris.user.api;
 
 import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.user.api.domain.dto.AppUserDTO;
-import com.wzkris.user.api.domain.dto.LoginInfoDTO;
+import com.wzkris.user.api.domain.request.LoginInfoReq;
+import com.wzkris.user.api.domain.response.AppUserResp;
 import com.wzkris.user.api.fallback.RemoteAppUserApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +28,11 @@ public interface RemoteAppUserApi {
      * 根据手机号查询app用户
      */
     @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_app_user_by_phonenumber")
-    Result<AppUserDTO> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
+    Result<AppUserResp> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
 
     /**
      * 更新用户登录信息
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/update_app_user_logininfo")
-    void updateLoginInfo(@RequestBody LoginInfoDTO loginInfoDTO);
+    void updateLoginInfo(@RequestBody LoginInfoReq loginInfoReq);
 }

@@ -1,10 +1,10 @@
-package com.wzkris.auth.domain.dto;
+package com.wzkris.auth.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class KaptchaDTO {
+public class KaptchaVO {
     @Schema(description = "是否启用")
     private boolean captchaEnabled;
 
@@ -17,7 +17,7 @@ public class KaptchaDTO {
     @Schema(description = "过期时间")
     private int expired;
 
-    public KaptchaDTO(boolean captchaEnabled) {
+    public KaptchaVO(boolean captchaEnabled) {
         this.captchaEnabled = captchaEnabled;
     }
 

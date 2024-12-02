@@ -2,7 +2,7 @@ package com.wzkris.file.api;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
-import com.wzkris.file.api.domain.SysFile;
+import com.wzkris.file.api.domain.request.SysFileUploadReq;
 import com.wzkris.file.service.SysFileService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +26,12 @@ public class RemoteFileApiImpl implements RemoteFileApi {
     private final SysFileService fileService;
 
     // 上传文件
-    public Result<SysFile> upload(MultipartFile file) {
+    public Result<SysFileUploadReq> upload(MultipartFile file) {
         // 上传并返回访问地址
         String url = fileService.uploadFile(file);
-        SysFile sysFile = new SysFile();
-        sysFile.setName(sysFile.getName());
-        sysFile.setUrl(url);
-        return ok(sysFile);
+        SysFileUploadReq sysFileUploadReq = new SysFileUploadReq();
+        sysFileUploadReq.setName(sysFileUploadReq.getName());
+        sysFileUploadReq.setUrl(url);
+        return ok(sysFileUploadReq);
     }
 }

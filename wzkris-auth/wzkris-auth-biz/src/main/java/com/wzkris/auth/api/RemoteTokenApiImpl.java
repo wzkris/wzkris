@@ -1,6 +1,6 @@
 package com.wzkris.auth.api;
 
-import com.wzkris.auth.api.domain.ReqToken;
+import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
@@ -55,12 +55,12 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     }
 
     @Override
-    public Result<WzUser> checkToken(ReqToken reqToken) {
-        String reqId = RedisUtil.getObj(TOKEN_REQ_ID_PREFIX + reqToken.getToken());
-        if (StringUtil.isBlank(reqId) || !reqId.equals(reqToken.getReqId())) {
+    public Result<WzUser> checkToken(TokenReq tokenReq) {
+        String reqId = RedisUtil.getObj(TOKEN_REQ_ID_PREFIX + tokenReq.getToken());
+        if (StringUtil.isBlank(reqId) || !reqId.equals(tokenReq.getReqId())) {
             return resp(BizCode.NOT_FOUND, CustomErrorCodes.INVALID_REQUEST_ID);
         }
-        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(reqToken.getToken(), null);
+        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(tokenReq.getToken(), null);
         if (oAuth2Authorization == null) {
             return resp(BizCode.INVALID_TOKEN, OAuth2ErrorCodes.INVALID_TOKEN);
         }

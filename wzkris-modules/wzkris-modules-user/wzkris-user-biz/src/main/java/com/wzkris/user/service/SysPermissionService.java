@@ -1,6 +1,6 @@
 package com.wzkris.user.service;
 
-import com.wzkris.user.api.domain.dto.SysPermissionDTO;
+import com.wzkris.user.api.domain.response.SysPermissionResp;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -19,6 +19,6 @@ public interface SysPermissionService {
      * @param deptId   部门ID
      * @return 权限
      */
-    SysPermissionDTO getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId);
+    SysPermissionResp getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId);
 
 }

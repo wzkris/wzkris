@@ -1,7 +1,7 @@
 package com.wzkris.auth.api.fallback;
 
 import com.wzkris.auth.api.RemoteCaptchaApi;
-import com.wzkris.auth.api.domain.dto.SmsDTO;
+import com.wzkris.auth.api.domain.request.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class RemoteCaptchaApiFallback implements FallbackFactory<RemoteCaptchaAp
         log.error("-----------认证服务发生熔断-----------");
         return new RemoteCaptchaApi() {
             @Override
-            public Result<Void> validateSms(SmsDTO smsDTO) {
+            public Result<Void> validateSms(SmsCheckReq smsCheckReq) {
                 log.error("验证短信发生异常，errMsg：{}", cause.getMessage());
 
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());

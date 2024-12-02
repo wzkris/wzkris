@@ -9,7 +9,7 @@ import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
-import com.wzkris.user.api.domain.dto.SysUserDTO;
+import com.wzkris.user.api.domain.response.SysUserResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +30,7 @@ import lombok.experimental.FieldNameConstants;
 @Accessors(chain = true)
 @AutoMappers({
         @AutoMapper(target = LoginSyser.class),
-        @AutoMapper(target = SysUserDTO.class)
+        @AutoMapper(target = SysUserResp.class)
 })
 @NoArgsConstructor
 @FieldNameConstants
