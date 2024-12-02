@@ -56,6 +56,10 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
         return this.findByClientId(id);
     }
 
+    public final void remove(final String id) {
+        RedisUtil.delObj(this.buildRedisKey(id));
+    }
+
     @Override
     public RegisteredClient findByClientId(String clientId) {
         RedisRegisteredClient redisRegisteredClient = RedisUtil.getObj(this.buildRedisKey(clientId));

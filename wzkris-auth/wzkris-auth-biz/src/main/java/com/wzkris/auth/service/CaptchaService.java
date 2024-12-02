@@ -92,6 +92,7 @@ public class CaptchaService {
 
         kaptchaVO.setImg(base64Img);
         kaptchaVO.setUuid(uuid);
+        kaptchaVO.setExpired(captchaConfig.getExpired());
         return kaptchaVO;
     }
 

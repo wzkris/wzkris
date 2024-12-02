@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.user.api.domain.response.OAuth2ClientResp;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -43,6 +44,7 @@ public class OAuth2Client extends BaseEntity {
 
     @NotBlank(message = "[clientSecret] {validate.notnull}")
     @Length(min = 6, max = 6, message = "[clientSecret] {validate.size.illegal}")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "客户端密钥 等价于app_secret")
     private String clientSecret;
 
