@@ -17,16 +17,12 @@ import java.io.Serial;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-
 public class DeviceVO extends Device {
 
     @Serial
     private static final long serialVersionUID = -5565673176757994333L;
 
-    @Schema(description = "电站id")
-    private Long stationId;
-
-    @Schema(description = "电站名称")
-    private String stationName;
+    @Schema(description = "网络信息")
+    private NetworkVO net;
 
 }

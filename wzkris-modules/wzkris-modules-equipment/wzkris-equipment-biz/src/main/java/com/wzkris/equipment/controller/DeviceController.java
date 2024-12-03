@@ -1,11 +1,9 @@
 package com.wzkris.equipment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Device;
 import com.wzkris.equipment.domain.req.DeviceQueryReq;
@@ -53,31 +51,25 @@ public class DeviceController extends BaseController {
                 .eq(StringUtil.isNotBlank(req.getConnStatus()), Device::getConnStatus, req.getConnStatus());
     }
 
-    @Operation(summary = "详情")
+    @Operation(summary = "id查询设备信息")
     @GetMapping("/{deviceId}")
     @PreAuthorize("@ps.hasPerms('device:query')")
-    public Result<DeviceVO> queryById(@PathVariable Long deviceId) {
-        return ok(deviceService.getVOById(deviceId));
+    public Result<Device> queryById(@PathVariable Long deviceId) {
+        return ok(deviceMapper.selectById(deviceId));
+    }
+
+    @Operation(summary = "设备号查询详情")
+    @GetMapping("/by_sno/{sno}")
+    @PreAuthorize("@ps.hasPerms('device:query')")
+    public Result<DeviceVO> queryBySno(@PathVariable String sno) {
+        return ok(deviceService.getVOBySno(sno));
     }
 
     @Operation(summary = "设备号查询入网信息")
-    @GetMapping("/network_detail/{serialNo}")
+    @GetMapping("/network_detail/{sno}")
     @PreAuthorize("@ps.hasPerms('device:query')")
-    public Result<NetworkVO> queryNetwork(@PathVariable String serialNo) {
-        return ok(deviceService.getNetworkVOBySerialNo(serialNo));
-    }
-
-    @Operation(summary = "订阅设备信息")
-    @PostMapping("/sub_dev")
-    @PreAuthorize("@ps.hasPerms('device:sub_dev')")
-    public Result<String> subInfo(@RequestBody Long deviceId) {
-        Device device = deviceMapper.selectOne(new QueryWrapper<>(new Device(deviceId).setTenantId(SysUtil.getTenantId())));
-        if (device == null) {
-            return fail("设备不存在");
-        }
-
-        String roomNo = deviceService.subDevice(device.getSerialNo());
-        return ok(roomNo);
+    public Result<NetworkVO> queryNetwork(@PathVariable String sno) {
+        return ok(deviceService.getNetInfoBySno(sno));
     }
 
     @Operation(summary = "添加设备")

@@ -14,4 +14,7 @@ public class NetworkVO {
 
     @Schema(description = "信号值")
     private Integer signal;
+
+    @Schema(description = "温度")
+    private Integer temperature;
 }
