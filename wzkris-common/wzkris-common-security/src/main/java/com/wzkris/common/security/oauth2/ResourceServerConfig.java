@@ -5,6 +5,7 @@ import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
+import com.wzkris.common.security.oauth2.resolver.CustomBearerTokenResolver;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,7 @@ public final class ResourceServerConfig {
                             .opaqueToken(token -> {
                                 token.introspector(new CustomOpaqueTokenIntrospector(remoteTokenApi));
                             })
+                            .bearerTokenResolver(new CustomBearerTokenResolver())
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                             .accessDeniedHandler(new AccessDeniedHandlerImpl())
                     ;
