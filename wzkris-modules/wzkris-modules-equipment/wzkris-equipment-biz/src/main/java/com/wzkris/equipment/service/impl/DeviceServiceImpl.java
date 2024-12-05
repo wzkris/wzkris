@@ -27,6 +27,7 @@ public class DeviceServiceImpl implements DeviceService {
                         .eq(Device::getSerialNo, sno)
                 , DeviceVO.class);
         NetworkVO networkVO = this.getNetInfoBySno(sno);
+        if (deviceVO == null) return null;
         deviceVO.setNet(networkVO);
         return deviceVO;
     }
@@ -34,7 +35,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public NetworkVO getNetInfoBySno(String sno) {
         // 查询入网后的信息
-        return null;
+        return new NetworkVO("192.168.0.1", 30069, 18, 35);
     }
 
 }

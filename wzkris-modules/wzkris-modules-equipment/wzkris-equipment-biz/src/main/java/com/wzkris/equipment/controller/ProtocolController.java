@@ -1,6 +1,7 @@
 package com.wzkris.equipment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.page.Page;
@@ -45,6 +46,18 @@ public class ProtocolController extends BaseController {
                 .like(StringUtil.isNotBlank(queryReq.getPtcName()), Protocol::getPtcName, queryReq.getPtcName())
                 .like(StringUtil.isNotBlank(queryReq.getPtcVersion()), Protocol::getPtcVersion, queryReq.getPtcVersion())
                 .eq(StringUtil.isNotBlank(queryReq.getStatus()), Protocol::getStatus, queryReq.getStatus());
+    }
+
+    @Operation(summary = "协议选择列表(不带分页)")
+    @GetMapping("/selectlist")
+    @PreAuthorize("@ps.hasPerms('protocol:list')")
+    public Result<List<Protocol>> selectList(String ptcName) {
+        LambdaQueryWrapper<Protocol> lqw = new LambdaQueryWrapper<Protocol>()
+                .select(Protocol::getPtcId, Protocol::getPtcName)
+                .eq(Protocol::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(ptcName), Protocol::getPtcName, ptcName);
+        List<Protocol> list = protocolMapper.selectList(lqw);
+        return ok(list);
     }
 
     @Operation(summary = "详情")

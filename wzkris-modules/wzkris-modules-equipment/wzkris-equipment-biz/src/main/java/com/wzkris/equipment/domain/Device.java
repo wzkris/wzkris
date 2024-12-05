@@ -28,8 +28,11 @@ public class Device extends BaseEntity {
     @TableId
     private Long deviceId;
 
-    @Schema(description = "租户id")
+    @Schema(description = "租户ID")
     private Long tenantId;
+
+    @Schema(description = "产品ID")
+    private Long pdtId;
 
     @Schema(description = "设备名称")
     private String deviceName;

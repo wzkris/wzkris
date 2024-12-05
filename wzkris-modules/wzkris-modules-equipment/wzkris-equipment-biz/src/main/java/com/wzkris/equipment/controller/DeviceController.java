@@ -3,6 +3,8 @@ package com.wzkris.equipment.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Device;
@@ -48,7 +50,8 @@ public class DeviceController extends BaseController {
                 .like(StringUtil.isNotBlank(req.getDeviceName()), Device::getDeviceName, req.getDeviceName())
                 .like(StringUtil.isNotBlank(req.getSerialNo()), Device::getSerialNo, req.getSerialNo())
                 .eq(StringUtil.isNotBlank(req.getStatus()), Device::getStatus, req.getStatus())
-                .eq(StringUtil.isNotBlank(req.getConnStatus()), Device::getConnStatus, req.getConnStatus());
+                .eq(StringUtil.isNotBlank(req.getConnStatus()), Device::getConnStatus, req.getConnStatus())
+                .last("ORDER BY CASE conn_status WHEN '1' THEN 1 ELSE 2 END , device_id DESC");
     }
 
     @Operation(summary = "id查询设备信息")
@@ -73,32 +76,36 @@ public class DeviceController extends BaseController {
     }
 
     @Operation(summary = "添加设备")
+    @OperateLog(title = "设备管理", subTitle = "添加设备", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('device:add')")
-    public Result<?> add(@RequestBody Device device) {
+    public Result<Void> add(@RequestBody Device device) {
         return toRes(deviceMapper.insert(device));
     }
 
     @Operation(summary = "修改设备")
+    @OperateLog(title = "设备管理", subTitle = "修改设备", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('device:edit')")
-    public Result<?> edit(@RequestBody Device device) {
+    public Result<Void> edit(@RequestBody Device device) {
         return toRes(deviceMapper.updateById(device));
     }
 
     @Operation(summary = "修改设备状态")
+    @OperateLog(title = "设备管理", subTitle = "修改设备状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @PreAuthorize("@ps.hasPerms('device:edit')")
-    public Result<?> editStatus(@RequestBody EditStatusReq statusReq) {
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         Device update = new Device(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(deviceMapper.updateById(update));
     }
 
     @Operation(summary = "删除设备")
+    @OperateLog(title = "设备管理", subTitle = "删除设备", operateType = OperateType.UPDATE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('device:remove')")
-    public Result<?> deleteById(@RequestBody Long deviceId) {
+    public Result<Void> deleteById(@RequestBody Long deviceId) {
         return toRes(deviceMapper.deleteById(deviceId));
     }
 

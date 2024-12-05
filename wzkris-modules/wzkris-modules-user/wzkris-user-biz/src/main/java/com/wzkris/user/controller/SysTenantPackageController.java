@@ -55,11 +55,11 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "套餐选择列表(不带分页)")
     @GetMapping("/selectlist")
     @PreAuthorize("@ps.hasPerms('tenant_package:list')")
-    public Result<List<SysTenantPackage>> selectList(SysTenantPackage sysTenantPackage) {
+    public Result<List<SysTenantPackage>> selectList(String packageName) {
         LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
                 .select(SysTenantPackage::getPackageId, SysTenantPackage::getPackageName)
                 .eq(SysTenantPackage::getStatus, CommonConstants.STATUS_ENABLE)
-                .like(StringUtil.isNotBlank(sysTenantPackage.getPackageName()), SysTenantPackage::getPackageName, sysTenantPackage.getPackageName());
+                .like(StringUtil.isNotBlank(packageName), SysTenantPackage::getPackageName, packageName);
         return ok(tenantPackageMapper.selectList(lqw));
     }
 

@@ -53,9 +53,6 @@ public class AppUser extends BaseEntity {
     @Schema(description = "最近登录日期")
     private Long loginDate;
 
-    @Schema(description = "用户额外信息")
-    private String remark;
-
     public AppUser(Long userId) {
         this.userId = userId;
     }
