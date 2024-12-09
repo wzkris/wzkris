@@ -17,7 +17,7 @@ public class DeviceQueryReq {
     private String serialNo;
 
     @Schema(description = "连接状态")
-    private String connStatus;
+    private Boolean online;
 
     @Schema(description = "状态")
     private String status;

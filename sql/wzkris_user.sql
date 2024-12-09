@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 05/12/2024 15:25:56
+ Date: 09/12/2024 16:54:02
 */
 
 SET NAMES utf8mb4;
@@ -213,10 +213,11 @@ INSERT INTO `sys_menu` VALUES (301, '系统接口', 101, 2, 'http://localhost:80
 INSERT INTO `sys_menu` VALUES (302, 'Sentinel控制台', 101, 3, 'http://localhost:8718', NULL, NULL, 'C', '0', 'monitor:sentinel:list', 'sentinel', 1, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (303, 'Nacos控制台', 101, 4, 'http://127.0.0.1:8848/nacos', NULL, NULL, 'C', '0', 'monitor:nacos:list', 'nacos', 1, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (304, '服务监控', 101, 5, 'http://localhost:9100/', NULL, NULL, 'C', '0', 'monitor:server:list', 'server', 1, 0, 1, 1713334134616, 1, 1719987239231, 1);
-INSERT INTO `sys_menu` VALUES (400, '站点管理', 4, 0, 'station', 'equipment/station/index', NULL, 'C', '0', 'station:list', 'location', 0, 0, 1, 1713334134616, 1, 1730270990702, 1);
-INSERT INTO `sys_menu` VALUES (401, '物联网设备', 4, 1, 'device', 'equipment/device/index', NULL, 'C', '0', 'device:list', 'chargePile', 0, 1, 1, 1713334134616, 1, 1733383483922, 1);
-INSERT INTO `sys_menu` VALUES (402, '协议管理', 4, 50, 'protocol', 'equipment/protocol/index', NULL, 'C', '0', 'protocol:list', 'protocol', 0, 0, 1, 1732063013229, 1, 1732063154322, 1);
-INSERT INTO `sys_menu` VALUES (403, '产品管理', 4, 0, 'product', 'equipment/product/index', NULL, 'C', '0', 'product:list', 'product', 0, 0, 1, 1733298652177, 1, 1733299561157, 1);
+INSERT INTO `sys_menu` VALUES (400, '站点管理', 4, 10, 'station', 'equipment/station/index', NULL, 'C', '0', 'station:list', 'location', 0, 0, 1, 1713334134616, 1, 1733734162176, 1);
+INSERT INTO `sys_menu` VALUES (401, '设备列表', 4, 50, 'device', 'equipment/device/index', NULL, 'C', '0', 'device:list', 'chargePile', 0, 1, 1, 1713334134616, 1, 1733734143112, 1);
+INSERT INTO `sys_menu` VALUES (402, '协议管理', 4, 30, 'protocol', 'equipment/protocol/index', NULL, 'C', '0', 'protocol:list', 'protocol', 0, 0, 1, 1732063013229, 1, 1733734147401, 1);
+INSERT INTO `sys_menu` VALUES (403, '产品管理', 4, 20, 'product', 'equipment/product/index', NULL, 'C', '0', 'product:list', 'product', 0, 0, 1, 1733298652177, 1, 1733734156104, 1);
+INSERT INTO `sys_menu` VALUES (404, '设备地图', 4, 10, 'map', 'equipment/map/index', NULL, 'C', '0', NULL, 'map', 0, 0, 1, 1733706990166, 1, 1733734277275, 1);
 INSERT INTO `sys_menu` VALUES (500, '订单管理', 5, 100, 'order', 'trade/order/index', NULL, 'C', '0', 'order:list', 'list', 0, 0, 1, 1713334134616, 1, 1732672962995, 1);
 INSERT INTO `sys_menu` VALUES (501, '优惠券管理', 5, 1, 'coupon', 'trade/coupon/index', NULL, 'C', '0', 'coupon:list', 'coupon', 0, 0, 1, 1713334134616, 1, 1732672870665, 1);
 INSERT INTO `sys_menu` VALUES (502, '交易投诉', 5, 5, 'feedback', 'trade/feedback/index', NULL, 'C', '0', NULL, 'feedback', 0, 0, 1, 1713334134616, 1, 1732672943651, 1);
@@ -520,7 +521,7 @@ CREATE TABLE `sys_tenant`  (
 -- Records of sys_tenant
 -- ----------------------------
 INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1, 1733376673716);
-INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$5VkAMC0ynugNbd4cbail4.6xb8HuhiodlxiIQwU2w0Cpe8OqII.Lm', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1730962049110);
+INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$p5qz.Z95gyAiursCatzy/.FtVrtlbRBKjjGl3LMP.W3ijPFrfNf2K', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1733723855419);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package

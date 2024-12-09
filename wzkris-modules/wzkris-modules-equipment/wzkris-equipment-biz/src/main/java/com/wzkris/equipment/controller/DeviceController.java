@@ -16,6 +16,7 @@ import com.wzkris.equipment.mapper.DeviceMapper;
 import com.wzkris.equipment.service.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +51,8 @@ public class DeviceController extends BaseController {
                 .like(StringUtil.isNotBlank(req.getDeviceName()), Device::getDeviceName, req.getDeviceName())
                 .like(StringUtil.isNotBlank(req.getSerialNo()), Device::getSerialNo, req.getSerialNo())
                 .eq(StringUtil.isNotBlank(req.getStatus()), Device::getStatus, req.getStatus())
-                .eq(StringUtil.isNotBlank(req.getConnStatus()), Device::getConnStatus, req.getConnStatus())
-                .last("ORDER BY CASE conn_status WHEN '1' THEN 1 ELSE 2 END , device_id DESC");
+                .eq(StringUtil.isNotNull(req.getOnline()), Device::getOnline, req.getOnline())
+                .orderByDesc(Device::getOnline, Device::getDeviceId);
     }
 
     @Operation(summary = "id查询设备信息")
@@ -79,7 +80,7 @@ public class DeviceController extends BaseController {
     @OperateLog(title = "设备管理", subTitle = "添加设备", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('device:add')")
-    public Result<Void> add(@RequestBody Device device) {
+    public Result<Void> add(@RequestBody @Valid Device device) {
         return toRes(deviceMapper.insert(device));
     }
 
@@ -87,7 +88,7 @@ public class DeviceController extends BaseController {
     @OperateLog(title = "设备管理", subTitle = "修改设备", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('device:edit')")
-    public Result<Void> edit(@RequestBody Device device) {
+    public Result<Void> edit(@RequestBody @Valid Device device) {
         return toRes(deviceMapper.updateById(device));
     }
 

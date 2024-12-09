@@ -12,6 +12,7 @@ import com.wzkris.equipment.domain.Product;
 import com.wzkris.equipment.domain.req.EditStatusReq;
 import com.wzkris.equipment.domain.req.ProductQueryReq;
 import com.wzkris.equipment.mapper.ProductMapper;
+import com.wzkris.equipment.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ProductController extends BaseController {
     private final ProductMapper productMapper;
+    private final ProductService productService;
 
     @Operation(summary = "分页查询")
     @GetMapping("/list")
@@ -111,8 +113,11 @@ public class ProductController extends BaseController {
     @OperateLog(title = "产品管理", subTitle = "删除产品", operateType = OperateType.UPDATE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('product:remove')")
-    public Result<Void> deleteById(@RequestBody Long deviceId) {
-        return toRes(productMapper.deleteById(deviceId));
+    public Result<Void> deleteById(@RequestBody Long pdtId) {
+        if (productService.checkProductUsed(pdtId)) {
+            return fail("删除失败，该产品与设备关联使用中");
+        }
+        return toRes(productMapper.deleteById(pdtId));
     }
 
 }

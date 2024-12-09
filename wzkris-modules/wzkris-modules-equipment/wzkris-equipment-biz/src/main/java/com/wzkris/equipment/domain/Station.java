@@ -15,64 +15,46 @@ import java.io.Serial;
 import java.math.BigDecimal;
 
 /**
- * (Device)实体类
+ * (Station)实体类
  *
  * @author wzkris
- * @since 2023-08-21 09:34:40
+ * @since 2024-12-09 12:56:40
  */
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@Schema(description = "设备信息")
-public class Device extends BaseEntity {
+@Schema(description = "站点信息")
+public class Station extends BaseEntity {
     @Serial
-    private static final long serialVersionUID = 253601802815121784L;
+    private static final long serialVersionUID = -2977651045048928385L;
 
     @TableId
-    private Long deviceId;
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
-
-    @Schema(description = "产品ID")
-    private Long pdtId;
-
-    @Schema(description = "站点ID")
     private Long stationId;
 
-    @Schema(description = "设备名称")
-    private String deviceName;
-
-    @NotBlank(message = "[serialNo] {validate.notnull}")
-    @Schema(description = "设备号")
-    private String serialNo;
-
+    @NotNull(message = "[latitude] {validate.notnull}")
     @DecimalMin(value = "-90.000000", message = "纬度参数不正确")
     @DecimalMax(value = "90.000000", message = "纬度参数不正确")
     @Schema(description = "纬度")
     private BigDecimal latitude;
 
+    @NotNull(message = "[longitude] {validate.notnull}")
     @DecimalMin(value = "-180.000000", message = "经度参数不正确")
     @DecimalMax(value = "180.000000", message = "经度参数不正确")
     @Schema(description = "经度")
     private BigDecimal longitude;
 
-    @Schema(description = "在线离线")
-    private Boolean online;
+    @NotBlank(message = "[address] {validate.notnull}")
+    @Schema(description = "地址信息")
+    private String address;
 
-    @Schema(description = "设备状态")
+    @NotBlank(message = "[stationName] {validate.notnull}")
+    @Schema(description = "站点名称")
+    private String stationName;
+
+    @Schema(description = "站点状态")
     private String status;
 
-    @Schema(description = "告警状态")
-    private String alarm;
-
-    @Schema(description = "上线时间")
-    private Long onlineTime;
-
-    @Schema(description = "下线时间")
-    private Long offlineTime;
-
-    public Device(Long deviceId) {
-        this.deviceId = deviceId;
+    public Station(Long stationId) {
+        this.stationId = stationId;
     }
 }

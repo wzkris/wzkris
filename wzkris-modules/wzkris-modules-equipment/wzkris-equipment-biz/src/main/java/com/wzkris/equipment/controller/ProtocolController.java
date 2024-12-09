@@ -10,6 +10,7 @@ import com.wzkris.equipment.domain.Protocol;
 import com.wzkris.equipment.domain.req.EditStatusReq;
 import com.wzkris.equipment.domain.req.ProtocolQueryReq;
 import com.wzkris.equipment.mapper.ProtocolMapper;
+import com.wzkris.equipment.service.ProtocolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProtocolController extends BaseController {
     private final ProtocolMapper protocolMapper;
+    private final ProtocolService protocolService;
 
     @Operation(summary = "分页查询")
     @GetMapping("/list")
@@ -93,8 +95,11 @@ public class ProtocolController extends BaseController {
     @Operation(summary = "删除协议")
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('protocol:remove')")
-    public Result<?> deleteById(@RequestBody Long deviceId) {
-        return toRes(protocolMapper.deleteById(deviceId));
+    public Result<?> deleteById(@RequestBody Long ptcId) {
+        if (protocolService.checkProtocolUsed(ptcId)) {
+            return fail("删除失败，该协议被产品使用中");
+        }
+        return toRes(protocolMapper.deleteById(ptcId));
     }
 
 }
