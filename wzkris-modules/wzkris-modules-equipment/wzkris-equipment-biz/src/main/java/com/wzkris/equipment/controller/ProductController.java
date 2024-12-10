@@ -56,7 +56,7 @@ public class ProductController extends BaseController {
 
     @Operation(summary = "产品选择列表(不带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPerms('product:list')")
+    @PreAuthorize("@ps.hasPermsOr('device:add', 'device:edit')")// 设备添加修改时使用
     public Result<List<Product>> selectList(String pdtName) {
         LambdaQueryWrapper<Product> lqw = new LambdaQueryWrapper<Product>()
                 .select(Product::getPdtId, Product::getPdtName)

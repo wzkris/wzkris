@@ -33,46 +33,56 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
     @Override
     public WzUser loadUserByUsername(String username) throws UsernameNotFoundException {
         Result<SysUserResp> result = remoteSysUserApi.getByUsername(username);
-        SysUserResp userDTO = result.checkData();
-        return this.checkAndBuild(userDTO);
+        SysUserResp userResp = result.checkData();
+        return userResp == null ? null : this.checkAndBuild(userResp);
     }
 
     @Override
     public WzUser loadUserByPhoneNumber(String phoneNumber) {
         Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
-        SysUserResp userDTO = result.checkData();
-        return userDTO == null ? null : this.checkAndBuild(userDTO);
+        SysUserResp userResp = result.checkData();
+        return userResp == null ? null : this.checkAndBuild(userResp);
     }
 
     /**
      * 构建登录用户
      */
-    private WzUser checkAndBuild(@Nonnull SysUserResp userDTO) {
+    private WzUser checkAndBuild(@Nonnull SysUserResp userResp) {
         // 校验用户状态
-        this.checkAccount(userDTO);
+        this.checkAccount(userResp);
 
         // 获取权限信息
         Result<SysPermissionResp> permissionDTOResult = remoteSysUserApi
-                .getPermission(new QueryPermsReq(userDTO.getUserId(), userDTO.getTenantId(), userDTO.getDeptId()));
+                .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
         SysPermissionResp permissions = permissionDTOResult.checkData();
 
         LoginSyser loginSyser = new LoginSyser();
-        loginSyser.setUserId(userDTO.getUserId());
-        loginSyser.setUsername(userDTO.getUsername());
-        loginSyser.setTenantId(userDTO.getTenantId());
+        loginSyser.setUserId(userResp.getUserId());
+        loginSyser.setUsername(userResp.getUsername());
+        loginSyser.setTenantId(userResp.getTenantId());
         loginSyser.setAdministrator(permissions.getAdministrator());
         loginSyser.setDeptScopes(permissions.getDeptScopes());
 
         return new WzUser(UserType.SYS_USER, loginSyser.getUsername(),
-                loginSyser, userDTO.getPassword(), permissions.getGrantedAuthority());
+                loginSyser, userResp.getPassword(), permissions.getGrantedAuthority());
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(SysUserResp userDTO) {
-        if (ObjUtil.equals(userDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
+    private void checkAccount(SysUserResp userResp) {
+        if (ObjUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+        }
+        else if (ObjUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
+        }
+        else if (userResp.getTenantExpired() != CommonConstants.NOT_EXPIRED_TIME
+                && userResp.getTenantExpired() < System.currentTimeMillis()) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
+        }
+        else if (ObjUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }
 }

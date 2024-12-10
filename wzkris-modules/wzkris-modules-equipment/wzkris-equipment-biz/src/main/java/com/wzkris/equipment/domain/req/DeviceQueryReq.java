@@ -13,6 +13,9 @@ public class DeviceQueryReq {
     @Schema(description = "设备名称")
     private String deviceName;
 
+    @Schema(description = "站点ID")
+    private String stationId;
+
     @Schema(description = "设备号")
     private String serialNo;
 

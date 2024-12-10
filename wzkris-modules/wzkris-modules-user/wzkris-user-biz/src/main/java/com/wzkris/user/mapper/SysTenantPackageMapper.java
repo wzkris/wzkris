@@ -21,10 +21,11 @@ public interface SysTenantPackageMapper extends BaseMapperPlus<SysTenantPackage>
         if (packageId == null) {
             return Collections.emptyList();
         }
-        return this.selectOne(
+        SysTenantPackage tenantPackage = this.selectOne(
                 new LambdaQueryWrapper<SysTenantPackage>()
                         .select(SysTenantPackage::getMenuIds)
                         .eq(SysTenantPackage::getPackageId, packageId)
-        ).getMenuIds();
+        );
+        return tenantPackage == null ? Collections.emptyList() : tenantPackage.getMenuIds();
     }
 }

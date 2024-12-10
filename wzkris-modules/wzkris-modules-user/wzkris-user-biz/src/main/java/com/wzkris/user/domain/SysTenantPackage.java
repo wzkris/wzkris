@@ -45,4 +45,7 @@ public class SysTenantPackage extends BaseEntity {
     @Schema(description = "备注")
     private String remark;
 
+    public SysTenantPackage(Long packageId) {
+        this.packageId = packageId;
+    }
 }

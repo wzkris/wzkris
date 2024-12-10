@@ -18,4 +18,11 @@ public interface SysTenantPackageService {
      */
     List<SysTenantPackage> list(SysTenantPackage sysTenantPackage);
 
+    /**
+     * 校验套餐是否被使用
+     *
+     * @param packageIds 套餐ID
+     * @return 结果
+     */
+    boolean checkPackageUsed(List<Long> packageIds);
 }

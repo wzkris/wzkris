@@ -14,6 +14,7 @@ import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysTenantDTO;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.SysTenantQueryReq;
 import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
 import com.wzkris.user.domain.vo.SysTenantVO;
@@ -23,6 +24,7 @@ import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -126,6 +128,16 @@ public class SysTenantController extends BaseController {
         sysTenant.setAdministrator(null);
         sysTenant.setOperPwd(null);
         return toRes(tenantMapper.updateById(sysTenant));
+    }
+
+    @Operation(summary = "修改租户状态")
+    @OperateLog(title = "租户管理", subTitle = "修改租户状态", operateType = OperateType.UPDATE)
+    @PostMapping("/edit_status")
+    @PreAuthorize("@ps.hasPerms('tenant:edit')")
+    public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
+        SysTenant update = new SysTenant(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
+        return toRes(tenantMapper.updateById(update));
     }
 
     @Operation(summary = "重置租户操作密码")

@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 09/12/2024 16:54:02
+ Date: 11/12/2024 11:20:54
 */
 
 SET NAMES utf8mb4;
@@ -240,7 +240,7 @@ INSERT INTO `sys_menu` VALUES (1058, '公告修改', 100, 3, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (1059, '公告删除', 100, 4, '#', NULL, NULL, 'F', '0', 'notify:remove', '#', 0, 0, 1, 1713334134616, 1, 1732155783581, 1);
 INSERT INTO `sys_menu` VALUES (1061, '操作删除', 150, 2, '#', NULL, NULL, 'F', '0', 'operlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1064, '登录删除', 151, 2, '#', NULL, NULL, 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1730336330958, 1);
-INSERT INTO `sys_menu` VALUES (1125, '商户余额记录', 601, 3, '#', NULL, NULL, 'F', '0', 'wallet_record:list', '#', 0, 0, 1, 1732598092738, 1, 1732598285979, 1);
+INSERT INTO `sys_menu` VALUES (1125, '余额记录', 601, 3, '#', NULL, NULL, 'F', '0', 'wallet_record:list', '#', 0, 0, 1, 1732598092738, 1, 1733813517885, 2);
 INSERT INTO `sys_menu` VALUES (1126, '商户提现', 601, 1, '#', NULL, NULL, 'F', '0', 'tenant:withdrawal', '#', 0, 0, 1, 1732598071539, 1, 1732598191196, 1);
 INSERT INTO `sys_menu` VALUES (1127, '商户余额信息', 601, 0, '#', NULL, NULL, 'F', '0', 'tenant:wallet_info', '#', 0, 0, 1, 1732597687278, 1, 1732598171530, 1);
 INSERT INTO `sys_menu` VALUES (1128, '租户列表', 601, 10, '#', NULL, NULL, 'F', '0', 'tenant:list', '#', 0, 0, 1, 1730530211713, 1, 1730530211713, 1);
@@ -366,7 +366,7 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1732351091887, 1);
+INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1733812623206, 1);
 INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1732349385269, 1);
 INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '1', 5, 1, 1, 1713334134616, 1, 1732348738671, 1);
 INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '5', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1724393365447, 1774671331412627456);
@@ -412,7 +412,6 @@ INSERT INTO `sys_role_menu` VALUES (2, 206);
 INSERT INTO `sys_role_menu` VALUES (2, 207);
 INSERT INTO `sys_role_menu` VALUES (2, 208);
 INSERT INTO `sys_role_menu` VALUES (2, 601);
-INSERT INTO `sys_role_menu` VALUES (2, 602);
 INSERT INTO `sys_role_menu` VALUES (2, 1051);
 INSERT INTO `sys_role_menu` VALUES (2, 1052);
 INSERT INTO `sys_role_menu` VALUES (2, 1053);
@@ -422,15 +421,12 @@ INSERT INTO `sys_role_menu` VALUES (2, 1056);
 INSERT INTO `sys_role_menu` VALUES (2, 1057);
 INSERT INTO `sys_role_menu` VALUES (2, 1058);
 INSERT INTO `sys_role_menu` VALUES (2, 1059);
+INSERT INTO `sys_role_menu` VALUES (2, 1128);
 INSERT INTO `sys_role_menu` VALUES (2, 1130);
 INSERT INTO `sys_role_menu` VALUES (2, 1131);
 INSERT INTO `sys_role_menu` VALUES (2, 1132);
 INSERT INTO `sys_role_menu` VALUES (2, 1133);
 INSERT INTO `sys_role_menu` VALUES (2, 1134);
-INSERT INTO `sys_role_menu` VALUES (2, 1135);
-INSERT INTO `sys_role_menu` VALUES (2, 1136);
-INSERT INTO `sys_role_menu` VALUES (2, 1137);
-INSERT INTO `sys_role_menu` VALUES (2, 1138);
 INSERT INTO `sys_role_menu` VALUES (2, 2001);
 INSERT INTO `sys_role_menu` VALUES (2, 2013);
 INSERT INTO `sys_role_menu` VALUES (2, 2014);
@@ -520,8 +516,8 @@ CREATE TABLE `sys_tenant`  (
 -- ----------------------------
 -- Records of sys_tenant
 -- ----------------------------
-INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1, 1733376673716);
-INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$p5qz.Z95gyAiursCatzy/.FtVrtlbRBKjjGl3LMP.W3ijPFrfNf2K', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1733723855419);
+INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1, 1733886686039);
+INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$p5qz.Z95gyAiursCatzy/.FtVrtlbRBKjjGl3LMP.W3ijPFrfNf2K', '1', NULL, NULL, 1773620875265482754, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1733886687736);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package
@@ -544,8 +540,8 @@ CREATE TABLE `sys_tenant_package`  (
 -- ----------------------------
 -- Records of sys_tenant_package
 -- ----------------------------
-INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '0', '[]', 1, NULL, 1, 1713334134616, 1, 1730271844479);
-INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 401, 151, 1064, 203, 2062, 2064, 2071, 2072, 2077, 2078, 205, 2037, 2038, 2039, 2040, 206, 2207, 2208, 2209, 2210, 2211, 208, 2141, 2142, 2143, 2144, 2145, 1125, 1126, 1127, 1130, 3127, 3128, 3129, 3130]', 1, NULL, 1, 1713334134616, 1, 1733275620075);
+INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '1', '[]', 1, NULL, 1, 1713334134616, 1, 1733887132701);
+INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 151, 1064, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130, 1125, 1126, 1127, 401, 3130, 3129, 3128, 3127, 3126, 400, 3125, 3124, 3123, 3122, 3121]', 1, '通用租户套餐', 1, 1713334134616, 1, 1733886679175);
 
 -- ----------------------------
 -- Table structure for sys_tenant_wallet
@@ -650,6 +646,7 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
+INSERT INTO `sys_user_role` VALUES (2, 2);
 INSERT INTO `sys_user_role` VALUES (1856251200466030593, 1775445330027577345);
 INSERT INTO `sys_user_role` VALUES (1856869914760638466, 1775445330027577345);
 

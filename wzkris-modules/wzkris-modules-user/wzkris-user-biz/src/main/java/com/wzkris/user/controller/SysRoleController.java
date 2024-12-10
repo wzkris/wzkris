@@ -200,6 +200,8 @@ public class SysRoleController extends BaseController {
     public Result<Void> batchAuth(@RequestBody @Valid SysRole2UsersReq req) {
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
+        // 校验用户权限
+        userService.checkDataScopes(req.getUserIds());
         roleService.allocateUsers(req.getRoleId(), req.getUserIds());
         return ok();
     }

@@ -52,7 +52,7 @@ public class ProtocolController extends BaseController {
 
     @Operation(summary = "协议选择列表(不带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPerms('protocol:list')")
+    @PreAuthorize("@ps.hasPermsOr('product:add', 'product:edit')")// 产品添加修改时使用
     public Result<List<Protocol>> selectList(String ptcName) {
         LambdaQueryWrapper<Protocol> lqw = new LambdaQueryWrapper<Protocol>()
                 .select(Protocol::getPtcId, Protocol::getPtcName)

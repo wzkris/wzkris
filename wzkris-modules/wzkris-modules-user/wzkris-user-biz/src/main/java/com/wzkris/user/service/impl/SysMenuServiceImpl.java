@@ -77,7 +77,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class)
                 .eq(SysMenu::getStatus, CommonConstants.STATUS_ENABLE)
-                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds);
+                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
+                .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
         return this.buildSelectTree(menuMapper.selectList(lqw));
     }
 
@@ -105,7 +106,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     /**
      * 查询用户对应菜单id
      */
-    private List<Long> listMenuIdByUserId(Long userId) {
+    public List<Long> listMenuIdByUserId(Long userId) {
         List<Long> roleIds = roleService.listIdByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();

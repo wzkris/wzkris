@@ -50,9 +50,21 @@ public class DeviceController extends BaseController {
         return new LambdaQueryWrapper<Device>()
                 .like(StringUtil.isNotBlank(req.getDeviceName()), Device::getDeviceName, req.getDeviceName())
                 .like(StringUtil.isNotBlank(req.getSerialNo()), Device::getSerialNo, req.getSerialNo())
+                .eq(StringUtil.isNotBlank(req.getStationId()), Device::getStationId, req.getStationId())
                 .eq(StringUtil.isNotBlank(req.getStatus()), Device::getStatus, req.getStatus())
                 .eq(StringUtil.isNotNull(req.getOnline()), Device::getOnline, req.getOnline())
                 .orderByDesc(Device::getOnline, Device::getDeviceId);
+    }
+
+    @Operation(summary = "查询未绑定站点设备(带分页)")
+    @GetMapping("/list_unbinding")
+    @PreAuthorize("@ps.hasPerms('device:list')")
+    public Result<Page<Device>> listUnbinding(DeviceQueryReq req) {
+        startPage();
+        LambdaQueryWrapper<Device> lqw = this.buildQueryWrapper(req)
+                .isNull(Device::getStationId);
+        List<Device> list = deviceMapper.selectList(lqw);
+        return getDataTable(list);
     }
 
     @Operation(summary = "id查询设备信息")

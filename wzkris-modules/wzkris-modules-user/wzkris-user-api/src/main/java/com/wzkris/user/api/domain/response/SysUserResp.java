@@ -27,4 +27,11 @@ public class SysUserResp {
     private String status;
 
     private String password;
+
+    private String tenantStatus;
+
+    private Long tenantExpired;
+
+    private String packageStatus;
+
 }

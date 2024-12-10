@@ -31,6 +31,8 @@ public class Station extends BaseEntity {
     @TableId
     private Long stationId;
 
+    private Long tenantId;
+
     @NotNull(message = "[latitude] {validate.notnull}")
     @DecimalMin(value = "-90.000000", message = "纬度参数不正确")
     @DecimalMax(value = "90.000000", message = "纬度参数不正确")

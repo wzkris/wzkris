@@ -10,6 +10,7 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenantPackage;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.vo.SysMenuCheckSelectTreeVO;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
@@ -54,7 +55,7 @@ public class SysTenantPackageController extends BaseController {
 
     @Operation(summary = "套餐选择列表(不带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPerms('tenant_package:list')")
+    @PreAuthorize("@ps.hasPermsOr('tenant:add', 'tenant:edit')")// 租户添加修改时使用
     public Result<List<SysTenantPackage>> selectList(String packageName) {
         LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
                 .select(SysTenantPackage::getPackageId, SysTenantPackage::getPackageName)
@@ -97,11 +98,24 @@ public class SysTenantPackageController extends BaseController {
         return toRes(tenantPackageMapper.updateById(tenantPackage));
     }
 
+    @Operation(summary = "修改租户套餐状态")
+    @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", operateType = OperateType.UPDATE)
+    @PostMapping("/edit_status")
+    @PreAuthorize("@ps.hasPerms('tenant_package:edit')")
+    public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
+        SysTenantPackage update = new SysTenantPackage(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
+        return toRes(tenantPackageMapper.updateById(update));
+    }
+
     @Operation(summary = "删除租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @PreAuthorize("@ps.hasPerms('tenant_package:remove')")
     public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @RequestBody List<Long> packageIds) {
+        if (tenantPackageService.checkPackageUsed(packageIds)) {
+            return fail("删除失败, 套餐正在使用");
+        }
         return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }
 
