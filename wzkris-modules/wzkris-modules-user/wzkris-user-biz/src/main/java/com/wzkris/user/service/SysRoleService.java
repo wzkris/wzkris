@@ -38,9 +38,9 @@ public interface SysRoleService {
     List<Long> listIdByUserId(@Nullable Long userId);
 
     /**
-     * 根据用户id获取角色
+     * 获取当前角色组
      */
-    String getRoleGroup(@Nullable Long userId);
+    String getRoleGroup();
 
     /**
      * 新增角色信息

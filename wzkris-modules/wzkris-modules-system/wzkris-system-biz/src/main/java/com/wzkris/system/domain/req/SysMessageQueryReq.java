@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class SysNotifyQueryReq {
+public class SysMessageQueryReq {
 
     @Schema(description = "标题")
-    private String notifyTitle;
+    private String msgTitle;
 
-    @Schema(description = "公告类型（1通知 2公告）")
-    private String notifyType;
+    @Schema(description = "消息类型（1通知 2公告）")
+    private String msgType;
 
     @Schema(description = "状态（0正常 1关闭）")
     private String status;

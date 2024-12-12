@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 11/12/2024 11:20:54
+ Date: 14/12/2024 16:02:22
 */
 
 SET NAMES utf8mb4;
@@ -194,7 +194,7 @@ INSERT INTO `sys_menu` VALUES (2, '用户权限管理', 0, 99, 'user', NULL, NUL
 INSERT INTO `sys_menu` VALUES (3, '商户管理', 0, 50, 'tenant', NULL, NULL, 'M', '0', NULL, 'merchant', 0, 0, 1, 1713334134616, 1, 1730344304191, 1);
 INSERT INTO `sys_menu` VALUES (4, '设备管理', 0, 10, 'equipment', NULL, NULL, 'M', '0', NULL, 'device', 0, 0, 1, 1713334134616, 1, 1731995658381, 1);
 INSERT INTO `sys_menu` VALUES (5, '交易订单', 0, 4, 'trade', NULL, NULL, 'M', '0', NULL, 'order', 0, 0, 1, 1713334134616, 1, 1732672652217, 1);
-INSERT INTO `sys_menu` VALUES (100, '通知公告', 1, 15, 'notify', 'system/notify/index', NULL, 'C', '0', 'notify:list', 'guide', 0, 0, 1, 1713334134616, 1, 1732155689519, 1);
+INSERT INTO `sys_menu` VALUES (100, '系统消息', 1, 15, 'sys_message', 'system/sysmessage/index', NULL, 'C', '0', 'sys_message:list', 'guide', 0, 0, 1, 1713334134616, 1, 1733991014933, 1);
 INSERT INTO `sys_menu` VALUES (101, '控制台入口', 1, 0, 'controller', NULL, NULL, 'M', '0', NULL, 'dashboard', 0, 0, 1, 1713334134616, 1, 1730270954332, 1);
 INSERT INTO `sys_menu` VALUES (102, '字典管理', 1, 6, 'dict', 'system/dict/index', NULL, 'C', '0', 'dict:list', 'dict', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (103, '参数设置', 1, 7, 'config', 'system/config/index', NULL, 'C', '0', 'config:list', 'edit', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
@@ -205,7 +205,7 @@ INSERT INTO `sys_menu` VALUES (201, '顾客管理', 2, 1, 'appuser', 'user/appus
 INSERT INTO `sys_menu` VALUES (202, '会员体系', 2, 2, 'vip', 'user/vip/index', NULL, 'C', '0', 'vip:list', 'build', 0, 0, 1, 1713334134616, 1, 1731996267958, 1);
 INSERT INTO `sys_menu` VALUES (203, '后台用户', 2, 100, 'sysuser', 'user/sysuser/index', NULL, 'C', '0', 'sys_user:list', 'user', 0, 1, 1, 1713334134616, 1, 1733383530966, 1);
 INSERT INTO `sys_menu` VALUES (205, '部门管理', 2, 70, 'dept', 'user/dept/index', NULL, 'C', '0', 'dept:list', 'tree', 0, 0, 1, 1713334134616, 1, 1731996252876, 1);
-INSERT INTO `sys_menu` VALUES (206, '角色管理', 2, 99, 'role', 'user/role/index', NULL, 'C', '0', 'sys_role:list', 'role', 0, 1, 1, 1713334134616, 1, 1733383548254, 1);
+INSERT INTO `sys_menu` VALUES (206, '角色管理', 2, 99, 'role', 'user/role/index', NULL, 'C', '0', 'sys_role:list', 'role', 0, 0, 1, 1713334134616, 1, 1733984758532, 1);
 INSERT INTO `sys_menu` VALUES (207, '菜单管理', 2, 50, 'menu', 'user/menu/index', NULL, 'C', '0', 'menu:list', 'tree-table', 0, 0, 1, 1713334134616, 1, 1731996177723, 1);
 INSERT INTO `sys_menu` VALUES (208, '岗位管理', 2, 8, 'post', 'user/post/index', NULL, 'C', '0', 'post:list', 'post', 0, 0, 1, 1713334134616, 1, 1731996261504, 1);
 INSERT INTO `sys_menu` VALUES (300, '定时任务', 101, 20, 'http://localhost:9200/xxl-job-admin', NULL, NULL, 'C', '0', 'job:list', 'job', 1, 0, 1, 1713334134616, 1, 1719987477468, 1);
@@ -234,10 +234,10 @@ INSERT INTO `sys_menu` VALUES (1052, '参数新增', 103, 2, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (1053, '参数修改', 103, 3, '#', NULL, NULL, 'F', '0', 'config:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1054, '参数删除', 103, 4, '#', NULL, NULL, 'F', '0', 'config:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1055, '参数导出', 103, 5, '#', NULL, NULL, 'F', '0', 'config:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1056, '公告查询', 100, 1, '#', NULL, NULL, 'F', '0', 'notify:query', '#', 0, 0, 1, 1713334134616, 1, 1732155795196, 1);
-INSERT INTO `sys_menu` VALUES (1057, '公告新增', 100, 2, '#', NULL, NULL, 'F', '0', 'notify:add', '#', 0, 0, 1, 1713334134616, 1, 1732155791931, 1);
-INSERT INTO `sys_menu` VALUES (1058, '公告修改', 100, 3, '#', NULL, NULL, 'F', '0', 'notify:edit', '#', 0, 0, 1, 1713334134616, 1, 1732155788748, 1);
-INSERT INTO `sys_menu` VALUES (1059, '公告删除', 100, 4, '#', NULL, NULL, 'F', '0', 'notify:remove', '#', 0, 0, 1, 1713334134616, 1, 1732155783581, 1);
+INSERT INTO `sys_menu` VALUES (1056, '消息查询', 100, 1, '#', NULL, NULL, 'F', '0', 'sys_message:query', '#', 0, 0, 1, 1713334134616, 1, 1733991048396, 1);
+INSERT INTO `sys_menu` VALUES (1057, '消息新增', 100, 2, '#', NULL, NULL, 'F', '0', 'sys_message:add', '#', 0, 0, 1, 1713334134616, 1, 1733991045507, 1);
+INSERT INTO `sys_menu` VALUES (1058, '消息修改', 100, 3, '#', NULL, NULL, 'F', '0', 'sys_message:edit', '#', 0, 0, 1, 1713334134616, 1, 1733991042466, 1);
+INSERT INTO `sys_menu` VALUES (1059, '消息删除', 100, 4, '#', NULL, NULL, 'F', '0', 'sys_message:remove', '#', 0, 0, 1, 1713334134616, 1, 1733991038314, 1);
 INSERT INTO `sys_menu` VALUES (1061, '操作删除', 150, 2, '#', NULL, NULL, 'F', '0', 'operlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1064, '登录删除', 151, 2, '#', NULL, NULL, 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1730336330958, 1);
 INSERT INTO `sys_menu` VALUES (1125, '余额记录', 601, 3, '#', NULL, NULL, 'F', '0', 'wallet_record:list', '#', 0, 0, 1, 1732598092738, 1, 1733813517885, 2);
@@ -516,8 +516,8 @@ CREATE TABLE `sys_tenant`  (
 -- ----------------------------
 -- Records of sys_tenant
 -- ----------------------------
-INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1, 1733886686039);
-INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$p5qz.Z95gyAiursCatzy/.FtVrtlbRBKjjGl3LMP.W3ijPFrfNf2K', '1', NULL, NULL, 1773620875265482754, -1, 5, 5, 5, 5, 1, 1730796054571, 1, 1733886687736);
+INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1, 1733894016830);
+INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$PFnKxjjXZuFnwdvLAqrFd.m5lls2JcXWJ2gcMQYphGv0I6K0Fwgrm', '1', NULL, '第二个', 1773620875265482754, 1733896268000, 5, 5, 5, 5, 1, 1730796054571, 1, 1733901461866);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package
@@ -612,7 +612,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, NULL, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1732947864801, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '1', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1732947864801, NULL, 1713334134616, 1, 1734156343758, 1);
 INSERT INTO `sys_user` VALUES (2, 0, 100, 'wzkris', '', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1731992153861, NULL, 1713334134616, 1, 1732081703443, 1);
 INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', '127.0.0.1', 1732598359333, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$v544q0b/1YjPbVQJDRKZrOnXoRxRcR.eyxIUd33TMRNCNXdVh.1Eu', '127.0.0.1', 1731648341626, NULL, 1730796054646, 1, NULL, NULL);

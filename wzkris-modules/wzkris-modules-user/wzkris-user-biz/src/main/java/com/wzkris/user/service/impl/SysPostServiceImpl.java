@@ -59,11 +59,11 @@ public class SysPostServiceImpl implements SysPostService {
     }
 
     @Override
-    public String getPostGroup(Long userId) {
+    public String getPostGroup() {
         if (SysUtil.isAdministrator()) {
-            return "超管";
+            return "超级管理员";
         }
-        List<SysPost> sysPosts = this.listByUserId(userId);
+        List<SysPost> sysPosts = this.listByUserId(SysUtil.getUserId());
         return sysPosts.stream().map(SysPost::getPostName).collect(Collectors.joining(","));
     }
 

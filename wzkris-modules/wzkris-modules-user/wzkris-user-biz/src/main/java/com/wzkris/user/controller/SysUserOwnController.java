@@ -63,14 +63,15 @@ public class SysUserOwnController extends BaseController {
         userInfo.setUsername(sysUser.getUsername());
         userInfo.setAvatar(sysUser.getAvatar());
         userInfo.setNickname(sysUser.getNickname());
+        userInfo.setEmail(sysUser.getEmail());
         userInfo.setPhoneNumber(sysUser.getPhoneNumber());
         userInfo.setGender(sysUser.getGender());
 
         SysUserAccountVO accountVO = new SysUserAccountVO();
         accountVO.setUser(userInfo);
         accountVO.setDeptName(deptMapper.selectDeptNameById(sysUser.getDeptId()));
-        accountVO.setRoleGroup(roleService.getRoleGroup(sysUser.getUserId()));
-        accountVO.setPostGroup(postService.getPostGroup(sysUser.getUserId()));
+        accountVO.setRoleGroup(roleService.getRoleGroup());
+        accountVO.setPostGroup(postService.getPostGroup());
         return ok(accountVO);
     }
 

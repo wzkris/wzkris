@@ -4,9 +4,7 @@ import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.oauth2.domain.WzUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import com.wzkris.common.security.oauth2.enums.UserType;
-import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysTenantMapper;
-import com.wzkris.user.mapper.SysUserMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,36 +33,17 @@ public class DynamicTenantUtilTest {
     @Autowired
     SysTenantMapper tenantMapper;
 
-    @Autowired
-    SysUserMapper userMapper;
-
-    @Autowired
-    SysRoleMapper roleMapper;
-
     @Test
-    @DisplayName("测试1")
-    public void ignoreTest() {
-        list0();
-    }
-
-    void list0() {
-        DynamicTenantUtil.switcht(2L, () -> {
-            list1();
+    public void test() {
+        DynamicTenantUtil.ignore(() -> {
+            list();
             tenantMapper.selectList(null);// 应该不带租户ID
         });
     }
 
-    void list1() {
-        DynamicTenantUtil.switcht(5L, () -> {
-            list2();
-            roleMapper.selectList(null);
+    void list() {
+        DynamicTenantUtil.ignore(() -> {
+            tenantMapper.selectList(null);
         });
     }
-
-    void list2() {
-        DynamicTenantUtil.switcht(9L, () -> {
-            userMapper.selectList(null);
-        });
-    }
-
 }
