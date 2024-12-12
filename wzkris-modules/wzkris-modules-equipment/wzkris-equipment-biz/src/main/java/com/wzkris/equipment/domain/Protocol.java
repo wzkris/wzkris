@@ -19,14 +19,8 @@ public class Protocol extends BaseEntity {
     @TableId
     private Long ptcId;
 
-    @Schema(description = "产品标识")
-    private String productKey;
-
     @Schema(description = "协议名称")
     private String ptcName;
-
-    @Schema(description = "协议标识")
-    private String ptcKey;
 
     @Schema(description = "协议版本")
     private String ptcVersion;

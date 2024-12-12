@@ -1,7 +1,5 @@
 package com.wzkris.equipment.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.equipment.domain.Device;
 import com.wzkris.equipment.domain.vo.DeviceVO;
 import com.wzkris.equipment.domain.vo.NetworkVO;
 import com.wzkris.equipment.mapper.DeviceMapper;
@@ -23,9 +21,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public DeviceVO getVOBySno(String sno) {
-        DeviceVO deviceVO = deviceMapper.selectOne2VO(Wrappers.lambdaQuery(Device.class)
-                        .eq(Device::getSerialNo, sno)
-                , DeviceVO.class);
+        DeviceVO deviceVO = deviceMapper.selectVOBySno(sno);
         NetworkVO networkVO = this.getNetInfoBySno(sno);
         if (deviceVO == null) return null;
         deviceVO.setNet(networkVO);
