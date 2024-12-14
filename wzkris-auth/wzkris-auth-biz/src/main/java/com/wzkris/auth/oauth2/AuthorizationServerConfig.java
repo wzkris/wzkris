@@ -6,7 +6,6 @@ import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationProvider;
 import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationProvider;
-import com.wzkris.auth.oauth2.filter.ValidateCodeFilter;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
 import com.wzkris.auth.oauth2.service.SysUserDetailsService;
@@ -29,7 +28,6 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 /**
@@ -44,7 +42,6 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationFilterChain(HttpSecurity http,
-                                                        ValidateCodeFilter validateCodeFilter,
                                                         PasswordAuthenticationProvider passwordAuthenticationProvider,
                                                         SmsAuthenticationProvider smsAuthenticationProvider) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
@@ -70,9 +67,6 @@ public class AuthorizationServerConfig {
                 .deviceVerificationEndpoint(Customizer.withDefaults())
                 .deviceAuthorizationEndpoint(Customizer.withDefaults()) // 设备授权
                 .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
-
-        // 追加验证码过滤器
-        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling(exceptionHandler -> {
             exceptionHandler.defaultAuthenticationEntryPointFor(

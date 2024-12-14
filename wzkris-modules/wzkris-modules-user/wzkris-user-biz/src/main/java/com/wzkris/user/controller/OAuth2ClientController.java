@@ -4,7 +4,6 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -12,6 +11,7 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.domain.export.OAuth2ClientExport;
+import com.wzkris.user.domain.req.EditClientSecretReq;
 import com.wzkris.user.domain.req.OAuth2ClientQueryReq;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
 import com.wzkris.user.service.OAuth2ClientService;
@@ -68,10 +68,18 @@ public class OAuth2ClientController extends BaseController {
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('oauth2_client:edit')")
     public Result<Void> edit(@RequestBody OAuth2Client client) {
-        if (StringUtil.isNotBlank(client.getClientSecret())) {
-            client.setClientSecret(passwordEncoder.encode(client.getClientSecret()));
-        }
         return toRes(oauth2ClientMapper.updateById(client));
+    }
+
+    @Operation(summary = "根据id修改密钥")
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "修改密钥", operateType = OperateType.UPDATE)
+    @PostMapping("/edit_secret")
+    @PreAuthorize("@ps.hasPerms('oauth2_client:edit_secret')")
+    public Result<Void> editSecret(@RequestBody @Valid EditClientSecretReq req) {
+        OAuth2Client update = new OAuth2Client();
+        update.setId(req.getId());
+        update.setClientSecret(passwordEncoder.encode(req.getSecret()));
+        return toRes(oauth2ClientMapper.updateById(update));
     }
 
     @Operation(summary = "添加客户端")

@@ -5,8 +5,10 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysMenu;
+import com.wzkris.user.domain.req.SysMenuQueryReq;
 import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,20 +38,20 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('menu:list')")
-    public Result<List<SysMenu>> list(SysMenu menu) {
-        List<SysMenu> menus = menuMapper.selectList(this.buildQueryWrapper(menu));
+    public Result<List<SysMenu>> list(SysMenuQueryReq queryReq) {
+        List<SysMenu> menus = menuMapper.selectList(this.buildQueryWrapper(queryReq));
         return ok(menus);
     }
 
-    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenu menu) {
+    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuQueryReq queryReq) {
+        List<Long> menuIds = new ArrayList<>();
+        if (!SysUtil.isAdministrator()) {
+            menuIds = menuService.listMenuIdByUserId(SysUtil.getUserId());
+        }
         return new LambdaQueryWrapper<SysMenu>()
-                .eq(StringUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId())
-                .like(StringUtil.isNotNull(menu.getMenuName()), SysMenu::getMenuName, menu.getMenuName())
-                .eq(StringUtil.isNotNull(menu.getMenuType()), SysMenu::getMenuType, menu.getMenuType())
-                .eq(StringUtil.isNotNull(menu.getIsVisible()), SysMenu::getIsVisible, menu.getIsVisible())
-                .eq(StringUtil.isNotNull(menu.getIsCache()), SysMenu::getIsCache, menu.getIsCache())
-                .eq(StringUtil.isNotNull(menu.getIsFrame()), SysMenu::getIsFrame, menu.getIsFrame())
-                .eq(StringUtil.isNotNull(menu.getStatus()), SysMenu::getStatus, menu.getStatus())
+                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
+                .like(StringUtil.isNotNull(queryReq.getMenuName()), SysMenu::getMenuName, queryReq.getMenuName())
+                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysMenu::getStatus, queryReq.getStatus())
                 .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
     }
 

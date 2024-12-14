@@ -8,7 +8,7 @@ import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.enums.UserType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
-import com.wzkris.user.api.domain.dto.AppUserDTO;
+import com.wzkris.user.api.domain.response.AppUserResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
@@ -27,22 +27,22 @@ public class AppUserDetailsService implements UserDetailsServiceExt {
     private final RemoteAppUserApi remoteAppUserApi;
 
     public WzUser loadUserByPhoneNumber(String phoneNumber) {
-        Result<AppUserDTO> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
-        AppUserDTO appUserDTO = result.checkData();
+        Result<AppUserResp> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
+        AppUserResp appUserResp = result.checkData();
 
-        return this.checkAndBuild(appUserDTO);
+        return appUserResp == null ? null : this.checkAndBuild(appUserResp);
     }
 
     /**
      * 构建登录用户
      */
-    private WzUser checkAndBuild(AppUserDTO appUserDTO) {
+    private WzUser checkAndBuild(AppUserResp appUserResp) {
         // 校验用户状态
-        this.checkAccount(appUserDTO);
+        this.checkAccount(appUserResp);
 
         LoginApper loginApper = new LoginApper();
-        loginApper.setUserId(appUserDTO.getUserId());
-        loginApper.setPhoneNumber(appUserDTO.getPhoneNumber());
+        loginApper.setUserId(appUserResp.getUserId());
+        loginApper.setPhoneNumber(appUserResp.getPhoneNumber());
 
         return new WzUser(UserType.APP_USER, loginApper.getPhoneNumber(), loginApper, Collections.emptyList());
     }
@@ -50,11 +50,8 @@ public class AppUserDetailsService implements UserDetailsServiceExt {
     /**
      * 校验用户账号
      */
-    private void checkAccount(AppUserDTO appUserDTO) {
-        if (appUserDTO == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");// 不能明说账号不存在
-        }
-        if (ObjUtil.equals(appUserDTO.getStatus(), CommonConstants.STATUS_DISABLE)) {
+    private void checkAccount(AppUserResp appUserResp) {
+        if (ObjUtil.equals(appUserResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }

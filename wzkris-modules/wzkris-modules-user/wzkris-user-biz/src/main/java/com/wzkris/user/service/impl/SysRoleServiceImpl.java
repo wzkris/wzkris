@@ -74,11 +74,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public String getRoleGroup(Long userId) {
+    public String getRoleGroup() {
         if (SysUtil.isAdministrator()) {
             return "超级管理员";
         }
-        List<SysRole> roles = this.listByUserId(userId);
+        List<SysRole> roles = this.listByUserId(SysUtil.getUserId());
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }
 

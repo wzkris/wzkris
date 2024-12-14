@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.user.constant.UserConstants;
+import com.wzkris.user.constant.MenuConstants;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.vo.MetaVO;
@@ -77,7 +77,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class)
                 .eq(SysMenu::getStatus, CommonConstants.STATUS_ENABLE)
-                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds);
+                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
+                .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
         return this.buildSelectTree(menuMapper.selectList(lqw));
     }
 
@@ -105,7 +106,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     /**
      * 查询用户对应菜单id
      */
-    private List<Long> listMenuIdByUserId(Long userId) {
+    public List<Long> listMenuIdByUserId(Long userId) {
         List<Long> roleIds = roleService.listIdByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
@@ -133,7 +134,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             router.setMeta(new MetaVO(menu.getMenuName(), menu.getIcon(), Boolean.FALSE.equals(menu.getIsCache()), menu.getPath()));
             List<SysMenu> cMenus = menu.getChildren().stream().sorted(Comparator.comparing(SysMenu::getMenuSort, Comparator.reverseOrder()).
                     thenComparing(SysMenu::getMenuId, Comparator.reverseOrder())).toList();
-            if (!cMenus.isEmpty() && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
+            if (!cMenus.isEmpty() && MenuConstants.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildRouter(cMenus));
@@ -156,7 +157,7 @@ public class SysMenuServiceImpl implements SysMenuService {
                 List<RouterVO> childrenList = new ArrayList<>();
                 RouterVO children = new RouterVO();
                 children.setPath(menu.getPath());
-                children.setComponent(UserConstants.INNER_LINK);
+                children.setComponent(MenuConstants.INNER_LINK);
                 children.setName(StringUtil.upperFirst(menu.getPath()));
                 children.setMeta(new MetaVO(menu.getMenuName(), menu.getIcon(), menu.getPath()));
                 childrenList.add(children);
@@ -237,7 +238,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     public String getRouterPath(SysMenu menu) {
         String routerPath = menu.getPath();
         // 非外链并且是一级目录（类型为目录）
-        if (0 == menu.getParentId().intValue() && StringUtil.equals(UserConstants.TYPE_DIR, menu.getMenuType())
+        if (0 == menu.getParentId().intValue() && StringUtil.equals(MenuConstants.TYPE_DIR, menu.getMenuType())
                 && !menu.getIsFrame()) {
             routerPath = "/" + menu.getPath();
         }
@@ -255,15 +256,15 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @return 组件信息
      */
     public String getComponent(SysMenu menu) {
-        String component = UserConstants.LAYOUT;
+        String component = MenuConstants.LAYOUT;
         if (StringUtil.isNotEmpty(menu.getComponent()) && !isMenuFrame(menu)) {
             component = menu.getComponent();
         }
         else if (StringUtil.isEmpty(menu.getComponent()) && menu.getParentId().intValue() != 0 && isInnerLink(menu)) {
-            component = UserConstants.INNER_LINK;
+            component = MenuConstants.INNER_LINK;
         }
         else if (StringUtil.isEmpty(menu.getComponent()) && isParentView(menu)) {
-            component = UserConstants.PARENT_VIEW;
+            component = MenuConstants.PARENT_VIEW;
         }
         return component;
     }
@@ -276,7 +277,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      */
     public boolean isMenuFrame(SysMenu menu) {
         return menu.getParentId().intValue() == 0
-                && StringUtil.equals(UserConstants.TYPE_MENU, menu.getMenuType())
+                && StringUtil.equals(MenuConstants.TYPE_MENU, menu.getMenuType())
                 && !menu.getIsFrame();
     }
 
@@ -297,7 +298,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @return 结果
      */
     public boolean isParentView(SysMenu menu) {
-        return menu.getParentId().intValue() != 0 && StringUtil.equals(UserConstants.TYPE_DIR, menu.getMenuType());
+        return menu.getParentId().intValue() != 0 && StringUtil.equals(MenuConstants.TYPE_DIR, menu.getMenuType());
     }
 
     /**

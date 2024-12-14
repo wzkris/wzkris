@@ -1,2 +1,3 @@
 com.wzkris.common.security.oauth2.ResourceServerConfig
 com.wzkris.common.security.config.PermitAllProperties
+com.wzkris.common.security.handler.SecurityExceptionHandler

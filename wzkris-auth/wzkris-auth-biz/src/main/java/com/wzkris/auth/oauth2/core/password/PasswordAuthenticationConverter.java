@@ -2,6 +2,7 @@ package com.wzkris.auth.oauth2.core.password;
 
 import com.wzkris.auth.oauth2.core.CommonAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -20,6 +21,10 @@ import java.util.Set;
  */
 public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
+    private static final String CODE = "code";
+
+    private static final String UUID = "uuid";
+
     @Override
     protected boolean support(String grantType) {
         return AuthorizationGrantType.PASSWORD.getValue().equals(grantType);
@@ -27,7 +32,6 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
 
     @Override
     public void checkParams(MultiValueMap<String, String> parameters) {
-
         // username (REQUIRED)
         String username = parameters.getFirst(OAuth2ParameterNames.USERNAME);
         if (!StringUtils.hasText(username) || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
@@ -43,9 +47,11 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
 
     @Override
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
-        String username = additionalParameters.get(OAuth2ParameterNames.USERNAME).toString();
-        String password = additionalParameters.get(OAuth2ParameterNames.PASSWORD).toString();
-        return new PasswordAuthenticationToken(username, password, clientPrincipal, requestedScopes, null);
+        String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
+        String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
+        String code = StringUtil.toStringOrNull(additionalParameters.get(CODE));
+        String uuid = StringUtil.toStringOrNull(additionalParameters.get(UUID));
+        return new PasswordAuthenticationToken(username, password, uuid, code, clientPrincipal, requestedScopes, null);
     }
 
 }

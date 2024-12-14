@@ -11,10 +11,20 @@ import com.wzkris.equipment.domain.vo.NetworkVO;
  */
 public interface DeviceService {
 
-    DeviceVO getVOById(Long deviceId);
+    /**
+     * 设备号查询详情
+     *
+     * @param sno 设备号
+     * @return result
+     */
+    DeviceVO getVOBySno(String sno);
 
-    NetworkVO getNetworkVOBySerialNo(String serialNo);
+    /**
+     * 设备号查询网络信息
+     *
+     * @param sno 设备号
+     * @return result
+     */
+    NetworkVO getNetInfoBySno(String sno);
 
-    // 订阅设备消息
-    String subDevice(String serialNo);
 }

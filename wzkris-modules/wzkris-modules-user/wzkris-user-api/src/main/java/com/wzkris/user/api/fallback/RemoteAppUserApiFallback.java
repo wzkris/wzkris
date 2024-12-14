@@ -3,8 +3,8 @@ package com.wzkris.user.api.fallback;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.user.api.RemoteAppUserApi;
-import com.wzkris.user.api.domain.dto.AppUserDTO;
-import com.wzkris.user.api.domain.dto.LoginInfoDTO;
+import com.wzkris.user.api.domain.request.LoginInfoReq;
+import com.wzkris.user.api.domain.response.AppUserResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -27,13 +27,13 @@ public class RemoteAppUserApiFallback implements FallbackFactory<RemoteAppUserAp
         return new RemoteAppUserApi() {
 
             @Override
-            public Result<AppUserDTO> getByPhoneNumber(String phoneNumber) {
+            public Result<AppUserResp> getByPhoneNumber(String phoneNumber) {
                 log.error("查询app用户信息发生异常，errMsg：{}", cause.getMessage(), cause);
                 return resp(BizCode.RPC_INVOCATION, cause.getMessage());
             }
 
             @Override
-            public void updateLoginInfo(LoginInfoDTO loginInfoDTO) {
+            public void updateLoginInfo(LoginInfoReq loginInfoReq) {
                 log.error("更新app用户登录信息发生异常，errMsg：{}", cause.getMessage(), cause);
             }
         };

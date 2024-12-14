@@ -20,9 +20,13 @@ import java.util.Set;
 public final class PasswordAuthenticationToken extends CommonAuthenticationToken {
     private final String username;
     private final String password;
+    private final String uuid;
+    private final String code;
 
     public PasswordAuthenticationToken(String username,
                                        String password,
+                                       String uuid,
+                                       String code,
                                        Authentication clientPrincipal,
                                        Set<String> scopes,
                                        Map<String, Object> additionalParameters) {
@@ -31,5 +35,7 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
         Assert.notNull(password, "password cannot be null");
         this.username = username;
         this.password = password;
+        this.uuid = uuid;
+        this.code = code;
     }
 }

@@ -1,11 +1,9 @@
 package com.wzkris.common.web.handler;
 
-import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.utils.SysUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +19,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
-    // 全局租户忽略
-    private static final String GLOBAL_IGNORE_TENANT = "globalIgnore";
-
     // 动态租户ID切换
     private static final String DYNAMIC_TENANT = "dynamicTenant";
+
+    private static final String IGNORE_TYPE = "all";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -39,43 +36,33 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
             return true;
         }
 
-        Cookie[] cookies = request.getCookies();
-        String tenantId = null;
-        String globalIgnore = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (StringUtil.equals(GLOBAL_IGNORE_TENANT, cookie.getName())) {
-                    globalIgnore = cookie.getValue();
-                }
-                else if (StringUtil.equals(DYNAMIC_TENANT, cookie.getName())) {
-                    tenantId = cookie.getValue();
-                }
-            }
-        }
+        String dynamicTenant = request.getHeader(DYNAMIC_TENANT);
 
-        if (BooleanUtil.isTrue(Boolean.valueOf(globalIgnore))) {
+        if (NumberUtil.isNumber(dynamicTenant)) {
+            DynamicTenantUtil.set(Long.valueOf(dynamicTenant));
+        }
+        else if (StringUtil.equals(dynamicTenant, IGNORE_TYPE)) {
             DynamicTenantUtil.enableIgnore();
-            request.setAttribute(GLOBAL_IGNORE_TENANT, globalIgnore);
-            return true;
+        }
+        else if (dynamicTenant != null) {
+            return false;// 不是合法请求头数据则直接返回
         }
 
-        if (NumberUtil.isNumber(tenantId)) {
-            DynamicTenantUtil.set(Long.valueOf(tenantId));
-            request.setAttribute(DYNAMIC_TENANT, tenantId);
-            return true;
-        }
-
+        request.setAttribute(DYNAMIC_TENANT, dynamicTenant);
         return true;
     }
 
     // 请求完成后的回调
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        if (request.getAttribute(GLOBAL_IGNORE_TENANT) != null) {
-            DynamicTenantUtil.disableIgnore();
-        }
-        if (request.getAttribute(DYNAMIC_TENANT) != null) {
-            DynamicTenantUtil.remove();
+        Object dynamicTenant = request.getAttribute(DYNAMIC_TENANT);
+        if (dynamicTenant != null) {
+            if (NumberUtil.isNumber(dynamicTenant.toString())) {
+                DynamicTenantUtil.remove();
+            }
+            else if (StringUtil.equals(dynamicTenant.toString(), IGNORE_TYPE)) {
+                DynamicTenantUtil.disableIgnore();
+            }
         }
     }
 

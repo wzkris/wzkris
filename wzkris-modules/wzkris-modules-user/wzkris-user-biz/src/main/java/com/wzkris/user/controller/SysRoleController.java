@@ -1,5 +1,7 @@
 package com.wzkris.user.controller;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
@@ -174,6 +176,9 @@ public class SysRoleController extends BaseController {
     @PostMapping("/authorize/cancel")
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<Void> cancelAuth(@RequestBody @Valid SysUserRole userRole) {
+        if (ObjUtil.equals(userRole.getUserId(), SysUtil.getUserId())) {
+            return fail("不能对自己解除授权");
+        }
         // 校验角色权限
         roleService.checkDataScopes(userRole.getRoleId());
         // 校验用户权限
@@ -186,6 +191,9 @@ public class SysRoleController extends BaseController {
     @PostMapping("/authorize/cancel_batch")
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<Void> cancelAuth(@RequestBody @Valid SysRole2UsersReq req) {
+        if (CollUtil.contains(req.getUserIds(), SysUtil.getUserId())) {
+            return fail("不能对自己解除授权");
+        }
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
         // 校验用户权限
@@ -198,8 +206,13 @@ public class SysRoleController extends BaseController {
     @PostMapping("/authorize_user")
     @PreAuthorize("@ps.hasPerms('sys_role:auth')")
     public Result<Void> batchAuth(@RequestBody @Valid SysRole2UsersReq req) {
+        if (CollUtil.contains(req.getUserIds(), SysUtil.getUserId())) {
+            return fail("不能授权自己");
+        }
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
+        // 校验用户权限
+        userService.checkDataScopes(req.getUserIds());
         roleService.allocateUsers(req.getRoleId(), req.getUserIds());
         return ok();
     }

@@ -1,5 +1,6 @@
 package com.wzkris.auth.oauth2.core.password;
 
+import com.wzkris.auth.config.CaptchaConfig;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.oauth2.service.SysUserDetailsService;
 import com.wzkris.auth.oauth2.service.UserDetailsServiceExt;
@@ -25,21 +26,27 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     private final UserDetailsServiceExt userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final CaptchaService captchaService;
+    private final CaptchaConfig captchaConfig;
 
     public PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
                                           SysUserDetailsService userDetailsService,
                                           PasswordEncoder passwordEncoder,
-                                          CaptchaService captchaService) {
+                                          CaptchaService captchaService, CaptchaConfig captchaConfig) {
         super(tokenGenerator, authorizationService);
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.captchaService = captchaService;
+        this.captchaConfig = captchaConfig;
     }
 
     @Override
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
+        // 验证码校验
+        if (captchaConfig.getEnabled()) {
+            captchaService.validatePicCode(authenticationToken.getUuid(), authenticationToken.getCode());
+        }
         // 校验最大次数
         captchaService.validateMaxTryCount(authenticationToken.getUsername());
 

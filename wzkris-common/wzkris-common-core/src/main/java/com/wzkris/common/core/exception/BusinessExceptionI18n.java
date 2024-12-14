@@ -11,13 +11,13 @@ import com.wzkris.common.core.exception.base.BaseException;
  */
 public final class BusinessExceptionI18n extends BaseException {
 
+    public BusinessExceptionI18n(int biz, String code, Object... args) {
+        super("业务异常", biz, code, args, null);
+    }
+
     // 指向国际化信息
     public BusinessExceptionI18n(String code, Object... args) {
         this(BizCode.FAIL.value(), code, args);
-    }
-
-    public BusinessExceptionI18n(int biz, String code, Object... args) {
-        super("", biz, code, args, null);
     }
 
     @Override

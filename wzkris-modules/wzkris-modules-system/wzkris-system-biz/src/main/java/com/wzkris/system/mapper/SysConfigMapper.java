@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface SysConfigMapper extends BaseMapperPlus<SysConfig> {
 
     @Select("SELECT * FROM sys_config WHERE config_key = #{configKey}")
-    SysConfig selectConfig(String configKey);
+    SysConfig selectByKey(String configKey);
 
     @Select("SELECT config_value FROM sys_config WHERE config_key = #{configKey}")
     String selectValueByKey(String configKey);

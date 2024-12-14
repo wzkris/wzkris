@@ -5,7 +5,6 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
@@ -16,7 +15,6 @@ import java.math.BigDecimal;
  * @date : 2023/6/6 14:42
  */
 @Data
-@Accessors
 public class LocationDTO {
 
     @Schema(description = "经度")

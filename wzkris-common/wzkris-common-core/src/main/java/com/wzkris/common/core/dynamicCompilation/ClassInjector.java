@@ -13,7 +13,7 @@ import com.wzkris.common.core.dynamicCompilation.bytecode.InjectionSystem;
 public class ClassInjector {
 
     /**
-     * 注入可注入式的IntectionSystem类来替换java.lang.System
+     * 注入可注入式的InjectionSystem类来替换java.lang.System
      * </br>返回null，表示修改失败或者没有找到待修改的内容
      *
      * @param classBytes

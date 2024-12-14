@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 业务状态码，常用的部分直接用http状态码;  __连接的枚举为子状态
+ * @description : 业务状态码，常用的部分直接用http状态码;
  * @date : 2023/3/3 8:46
  */
 @AllArgsConstructor
@@ -23,6 +23,8 @@ public enum BizCode {
     BAD_METHOD(405, "Method Not Allowed"),
     // 412前置条件不满足
     PRECONDITION_FAILED(412, "Precondition Failed"),
+    // 超出频次限制
+    TOO_MANY_REQUESTS(429, "Too Many Requests"),
     INTERNAL_ERROR(500, "Internal Server Error"),
     BAD_GATEWAY(502, "Bad Gateway"),
     // 服务不可用
@@ -37,13 +39,12 @@ public enum BizCode {
     // 状态码描述
     private final String desc;
 
-    public int value() {
+    public final int value() {
         return this.biz;
     }
 
-    public String desc() {
+    public final String desc() {
         return this.desc;
     }
-
 
 }

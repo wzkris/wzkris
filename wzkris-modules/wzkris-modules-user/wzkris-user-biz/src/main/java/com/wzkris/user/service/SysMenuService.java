@@ -47,6 +47,14 @@ public interface SysMenuService {
     List<RouterVO> listRouterTree(Long userId);
 
     /**
+     * 查询用户对应菜单id
+     *
+     * @param userId 用户ID
+     * @return 菜单ID
+     */
+    List<Long> listMenuIdByUserId(Long userId);
+
+    /**
      * 是否存在菜单子节点
      *
      * @param menuId 菜单ID

@@ -73,6 +73,14 @@ public class SysDeptController extends BaseController {
         if (!tenantService.checkDeptLimit(SysUtil.getTenantId())) {
             return fail("部门数量已达上限，请联系管理员");
         }
+        if (StringUtil.isNotNull(dept.getParentId()) && dept.getParentId() != 0) {
+            SysDept info = deptMapper.selectById(dept.getParentId());
+            // 如果父节点为停用状态,则不允许新增子节点
+            if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
+                return fail("无法在被禁用的部门下添加下级");
+            }
+            dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
+        }
         deptService.insertDept(dept);
         return ok();
     }

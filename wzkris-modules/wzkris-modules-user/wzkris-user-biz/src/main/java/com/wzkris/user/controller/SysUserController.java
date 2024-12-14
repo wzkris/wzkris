@@ -22,8 +22,6 @@ import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.domain.vo.SysUserGrantVO;
 import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.mapper.SysUserMapper;
-import com.wzkris.user.mapper.SysUserPostMapper;
-import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,8 +51,6 @@ public class SysUserController extends BaseController {
     private final SysDeptService deptService;
     private final SysRoleService roleService;
     private final SysPostService postService;
-    private final SysUserPostMapper userPostMapper;
-    private final SysUserRoleMapper userRoleMapper;
     private final SysTenantService tenantService;
     private final PasswordEncoder passwordEncoder;
 
@@ -215,7 +211,7 @@ public class SysUserController extends BaseController {
 
         SysUserGrantVO resp = new SysUserGrantVO();
         resp.setUser(userMapper.selectById(userId));
-        resp.setRoleIds(userRoleMapper.listRoleIdByUserId(userId));
+        resp.setRoleIds(roleService.listIdByUserId(userId));
         resp.setRoles(roleService.listCanGranted());
         return ok(resp);
     }

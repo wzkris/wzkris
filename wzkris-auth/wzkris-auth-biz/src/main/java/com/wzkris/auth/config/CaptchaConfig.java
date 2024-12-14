@@ -32,6 +32,10 @@ public class CaptchaConfig {
      */
     private String type;
 
+    /**
+     * 过期时间
+     */
+    private int expired = 90;
 
     @Bean(name = "captchaProducer")
     public DefaultKaptcha captchaProducer() {
@@ -40,7 +44,7 @@ public class CaptchaConfig {
         // 是否有边框 默认为true 我们可以自己设置yes，no
         properties.setProperty(Constants.KAPTCHA_BORDER, "yes");
         // 验证码文本字符颜色 默认为Color.BLACK
-        properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_COLOR, "black");
+        properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_COLOR, "blue");
         // 验证码图片宽度 默认为200
         properties.setProperty(Constants.KAPTCHA_IMAGE_WIDTH, "160");
         // 验证码图片高度 默认为50
@@ -53,6 +57,10 @@ public class CaptchaConfig {
         properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_LENGTH, "4");
         // 验证码文本字体样式 默认为new Font("Arial", 1, fontSize), new Font("Courier", 1, fontSize)
         properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_NAMES, "Arial,Courier");
+        // 验证码噪点颜色 默认为Color.BLACK
+        properties.setProperty(Constants.KAPTCHA_NOISE_COLOR, "white");
+        // 干扰实现类
+        properties.setProperty(Constants.KAPTCHA_NOISE_IMPL, "com.google.code.kaptcha.impl.DefaultNoise");
         // 图片样式 水纹com.google.code.kaptcha.impl.WaterRipple 鱼眼com.google.code.kaptcha.impl.FishEyeGimpy 阴影com.google.code.kaptcha.impl.ShadowGimpy
         properties.setProperty(Constants.KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
         Config config = new Config(properties);
@@ -89,7 +97,7 @@ public class CaptchaConfig {
         // 验证码噪点颜色 默认为Color.BLACK
         properties.setProperty(Constants.KAPTCHA_NOISE_COLOR, "white");
         // 干扰实现类
-        properties.setProperty(Constants.KAPTCHA_NOISE_IMPL, "com.google.code.kaptcha.impl.NoNoise");
+        properties.setProperty(Constants.KAPTCHA_NOISE_IMPL, "com.google.code.kaptcha.impl.DefaultNoise");
         // 图片样式 水纹com.google.code.kaptcha.impl.WaterRipple 鱼眼com.google.code.kaptcha.impl.FishEyeGimpy 阴影com.google.code.kaptcha.impl.ShadowGimpy
         properties.setProperty(Constants.KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
         Config config = new Config(properties);

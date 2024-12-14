@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.utils.AppUtil;
 import com.wzkris.common.security.utils.SecureUtil;
 import com.wzkris.common.security.utils.SysUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +24,20 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecureUtil.isAuthenticated()) {
             if (SecureUtil.getUserType().equals(UserType.SYS_USER)) {
-                Long current = DateUtil.current();
-                Long createId = this.getUserId();
-                this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
-                this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-                this.setFieldValByName(BaseEntity.Fields.createId, createId, metaObject);
-                this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
+                fillInsert(this.getUserId(), metaObject);
+            }
+            else if (SecureUtil.getUserType().equals(UserType.APP_USER)) {
+                fillInsert(this.getAppUserId(), metaObject);
             }
         }
+    }
+
+    private void fillInsert(Long userId, MetaObject metaObject) {
+        Long current = DateUtil.current();
+        this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.createId, userId, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.updateId, userId, metaObject);
     }
 
     @Override
@@ -38,12 +45,18 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecureUtil.isAuthenticated()) {
             if (SecureUtil.getUserType().equals(UserType.SYS_USER)) {
-                Long current = DateUtil.current();
-                Long createId = this.getUserId();
-                this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-                this.setFieldValByName(BaseEntity.Fields.updateId, createId, metaObject);
+                fillUpdate(this.getUserId(), metaObject);
+            }
+            else if (SecureUtil.getUserType().equals(UserType.APP_USER)) {
+                fillUpdate(this.getAppUserId(), metaObject);
             }
         }
+    }
+
+    private void fillUpdate(Long userId, MetaObject metaObject) {
+        Long current = DateUtil.current();
+        this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.updateId, userId, metaObject);
     }
 
     /**
@@ -52,6 +65,19 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     private Long getUserId() {
         try {
             return SysUtil.getUserId();
+        }
+        catch (Exception e) {
+            log.warn("属性填充警告 => 用户未登录");
+            return 0L;
+        }
+    }
+
+    /**
+     * 获取登录用户
+     */
+    private Long getAppUserId() {
+        try {
+            return AppUtil.getUserId();
         }
         catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");

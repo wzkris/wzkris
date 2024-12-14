@@ -1,7 +1,7 @@
 package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.wzkris.system.api.domain.LoginLogDTO;
+import com.wzkris.system.api.domain.request.LoginLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @date : 2023/8/26 14:35
  */
 @Data
-@AutoMapper(target = LoginLogDTO.class)
+@AutoMapper(target = LoginLogReq.class)
 @Accessors(chain = true)
 public class SysLoginLog implements Serializable {
 

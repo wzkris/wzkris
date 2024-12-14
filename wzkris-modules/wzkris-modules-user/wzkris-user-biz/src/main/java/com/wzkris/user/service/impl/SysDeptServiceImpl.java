@@ -3,8 +3,6 @@ package com.wzkris.user.service.impl;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.exception.BusinessExceptionI18n;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
@@ -85,14 +83,8 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public void insertDept(SysDept dept) {
-        if (StringUtil.isNotNull(dept.getParentId()) && dept.getParentId() != 0) {
-            SysDept info = deptMapper.selectById(dept.getParentId());
-            // 如果父节点为停用状态,则不允许新增子节点
-            if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
-                throw new BusinessExceptionI18n("business.disabled");
-            }
-            dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
-        }
+        SysDept parent = deptMapper.selectById(dept.getParentId());
+        dept.setAncestors(parent.getAncestors() + "," + dept.getParentId());
         deptMapper.insert(dept);
     }
 

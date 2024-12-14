@@ -2,7 +2,7 @@ package com.wzkris.user.api;
 
 import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.user.api.domain.dto.OAuth2ClientDTO;
+import com.wzkris.user.api.domain.response.OAuth2ClientResp;
 import com.wzkris.user.api.fallback.RemoteOAuth2ClientApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +27,6 @@ public interface RemoteOAuth2ClientApi {
      * @return oauth2客户端
      */
     @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_oauth2_client_by_clientid")
-    Result<OAuth2ClientDTO> getByClientId(@RequestParam("clientid") String clientid);
+    Result<OAuth2ClientResp> getByClientId(@RequestParam("clientid") String clientid);
 
 }

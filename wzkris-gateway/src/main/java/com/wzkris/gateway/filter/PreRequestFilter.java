@@ -18,12 +18,14 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -66,9 +68,13 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        final String bearerToken = request.getHeaders().getFirst(SecurityConstants.TOKEN_HEADER);
+        String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (StringUtil.isBlank(bearerToken)) {
-            return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
+            List<String> list = request.getQueryParams().get(HttpHeaders.AUTHORIZATION);
+            if (list == null || list.isEmpty()) {
+                return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
+            }
+            bearerToken = list.get(0);
         }
 
         final String token = bearerToken.replaceFirst(SecurityConstants.TOKEN_PREFIX, "");

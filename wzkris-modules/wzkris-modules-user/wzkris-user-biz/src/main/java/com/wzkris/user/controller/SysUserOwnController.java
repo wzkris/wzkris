@@ -1,8 +1,9 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.auth.api.RemoteCaptchaApi;
-import com.wzkris.auth.api.domain.SmsDTO;
+import com.wzkris.auth.api.domain.request.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
@@ -13,6 +14,7 @@ import com.wzkris.user.domain.req.EditOwnSysUserReq;
 import com.wzkris.user.domain.req.EditPhoneReq;
 import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.domain.vo.SysUserAccountVO;
+import com.wzkris.user.domain.vo.SysUserOwnVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPostService;
@@ -32,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "系统账户")
 @RestController
-@RequestMapping("/user/account")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class SysUserOwnController extends BaseController {
     private final SysUserMapper userMapper;
@@ -43,8 +45,17 @@ public class SysUserOwnController extends BaseController {
     private final RemoteCaptchaApi remoteCaptchaApi;
     private final PasswordEncoder passwordEncoder;
 
+    @Operation(summary = "登录信息")
+    @GetMapping("/info")
+    public Result<SysUserOwnVO> loginUser() {
+        LoginSyser loginSyser = SysUtil.getLoginSyser();
+        SysUserOwnVO sysUserOwnVO = MapstructUtil.convert(loginSyser, SysUserOwnVO.class);
+        sysUserOwnVO.setAuthorities(SysUtil.getAuthorities());
+        return ok(sysUserOwnVO);
+    }
+
     @Operation(summary = "账户信息")
-    @GetMapping
+    @GetMapping("/account")
     public Result<SysUserAccountVO> accountVO() {
         SysUser sysUser = userMapper.selectById(SysUtil.getUserId());
 
@@ -52,20 +63,21 @@ public class SysUserOwnController extends BaseController {
         userInfo.setUsername(sysUser.getUsername());
         userInfo.setAvatar(sysUser.getAvatar());
         userInfo.setNickname(sysUser.getNickname());
+        userInfo.setEmail(sysUser.getEmail());
         userInfo.setPhoneNumber(sysUser.getPhoneNumber());
         userInfo.setGender(sysUser.getGender());
 
         SysUserAccountVO accountVO = new SysUserAccountVO();
         accountVO.setUser(userInfo);
         accountVO.setDeptName(deptMapper.selectDeptNameById(sysUser.getDeptId()));
-        accountVO.setRoleGroup(roleService.getRoleGroup(sysUser.getUserId()));
-        accountVO.setPostGroup(postService.getPostGroup(sysUser.getUserId()));
+        accountVO.setRoleGroup(roleService.getRoleGroup());
+        accountVO.setPostGroup(postService.getPostGroup());
         return ok(accountVO);
     }
 
     @Operation(summary = "修改昵称、性别")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
-    @PostMapping
+    @PostMapping("/account")
     public Result<Void> editInfo(@RequestBody EditOwnSysUserReq req) {
         SysUser user = new SysUser(SysUtil.getUserId());
         user.setNickname(req.getNickname());
@@ -75,7 +87,7 @@ public class SysUserOwnController extends BaseController {
 
     @Operation(summary = "修改手机号")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
-    @PostMapping("/edit_phonenumber")
+    @PostMapping("/account/edit_phonenumber")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = SysUtil.getUserId();
 
@@ -83,8 +95,8 @@ public class SysUserOwnController extends BaseController {
             return fail("该手机号已被使用");
         }
         // 验证
-        SmsDTO smsDTO = new SmsDTO(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        Result<Void> result = remoteCaptchaApi.validateSms(smsDTO);
+        SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
+        Result<Void> result = remoteCaptchaApi.validateSms(smsCheckReq);
         result.checkData();
 
         SysUser user = new SysUser(userId);
@@ -94,7 +106,7 @@ public class SysUserOwnController extends BaseController {
 
     @Operation(summary = "修改密码")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
-    @PostMapping("/edit_password")
+    @PostMapping("/account/edit_password")
     public Result<Void> editPwd(@RequestBody @Valid EditPwdReq req) {
         LoginSyser loginUser = SysUtil.getLoginSyser();
 
@@ -116,7 +128,7 @@ public class SysUserOwnController extends BaseController {
 
     @Operation(summary = "更新头像")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
-    @PostMapping("/edit_avatar")
+    @PostMapping("/account/edit_avatar")
     public Result<Void> updateAvatar(@RequestBody String url) {
         SysUser sysUser = new SysUser(SysUtil.getUserId());
         sysUser.setAvatar(url);

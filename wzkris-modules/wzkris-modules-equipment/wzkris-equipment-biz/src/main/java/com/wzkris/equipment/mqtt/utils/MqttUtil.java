@@ -32,6 +32,7 @@ import java.util.Map;
 public class MqttUtil {
 
     private static final Map<String, MqttClientPool> mqttPools = new HashMap<>();
+
     @Autowired
     private MqttProperties mqttProperties;
 
@@ -58,6 +59,7 @@ public class MqttUtil {
             MqttProperties.GeneralSetting generalSetting = setting.getValue();
             String clientidPref = generalSetting.getClientId() + "_" + setting.getKey() + "_" + NetUtil.getLocalMacAddress();// 解决集群部署clientid冲突
             final MqttClientPool pool = new MqttClientPool();
+            boolean setCallback = true;
             for (int i = 0; i < generalSetting.getClientNum(); i++) {
                 MqttClient mqttClient = new MqttClient(generalSetting.getHost(), clientidPref + "_" + i, new MemoryPersistence());
                 // 创建链接参数
@@ -72,7 +74,10 @@ public class MqttUtil {
                 connectOptions.setConnectionTimeout(generalSetting.getConnectTimeout());
                 connectOptions.setKeepAliveInterval(generalSetting.getKeepAlive());
                 connectOptions.setMaxInflight(generalSetting.getMaxInFlight());
-                mqttClient.setCallback(new MqttReceive());
+                if (setCallback) {// 相同的客户端只接收一个回调信息
+                    mqttClient.setCallback(new MqttReceive());
+                    setCallback = false;
+                }
                 // 建立连接
                 mqttClient.connect(connectOptions);
                 log.info("-------------------mqtt客户端：{}, 第{}个连接初始化-------------------", setting.getKey(), i + 1);

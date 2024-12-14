@@ -1,8 +1,8 @@
 package com.wzkris.system.api;
 
 import com.wzkris.common.core.constant.ApplicationNameConstants;
-import com.wzkris.system.api.domain.LoginLogDTO;
-import com.wzkris.system.api.domain.OperLogDTO;
+import com.wzkris.system.api.domain.request.LoginLogReq;
+import com.wzkris.system.api.domain.request.OperLogReq;
 import com.wzkris.system.api.fallback.RemoteLogFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,11 +23,11 @@ public interface RemoteLogApi {
      * 新增操作日志
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/add_operlog")
-    void insertOperlog(@RequestBody OperLogDTO operLogDTO);
+    void insertOperlog(@RequestBody OperLogReq operLogReq);
 
     /**
      * 新增登录日志
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/add_loginlog")
-    void insertLoginlog(@RequestBody LoginLogDTO loginLogDTO);
+    void insertLoginlog(@RequestBody LoginLogReq loginLogReq);
 }

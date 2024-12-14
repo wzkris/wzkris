@@ -1,6 +1,6 @@
 package com.wzkris.auth.api;
 
-import com.wzkris.auth.api.domain.SmsDTO;
+import com.wzkris.auth.api.domain.request.SmsCheckReq;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
@@ -18,8 +18,8 @@ public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
     private final CaptchaService captchaService;
 
     @Override
-    public Result<Void> validateSms(SmsDTO smsDTO) {
-        captchaService.validateSmsCode(smsDTO.getPhoneNumber(), smsDTO.getSmsCode());
+    public Result<Void> validateSms(SmsCheckReq smsCheckReq) {
+        captchaService.validateSmsCode(smsCheckReq.getPhoneNumber(), smsCheckReq.getSmsCode());
         return ok();
     }
 }
