@@ -55,7 +55,7 @@ public class SysConfigController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{configId}")
-    public Result<?> getInfo(@PathVariable Long configId) {
+    public Result<SysConfig> getInfo(@PathVariable Long configId) {
         return ok(configMapper.selectById(configId));
     }
 

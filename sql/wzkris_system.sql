@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 14/12/2024 16:01:57
+ Date: 16/12/2024 13:45:07
 */
 
 SET NAMES utf8mb4;
@@ -57,8 +57,8 @@ INSERT INTO `global_dict_data` VALUES (10, 1, '默认', 'DEFAULT', 'sys_job_grou
 INSERT INTO `global_dict_data` VALUES (11, 2, '系统', 'SYSTEM', 'sys_job_group', '', '', 'N', 1713334134616, 1, NULL, NULL);
 INSERT INTO `global_dict_data` VALUES (12, 1, '是', 'Y', 'sys_yes_no', '', 'primary', 'Y', 1713334134616, 1, NULL, NULL);
 INSERT INTO `global_dict_data` VALUES (13, 2, '否', 'N', 'sys_yes_no', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
-INSERT INTO `global_dict_data` VALUES (14, 1, '通知', '1', 'msg_type', '', 'primary', 'Y', 1713334134616, 1, 1733991598643, 1);
-INSERT INTO `global_dict_data` VALUES (15, 2, '公告', '2', 'msg_type', '', 'success', 'N', 1713334134616, 1, NULL, NULL);
+INSERT INTO `global_dict_data` VALUES (14, 1, '系统公告', '1', 'msg_type', '', 'primary', 'Y', 1713334134616, 1, 1734312560477, 1);
+INSERT INTO `global_dict_data` VALUES (15, 2, 'APP公告', '2', 'msg_type', '', 'success', 'N', 1713334134616, 1, 1734312567234, 1);
 INSERT INTO `global_dict_data` VALUES (16, 1, '草稿', '0', 'msg_status', '', 'info', 'Y', 1713334134616, 1, 1733991582786, 1);
 INSERT INTO `global_dict_data` VALUES (17, 2, '关闭', '1', 'msg_status', '', 'danger', 'N', 1713334134616, 1, NULL, NULL);
 INSERT INTO `global_dict_data` VALUES (18, 0, '其他', '0', 'sys_oper_type', '', 'info', 'N', 1713334134616, 1, 20240412103337, 1);
@@ -100,7 +100,7 @@ INSERT INTO `global_dict_data` VALUES (61, 0, '菜单', 'C', 'menu_type', NULL, 
 INSERT INTO `global_dict_data` VALUES (62, 0, '按钮', 'F', 'menu_type', NULL, 'danger', 'N', 1732346631024, 1, 1732346631024, 1);
 INSERT INTO `global_dict_data` VALUES (63, 0, '收入', '0', 'wallet_record_type', NULL, 'primary', 'N', 1732523552276, 1, 1732523552276, 1);
 INSERT INTO `global_dict_data` VALUES (64, 0, '支出', '1', 'wallet_record_type', NULL, 'danger', 'N', 1732523560627, 1, 1732523560627, 1);
-INSERT INTO `global_dict_data` VALUES (65, 0, '已发送', '2', 'msg_status', NULL, 'primary', 'N', 1733991577087, 1, 1733991577087, 1);
+INSERT INTO `global_dict_data` VALUES (65, 0, '已发布', '2', 'msg_status', NULL, 'primary', 'N', 1733991577087, 1, 1734316199926, 1);
 
 -- ----------------------------
 -- Table structure for global_dict_type
@@ -128,8 +128,8 @@ INSERT INTO `global_dict_type` VALUES (4, '是否禁用', 'common_disable', 1713
 INSERT INTO `global_dict_type` VALUES (5, '任务状态', 'sys_job_status', 1713334134616, 1, NULL, 1);
 INSERT INTO `global_dict_type` VALUES (6, '任务分组', 'sys_job_group', 1713334134616, 1, NULL, 1);
 INSERT INTO `global_dict_type` VALUES (7, '系统是否', 'sys_yes_no', 1713334134616, 1, NULL, 1);
-INSERT INTO `global_dict_type` VALUES (8, '通知类型', 'msg_type', 1713334134616, 1, 1733991364570, 1);
-INSERT INTO `global_dict_type` VALUES (9, '通知状态', 'msg_status', 1713334134616, 1, 1733991370838, 1);
+INSERT INTO `global_dict_type` VALUES (8, '消息类型', 'msg_type', 1713334134616, 1, 1734316213003, 1);
+INSERT INTO `global_dict_type` VALUES (9, '消息状态', 'msg_status', 1713334134616, 1, 1734316217169, 1);
 INSERT INTO `global_dict_type` VALUES (10, '操作类型', 'sys_oper_type', 1713334134616, 1, 1732083989997, 1);
 INSERT INTO `global_dict_type` VALUES (11, '操作状态', 'sys_oper_status', 1713334134616, 1, 1732083226583, 1);
 INSERT INTO `global_dict_type` VALUES (12, '授权类型', 'authorization_grant_types', 1713334134616, 1, 1724138651758, 1);
@@ -337,6 +337,13 @@ INSERT INTO `sys_login_log` VALUES (1867724462064607234, 0, 'admin', '0', '127.0
 INSERT INTO `sys_login_log` VALUES (1867816075344437250, 1774671331416821762, 'testtt', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734157029337);
 INSERT INTO `sys_login_log` VALUES (1867839857794703362, 1774671331416821762, 'testtt', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734162699534);
 INSERT INTO `sys_login_log` VALUES (1867841978359308290, 1774671331416821762, 'testtt', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734163205128);
+INSERT INTO `sys_login_log` VALUES (1868446775437373442, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734307398789);
+INSERT INTO `sys_login_log` VALUES (1868487873123799042, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734317198433);
+INSERT INTO `sys_login_log` VALUES (1868490937310334977, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734317928989);
+INSERT INTO `sys_login_log` VALUES (1868491548781137921, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734318074786);
+INSERT INTO `sys_login_log` VALUES (1868491686727602177, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734318107666);
+INSERT INTO `sys_login_log` VALUES (1868491818231615490, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734318139017);
+INSERT INTO `sys_login_log` VALUES (1868495527485329410, 0, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1734319023371);
 
 -- ----------------------------
 -- Table structure for sys_message
@@ -344,8 +351,8 @@ INSERT INTO `sys_login_log` VALUES (1867841978359308290, 1774671331416821762, 't
 DROP TABLE IF EXISTS `sys_message`;
 CREATE TABLE `sys_message`  (
   `msg_id` bigint NOT NULL COMMENT '消息ID',
-  `msg_title` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '消息标题',
-  `msg_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '消息类型（1通知 2公告）',
+  `title` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '消息标题',
+  `msg_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '消息类型（1系统公告 2APP公告）',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '消息内容',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息状态（0草稿 1关闭 2已发送）',
   `create_at` bigint NOT NULL COMMENT '创建者',
@@ -359,33 +366,41 @@ CREATE TABLE `sys_message`  (
 -- Records of sys_message
 -- ----------------------------
 INSERT INTO `sys_message` VALUES (1867761637258874881, '测试标题', '2', '测试内容xxxx', '2', 1734144050316, 1, 1734144050316, 1);
-INSERT INTO `sys_message` VALUES (1867761817215483102, '测试标题3', '2', '内容abbbbbbbbbbbbbbbbbbbbbbqqqqq', '2', 1734144093219, 1, 1734144093219, 1);
-INSERT INTO `sys_message` VALUES (1867761817215483902, '测试标题4', '2', '内容aagggggggggggggggggggggggggggggggggqqqqqqqqqqq', '2', 1734144093219, 1, 1734144093219, 1);
 INSERT INTO `sys_message` VALUES (1867761817215488002, '测试标题5', '2', '内容aauuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuqqqq', '2', 1734144093219, 1, 1734144093219, 1);
-INSERT INTO `sys_message` VALUES (1867761817215488003, '测试通知', '1', '你是超级管理员，你的职责是管理这个系统', '2', 1734144093219, 1, 1734144093219, 1);
 INSERT INTO `sys_message` VALUES (1867761817215488005, '测试通知7', '1', '测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测', '2', 1734144094219, 1, 1734144093219, 1);
-INSERT INTO `sys_message` VALUES (1867761817215488102, '测试标题21', '2', '内容', '2', 1734144093219, 1, 1734144093219, 1);
-INSERT INTO `sys_message` VALUES (1867761817215489902, '测试标题10', '2', '内容aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</br>qqqqqqq', '2', 1734144203219, 1, 1734144103219, 1);
-INSERT INTO `sys_message` VALUES (1867761817215498005, '测试通知3', '1', 'ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd', '2', 1734144194219, 1, 1734144013219, 1);
+INSERT INTO `sys_message` VALUES (1868480718916243457, '冲钱充钱', '1', '<h1>充充充充充充充充充充充充充充充充充充充充充充充充充充充充充</h1>', '2', 1734315492740, 1, 1734316170787, 1);
 
 -- ----------------------------
--- Table structure for sys_message_send
+-- Table structure for sys_notify
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_message_send`;
-CREATE TABLE `sys_message_send`  (
+DROP TABLE IF EXISTS `sys_notify`;
+CREATE TABLE `sys_notify`  (
+  `notify_id` bigint NOT NULL,
+  `notify_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '通知类型（0系统通知 1设备告警）',
+  `title` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标题',
+  `content` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '通知内容',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`notify_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统通知表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_notify
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_notify_send
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_notify_send`;
+CREATE TABLE `sys_notify_send`  (
+  `notify_id` bigint NOT NULL COMMENT '系统消息ID',
   `user_id` bigint NOT NULL COMMENT '接收用户ID',
-  `msg_id` bigint NOT NULL COMMENT '系统消息ID',
-  `send_time` bigint NOT NULL COMMENT '发送时间',
   `read_state` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '已读1 未读0',
-  PRIMARY KEY (`user_id`, `msg_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '消息发送表' ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`notify_id`, `user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '通知发送表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of sys_message_send
+-- Records of sys_notify_send
 -- ----------------------------
-INSERT INTO `sys_message_send` VALUES (1, 1867761817215488003, 1734144093219, '0');
-INSERT INTO `sys_message_send` VALUES (1, 1867761817215488005, 1734144094219, '0');
-INSERT INTO `sys_message_send` VALUES (1, 1867761817215498005, 1734144104219, '0');
 
 -- ----------------------------
 -- Table structure for sys_oper_log
@@ -972,5 +987,71 @@ INSERT INTO `sys_oper_log` VALUES (1867812776339791874, 0, '系统账户', '', '
 INSERT INTO `sys_oper_log` VALUES (1867812832329555970, 0, '系统账户', '', '2', 'com.wzkris.user.controller.SysUserOwnController.editInfo()', 'POST', 'admin', '/user/account', '127.0.0.1', '内网IP', '{\"gender\":\"0\",\"nickname\":\"nick_admin\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734156256176}', '0', NULL, 1734156256176);
 INSERT INTO `sys_oper_log` VALUES (1867813190497951745, 0, '系统账户', '', '2', 'com.wzkris.user.controller.SysUserOwnController.editInfo()', 'POST', 'admin', '/user/account', '127.0.0.1', '内网IP', '{\"gender\":\"0\",\"nickname\":\"nick_admin\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734156341563}', '0', NULL, 1734156341563);
 INSERT INTO `sys_oper_log` VALUES (1867813199712837634, 0, '系统账户', '', '2', 'com.wzkris.user.controller.SysUserOwnController.editInfo()', 'POST', 'admin', '/user/account', '127.0.0.1', '内网IP', '{\"gender\":\"1\",\"nickname\":\"nick_admin\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734156343764}', '0', NULL, 1734156343764);
+INSERT INTO `sys_oper_log` VALUES (1868447053729443841, 0, '后台管理', '删除用户', '3', 'com.wzkris.user.controller.SysUserController.remove()', 'POST', 'admin', '/sys_user/remove', '127.0.0.1', '内网IP', '[1774671331412627456]', '{\"biz\":1,\"err_msg\":\"删除失败，用户包含租户超级管理员\",\"timestamp\":1734307466275}', '1', '删除失败，用户包含租户超级管理员', 1734307466280);
+INSERT INTO `sys_oper_log` VALUES (1868447076152193026, 0, '后台管理', '删除用户', '3', 'com.wzkris.user.controller.SysUserController.remove()', 'POST', 'admin', '/sys_user/remove', '127.0.0.1', '内网IP', '[1774671331412627456,1774671331412627456]', NULL, '1', '当前用户没有权限访问数据', 1734307471675);
+INSERT INTO `sys_oper_log` VALUES (1868447094149951490, 0, '后台管理', '删除用户', '3', 'com.wzkris.user.controller.SysUserController.remove()', 'POST', 'admin', '/sys_user/remove', '127.0.0.1', '内网IP', '[1774671331412627456,1774671331412627456,1774671331412627456]', NULL, '1', '当前用户没有权限访问数据', 1734307475965);
+INSERT INTO `sys_oper_log` VALUES (1868447230779404290, 0, '后台管理', '删除用户', '3', 'com.wzkris.user.controller.SysUserController.remove()', 'POST', 'admin', '/sys_user/remove', '127.0.0.1', '内网IP', '[1774671331412627456,1774671331412627456,1774671331412627456,1774671331412627456]', NULL, '1', '当前用户没有权限访问数据', 1734307508538);
+INSERT INTO `sys_oper_log` VALUES (1868447318591352833, 0, '后台管理', '删除用户', '3', 'com.wzkris.user.controller.SysUserController.remove()', 'POST', 'admin', '/sys_user/remove', '127.0.0.1', '内网IP', '[1774671331412627456,1774671331412627456,1774671331412627456,1774671331412627456,1774671331412627456]', NULL, '1', '当前用户没有权限访问数据', 1734307529475);
+INSERT INTO `sys_oper_log` VALUES (1868447368641982466, 0, '后台管理', '删除用户', '3', 'com.wzkris.user.controller.SysUserController.remove()', 'POST', 'admin', '/sys_user/remove', '127.0.0.1', '内网IP', '[1774671331412627456]', '{\"biz\":1,\"err_msg\":\"删除失败，用户包含租户超级管理员\",\"timestamp\":1734307541407}', '1', '删除失败，用户包含租户超级管理员', 1734307541407);
+INSERT INTO `sys_oper_log` VALUES (1868447841390374914, 0, '后台管理', '删除用户', '3', 'com.wzkris.user.controller.SysUserController.remove()', 'POST', 'admin', '/sys_user/remove', '127.0.0.1', '内网IP', '[1774671331412627456]', '{\"biz\":1,\"err_msg\":\"删除失败，用户包含租户超级管理员\",\"timestamp\":1734307654119}', '1', '删除失败，用户包含租户超级管理员', 1734307654120);
+INSERT INTO `sys_oper_log` VALUES (1868453643836674050, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215489902', '{\"biz\":1,\"err_msg\":\"非草稿状态不可以关闭\",\"timestamp\":1734309037480}', '1', '非草稿状态不可以关闭', 1734309037485);
+INSERT INTO `sys_oper_log` VALUES (1868454840622600194, 0, '系统消息', '发布公告', '2', 'com.wzkris.system.controller.SysMessageController.publish()', 'POST', 'admin', '/sys_message/publish_announcement', '127.0.0.1', '内网IP', '1867761817215488005', '{\"biz\":1,\"err_msg\":\"只有公告类型的消息才可以发布\",\"timestamp\":1734309322874}', '1', '只有公告类型的消息才可以发布', 1734309322874);
+INSERT INTO `sys_oper_log` VALUES (1868454853406838786, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215488005', '{\"biz\":1,\"err_msg\":\"非草稿状态不可以关闭\",\"timestamp\":1734309325933}', '1', '非草稿状态不可以关闭', 1734309325933);
+INSERT INTO `sys_oper_log` VALUES (1868454878962733057, 0, '系统消息', '添加草稿', '1', 'com.wzkris.system.controller.SysMessageController.add()', 'POST', 'admin', '/sys_message/add', '127.0.0.1', '内网IP', '{\"msgType\":\"2\",\"msgTitle\":\"123123\",\"updateAt\":1734309332000,\"msgId\":1868454878904012801,\"createAt\":1734309332000,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734309332009}', '0', NULL, 1734309332009);
+INSERT INTO `sys_oper_log` VALUES (1868454905391042562, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1868454878904012801', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734309338312}', '0', NULL, 1734309338312);
+INSERT INTO `sys_oper_log` VALUES (1868454931353784322, 0, '系统消息', '发布公告', '2', 'com.wzkris.system.controller.SysMessageController.publish()', 'POST', 'admin', '/sys_message/publish_announcement', '127.0.0.1', '内网IP', '1868454878904012801', '{\"biz\":1,\"err_msg\":\"非草稿状态不可以发布\",\"timestamp\":1734309344499}', '1', '非草稿状态不可以发布', 1734309344499);
+INSERT INTO `sys_oper_log` VALUES (1868454944440012802, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1868454878904012801', '{\"biz\":1,\"err_msg\":\"非草稿状态不可以关闭\",\"timestamp\":1734309347623}', '1', '非草稿状态不可以关闭', 1734309347623);
+INSERT INTO `sys_oper_log` VALUES (1868455051285712897, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1868454878904012801]', '{\"biz\":1,\"err_msg\":\"仅草稿可以修改\",\"timestamp\":1734309373094}', '1', '仅草稿可以修改', 1734309373094);
+INSERT INTO `sys_oper_log` VALUES (1868455072341118978, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1868454878904012801,1868454878904012801]', '{\"biz\":1,\"err_msg\":\"仅草稿可以修改\",\"timestamp\":1734309378116}', '1', '仅草稿可以修改', 1734309378116);
+INSERT INTO `sys_oper_log` VALUES (1868455516392103937, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1868454878904012801,1868454878904012801,1868454878904012801]', '{\"biz\":1,\"err_msg\":\"仅关闭消息可以删除\",\"timestamp\":1734309483913}', '1', '仅关闭消息可以删除', 1734309483920);
+INSERT INTO `sys_oper_log` VALUES (1868455636164648962, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1868454878904012801,1868454878904012801,1868454878904012801,1868454878904012801]', '{\"biz\":1,\"err_msg\":\"仅关闭消息可以删除\",\"timestamp\":1734309512537}', '1', '仅关闭消息可以删除', 1734309512537);
+INSERT INTO `sys_oper_log` VALUES (1868455654716055554, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1868454878904012801]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734309516962}', '0', NULL, 1734309516962);
+INSERT INTO `sys_oper_log` VALUES (1868468151841931265, 0, '系统消息', '发布公告', '2', 'com.wzkris.system.controller.SysMessageController.publish()', 'POST', 'admin', '/sys_message/publish', '127.0.0.1', '内网IP', '1867761817215498005', '{\"biz\":1,\"err_msg\":\"非草稿状态不可以发布\",\"timestamp\":1734312496454}', '1', '非草稿状态不可以发布', 1734312496458);
+INSERT INTO `sys_oper_log` VALUES (1868468162931671042, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215498005', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734312499154}', '0', NULL, 1734312499154);
+INSERT INTO `sys_oper_log` VALUES (1868468178899386370, 0, '系统消息', '发布公告', '2', 'com.wzkris.system.controller.SysMessageController.publish()', 'POST', 'admin', '/sys_message/publish', '127.0.0.1', '内网IP', '1867761817215498005', '{\"biz\":1,\"err_msg\":\"非草稿状态不可以发布\",\"timestamp\":1734312502963}', '1', '非草稿状态不可以发布', 1734312502963);
+INSERT INTO `sys_oper_log` VALUES (1868468198226739202, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215489902', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734312507570}', '0', NULL, 1734312507570);
+INSERT INTO `sys_oper_log` VALUES (1868468394373365762, 0, '字典数据', '修改字典', '2', 'com.wzkris.system.controller.GlobalDictDataController.edit()', 'POST', 'admin', '/dict/data/edit', '127.0.0.1', '内网IP', '{\"dictLabel\":\"公告\",\"dictValue\":\"APP公告\",\"listClass\":\"success\",\"isDefault\":\"N\",\"dataId\":15,\"cssClass\":\"\",\"updateAt\":1734312554311,\"dictSort\":2,\"dictType\":\"msg_type\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734312554332}', '0', NULL, 1734312554332);
+INSERT INTO `sys_oper_log` VALUES (1868468420206084098, 0, '字典数据', '修改字典', '2', 'com.wzkris.system.controller.GlobalDictDataController.edit()', 'POST', 'admin', '/dict/data/edit', '127.0.0.1', '内网IP', '{\"dictLabel\":\"系统公告\",\"dictValue\":\"1\",\"listClass\":\"primary\",\"isDefault\":\"Y\",\"dataId\":14,\"cssClass\":\"\",\"updateAt\":1734312560477,\"dictSort\":1,\"dictType\":\"msg_type\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734312560492}', '0', NULL, 1734312560492);
+INSERT INTO `sys_oper_log` VALUES (1868468448635076610, 0, '字典数据', '修改字典', '2', 'com.wzkris.system.controller.GlobalDictDataController.edit()', 'POST', 'admin', '/dict/data/edit', '127.0.0.1', '内网IP', '{\"dictLabel\":\"APP公告\",\"dictValue\":\"2\",\"listClass\":\"success\",\"isDefault\":\"N\",\"dataId\":15,\"cssClass\":\"\",\"updateAt\":1734312567234,\"dictSort\":2,\"dictType\":\"msg_type\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734312567267}', '0', NULL, 1734312567267);
+INSERT INTO `sys_oper_log` VALUES (1868477926583500802, 0, '菜单管理', '新增菜单', '1', 'com.wzkris.user.controller.SysMenuController.add()', 'POST', 'admin', '/sys_menu/add', '127.0.0.1', '内网IP', '{\"updateAt\":1734314826956,\"menuName\":\"发布公告\",\"isVisible\":true,\"createAt\":1734314826956,\"parentId\":100,\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1868477926415749121,\"menuType\":\"F\",\"perms\":\"sys_message:publish\",\"menuSort\":10,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314826966}', '0', NULL, 1734314826966);
+INSERT INTO `sys_oper_log` VALUES (1868478031986360322, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1734314852112,\"menuName\":\"公告删除\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1059,\"menuType\":\"F\",\"perms\":\"sys_message:remove\",\"menuSort\":4,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314852119}', '0', NULL, 1734314852119);
+INSERT INTO `sys_oper_log` VALUES (1868478047593365506, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1734314855835,\"menuName\":\"公告修改\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1058,\"menuType\":\"F\",\"perms\":\"sys_message:edit\",\"menuSort\":3,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314855841}', '0', NULL, 1734314855841);
+INSERT INTO `sys_oper_log` VALUES (1868478060818006017, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1734314858988,\"menuName\":\"公告新增\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1057,\"menuType\":\"F\",\"perms\":\"sys_message:add\",\"menuSort\":2,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314858994}', '0', NULL, 1734314858994);
+INSERT INTO `sys_oper_log` VALUES (1868478072562057218, 0, '菜单管理', '修改菜单', '2', 'com.wzkris.user.controller.SysMenuController.edit()', 'POST', 'admin', '/sys_menu/edit', '127.0.0.1', '内网IP', '{\"icon\":\"#\",\"updateAt\":1734314861788,\"menuName\":\"公告查询\",\"isVisible\":true,\"parentId\":100,\"path\":\"#\",\"isCache\":false,\"children\":[],\"isFrame\":false,\"menuId\":1056,\"menuType\":\"F\",\"perms\":\"sys_message:query\",\"menuSort\":1,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314861794}', '0', NULL, 1734314861794);
+INSERT INTO `sys_oper_log` VALUES (1868478346106175489, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215488003', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314926971}', '0', NULL, 1734314926973);
+INSERT INTO `sys_oper_log` VALUES (1868478473189392386, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215483102', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314957317}', '0', NULL, 1734314957317);
+INSERT INTO `sys_oper_log` VALUES (1868478481003380737, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215483102]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314959174}', '0', NULL, 1734314959174);
+INSERT INTO `sys_oper_log` VALUES (1868478491417837570, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215483902', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734314961659}', '0', NULL, 1734314961659);
+INSERT INTO `sys_oper_log` VALUES (1868478496870432769, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215483102,1867761817215483902]', '{\"biz\":1,\"err_msg\":\"仅关闭消息可以删除\",\"timestamp\":1734314962958}', '1', '仅关闭消息可以删除', 1734314962958);
+INSERT INTO `sys_oper_log` VALUES (1868478517468659714, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215483102,1867761817215483902,1867761817215483902]', '{\"biz\":1,\"err_msg\":\"仅关闭消息可以删除\",\"timestamp\":1734314967870}', '1', '仅关闭消息可以删除', 1734314967870);
+INSERT INTO `sys_oper_log` VALUES (1868478529627947009, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215483102,1867761817215483902,1867761817215483902,1867761817215483902]', '{\"biz\":1,\"err_msg\":\"仅关闭消息可以删除\",\"timestamp\":1734314970767}', '1', '仅关闭消息可以删除', 1734314970767);
+INSERT INTO `sys_oper_log` VALUES (1868478823489273857, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[]', NULL, '1', '\r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \') AND status = \'1\')\' at line 1\r\n### The error may exist in com/wzkris/system/mapper/SysMessageMapper.java (best guess)\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT COUNT(*) AS total FROM sys_message WHERE (msg_id IN () AND status = ?)\r\n### Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \') AND status = \'1\')\' at line 1\n; bad SQL grammar []', 1734315040828);
+INSERT INTO `sys_oper_log` VALUES (1868479647762305026, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215498005]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315237296}', '0', NULL, 1734315237302);
+INSERT INTO `sys_oper_log` VALUES (1868479666502455298, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215489902]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315241820}', '0', NULL, 1734315241820);
+INSERT INTO `sys_oper_log` VALUES (1868480441043603457, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215488003]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315426486}', '0', NULL, 1734315426486);
+INSERT INTO `sys_oper_log` VALUES (1868480457694990338, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215483902]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315430455}', '0', NULL, 1734315430455);
+INSERT INTO `sys_oper_log` VALUES (1868480477148172289, 0, '系统消息', '关闭公告', '2', 'com.wzkris.system.controller.SysMessageController.close()', 'POST', 'admin', '/sys_message/close', '127.0.0.1', '内网IP', '1867761817215488102', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315435094}', '0', NULL, 1734315435094);
+INSERT INTO `sys_oper_log` VALUES (1868480572568588290, 0, '系统消息', '删除草稿', '3', 'com.wzkris.system.controller.SysMessageController.remove()', 'POST', 'admin', '/sys_message/remove', '127.0.0.1', '内网IP', '[1867761817215488102]', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315457841}', '0', NULL, 1734315457841);
+INSERT INTO `sys_oper_log` VALUES (1868480718970769410, 0, '系统消息', '添加草稿', '1', 'com.wzkris.system.controller.SysMessageController.add()', 'POST', 'admin', '/sys_message/add', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315492740,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"createAt\":1734315492740,\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315492747}', '0', NULL, 1734315492747);
+INSERT INTO `sys_oper_log` VALUES (1868481134341083137, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315591771,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315591778}', '0', NULL, 1734315591778);
+INSERT INTO `sys_oper_log` VALUES (1868481691311099906, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315724564,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315724571}', '0', NULL, 1734315724571);
+INSERT INTO `sys_oper_log` VALUES (1868481773758533634, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315744164,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315744229}', '0', NULL, 1734315744229);
+INSERT INTO `sys_oper_log` VALUES (1868482017653116929, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315802369,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315802377}', '0', NULL, 1734315802377);
+INSERT INTO `sys_oper_log` VALUES (1868482079821090817, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315817193,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315817199}', '0', NULL, 1734315817199);
+INSERT INTO `sys_oper_log` VALUES (1868482126604357634, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315828349,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315828354}', '0', NULL, 1734315828354);
+INSERT INTO `sys_oper_log` VALUES (1868482210620461057, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315848379,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315848385}', '0', NULL, 1734315848385);
+INSERT INTO `sys_oper_log` VALUES (1868482217209712641, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315849949,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315849956}', '0', NULL, 1734315849956);
+INSERT INTO `sys_oper_log` VALUES (1868482392384819201, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315891706,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315891713}', '0', NULL, 1734315891714);
+INSERT INTO `sys_oper_log` VALUES (1868482392393207809, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315891716,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315891723}', '0', NULL, 1734315891723);
+INSERT INTO `sys_oper_log` VALUES (1868482455517483010, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315906768,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315906774}', '0', NULL, 1734315906774);
+INSERT INTO `sys_oper_log` VALUES (1868482472403750913, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315910790,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315910799}', '0', NULL, 1734315910799);
+INSERT INTO `sys_oper_log` VALUES (1868482655174742018, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734315954368,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734315954375}', '0', NULL, 1734315954375);
+INSERT INTO `sys_oper_log` VALUES (1868483510187806721, 0, '系统消息', '修改草稿', '2', 'com.wzkris.system.controller.SysMessageController.edit()', 'POST', 'admin', '/sys_message/edit', '127.0.0.1', '内网IP', '{\"msgType\":\"1\",\"updateAt\":1734316158221,\"msgId\":1868480718916243457,\"title\":\"冲钱充钱\",\"content\":\"<h1>充充充充充充充充充充充充充充充充充充充充充充充充充充充充充</h1>\",\"status\":\"0\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734316158227}', '0', NULL, 1734316158227);
+INSERT INTO `sys_oper_log` VALUES (1868483562897625090, 0, '系统消息', '发布公告', '2', 'com.wzkris.system.controller.SysMessageController.publish()', 'POST', 'admin', '/sys_message/publish', '127.0.0.1', '内网IP', '1868480718916243457', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734316170793}', '0', NULL, 1734316170793);
+INSERT INTO `sys_oper_log` VALUES (1868483685149003778, 0, '字典数据', '修改字典', '2', 'com.wzkris.system.controller.GlobalDictDataController.edit()', 'POST', 'admin', '/dict/data/edit', '127.0.0.1', '内网IP', '{\"dictLabel\":\"已发布\",\"dictValue\":\"2\",\"listClass\":\"primary\",\"isDefault\":\"N\",\"dataId\":65,\"updateAt\":1734316199926,\"dictSort\":0,\"dictType\":\"msg_status\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734316199940}', '0', NULL, 1734316199940);
+INSERT INTO `sys_oper_log` VALUES (1868483739997917186, 0, '字典类型', '修改字典', '2', 'com.wzkris.system.controller.GlobalDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', '内网IP', '{\"updateAt\":1734316213003,\"typeId\":8,\"dictName\":\"消息类型\",\"dictType\":\"msg_type\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734316213017}', '0', NULL, 1734316213017);
+INSERT INTO `sys_oper_log` VALUES (1868483757450416129, 0, '字典类型', '修改字典', '2', 'com.wzkris.system.controller.GlobalDictTypeController.edit()', 'POST', 'admin', '/dict/type/edit', '127.0.0.1', '内网IP', '{\"updateAt\":1734316217169,\"typeId\":9,\"dictName\":\"消息状态\",\"dictType\":\"msg_status\"}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734316217180}', '0', NULL, 1734316217180);
+INSERT INTO `sys_oper_log` VALUES (1868494916928884738, 0, '角色管理', '修改角色', '2', 'com.wzkris.user.controller.SysRoleController.edit()', 'POST', 'admin', '/sys_role/edit', '127.0.0.1', '内网IP', '{\"isMenuDisplay\":true,\"roleId\":1775445330027577345,\"tenantId\":1774671331416821762,\"roleName\":\"默认租户角色\",\"updateAt\":1734318877761,\"isDeptDisplay\":true,\"deptIds\":[],\"dataScope\":\"5\",\"menuIds\":[2,203,2071,205,2040,2039,2038,2037,208,2145,2144,2143,2142,2141],\"status\":\"0\",\"roleSort\":0}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734318877770}', '0', NULL, 1734318877771);
+INSERT INTO `sys_oper_log` VALUES (1868494956275650561, 0, '角色管理', '修改角色', '2', 'com.wzkris.user.controller.SysRoleController.edit()', 'POST', 'admin', '/sys_role/edit', '127.0.0.1', '内网IP', '{\"isMenuDisplay\":true,\"roleId\":1775445330027577345,\"tenantId\":1774671331416821762,\"roleName\":\"默认租户角色\",\"updateAt\":1734318887182,\"isDeptDisplay\":true,\"deptIds\":[],\"dataScope\":\"3\",\"menuIds\":[2,203,2071,205,2040,2039,2038,2037,208,2145,2144,2143,2142,2141],\"status\":\"0\",\"roleSort\":0}', '{\"biz\":0,\"err_msg\":\"Success\",\"timestamp\":1734318887187}', '0', NULL, 1734318887187);
 
 SET FOREIGN_KEY_CHECKS = 1;

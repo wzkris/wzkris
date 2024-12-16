@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class RemoteLogFallback implements FallbackFactory<RemoteLogApi> {
+public class RemoteLogApiFallback implements FallbackFactory<RemoteLogApi> {
 
     @Override
     public RemoteLogApi create(Throwable cause) {

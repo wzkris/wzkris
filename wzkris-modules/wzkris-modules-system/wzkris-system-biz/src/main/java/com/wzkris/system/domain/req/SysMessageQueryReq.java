@@ -8,7 +8,7 @@ import lombok.Data;
 public class SysMessageQueryReq {
 
     @Schema(description = "标题")
-    private String msgTitle;
+    private String title;
 
     @Schema(description = "消息类型（1通知 2公告）")
     private String msgType;

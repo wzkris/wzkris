@@ -6,19 +6,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 系统消息发送表
+ * 系统通知发送表
  *
  * @author wzkris
  */
 @Data
 @NoArgsConstructor
-public class SysMessageSend {
+public class SysNotifySend {
 
     @Schema(description = "接收用户ID")
     private Long userId;
 
     @Schema(description = "通知ID")
-    private Long msgId;
+    private Long notifyId;
 
     @Schema(description = "发送时间")
     private Long sendTime;
@@ -26,9 +26,9 @@ public class SysMessageSend {
     @Schema(description = "已读1 未读0")
     private String readState;
 
-    public SysMessageSend(Long userId, Long msgId) {
+    public SysNotifySend(Long userId, Long notifyId) {
         this.userId = userId;
-        this.msgId = msgId;
+        this.notifyId = notifyId;
         this.readState = MessageConstants.NOTIFY_UNREAD;
     }
 }

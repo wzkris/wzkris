@@ -7,10 +7,14 @@ import lombok.Data;
 @Schema(description = "未读统计")
 public class UnreadVO {
 
-    @Schema(description = "通知未读数量")
-    private int notify;
+    @Schema(description = "系统通知未读")
+    private int system;
 
-    public UnreadVO(int notify) {
-        this.notify = notify;
+    @Schema(description = "设备通知未读")
+    private int device;
+
+    public UnreadVO(int system, int device) {
+        this.system = system;
+        this.device = device;
     }
 }

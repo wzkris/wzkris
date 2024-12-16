@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 14/12/2024 16:02:22
+ Date: 16/12/2024 10:18:34
 */
 
 SET NAMES utf8mb4;
@@ -234,10 +234,11 @@ INSERT INTO `sys_menu` VALUES (1052, '参数新增', 103, 2, '#', NULL, NULL, 'F
 INSERT INTO `sys_menu` VALUES (1053, '参数修改', 103, 3, '#', NULL, NULL, 'F', '0', 'config:edit', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1054, '参数删除', 103, 4, '#', NULL, NULL, 'F', '0', 'config:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1055, '参数导出', 103, 5, '#', NULL, NULL, 'F', '0', 'config:export', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
-INSERT INTO `sys_menu` VALUES (1056, '消息查询', 100, 1, '#', NULL, NULL, 'F', '0', 'sys_message:query', '#', 0, 0, 1, 1713334134616, 1, 1733991048396, 1);
-INSERT INTO `sys_menu` VALUES (1057, '消息新增', 100, 2, '#', NULL, NULL, 'F', '0', 'sys_message:add', '#', 0, 0, 1, 1713334134616, 1, 1733991045507, 1);
-INSERT INTO `sys_menu` VALUES (1058, '消息修改', 100, 3, '#', NULL, NULL, 'F', '0', 'sys_message:edit', '#', 0, 0, 1, 1713334134616, 1, 1733991042466, 1);
-INSERT INTO `sys_menu` VALUES (1059, '消息删除', 100, 4, '#', NULL, NULL, 'F', '0', 'sys_message:remove', '#', 0, 0, 1, 1713334134616, 1, 1733991038314, 1);
+INSERT INTO `sys_menu` VALUES (1056, '公告查询', 100, 1, '#', NULL, NULL, 'F', '0', 'sys_message:query', '#', 0, 0, 1, 1713334134616, 1, 1734314861788, 1);
+INSERT INTO `sys_menu` VALUES (1057, '公告新增', 100, 2, '#', NULL, NULL, 'F', '0', 'sys_message:add', '#', 0, 0, 1, 1713334134616, 1, 1734314858988, 1);
+INSERT INTO `sys_menu` VALUES (1058, '公告修改', 100, 3, '#', NULL, NULL, 'F', '0', 'sys_message:edit', '#', 0, 0, 1, 1713334134616, 1, 1734314855835, 1);
+INSERT INTO `sys_menu` VALUES (1059, '公告删除', 100, 4, '#', NULL, NULL, 'F', '0', 'sys_message:remove', '#', 0, 0, 1, 1713334134616, 1, 1734314852112, 1);
+INSERT INTO `sys_menu` VALUES (1060, '发布公告', 100, 10, '#', NULL, NULL, 'F', '0', 'sys_message:publish', '#', 0, 0, 1, 1734314826956, 1, 1734314826956, 1);
 INSERT INTO `sys_menu` VALUES (1061, '操作删除', 150, 2, '#', NULL, NULL, 'F', '0', 'operlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, NULL);
 INSERT INTO `sys_menu` VALUES (1064, '登录删除', 151, 2, '#', NULL, NULL, 'F', '0', 'loginlog:remove', '#', 0, 0, 1, 1713334134616, 1, 1730336330958, 1);
 INSERT INTO `sys_menu` VALUES (1125, '余额记录', 601, 3, '#', NULL, NULL, 'F', '0', 'wallet_record:list', '#', 0, 0, 1, 1732598092738, 1, 1733813517885, 2);

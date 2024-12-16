@@ -17,7 +17,7 @@ import java.util.List;
 public interface SysMessageMapper extends BaseMapperPlus<SysMessage> {
 
     @Select("""
-            SELECT m.*, s.read_state FROM sys_message m RIGHT JOIN sys_message_send s ON m.msg_id = s.msg_id
+            SELECT m.*, s.read_state FROM sys_message m RIGHT JOIN sys_notify_send s ON m.msg_id = s.msg_id
             WHERE msg_type = '1' AND status = '2' AND user_id = #{userId} ORDER BY send_time DESC
             """)
     List<SysNotifyVO> listNotify(Long userId);

@@ -12,11 +12,11 @@ public class SysAnnouncementVO {
 
     private Long msgId;
 
-    @Xss(message = "消息标题不能包含脚本字符")
-    @NotBlank(message = "消息标题不能为空")
+    @Xss(message = "标题不能包含脚本字符")
+    @NotBlank(message = "标题不能为空")
     @Size(min = 2, max = 30, message = "消息标题{validate.size.illegal}")
     @Schema(description = "标题")
-    private String msgTitle;
+    private String title;
 
     @Schema(description = "内容")
     private String content;

@@ -1,1 +1,2 @@
-com.wzkris.system.api.fallback.RemoteLogFallback
+com.wzkris.system.api.fallback.RemoteLogApiFallback
+com.wzkris.system.api.fallback.RemoteNotifyApiFallback

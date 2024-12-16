@@ -1,6 +1,5 @@
 package com.wzkris.system.service;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,29 +10,30 @@ import java.util.List;
 public interface SysMessageService {
 
     /**
-     * 发送通知
-     *
-     * @param userIds 接收方用户ID
-     * @param msgId   通知ID
-     */
-    boolean sendNotify(List<Long> userIds, Long msgId);
-
-    /**
-     * 校验是否为通知
+     * 校验是否为系统公告
      *
      * @param msgId 消息ID
      */
-    boolean checkIsNotify(Long msgId);
+    boolean checkIsSystem(Long msgId);
+
+    /**
+     * 校验是否为APP公告
+     *
+     * @param msgId 消息ID
+     */
+    boolean checkIsApp(Long msgId);
 
     /**
      * 校验是否为草稿
      *
      * @param msgId 消息ID
      */
-    boolean checkIsDraft(List<Long> msgId);
+    boolean checkIsDraft(Long msgId);
 
-    default boolean checkIsDraft(Long msgId) {
-        return this.checkIsDraft(Collections.singletonList(msgId));
-    }
-
+    /**
+     * 校验是否为关闭
+     *
+     * @param msgIds 消息ID
+     */
+    boolean checkIsClose(List<Long> msgIds);
 }
