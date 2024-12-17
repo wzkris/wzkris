@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 @Component
 public class MyConsumer {
 
-    @Bean
+    @Bean("Aconsumer")
     public Consumer<Message<String>> consumer() {
         return (data) -> {
             String payload = data.getPayload();
