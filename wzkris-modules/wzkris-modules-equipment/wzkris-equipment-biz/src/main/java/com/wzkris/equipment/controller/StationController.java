@@ -53,6 +53,18 @@ public class StationController extends BaseController {
                 .orderByDesc(Station::getStationId);
     }
 
+    @Operation(summary = "站点选择列表(不带分页)")
+    @GetMapping("/selectlist")
+    @PreAuthorize("@ps.hasPermsOr('device:add', 'device:edit')")// 设备添加修改时使用
+    public Result<List<Station>> selectList(String stationName) {
+        LambdaQueryWrapper<Station> lqw = new LambdaQueryWrapper<Station>()
+                .select(Station::getStationId, Station::getStationName)
+                .eq(Station::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(stationName), Station::getStationName, stationName);
+        List<Station> list = stationMapper.selectList(lqw);
+        return ok(list);
+    }
+
     @Operation(summary = "id查询站点信息")
     @GetMapping("/{stationId}")
     @PreAuthorize("@ps.hasPerms('station:query')")

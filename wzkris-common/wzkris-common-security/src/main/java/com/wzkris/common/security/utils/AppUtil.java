@@ -3,6 +3,8 @@ package com.wzkris.common.security.utils;
 import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.security.oauth2.domain.model.LoginApper;
 import com.wzkris.common.security.oauth2.enums.UserType;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppUtil extends SecureUtil {
 
     /**

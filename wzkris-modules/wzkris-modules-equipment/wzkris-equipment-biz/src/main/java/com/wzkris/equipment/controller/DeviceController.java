@@ -100,7 +100,7 @@ public class DeviceController extends BaseController {
     @OperateLog(title = "设备管理", subTitle = "修改设备", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('device:edit')")
-    public Result<Void> edit(@RequestBody @Valid Device device) {
+    public Result<Void> edit(@RequestBody Device device) {
         return toRes(deviceMapper.updateById(device));
     }
 

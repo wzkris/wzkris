@@ -2,11 +2,12 @@ package com.wzkris.equipment.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.common.security.field.annotation.FieldPerms;
+import com.wzkris.common.security.field.enums.FieldPerm;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -43,6 +44,7 @@ public class Device extends BaseEntity {
     @Schema(description = "设备名称")
     private String deviceName;
 
+    @FieldPerms(perm = FieldPerm.WRITE, value = "@SysUtil.isSuperTenant()")
     @NotBlank(message = "[serialNo] {validate.notnull}")
     @Schema(description = "设备号")
     private String serialNo;

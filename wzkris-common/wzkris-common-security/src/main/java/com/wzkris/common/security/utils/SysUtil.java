@@ -4,6 +4,8 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
 import com.wzkris.common.security.oauth2.enums.UserType;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,8 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("SysUtil") //加入Spring容器以用于SPEL
+@Component("SysUtil")// 加入Spring容器以用于SPEL
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SysUtil extends SecureUtil {
 
     /**
