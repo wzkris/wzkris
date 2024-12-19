@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -13,10 +14,10 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserRole;
-import com.wzkris.user.domain.dto.SysRoleDTO;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.SysRole2UsersReq;
 import com.wzkris.user.domain.req.SysRoleQueryReq;
+import com.wzkris.user.domain.req.SysRoleReq;
 import com.wzkris.user.domain.vo.SysDeptCheckSelectTreeVO;
 import com.wzkris.user.domain.vo.SysMenuCheckSelectTreeVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
@@ -110,23 +111,21 @@ public class SysRoleController extends BaseController {
     @OperateLog(title = "角色管理", subTitle = "新增角色", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_role:add')")
-    public Result<Void> add(@Validated @RequestBody SysRoleDTO roleDTO) {
+    public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
         if (!tenantService.checkRoleLimit(SysUtil.getTenantId())) {
             return fail("角色数量已达上限，请联系管理员");
         }
-        roleService.insertRole(roleDTO);
-        return ok();
+        return toRes(roleService.insertRole(MapstructUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
 
     @Operation(summary = "修改角色")
     @OperateLog(title = "角色管理", subTitle = "修改角色", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('sys_role:edit')")
-    public Result<Void> edit(@Validated @RequestBody SysRoleDTO roleDTO) {
+    public Result<Void> edit(@Validated @RequestBody SysRoleReq roleReq) {
         // 权限校验
-        roleService.checkDataScopes(roleDTO.getRoleId());
-        roleService.updateRole(roleDTO);
-        return ok();
+        roleService.checkDataScopes(roleReq.getRoleId());
+        return toRes(roleService.updateRole(MapstructUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
 
     @Operation(summary = "状态修改")

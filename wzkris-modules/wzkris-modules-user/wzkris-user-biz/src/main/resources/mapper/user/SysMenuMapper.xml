@@ -6,7 +6,7 @@
 
 	<select id="listRouteTree" resultType="SysMenu">
 		SELECT * FROM sys_menu
-		WHERE menu_type IN ('M', 'C') AND status = '0' AND is_visible = true
+		WHERE menu_type IN ('D', 'M') AND status = '0' AND is_visible = true
 		<if test="menuIds != null and !menuIds.isEmpty()">
 			AND menu_id IN
 			<foreach collection="menuIds" item="menuId" separator="," open="(" close=")">

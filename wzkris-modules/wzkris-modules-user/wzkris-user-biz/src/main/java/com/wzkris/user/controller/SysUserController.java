@@ -12,12 +12,8 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.utils.SysUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.domain.export.SysUserExport;
-import com.wzkris.user.domain.req.EditStatusReq;
-import com.wzkris.user.domain.req.ResetPwdReq;
-import com.wzkris.user.domain.req.SysUser2RolesReq;
-import com.wzkris.user.domain.req.SysUserQueryReq;
+import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.domain.vo.SysUserGrantVO;
 import com.wzkris.user.domain.vo.SysUserVO;
@@ -108,49 +104,44 @@ public class SysUserController extends BaseController {
     @OperateLog(title = "后台管理", subTitle = "新增用户", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('sys_user:add')")
-    public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserDTO userDTO) {
+    public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
         if (!tenantService.checkAccountLimit(SysUtil.getTenantId())) {
             return fail("账号数量已达上限，请联系管理员");
         }
-        if (userService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
-            return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
+        if (userService.checkUserUnique(new SysUser(userReq.getUserId()).setUsername(userReq.getUsername()))) {
+            return fail("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         }
-        else if (StringUtil.isNotEmpty(userDTO.getPhoneNumber())
-                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
-            return fail("修改用户'" + userDTO.getUsername() + "'失败，手机号码已存在");
+        else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
+                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setPhoneNumber(userReq.getPhoneNumber()))) {
+            return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
-        else if (StringUtil.isNotEmpty(userDTO.getEmail())
-                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
-            return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
+        else if (StringUtil.isNotEmpty(userReq.getEmail())
+                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setEmail(userReq.getEmail()))) {
+            return fail("修改用户'" + userReq.getUsername() + "'失败，邮箱账号已存在");
         }
-        // 密码加密
-        if (StringUtil.isNotBlank(userDTO.getPassword())) {
-            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        }
-        userService.insertUser(userDTO);
-        return ok();
+        return toRes(userService.insertUser(MapstructUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
     }
 
     @Operation(summary = "修改用户")
     @OperateLog(title = "后台管理", subTitle = "修改用户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('sys_user:edit')")
-    public Result<Void> edit(@Validated @RequestBody SysUserDTO userDTO) {
+    public Result<Void> edit(@Validated @RequestBody SysUserReq userReq) {
         // 校验权限
-        userService.checkDataScopes(userDTO.getUserId());
-        if (userService.checkUserUnique(new SysUser(userDTO.getUserId()).setUsername(userDTO.getUsername()))) {
-            return fail("修改用户'" + userDTO.getUsername() + "'失败，登录账号已存在");
+        userService.checkDataScopes(userReq.getUserId());
+        if (userService.checkUserUnique(new SysUser(userReq.getUserId()).setUsername(userReq.getUsername()))) {
+            return fail("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         }
-        else if (StringUtil.isNotEmpty(userDTO.getPhoneNumber())
-                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setPhoneNumber(userDTO.getPhoneNumber()))) {
-            return fail("修改用户'" + userDTO.getUsername() + "'失败，手机号码已存在");
+        else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
+                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setPhoneNumber(userReq.getPhoneNumber()))) {
+            return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
-        else if (StringUtil.isNotEmpty(userDTO.getEmail())
-                && userService.checkUserUnique(new SysUser(userDTO.getUserId()).setEmail(userDTO.getEmail()))) {
-            return fail("修改用户'" + userDTO.getUsername() + "'失败，邮箱账号已存在");
+        else if (StringUtil.isNotEmpty(userReq.getEmail())
+                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setEmail(userReq.getEmail()))) {
+            return fail("修改用户'" + userReq.getUsername() + "'失败，邮箱账号已存在");
         }
-        userService.updateUser(userDTO);
-        return ok();
+        userReq.setPassword(null);
+        return toRes(userService.updateUser(MapstructUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
     }
 
     @Operation(summary = "删除用户")

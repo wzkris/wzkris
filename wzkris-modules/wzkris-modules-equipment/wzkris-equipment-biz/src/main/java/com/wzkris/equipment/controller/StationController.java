@@ -123,9 +123,6 @@ public class StationController extends BaseController {
         if (station == null) {
             return fail("站点不存在");
         }
-        else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, station.getStatus())) {
-            return fail("该站点已被禁用, 禁止绑定设备");
-        }
         stationService.unbindDevice(bindingReq.getId(), bindingReq.getBindingIds());
         return ok();
     }

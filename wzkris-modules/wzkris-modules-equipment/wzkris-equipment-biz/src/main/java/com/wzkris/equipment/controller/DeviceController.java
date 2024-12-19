@@ -1,7 +1,11 @@
 package com.wzkris.equipment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.MapstructUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -9,6 +13,7 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Device;
 import com.wzkris.equipment.domain.req.DeviceQueryReq;
+import com.wzkris.equipment.domain.req.DeviceReq;
 import com.wzkris.equipment.domain.req.EditStatusReq;
 import com.wzkris.equipment.domain.vo.DeviceVO;
 import com.wzkris.equipment.domain.vo.NetworkVO;
@@ -16,9 +21,9 @@ import com.wzkris.equipment.mapper.DeviceMapper;
 import com.wzkris.equipment.service.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,19 +45,19 @@ public class DeviceController extends BaseController {
     @Operation(summary = "分页查询")
     @GetMapping("/list")
     @PreAuthorize("@ps.hasPerms('device:list')")
-    public Result<Page<Device>> listPage(DeviceQueryReq req) {
+    public Result<Page<Device>> listPage(DeviceQueryReq queryReq) {
         startPage();
-        List<Device> list = deviceMapper.selectList(this.buildQueryWrapper(req));
+        List<Device> list = deviceMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
     }
 
-    private LambdaQueryWrapper<Device> buildQueryWrapper(DeviceQueryReq req) {
+    private LambdaQueryWrapper<Device> buildQueryWrapper(DeviceQueryReq queryReq) {
         return new LambdaQueryWrapper<Device>()
-                .like(StringUtil.isNotBlank(req.getDeviceName()), Device::getDeviceName, req.getDeviceName())
-                .like(StringUtil.isNotBlank(req.getSerialNo()), Device::getSerialNo, req.getSerialNo())
-                .eq(StringUtil.isNotBlank(req.getStationId()), Device::getStationId, req.getStationId())
-                .eq(StringUtil.isNotBlank(req.getStatus()), Device::getStatus, req.getStatus())
-                .eq(StringUtil.isNotNull(req.getOnline()), Device::getOnline, req.getOnline())
+                .like(StringUtil.isNotBlank(queryReq.getDeviceName()), Device::getDeviceName, queryReq.getDeviceName())
+                .like(StringUtil.isNotBlank(queryReq.getSerialNo()), Device::getCmcid, queryReq.getSerialNo())
+                .eq(StringUtil.isNotBlank(queryReq.getStationId()), Device::getStationId, queryReq.getStationId())
+                .eq(StringUtil.isNotBlank(queryReq.getStatus()), Device::getStatus, queryReq.getStatus())
+                .eq(StringUtil.isNotNull(queryReq.getOnline()), Device::getOnline, queryReq.getOnline())
                 .orderByDesc(Device::getOnline, Device::getDeviceId);
     }
 
@@ -74,25 +79,26 @@ public class DeviceController extends BaseController {
         return ok(deviceMapper.selectById(deviceId));
     }
 
-    @Operation(summary = "设备号查询详情")
-    @GetMapping("/by_sno/{sno}")
+    @Operation(summary = "id查询设备详情")
+    @GetMapping("/details/{deviceId}")
     @PreAuthorize("@ps.hasPerms('device:query')")
-    public Result<DeviceVO> queryBySno(@PathVariable String sno) {
-        return ok(deviceService.getVOBySno(sno));
+    public Result<DeviceVO> queryDetailsById(@PathVariable Long deviceId) {
+        return ok(deviceService.getVOById(deviceId));
     }
 
     @Operation(summary = "设备号查询入网信息")
-    @GetMapping("/network_detail/{sno}")
+    @GetMapping("/network_detail/{deviceId}")
     @PreAuthorize("@ps.hasPerms('device:query')")
-    public Result<NetworkVO> queryNetwork(@PathVariable String sno) {
-        return ok(deviceService.getNetInfoBySno(sno));
+    public Result<NetworkVO> queryNetwork(@PathVariable Long deviceId) {
+        return ok(deviceService.getNetInfoBySno(deviceId));
     }
 
     @Operation(summary = "添加设备")
     @OperateLog(title = "设备管理", subTitle = "添加设备", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('device:add')")
-    public Result<Void> add(@RequestBody @Valid Device device) {
+    public Result<Void> add(@RequestBody @Validated(ValidationGroups.Insert.class) DeviceReq deviceReq) {
+        Device device = MapstructUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.insert(device));
     }
 
@@ -100,8 +106,22 @@ public class DeviceController extends BaseController {
     @OperateLog(title = "设备管理", subTitle = "修改设备", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @PreAuthorize("@ps.hasPerms('device:edit')")
-    public Result<Void> edit(@RequestBody Device device) {
+    public Result<Void> edit(@RequestBody DeviceReq deviceReq) {
+        Device device = MapstructUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.updateById(device));
+    }
+
+    @Operation(summary = "解绑站点")
+    @OperateLog(title = "设备管理", subTitle = "解绑站点", operateType = OperateType.UPDATE)
+    @PostMapping("/unbinding_station")
+    @PreAuthorize("@ps.hasPerms('device:edit')")
+    public Result<Void> unbindingDevice(@RequestBody Long deviceId) {
+        LambdaUpdateWrapper<Device> luw = Wrappers.lambdaUpdate(Device.class)
+                .eq(Device::getDeviceId, deviceId)
+                .set(Device::getStationId, null)
+                .set(Device::getLatitude, null)
+                .set(Device::getLongitude, null);
+        return toRes(deviceMapper.update(luw));
     }
 
     @Operation(summary = "修改设备状态")

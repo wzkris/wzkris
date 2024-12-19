@@ -10,7 +10,6 @@ import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
 import com.wzkris.user.domain.SysUserRole;
-import com.wzkris.user.domain.dto.SysRoleDTO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -84,28 +83,34 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertRole(SysRoleDTO roleDTO) {
+    public boolean insertRole(SysRole role, List<Long> menuIds, List<Long> deptIds) {
         // 新增角色信息
-        roleMapper.insert(roleDTO);
-        // 插入角色菜单信息
-        this.insertRoleMenu(roleDTO.getRoleId(), roleDTO.getMenuIds());
-        // 新增角色和部门信息（数据权限）
-        this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
+        boolean success = roleMapper.insert(role) > 0;
+        if (success) {
+            // 插入角色菜单信息
+            this.insertRoleMenu(role.getRoleId(), menuIds);
+            // 新增角色和部门信息（数据权限）
+            this.insertRoleDept(role.getRoleId(), deptIds);
+        }
+        return success;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateRole(SysRoleDTO roleDTO) {
-        // 删除角色与菜单关联
-        roleMenuMapper.deleteByRoleId(roleDTO.getRoleId());
-        // 插入角色菜单信息
-        this.insertRoleMenu(roleDTO.getRoleId(), roleDTO.getMenuIds());
-        // 删除角色与部门关联
-        roleDeptMapper.deleteByRoleId(roleDTO.getRoleId());
-        // 插入角色和部门信息（数据权限）
-        this.insertRoleDept(roleDTO.getRoleId(), roleDTO.getDeptIds());
+    public boolean updateRole(SysRole role, List<Long> menuIds, List<Long> deptIds) {
         // 修改角色信息
-        roleMapper.updateById(roleDTO);
+        boolean success = roleMapper.updateById(role) > 0;
+        if (success) {
+            // 删除角色与菜单关联
+            roleMenuMapper.deleteByRoleId(role.getRoleId());
+            // 插入角色菜单信息
+            this.insertRoleMenu(role.getRoleId(), menuIds);
+            // 删除角色与部门关联
+            roleDeptMapper.deleteByRoleId(role.getRoleId());
+            // 插入角色和部门信息（数据权限）
+            this.insertRoleDept(role.getRoleId(), deptIds);
+        }
+        return success;
     }
 
     @Override

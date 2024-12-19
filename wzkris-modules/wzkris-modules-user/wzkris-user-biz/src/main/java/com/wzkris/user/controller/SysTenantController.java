@@ -112,11 +112,11 @@ public class SysTenantController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @PreAuthorize("@ps.hasPerms('tenant:add')")
-    public Result<Void> add(@Validated @RequestBody SysTenantDTO sysTenantDTO) {
-        if (userService.checkUserUnique(new SysUser().setUsername(sysTenantDTO.getUsername()))) {
-            return fail("登录账号'" + sysTenantDTO.getUsername() + "'已存在");
+    public Result<Void> add(@Validated @RequestBody SysTenantDTO tenantDTO) {
+        if (userService.checkUserUnique(new SysUser().setUsername(tenantDTO.getUsername()))) {
+            return fail("登录账号'" + tenantDTO.getUsername() + "'已存在");
         }
-        tenantService.insertTenant(sysTenantDTO);
+        tenantService.insertTenant(tenantDTO);
         return ok();
     }
 
