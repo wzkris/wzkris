@@ -7,7 +7,8 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenantPackage;
 import com.wzkris.user.domain.req.EditStatusReq;
@@ -35,7 +36,7 @@ import java.util.List;
 @Tag(name = "租户套餐管理")
 @Validated
 @RequiredArgsConstructor
-@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
 @RestController
 @RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {
@@ -46,7 +47,7 @@ public class SysTenantPackageController extends BaseController {
 
     @Operation(summary = "套餐分页")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('tenant_package:list')")
+    @CheckPerms("tenant_package:list")
     public Result<Page<SysTenantPackage>> listPage(SysTenantPackage sysTenantPackage) {
         startPage();
         List<SysTenantPackage> list = tenantPackageService.list(sysTenantPackage);
@@ -55,7 +56,7 @@ public class SysTenantPackageController extends BaseController {
 
     @Operation(summary = "套餐选择列表(不带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPermsOr('tenant:add', 'tenant:edit')")// 租户添加修改时使用
+    @CheckPerms(value = {"tenant:add", "tenant:edit"}, mode = CheckPerms.Mode.OR)// 租户添加修改时使用
     public Result<List<SysTenantPackage>> selectList(String packageName) {
         LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
                 .select(SysTenantPackage::getPackageId, SysTenantPackage::getPackageName)
@@ -66,17 +67,17 @@ public class SysTenantPackageController extends BaseController {
 
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{packageId}"})
-    @PreAuthorize("@ps.hasPerms('tenant_package:list')")
+    @CheckPerms("tenant_package:list")
     public Result<SysMenuCheckSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
         resp.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
-        resp.setMenus(menuService.listMenuSelectTree(SysUtil.getUserId()));
+        resp.setMenus(menuService.listMenuSelectTree(LoginUserUtil.getUserId()));
         return ok(resp);
     }
 
     @Operation(summary = "套餐详细信息")
     @GetMapping("/{packageId}")
-    @PreAuthorize("@ps.hasPerms('tenant_package:query')")
+    @CheckPerms("tenant_package:query")
     public Result<SysTenantPackage> getInfo(@NotNull(message = "[packageId] {validate.notnull}")
                                             @PathVariable Long packageId) {
         return ok(tenantPackageMapper.selectById(packageId));
@@ -85,7 +86,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "新增租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "新增套餐", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('tenant_package:add')")
+    @CheckPerms("tenant_package:add")
     public Result<Void> add(@Valid @RequestBody SysTenantPackage tenantPackage) {
         return toRes(tenantPackageMapper.insert(tenantPackage));
     }
@@ -93,7 +94,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "修改租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "修改套餐", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('tenant_package:edit')")
+    @CheckPerms("tenant_package:edit")
     public Result<Void> edit(@Valid @RequestBody SysTenantPackage tenantPackage) {
         return toRes(tenantPackageMapper.updateById(tenantPackage));
     }
@@ -101,7 +102,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "修改租户套餐状态")
     @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @PreAuthorize("@ps.hasPerms('tenant_package:edit')")
+    @CheckPerms("tenant_package:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         SysTenantPackage update = new SysTenantPackage(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -111,7 +112,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "删除租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('tenant_package:remove')")
+    @CheckPerms("tenant_package:remove")
     public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
             return fail("删除失败, 套餐正在使用");

@@ -25,7 +25,7 @@
 		<redisson.version>3.31.0</redisson.version>
 		<dynamic-ds.version>4.2.0</dynamic-ds.version>
 		<hutool.version>5.8.27</hutool.version>
-		<mapstruct-plus.version>1.4.0</mapstruct-plus.version>
+		<mapstruct-plus.version>1.4.6</mapstruct-plus.version>
 		<mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
 		<caffeine.version>3.1.8</caffeine.version>
 		<minio.version>8.2.2</minio.version>

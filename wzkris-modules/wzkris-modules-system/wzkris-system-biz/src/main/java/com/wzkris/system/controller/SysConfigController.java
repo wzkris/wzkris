@@ -7,6 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysConfig;
 import com.wzkris.system.domain.req.SysConfigQueryReq;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @Tag(name = "系统配置")
 @RestController
-@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
 @RequestMapping("/config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
@@ -38,7 +39,7 @@ public class SysConfigController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('config:list')")
+    @CheckPerms("config:list")
     public Result<Page<SysConfig>> list(SysConfigQueryReq queryReq) {
         startPage();
         List<SysConfig> list = configMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -72,7 +73,7 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "添加参数")
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('config:add')")
+    @CheckPerms("config:add")
     public Result<Void> add(@Validated @RequestBody SysConfig config) {
         if (configService.checkConfigKeyUnique(config)) {
             return fail("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
@@ -84,7 +85,7 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "修改参数")
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('config:edit')")
+    @CheckPerms("config:edit")
     public Result<Void> edit(@Validated @RequestBody SysConfig config) {
         if (configService.checkConfigKeyUnique(config)) {
             return fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
@@ -96,7 +97,7 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "删除参数")
     @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('config:remove')")
+    @CheckPerms("config:remove")
     public Result<Void> remove(@RequestBody List<Long> configIds) {
         List<SysConfig> configs = configMapper.selectByIds(configIds);
 
@@ -111,7 +112,7 @@ public class SysConfigController extends BaseController {
 
     @Operation(summary = "刷新参数缓存")
     @PostMapping("/refresh_cache")
-    @PreAuthorize("@ps.hasPerms('config:remove')")
+    @CheckPerms("config:remove")
     public Result<Void> refreshCache() {
         ConfigCacheUtil.clearAll();
         configService.loadingConfigCache();

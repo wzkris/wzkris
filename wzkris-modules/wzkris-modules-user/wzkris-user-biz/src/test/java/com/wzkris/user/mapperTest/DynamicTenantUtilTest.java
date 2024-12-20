@@ -1,9 +1,7 @@
 package com.wzkris.user.mapperTest;
 
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.oauth2.domain.WzUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.user.mapper.SysTenantMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +19,12 @@ import java.util.Collections;
 public class DynamicTenantUtilTest {
 
     static {
-        LoginSyser loginSyser = new LoginSyser();
-        loginSyser.setTenantId(0L);
-        WzUser wzUser = new WzUser(UserType.SYS_USER, "admin", loginSyser, Collections.singletonList("*"));
+        LoginUser loginUser = new LoginUser(Collections.singleton("*"));
+        loginUser.setTenantId(0L);
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
                 "xxxxxx", Instant.MIN, Instant.MAX, Collections.emptySet());
         SecurityContextHolder.getContext().setAuthentication(
-                new BearerTokenAuthentication(wzUser, oAuth2AccessToken, Collections.emptyList()));
+                new BearerTokenAuthentication(loginUser, oAuth2AccessToken, Collections.emptyList()));
     }
 
     @Autowired

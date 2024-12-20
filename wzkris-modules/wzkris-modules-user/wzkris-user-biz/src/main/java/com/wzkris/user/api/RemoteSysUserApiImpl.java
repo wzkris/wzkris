@@ -17,6 +17,7 @@ import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPermissionService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.wzkris.common.core.domain.Result.ok;
@@ -35,12 +36,16 @@ import static com.wzkris.common.core.domain.Result.ok;
 public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     private final SysUserMapper userMapper;
     private final SysTenantMapper tenantMapper;
+    private final PasswordEncoder passwordEncoder;
     private final SysTenantPackageMapper tenantPackageMapper;
     private final SysPermissionService sysPermissionService;
 
     @Override
-    public Result<SysUserResp> getByUsername(String username) {
+    public Result<SysUserResp> getByUsername(String username, String password) {
         SysUser user = userMapper.selectByUsername(username);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return ok();
+        }
         SysUserResp userResp = MapstructUtil.convert(user, SysUserResp.class);
         this.retrieveAllStatus(userResp);
         return ok(userResp);

@@ -11,11 +11,7 @@ import com.wzkris.common.core.exception.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.deserializer.module.OAuth2JacksonModule;
-import com.wzkris.common.security.oauth2.domain.WzUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginApper;
-import com.wzkris.common.security.oauth2.domain.model.LoginClient;
-import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -75,25 +71,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
     }
 
-    private WzUser adaptToCustomResponse(Object responseEntity) {
-        WzUser wzUser = objectMapper.convertValue(responseEntity, WzUser.class);
-
-        return new WzUser(wzUser.getUserType(), wzUser.getName(),
-                this.convertPrincipal(wzUser.getUserType(), wzUser.getPrincipal()), wzUser.getGrantedAuthority());
-    }
-
-    private Object convertPrincipal(UserType userType, Object principal) {
-        switch (userType) {
-            case SYS_USER -> {
-                return objectMapper.convertValue(principal, LoginSyser.class);
-            }
-            case APP_USER -> {
-                return objectMapper.convertValue(principal, LoginApper.class);
-            }
-            case CLIENT -> {
-                return objectMapper.convertValue(principal, LoginClient.class);
-            }
-            default -> throw new BusinessException("登录用户/客户端异常");
-        }
+    private AuthBaseUser adaptToCustomResponse(Object responseEntity) {
+        return objectMapper.convertValue(responseEntity, AuthBaseUser.class);
     }
 }

@@ -1,45 +1,40 @@
-package com.wzkris.auth.oauth2.service;
+package com.wzkris.auth.service;
 
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.security.oauth2.domain.WzUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
+import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
 import com.wzkris.user.api.domain.response.SysUserResp;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 
-/**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 查询系统用户信息
- * @date : 2024/2/26 10:03
- */
-@Slf4j
+import java.util.HashSet;
+
 @Service
 @RequiredArgsConstructor
-public class SysUserDetailsService implements UserDetailsServiceExt {
+public class LoginUserService {
+
     private final RemoteSysUserApi remoteSysUserApi;
 
-    @Override
-    public WzUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        Result<SysUserResp> result = remoteSysUserApi.getByUsername(username);
+    @Nullable
+    public AuthBaseUser getUserByPhoneNumber(String phoneNumber) {
+        Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
         SysUserResp userResp = result.checkData();
         return userResp == null ? null : this.checkAndBuild(userResp);
     }
 
-    @Override
-    public WzUser loadUserByPhoneNumber(String phoneNumber) {
-        Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
+    @Nullable
+    public LoginUser getByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+        Result<SysUserResp> result = remoteSysUserApi.getByUsername(username, password);
         SysUserResp userResp = result.checkData();
         return userResp == null ? null : this.checkAndBuild(userResp);
     }
@@ -47,7 +42,7 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
     /**
      * 构建登录用户
      */
-    private WzUser checkAndBuild(@Nonnull SysUserResp userResp) {
+    private LoginUser checkAndBuild(@Nonnull SysUserResp userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 
@@ -56,15 +51,14 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
                 .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
         SysPermissionResp permissions = permissionDTOResult.checkData();
 
-        LoginSyser loginSyser = new LoginSyser();
-        loginSyser.setUserId(userResp.getUserId());
-        loginSyser.setUsername(userResp.getUsername());
-        loginSyser.setTenantId(userResp.getTenantId());
-        loginSyser.setAdministrator(permissions.getAdministrator());
-        loginSyser.setDeptScopes(permissions.getDeptScopes());
+        LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));
+        loginUser.setAdmin(permissions.getAdmin());
+        loginUser.setUserId(userResp.getUserId());
+        loginUser.setUsername(userResp.getUsername());
+        loginUser.setTenantId(userResp.getTenantId());
+        loginUser.setDeptScopes(permissions.getDeptScopes());
 
-        return new WzUser(UserType.SYS_USER, loginSyser.getUsername(),
-                loginSyser, userResp.getPassword(), permissions.getGrantedAuthority());
+        return loginUser;
     }
 
     /**
@@ -85,4 +79,5 @@ public class SysUserDetailsService implements UserDetailsServiceExt {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }
+
 }

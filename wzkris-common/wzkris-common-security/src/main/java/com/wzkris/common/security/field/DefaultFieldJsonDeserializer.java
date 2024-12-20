@@ -1,13 +1,11 @@
 package com.wzkris.common.security.field;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.field.annotation.FieldPerms;
-import com.wzkris.common.security.field.enums.FieldPerm;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -18,13 +16,10 @@ import java.io.IOException;
 
 public class DefaultFieldJsonDeserializer extends JsonDeserializer implements ContextualDeserializer {
 
-    private FieldPerms fieldPerms;
-
-    private JavaType javaType;
-
-    private final ExpressionParser spel = new SpelExpressionParser();
-
     private volatile static StandardEvaluationContext context;
+    private final ExpressionParser spel = new SpelExpressionParser();
+    private FieldPerms fieldPerms;
+    private JavaType javaType;
 
     private StandardEvaluationContext createContext() {
         if (context == null) {
@@ -39,12 +34,12 @@ public class DefaultFieldJsonDeserializer extends JsonDeserializer implements Co
     }
 
     @Override
-    public Object deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JacksonException {
+    public Object deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         if (jp.currentToken() == JsonToken.VALUE_NULL) {
             return null;
         }
 
-        if (fieldPerms.perm() == FieldPerm.ALL || fieldPerms.perm() == FieldPerm.WRITE) {
+        if (fieldPerms.perms() == FieldPerms.Perms.ALL || fieldPerms.perms() == FieldPerms.Perms.WRITE) {
             if (ExpressionUtils.evaluateAsBoolean(spel.parseExpression(fieldPerms.value()), this.createContext())) {
                 return jp.getCodec().readValue(jp, this.javaType);
             }

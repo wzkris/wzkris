@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.field.annotation.FieldPerms;
-import com.wzkris.common.security.field.enums.FieldPerm;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -25,11 +24,9 @@ import java.io.IOException;
  */
 public class DefaultFieldJsonSerializer extends JsonSerializer implements ContextualSerializer {
 
-    private FieldPerms fieldPerms;
-
-    private final ExpressionParser spel = new SpelExpressionParser();
-
     private volatile static StandardEvaluationContext context;
+    private final ExpressionParser spel = new SpelExpressionParser();
+    private FieldPerms fieldPerms;
 
     private StandardEvaluationContext createContext() {
         if (context == null) {
@@ -50,7 +47,7 @@ public class DefaultFieldJsonSerializer extends JsonSerializer implements Contex
             return;
         }
 
-        if (fieldPerms.perm() == FieldPerm.ALL || fieldPerms.perm() == FieldPerm.READ) {
+        if (fieldPerms.perms() == FieldPerms.Perms.ALL || fieldPerms.perms() == FieldPerms.Perms.READ) {
             if (ExpressionUtils.evaluateAsBoolean(spel.parseExpression(fieldPerms.value()), this.createContext())) {
                 serializers.defaultSerializeValue(value, gen);
             }

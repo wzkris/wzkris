@@ -2,14 +2,12 @@ package com.wzkris.auth.oauth2.core.password;
 
 import com.wzkris.auth.config.CaptchaConfig;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
-import com.wzkris.auth.oauth2.service.SysUserDetailsService;
-import com.wzkris.auth.oauth2.service.UserDetailsServiceExt;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.common.security.oauth2.domain.WzUser;
+import com.wzkris.auth.service.LoginUserService;
+import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -23,19 +21,17 @@ import org.springframework.stereotype.Component;
  */
 @Component //注册成bean方便引用
 public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider<PasswordAuthenticationToken> {
-    private final UserDetailsServiceExt userDetailsService;
-    private final PasswordEncoder passwordEncoder;
+    private final LoginUserService loginUserService;
     private final CaptchaService captchaService;
     private final CaptchaConfig captchaConfig;
 
     public PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                          SysUserDetailsService userDetailsService,
-                                          PasswordEncoder passwordEncoder,
-                                          CaptchaService captchaService, CaptchaConfig captchaConfig) {
+                                          LoginUserService loginUserService,
+                                          CaptchaService captchaService,
+                                          CaptchaConfig captchaConfig) {
         super(tokenGenerator, authorizationService);
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
+        this.loginUserService = loginUserService;
         this.captchaService = captchaService;
         this.captchaConfig = captchaConfig;
     }
@@ -50,14 +46,14 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
         // 校验最大次数
         captchaService.validateMaxTryCount(authenticationToken.getUsername());
 
-        WzUser wzUser = userDetailsService.loadUserByUsername(authenticationToken.getUsername());
+        LoginUser loginUser = loginUserService.getByUsernameAndPassword(authenticationToken.getUsername(), authenticationToken.getPassword());
 
-        if (wzUser == null || !passwordEncoder.matches(authenticationToken.getPassword(), wzUser.getPassword())) {
+        if (loginUser == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        UsernamePasswordAuthenticationToken wzAuthenticationToken = new UsernamePasswordAuthenticationToken(wzUser, null, null);
+        UsernamePasswordAuthenticationToken wzAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, null);
         wzAuthenticationToken.setDetails(authenticationToken.getDetails());
         return wzAuthenticationToken;
     }

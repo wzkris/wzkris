@@ -3,20 +3,20 @@ package com.wzkris.common.security.oauth2.enums;
 /**
  * @author : wzkris
  * @version : V1.0.1
- * @description : 用户类型
+ * @description : 登录类型
  * @date : 2024/10/18 15:52
  */
-public enum UserType {
+public enum LoginType {
     /**
      * 系统用户
      */
-    SYS_USER,
+    SYSTEM_USER,
     /**
-     * APP用户
+     * 客户端用户
      */
-    APP_USER,
+    CLIENT_USER,
     /**
-     * 客户端
+     * 授权客户端
      */
-    CLIENT
+    AUTH_CLIENT
 }

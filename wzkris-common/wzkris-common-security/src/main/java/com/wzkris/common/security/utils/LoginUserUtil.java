@@ -2,8 +2,8 @@ package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.domain.model.LoginUser;
+import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +17,15 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("SysUtil")// 加入Spring容器以用于SPEL
+@Component("LoginUserUtil")// 加入Spring容器以用于SPEL
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SysUtil extends SecureUtil {
+public class LoginUserUtil extends SecurityUtil {
 
     /**
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getUserType().equals(UserType.SYS_USER);
+        return isAuthenticated() && getLoginType().equals(LoginType.SYSTEM_USER);
     }
 
     /**
@@ -33,9 +33,9 @@ public class SysUtil extends SecureUtil {
      *
      * @return 当前用户
      */
-    public static LoginSyser getLoginSyser() {
+    public static LoginUser getLoginUser() {
         try {
-            return (LoginSyser) getWzUser().getPrincipal();
+            return (LoginUser) getAuthentication().getPrincipal();
         }
         catch (Exception e) {
             throw new UserException(401, "user.not.login");
@@ -48,7 +48,7 @@ public class SysUtil extends SecureUtil {
      * @return 当前用户ID
      */
     public static Long getUserId() {
-        return getLoginSyser().getUserId();
+        return getLoginUser().getUserId();
     }
 
     /**
@@ -57,7 +57,7 @@ public class SysUtil extends SecureUtil {
      * @return 当前用户名
      */
     public static String getUsername() {
-        return getLoginSyser().getUsername();
+        return getLoginUser().getUsername();
     }
 
     /**
@@ -66,7 +66,7 @@ public class SysUtil extends SecureUtil {
      * @return 当前租户ID
      */
     public static Long getTenantId() {
-        return getLoginSyser().getTenantId();
+        return getLoginUser().getTenantId();
     }
 
     /**
@@ -75,7 +75,7 @@ public class SysUtil extends SecureUtil {
      * @return 是否
      */
     public static boolean isAdministrator() {
-        return getLoginSyser().isAdministrator();
+        return getLoginUser().getAdmin();
     }
 
     /**

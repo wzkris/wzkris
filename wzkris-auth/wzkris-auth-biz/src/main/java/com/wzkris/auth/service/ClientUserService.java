@@ -1,32 +1,25 @@
-package com.wzkris.auth.oauth2.service;
+package com.wzkris.auth.service;
 
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.security.oauth2.domain.WzUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginApper;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.domain.response.AppUserResp;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
-/**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 查询app用户信息
- * @date : 2024/04/09 10:53
- */
 @Service
 @RequiredArgsConstructor
-public class AppUserDetailsService implements UserDetailsServiceExt {
+public class ClientUserService {
+
     private final RemoteAppUserApi remoteAppUserApi;
 
-    public WzUser loadUserByPhoneNumber(String phoneNumber) {
+    @Nullable
+    public ClientUser getUserByPhoneNumber(String phoneNumber) {
         Result<AppUserResp> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
         AppUserResp appUserResp = result.checkData();
 
@@ -36,15 +29,15 @@ public class AppUserDetailsService implements UserDetailsServiceExt {
     /**
      * 构建登录用户
      */
-    private WzUser checkAndBuild(AppUserResp appUserResp) {
+    private ClientUser checkAndBuild(AppUserResp appUserResp) {
         // 校验用户状态
         this.checkAccount(appUserResp);
 
-        LoginApper loginApper = new LoginApper();
-        loginApper.setUserId(appUserResp.getUserId());
-        loginApper.setPhoneNumber(appUserResp.getPhoneNumber());
+        ClientUser clientUser = new ClientUser();
+        clientUser.setUserId(appUserResp.getUserId());
+        clientUser.setPhoneNumber(appUserResp.getPhoneNumber());
 
-        return new WzUser(UserType.APP_USER, loginApper.getPhoneNumber(), loginApper, Collections.emptyList());
+        return clientUser;
     }
 
     /**

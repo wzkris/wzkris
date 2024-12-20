@@ -156,7 +156,7 @@ public class SysUserServiceImpl implements SysUserService {
                 throw new AccessDeniedException("无法访问超级管理员数据");
             }
             if (userMapper.checkDataScopes(userIds) != userIds.size()) {
-                throw new AccessDeniedException("当前用户没有权限访问数据");
+                throw new AccessDeniedException("没有用户数据访问权限");
             }
         }
     }

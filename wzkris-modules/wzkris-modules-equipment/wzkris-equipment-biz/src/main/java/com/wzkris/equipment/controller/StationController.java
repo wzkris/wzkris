@@ -7,6 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Station;
 import com.wzkris.equipment.domain.req.BindingReq;
@@ -18,7 +19,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class StationController extends BaseController {
 
     @Operation(summary = "分页查询")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('station:list')")
+    @CheckPerms("station:list")
     public Result<Page<Station>> listPage(StationQueryReq req) {
         startPage();
         List<Station> list = stationMapper.selectList(this.buildQueryWrapper(req));
@@ -55,7 +55,7 @@ public class StationController extends BaseController {
 
     @Operation(summary = "站点选择列表(不带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPermsOr('device:add', 'device:edit')")// 设备添加修改时使用
+    @CheckPerms(value = {"device:add", "device:edit"}, mode = CheckPerms.Mode.OR)// 设备添加修改时使用
     public Result<List<Station>> selectList(String stationName) {
         LambdaQueryWrapper<Station> lqw = new LambdaQueryWrapper<Station>()
                 .select(Station::getStationId, Station::getStationName)
@@ -67,7 +67,7 @@ public class StationController extends BaseController {
 
     @Operation(summary = "id查询站点信息")
     @GetMapping("/{stationId}")
-    @PreAuthorize("@ps.hasPerms('station:query')")
+    @CheckPerms("station:query")
     public Result<Station> queryById(@PathVariable Long stationId) {
         return ok(stationMapper.selectById(stationId));
     }
@@ -75,7 +75,7 @@ public class StationController extends BaseController {
     @Operation(summary = "添加站点")
     @OperateLog(title = "站点管理", subTitle = "添加站点", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('station:add')")
+    @CheckPerms("station:add")
     public Result<Void> add(@RequestBody @Valid Station station) {
         return toRes(stationMapper.insert(station));
     }
@@ -83,7 +83,7 @@ public class StationController extends BaseController {
     @Operation(summary = "修改站点")
     @OperateLog(title = "站点管理", subTitle = "修改站点", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('station:edit')")
+    @CheckPerms("station:edit")
     public Result<Void> edit(@RequestBody @Valid Station station) {
         return toRes(stationMapper.updateById(station));
     }
@@ -91,7 +91,7 @@ public class StationController extends BaseController {
     @Operation(summary = "修改站点状态")
     @OperateLog(title = "站点管理", subTitle = "修改站点状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @PreAuthorize("@ps.hasPerms('station:edit')")
+    @CheckPerms("station:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         Station update = new Station(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -101,7 +101,7 @@ public class StationController extends BaseController {
     @Operation(summary = "绑定设备")
     @OperateLog(title = "站点管理", subTitle = "绑定设备", operateType = OperateType.UPDATE)
     @PostMapping("/binding_device")
-    @PreAuthorize("@ps.hasPerms('station:bind')")
+    @CheckPerms("station:bind")
     public Result<Void> bindingDevice(@RequestBody @Valid BindingReq bindingReq) {
         Station station = stationMapper.selectById(bindingReq.getId());
         if (station == null) {
@@ -117,7 +117,7 @@ public class StationController extends BaseController {
     @Operation(summary = "解绑设备")
     @OperateLog(title = "站点管理", subTitle = "解绑设备", operateType = OperateType.UPDATE)
     @PostMapping("/unbinding_device")
-    @PreAuthorize("@ps.hasPerms('station:bind')")
+    @CheckPerms("station:bind")
     public Result<Void> unbindingDevice(@RequestBody @Valid BindingReq bindingReq) {
         Station station = stationMapper.selectById(bindingReq.getId());
         if (station == null) {
@@ -130,7 +130,7 @@ public class StationController extends BaseController {
     @Operation(summary = "删除站点")
     @OperateLog(title = "站点管理", subTitle = "删除站点", operateType = OperateType.UPDATE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('station:remove')")
+    @CheckPerms("station:remove")
     public Result<Void> deleteById(@RequestBody Long stationId) {
         if (stationService.checkStationUsed(stationId)) {
             return fail("删除失败, 该站点正在使用");

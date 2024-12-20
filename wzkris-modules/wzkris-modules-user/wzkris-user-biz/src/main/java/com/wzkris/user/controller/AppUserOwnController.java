@@ -2,8 +2,8 @@ package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.MapstructUtil;
-import com.wzkris.common.security.oauth2.domain.model.LoginApper;
-import com.wzkris.common.security.utils.AppUtil;
+import com.wzkris.common.security.oauth2.domain.model.ClientUser;
+import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.req.EditOwnAppUserReq;
@@ -37,15 +37,15 @@ public class AppUserOwnController extends BaseController {
     @Operation(summary = "登录信息")
     @GetMapping("/info")
     public Result<AppUserOwnVO> appUser() {
-        LoginApper loginApper = AppUtil.getAppUser();
-        AppUserOwnVO appUserOwnVO = MapstructUtil.convert(loginApper, AppUserOwnVO.class);
+        ClientUser clientUser = ClientUserUtil.getClientUser();
+        AppUserOwnVO appUserOwnVO = MapstructUtil.convert(clientUser, AppUserOwnVO.class);
         return ok(appUserOwnVO);
     }
 
     @Operation(summary = "账户信息")
     @GetMapping("/account")
     public Result<AppUserAccountVO> accountVO() {
-        AppUser appUser = appUserMapper.selectById(AppUtil.getUserId());
+        AppUser appUser = appUserMapper.selectById(ClientUserUtil.getUserId());
 
         AppUserAccountVO accountVO = new AppUserAccountVO();
         AppUserAccountVO.UserInfo userInfo = new AppUserAccountVO.UserInfo();
@@ -61,7 +61,7 @@ public class AppUserOwnController extends BaseController {
     @Operation(summary = "修改昵称、性别")
     @PostMapping("/account")
     public Result<?> editInfo(@RequestBody EditOwnAppUserReq userReq) {
-        AppUser user = new AppUser(AppUtil.getUserId());
+        AppUser user = new AppUser(ClientUserUtil.getUserId());
         user.setNickname(userReq.getNickname());
         user.setGender(userReq.getGender());
         return toRes(appUserMapper.updateById(user));
@@ -70,7 +70,7 @@ public class AppUserOwnController extends BaseController {
     @Operation(summary = "更新头像")
     @PostMapping("/account/edit_avatar")
     public Result<?> updateAvatar(@RequestBody String url) {
-        AppUser appUser = new AppUser(AppUtil.getUserId());
+        AppUser appUser = new AppUser(ClientUserUtil.getUserId());
         appUser.setAvatar(url);
         return toRes(appUserMapper.updateById(appUser));
     }

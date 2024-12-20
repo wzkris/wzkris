@@ -3,7 +3,7 @@ package com.wzkris.common.web.handler;
 import cn.hutool.core.util.NumberUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +27,12 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // handle login request
-        if (!SysUtil.isLogin()) {
+        if (!LoginUserUtil.isLogin()) {
             return true;
         }
 
         // handle super tenant request
-        if (!SysUtil.isSuperTenant()) {
+        if (!LoginUserUtil.isSuperTenant()) {
             return true;
         }
 

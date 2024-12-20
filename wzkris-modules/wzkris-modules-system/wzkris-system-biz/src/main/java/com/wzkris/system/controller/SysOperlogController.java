@@ -6,6 +6,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysOperLog;
 import com.wzkris.system.domain.req.SysOperLogQueryReq;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @Tag(name = "操作日志")
 @RestController
-@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
 @RequestMapping("/operlog")
 @RequiredArgsConstructor
 public class SysOperlogController extends BaseController {
@@ -37,7 +38,7 @@ public class SysOperlogController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('operlog:list')")
+    @CheckPerms("operlog:list")
     public Result<Page<SysOperLog>> list(SysOperLogQueryReq queryReq) {
         startPage();
         List<SysOperLog> list = operLogMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -59,7 +60,7 @@ public class SysOperlogController extends BaseController {
     @Operation(summary = "删除日志")
     @OperateLog(title = "操作日志", subTitle = "删除日志", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('operlog:remove')")
+    @CheckPerms("operlog:remove")
     public Result<?> remove(@RequestBody Long[] operIds) {
         return toRes(operLogMapper.deleteByIds(Arrays.asList(operIds)));
     }
@@ -67,7 +68,7 @@ public class SysOperlogController extends BaseController {
     @Operation(summary = "清空日志")
     @OperateLog(title = "操作日志", subTitle = "清空日志", operateType = OperateType.DELETE)
     @PostMapping("/clean")
-    @PreAuthorize("@ps.hasPerms('operlog:remove')")
+    @CheckPerms("operlog:remove")
     public Result<?> clean() {
         operLogMapper.clearAll();
         return ok();

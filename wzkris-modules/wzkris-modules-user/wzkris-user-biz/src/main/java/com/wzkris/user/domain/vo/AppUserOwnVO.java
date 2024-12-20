@@ -3,7 +3,7 @@ package com.wzkris.user.domain.vo;
 
 import com.wzkris.common.core.annotation.Sensitive;
 import com.wzkris.common.core.annotation.impl.SensitiveStrategy;
-import com.wzkris.common.security.oauth2.domain.model.LoginApper;
+import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@AutoMapper(target = LoginApper.class)
+@AutoMapper(target = ClientUser.class)
 public class AppUserOwnVO {
 
     @Schema(description = "头像")

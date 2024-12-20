@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.wzkris.common.security.field.DefaultFieldJsonDeserializer;
 import com.wzkris.common.security.field.DefaultFieldJsonSerializer;
-import com.wzkris.common.security.field.enums.FieldPerm;
 
 import java.lang.annotation.*;
 
@@ -26,11 +25,27 @@ public @interface FieldPerms {
     /**
      * 控制字段写入与读取
      */
-    FieldPerm perm() default FieldPerm.ALL;
+    Perms perms() default Perms.ALL;
 
     /**
      * 判断权限 spel
      */
     String value();
+
+    public enum Perms {
+        /**
+         * A
+         * 读权限
+         */
+        READ,
+        /**
+         * 写权限
+         */
+        WRITE,
+        /**
+         * 读写权限
+         */
+        ALL
+    }
 }
 

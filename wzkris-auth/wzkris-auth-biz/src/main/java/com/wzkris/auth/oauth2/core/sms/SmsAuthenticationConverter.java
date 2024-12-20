@@ -5,7 +5,7 @@ import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -47,15 +47,15 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
         String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
         String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.USER_TYPE));
-        UserType userTypeEm;
+        LoginType loginTypeEm;
         try {
-            userTypeEm = UserType.valueOf(userType);
+            loginTypeEm = LoginType.valueOf(userType);
         }
         catch (Exception e) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
             return null;// never run this line
         }
-        return new SmsAuthenticationToken(userTypeEm, phoneNumber, smsCode,
+        return new SmsAuthenticationToken(loginTypeEm, phoneNumber, smsCode,
                 clientPrincipal, requestedScopes, null);
     }
 

@@ -9,6 +9,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
@@ -44,7 +45,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
 @IgnoreTenant// 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
@@ -57,7 +58,7 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "租户分页")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('tenant:list')")
+    @CheckPerms("tenant:list")
     public Result<Page<SysTenantVO>> listPage(SysTenantQueryReq queryReq) {
         startPage();
         List<SysTenantVO> list = tenantMapper.selectVOList(this.buildQueryWrapper(queryReq));
@@ -84,7 +85,7 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/{tenantId}")
-    @PreAuthorize("@ps.hasPerms('tenant:query')")
+    @CheckPerms("tenant:query")
     public Result<SysTenant> queryByid(@NotNull(message = "[tenantId] {validate.notnull}")
                                        @PathVariable Long tenantId) {
         return ok(tenantMapper.selectById(tenantId));
@@ -92,7 +93,7 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "分页获取租户钱包记录")
     @GetMapping("/wallet_record/list")
-    @PreAuthorize("@ps.hasPerms('wallet_record:list')")
+    @CheckPerms("wallet_record:list")
     public Result<Page<SysTenantWalletRecord>> listWalletPage(SysTenantWalletRecordQueryReq queryReq) {
         startPage();
         List<SysTenantWalletRecord> recordList = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
@@ -111,7 +112,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "新增租户")
     @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('tenant:add')")
+    @CheckPerms("tenant:add")
     public Result<Void> add(@Validated @RequestBody SysTenantDTO tenantDTO) {
         if (userService.checkUserUnique(new SysUser().setUsername(tenantDTO.getUsername()))) {
             return fail("登录账号'" + tenantDTO.getUsername() + "'已存在");
@@ -123,7 +124,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('tenant:edit')")
+    @CheckPerms("tenant:edit")
     public Result<Void> edit(@RequestBody SysTenant sysTenant) {
         sysTenant.setAdministrator(null);
         sysTenant.setOperPwd(null);
@@ -133,7 +134,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "修改租户状态")
     @OperateLog(title = "租户管理", subTitle = "修改租户状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @PreAuthorize("@ps.hasPerms('tenant:edit')")
+    @CheckPerms("tenant:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         SysTenant update = new SysTenant(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -143,7 +144,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
-    @PreAuthorize("@ps.hasPerms('tenant:edit_operpwd')")
+    @CheckPerms("tenant:edit_operpwd")
     public Result<Void> editOperPwd(@RequestBody SysTenant sysTenant) {
         if (StringUtil.length(sysTenant.getOperPwd()) != 6 || !NumberUtil.isNumber(sysTenant.getOperPwd())) {
             return fail("操作密码必须为6位数字");
@@ -156,7 +157,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "删除租户")
     @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('tenant:remove')")
+    @CheckPerms("tenant:remove")
     public Result<Void> remove(@RequestBody @NotEmpty(message = "[tenantIds] {validate.notnull}") List<Long> tenantIds) {
         tenantService.deleteByIds(tenantIds);
         return ok();

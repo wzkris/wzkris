@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.constant.MessageConstants;
 import com.wzkris.system.domain.SysMessage;
@@ -47,7 +47,7 @@ public class SysMessageOwnController extends BaseController {
     @GetMapping("/system_notify/list")
     public Result<Page<SysNotifyVO>> systemNotify() {
         startPage();
-        List<SysNotifyVO> list = notifyMapper.listNotify(SysUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM);
+        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM);
         return getDataTable(list);
     }
 
@@ -55,15 +55,15 @@ public class SysMessageOwnController extends BaseController {
     @GetMapping("/device_notify/list")
     public Result<Page<SysNotifyVO>> deviceNotify() {
         startPage();
-        List<SysNotifyVO> list = notifyMapper.listNotify(SysUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE);
+        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE);
         return getDataTable(list);
     }
 
     @Operation(summary = "未读数量统计")
     @GetMapping("/unread_count")
     public Result<UnreadVO> unreadCount() {
-        int system = notifyMapper.countUnread(SysUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM);
-        int device = notifyMapper.countUnread(SysUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE);
+        int system = notifyMapper.countUnread(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM);
+        int device = notifyMapper.countUnread(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE);
         return ok(new UnreadVO(system, device));
     }
 }

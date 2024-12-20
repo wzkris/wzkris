@@ -1,7 +1,6 @@
 package com.wzkris.common.security.field;
 
 import com.wzkris.common.security.field.annotation.FieldPerms;
-import com.wzkris.common.security.field.enums.FieldPerm;
 import lombok.Data;
 
 import java.util.List;
@@ -9,16 +8,16 @@ import java.util.List;
 @Data
 public class TestDomain {
 
-    @FieldPerms(perm = FieldPerm.WRITE, value = "@SysUtil.isSuperTenant()")
+    @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@LoginUserUtil.isSuperTenant()")
     private Long id;
 
-    @FieldPerms(perm = FieldPerm.READ, value = "@SysUtil.isSuperTenant()")
+    @FieldPerms(perms = FieldPerms.Perms.READ, value = "@LoginUserUtil.isSuperTenant()")
     private Boolean young;
 
-    @FieldPerms(perm = FieldPerm.WRITE, value = "@SysUtil.isSuperTenant()")
+    @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@LoginUserUtil.isSuperTenant()")
     private TestDefault testDefault;
 
-    @FieldPerms(perm = FieldPerm.READ, value = "@SysUtil.isSuperTenant()")
+    @FieldPerms(perms = FieldPerms.Perms.READ, value = "@LoginUserUtil.isSuperTenant()")
     private List<TestDefault> testDefaults;
 
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
+import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.user.api.domain.response.SysUserResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -23,7 +23,7 @@ import lombok.experimental.FieldNameConstants;
 @Data
 @Accessors(chain = true)
 @AutoMappers({
-        @AutoMapper(target = LoginSyser.class),
+        @AutoMapper(target = LoginUser.class),
         @AutoMapper(target = SysUserResp.class)
 })
 @NoArgsConstructor

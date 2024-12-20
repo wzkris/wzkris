@@ -2,7 +2,6 @@ package com.wzkris.equipment.domain.req;
 
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.security.field.annotation.FieldPerms;
-import com.wzkris.common.security.field.enums.FieldPerm;
 import com.wzkris.equipment.domain.Device;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -22,7 +21,7 @@ public class DeviceReq {
 
     private Long deviceId;
 
-    @FieldPerms(perm = FieldPerm.WRITE, value = "@ps.hasPerms('device:field')")
+    @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@ps.hasPerms('device:field')")
     @NotNull(message = "[pdtId] {validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "产品ID")
     private Long pdtId;
@@ -33,7 +32,7 @@ public class DeviceReq {
     @Schema(description = "设备名称")
     private String deviceName;
 
-    @FieldPerms(perm = FieldPerm.WRITE, value = "@ps.hasPerms('device:field')")
+    @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@ps.hasPerms('device:field')")
     @NotBlank(message = "[cmcid] {validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "通信标识")
     private String cmcid;

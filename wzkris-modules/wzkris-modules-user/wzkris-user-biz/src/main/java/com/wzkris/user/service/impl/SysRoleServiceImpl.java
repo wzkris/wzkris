@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.BusinessExceptionI18n;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
@@ -74,10 +74,10 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public String getRoleGroup() {
-        if (SysUtil.isAdministrator()) {
+        if (LoginUserUtil.isAdministrator()) {
             return "超级管理员";
         }
-        List<SysRole> roles = this.listByUserId(SysUtil.getUserId());
+        List<SysRole> roles = this.listByUserId(LoginUserUtil.getUserId());
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }
 
@@ -185,7 +185,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(roleIds)) {
             if (roleMapper.checkDataScopes(roleIds) != roleIds.size()) {
-                throw new AccessDeniedException("当前部门没有权限访问数据");
+                throw new AccessDeniedException("没有角色数据访问权限");
             }
         }
     }

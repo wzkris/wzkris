@@ -10,6 +10,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Device;
 import com.wzkris.equipment.domain.req.DeviceQueryReq;
@@ -22,7 +23,6 @@ import com.wzkris.equipment.service.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +44,7 @@ public class DeviceController extends BaseController {
 
     @Operation(summary = "分页查询")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('device:list')")
+    @CheckPerms("device:list")
     public Result<Page<Device>> listPage(DeviceQueryReq queryReq) {
         startPage();
         List<Device> list = deviceMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -63,7 +63,7 @@ public class DeviceController extends BaseController {
 
     @Operation(summary = "查询未绑定站点设备(带分页)")
     @GetMapping("/list_unbinding")
-    @PreAuthorize("@ps.hasPerms('device:list')")
+    @CheckPerms("device:list")
     public Result<Page<Device>> listUnbinding(DeviceQueryReq req) {
         startPage();
         LambdaQueryWrapper<Device> lqw = this.buildQueryWrapper(req)
@@ -74,21 +74,21 @@ public class DeviceController extends BaseController {
 
     @Operation(summary = "id查询设备信息")
     @GetMapping("/{deviceId}")
-    @PreAuthorize("@ps.hasPerms('device:query')")
+    @CheckPerms("device:query")
     public Result<Device> queryById(@PathVariable Long deviceId) {
         return ok(deviceMapper.selectById(deviceId));
     }
 
     @Operation(summary = "id查询设备详情")
     @GetMapping("/details/{deviceId}")
-    @PreAuthorize("@ps.hasPerms('device:query')")
+    @CheckPerms("device:query")
     public Result<DeviceVO> queryDetailsById(@PathVariable Long deviceId) {
         return ok(deviceService.getVOById(deviceId));
     }
 
     @Operation(summary = "设备号查询入网信息")
     @GetMapping("/network_detail/{deviceId}")
-    @PreAuthorize("@ps.hasPerms('device:query')")
+    @CheckPerms("device:query")
     public Result<NetworkVO> queryNetwork(@PathVariable Long deviceId) {
         return ok(deviceService.getNetInfoBySno(deviceId));
     }
@@ -96,7 +96,7 @@ public class DeviceController extends BaseController {
     @Operation(summary = "添加设备")
     @OperateLog(title = "设备管理", subTitle = "添加设备", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('device:add')")
+    @CheckPerms("device:add")
     public Result<Void> add(@RequestBody @Validated(ValidationGroups.Insert.class) DeviceReq deviceReq) {
         Device device = MapstructUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.insert(device));
@@ -105,7 +105,7 @@ public class DeviceController extends BaseController {
     @Operation(summary = "修改设备")
     @OperateLog(title = "设备管理", subTitle = "修改设备", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('device:edit')")
+    @CheckPerms("device:edit")
     public Result<Void> edit(@RequestBody DeviceReq deviceReq) {
         Device device = MapstructUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.updateById(device));
@@ -114,7 +114,7 @@ public class DeviceController extends BaseController {
     @Operation(summary = "解绑站点")
     @OperateLog(title = "设备管理", subTitle = "解绑站点", operateType = OperateType.UPDATE)
     @PostMapping("/unbinding_station")
-    @PreAuthorize("@ps.hasPerms('device:edit')")
+    @CheckPerms("device:edit")
     public Result<Void> unbindingDevice(@RequestBody Long deviceId) {
         LambdaUpdateWrapper<Device> luw = Wrappers.lambdaUpdate(Device.class)
                 .eq(Device::getDeviceId, deviceId)
@@ -127,7 +127,7 @@ public class DeviceController extends BaseController {
     @Operation(summary = "修改设备状态")
     @OperateLog(title = "设备管理", subTitle = "修改设备状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @PreAuthorize("@ps.hasPerms('device:edit')")
+    @CheckPerms("device:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         Device update = new Device(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -137,7 +137,7 @@ public class DeviceController extends BaseController {
     @Operation(summary = "删除设备")
     @OperateLog(title = "设备管理", subTitle = "删除设备", operateType = OperateType.UPDATE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('device:remove')")
+    @CheckPerms("device:remove")
     public Result<Void> deleteById(@RequestBody Long deviceId) {
         return toRes(deviceMapper.deleteById(deviceId));
     }

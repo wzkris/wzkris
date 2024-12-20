@@ -17,9 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 public class SysPermissionResp {
     /**
-     * 是否当前租户下的超级管理员
+     * 租户管理员
      */
-    private Boolean administrator;
+    private boolean admin;
     /**
      * 已授权限
      */
@@ -28,4 +28,8 @@ public class SysPermissionResp {
      * 部门数据权限
      */
     private List<Long> deptScopes;
+
+    public boolean getAdmin() {
+        return this.admin;
+    }
 }
