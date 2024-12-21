@@ -12,19 +12,19 @@ import com.wzkris.equipment.domain.vo.NetworkVO;
 public interface DeviceService {
 
     /**
-     * 设备号查询详情
+     * 设备ID查询详情
      *
-     * @param sno 设备号
+     * @param deviceId 设备ID
      * @return result
      */
-    DeviceVO getVOBySno(String sno);
+    DeviceVO getVOById(Long deviceId);
 
     /**
-     * 设备号查询网络信息
+     * 设备ID查询网络信息
      *
-     * @param sno 设备号
+     * @param deviceId 设备ID
      * @return result
      */
-    NetworkVO getNetInfoBySno(String sno);
+    NetworkVO getNetInfoBySno(Long deviceId);
 
 }

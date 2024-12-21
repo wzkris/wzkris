@@ -8,14 +8,14 @@ package com.wzkris.system.constant;
 public class MessageConstants {
 
     /**
-     * 消息类型 消息
+     * 消息类型 系统公告
      */
-    public static final String TYPE_NOTIFY = "1";
+    public static final String TYPE_SYSTEM = "1";
 
     /**
-     * 消息类型 公告
+     * 消息类型 APP公告
      */
-    public static final String TYPE_ANNOUNCEMENT = "2";
+    public static final String TYPE_APP = "2";
 
     /**
      * 消息状态 草稿
@@ -28,9 +28,9 @@ public class MessageConstants {
     public static final String STATUS_CLOSED = "1";
 
     /**
-     * 消息状态 已发送
+     * 消息状态 已发布
      */
-    public static final String STATUS_SENDED = "2";
+    public static final String STATUS_PUBLISH = "2";
 
     /**
      * 通知 已读
@@ -41,5 +41,15 @@ public class MessageConstants {
      * 通知 未读
      */
     public static final String NOTIFY_UNREAD = "0";
+
+    /**
+     * 通知类型 系统通知
+     */
+    public static final String NOTIFY_TYPE_SYSTEM = "0";
+
+    /**
+     * 通知类型 设备告警
+     */
+    public static final String NOTIFY_TYPE_DEVICE = "1";
 
 }

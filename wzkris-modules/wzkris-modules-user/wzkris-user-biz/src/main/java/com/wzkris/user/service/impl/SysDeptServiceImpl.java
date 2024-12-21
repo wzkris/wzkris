@@ -178,7 +178,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         deptIds = deptIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(deptIds)) {
             if (deptMapper.checkDataScopes(deptIds) != deptIds.size()) {
-                throw new AccessDeniedException("没有访问数据权限");
+                throw new AccessDeniedException("没有部门数据权限");
             }
         }
     }

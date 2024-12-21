@@ -2,7 +2,6 @@ package com.wzkris.system.api.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +12,6 @@ import java.util.Map;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 public class OperLogReq {
 
     /**

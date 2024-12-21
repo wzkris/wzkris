@@ -1,7 +1,7 @@
 package com.wzkris.equipment.controller;
 
 import cn.hutool.core.util.RandomUtil;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.equipment.utils.SseUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +29,12 @@ public class SseDeviceController {
 
     @GetMapping("/connect")
     public SseEmitter createConnect() {
-        return SseUtil.connect(String.valueOf(SysUtil.getUserId()));
+        return SseUtil.connect(String.valueOf(LoginUserUtil.getUserId()));
     }
 
     @GetMapping("/disconnect")
     public void disconnect() {
-        SseUtil.disconnect(String.valueOf(SysUtil.getUserId()));
+        SseUtil.disconnect(String.valueOf(LoginUserUtil.getUserId()));
     }
 
     @Scheduled(cron = "*/3 * * * * *")// 模拟

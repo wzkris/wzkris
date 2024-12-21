@@ -4,10 +4,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.common.security.oauth2.enums.UserType;
-import com.wzkris.common.security.utils.AppUtil;
-import com.wzkris.common.security.utils.SecureUtil;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.oauth2.enums.LoginType;
+import com.wzkris.common.security.utils.ClientUserUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 
@@ -22,11 +22,11 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && SecureUtil.isAuthenticated()) {
-            if (SecureUtil.getUserType().equals(UserType.SYS_USER)) {
+                && SecurityUtil.isAuthenticated()) {
+            if (SecurityUtil.getLoginType().equals(LoginType.SYSTEM_USER)) {
                 fillInsert(this.getUserId(), metaObject);
             }
-            else if (SecureUtil.getUserType().equals(UserType.APP_USER)) {
+            else if (SecurityUtil.getLoginType().equals(LoginType.CLIENT_USER)) {
                 fillInsert(this.getAppUserId(), metaObject);
             }
         }
@@ -43,11 +43,11 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
-                && SecureUtil.isAuthenticated()) {
-            if (SecureUtil.getUserType().equals(UserType.SYS_USER)) {
+                && SecurityUtil.isAuthenticated()) {
+            if (SecurityUtil.getLoginType().equals(LoginType.SYSTEM_USER)) {
                 fillUpdate(this.getUserId(), metaObject);
             }
-            else if (SecureUtil.getUserType().equals(UserType.APP_USER)) {
+            else if (SecurityUtil.getLoginType().equals(LoginType.CLIENT_USER)) {
                 fillUpdate(this.getAppUserId(), metaObject);
             }
         }
@@ -64,7 +64,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      */
     private Long getUserId() {
         try {
-            return SysUtil.getUserId();
+            return LoginUserUtil.getUserId();
         }
         catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");
@@ -77,7 +77,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      */
     private Long getAppUserId() {
         try {
-            return AppUtil.getUserId();
+            return ClientUserUtil.getUserId();
         }
         catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");

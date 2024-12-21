@@ -8,18 +8,13 @@ import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationProvider;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
-import com.wzkris.auth.oauth2.service.SysUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -84,17 +79,6 @@ public class AuthorizationServerConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder().build();
-    }
-
-    /**
-     * 默认的表单AuthenticationProvider，由于存在多个UserDetailsService 自动配置会失败
-     * 手动对后台用户进行创建
-     */
-    @Bean
-    public AuthenticationManager providerManager(PasswordEncoder passwordEncoder, SysUserDetailsService userDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(daoAuthenticationProvider);
     }
 
     /**

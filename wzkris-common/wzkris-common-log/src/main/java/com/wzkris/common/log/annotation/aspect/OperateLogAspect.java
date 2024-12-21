@@ -13,7 +13,7 @@ import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.system.api.RemoteLogApi;
 import com.wzkris.system.api.domain.request.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,8 +81,8 @@ public class OperateLogAspect {
         try {
             // *========数据库日志=========*//
             OperLogReq operLogReq = new OperLogReq();
-            operLogReq.setOperName(SysUtil.getUsername());
-            operLogReq.setTenantId(SysUtil.getTenantId());
+            operLogReq.setOperName(LoginUserUtil.getUsername());
+            operLogReq.setTenantId(LoginUserUtil.getTenantId());
             operLogReq.setOperType(operateLog.operateType().getValue());
             operLogReq.setStatus(OperateStatus.SUCCESS.value());
             operLogReq.setOperTime(DateUtil.current());

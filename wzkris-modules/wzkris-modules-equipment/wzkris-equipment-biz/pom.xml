@@ -88,6 +88,12 @@
 			<artifactId>wzkris-common-swagger</artifactId>
 		</dependency>
 
+		<!-- 消息通知-->
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-system-api</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

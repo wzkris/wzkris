@@ -23,7 +23,7 @@ import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.security.oauth2.domain.WzUser;
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -75,12 +75,12 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
 
         // 判断是否携带当前用户信息
-        if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(WzUser.class.getName())) {
-            WzUser wzUser = (WzUser) additionalParameters.get(WzUser.class.getName());
+        if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(AuthBaseUser.class.getName())) {
+            AuthBaseUser baseUser = (AuthBaseUser) additionalParameters.get(AuthBaseUser.class.getName());
             // 发布登录成功事件
-            SpringUtil.getContext().publishEvent(new LoginEvent(wzUser, ServletUtil.getClientIP(request),
+            SpringUtil.getContext().publishEvent(new LoginEvent(baseUser, ServletUtil.getClientIP(request),
                     UserAgentUtil.parse(request.getHeader("User-Agent"))));
-            additionalParameters.remove(WzUser.class.getName());
+            additionalParameters.remove(AuthBaseUser.class.getName());
         }
 
         // 构造响应体

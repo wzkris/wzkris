@@ -7,9 +7,8 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
-import com.wzkris.common.security.oauth2.domain.WzUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginClient;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
+import com.wzkris.common.security.oauth2.domain.model.AuthClient;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScript;
@@ -55,7 +54,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     }
 
     @Override
-    public Result<WzUser> checkToken(TokenReq tokenReq) {
+    public Result<AuthBaseUser> checkToken(TokenReq tokenReq) {
         String reqId = RedisUtil.getObj(TOKEN_REQ_ID_PREFIX + tokenReq.getToken());
         if (StringUtil.isBlank(reqId) || !reqId.equals(tokenReq.getReqId())) {
             return resp(BizCode.NOT_FOUND, CustomErrorCodes.INVALID_REQUEST_ID);
@@ -66,23 +65,21 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());
-        WzUser wzUser = null;
 
         if (authenticationToken != null) {
-            wzUser = (WzUser) authenticationToken.getPrincipal();
+            return ok((AuthBaseUser) authenticationToken.getPrincipal());
         }
         else {
             // TODO 为空则为其他授权方式登录，现仅兼容客户端模式，可扩展设备码模式
             AuthorizationGrantType authorizationGrantType = oAuth2Authorization.getAuthorizationGrantType();
             if (authorizationGrantType.equals(AuthorizationGrantType.CLIENT_CREDENTIALS)) {
-                LoginClient loginClient = new LoginClient();
-                loginClient.setClientId(oAuth2Authorization.getRegisteredClientId());
-                loginClient.setClientName(oAuth2Authorization.getPrincipalName());
+                AuthClient authClient = new AuthClient();
+                authClient.setClientId(oAuth2Authorization.getRegisteredClientId());
+                authClient.setClientName(oAuth2Authorization.getPrincipalName());
 
-                wzUser = new WzUser(UserType.CLIENT, loginClient.getClientName(),
-                        loginClient, oAuth2Authorization.getAuthorizedScopes());
+                return ok(authClient);
             }
+            return null;
         }
-        return ok(wzUser);
     }
 }

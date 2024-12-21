@@ -1,7 +1,6 @@
 package com.wzkris.system.api.domain.request;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * @author : wzkris
@@ -10,7 +9,6 @@ import lombok.experimental.Accessors;
  * @date : 2023/8/26 14:35
  */
 @Data
-@Accessors(chain = true)
 public class LoginLogReq {
 
     /**

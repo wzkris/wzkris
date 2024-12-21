@@ -8,13 +8,13 @@ import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
-import com.wzkris.user.domain.dto.SysUserDTO;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +34,7 @@ public class SysUserServiceImpl implements SysUserService {
     private final SysUserMapper userMapper;
     private final SysUserRoleMapper userRoleMapper;
     private final SysUserPostMapper userPostMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<SysUser> list(SysUser user) {
@@ -65,23 +66,30 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertUser(SysUserDTO userDTO) {
-        userMapper.insert(userDTO);
-        // 新增用户与角色管理
-        this.insertUserRole(userDTO.getUserId(), userDTO.getRoleIds());
-        this.insertUserPost(userDTO.getUserId(), userDTO.getPostIds());
+    public boolean insertUser(SysUser user, List<Long> roleIds, List<Long> postIds) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        boolean success = userMapper.insert(user) > 0;
+        if (success) {
+            // 新增用户与角色管理
+            this.insertUserRole(user.getUserId(), roleIds);
+            this.insertUserPost(user.getUserId(), postIds);
+        }
+        return success;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateUser(SysUserDTO dto) {
-        // 删除用户与角色关联
-        userRoleMapper.deleteByUserId(dto.getUserId());
-        userPostMapper.deleteByUserId(dto.getUserId());
-        // 新增用户与角色管理
-        this.insertUserRole(dto.getUserId(), dto.getRoleIds());
-        this.insertUserPost(dto.getUserId(), dto.getPostIds());
-        userMapper.updateById(dto);
+    public boolean updateUser(SysUser user, List<Long> roleIds, List<Long> postIds) {
+        boolean success = userMapper.updateById(user) > 0;
+        if (success) {
+            // 删除用户与角色关联
+            userRoleMapper.deleteByUserId(user.getUserId());
+            userPostMapper.deleteByUserId(user.getUserId());
+            // 新增用户与角色管理
+            this.insertUserRole(user.getUserId(), roleIds);
+            this.insertUserPost(user.getUserId(), postIds);
+        }
+        return success;
     }
 
     @Override
@@ -148,7 +156,7 @@ public class SysUserServiceImpl implements SysUserService {
                 throw new AccessDeniedException("无法访问超级管理员数据");
             }
             if (userMapper.checkDataScopes(userIds) != userIds.size()) {
-                throw new AccessDeniedException("当前用户没有权限访问数据");
+                throw new AccessDeniedException("没有用户数据访问权限");
             }
         }
     }

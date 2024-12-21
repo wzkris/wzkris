@@ -28,7 +28,7 @@ public class EmqxAuthorizeController {
         EmqxAuthResult result = new EmqxAuthResult();
         // 根据clientid查询设备是否可入网
         Device device = new LambdaQueryChainWrapper<>(deviceMapper)
-                .eq(Device::getSerialNo, authDTO.getClientid())
+                .eq(Device::getCmcid, authDTO.getClientid())
                 .one();
         if (device != null) {
             result.setResult("allow");

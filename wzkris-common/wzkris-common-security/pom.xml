@@ -16,7 +16,6 @@
 		wzkris-common-security安全模块
 	</description>
 
-
 	<dependencies>
 
 		<dependency>

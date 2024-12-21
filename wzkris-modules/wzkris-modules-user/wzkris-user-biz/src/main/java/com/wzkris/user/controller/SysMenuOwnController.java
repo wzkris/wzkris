@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.service.SysMenuService;
@@ -30,7 +30,7 @@ public class SysMenuOwnController extends BaseController {
     @Operation(summary = "路由")
     @GetMapping("/router")
     public Result<List<RouterVO>> routers() {
-        List<RouterVO> routerVOS = menuService.listRouterTree(SysUtil.getUserId());
+        List<RouterVO> routerVOS = menuService.listRouterTree(LoginUserUtil.getUserId());
         return ok(routerVOS);
     }
 }

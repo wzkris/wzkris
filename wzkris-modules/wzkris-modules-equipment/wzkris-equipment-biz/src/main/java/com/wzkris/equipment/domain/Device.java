@@ -5,8 +5,6 @@ import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -23,7 +21,7 @@ import java.math.BigDecimal;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@Schema(description = "设备信息")
+@Schema(description = "实体类: 设备信息")
 public class Device extends BaseEntity {
     @Serial
     private static final long serialVersionUID = 253601802815121784L;
@@ -43,9 +41,8 @@ public class Device extends BaseEntity {
     @Schema(description = "设备名称")
     private String deviceName;
 
-    @NotBlank(message = "[serialNo] {validate.notnull}")
-    @Schema(description = "设备号")
-    private String serialNo;
+    @Schema(description = "通信标识")
+    private String cmcid;
 
     @DecimalMin(value = "-90.000000", message = "纬度参数不正确")
     @DecimalMax(value = "90.000000", message = "纬度参数不正确")

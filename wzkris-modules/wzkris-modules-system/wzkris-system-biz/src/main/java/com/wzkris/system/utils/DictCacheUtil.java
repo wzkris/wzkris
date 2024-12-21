@@ -21,7 +21,7 @@ public class DictCacheUtil {
      * @param dictData 字典数据列表
      */
     public static void setDictCache(String key, List<GlobalDictData> dictData) {
-        RedisUtil.setMapValue(DICT_KEY, key, dictData);
+        RedisUtil.getRMap(DICT_KEY).put(key, dictData);
     }
 
     /**
@@ -31,7 +31,7 @@ public class DictCacheUtil {
      * @return dictDatas 字典数据列表
      */
     public static <T> T getDictCache(String key) {
-        return RedisUtil.getMapValue(DICT_KEY, key);
+        return (T) RedisUtil.getRMap(DICT_KEY).get(key);
     }
 
     /**
@@ -40,13 +40,13 @@ public class DictCacheUtil {
      * @param key 字典键
      */
     public static void removeDictCache(String key) {
-        RedisUtil.delMapValue(DICT_KEY, key);
+        RedisUtil.getRMap(DICT_KEY).remove(key);
     }
 
     /**
      * 清空字典缓存
      */
     public static void clearAll() {
-        RedisUtil.delObj(DICT_KEY);
+        RedisUtil.getRMap(DICT_KEY).delete();
     }
 }

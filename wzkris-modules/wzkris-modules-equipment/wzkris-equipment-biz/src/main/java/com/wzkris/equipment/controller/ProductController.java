@@ -7,6 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Product;
 import com.wzkris.equipment.domain.req.EditStatusReq;
@@ -16,7 +17,6 @@ import com.wzkris.equipment.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
@@ -39,7 +39,7 @@ public class ProductController extends BaseController {
 
     @Operation(summary = "分页查询")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('product:list')")
+    @CheckPerms("product:list")
     public Result<Page<Product>> listPage(ProductQueryReq req) {
         startPage();
         List<Product> list = productMapper.selectList(this.buildQueryWrapper(req));
@@ -56,7 +56,7 @@ public class ProductController extends BaseController {
 
     @Operation(summary = "产品选择列表(不带分页)")
     @GetMapping("/selectlist")
-    @PreAuthorize("@ps.hasPermsOr('device:add', 'device:edit')")// 设备添加修改时使用
+    @CheckPerms(value = {"device:add", "device:edit"}, mode = CheckPerms.Mode.OR)// 设备添加修改时使用
     public Result<List<Product>> selectList(String pdtName) {
         LambdaQueryWrapper<Product> lqw = new LambdaQueryWrapper<Product>()
                 .select(Product::getPdtId, Product::getPdtName)
@@ -68,7 +68,7 @@ public class ProductController extends BaseController {
 
     @Operation(summary = "产品模型选择")
     @GetMapping("/model_list")
-    @PreAuthorize("@ps.hasPerms('product:list')")
+    @CheckPerms("product:list")
     public Result<Map<String, Object>> modelList() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(Product.ChargePileModel.type, new Product.ChargePileModel());
@@ -78,7 +78,7 @@ public class ProductController extends BaseController {
 
     @Operation(summary = "id查询信息")
     @GetMapping("/{pdtId}")
-    @PreAuthorize("@ps.hasPerms('product:query')")
+    @CheckPerms("product:query")
     public Result<Product> queryById(@PathVariable Long pdtId) {
         return ok(productMapper.selectById(pdtId));
     }
@@ -86,7 +86,7 @@ public class ProductController extends BaseController {
     @Operation(summary = "添加产品")
     @OperateLog(title = "产品管理", subTitle = "添加产品", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('product:add')")
+    @CheckPerms("product:add")
     public Result<Void> add(@RequestBody Product product) {
         return toRes(productMapper.insert(product));
     }
@@ -94,7 +94,7 @@ public class ProductController extends BaseController {
     @Operation(summary = "修改产品")
     @OperateLog(title = "产品管理", subTitle = "修改产品", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('product:edit')")
+    @CheckPerms("product:edit")
     public Result<Void> edit(@RequestBody Product product) {
         return toRes(productMapper.updateById(product));
     }
@@ -102,7 +102,7 @@ public class ProductController extends BaseController {
     @Operation(summary = "修改产品状态")
     @OperateLog(title = "产品管理", subTitle = "修改产品状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @PreAuthorize("@ps.hasPerms('product:edit')")
+    @CheckPerms("product:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         Product update = new Product(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -112,7 +112,7 @@ public class ProductController extends BaseController {
     @Operation(summary = "删除产品")
     @OperateLog(title = "产品管理", subTitle = "删除产品", operateType = OperateType.UPDATE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('product:remove')")
+    @CheckPerms("product:remove")
     public Result<Void> deleteById(@RequestBody Long pdtId) {
         if (productService.checkProductUsed(pdtId)) {
             return fail("删除失败，该产品与设备关联使用中");

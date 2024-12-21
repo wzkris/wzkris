@@ -5,7 +5,7 @@ import java.util.List;
 public interface StationService {
 
     /**
-     * 设备绑定电站
+     * 设备绑定站点
      *
      * @param stationId 电站ID
      * @param deviceIds 设备ID集合
@@ -13,7 +13,7 @@ public interface StationService {
     void bindDevice(Long stationId, List<Long> deviceIds);
 
     /**
-     * 设备解绑绑定电站
+     * 设备解绑站点
      *
      * @param stationId 电站ID
      * @param deviceIds 设备ID集合

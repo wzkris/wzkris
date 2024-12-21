@@ -5,7 +5,8 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.req.SysMenuQueryReq;
@@ -29,7 +30,7 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/sys_menu")
-@PreAuthorize("@SysUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
     private final SysMenuMapper menuMapper;
@@ -37,7 +38,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('menu:list')")
+    @CheckPerms("menu:list")
     public Result<List<SysMenu>> list(SysMenuQueryReq queryReq) {
         List<SysMenu> menus = menuMapper.selectList(this.buildQueryWrapper(queryReq));
         return ok(menus);
@@ -45,8 +46,8 @@ public class SysMenuController extends BaseController {
 
     private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!SysUtil.isAdministrator()) {
-            menuIds = menuService.listMenuIdByUserId(SysUtil.getUserId());
+        if (!LoginUserUtil.isAdministrator()) {
+            menuIds = menuService.listMenuIdByUserId(LoginUserUtil.getUserId());
         }
         return new LambdaQueryWrapper<SysMenu>()
                 .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
@@ -57,7 +58,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @PreAuthorize("@ps.hasPerms('menu:query')")
+    @CheckPerms("menu:query")
     public Result<SysMenu> getInfo(@PathVariable Long menuId) {
         return ok(menuMapper.selectById(menuId));
     }
@@ -65,7 +66,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @PreAuthorize("@ps.hasPerms('menu:add')")
+    @CheckPerms("menu:add")
     public Result<Void> add(@Valid @RequestBody SysMenu menu) {
         if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
@@ -76,7 +77,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @PreAuthorize("@ps.hasPerms('menu:edit')")
+    @CheckPerms("menu:edit")
     public Result<Void> edit(@Valid @RequestBody SysMenu menu) {
         if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
             return fail("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
@@ -90,7 +91,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @PreAuthorize("@ps.hasPerms('menu:remove')")
+    @CheckPerms("menu:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
         if (menuService.hasChildByMenuId(menuId)) {
             return fail("存在子菜单,不允许删除");
