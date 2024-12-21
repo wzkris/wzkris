@@ -51,7 +51,7 @@ public class DeptScopeAspect {
             return;
         }
         // 租户的最高管理员不查询部门数据权限
-        if (LoginUserUtil.isAdministrator()) {
+        if (LoginUserUtil.isAdmin()) {
             return;
         }
 

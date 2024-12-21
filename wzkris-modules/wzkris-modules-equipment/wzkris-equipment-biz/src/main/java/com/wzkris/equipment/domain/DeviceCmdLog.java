@@ -3,7 +3,6 @@ package com.wzkris.equipment.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * (DeviceCommandRecord)实体类
@@ -12,7 +11,6 @@ import lombok.experimental.Accessors;
  * @since 2024-12-19 15:30:40
  */
 @Data
-@Accessors(chain = true)
 @AllArgsConstructor
 @Schema(description = "实体类: 设备指令日志")
 public class DeviceCmdLog {

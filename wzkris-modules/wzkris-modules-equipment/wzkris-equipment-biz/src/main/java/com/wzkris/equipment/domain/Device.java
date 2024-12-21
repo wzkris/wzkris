@@ -7,7 +7,6 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -19,7 +18,6 @@ import java.math.BigDecimal;
  * @since 2023-08-21 09:34:40
  */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 @Schema(description = "实体类: 设备信息")
 public class Device extends BaseEntity {

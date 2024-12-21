@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -21,7 +20,6 @@ import java.math.BigDecimal;
  * @since 2024-12-09 12:56:40
  */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 @Schema(description = "站点信息")
 public class Station extends BaseEntity {

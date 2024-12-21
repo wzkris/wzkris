@@ -19,8 +19,7 @@ import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.SysRole2UsersReq;
 import com.wzkris.user.domain.req.SysRoleQueryReq;
 import com.wzkris.user.domain.req.SysRoleReq;
-import com.wzkris.user.domain.vo.SysDeptCheckSelectTreeVO;
-import com.wzkris.user.domain.vo.SysMenuCheckSelectTreeVO;
+import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -86,25 +85,25 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "角色菜单选择树")
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{roleId}"})
     @CheckPerms("sys_role:list")
-    public Result<SysMenuCheckSelectTreeVO> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
+    public Result<CheckedSelectTreeVO> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
-        SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
-        resp.setCheckedKeys(roleId == null ? Collections.emptyList() : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        resp.setMenus(menuService.listMenuSelectTree(LoginUserUtil.getUserId()));
-        return ok(resp);
+        CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
+        checkedSelectTreeVO.setCheckedKeys(roleId == null ? Collections.emptyList() : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
+        checkedSelectTreeVO.setSelectTrees(menuService.listMenuSelectTree(LoginUserUtil.getUserId()));
+        return ok(checkedSelectTreeVO);
     }
 
     @Operation(summary = "角色部门选择树")
     @GetMapping({"/dept_select_tree/{roleId}", "/dept_select_tree/{roleId}"})
     @CheckPerms("sys_role:query")
-    public Result<SysDeptCheckSelectTreeVO> deptTree(@PathVariable(required = false) Long roleId) {
+    public Result<CheckedSelectTreeVO> deptTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
-        SysDeptCheckSelectTreeVO resp = new SysDeptCheckSelectTreeVO();
-        resp.setCheckedKeys(roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
-        resp.setDepts(deptService.listSelectTree(null));
-        return ok(resp);
+        CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
+        checkedSelectTreeVO.setCheckedKeys(roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
+        checkedSelectTreeVO.setSelectTrees(deptService.listSelectTree(null));
+        return ok(checkedSelectTreeVO);
     }
 
     @Operation(summary = "新增角色")

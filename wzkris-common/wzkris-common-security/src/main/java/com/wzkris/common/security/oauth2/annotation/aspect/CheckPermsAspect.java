@@ -11,6 +11,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -26,7 +27,8 @@ import java.util.Set;
 @Aspect
 public class CheckPermsAspect {
 
-    static PermissionService permissionService = new PermissionService();
+    @Autowired
+    private PermissionService permissionService;
 
     /**
      * 方法执行前执行

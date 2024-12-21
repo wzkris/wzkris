@@ -104,7 +104,7 @@ public class SysTenantOwnController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "租户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
-    @PreAuthorize("@LoginUserUtil.isAdministrator()")// 只允许租户的超级管理员修改
+    @PreAuthorize("@LoginUserUtil.isAdmin()")// 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Valid EditPwdReq req) {
         if (StringUtil.length(req.getOldPassword()) != 6 || StringUtil.length(req.getNewPassword()) != 6) {
             return fail("密码长度不正确");

@@ -46,7 +46,7 @@ public class SysMenuController extends BaseController {
 
     private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!LoginUserUtil.isAdministrator()) {
+        if (!LoginUserUtil.isAdmin()) {
             menuIds = menuService.listMenuIdByUserId(LoginUserUtil.getUserId());
         }
         return new LambdaQueryWrapper<SysMenu>()

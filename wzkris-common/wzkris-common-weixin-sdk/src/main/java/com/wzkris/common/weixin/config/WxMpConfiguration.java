@@ -3,6 +3,7 @@ package com.wzkris.common.weixin.config;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.weixin.properties.WxMpProperties;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxRuntimeException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
@@ -32,7 +33,7 @@ public class WxMpConfiguration {
         // 代码里 getConfigs()处报错的同学，请注意仔细阅读项目说明，你的IDE需要引入lombok插件！！！！
         final List<WxMpProperties.MpConfig> configs = this.properties.getConfigs();
         if (configs == null) {
-            throw new RuntimeException("大哥，拜托先看下项目首页的说明（readme文件），添加下相关配置，注意别配错了！");
+            throw new WxRuntimeException("大哥，拜托先看下项目首页的说明（readme文件），添加下相关配置，注意别配错了！");
         }
 
         WxMpService service = new WxMpServiceImpl();

@@ -54,8 +54,9 @@ public class DeviceController extends BaseController {
     private LambdaQueryWrapper<Device> buildQueryWrapper(DeviceQueryReq queryReq) {
         return new LambdaQueryWrapper<Device>()
                 .like(StringUtil.isNotBlank(queryReq.getDeviceName()), Device::getDeviceName, queryReq.getDeviceName())
-                .like(StringUtil.isNotBlank(queryReq.getSerialNo()), Device::getCmcid, queryReq.getSerialNo())
-                .eq(StringUtil.isNotBlank(queryReq.getStationId()), Device::getStationId, queryReq.getStationId())
+                .like(StringUtil.isNotBlank(queryReq.getCmcid()), Device::getCmcid, queryReq.getCmcid())
+                .eq(StringUtil.isNotNull(queryReq.getStationId()), Device::getStationId, queryReq.getStationId())
+                .eq(StringUtil.isNotNull(queryReq.getPdtId()), Device::getPdtId, queryReq.getPdtId())
                 .eq(StringUtil.isNotBlank(queryReq.getStatus()), Device::getStatus, queryReq.getStatus())
                 .eq(StringUtil.isNotNull(queryReq.getOnline()), Device::getOnline, queryReq.getOnline())
                 .orderByDesc(Device::getOnline, Device::getDeviceId);

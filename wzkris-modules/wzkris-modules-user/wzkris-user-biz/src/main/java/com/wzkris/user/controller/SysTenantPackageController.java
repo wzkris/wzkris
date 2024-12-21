@@ -12,7 +12,7 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenantPackage;
 import com.wzkris.user.domain.req.EditStatusReq;
-import com.wzkris.user.domain.vo.SysMenuCheckSelectTreeVO;
+import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysTenantPackageService;
@@ -68,11 +68,11 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{packageId}"})
     @CheckPerms("tenant_package:list")
-    public Result<SysMenuCheckSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
-        SysMenuCheckSelectTreeVO resp = new SysMenuCheckSelectTreeVO();
-        resp.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
-        resp.setMenus(menuService.listMenuSelectTree(LoginUserUtil.getUserId()));
-        return ok(resp);
+    public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
+        CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
+        checkedSelectTreeVO.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
+        checkedSelectTreeVO.setSelectTrees(menuService.listMenuSelectTree(LoginUserUtil.getUserId()));
+        return ok(checkedSelectTreeVO);
     }
 
     @Operation(summary = "套餐详细信息")
