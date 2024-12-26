@@ -45,6 +45,6 @@ public interface GlobalDictDataMapper extends BaseMapperPlus<GlobalDictData> {
      * @return 结果
      */
     @Update("UPDATE global_dict_data SET dict_type = #{newDictType} WHERE dict_type = #{oldDictType}")
-    int updateDictDataType(@Param("oldDictType") String oldDictType, @Param("newDictType") String newDictType);
+    int updateDictByType(@Param("oldDictType") String oldDictType, @Param("newDictType") String newDictType);
 
 }

@@ -82,28 +82,23 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public void insertDept(SysDept dept) {
-        SysDept parent = deptMapper.selectById(dept.getParentId());
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertDept(SysDept dept) {
+        SysDept parent = deptMapper.selectByIdForUpdate(dept.getParentId());
         dept.setAncestors(parent.getAncestors() + "," + dept.getParentId());
-        deptMapper.insert(dept);
+        return deptMapper.insert(dept) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateDept(SysDept dept) {
-        SysDept parentDept = deptMapper.selectById(dept.getParentId());
-        SysDept curDept = deptMapper.selectById(dept.getDeptId());
-        if (StringUtil.isNotNull(parentDept) && StringUtil.isNotNull(curDept)) {
+    public boolean updateDept(SysDept dept) {
+        SysDept parentDept = deptMapper.selectByIdForUpdate(dept.getParentId());
+        if (StringUtil.isNotNull(parentDept)) {
             String newAncestors = parentDept.getAncestors() + "," + parentDept.getDeptId();
             dept.setAncestors(newAncestors);
-            updateDeptChildren(dept.getDeptId(), newAncestors, curDept.getAncestors());
+            updateDeptChildren(dept.getDeptId(), newAncestors, dept.getAncestors());
         }
-        else {
-            // 否则不更新父节点
-            dept.setParentId(null);
-            dept.setAncestors(null);
-        }
-        deptMapper.updateById(dept);
+        return deptMapper.updateById(dept) > 0;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.wzkris.user.api;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import com.wzkris.user.api.domain.response.AppUserResp;
@@ -32,7 +32,7 @@ public class RemoteAppUserApiImpl implements RemoteAppUserApi {
     @Override
     public Result<AppUserResp> getByPhoneNumber(String phoneNumber) {
         AppUser appUser = appUserMapper.selectByPhoneNumber(phoneNumber);
-        AppUserResp appUserResp = MapstructUtil.convert(appUser, AppUserResp.class);
+        AppUserResp appUserResp = BeanUtil.convert(appUser, AppUserResp.class);
         return ok(appUserResp);
     }
 

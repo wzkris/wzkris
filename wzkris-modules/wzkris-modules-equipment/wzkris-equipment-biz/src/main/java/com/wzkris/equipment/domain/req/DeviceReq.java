@@ -22,7 +22,7 @@ public class DeviceReq {
     private Long deviceId;
 
     @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@ps.hasPerms('device:field')")
-    @NotNull(message = "[pdtId] {validate.notnull}", groups = ValidationGroups.Insert.class)
+    @NotNull(message = "{desc.product}" + "{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "产品ID")
     private Long pdtId;
 
@@ -33,17 +33,17 @@ public class DeviceReq {
     private String deviceName;
 
     @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@ps.hasPerms('device:field')")
-    @NotBlank(message = "[cmcid] {validate.notnull}", groups = ValidationGroups.Insert.class)
+    @NotBlank(message = "{desc.cmcid}" + "{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "通信标识")
     private String cmcid;
 
-    @DecimalMin(value = "-90.000000", message = "纬度参数不正确")
-    @DecimalMax(value = "90.000000", message = "纬度参数不正确")
+    @DecimalMin(value = "-90.000000", message = "{desc.latitude}{validate.illegal}")
+    @DecimalMax(value = "90.000000", message = "{desc.latitude}{validate.illegal}")
     @Schema(description = "纬度")
     private BigDecimal latitude;
 
-    @DecimalMin(value = "-180.000000", message = "经度参数不正确")
-    @DecimalMax(value = "180.000000", message = "经度参数不正确")
+    @DecimalMin(value = "-180.000000", message = "{desc.longitude}{validate.illegal}")
+    @DecimalMax(value = "180.000000", message = "{desc.longitude}{validate.illegal}")
     @Schema(description = "经度")
     private BigDecimal longitude;
 }

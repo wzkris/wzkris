@@ -2,6 +2,7 @@ package com.wzkris.equipment.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.equipment.domain.Device;
 import com.wzkris.equipment.domain.Product;
 import com.wzkris.equipment.domain.ThingsModel;
@@ -27,7 +28,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean insertProduct(Product product) {
-        product.setPdtKey(RandomUtil.randomString(16));
+        if (StringUtil.isBlank(product.getPdtKey())) {
+            product.setPdtKey(RandomUtil.randomString(16));
+        }
         return productMapper.insert(product) > 0;
     }
 

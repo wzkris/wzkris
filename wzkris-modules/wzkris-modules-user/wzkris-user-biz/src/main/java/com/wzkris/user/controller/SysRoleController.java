@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -114,7 +114,7 @@ public class SysRoleController extends BaseController {
         if (!tenantService.checkRoleLimit(LoginUserUtil.getTenantId())) {
             return fail("角色数量已达上限，请联系管理员");
         }
-        return toRes(roleService.insertRole(MapstructUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
+        return toRes(roleService.insertRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
 
     @Operation(summary = "修改角色")
@@ -124,7 +124,7 @@ public class SysRoleController extends BaseController {
     public Result<Void> edit(@Validated @RequestBody SysRoleReq roleReq) {
         // 权限校验
         roleService.checkDataScopes(roleReq.getRoleId());
-        return toRes(roleService.updateRole(MapstructUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
+        return toRes(roleService.updateRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
 
     @Operation(summary = "状态修改")

@@ -1,7 +1,6 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.wzkris.common.core.annotation.PhoneNumber;
 import com.wzkris.common.core.annotation.Xss;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
@@ -11,7 +10,6 @@ import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldNameConstants;
 
 /**
  * 顾客 app_user
@@ -24,7 +22,6 @@ import lombok.experimental.FieldNameConstants;
         @AutoMapper(target = AppUserResp.class)
 })
 @NoArgsConstructor
-@FieldNameConstants
 public class AppUser extends BaseEntity {
 
     @TableId
@@ -34,7 +31,6 @@ public class AppUser extends BaseEntity {
     @Schema(description = "用户昵称")
     private String nickname;
 
-    @PhoneNumber
     @Schema(description = "手机号码")
     private String phoneNumber;
 

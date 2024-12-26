@@ -5,7 +5,6 @@ import com.wzkris.system.api.domain.request.LoginLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,7 +17,6 @@ import java.io.Serializable;
  */
 @Data
 @AutoMapper(target = LoginLogReq.class)
-@Accessors(chain = true)
 public class SysLoginLog implements Serializable {
 
     @Serial

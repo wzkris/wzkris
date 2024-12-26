@@ -2,6 +2,7 @@ package com.wzkris.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -9,6 +10,8 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.GlobalDictType;
+import com.wzkris.system.domain.req.GlobalDictTypeQueryReq;
+import com.wzkris.system.domain.req.GlobalDictTypeReq;
 import com.wzkris.system.mapper.GlobalDictTypeMapper;
 import com.wzkris.system.service.GlobalDictTypeService;
 import com.wzkris.system.utils.DictCacheUtil;
@@ -37,12 +40,17 @@ public class GlobalDictTypeController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @CheckPerms("dict:list")
-    public Result<Page<GlobalDictType>> list(GlobalDictType globalDictType) {
+    public Result<Page<GlobalDictType>> list(GlobalDictTypeQueryReq queryReq) {
         startPage();
-        LambdaQueryWrapper<GlobalDictType> lqw = new LambdaQueryWrapper<GlobalDictType>()
-                .like(StringUtil.isNotBlank(globalDictType.getDictName()), GlobalDictType::getDictName, globalDictType.getDictName())
-                .like(StringUtil.isNotBlank(globalDictType.getDictType()), GlobalDictType::getDictType, globalDictType.getDictType());
+        LambdaQueryWrapper<GlobalDictType> lqw = this.buildQueryWrapper(queryReq);
         return getDataTable(dictTypeMapper.selectList(lqw));
+    }
+
+    private LambdaQueryWrapper<GlobalDictType> buildQueryWrapper(GlobalDictTypeQueryReq queryReq) {
+        return new LambdaQueryWrapper<GlobalDictType>()
+                .like(StringUtil.isNotBlank(queryReq.getDictName()), GlobalDictType::getDictName, queryReq.getDictName())
+                .like(StringUtil.isNotBlank(queryReq.getDictType()), GlobalDictType::getDictType, queryReq.getDictType())
+                .orderByDesc(GlobalDictType::getTypeId);
     }
 
     @Operation(summary = "详情")
@@ -56,24 +64,22 @@ public class GlobalDictTypeController extends BaseController {
     @OperateLog(title = "字典类型", subTitle = "添加字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("dict:add")
-    public Result<Void> add(@Validated @RequestBody GlobalDictType dict) {
-        if (dictTypeService.checkDictTypeUnique(dict)) {
-            return fail("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
+    public Result<Void> add(@Validated @RequestBody GlobalDictTypeReq req) {
+        if (dictTypeService.checkDictTypeUnique(req.getTypeId(), req.getDictType())) {
+            return fail("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
-        dictTypeService.insertDictType(dict);
-        return ok();
+        return toRes(dictTypeService.insertDictType(BeanUtil.convert(req, GlobalDictType.class)));
     }
 
     @Operation(summary = "修改")
     @OperateLog(title = "字典类型", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("dict:edit")
-    public Result<Void> edit(@Validated @RequestBody GlobalDictType dict) {
-        if (dictTypeService.checkDictTypeUnique(dict)) {
-            return fail("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
+    public Result<Void> edit(@Validated @RequestBody GlobalDictTypeReq req) {
+        if (dictTypeService.checkDictTypeUnique(req.getTypeId(), req.getDictType())) {
+            return fail("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
-        dictTypeService.updateDictType(dict);
-        return ok();
+        return toRes(dictTypeService.updateDictType(BeanUtil.convert(req, GlobalDictType.class)));
     }
 
     @Operation(summary = "删除")

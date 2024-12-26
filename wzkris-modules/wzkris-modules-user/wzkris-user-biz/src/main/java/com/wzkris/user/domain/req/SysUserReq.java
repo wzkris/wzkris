@@ -1,8 +1,10 @@
 package com.wzkris.user.domain.req;
 
+import com.wzkris.common.core.annotation.EnumsCheck;
 import com.wzkris.common.core.annotation.PhoneNumber;
 import com.wzkris.common.core.annotation.Xss;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.user.domain.SysUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -24,17 +26,17 @@ public class SysUserReq {
     @Schema(description = "部门ID")
     private Long deptId;
 
-    @Xss
-    @NotBlank(message = "[username] {validate.notnull}", groups = ValidationGroups.Insert.class)
-    @Size(min = 6, max = 20, message = "[username] {validate.size.illegal}")
+    @Xss(message = "{desc.user}{desc.name}" + "{validate.xss.forbid}")
+    @NotBlank(message = "{desc.user}" + "{validate.notnull}", groups = ValidationGroups.Insert.class)
+    @Size(min = 6, max = 30, message = "{desc.user}" + "{validate.size.illegal}")
     @Schema(description = "用户名")
     private String username;
 
-    @Xss
+    @Xss(message = "{desc.user}{desc.name}" + "{validate.xss.forbid}")
     @Schema(description = "用户昵称")
     private String nickname;
 
-    @Email(message = "[email] {validate.email.illegal}")
+    @Email(message = "{desc.user}" + "{validate.email.illegal}")
     @Schema(description = "用户邮箱")
     private String email;
 
@@ -42,14 +44,15 @@ public class SysUserReq {
     @Schema(description = "手机号码")
     private String phoneNumber;
 
+    @EnumsCheck(values = {CommonConstants.STATUS_DISABLE, CommonConstants.STATUS_ENABLE})
     @Schema(description = "用户状态")
     private String status;
 
     @Schema(description = "用户性别")
     private String gender;
 
-    @NotBlank(message = "[password] {validate.notnull}", groups = ValidationGroups.Insert.class)
-    @Size(min = 8, max = 32, message = "[password] {validate.size.illegal}")
+    @NotBlank(message = "{desc.pwd}" + "{validate.notnull}", groups = ValidationGroups.Insert.class)
+    @Size(min = 8, max = 32, message = "{desc.pwd}" + "{validate.size.illegal}")
     @Schema(description = "密码")
     private String password;
 

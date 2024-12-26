@@ -6,7 +6,7 @@ import com.wzkris.auth.oauth2.model.RedisRegisteredClient;
 import com.wzkris.auth.oauth2.utils.OAuth2JsonUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.user.api.RemoteOAuth2ClientApi;
 import com.wzkris.user.api.domain.response.OAuth2ClientResp;
@@ -74,7 +74,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(
-                    new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, MessageUtil.message("oauth2.client.invalid"), null), null);
+                    new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, I18nUtil.message("oauth2.client.invalid"), null), null);
         }
 
         RegisteredClient registeredClient = this.buildRegisteredClient(oauth2Client);

@@ -2,7 +2,7 @@ package com.wzkris.user.api;
 
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
@@ -46,7 +46,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ok();
         }
-        SysUserResp userResp = MapstructUtil.convert(user, SysUserResp.class);
+        SysUserResp userResp = BeanUtil.convert(user, SysUserResp.class);
         this.retrieveAllStatus(userResp);
         return ok(userResp);
     }
@@ -54,7 +54,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     @Override
     public Result<SysUserResp> getByPhoneNumber(String phoneNumber) {
         SysUser sysUser = userMapper.selectByPhoneNumber(phoneNumber);
-        SysUserResp userResp = MapstructUtil.convert(sysUser, SysUserResp.class);
+        SysUserResp userResp = BeanUtil.convert(sysUser, SysUserResp.class);
         this.retrieveAllStatus(userResp);
         return ok(userResp);
     }

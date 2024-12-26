@@ -3,6 +3,7 @@ package com.wzkris.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -12,6 +13,8 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenantPackage;
 import com.wzkris.user.domain.req.EditStatusReq;
+import com.wzkris.user.domain.req.SysTenantPackageQueryReq;
+import com.wzkris.user.domain.req.SysTenantPackageReq;
 import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
@@ -48,10 +51,17 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "套餐分页")
     @GetMapping("/list")
     @CheckPerms("tenant_package:list")
-    public Result<Page<SysTenantPackage>> listPage(SysTenantPackage sysTenantPackage) {
+    public Result<Page<SysTenantPackage>> listPage(SysTenantPackageQueryReq queryReq) {
         startPage();
-        List<SysTenantPackage> list = tenantPackageService.list(sysTenantPackage);
+        List<SysTenantPackage> list = tenantPackageMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
+    }
+
+    private LambdaQueryWrapper<SysTenantPackage> buildQueryWrapper(SysTenantPackageQueryReq queryReq) {
+        return new LambdaQueryWrapper<SysTenantPackage>()
+                .like(StringUtil.isNotNull(queryReq.getPackageName()), SysTenantPackage::getPackageName, queryReq.getPackageName())
+                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysTenantPackage::getStatus, queryReq.getStatus())
+                .orderByDesc(SysTenantPackage::getPackageId);
     }
 
     @Operation(summary = "套餐选择列表(不带分页)")
@@ -87,16 +97,16 @@ public class SysTenantPackageController extends BaseController {
     @OperateLog(title = "租户套餐", subTitle = "新增套餐", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("tenant_package:add")
-    public Result<Void> add(@Valid @RequestBody SysTenantPackage tenantPackage) {
-        return toRes(tenantPackageMapper.insert(tenantPackage));
+    public Result<Void> add(@Valid @RequestBody SysTenantPackageReq req) {
+        return toRes(tenantPackageMapper.insert(BeanUtil.convert(req, SysTenantPackage.class)));
     }
 
     @Operation(summary = "修改租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "修改套餐", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("tenant_package:edit")
-    public Result<Void> edit(@Valid @RequestBody SysTenantPackage tenantPackage) {
-        return toRes(tenantPackageMapper.updateById(tenantPackage));
+    public Result<Void> edit(@Valid @RequestBody SysTenantPackageReq req) {
+        return toRes(tenantPackageMapper.updateById(BeanUtil.convert(req, SysTenantPackage.class)));
     }
 
     @Operation(summary = "修改租户套餐状态")

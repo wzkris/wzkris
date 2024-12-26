@@ -3,7 +3,7 @@ package com.wzkris.user.controller;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -105,7 +105,7 @@ public class OAuth2ClientController extends BaseController {
     @CheckPerms("oauth2_client:export")
     public void export(HttpServletResponse response, OAuth2ClientQueryReq req) {
         List<OAuth2Client> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
-        List<OAuth2ClientExport> convert = MapstructUtil.convert(list, OAuth2ClientExport.class);
+        List<OAuth2ClientExport> convert = BeanUtil.convert(list, OAuth2ClientExport.class);
         ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, response);
     }
 }

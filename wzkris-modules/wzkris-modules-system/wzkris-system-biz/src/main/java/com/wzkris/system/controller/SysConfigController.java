@@ -3,6 +3,7 @@ package com.wzkris.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -11,6 +12,7 @@ import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysConfig;
 import com.wzkris.system.domain.req.SysConfigQueryReq;
+import com.wzkris.system.domain.req.SysConfigReq;
 import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
 import com.wzkris.system.utils.ConfigCacheUtil;
@@ -74,24 +76,22 @@ public class SysConfigController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("config:add")
-    public Result<Void> add(@Validated @RequestBody SysConfig config) {
-        if (configService.checkConfigKeyUnique(config)) {
-            return fail("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
+    public Result<Void> add(@Validated @RequestBody SysConfigReq req) {
+        if (configService.checkUsedByConfigKey(null, req.getConfigKey())) {
+            return fail("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
-        configService.insertConfig(config);
-        return ok();
+        return toRes(configService.insertConfig(BeanUtil.convert(req, SysConfig.class)));
     }
 
     @Operation(summary = "修改参数")
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("config:edit")
-    public Result<Void> edit(@Validated @RequestBody SysConfig config) {
-        if (configService.checkConfigKeyUnique(config)) {
-            return fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
+    public Result<Void> edit(@Validated @RequestBody SysConfigReq req) {
+        if (configService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
+            return fail("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
-        configService.updateConfig(config);
-        return ok();
+        return toRes(configService.updateConfig(BeanUtil.convert(req, SysConfig.class)));
     }
 
     @Operation(summary = "删除参数")

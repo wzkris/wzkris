@@ -13,7 +13,6 @@ import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
-import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.dto.SysTenantDTO;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.SysTenantQueryReq;
@@ -114,7 +113,7 @@ public class SysTenantController extends BaseController {
     @PostMapping("/add")
     @CheckPerms("tenant:add")
     public Result<Void> add(@Validated @RequestBody SysTenantDTO tenantDTO) {
-        if (userService.checkUserUnique(new SysUser().setUsername(tenantDTO.getUsername()))) {
+        if (userService.checkUsedByUsername(null, tenantDTO.getUsername())) {
             return fail("登录账号'" + tenantDTO.getUsername() + "'已存在");
         }
         tenantService.insertTenant(tenantDTO);

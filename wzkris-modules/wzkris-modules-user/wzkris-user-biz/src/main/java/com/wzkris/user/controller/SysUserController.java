@@ -3,7 +3,7 @@ package com.wzkris.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -108,18 +108,14 @@ public class SysUserController extends BaseController {
         if (!tenantService.checkAccountLimit(LoginUserUtil.getTenantId())) {
             return fail("账号数量已达上限，请联系管理员");
         }
-        if (userService.checkUserUnique(new SysUser(userReq.getUserId()).setUsername(userReq.getUsername()))) {
+        if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         }
         else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
-                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setPhoneNumber(userReq.getPhoneNumber()))) {
+                && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
-        else if (StringUtil.isNotEmpty(userReq.getEmail())
-                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setEmail(userReq.getEmail()))) {
-            return fail("修改用户'" + userReq.getUsername() + "'失败，邮箱账号已存在");
-        }
-        return toRes(userService.insertUser(MapstructUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
+        return toRes(userService.insertUser(BeanUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
     }
 
     @Operation(summary = "修改用户")
@@ -129,19 +125,15 @@ public class SysUserController extends BaseController {
     public Result<Void> edit(@Validated @RequestBody SysUserReq userReq) {
         // 校验权限
         userService.checkDataScopes(userReq.getUserId());
-        if (userService.checkUserUnique(new SysUser(userReq.getUserId()).setUsername(userReq.getUsername()))) {
+        if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         }
         else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
-                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setPhoneNumber(userReq.getPhoneNumber()))) {
+                && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
-        else if (StringUtil.isNotEmpty(userReq.getEmail())
-                && userService.checkUserUnique(new SysUser(userReq.getUserId()).setEmail(userReq.getEmail()))) {
-            return fail("修改用户'" + userReq.getUsername() + "'失败，邮箱账号已存在");
-        }
         userReq.setPassword(null);
-        return toRes(userService.updateUser(MapstructUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
+        return toRes(userService.updateUser(BeanUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
     }
 
     @Operation(summary = "删除用户")
@@ -189,7 +181,7 @@ public class SysUserController extends BaseController {
     @CheckPerms("sys_user:export")
     public void export(HttpServletResponse response, SysUserQueryReq queryReq) {
         List<SysUserVO> list = userMapper.selectVOInScope(this.buildPageWrapper(queryReq));
-        List<SysUserExport> convert = MapstructUtil.convert(list, SysUserExport.class);
+        List<SysUserExport> convert = BeanUtil.convert(list, SysUserExport.class);
         ExcelUtil.exportExcel(convert, "后台用户数据", SysUserExport.class, response);
     }
 

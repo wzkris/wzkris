@@ -10,10 +10,10 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 public class EditClientSecretReq {
-    @NotNull(message = "[id] {validate.notnull}")
+    @NotNull(message = "id {validate.notnull}")
     private Long id;
 
-    @NotBlank(message = "[secret] {validate.notnull}")
-    @Length(min = 6, max = 6, message = "[secret] {validate.size.illegal}")
+    @NotBlank(message = "{desc.secret}" + "{validate.notnull}")
+    @Length(min = 6, max = 6, message = "{desc.secret}" + "{validate.size.illegal}")
     private String secret;
 }

@@ -2,6 +2,7 @@ package com.wzkris.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -11,6 +12,7 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.constant.MessageConstants;
 import com.wzkris.system.domain.SysMessage;
 import com.wzkris.system.domain.req.SysMessageQueryReq;
+import com.wzkris.system.domain.req.SysMessageReq;
 import com.wzkris.system.mapper.SysMessageMapper;
 import com.wzkris.system.service.SysMessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,8 +67,19 @@ public class SysMessageController extends BaseController {
     @OperateLog(title = "系统消息", subTitle = "添加草稿", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("sys_message:add")
-    public Result<Void> add(@Valid @RequestBody SysMessage message) {
-        return toRes(messageMapper.insert(message));
+    public Result<Void> add(@Valid @RequestBody SysMessageReq req) {
+        return toRes(messageMapper.insert(BeanUtil.convert(req, SysMessage.class)));
+    }
+
+    @Operation(summary = "修改草稿")
+    @OperateLog(title = "系统消息", subTitle = "修改草稿", operateType = OperateType.UPDATE)
+    @PostMapping("/edit")
+    @CheckPerms("sys_message:edit")
+    public Result<Void> edit(@RequestBody SysMessageReq req) {
+        if (!messageService.checkIsDraft(req.getMsgId())) {
+            return fail("仅草稿可以修改");
+        }
+        return toRes(messageMapper.updateById(BeanUtil.convert(req, SysMessage.class)));
     }
 
     @Operation(summary = "发布公告")
@@ -90,17 +103,6 @@ public class SysMessageController extends BaseController {
         SysMessage update = new SysMessage(msgId);
         update.setStatus(MessageConstants.STATUS_CLOSED);
         return toRes(messageMapper.updateById(update));
-    }
-
-    @Operation(summary = "修改草稿")
-    @OperateLog(title = "系统消息", subTitle = "修改草稿", operateType = OperateType.UPDATE)
-    @PostMapping("/edit")
-    @CheckPerms("sys_message:edit")
-    public Result<Void> edit(@RequestBody SysMessage message) {
-        if (!messageService.checkIsDraft(message.getMsgId())) {
-            return fail("仅草稿可以修改");
-        }
-        return toRes(messageMapper.updateById(message));
     }
 
     @Operation(summary = "删除草稿")

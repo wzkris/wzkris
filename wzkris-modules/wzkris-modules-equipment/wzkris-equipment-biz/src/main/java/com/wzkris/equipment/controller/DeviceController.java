@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -99,7 +99,7 @@ public class DeviceController extends BaseController {
     @PostMapping("/add")
     @CheckPerms("device:add")
     public Result<Void> add(@RequestBody @Validated(ValidationGroups.Insert.class) DeviceReq deviceReq) {
-        Device device = MapstructUtil.convert(deviceReq, Device.class);
+        Device device = BeanUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.insert(device));
     }
 
@@ -108,7 +108,7 @@ public class DeviceController extends BaseController {
     @PostMapping("/edit")
     @CheckPerms("device:edit")
     public Result<Void> edit(@RequestBody DeviceReq deviceReq) {
-        Device device = MapstructUtil.convert(deviceReq, Device.class);
+        Device device = BeanUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.updateById(device));
     }
 

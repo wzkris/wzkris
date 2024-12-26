@@ -2,6 +2,7 @@ package com.wzkris.equipment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -10,6 +11,7 @@ import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.Product;
 import com.wzkris.equipment.domain.req.ProductQueryReq;
+import com.wzkris.equipment.domain.req.ProductReq;
 import com.wzkris.equipment.mapper.ProductMapper;
 import com.wzkris.equipment.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,17 +72,16 @@ public class ProductController extends BaseController {
     @OperateLog(title = "产品管理", subTitle = "添加产品", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("product:add")
-    public Result<Void> add(@RequestBody Product product) {
-        return toRes(productService.insertProduct(product));
+    public Result<Void> add(@RequestBody ProductReq req) {
+        return toRes(productService.insertProduct(BeanUtil.convert(req, Product.class)));
     }
 
     @Operation(summary = "修改产品")
     @OperateLog(title = "产品管理", subTitle = "修改产品", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("product:edit")
-    public Result<Void> edit(@RequestBody Product product) {
-        product.setPdtKey(null);
-        return toRes(productMapper.updateById(product));
+    public Result<Void> edit(@RequestBody ProductReq req) {
+        return toRes(productMapper.updateById(BeanUtil.convert(req, Product.class)));
     }
 
     @Operation(summary = "删除产品")

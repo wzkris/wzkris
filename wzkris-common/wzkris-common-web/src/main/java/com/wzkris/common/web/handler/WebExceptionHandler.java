@@ -4,7 +4,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.DemoModeException;
 import com.wzkris.common.core.exception.base.BaseException;
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -41,7 +41,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Result<?> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',不支持媒体类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.PRECONDITION_FAILED, MessageUtil.message("request.media.error"));
+        return resp(BizCode.PRECONDITION_FAILED, I18nUtil.message("request.media.error"));
     }
 
     /**
@@ -50,7 +50,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',请求数据格式异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return resp(BizCode.PRECONDITION_FAILED, MessageUtil.message("request.param.error"));
+        return resp(BizCode.PRECONDITION_FAILED, I18nUtil.message("request.param.error"));
     }
 
     /**

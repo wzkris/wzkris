@@ -1,5 +1,6 @@
 package com.wzkris.user.domain.req;
 
+import com.wzkris.common.core.annotation.PhoneNumber;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -8,9 +9,10 @@ import lombok.Data;
  */
 @Data
 public class EditPhoneReq {
-    @NotBlank(message = "[phoneNumber] {validate.notnull}")
+    @PhoneNumber
+    @NotBlank(message = "{desc.phonenumber}" + "{validate.notnull}")
     private String phoneNumber;
 
-    @NotBlank(message = "[smsCode] {validate.notnull}")
+    @NotBlank(message = "{desc.smscode}" + "{validate.notnull}")
     private String smsCode;
 }

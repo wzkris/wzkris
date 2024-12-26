@@ -1,7 +1,6 @@
 package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 /**
@@ -10,7 +9,6 @@ import lombok.experimental.FieldNameConstants;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 @FieldNameConstants
 public class AppUserResp {
 
