@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 26/12/2024 15:07:35
+ Date: 26/12/2024 15:39:36
 */
 
 SET NAMES utf8mb4;
@@ -29,7 +29,7 @@ CREATE TABLE `device`  (
   `pdt_id` bigint NOT NULL COMMENT '产品ID',
   `station_id` bigint NULL DEFAULT NULL COMMENT '站点信息',
   `device_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '设备名称',
-  `cmcid` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备通信标识',
+  `cmcid` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备通信标识',
   `longitude` decimal(9, 6) NULL DEFAULT NULL COMMENT '经度',
   `latitude` decimal(8, 6) NULL DEFAULT NULL COMMENT '纬度',
   `online` tinyint(1) NOT NULL DEFAULT 0 COMMENT '在线离线',

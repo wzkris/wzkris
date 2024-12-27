@@ -1,15 +1,15 @@
 package com.wzkris.equipment.domain.req;
 
 import com.wzkris.common.core.annotation.group.ValidationGroups;
-import com.wzkris.common.security.field.annotation.FieldPerms;
+import com.wzkris.common.orm.annotation.FieldPerms;
 import com.wzkris.equipment.domain.Device;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,7 +21,7 @@ public class DeviceReq {
 
     private Long deviceId;
 
-    @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@ps.hasPerms('device:field')")
+    @FieldPerms(groups = ValidationGroups.Update.class)
     @NotNull(message = "{desc.product}" + "{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "产品ID")
     private Long pdtId;
@@ -32,8 +32,8 @@ public class DeviceReq {
     @Schema(description = "设备名称")
     private String deviceName;
 
-    @FieldPerms(perms = FieldPerms.Perms.WRITE, value = "@ps.hasPerms('device:field')")
-    @NotBlank(message = "{desc.cmcid}" + "{validate.notnull}", groups = ValidationGroups.Insert.class)
+    @FieldPerms(groups = ValidationGroups.Update.class)
+    @Size(min = 16, max = 16, message = "{desc.cmcid}" + "{validate.size.illegal}")
     @Schema(description = "通信标识")
     private String cmcid;
 

@@ -9,6 +9,7 @@ import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.CheckFieldPerms;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
@@ -107,6 +108,7 @@ public class DeviceController extends BaseController {
     @OperateLog(title = "设备管理", subTitle = "修改设备", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("device:edit")
+    @CheckFieldPerms(value = "@ps.hasPerms('device:field')", rw = CheckFieldPerms.Perms.WRITE, groups = ValidationGroups.Update.class)
     public Result<Void> edit(@RequestBody DeviceReq deviceReq) {
         Device device = BeanUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.updateById(device));

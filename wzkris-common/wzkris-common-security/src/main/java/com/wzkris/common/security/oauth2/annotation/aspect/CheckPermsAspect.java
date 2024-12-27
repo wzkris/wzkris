@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.Set;
  */
 @Slf4j
 @Aspect
+@Order(-1)
 public class CheckPermsAspect {
 
     @Autowired
