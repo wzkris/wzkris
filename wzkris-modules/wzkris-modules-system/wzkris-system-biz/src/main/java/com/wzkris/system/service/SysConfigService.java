@@ -1,6 +1,8 @@
 package com.wzkris.system.service;
 
 import com.wzkris.system.domain.SysConfig;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
@@ -21,14 +23,14 @@ public interface SysConfigService {
      *
      * @param config 参数配置信息
      */
-    void insertConfig(SysConfig config);
+    boolean insertConfig(SysConfig config);
 
     /**
      * 修改参数配置
      *
      * @param config 参数配置信息
      */
-    void updateConfig(SysConfig config);
+    boolean updateConfig(SysConfig config);
 
     /**
      * 批量删除参数信息
@@ -40,8 +42,9 @@ public interface SysConfigService {
     /**
      * 校验参数键名是否唯一
      *
-     * @param config 参数信息
+     * @param configId  参数ID
+     * @param configKey 参数key
      * @return 结果
      */
-    boolean checkConfigKeyUnique(SysConfig config);
+    boolean checkUsedByConfigKey(@Nullable Long configId, @Nonnull String configKey);
 }

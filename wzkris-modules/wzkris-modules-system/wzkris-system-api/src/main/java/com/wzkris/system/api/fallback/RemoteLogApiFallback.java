@@ -19,7 +19,6 @@ public class RemoteLogApiFallback implements FallbackFactory<RemoteLogApi> {
 
     @Override
     public RemoteLogApi create(Throwable cause) {
-        log.error("-------openfeign触发熔断，系统服务调用失败-------");
         return new RemoteLogApi() {
             @Override
             public void insertOperlog(OperLogReq operLogReq) {
@@ -32,4 +31,5 @@ public class RemoteLogApiFallback implements FallbackFactory<RemoteLogApi> {
             }
         };
     }
+
 }

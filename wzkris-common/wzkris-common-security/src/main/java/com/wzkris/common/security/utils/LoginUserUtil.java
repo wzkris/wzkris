@@ -74,7 +74,7 @@ public class LoginUserUtil extends SecurityUtil {
      *
      * @return 是否
      */
-    public static boolean isAdministrator() {
+    public static boolean isAdmin() {
         return getLoginUser().getAdmin();
     }
 

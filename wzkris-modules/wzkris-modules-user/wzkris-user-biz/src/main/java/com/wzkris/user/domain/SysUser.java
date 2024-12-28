@@ -12,8 +12,6 @@ import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import lombok.experimental.FieldNameConstants;
 
 /**
  * 用户对象 sys_user
@@ -21,13 +19,11 @@ import lombok.experimental.FieldNameConstants;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 @AutoMappers({
         @AutoMapper(target = LoginUser.class),
         @AutoMapper(target = SysUserResp.class)
 })
 @NoArgsConstructor
-@FieldNameConstants
 public class SysUser extends BaseEntity {
 
     @TableId

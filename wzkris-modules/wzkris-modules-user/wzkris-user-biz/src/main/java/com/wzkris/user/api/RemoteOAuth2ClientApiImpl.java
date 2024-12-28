@@ -1,7 +1,7 @@
 package com.wzkris.user.api;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.user.api.domain.response.OAuth2ClientResp;
 import com.wzkris.user.domain.OAuth2Client;
@@ -28,7 +28,7 @@ public class RemoteOAuth2ClientApiImpl implements RemoteOAuth2ClientApi {
     @Override
     public Result<OAuth2ClientResp> getByClientId(String clientid) {
         OAuth2Client oAuth2Client = oAuth2ClientMapper.selectByClientId(clientid);
-        OAuth2ClientResp clientDTO = MapstructUtil.convert(oAuth2Client, OAuth2ClientResp.class);
+        OAuth2ClientResp clientDTO = BeanUtil.convert(oAuth2Client, OAuth2ClientResp.class);
         return ok(clientDTO);
     }
 }

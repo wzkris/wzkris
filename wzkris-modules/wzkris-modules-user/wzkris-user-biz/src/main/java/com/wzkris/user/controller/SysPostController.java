@@ -3,7 +3,7 @@ package com.wzkris.user.controller;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -14,6 +14,7 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.domain.export.SysPostExport;
 import com.wzkris.user.domain.req.SysPostQueryReq;
+import com.wzkris.user.domain.req.SysPostReq;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysTenantService;
@@ -68,19 +69,19 @@ public class SysPostController extends BaseController {
     @OperateLog(title = "岗位管理", subTitle = "新增岗位", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("post:add")
-    public Result<Void> add(@Validated @RequestBody SysPost sysPost) {
+    public Result<Void> add(@Validated @RequestBody SysPostReq req) {
         if (!tenantService.checkPostLimit(LoginUserUtil.getTenantId())) {
             return fail("岗位数量已达上限，请联系管理员");
         }
-        return toRes(postMapper.insert(sysPost));
+        return toRes(postMapper.insert(BeanUtil.convert(req, SysPost.class)));
     }
 
     @Operation(summary = "修改岗位")
     @OperateLog(title = "岗位管理", subTitle = "修改岗位", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("post:edit")
-    public Result<Void> edit(@Validated @RequestBody SysPost sysPost) {
-        return toRes(postMapper.updateById(sysPost));
+    public Result<Void> edit(@Validated @RequestBody SysPostReq req) {
+        return toRes(postMapper.updateById(BeanUtil.convert(req, SysPost.class)));
     }
 
     @Operation(summary = "删除岗位")
@@ -101,7 +102,7 @@ public class SysPostController extends BaseController {
     @CheckPerms("post:export")
     public void export(HttpServletResponse response, SysPostQueryReq req) {
         List<SysPost> list = postMapper.selectList(this.buildQueryWrapper(req));
-        List<SysPostExport> convert = MapstructUtil.convert(list, SysPostExport.class);
+        List<SysPostExport> convert = BeanUtil.convert(list, SysPostExport.class);
         ExcelUtil.exportExcel(convert, "岗位数据", SysPostExport.class, response);
     }
 }

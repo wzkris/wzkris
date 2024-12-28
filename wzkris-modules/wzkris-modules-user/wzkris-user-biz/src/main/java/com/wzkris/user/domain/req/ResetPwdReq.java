@@ -9,9 +9,9 @@ import lombok.Data;
  */
 @Data
 public class ResetPwdReq {
-    @NotNull(message = "[userId] {validate.notnull}")
+    @NotNull(message = "id {validate.notnull}")
     private Long userId;
 
-    @NotBlank(message = "[password] {validate.notnull}")
+    @NotBlank(message = "{desc.pwd}" + "{validate.notnull}")
     private String password;
 }

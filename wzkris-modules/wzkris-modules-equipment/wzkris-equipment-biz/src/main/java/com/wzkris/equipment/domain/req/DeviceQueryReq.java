@@ -14,10 +14,13 @@ public class DeviceQueryReq {
     private String deviceName;
 
     @Schema(description = "站点ID")
-    private String stationId;
+    private Long stationId;
 
-    @Schema(description = "设备号")
-    private String serialNo;
+    @Schema(description = "产品ID")
+    private Long pdtId;
+
+    @Schema(description = "通讯标识")
+    private String cmcid;
 
     @Schema(description = "连接状态")
     private Boolean online;

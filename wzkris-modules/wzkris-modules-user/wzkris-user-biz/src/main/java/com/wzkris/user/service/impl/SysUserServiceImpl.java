@@ -12,7 +12,9 @@ import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -115,7 +117,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
     }
 
-    public void insertUserPost(Long userId, List<Long> postIds) {
+    private void insertUserPost(Long userId, List<Long> postIds) {
         if (ObjUtil.isNotEmpty(postIds)) {
             List<SysUserPost> list = postIds.stream()
                     .map(postId -> new SysUserPost(userId, postId))
@@ -138,17 +140,27 @@ public class SysUserServiceImpl implements SysUserService {
                 .orderByDesc(SysUser::getUserId);
     }
 
-    public boolean checkUserUnique(SysUser user) {
+    @Override
+    public boolean checkUsedByUsername(@Nullable Long userId, @NotNull String username) {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
-                    .eq(StringUtil.isNotNull(user.getUsername()), SysUser::getUsername, user.getUsername())
-                    .eq(StringUtil.isNotNull(user.getPhoneNumber()), SysUser::getPhoneNumber, user.getPhoneNumber())
-                    .eq(StringUtil.isNotNull(user.getEmail()), SysUser::getEmail, user.getEmail())
-                    .ne(ObjUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId());
+                    .eq(SysUser::getUsername, username)
+                    .ne(ObjUtil.isNotNull(userId), SysUser::getUserId, userId);
             return userMapper.exists(lqw);
         });
     }
 
+    @Override
+    public boolean checkUsedByPhoneNumber(@org.jetbrains.annotations.Nullable Long userId, @NotNull String phonenumber) {
+        return DynamicTenantUtil.ignore(() -> {
+            LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
+                    .eq(SysUser::getPhoneNumber, phonenumber)
+                    .ne(ObjUtil.isNotNull(userId), SysUser::getUserId, userId);
+            return userMapper.exists(lqw);
+        });
+    }
+
+    @Override
     public void checkDataScopes(List<Long> userIds) {
         userIds = userIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(userIds)) {

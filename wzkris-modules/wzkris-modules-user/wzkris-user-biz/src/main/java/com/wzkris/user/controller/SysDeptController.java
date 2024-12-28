@@ -3,6 +3,7 @@ package com.wzkris.user.controller;
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -11,6 +12,7 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
+import com.wzkris.user.domain.req.SysDeptReq;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.service.SysDeptService;
 import com.wzkris.user.service.SysTenantService;
@@ -67,40 +69,37 @@ public class SysDeptController extends BaseController {
     @OperateLog(title = "部门管理", subTitle = "新增部门", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("dept:add")
-    public Result<?> add(@Validated @RequestBody SysDept dept) {
+    public Result<?> add(@Validated @RequestBody SysDeptReq req) {
         // 校验权限
-        deptService.checkDataScopes(dept.getParentId());
+        deptService.checkDataScopes(req.getParentId());
         if (!tenantService.checkDeptLimit(LoginUserUtil.getTenantId())) {
             return fail("部门数量已达上限，请联系管理员");
         }
-        if (StringUtil.isNotNull(dept.getParentId()) && dept.getParentId() != 0) {
-            SysDept info = deptMapper.selectById(dept.getParentId());
+        if (StringUtil.isNotNull(req.getParentId()) && req.getParentId() != 0) {
+            SysDept info = deptMapper.selectById(req.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点
             if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
                 return fail("无法在被禁用的部门下添加下级");
             }
-            dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
         }
-        deptService.insertDept(dept);
-        return ok();
+        return toRes(deptService.insertDept(BeanUtil.convert(req, SysDept.class)));
     }
 
     @Operation(summary = "修改部门")
     @OperateLog(title = "部门管理", subTitle = "修改部门", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("dept:edit")
-    public Result<?> edit(@Validated @RequestBody SysDept dept) {
+    public Result<?> edit(@Validated @RequestBody SysDeptReq req) {
         // 校验权限
-        deptService.checkDataScopes(dept.getDeptId());
-        if (ObjUtil.equals(dept.getParentId(), dept.getDeptId())) {
-            return fail("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
+        deptService.checkDataScopes(req.getDeptId());
+        if (ObjUtil.equals(req.getParentId(), req.getDeptId())) {
+            return fail("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
         }
-        else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, dept.getStatus())
-                && deptMapper.listNormalChildrenById(dept.getDeptId()) > 0) {
+        else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
+                && deptMapper.listNormalChildrenById(req.getDeptId()) > 0) {
             return fail("该部门包含未停用的子部门");
         }
-        deptService.updateDept(dept);
-        return ok();
+        return toRes(deptService.updateDept(BeanUtil.convert(req, SysDept.class)));
     }
 
     @Operation(summary = "删除部门")
@@ -108,13 +107,13 @@ public class SysDeptController extends BaseController {
     @PostMapping("/remove")
     @CheckPerms("dept:remove")
     public Result<?> remove(@RequestBody Long deptId) {
+        deptService.checkDataScopes(deptId);
         if (deptService.hasChildByDeptId(deptId)) {
             return fail("存在下级部门,不允许删除");
         }
         if (deptService.checkDeptExistUser(deptId)) {
             return fail("部门存在用户,不允许删除");
         }
-        deptService.checkDataScopes(deptId);
         deptService.deleteById(deptId);
         return ok();
     }

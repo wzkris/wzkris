@@ -5,7 +5,6 @@ import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * @author : wzkris
@@ -15,7 +14,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @AutoMapper(target = SysUser.class)
-@Accessors(chain = true)
 @NoArgsConstructor
 public class SysUserVO extends SysUser {
 

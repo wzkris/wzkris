@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.base;
 
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import org.springframework.lang.Nullable;
 
 /**
@@ -46,7 +46,7 @@ public class BaseException extends RuntimeException {
     @Nullable
     public String getMessage() {
         if (this.code != null) {
-            return MessageUtil.message(this.code, this.args);
+            return I18nUtil.message(this.code, this.args);
         }
         return null;
     }
@@ -55,7 +55,7 @@ public class BaseException extends RuntimeException {
         return this.modules;
     }
 
-    public final int getBiz() {
+    public final int getCode() {
         return this.biz;
     }
 

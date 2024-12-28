@@ -5,10 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.CheckFieldPerms;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
@@ -54,8 +55,9 @@ public class DeviceController extends BaseController {
     private LambdaQueryWrapper<Device> buildQueryWrapper(DeviceQueryReq queryReq) {
         return new LambdaQueryWrapper<Device>()
                 .like(StringUtil.isNotBlank(queryReq.getDeviceName()), Device::getDeviceName, queryReq.getDeviceName())
-                .like(StringUtil.isNotBlank(queryReq.getSerialNo()), Device::getCmcid, queryReq.getSerialNo())
-                .eq(StringUtil.isNotBlank(queryReq.getStationId()), Device::getStationId, queryReq.getStationId())
+                .like(StringUtil.isNotBlank(queryReq.getCmcid()), Device::getCmcid, queryReq.getCmcid())
+                .eq(StringUtil.isNotNull(queryReq.getStationId()), Device::getStationId, queryReq.getStationId())
+                .eq(StringUtil.isNotNull(queryReq.getPdtId()), Device::getPdtId, queryReq.getPdtId())
                 .eq(StringUtil.isNotBlank(queryReq.getStatus()), Device::getStatus, queryReq.getStatus())
                 .eq(StringUtil.isNotNull(queryReq.getOnline()), Device::getOnline, queryReq.getOnline())
                 .orderByDesc(Device::getOnline, Device::getDeviceId);
@@ -98,7 +100,7 @@ public class DeviceController extends BaseController {
     @PostMapping("/add")
     @CheckPerms("device:add")
     public Result<Void> add(@RequestBody @Validated(ValidationGroups.Insert.class) DeviceReq deviceReq) {
-        Device device = MapstructUtil.convert(deviceReq, Device.class);
+        Device device = BeanUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.insert(device));
     }
 
@@ -106,8 +108,9 @@ public class DeviceController extends BaseController {
     @OperateLog(title = "设备管理", subTitle = "修改设备", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("device:edit")
+    @CheckFieldPerms(value = "@ps.hasPerms('device:field')", rw = CheckFieldPerms.Perms.WRITE, groups = ValidationGroups.Update.class)
     public Result<Void> edit(@RequestBody DeviceReq deviceReq) {
-        Device device = MapstructUtil.convert(deviceReq, Device.class);
+        Device device = BeanUtil.convert(deviceReq, Device.class);
         return toRes(deviceMapper.updateById(device));
     }
 

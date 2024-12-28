@@ -2,6 +2,7 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -10,6 +11,7 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.req.SysMenuQueryReq;
+import com.wzkris.user.domain.req.SysMenuReq;
 import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +48,7 @@ public class SysMenuController extends BaseController {
 
     private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!LoginUserUtil.isAdministrator()) {
+        if (!LoginUserUtil.isAdmin()) {
             menuIds = menuService.listMenuIdByUserId(LoginUserUtil.getUserId());
         }
         return new LambdaQueryWrapper<SysMenu>()
@@ -67,25 +69,25 @@ public class SysMenuController extends BaseController {
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("menu:add")
-    public Result<Void> add(@Valid @RequestBody SysMenu menu) {
-        if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
-            return fail("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
+    public Result<Void> add(@Valid @RequestBody SysMenuReq req) {
+        if (req.getIsFrame() && !StringUtil.ishttp(req.getPath())) {
+            return fail("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
-        return toRes(menuMapper.insert(menu));
+        return toRes(menuMapper.insert(BeanUtil.convert(req, SysMenu.class)));
     }
 
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("menu:edit")
-    public Result<Void> edit(@Valid @RequestBody SysMenu menu) {
-        if (menu.getIsFrame() && !StringUtil.ishttp(menu.getPath())) {
-            return fail("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
+    public Result<Void> edit(@Valid @RequestBody SysMenuReq req) {
+        if (req.getIsFrame() && !StringUtil.ishttp(req.getPath())) {
+            return fail("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
-        else if (menu.getMenuId().equals(menu.getParentId())) {
-            return fail("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
+        else if (req.getMenuId().equals(req.getParentId())) {
+            return fail("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
         }
-        return toRes(menuMapper.updateById(menu));
+        return toRes(menuMapper.updateById(BeanUtil.convert(req, SysMenu.class)));
     }
 
     @Operation(summary = "删除菜单")

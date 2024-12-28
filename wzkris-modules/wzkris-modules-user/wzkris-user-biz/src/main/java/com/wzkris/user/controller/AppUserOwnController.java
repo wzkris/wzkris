@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.web.model.BaseController;
@@ -38,7 +38,7 @@ public class AppUserOwnController extends BaseController {
     @GetMapping("/info")
     public Result<AppUserOwnVO> appUser() {
         ClientUser clientUser = ClientUserUtil.getClientUser();
-        AppUserOwnVO appUserOwnVO = MapstructUtil.convert(clientUser, AppUserOwnVO.class);
+        AppUserOwnVO appUserOwnVO = BeanUtil.convert(clientUser, AppUserOwnVO.class);
         return ok(appUserOwnVO);
     }
 

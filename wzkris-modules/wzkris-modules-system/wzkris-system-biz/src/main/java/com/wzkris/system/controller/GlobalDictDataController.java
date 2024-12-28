@@ -2,6 +2,7 @@ package com.wzkris.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -9,6 +10,8 @@ import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.GlobalDictData;
+import com.wzkris.system.domain.req.GlobalDictDataQueryReq;
+import com.wzkris.system.domain.req.GlobalDictDataReq;
 import com.wzkris.system.mapper.GlobalDictDataMapper;
 import com.wzkris.system.service.GlobalDictDataService;
 import com.wzkris.system.utils.DictCacheUtil;
@@ -36,13 +39,18 @@ public class GlobalDictDataController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @CheckPerms("dict:list")
-    public Result<Page<GlobalDictData>> list(GlobalDictData globalDictData) {
+    public Result<Page<GlobalDictData>> list(GlobalDictDataQueryReq queryReq) {
         startPage();
-        LambdaQueryWrapper<GlobalDictData> lqw = new LambdaQueryWrapper<GlobalDictData>()
-                .like(StringUtil.isNotBlank(globalDictData.getDictType()), GlobalDictData::getDictType, globalDictData.getDictType())
-                .like(StringUtil.isNotBlank(globalDictData.getDictLabel()), GlobalDictData::getDictLabel, globalDictData.getDictLabel())
-                .orderByAsc(GlobalDictData::getDictSort);
+        LambdaQueryWrapper<GlobalDictData> lqw = this.buildQueryWrapper(queryReq);
         return getDataTable(dictDataMapper.selectList(lqw));
+    }
+
+    private LambdaQueryWrapper<GlobalDictData> buildQueryWrapper(GlobalDictDataQueryReq queryReq) {
+        return new LambdaQueryWrapper<GlobalDictData>()
+                .like(StringUtil.isNotBlank(queryReq.getDictType()), GlobalDictData::getDictType, queryReq.getDictType())
+                .like(StringUtil.isNotBlank(queryReq.getDictLabel()), GlobalDictData::getDictLabel, queryReq.getDictLabel())
+                .eq(StringUtil.isNotBlank(queryReq.getIsDefault()), GlobalDictData::getIsDefault, queryReq.getIsDefault())
+                .orderByDesc(GlobalDictData::getDictSort, GlobalDictData::getDataId);
     }
 
     @Operation(summary = "详情")
@@ -66,8 +74,8 @@ public class GlobalDictDataController extends BaseController {
     @OperateLog(title = "字典数据", subTitle = "新增字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("dict:add")
-    public Result<?> add(@Validated @RequestBody GlobalDictData dict) {
-        dictDataService.insertDictData(dict);
+    public Result<?> add(@Validated @RequestBody GlobalDictDataReq req) {
+        dictDataService.insertDictData(BeanUtil.convert(req, GlobalDictData.class));
         return ok();
     }
 
@@ -75,8 +83,8 @@ public class GlobalDictDataController extends BaseController {
     @OperateLog(title = "字典数据", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("dict:edit")
-    public Result<?> edit(@Validated @RequestBody GlobalDictData dict) {
-        dictDataService.updateDictData(dict);
+    public Result<?> edit(@Validated @RequestBody GlobalDictDataReq req) {
+        dictDataService.updateDictData(BeanUtil.convert(req, GlobalDictData.class));
         return ok();
     }
 

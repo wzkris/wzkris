@@ -52,10 +52,10 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
         else if (e instanceof BaseException bizEx) {
             // 若状态码为远程调用异常，则返回前端数据需要覆盖
             String errorMsg = bizEx.getMessage();
-            if (bizEx.getBiz() == BizCode.RPC_INVOCATION.value()) {
+            if (bizEx.getCode() == BizCode.RPC_INVOCATION.value()) {
                 errorMsg = BizCode.RPC_INVOCATION.desc();
             }
-            return WebFluxUtil.writeResponse(response, bizEx.getBiz(), errorMsg);
+            return WebFluxUtil.writeResponse(response, bizEx.getCode(), errorMsg);
         }
 
         // 返回500内部异常

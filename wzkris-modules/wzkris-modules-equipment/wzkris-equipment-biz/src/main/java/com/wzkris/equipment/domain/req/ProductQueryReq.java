@@ -13,9 +13,6 @@ public class ProductQueryReq {
     @Schema(description = "产品名称")
     private String pdtName;
 
-    @Schema(description = "状态(字典值：0启用  1停用)")
-    private String status;
-
     @Schema(description = "产品类型 0 直连产品 1 网关产品")
     private String pdtType;
 }

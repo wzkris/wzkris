@@ -2,7 +2,7 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -83,7 +83,7 @@ public class AppUserController extends BaseController {
     @CheckPerms("app_user:export")
     public void export(HttpServletResponse response, AppUserQueryReq req) {
         List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
-        List<AppUserExport> convert = MapstructUtil.convert(list, AppUserExport.class);
+        List<AppUserExport> convert = BeanUtil.convert(list, AppUserExport.class);
         ExcelUtil.exportExcel(convert, "用户数据", AppUserExport.class, response);
     }
 }

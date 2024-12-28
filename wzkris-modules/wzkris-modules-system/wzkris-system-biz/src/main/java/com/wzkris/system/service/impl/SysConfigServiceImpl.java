@@ -8,6 +8,8 @@ import com.wzkris.system.listener.event.RefreshConfigEvent;
 import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
 import com.wzkris.system.utils.ConfigCacheUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,17 +35,21 @@ public class SysConfigServiceImpl implements SysConfigService {
     }
 
     @Override
-    public void insertConfig(SysConfig config) {
-        if (configMapper.insert(config) > 0) {
+    public boolean insertConfig(SysConfig config) {
+        boolean success = configMapper.insert(config) > 0;
+        if (success) {
             SpringUtil.getContext().publishEvent(new RefreshConfigEvent(config.getConfigKey(), config.getConfigValue()));
         }
+        return success;
     }
 
     @Override
-    public void updateConfig(SysConfig config) {
-        if (configMapper.updateById(config) > 0) {
+    public boolean updateConfig(SysConfig config) {
+        boolean success = configMapper.updateById(config) > 0;
+        if (success) {
             SpringUtil.getContext().publishEvent(new RefreshConfigEvent(config.getConfigKey(), config.getConfigValue()));
         }
+        return success;
     }
 
     @Override
@@ -55,10 +61,10 @@ public class SysConfigServiceImpl implements SysConfigService {
     }
 
     @Override
-    public boolean checkConfigKeyUnique(SysConfig config) {
+    public boolean checkUsedByConfigKey(@Nullable Long configId, @Nonnull String configKey) {
         LambdaQueryWrapper<SysConfig> lqw = new LambdaQueryWrapper<SysConfig>()
-                .eq(SysConfig::getConfigKey, config.getConfigKey())
-                .ne(ObjUtil.isNotNull(config.getConfigId()), SysConfig::getConfigId, config.getConfigId());
+                .eq(SysConfig::getConfigKey, configKey)
+                .ne(ObjUtil.isNotNull(configId), SysConfig::getConfigId, configId);
         return configMapper.exists(lqw);
     }
 

@@ -74,7 +74,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public String getRoleGroup() {
-        if (LoginUserUtil.isAdministrator()) {
+        if (LoginUserUtil.isAdmin()) {
             return "超级管理员";
         }
         List<SysRole> roles = this.listByUserId(LoginUserUtil.getUserId());

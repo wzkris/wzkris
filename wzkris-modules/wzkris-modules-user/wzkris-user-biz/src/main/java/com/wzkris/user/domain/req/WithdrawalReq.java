@@ -18,7 +18,7 @@ public class WithdrawalReq {
     @DecimalMin(value = "1.00", message = "提现金额最少为1元")
     private BigDecimal amount;
 
-    @NotBlank(message = "请输入操作密码")
-    @Size(min = 6, max = 6, message = "操作密码错误")
+    @NotBlank(message = "{desc.pwd}" + "{validate.notnull}")
+    @Size(min = 6, max = 6, message = "{desc.pwd}" + "{validate.size.illegal}")
     private String operPwd;
 }

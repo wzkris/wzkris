@@ -60,7 +60,7 @@ public class SysPostServiceImpl implements SysPostService {
 
     @Override
     public String getPostGroup() {
-        if (LoginUserUtil.isAdministrator()) {
+        if (LoginUserUtil.isAdmin()) {
             return "超级管理员";
         }
         List<SysPost> sysPosts = this.listByUserId(LoginUserUtil.getUserId());

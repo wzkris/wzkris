@@ -92,7 +92,7 @@ public class SysUserOwnController extends BaseController {
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = LoginUserUtil.getUserId();
 
-        if (userService.checkUserUnique(new SysUser(userId).setPhoneNumber(req.getPhoneNumber()))) {
+        if (userService.checkUsedByPhoneNumber(userId, req.getPhoneNumber())) {
             return fail("该手机号已被使用");
         }
         // 验证

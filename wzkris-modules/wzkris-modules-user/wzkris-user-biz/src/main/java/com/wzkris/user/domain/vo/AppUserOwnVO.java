@@ -7,7 +7,6 @@ import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * @author : wzkris
@@ -16,7 +15,6 @@ import lombok.experimental.Accessors;
  * @date : 2024/4/13 14:13
  */
 @Data
-@Accessors(chain = true)
 @AutoMapper(target = ClientUser.class)
 public class AppUserOwnVO {
 

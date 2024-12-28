@@ -2,7 +2,7 @@ package com.wzkris.common.security.oauth2.utils;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.exception.OAuth2AuthenticationI18nException;
@@ -67,16 +67,16 @@ public final class OAuth2ExceptionUtil {
         else if (errorCode.startsWith("unsupported_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE ->
-                        Result.resp(BizCode.BAD_REQUEST, MessageUtil.message("oauth2.unsupport.granttype"));
+                        Result.resp(BizCode.BAD_REQUEST, I18nUtil.message("oauth2.unsupport.granttype"));
                 case OAuth2ErrorCodes.UNSUPPORTED_TOKEN_TYPE ->
-                        Result.resp(BizCode.BAD_REQUEST, MessageUtil.message("oauth2.unsupport.tokentype"));
+                        Result.resp(BizCode.BAD_REQUEST, I18nUtil.message("oauth2.unsupport.tokentype"));
                 case OAuth2ErrorCodes.UNSUPPORTED_RESPONSE_TYPE ->
-                        Result.resp(BizCode.BAD_REQUEST, MessageUtil.message("oauth2.unsupport.responsetype"));
+                        Result.resp(BizCode.BAD_REQUEST, I18nUtil.message("oauth2.unsupport.responsetype"));
                 default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
             };
         }
         else if (errorCode.equals(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT)) {
-            return Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, MessageUtil.message("oauth2.unsupport.granttype")));
+            return Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, I18nUtil.message("oauth2.unsupport.granttype")));
         }
         else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
@@ -85,7 +85,7 @@ public final class OAuth2ExceptionUtil {
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
                         Result.resp(BizCode.UNAUTHORIZED, StringUtil.nullToDefault(errorMsg, BizCode.UNAUTHORIZED.desc()));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
-                        Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, MessageUtil.message("oauth2.scope.invalid")));
+                        Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, I18nUtil.message("oauth2.scope.invalid")));
                 default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
             };
         }

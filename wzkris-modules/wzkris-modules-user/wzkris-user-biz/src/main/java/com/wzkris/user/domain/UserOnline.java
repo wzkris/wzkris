@@ -3,7 +3,6 @@ package com.wzkris.user.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * 当前在线会话
@@ -11,7 +10,6 @@ import lombok.experimental.Accessors;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 public class UserOnline {
 

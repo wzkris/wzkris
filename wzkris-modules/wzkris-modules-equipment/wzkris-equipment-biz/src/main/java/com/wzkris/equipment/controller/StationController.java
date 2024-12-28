@@ -3,6 +3,7 @@ package com.wzkris.equipment.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -13,6 +14,7 @@ import com.wzkris.equipment.domain.Station;
 import com.wzkris.equipment.domain.req.BindingReq;
 import com.wzkris.equipment.domain.req.EditStatusReq;
 import com.wzkris.equipment.domain.req.StationQueryReq;
+import com.wzkris.equipment.domain.req.StationReq;
 import com.wzkris.equipment.mapper.StationMapper;
 import com.wzkris.equipment.service.StationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,16 +78,16 @@ public class StationController extends BaseController {
     @OperateLog(title = "站点管理", subTitle = "添加站点", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("station:add")
-    public Result<Void> add(@RequestBody @Valid Station station) {
-        return toRes(stationMapper.insert(station));
+    public Result<Void> add(@RequestBody @Valid StationReq req) {
+        return toRes(stationMapper.insert(BeanUtil.convert(req, Station.class)));
     }
 
     @Operation(summary = "修改站点")
     @OperateLog(title = "站点管理", subTitle = "修改站点", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("station:edit")
-    public Result<Void> edit(@RequestBody @Valid Station station) {
-        return toRes(stationMapper.updateById(station));
+    public Result<Void> edit(@RequestBody @Valid StationReq req) {
+        return toRes(stationMapper.updateById(BeanUtil.convert(req, Station.class)));
     }
 
     @Operation(summary = "修改站点状态")

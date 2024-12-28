@@ -3,7 +3,7 @@ package com.wzkris.common.security.oauth2.handler;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -26,6 +26,6 @@ public final class AccessDeniedHandlerImpl implements AccessDeniedHandler {
         log.error(accessDeniedException.getMessage());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.FORBID, MessageUtil.message("request.forbid")));
+        JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.FORBID, I18nUtil.message("request.forbid")));
     }
 }

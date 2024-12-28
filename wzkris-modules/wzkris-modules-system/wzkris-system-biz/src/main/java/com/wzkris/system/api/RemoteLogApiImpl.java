@@ -1,6 +1,6 @@
 package com.wzkris.system.api;
 
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.system.api.domain.request.LoginLogReq;
 import com.wzkris.system.api.domain.request.OperLogReq;
@@ -29,13 +29,13 @@ public class RemoteLogApiImpl implements RemoteLogApi {
 
     @Override
     public void insertOperlog(@RequestBody OperLogReq operLogReq) {
-        SysOperLog sysOperLog = MapstructUtil.convert(operLogReq, SysOperLog.class);
+        SysOperLog sysOperLog = BeanUtil.convert(operLogReq, SysOperLog.class);
         operLogMapper.insert(sysOperLog);
     }
 
     @Override
     public void insertLoginlog(@RequestBody LoginLogReq loginLogReq) {
-        SysLoginLog sysLoginLog = MapstructUtil.convert(loginLogReq, SysLoginLog.class);
+        SysLoginLog sysLoginLog = BeanUtil.convert(loginLogReq, SysLoginLog.class);
         loginLogMapper.insert(sysLoginLog);
     }
 }

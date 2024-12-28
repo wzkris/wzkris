@@ -1,6 +1,7 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysUser;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import java.util.Collections;
@@ -69,11 +70,20 @@ public interface SysUserService {
     void allocateRoles(Long userId, List<Long> roleIds);
 
     /**
-     * 校验用户是否唯一
+     * 校验用户名是否被使用
      *
-     * @param user 筛选条件
+     * @param userId   用户ID
+     * @param username 用户名
      */
-    boolean checkUserUnique(SysUser user);
+    boolean checkUsedByUsername(@Nullable Long userId, @Nonnull String username);
+
+    /**
+     * 校验手机号是否被使用
+     *
+     * @param userId      用户ID
+     * @param phonenumber 手机号
+     */
+    boolean checkUsedByPhoneNumber(@Nullable Long userId, @Nonnull String phonenumber);
 
     /**
      * 校验是否有数据权限

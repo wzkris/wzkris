@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 19/12/2024 11:23:36
+ Date: 26/12/2024 10:25:01
 */
 
 SET NAMES utf8mb4;
@@ -151,8 +151,8 @@ CREATE TABLE `sys_dept`  (
 -- Records of sys_dept
 -- ----------------------------
 INSERT INTO `sys_dept` VALUES (100, 0, 0, '0', '最高部门', '0', 0, '15888888888', '', 1713334134616, 1, 20240403145415, 1);
-INSERT INTO `sys_dept` VALUES (105, 0, 114, '0,100,114', 'jeecg集团', '1', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 1731919947405, 1);
-INSERT INTO `sys_dept` VALUES (114, 0, 100, '0,100', 'pig开源联盟', '0', 0, NULL, NULL, 1713334134616, 1, 20240403145228, 1);
+INSERT INTO `sys_dept` VALUES (105, 0, 114, '0,100,114', 'jeecg集团', '1', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 1735110050181, 1);
+INSERT INTO `sys_dept` VALUES (114, 0, 1858433026613760002, '0,100,1858433026613760002', 'pig开源联盟', '0', 0, NULL, NULL, 1713334134616, 1, 1735110050184, 1);
 INSERT INTO `sys_dept` VALUES (1775382319191453698, 1774671331416821762, 0, '0', '默认租户部门', '0', 0, NULL, NULL, 1713334134616, 1774671331412627456, 20240412112834, 1);
 INSERT INTO `sys_dept` VALUES (1775387364419072002, 1774671331416821762, 1775382319191453698, '0,1775382319191453698', '默认租户销售部门', '0', 0, '13566699669', NULL, 1713334134616, 1774671331412627456, 20240403132635, 1);
 INSERT INTO `sys_dept` VALUES (1857293481839091714, 1853719125330489346, 0, '0', '2号', '0', 0, NULL, NULL, 1731648247581, 1, 1731648247581, 1);
@@ -369,9 +369,9 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1733812623206, 1);
+INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1735117194408, 1);
 INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1732349385269, 1);
-INSERT INTO `sys_role` VALUES (4, 0, '4', '员工', '1', 5, 1, 1, 1713334134616, 1, 1732348738671, 1);
+INSERT INTO `sys_role` VALUES (4, 0, '2', '员工', '1', 5, 1, 0, 1713334134616, 1, 1735088705511, 1);
 INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '3', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1734318887182, 1);
 INSERT INTO `sys_role` VALUES (1858701878891327490, 0, '4', 'xxx', '0', 0, 1, 1, 1731984035599, 2, 1731984035599, 2);
 
@@ -388,6 +388,8 @@ CREATE TABLE `sys_role_dept`  (
 -- ----------------------------
 -- Records of sys_role_dept
 -- ----------------------------
+INSERT INTO `sys_role_dept` VALUES (4, 105);
+INSERT INTO `sys_role_dept` VALUES (4, 114);
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -473,6 +475,41 @@ INSERT INTO `sys_role_menu` VALUES (3, 2208);
 INSERT INTO `sys_role_menu` VALUES (3, 2209);
 INSERT INTO `sys_role_menu` VALUES (3, 2210);
 INSERT INTO `sys_role_menu` VALUES (3, 2211);
+INSERT INTO `sys_role_menu` VALUES (4, 4);
+INSERT INTO `sys_role_menu` VALUES (4, 5);
+INSERT INTO `sys_role_menu` VALUES (4, 400);
+INSERT INTO `sys_role_menu` VALUES (4, 401);
+INSERT INTO `sys_role_menu` VALUES (4, 402);
+INSERT INTO `sys_role_menu` VALUES (4, 403);
+INSERT INTO `sys_role_menu` VALUES (4, 404);
+INSERT INTO `sys_role_menu` VALUES (4, 500);
+INSERT INTO `sys_role_menu` VALUES (4, 501);
+INSERT INTO `sys_role_menu` VALUES (4, 502);
+INSERT INTO `sys_role_menu` VALUES (4, 3121);
+INSERT INTO `sys_role_menu` VALUES (4, 3122);
+INSERT INTO `sys_role_menu` VALUES (4, 3123);
+INSERT INTO `sys_role_menu` VALUES (4, 3124);
+INSERT INTO `sys_role_menu` VALUES (4, 3125);
+INSERT INTO `sys_role_menu` VALUES (4, 3126);
+INSERT INTO `sys_role_menu` VALUES (4, 3226);
+INSERT INTO `sys_role_menu` VALUES (4, 3227);
+INSERT INTO `sys_role_menu` VALUES (4, 3228);
+INSERT INTO `sys_role_menu` VALUES (4, 3229);
+INSERT INTO `sys_role_menu` VALUES (4, 3230);
+INSERT INTO `sys_role_menu` VALUES (4, 3231);
+INSERT INTO `sys_role_menu` VALUES (4, 3301);
+INSERT INTO `sys_role_menu` VALUES (4, 3302);
+INSERT INTO `sys_role_menu` VALUES (4, 3303);
+INSERT INTO `sys_role_menu` VALUES (4, 3304);
+INSERT INTO `sys_role_menu` VALUES (4, 3401);
+INSERT INTO `sys_role_menu` VALUES (4, 3402);
+INSERT INTO `sys_role_menu` VALUES (4, 3403);
+INSERT INTO `sys_role_menu` VALUES (4, 3404);
+INSERT INTO `sys_role_menu` VALUES (4, 4102);
+INSERT INTO `sys_role_menu` VALUES (4, 4204);
+INSERT INTO `sys_role_menu` VALUES (4, 4205);
+INSERT INTO `sys_role_menu` VALUES (4, 4206);
+INSERT INTO `sys_role_menu` VALUES (4, 4207);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 203);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 205);
@@ -528,10 +565,10 @@ INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', 
 DROP TABLE IF EXISTS `sys_tenant_package`;
 CREATE TABLE `sys_tenant_package`  (
   `package_id` bigint NOT NULL COMMENT '租户套餐id',
-  `package_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '套餐名称',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `package_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '套餐名称',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
   `menu_ids` json NOT NULL COMMENT '套餐绑定的菜单',
-  `is_menu_display` tinyint(1) NULL DEFAULT 1 COMMENT '菜单树选择项是否关联显示',
+  `is_menu_display` tinyint(1) NOT NULL DEFAULT 1 COMMENT '菜单树选择项是否关联显示',
   `remark` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '备注',
   `create_id` bigint NOT NULL COMMENT '创建者',
   `create_at` bigint NOT NULL COMMENT '创建时间',
@@ -543,8 +580,8 @@ CREATE TABLE `sys_tenant_package`  (
 -- ----------------------------
 -- Records of sys_tenant_package
 -- ----------------------------
-INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '1', '[]', 1, NULL, 1, 1713334134616, 1, 1733887132701);
-INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 401, 151, 1064, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130, 1125, 1126, 1127, 3228, 3226, 400, 3126, 3125, 3124, 3123, 3122, 3121]', 1, '通用租户套餐', 1, 1713334134616, 1, 1734501385880);
+INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '1', '[]', 1, NULL, 1, 1713334134616, 1, 1735088764731);
+INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 401, 151, 1064, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130, 1125, 1126, 1127, 3228, 400, 3126, 3125, 3124, 3123, 3122, 3121]', 1, '通用租户套餐', 1, 1713334134616, 1, 1734747347377);
 
 -- ----------------------------
 -- Table structure for sys_tenant_wallet
