@@ -1,12 +1,12 @@
 package com.wzkris.user.api.fallback;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.openfeign.utils.FeignErrorUtil;
 import com.wzkris.user.api.RemoteSysUserApi;
-import com.wzkris.user.api.domain.dto.LoginInfoDTO;
-import com.wzkris.user.api.domain.dto.QueryPermsDTO;
-import com.wzkris.user.api.domain.dto.SysPermissionDTO;
-import com.wzkris.user.api.domain.dto.SysUserDTO;
+import com.wzkris.user.api.domain.request.LoginInfoReq;
+import com.wzkris.user.api.domain.request.QueryPermsReq;
+import com.wzkris.user.api.domain.response.SysPermissionResp;
+import com.wzkris.user.api.domain.response.SysUserResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -28,19 +28,25 @@ public class RemoteSysUserApiFallback implements FallbackFactory<RemoteSysUserAp
         log.error("-----------用户服务发生熔断-----------");
         return new RemoteSysUserApi() {
             @Override
-            public Result<SysUserDTO> getByUsername(String username) {
+            public Result<SysUserResp> getByUsername(String username, String password) {
                 log.error("查询系统用户信息发生异常，errMsg：{}", cause.getMessage(), cause);
-                return resp(BizCode.RPC_INVOCATION, cause.getMessage());
+                return resp(FeignErrorUtil.getCode(cause), null, cause.getMessage());
             }
 
             @Override
-            public Result<SysPermissionDTO> getPermission(QueryPermsDTO queryPermsDTO) {
+            public Result<SysUserResp> getByPhoneNumber(String phoneNumber) {
+                log.error("查询系统用户信息发生异常，errMsg：{}", cause.getMessage(), cause);
+                return resp(FeignErrorUtil.getCode(cause), null, cause.getMessage());
+            }
+
+            @Override
+            public Result<SysPermissionResp> getPermission(QueryPermsReq queryPermsReq) {
                 log.error("查询系统用户权限发生异常，errMsg：{}", cause.getMessage(), cause);
-                return resp(BizCode.RPC_INVOCATION, cause.getMessage());
+                return resp(FeignErrorUtil.getCode(cause), null, cause.getMessage());
             }
 
             @Override
-            public void updateLoginInfo(LoginInfoDTO loginInfoDTO) {
+            public void updateLoginInfo(LoginInfoReq loginInfoReq) {
                 log.error("更新用户登录信息发生异常，errMsg：{}", cause.getMessage(), cause);
             }
 

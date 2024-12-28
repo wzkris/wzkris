@@ -31,13 +31,13 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserMapper appUserMapper;
     private final AppUserThirdinfoMapper appUserThirdinfoMapper;
     private final AppUserWalletMapper appUserWalletMapper;
+    private final TransactionTemplate transactionTemplate;
     @Autowired
     @Lazy
     private WxMaService wxMaService;
     @Autowired
     @Lazy
     private WxMpService wxMpService;
-    private final TransactionTemplate transactionTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)

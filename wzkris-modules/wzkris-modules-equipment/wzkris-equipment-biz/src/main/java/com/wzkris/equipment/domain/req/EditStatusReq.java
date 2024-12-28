@@ -11,11 +11,11 @@ import lombok.Data;
 @Data
 @Schema(description = "修改状态请求体")
 public class EditStatusReq {
-    @NotNull(message = "[id] {validate.notnull}")
+    @NotNull(message = "id {validate.notnull}")
     @Schema(description = "主键")
     private Long id;
 
-    @NotBlank(message = "[status] {validate.notnull}")
+    @NotBlank(message = "{desc.status}" + "{validate.notnull}")
     @Schema(description = "状态值")
     private String status;
 }

@@ -1,7 +1,8 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.dto.SysUserDTO;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,16 +39,20 @@ public interface SysUserService {
     /**
      * 新增管理员信息
      *
-     * @param dto 管理员信息
+     * @param user    管理员信息
+     * @param roleIds 关联角色
+     * @param postIds 关联岗位
      */
-    void insertUser(SysUserDTO dto);
+    boolean insertUser(SysUser user, @Nullable List<Long> roleIds, @Nullable List<Long> postIds);
 
     /**
      * 修改管理员信息
      *
-     * @param dto 管理员信息
+     * @param user    管理员信息
+     * @param roleIds 关联角色
+     * @param postIds 关联岗位
      */
-    void updateUser(SysUserDTO dto);
+    boolean updateUser(SysUser user, @Nullable List<Long> roleIds, @Nullable List<Long> postIds);
 
     /**
      * 硬删除用户
@@ -65,11 +70,20 @@ public interface SysUserService {
     void allocateRoles(Long userId, List<Long> roleIds);
 
     /**
-     * 校验用户是否唯一
+     * 校验用户名是否被使用
      *
-     * @param user 筛选条件
+     * @param userId   用户ID
+     * @param username 用户名
      */
-    boolean checkUserUnique(SysUser user);
+    boolean checkUsedByUsername(@Nullable Long userId, @Nonnull String username);
+
+    /**
+     * 校验手机号是否被使用
+     *
+     * @param userId      用户ID
+     * @param phonenumber 手机号
+     */
+    boolean checkUsedByPhoneNumber(@Nullable Long userId, @Nonnull String phonenumber);
 
     /**
      * 校验是否有数据权限

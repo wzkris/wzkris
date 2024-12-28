@@ -1,6 +1,6 @@
 package com.wzkris.auth.api;
 
-import com.wzkris.auth.api.domain.ReqToken;
+import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.auth.api.fallback.RemoteTokenApiFallback;
 import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
@@ -32,5 +32,5 @@ public interface RemoteTokenApi {
      * 校验token
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/oauth2/check_token")
-    Result<?> checkToken(@RequestBody @Valid ReqToken reqToken);
+    Result<?> checkToken(@RequestBody @Valid TokenReq tokenReq);
 }

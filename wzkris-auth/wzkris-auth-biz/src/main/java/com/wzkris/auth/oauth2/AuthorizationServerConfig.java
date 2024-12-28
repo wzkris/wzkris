@@ -6,21 +6,15 @@ import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationProvider;
 import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationProvider;
-import com.wzkris.auth.oauth2.filter.ValidateCodeFilter;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
-import com.wzkris.auth.oauth2.service.SysUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -29,7 +23,6 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 /**
@@ -44,7 +37,6 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationFilterChain(HttpSecurity http,
-                                                        ValidateCodeFilter validateCodeFilter,
                                                         PasswordAuthenticationProvider passwordAuthenticationProvider,
                                                         SmsAuthenticationProvider smsAuthenticationProvider) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
@@ -71,9 +63,6 @@ public class AuthorizationServerConfig {
                 .deviceAuthorizationEndpoint(Customizer.withDefaults()) // 设备授权
                 .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 
-        // 追加验证码过滤器
-        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
-
         http.exceptionHandling(exceptionHandler -> {
             exceptionHandler.defaultAuthenticationEntryPointFor(
                     new LoginUrlAuthenticationEntryPoint("/login"),// 401了跳转到登录页
@@ -90,17 +79,6 @@ public class AuthorizationServerConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder().build();
-    }
-
-    /**
-     * 默认的表单AuthenticationProvider，由于存在多个UserDetailsService 自动配置会失败
-     * 手动对后台用户进行创建
-     */
-    @Bean
-    public AuthenticationManager providerManager(PasswordEncoder passwordEncoder, SysUserDetailsService userDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(daoAuthenticationProvider);
     }
 
     /**

@@ -3,7 +3,7 @@ package com.wzkris.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
@@ -59,11 +59,11 @@ public class SysPostServiceImpl implements SysPostService {
     }
 
     @Override
-    public String getPostGroup(Long userId) {
-        if (SysUtil.isAdministrator()) {
-            return "超管";
+    public String getPostGroup() {
+        if (LoginUserUtil.isAdmin()) {
+            return "超级管理员";
         }
-        List<SysPost> sysPosts = this.listByUserId(userId);
+        List<SysPost> sysPosts = this.listByUserId(LoginUserUtil.getUserId());
         return sysPosts.stream().map(SysPost::getPostName).collect(Collectors.joining(","));
     }
 

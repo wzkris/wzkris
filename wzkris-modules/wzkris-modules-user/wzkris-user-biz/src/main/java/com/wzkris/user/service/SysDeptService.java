@@ -34,14 +34,14 @@ public interface SysDeptService {
      *
      * @param dept 部门信息
      */
-    void insertDept(SysDept dept);
+    boolean insertDept(SysDept dept);
 
     /**
      * 修改保存部门信息
      *
      * @param dept 部门信息
      */
-    void updateDept(SysDept dept);
+    boolean updateDept(SysDept dept);
 
     /**
      * 删除部门信息

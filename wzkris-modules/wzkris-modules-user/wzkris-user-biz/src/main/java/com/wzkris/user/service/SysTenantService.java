@@ -3,6 +3,7 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.dto.SysTenantDTO;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,4 +66,8 @@ public interface SysTenantService {
      * @return true通过 false不通过
      */
     boolean checkAdministrator(List<Long> userIds);
+
+    default boolean checkAdministrator(Long userId) {
+        return this.checkAdministrator(Collections.singletonList(userId));
+    }
 }

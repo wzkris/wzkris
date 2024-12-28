@@ -1,11 +1,10 @@
 package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.wzkris.system.api.domain.OperLogDTO;
+import com.wzkris.system.api.domain.request.OperLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,8 +15,7 @@ import java.io.Serializable;
  * @author wzkris
  */
 @Data
-@AutoMapper(target = OperLogDTO.class)
-@Accessors(chain = true)
+@AutoMapper(target = OperLogReq.class)
 public class SysOperLog implements Serializable {
 
     @Serial

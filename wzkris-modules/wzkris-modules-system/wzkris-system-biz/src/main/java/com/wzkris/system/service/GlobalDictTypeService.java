@@ -1,6 +1,8 @@
 package com.wzkris.system.service;
 
 import com.wzkris.system.domain.GlobalDictType;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
@@ -21,22 +23,23 @@ public interface GlobalDictTypeService {
      *
      * @param globalDictType 字典类型信息
      */
-    void insertDictType(GlobalDictType globalDictType);
+    boolean insertDictType(GlobalDictType globalDictType);
 
     /**
      * 修改保存字典类型信息
      *
      * @param globalDictType 字典类型信息
      */
-    void updateDictType(GlobalDictType globalDictType);
+    boolean updateDictType(GlobalDictType globalDictType);
 
     /**
      * 校验字典类型是否唯一
      *
-     * @param globalDictType 字典类型
+     * @param typeId   字典ID
+     * @param dictType 字典类型
      * @return 结果
      */
-    boolean checkDictTypeUnique(GlobalDictType globalDictType);
+    boolean checkDictTypeUnique(@Nullable Long typeId, @Nonnull String dictType);
 
     /**
      * 校验字典类型是否被使用

@@ -3,8 +3,6 @@ package com.wzkris.user.service.impl;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.exception.BusinessExceptionI18n;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
@@ -84,34 +82,23 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public void insertDept(SysDept dept) {
-        if (StringUtil.isNotNull(dept.getParentId()) && dept.getParentId() != 0) {
-            SysDept info = deptMapper.selectById(dept.getParentId());
-            // 如果父节点为停用状态,则不允许新增子节点
-            if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
-                throw new BusinessExceptionI18n("business.disabled");
-            }
-            dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
-        }
-        deptMapper.insert(dept);
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertDept(SysDept dept) {
+        SysDept parent = deptMapper.selectByIdForUpdate(dept.getParentId());
+        dept.setAncestors(parent.getAncestors() + "," + dept.getParentId());
+        return deptMapper.insert(dept) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateDept(SysDept dept) {
-        SysDept parentDept = deptMapper.selectById(dept.getParentId());
-        SysDept curDept = deptMapper.selectById(dept.getDeptId());
-        if (StringUtil.isNotNull(parentDept) && StringUtil.isNotNull(curDept)) {
+    public boolean updateDept(SysDept dept) {
+        SysDept parentDept = deptMapper.selectByIdForUpdate(dept.getParentId());
+        if (StringUtil.isNotNull(parentDept)) {
             String newAncestors = parentDept.getAncestors() + "," + parentDept.getDeptId();
             dept.setAncestors(newAncestors);
-            updateDeptChildren(dept.getDeptId(), newAncestors, curDept.getAncestors());
+            updateDeptChildren(dept.getDeptId(), newAncestors, dept.getAncestors());
         }
-        else {
-            // 否则不更新父节点
-            dept.setParentId(null);
-            dept.setAncestors(null);
-        }
-        deptMapper.updateById(dept);
+        return deptMapper.updateById(dept) > 0;
     }
 
     @Override
@@ -186,7 +173,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         deptIds = deptIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(deptIds)) {
             if (deptMapper.checkDataScopes(deptIds) != deptIds.size()) {
-                throw new AccessDeniedException("没有访问数据权限");
+                throw new AccessDeniedException("没有部门数据权限");
             }
         }
     }

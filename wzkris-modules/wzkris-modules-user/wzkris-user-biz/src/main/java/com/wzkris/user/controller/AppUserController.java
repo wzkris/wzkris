@@ -2,12 +2,13 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MapstructUtil;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.export.AppUserExport;
@@ -19,7 +20,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +42,7 @@ public class AppUserController extends BaseController {
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
-    @PreAuthorize("@ps.hasPerms('app_user:list')")
+    @CheckPerms("app_user:list")
     public Result<Page<AppUser>> listPage(AppUserQueryReq req) {
         startPage();
         List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
@@ -61,7 +61,7 @@ public class AppUserController extends BaseController {
 
     @Operation(summary = "用户详细信息")
     @GetMapping("/{userId}")
-    @PreAuthorize("@ps.hasPerms('app_user:query')")
+    @CheckPerms("app_user:query")
     public Result<AppUser> query(@PathVariable Long userId) {
         return ok(appUserMapper.selectById(userId));
     }
@@ -69,7 +69,7 @@ public class AppUserController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @PreAuthorize("@ps.hasPerms('app_user:edit')")
+    @CheckPerms("app_user:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         AppUser update = new AppUser(statusReq.getId());
@@ -80,10 +80,10 @@ public class AppUserController extends BaseController {
     @Operation(summary = "导出")
     @OperateLog(title = "用户管理", operateType = OperateType.EXPORT)
     @PostMapping("/export")
-    @PreAuthorize("@ps.hasPerms('app_user:export')")
+    @CheckPerms("app_user:export")
     public void export(HttpServletResponse response, AppUserQueryReq req) {
         List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
-        List<AppUserExport> convert = MapstructUtil.convert(list, AppUserExport.class);
+        List<AppUserExport> convert = BeanUtil.convert(list, AppUserExport.class);
         ExcelUtil.exportExcel(convert, "用户数据", AppUserExport.class, response);
     }
 }

@@ -1,7 +1,7 @@
 package com.wzkris.auth.listener.event;
 
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.common.security.oauth2.domain.WzUser;
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,7 +14,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginEvent {
-    private WzUser wzUser;
+    private AuthBaseUser user;
+
     private String ipAddr;
+
     private UserAgent userAgent;
 }

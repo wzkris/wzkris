@@ -11,9 +11,9 @@ import lombok.Data;
 @Data
 public class XcxRegisterReq {
 
-    @NotBlank(message = "[jscode] {validate.notnull}")
+    @NotBlank(message = "jscode {validate.notnull}")
     private String jscode;
 
-    @NotBlank(message = "[code] {validate.notnull}")
+    @NotBlank(message = "code {validate.notnull}")
     private String code;
 }

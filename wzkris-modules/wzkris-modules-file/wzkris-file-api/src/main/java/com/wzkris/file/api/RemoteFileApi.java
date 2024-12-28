@@ -2,7 +2,7 @@ package com.wzkris.file.api;
 
 import com.wzkris.common.core.constant.ApplicationNameConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.file.api.domain.SysFile;
+import com.wzkris.file.api.domain.request.SysFileUploadReq;
 import com.wzkris.file.api.fallback.RemoteFileApiFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +26,6 @@ public interface RemoteFileApi {
      */
     @Deprecated
     @PostMapping(INNER_REQUEST_PATH + "/file/upload")
-    Result<SysFile> upload(MultipartFile file);
+    Result<SysFileUploadReq> upload(MultipartFile file);
 
 }

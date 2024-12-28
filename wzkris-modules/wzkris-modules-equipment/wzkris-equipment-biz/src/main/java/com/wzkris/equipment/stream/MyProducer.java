@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 @Component
 public class MyProducer {
 
-    @Bean
+    @Bean("Aproducer")
     public Supplier<Message<String>> producer() {
         return () -> {
             return MessageBuilder

@@ -1,13 +1,10 @@
 package com.wzkris.common.redis.config;
 
 import com.wzkris.common.redis.manager.PlusSpringCacheManager;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisKeyValueAdapter;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 /**
  * redis配置
@@ -16,8 +13,6 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
  */
 @Slf4j
 @EnableCaching
-@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
-@RequiredArgsConstructor
 public class CacheConfig {
 
     /**

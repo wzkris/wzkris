@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.wzkris.common.orm.plus.extension.ExtenseSqlInjector;
 import com.wzkris.common.orm.plus.handler.BaseFieldFillHandler;
 import com.wzkris.common.orm.plus.interceptor.DeptPermissionHandler;
 import com.wzkris.common.orm.plus.interceptor.PageInterceptor;
@@ -49,6 +50,14 @@ public class MybatisPlusConfig {
         pageInterceptor.setOptimizeJoin(false);// 不优化join
         interceptor.addInnerInterceptor(pageInterceptor);
         return interceptor;
+    }
+
+    /**
+     * 扩展SQL方法
+     */
+    @Bean
+    public ExtenseSqlInjector sqlInjector() {
+        return new ExtenseSqlInjector();
     }
 
     /**

@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.utils.DeptScopeUtil;
-import com.wzkris.common.security.utils.SysUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
@@ -47,18 +47,18 @@ public class DeptScopeAspect {
      * 处理部门数据权限
      */
     private void handleDataScope(DeptScope deptScope) {
-        if (!SysUtil.isLogin()) {
+        if (!LoginUserUtil.isLogin()) {
             return;
         }
         // 租户的最高管理员不查询部门数据权限
-        if (SysUtil.isAdministrator()) {
+        if (LoginUserUtil.isAdmin()) {
             return;
         }
 
         // 生成权限sql片段
         String aliasColumn = StringUtil.isBlank(deptScope.tableAlias()) ? deptScope.columnAlias() :
                 StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
-        List<Long> deptScopes = SysUtil.getLoginSyser().getDeptScopes();
+        List<Long> deptScopes = LoginUserUtil.getLoginUser().getDeptScopes();
 
         Expression expression;
         if (CollUtil.isEmpty(deptScopes)) {

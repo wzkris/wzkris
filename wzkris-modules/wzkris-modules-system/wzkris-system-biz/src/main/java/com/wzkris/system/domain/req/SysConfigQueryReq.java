@@ -13,6 +13,6 @@ public class SysConfigQueryReq {
     @Schema(description = "参数键名")
     private String configKey;
 
-    @Schema(description = "系统内置（Y是 N否")
+    @Schema(description = "系统内置（Y是 N否）")
     private String configType;
 }

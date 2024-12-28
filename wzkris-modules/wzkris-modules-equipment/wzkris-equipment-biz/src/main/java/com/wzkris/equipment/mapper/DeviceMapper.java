@@ -1,8 +1,8 @@
 package com.wzkris.equipment.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.equipment.domain.Device;
+import com.wzkris.equipment.domain.vo.DeviceVO;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,12 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeviceMapper extends BaseMapperPlus<Device> {
 
-    // 设备号修改数据
-    default int updateBySerialNo(Device device) {
-        LambdaUpdateWrapper<Device> luw = new LambdaUpdateWrapper<Device>()
-                .eq(Device::getSerialNo, device.getSerialNo());
-        device.setSerialNo(null);
-        return this.update(device, luw);
-    }
-
+    /**
+     * @param deviceId 设备ID
+     */
+    DeviceVO selectVOById(Long deviceId);
 }

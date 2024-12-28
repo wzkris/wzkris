@@ -14,23 +14,23 @@ public class ConfigCacheUtil {
 
     public static final String CONFIG_KEY_PREFIX = "sys_config";
 
-    public static String getConfigValueByKey(String configKey) {
-        return RedisUtil.getMapValue(CONFIG_KEY_PREFIX, configKey);
+    public static <T> T getConfigValueByKey(String configKey) {
+        return (T) RedisUtil.getRMap(CONFIG_KEY_PREFIX).get(configKey);
     }
 
     public static void setKey(String configKey, String configValue) {
-        RedisUtil.setMapValue(CONFIG_KEY_PREFIX, configKey, configValue);
+        RedisUtil.getRMap(CONFIG_KEY_PREFIX).put(configKey, configValue);
     }
 
     public static void setConfig(Map<String, Object> map) {
-        RedisUtil.setMap(CONFIG_KEY_PREFIX, map);
+        RedisUtil.getRMap(CONFIG_KEY_PREFIX).putAll(map);
     }
 
     public static void deleteByKey(String configKey) {
-        RedisUtil.getMap(CONFIG_KEY_PREFIX).remove(configKey);
+        RedisUtil.getRMap(CONFIG_KEY_PREFIX).remove(configKey);
     }
 
     public static void clearAll() {
-        RedisUtil.delObj(CONFIG_KEY_PREFIX);
+        RedisUtil.getRMap(CONFIG_KEY_PREFIX).delete();
     }
 }

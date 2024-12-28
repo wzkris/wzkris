@@ -6,7 +6,6 @@ import com.wzkris.user.domain.SysMenu;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 public class SelectTreeVO implements Serializable {
 

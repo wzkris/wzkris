@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 
 /**
@@ -15,7 +14,6 @@ import lombok.experimental.Accessors;
  * @description : 租户传输层
  */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 public class SysTenantDTO extends SysTenant {
     @NotBlank(message = "[username] {validate.notnull}", groups = ValidationGroups.Insert.class)

@@ -7,10 +7,6 @@ package com.wzkris.common.core.constant;
  * @date : 2023/11/17 9:13
  */
 public interface SecurityConstants {
-    /**
-     * token请求头标识
-     */
-    String TOKEN_HEADER = "Authorization";
 
     /**
      * token前缀

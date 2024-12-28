@@ -171,8 +171,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
                         }
                         FromItem rightItem = join.getRightItem();
                         String str = "";
-                        if (rightItem instanceof Table) {
-                            Table table = (Table) rightItem;
+                        if (rightItem instanceof Table table) {
                             str = Optional.ofNullable(table.getAlias()).map(Alias::getName).orElse(table.getName()) + StringPool.DOT;
                         }
                         else if (rightItem instanceof ParenthesedSelect subSelect) {

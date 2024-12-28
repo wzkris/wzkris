@@ -2,7 +2,7 @@ package com.wzkris.common.orm.handler;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
@@ -28,7 +28,7 @@ public class MybatisExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<?> handledDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到唯一索引异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return resp(BizCode.BAD_REQUEST, MessageUtil.message("business.duplicate.key"));
+        return resp(BizCode.BAD_REQUEST, I18nUtil.message("business.duplicate.key"));
     }
 
     /**

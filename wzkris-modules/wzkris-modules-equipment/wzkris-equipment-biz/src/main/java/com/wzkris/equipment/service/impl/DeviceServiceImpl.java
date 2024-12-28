@@ -1,8 +1,5 @@
 package com.wzkris.equipment.service.impl;
 
-import cn.hutool.core.util.IdUtil;
-import com.wzkris.common.redis.util.RedisUtil;
-import com.wzkris.equipment.constants.DeviceConstant;
 import com.wzkris.equipment.domain.vo.DeviceVO;
 import com.wzkris.equipment.domain.vo.NetworkVO;
 import com.wzkris.equipment.mapper.DeviceMapper;
@@ -24,20 +21,17 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public DeviceVO getVOById(Long deviceId) {
-        return deviceMapper.selectById2VO(deviceId, DeviceVO.class);
+        DeviceVO deviceVO = deviceMapper.selectVOById(deviceId);
+        NetworkVO networkVO = this.getNetInfoBySno(deviceId);
+        if (deviceVO == null) return null;
+        deviceVO.setNet(networkVO);
+        return deviceVO;
     }
 
     @Override
-    public NetworkVO getNetworkVOBySerialNo(String serialNo) {
+    public NetworkVO getNetInfoBySno(Long deviceId) {
         // 查询入网后的信息
-        return null;
-    }
-
-    @Override
-    public String subDevice(String serialNo) {
-        String roomNo = IdUtil.fastSimpleUUID();
-        RedisUtil.setObj(DeviceConstant.ROOM_PREFIX + roomNo, serialNo, 60 * 60);// 默认一个小时
-        return roomNo;
+        return new NetworkVO("192.168.0.1", 30069, 18, 35);
     }
 
 }

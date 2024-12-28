@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 /**
@@ -18,14 +21,16 @@ import java.util.function.Supplier;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DynamicTenantUtil {
 
-    private static final ThreadLocal<Long> LOCAL_DYNAMIC_TENANT = new ThreadLocal<>();
+    private static final ThreadLocal<List<Long>> LOCAL_DYNAMIC_TENANT = new ThreadLocal<>();
+
+    private static final ThreadLocal<AtomicInteger> LOCAL_IGNORE = new ThreadLocal<>();
 
     /**
      * 获取动态租户
      * 当前线程内生效
      */
     public static Long get() {
-        return LOCAL_DYNAMIC_TENANT.get();
+        return LOCAL_DYNAMIC_TENANT.get() == null ? null : LOCAL_DYNAMIC_TENANT.get().get(0);
     }
 
     /**
@@ -34,7 +39,14 @@ public class DynamicTenantUtil {
      */
     public static void set(Long tenantId) {
         if (tenantId != null) {// 避免get到null值无法判断是不存在还是set null
-            LOCAL_DYNAMIC_TENANT.set(tenantId);
+            if (LOCAL_DYNAMIC_TENANT.get() == null) {
+                List<Long> add = new ArrayList<>();
+                add.add(tenantId);
+                LOCAL_DYNAMIC_TENANT.set(add);
+            }
+            else {
+                LOCAL_DYNAMIC_TENANT.get().add(0, tenantId);
+            }
         }
     }
 
@@ -42,7 +54,14 @@ public class DynamicTenantUtil {
      * 清理线程变量
      */
     public static void remove() {
-        LOCAL_DYNAMIC_TENANT.remove();
+        if (LOCAL_DYNAMIC_TENANT.get() != null) {
+            if (LOCAL_DYNAMIC_TENANT.get().size() > 1) {
+                LOCAL_DYNAMIC_TENANT.get().remove(0);
+            }
+            else {
+                LOCAL_DYNAMIC_TENANT.remove();
+            }
+        }
     }
 
     /**
@@ -50,14 +69,29 @@ public class DynamicTenantUtil {
      * 开启后则不会再走租户拦截器
      */
     public static void enableIgnore() {
-        InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
+        if (LOCAL_IGNORE.get() == null) {
+            LOCAL_IGNORE.set(new AtomicInteger(1));
+            InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
+        }
+        else {
+            LOCAL_IGNORE.set(new AtomicInteger(LOCAL_IGNORE.get().incrementAndGet()));
+        }
     }
 
     /**
      * 关闭忽略租户
      */
     public static void disableIgnore() {
-        InterceptorIgnoreHelper.clearIgnoreStrategy();
+        if (LOCAL_IGNORE.get() != null) {
+            int count = LOCAL_IGNORE.get().decrementAndGet();
+            if (count > 0) {
+                LOCAL_IGNORE.set(new AtomicInteger(count));
+            }
+            else {
+                LOCAL_IGNORE.remove();
+                InterceptorIgnoreHelper.clearIgnoreStrategy();
+            }
+        }
     }
 
     public static void ignore(Runnable runnable) {

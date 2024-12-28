@@ -1,7 +1,8 @@
 package com.wzkris.auth.oauth2.core.sms;
 
-import com.wzkris.auth.oauth2.constants.GrantTypeConstant;
+import com.wzkris.auth.oauth2.constants.OAuth2GrantTypeConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
+import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.Transient;
@@ -20,17 +21,21 @@ import java.util.Set;
 @Getter
 @Transient
 public final class SmsAuthenticationToken extends CommonAuthenticationToken {
+    private final LoginType loginType;
     private final String phoneNumber;
     private final String smsCode;
 
-    public SmsAuthenticationToken(String phoneNumber,
+    public SmsAuthenticationToken(LoginType loginType,
+                                  String phoneNumber,
                                   String smsCode,
                                   Authentication clientPrincipal,
                                   Set<String> scopes,
                                   Map<String, Object> additionalParameters) {
-        super(new AuthorizationGrantType(GrantTypeConstant.SMS), clientPrincipal, scopes, additionalParameters);
+        super(new AuthorizationGrantType(OAuth2GrantTypeConstant.SMS), clientPrincipal, scopes, additionalParameters);
+        Assert.notNull(loginType, "userType cannot be null");
         Assert.notNull(phoneNumber, "phoneNumber cannot be null");
         Assert.notNull(smsCode, "smsCode cannot be null");
+        this.loginType = loginType;
         this.phoneNumber = phoneNumber;
         this.smsCode = smsCode;
     }

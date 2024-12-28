@@ -6,10 +6,10 @@ import com.wzkris.auth.oauth2.model.RedisRegisteredClient;
 import com.wzkris.auth.oauth2.utils.OAuth2JsonUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.user.api.RemoteOAuth2ClientApi;
-import com.wzkris.user.api.domain.dto.OAuth2ClientDTO;
+import com.wzkris.user.api.domain.response.OAuth2ClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -56,6 +56,10 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
         return this.findByClientId(id);
     }
 
+    public final void remove(final String id) {
+        RedisUtil.delObj(this.buildRedisKey(id));
+    }
+
     @Override
     public RegisteredClient findByClientId(String clientId) {
         RedisRegisteredClient redisRegisteredClient = RedisUtil.getObj(this.buildRedisKey(clientId));
@@ -64,13 +68,13 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return this.toObject(redisRegisteredClient);
         }
 
-        Result<OAuth2ClientDTO> clientDTOResult = remoteOAuth2ClientApi.getByClientId(clientId);
-        OAuth2ClientDTO oauth2Client = clientDTOResult.checkData();
+        Result<OAuth2ClientResp> clientDTOResult = remoteOAuth2ClientApi.getByClientId(clientId);
+        OAuth2ClientResp oauth2Client = clientDTOResult.checkData();
 
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(
-                    new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, MessageUtil.message("oauth2.client.invalid"), null), null);
+                    new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, I18nUtil.message("oauth2.client.invalid"), null), null);
         }
 
         RegisteredClient registeredClient = this.buildRegisteredClient(oauth2Client);
@@ -88,7 +92,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
     /**
      * 构建Spring OAuth2所需要的客户端信息
      */
-    private RegisteredClient buildRegisteredClient(OAuth2ClientDTO oauth2Client) {
+    private RegisteredClient buildRegisteredClient(OAuth2ClientResp oauth2Client) {
         RegisteredClient.Builder builder = RegisteredClient.withId(oauth2Client.getClientId())
                 .clientId(oauth2Client.getClientId())
                 .clientSecret(oauth2Client.getClientSecret())

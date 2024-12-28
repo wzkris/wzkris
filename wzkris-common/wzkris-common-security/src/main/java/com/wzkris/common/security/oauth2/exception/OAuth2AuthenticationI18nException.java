@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.exception;
 
-import com.wzkris.common.core.utils.MessageUtil;
+import com.wzkris.common.core.utils.I18nUtil;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 
@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 public class OAuth2AuthenticationI18nException extends OAuth2AuthenticationException {
 
     public OAuth2AuthenticationI18nException(String errorCode, String code, Object... args) {
-        super(new OAuth2Error(errorCode, MessageUtil.message(code, args), null));
+        super(new OAuth2Error(errorCode, I18nUtil.message(code, args), null));
     }
 
 }

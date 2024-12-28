@@ -8,10 +8,10 @@ import lombok.Data;
  */
 @Data
 public class EditPwdReq {
-    @NotBlank(message = "[oldPassword] {validate.notnull}")
+    @NotBlank(message = "{desc.oldpwd}" + "{validate.notnull}")
     private String oldPassword;
 
-    @NotBlank(message = "[newPassword] {validate.notnull}")
+    @NotBlank(message = "{desc.newpwd}" + "{validate.notnull}")
     private String newPassword;
 
 }

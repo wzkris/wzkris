@@ -6,15 +6,14 @@ import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.AddressUtil;
-import com.wzkris.common.security.oauth2.domain.WzUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginApper;
-import com.wzkris.common.security.oauth2.domain.model.LoginSyser;
-import com.wzkris.common.security.oauth2.enums.UserType;
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
+import com.wzkris.common.security.oauth2.domain.model.LoginUser;
+import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.system.api.RemoteLogApi;
-import com.wzkris.system.api.domain.LoginLogDTO;
+import com.wzkris.system.api.domain.request.LoginLogReq;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.RemoteSysUserApi;
-import com.wzkris.user.api.domain.dto.LoginInfoDTO;
+import com.wzkris.user.api.domain.request.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -41,42 +40,41 @@ public class LoginEventListener {
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final WzUser wzUser = event.getWzUser();
+        final AuthBaseUser baseUser = event.getUser();
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
-        log.info("监听到用户’{}‘登录成功事件, 登录IP：{}", wzUser.getName(), ipAddr);
+        log.info("监听到用户’{}‘登录成功事件, 登录IP：{}", baseUser.getName(), ipAddr);
 
-        if (ObjUtil.equals(wzUser.getUserType(), UserType.SYS_USER)) {
-            LoginSyser loginSyser = (LoginSyser) wzUser.getPrincipal();
+        if (ObjUtil.equals(baseUser.getLoginType(), LoginType.SYSTEM_USER)) {
+            LoginUser loginUser = (LoginUser) baseUser;
             // 更新用户登录信息
-            LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
-            loginInfoDTO.setUserId(loginSyser.getUserId());
-            loginInfoDTO.setLoginIp(ipAddr);
-            loginInfoDTO.setLoginDate(DateUtil.current());
-            remoteSysUserApi.updateLoginInfo(loginInfoDTO);
+            LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
+            loginInfoReq.setLoginIp(ipAddr);
+            loginInfoReq.setLoginDate(DateUtil.current());
+            remoteSysUserApi.updateLoginInfo(loginInfoReq);
             // 插入后台登陆日志
-            final LoginLogDTO loginLogDTO = new LoginLogDTO();
-            loginLogDTO.setUsername(loginSyser.getUsername());
-            loginLogDTO.setTenantId(loginSyser.getTenantId());
-            loginLogDTO.setLoginTime(DateUtil.current());
-            loginLogDTO.setLoginIp(ipAddr);
-            loginLogDTO.setStatus(CommonConstants.STATUS_ENABLE);
-            loginLogDTO.setLoginLocation(AddressUtil.getRealAddressByIp(ipAddr));
+            final LoginLogReq loginLogReq = new LoginLogReq();
+            loginLogReq.setUsername(loginUser.getUsername());
+            loginLogReq.setTenantId(loginUser.getTenantId());
+            loginLogReq.setLoginTime(DateUtil.current());
+            loginLogReq.setLoginIp(ipAddr);
+            loginLogReq.setStatus(CommonConstants.STATUS_ENABLE);
+            loginLogReq.setLoginLocation(AddressUtil.getRealAddressByIp(ipAddr));
             // 获取客户端操作系统
             String os = userAgent.getOs().getName();
             // 获取客户端浏览器
             String browser = userAgent.getBrowser().getName();
-            loginLogDTO.setOs(os);
-            loginLogDTO.setBrowser(browser);
-            remoteLogApi.insertLoginlog(loginLogDTO);
+            loginLogReq.setOs(os);
+            loginLogReq.setBrowser(browser);
+            remoteLogApi.insertLoginlog(loginLogReq);
         }
-        else if (ObjUtil.equals(wzUser.getUserType(), UserType.APP_USER)) {
-            // 更新用户登录信息
-            LoginInfoDTO loginInfoDTO = new LoginInfoDTO();
-            loginInfoDTO.setUserId(((LoginApper) wzUser.getPrincipal()).getUserId());
-            loginInfoDTO.setLoginIp(ipAddr);
-            loginInfoDTO.setLoginDate(DateUtil.current());
-            remoteAppUserApi.updateLoginInfo(loginInfoDTO);
+        else if (ObjUtil.equals(baseUser.getLoginType(), LoginType.CLIENT_USER)) {
+//            ClientUser clientUser = (ClientUser) baseUser;
+//            // 更新用户登录信息
+//            LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
+//            loginInfoReq.setLoginIp(ipAddr);
+//            loginInfoReq.setLoginDate(DateUtil.current());
+//            remoteAppUserApi.updateLoginInfo(loginInfoReq);
         }
     }
 

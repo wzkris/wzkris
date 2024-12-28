@@ -1,7 +1,6 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysRole;
-import com.wzkris.user.domain.dto.SysRoleDTO;
 import jakarta.annotation.Nullable;
 
 import java.util.Collections;
@@ -38,23 +37,27 @@ public interface SysRoleService {
     List<Long> listIdByUserId(@Nullable Long userId);
 
     /**
-     * 根据用户id获取角色
+     * 获取当前角色组
      */
-    String getRoleGroup(@Nullable Long userId);
+    String getRoleGroup();
 
     /**
      * 新增角色信息
      *
-     * @param roleDTO 角色信息
+     * @param role    角色信息
+     * @param menuIds 菜单组
+     * @param deptIds 部门组
      */
-    void insertRole(SysRoleDTO roleDTO);
+    boolean insertRole(SysRole role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds);
 
     /**
      * 修改角色信息
      *
-     * @param roleDTO 角色信息
+     * @param role    角色信息
+     * @param menuIds 菜单组
+     * @param deptIds 部门组
      */
-    void updateRole(SysRoleDTO roleDTO);
+    boolean updateRole(SysRole role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds);
 
     /**
      * 批量授权用户

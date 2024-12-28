@@ -1,6 +1,7 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysPost;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
@@ -30,12 +31,12 @@ public interface SysPostService {
      * @param userId 用户id
      * @return 岗位列表
      */
-    List<Long> listIdByUserId(Long userId);
+    List<Long> listIdByUserId(@Nullable Long userId);
 
     /**
-     * 根据用户id获取岗位
+     * 获取当前岗位组
      */
-    String getPostGroup(Long userId);
+    String getPostGroup();
 
     /**
      * 批量删除岗位信息

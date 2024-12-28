@@ -19,6 +19,7 @@ public class SysTenantWalletRecord {
     @TableId
     private Long recordId;
 
+    @Schema(description = "租户ID")
     private Long tenantId;
 
     @Schema(description = "金额, 元")

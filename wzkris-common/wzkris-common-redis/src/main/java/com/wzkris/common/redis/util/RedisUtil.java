@@ -5,12 +5,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
+import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * spring redis 工具类
@@ -77,82 +76,23 @@ public class RedisUtil {
     }
 
     /**
-     * 获得缓存的Map
+     * 获得缓存Map
      *
      * @param key 缓存的键值
      * @return map对象
      */
-    public static <T> Map<String, T> getMap(final String key) {
-        RMap<String, T> rMap = redissonclient.getMap(key);
-        return rMap.getAll(rMap.keySet());
+    public static <T> RMap<String, T> getRMap(final String key) {
+        return redissonclient.getMap(key);
     }
 
     /**
-     * 获得缓存Map的key列表
+     * 获得具有单个key过期时间的缓存Map
      *
      * @param key 缓存的键值
-     * @return key列表
+     * @return map对象
      */
-    public static <T> Set<String> getMapKeySet(final String key) {
-        RMap<String, T> rMap = redissonclient.getMap(key);
-        return rMap.keySet();
-    }
-
-    /**
-     * 获取Hash中的数据
-     *
-     * @param key  Redis键
-     * @param hKey Hash键
-     * @return Hash中的对象
-     */
-    public static <T> T getMapValue(final String key, final String hKey) {
-        RMap<String, T> rMap = redissonclient.getMap(key);
-        return rMap.get(hKey);
-    }
-
-    /**
-     * 删除Hash中的数据
-     *
-     * @param key  Redis键
-     * @param hKey Hash键
-     * @return Hash中的对象
-     */
-    public static boolean delMapValue(final String key, final String hKey) {
-        RMap<String, Object> rMap = redissonclient.getMap(key);
-        return rMap.remove(hKey) != null;
-    }
-
-    /**
-     * 获取多个Hash中的数据
-     *
-     * @param key   Redis键
-     * @param hKeys Hash键集合
-     * @return Hash对象集合
-     */
-    public static <K, V> Map<K, V> getMapMultipleValue(final String key, final Set<K> hKeys) {
-        RMap<K, V> rMap = redissonclient.getMap(key);
-        return rMap.getAll(hKeys);
-    }
-
-    /**
-     * 缓存HASH
-     *
-     * @param key Redis键
-     * @param map HashMap
-     */
-    public static <T> void setMap(final String key, final Map<String, Object> map) {
-        redissonclient.getMap(key).putAll(map);
-    }
-
-    /**
-     * 往Hash中存入数据
-     *
-     * @param key   Redis键
-     * @param hKey  Hash键
-     * @param value 值
-     */
-    public static <T> void setMapValue(final String key, final String hKey, final T value) {
-        redissonclient.getMap(key).put(hKey, value);
+    public static <T> RMapCache<String, T> getRMapCache(final String key) {
+        return redissonclient.getMapCache(key);
     }
 
     /**

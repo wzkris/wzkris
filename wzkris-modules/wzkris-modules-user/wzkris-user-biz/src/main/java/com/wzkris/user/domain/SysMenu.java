@@ -4,12 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,30 +16,24 @@ import java.util.List;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 @NoArgsConstructor
 public class SysMenu extends BaseEntity {
 
     @TableId
     private Long menuId;
 
-    @NotBlank(message = "[menuName] {validate.notnull}")
-    @Size(min = 0, max = 30, message = "[menuName] {validate.size.illegal}")
     @Schema(description = "菜单名称")
     private String menuName;
 
     @Schema(description = "父菜单ID")
     private Long parentId;
 
-    @NotNull(message = "[menuSort] {validate.notnull}")
     @Schema(description = "显示顺序")
     private Integer menuSort;
 
-    @Size(min = 0, max = 50, message = "[path] {validate.size.illegal}")
     @Schema(description = "路由地址(地址栏展示的地址)")
     private String path;
 
-    @Size(min = 0, max = 50, message = "[component] {validate.size.illegal}")
     @Schema(description = "组件路径")
     private String component;
 
@@ -59,14 +49,12 @@ public class SysMenu extends BaseEntity {
     @Schema(description = "是否显示")
     private Boolean isVisible;
 
-    @NotBlank(message = "[menuType] {validate.notnull}")
-    @Schema(description = "菜单类型（M目录 C菜单 F按钮）")
+    @Schema(description = "菜单类型（D目录 M菜单 B按钮 F字段）")
     private String menuType;
 
     @Schema(description = "菜单状态（0正常 1停用）")// 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
     private String status;
 
-    @Size(min = 0, max = 30, message = "[perms] {validate.size.illegal}")
     @Schema(description = "权限字符串")
     private String perms;
 

@@ -7,14 +7,16 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.google.code.kaptcha.Producer;
 import com.wzkris.auth.config.CaptchaConfig;
-import com.wzkris.auth.domain.dto.KaptchaDTO;
+import com.wzkris.auth.domain.vo.KaptchaVO;
 import com.wzkris.common.core.exception.param.CaptchaException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Resource;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FastByteArrayOutputStream;
@@ -28,6 +30,7 @@ import java.io.IOException;
  *
  * @author wzkris
  */
+@Slf4j
 @Service
 public class CaptchaService {
 
@@ -52,11 +55,11 @@ public class CaptchaService {
     /**
      * 生成验证码
      */
-    public KaptchaDTO createPicCaptcha() throws IOException {
+    public KaptchaVO createPicCode() throws IOException {
         boolean captchaEnabled = captchaConfig.getEnabled();
-        KaptchaDTO kaptchaDTO = new KaptchaDTO(captchaEnabled);
+        KaptchaVO kaptchaVO = new KaptchaVO(captchaEnabled);
         if (!captchaEnabled) {
-            return kaptchaDTO;
+            return kaptchaVO;
         }
 
         String captchaType = captchaConfig.getType();
@@ -85,17 +88,18 @@ public class CaptchaService {
         String uuid = IdUtil.simpleUUID();
 
         // 存入缓存
-        RedisUtil.setObj(PIC_CODE_PREFIX + uuid, code, 180);
+        RedisUtil.setObj(PIC_CODE_PREFIX + uuid, code, 90);
 
-        kaptchaDTO.setImg(base64Img);
-        kaptchaDTO.setUuid(uuid);
-        return kaptchaDTO;
+        kaptchaVO.setImg(base64Img);
+        kaptchaVO.setUuid(uuid);
+        kaptchaVO.setExpired(captchaConfig.getExpired());
+        return kaptchaVO;
     }
 
     /**
      * 验证图片验证码
      */
-    public void validatePicCaptcha(String uuid, String code) {
+    public void validatePicCode(String uuid, String code) {
         if (!StringUtil.isAllNotBlank(uuid, code)) {
             OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
         }
@@ -116,8 +120,9 @@ public class CaptchaService {
      * 发送短信验证码
      *
      * @param phoneNumber 手机号
+     * @return 过期时间
      */
-    public void sendSmsCode(String phoneNumber) {
+    public int createSmsCode(@Nonnull String phoneNumber) {
         String smsKey = SMS_CODE_PREFIX + phoneNumber;
         if (RedisUtil.hasKey(smsKey)) {
             // 存在则不允许多次调用
@@ -125,13 +130,15 @@ public class CaptchaService {
         }
         // TODO 调用SMS发送验证码
         String smsCode = RandomUtil.randomNumbers(6);
-        RedisUtil.setObj(smsKey, smsCode, 180);
+        log.info("手机号'{}'的短信验证码是：{}", phoneNumber, smsCode);
+        RedisUtil.setObj(smsKey, smsCode, captchaConfig.getExpired());
+        return captchaConfig.getExpired();
     }
 
     /**
      * 校验短信验证码
      */
-    public void validateSmsCode(@NonNull String phoneNumber, @NonNull String smsCode) {
+    public void validateSmsCode(@NonNull String phoneNumber, @Nonnull String smsCode) {
         String smsKey = SMS_CODE_PREFIX + phoneNumber;
 
         String code = RedisUtil.getObj(smsKey);

@@ -1,10 +1,8 @@
 package com.wzkris.common.security.oauth2.service;
 
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
+import com.wzkris.common.security.utils.SecurityUtil;
 import org.springframework.lang.NonNull;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
 
@@ -15,29 +13,34 @@ import java.util.Collection;
  */
 public class PermissionService {
 
+    public boolean hasPerms(String... permissions) {
+        AuthBaseUser baseUser = SecurityUtil.getPrincipal();
+
+        if (baseUser == null) {
+            return false;
+        }
+
+        return hasPerms(baseUser.getGrantedAuthority(), permissions);
+    }
+
     /**
      * 判断接口是否有权限 AND
      *
+     * @param list        权限
      * @param permissions 权限码数组
      * @return {boolean}
      */
-    public boolean hasPerms(String... permissions) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return false;
-        }
-
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if (authorities == null || authorities.isEmpty()) {
-            return false;
-        }
-
+    public boolean hasPerms(Collection<String> list, String... permissions) {
         if (permissions == null) {
             return true;
         }
 
+        if (list.isEmpty()) {
+            return false;
+        }
+
         for (String permission : permissions) {
-            if (!this.hasElement(authorities, permission)) {
+            if (!this.hasElement(list, permission)) {
                 return false;
             }
         }
@@ -45,29 +48,34 @@ public class PermissionService {
         return true;
     }
 
+    public boolean hasPermsOr(String... permissions) {
+        AuthBaseUser baseUser = SecurityUtil.getPrincipal();
+
+        if (baseUser == null) {
+            return false;
+        }
+
+        return hasPermsOr(baseUser.getGrantedAuthority(), permissions);
+    }
+
     /**
      * 判断：当前账号是否含有权限 OR
      *
+     * @param list        权限
      * @param permissions 权限码数组
      * @return true 或 false
      */
-    public boolean hasPermsOr(String... permissions) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return false;
-        }
-
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if (authorities == null || authorities.isEmpty()) {
-            return false;
-        }
-
+    public boolean hasPermsOr(Collection<String> list, String... permissions) {
         if (permissions == null) {
             return true;
         }
 
+        if (list.isEmpty()) {
+            return false;
+        }
+
         for (String permission : permissions) {
-            if (this.hasElement(authorities, permission)) {
+            if (this.hasElement(list, permission)) {
                 return true;
             }
         }
@@ -82,15 +90,15 @@ public class PermissionService {
      * @param element 元素
      * @return /
      */
-    public boolean hasElement(@NonNull Collection<? extends GrantedAuthority> list, @NonNull String element) {
+    public boolean hasElement(@NonNull Collection<String> list, @NonNull String element) {
         // 先尝试一下简单匹配，如果可以匹配成功则无需继续模糊匹配
-        if (list.contains(new SimpleGrantedAuthority(element))) {
+        if (list.contains(element)) {
             return true;
         }
 
         // 开始模糊匹配
-        for (GrantedAuthority pattern : list) {
-            if (this.vagueMatch(pattern.getAuthority(), element)) {
+        for (String pattern : list) {
+            if (this.vagueMatch(pattern, element)) {
                 return true;
             }
         }

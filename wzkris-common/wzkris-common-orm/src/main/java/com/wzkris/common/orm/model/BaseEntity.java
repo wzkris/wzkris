@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
@@ -16,7 +15,6 @@ import java.io.Serializable;
  * @author wzkris
  */
 @Data
-@Accessors(chain = true)
 @FieldNameConstants
 public class BaseEntity implements Serializable {
 
