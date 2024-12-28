@@ -18,7 +18,6 @@ public class RemoteNotifyApiFallback implements FallbackFactory<RemoteNotifyApi>
 
     @Override
     public RemoteNotifyApi create(Throwable cause) {
-        log.error("-------openfeign触发熔断，系统服务调用失败-------");
         return new RemoteNotifyApi() {
             @Override
             public void sendSystemNotify(SendNotifyReq sendNotifyReq) {
@@ -31,4 +30,5 @@ public class RemoteNotifyApiFallback implements FallbackFactory<RemoteNotifyApi>
             }
         };
     }
+
 }

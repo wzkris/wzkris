@@ -99,7 +99,7 @@ public class OperateLogAspect {
             else if (jsonResult instanceof Result<?> result) {
                 if (!result.isSuccess()) {
                     operLogReq.setStatus(OperateStatus.FAIL.value());
-                    operLogReq.setErrorMsg(StringUtil.sub(result.getErrMsg(), 0, 2000));
+                    operLogReq.setErrorMsg(StringUtil.sub(result.getMessage(), 0, 2000));
                 }
             }
             // 设置方法名称

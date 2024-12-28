@@ -104,8 +104,8 @@ public class WebExceptionHandler {
     @ExceptionHandler(BaseException.class)
     public Result<?> handleBaseException(BaseException e, HttpServletRequest request) {
         log.info("请求地址'{} {}',异常模块：{}, 状态码：{}, 异常信息：{}",
-                request.getMethod(), request.getRequestURI(), e.getModules(), e.getBiz(), e.getMessage());
-        return resp(e.getBiz(), null, e.getMessage());
+                request.getMethod(), request.getRequestURI(), e.getModules(), e.getCode(), e.getMessage());
+        return resp(e.getCode(), null, e.getMessage());
     }
 
     /**

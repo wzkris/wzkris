@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class RemoteDeviceApiFallback implements FallbackFactory<RemoteDeviceApi> {
     @Override
     public RemoteDeviceApi create(Throwable cause) {
-        log.error("-----------设备服务发生熔断-----------");
         return new RemoteDeviceApi() {
         };
     }
+
 }

@@ -55,7 +55,7 @@ public class BaseException extends RuntimeException {
         return this.modules;
     }
 
-    public final int getBiz() {
+    public final int getCode() {
         return this.biz;
     }
 

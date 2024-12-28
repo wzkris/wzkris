@@ -24,21 +24,21 @@ public class Result<T> implements Serializable {
     private static final long serialVersionUID = -683617940437008912L;
 
     // 业务状态码
-    private int biz;
+    private int code;
     // 数据
     private T data;
     // 错误信息
-    private String errMsg;
+    private String message;
     // 当前时间戳
     private long timestamp;
 
     public Result() {
     }
 
-    public Result(int biz, T data, String errMsg) {
-        this.biz = biz;
+    public Result(int code, T data, String message) {
+        this.code = code;
         this.data = data;
-        this.errMsg = errMsg;
+        this.message = message;
         this.timestamp = System.currentTimeMillis();
     }
 
@@ -54,20 +54,20 @@ public class Result<T> implements Serializable {
         return fail(BizCode.FAIL.desc());
     }
 
-    public static <T> Result<T> fail(String errMsg) {
-        return resp(BizCode.FAIL, errMsg);
+    public static <T> Result<T> fail(String message) {
+        return resp(BizCode.FAIL, message);
     }
 
     public static <T> Result<T> resp(BizCode bizCode) {
         return resp(bizCode.value(), null, bizCode.desc());
     }
 
-    public static <T> Result<T> resp(BizCode bizCode, String errMsg) {
-        return resp(bizCode.value(), null, errMsg);
+    public static <T> Result<T> resp(BizCode bizCode, String message) {
+        return resp(bizCode.value(), null, message);
     }
 
-    public static <T> Result<T> resp(int biz, T data, String errMsg) {
-        return new Result<>(biz, data, errMsg);
+    public static <T> Result<T> resp(int code, T data, String message) {
+        return new Result<>(code, data, message);
     }
 
     public static <T> Result<T> toRes(int affectRows) {
@@ -83,7 +83,7 @@ public class Result<T> implements Serializable {
      */
     @JsonIgnore
     public boolean isSuccess() {
-        return this.biz == BizCode.OK.value();
+        return this.code == BizCode.OK.value();
     }
 
     /**
@@ -94,6 +94,6 @@ public class Result<T> implements Serializable {
         if (this.isSuccess()) {
             return this.data;
         }
-        throw new BusinessException(this.biz, this.errMsg);
+        throw new BusinessException(this.code, this.message);
     }
 }

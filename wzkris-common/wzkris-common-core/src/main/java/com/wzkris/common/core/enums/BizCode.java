@@ -35,12 +35,12 @@ public enum BizCode {
     THIRD_SERVICE(3003, "Third Service Error");
 
     // 状态码
-    private final int biz;
+    private final int code;
     // 状态码描述
     private final String desc;
 
     public final int value() {
-        return this.biz;
+        return this.code;
     }
 
     public final String desc() {

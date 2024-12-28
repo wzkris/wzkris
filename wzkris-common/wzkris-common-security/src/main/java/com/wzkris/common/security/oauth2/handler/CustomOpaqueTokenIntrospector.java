@@ -58,7 +58,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
             return this.adaptToCustomResponse(res);
         }
         catch (BusinessException e) {
-            if (e.getBiz() == BizCode.NOT_FOUND.value()) {
+            if (e.getCode() == BizCode.NOT_FOUND.value()) {
                 throw new OAuth2AuthenticationException(new OAuth2Error(CustomErrorCodes.NOT_FOUND));
             }
             else {
