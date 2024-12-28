@@ -92,6 +92,7 @@ public class SysMessageController extends BaseController {
         }
         SysMessage update = new SysMessage(msgId);
         update.setStatus(MessageConstants.STATUS_PUBLISH);
+
         return toRes(messageMapper.updateById(update));
     }
 

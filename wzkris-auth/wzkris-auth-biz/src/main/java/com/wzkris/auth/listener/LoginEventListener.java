@@ -7,6 +7,7 @@ import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
+import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.system.api.RemoteLogApi;
@@ -69,12 +70,12 @@ public class LoginEventListener {
             remoteLogApi.insertLoginlog(loginLogReq);
         }
         else if (ObjUtil.equals(baseUser.getLoginType(), LoginType.CLIENT_USER)) {
-//            ClientUser clientUser = (ClientUser) baseUser;
-//            // 更新用户登录信息
-//            LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
-//            loginInfoReq.setLoginIp(ipAddr);
-//            loginInfoReq.setLoginDate(DateUtil.current());
-//            remoteAppUserApi.updateLoginInfo(loginInfoReq);
+            ClientUser clientUser = (ClientUser) baseUser;
+            // 更新用户登录信息
+            LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
+            loginInfoReq.setLoginIp(ipAddr);
+            loginInfoReq.setLoginDate(DateUtil.current());
+            remoteAppUserApi.updateLoginInfo(loginInfoReq);
         }
     }
 

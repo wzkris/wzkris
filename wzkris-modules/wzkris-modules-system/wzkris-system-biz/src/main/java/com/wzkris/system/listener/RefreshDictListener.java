@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DictListener {
+public class RefreshDictListener {
 
     private final GlobalDictDataMapper dictDataMapper;
     private final GlobalDictTypeService dictTypeService;

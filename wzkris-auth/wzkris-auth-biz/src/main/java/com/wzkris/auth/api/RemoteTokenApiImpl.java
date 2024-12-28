@@ -34,19 +34,19 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
 
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
 
+    private static final String lua = """
+            local reqId = redis.call('GET', KEYS[1])
+            if not reqId then
+                reqId = ARGV[1]
+            end
+            redis.call('SETEX', KEYS[1], ARGV[2], reqId)
+            return reqId
+            """;
+
     @Override
     public Result<String> getTokenReqId(String token) {
         String key = TOKEN_REQ_ID_PREFIX + token;
         String reqId = String.valueOf(System.currentTimeMillis());
-
-        String lua = """
-                local reqId = redis.call('GET', KEYS[1])
-                if not reqId then
-                    reqId = ARGV[1]
-                end
-                redis.call('SETEX', KEYS[1], ARGV[2], reqId)
-                return reqId
-                """;
 
         reqId = RedisUtil.getClient().getScript().eval(RScript.Mode.READ_WRITE, lua,
                 RScript.ReturnType.VALUE, List.of(key), reqId, 60);

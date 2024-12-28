@@ -1,17 +1,20 @@
 package com.wzkris.system.listener.event;
 
+import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "刷新系统配置事件")
-public class RefreshConfigEvent {
+@Schema(description = "系统推送弹窗事件")
+public class SystemPushAlertEvent {
 
-    private String key;
+    private List<?> ids;
 
-    private String value;
+    private SimpleMessageDTO messageDTO;
 }

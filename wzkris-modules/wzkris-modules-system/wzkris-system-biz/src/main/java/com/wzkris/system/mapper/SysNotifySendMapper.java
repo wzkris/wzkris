@@ -17,9 +17,9 @@ public interface SysNotifySendMapper {
 
     @Insert("""
             <script>
-                INSERT INTO sys_notify_send(user_id, notify_id, send_time, read_state) VALUES
+                INSERT INTO sys_notify_send(notify_id, user_id, read_state) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
-                        (#{item.userId}, #{item.msgId}, ${@java.lang.System@currentTimeMillis()}, #{readState})
+                        (#{item.notifyId},  #{item.userId},  #{item.readState})
                     </foreach>
             </script>
             """)

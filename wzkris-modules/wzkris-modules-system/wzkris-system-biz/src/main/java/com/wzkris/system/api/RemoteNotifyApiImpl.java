@@ -3,7 +3,7 @@ package com.wzkris.system.api;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.system.api.domain.request.SendNotifyReq;
 import com.wzkris.system.constant.MessageConstants;
-import com.wzkris.system.domain.SysNotify;
+import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.service.SysNotifyService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +23,13 @@ public class RemoteNotifyApiImpl implements RemoteNotifyApi {
     private final SysNotifyService notifyService;
 
     @Override
-    public void sendSystemNotify(SendNotifyReq sendNotifyReq) {
-        this.sendNotify(MessageConstants.NOTIFY_TYPE_SYSTEM, sendNotifyReq);
+    public void sendSystemNotify(SendNotifyReq req) {
+        notifyService.sendNotify(req.getUserIds(), new SimpleMessageDTO(req.getTitle(), MessageConstants.NOTIFY_TYPE_SYSTEM, req.getContent()));
     }
 
     @Override
-    public void sendDeviceNotify(SendNotifyReq sendNotifyReq) {
-        this.sendNotify(MessageConstants.NOTIFY_TYPE_DEVICE, sendNotifyReq);
+    public void sendDeviceNotify(SendNotifyReq req) {
+        notifyService.sendNotify(req.getUserIds(), new SimpleMessageDTO(req.getTitle(), MessageConstants.NOTIFY_TYPE_DEVICE, req.getContent()));
     }
 
-    private void sendNotify(String type, SendNotifyReq sendNotifyReq) {
-        SysNotify notify = new SysNotify();
-        notify.setNotifyType(type);
-        notify.setTitle(sendNotifyReq.getTitle());
-        notify.setContent(sendNotifyReq.getContent());
-        notifyService.sendNotify(sendNotifyReq.getUserIds(), notify);
-    }
 }
