@@ -5,6 +5,7 @@ import com.wzkris.auth.api.domain.request.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "系统账户")
 @RestController
 @RequestMapping("/user")
+@IgnoreTenant(value = false, forceTenantId = "@LoginUserUtil.getTenantId()")
 @RequiredArgsConstructor
 public class SysUserOwnController extends BaseController {
     private final SysUserMapper userMapper;
