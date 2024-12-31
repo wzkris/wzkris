@@ -6,6 +6,7 @@ import com.wzkris.system.domain.vo.SysNotifyVO;
 import jakarta.annotation.Nullable;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,10 +21,19 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
             	    <if test="notifyType != null and notifyType != ''">
             	        AND notify_type = #{notifyType}
             	    </if>
+            	    <if test="readState != null and readState != ''">
+            	        AND read_state = #{readState}
+            	    </if>
                 ORDER BY s.notify_id DESC
             </script>
             """)
-    List<SysNotifyVO> listNotify(@Param("userId") Long userId, @Nullable @Param("notifyType") String notifyType);
+    List<SysNotifyVO> listNotify(@Param("userId") Long userId, @Nullable @Param("notifyType") String notifyType, @Nullable @Param("readState") String readState);
+
+    /**
+     * 已读通知
+     */
+    @Update("UPDATE sys_notify_send SET read_state = '1' WHERE notify_id = #{notifyId} AND user_id = #{userId}")
+    int readNotify(@Param("notifyId") Long notifyId, @Param("userId") Long userId);
 
     /**
      * 最大统计100
@@ -39,4 +49,5 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
             </script>
             """)
     int countUnread(@Param("userId") Long userId, @Nullable @Param("notifyType") String notifyType);
+
 }

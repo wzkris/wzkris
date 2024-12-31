@@ -16,9 +16,7 @@ import com.wzkris.system.mapper.SysNotifyMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,18 +43,24 @@ public class SysMessageOwnController extends BaseController {
 
     @Operation(summary = "系统通知分页")
     @GetMapping("/system_notify/list")
-    public Result<Page<SysNotifyVO>> systemNotify() {
+    public Result<Page<SysNotifyVO>> systemNotify(String readState) {
         startPage();
-        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM);
+        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM, readState);
         return getDataTable(list);
     }
 
     @Operation(summary = "设备通知分页")
     @GetMapping("/device_notify/list")
-    public Result<Page<SysNotifyVO>> deviceNotify() {
+    public Result<Page<SysNotifyVO>> deviceNotify(String readState) {
         startPage();
-        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE);
+        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE, readState);
         return getDataTable(list);
+    }
+
+    @Operation(summary = "通知读取")
+    @PostMapping("/read_notify")
+    public Result<Void> readNotify(@RequestBody Long notifyId) {
+        return toRes(notifyMapper.readNotify(notifyId, LoginUserUtil.getUserId()));
     }
 
     @Operation(summary = "未读数量统计")
