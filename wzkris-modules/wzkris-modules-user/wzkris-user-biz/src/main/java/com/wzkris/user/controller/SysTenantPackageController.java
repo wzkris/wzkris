@@ -39,7 +39,7 @@ import java.util.List;
 @Tag(name = "租户套餐管理")
 @Validated
 @RequiredArgsConstructor
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RestController
 @RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {

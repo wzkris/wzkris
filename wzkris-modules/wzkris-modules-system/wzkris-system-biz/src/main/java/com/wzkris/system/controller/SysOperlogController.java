@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Tag(name = "操作日志")
 @RestController
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RequestMapping("/operlog")
 @RequiredArgsConstructor
 public class SysOperlogController extends BaseController {

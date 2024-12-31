@@ -44,7 +44,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @IgnoreTenant// 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {

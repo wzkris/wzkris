@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "系统账户")
 @RestController
 @RequestMapping("/user")
-@IgnoreTenant(value = false, forceTenantId = "@LoginUserUtil.getTenantId()")
+@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")
 @RequiredArgsConstructor
 public class SysUserOwnController extends BaseController {
     private final SysUserMapper userMapper;

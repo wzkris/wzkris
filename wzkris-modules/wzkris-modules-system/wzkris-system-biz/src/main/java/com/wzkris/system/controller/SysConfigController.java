@@ -32,7 +32,7 @@ import java.util.List;
  */
 @Tag(name = "系统配置")
 @RestController
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RequestMapping("/config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {

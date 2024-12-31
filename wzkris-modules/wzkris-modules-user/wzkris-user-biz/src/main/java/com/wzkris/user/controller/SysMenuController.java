@@ -32,7 +32,7 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/sys_menu")
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
     private final SysMenuMapper menuMapper;
