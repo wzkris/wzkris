@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.server.authorization.authentication.O
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.context.AuthorizationServerContextHolder;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.token.DefaultOAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
@@ -133,6 +134,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (generatedAccessToken instanceof ClaimAccessor) {
             authorizationBuilder.token(accessToken, (metadata) ->
                     metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, ((ClaimAccessor) generatedAccessToken).getClaims()));
+            authorizationBuilder.token(accessToken, (metadata) ->
+                    metadata.put(OAuth2TokenFormat.class.getName(), OAuth2TokenFormat.REFERENCE.getValue()));
         }
         else {
             authorizationBuilder.accessToken(accessToken);

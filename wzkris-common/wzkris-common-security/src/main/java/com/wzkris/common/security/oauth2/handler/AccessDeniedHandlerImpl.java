@@ -2,8 +2,8 @@ package com.wzkris.common.security.oauth2.handler;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.I18nUtil;
+import com.wzkris.common.core.utils.JsonUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

@@ -39,6 +39,14 @@ public class CheckFieldPermsAspect {
 
     private final ExpressionParser spel = new SpelExpressionParser();
 
+    // 判断是否是基本类型或包装类（如 int, Integer, boolean, Boolean 等）
+    public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
+        return clazz.isPrimitive() ||
+                clazz == Integer.class || clazz == Long.class || clazz == Short.class ||
+                clazz == Double.class || clazz == Float.class || clazz == Boolean.class ||
+                clazz == Character.class || clazz == Byte.class || clazz == String.class;
+    }
+
     @Around("@annotation(checkFieldPerms) || @within(checkFieldPerms)")
     public Object around(ProceedingJoinPoint point, CheckFieldPerms checkFieldPerms) throws Throwable {
         if (checkFieldPerms == null) {
@@ -165,14 +173,6 @@ public class CheckFieldPermsAspect {
                 }
             }
         }
-    }
-
-    // 判断是否是基本类型或包装类（如 int, Integer, boolean, Boolean 等）
-    public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
-        return clazz.isPrimitive() ||
-                clazz == Integer.class || clazz == Long.class || clazz == Short.class ||
-                clazz == Double.class || clazz == Float.class || clazz == Boolean.class ||
-                clazz == Character.class || clazz == Byte.class || clazz == String.class;
     }
 
     /**

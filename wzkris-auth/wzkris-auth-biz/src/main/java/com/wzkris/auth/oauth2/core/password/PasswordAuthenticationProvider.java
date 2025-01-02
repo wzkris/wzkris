@@ -53,9 +53,9 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        UsernamePasswordAuthenticationToken wzAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, null);
-        wzAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return wzAuthenticationToken;
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, null);
+        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
+        return usernamePasswordAuthenticationToken;
     }
 
     @Override

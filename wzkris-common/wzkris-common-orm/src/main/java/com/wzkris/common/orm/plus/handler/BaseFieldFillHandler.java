@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.utils.ClientUserUtil;
-import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 

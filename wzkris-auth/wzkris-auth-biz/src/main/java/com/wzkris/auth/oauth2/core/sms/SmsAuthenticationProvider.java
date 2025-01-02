@@ -64,9 +64,9 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        UsernamePasswordAuthenticationToken wzAuthenticationToken = new UsernamePasswordAuthenticationToken(null, null, null);
-        wzAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return wzAuthenticationToken;
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);
+        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
+        return usernamePasswordAuthenticationToken;
     }
 
     @Override

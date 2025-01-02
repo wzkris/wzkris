@@ -26,6 +26,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SystemPushAlertListener {
 
+    private static void doSystemPush(String type, String eventName, List<?> ids, ObjectNode msg) {
+        switch (type) {
+            case MessageConstants.NOTIFY_TYPE_SYSTEM -> eventName = SystemPushEventName.SYSTEM_NOTIFY;
+            case MessageConstants.NOTIFY_TYPE_DEVICE -> eventName = SystemPushEventName.DEVICE_NOTIFY;
+        }
+        SseUtil.sendBatch(ids, eventName, msg);
+    }
+
     @Async
     @EventListener
     public void loginEvent(SystemPushAlertEvent alertEvent) {
@@ -37,13 +45,5 @@ public class SystemPushAlertListener {
         msg.put("content", messageDTO.getContent());
 
         doSystemPush(messageDTO.getType(), eventName, ids, msg);
-    }
-
-    private static void doSystemPush(String type, String eventName, List<?> ids, ObjectNode msg) {
-        switch (type) {
-            case MessageConstants.NOTIFY_TYPE_SYSTEM -> eventName = SystemPushEventName.SYSTEM_NOTIFY;
-            case MessageConstants.NOTIFY_TYPE_DEVICE -> eventName = SystemPushEventName.DEVICE_NOTIFY;
-        }
-        SseUtil.sendBatch(ids, eventName, msg);
     }
 }

@@ -40,6 +40,16 @@ import java.util.stream.Collectors;
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
 
+    private static final ExecutorService executorService = new ThreadPoolExecutor(
+            Runtime.getRuntime().availableProcessors() * 3,
+            Runtime.getRuntime().availableProcessors() * 3 * 2,
+            10L,
+            TimeUnit.SECONDS,
+            new SynchronousQueue<>(),
+            new DefaultThreadFactory("token-requestid-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("token_request_id")),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+    );
+
     @Autowired
     private PermitAllProperties permitAllProperties;
 
@@ -52,16 +62,6 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
     public HttpMessageConverters messageConverters(ObjectProvider<HttpMessageConverter<?>> converters) {
         return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
     }
-
-    private static final ExecutorService executorService = new ThreadPoolExecutor(
-            Runtime.getRuntime().availableProcessors() * 3,
-            Runtime.getRuntime().availableProcessors() * 3 * 2,
-            10L,
-            TimeUnit.SECONDS,
-            new SynchronousQueue<>(),
-            new DefaultThreadFactory("token-requestid-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("token_request_id")),
-            new ThreadPoolExecutor.CallerRunsPolicy()
-    );
 
     /**
      * do something
@@ -89,9 +89,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
 
         final String token = bearerToken.replaceFirst(SecurityConstants.TOKEN_PREFIX, "");
 
-        Future<Result<String>> future = executorService.submit(() -> {
-            return remoteTokenApi.getTokenReqId(token);
-        });
+        Future<Result<String>> future = executorService.submit(() -> remoteTokenApi.getTokenReqId(token));
 
         try {
             Result<String> result = future.get();

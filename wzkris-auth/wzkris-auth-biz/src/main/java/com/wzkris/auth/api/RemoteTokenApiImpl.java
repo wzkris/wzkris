@@ -8,12 +8,11 @@ import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
-import com.wzkris.common.security.oauth2.domain.model.AuthClient;
+import com.wzkris.common.security.oauth2.domain.model.AuthThings;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScript;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -32,8 +31,6 @@ import static com.wzkris.common.core.domain.Result.resp;
 public class RemoteTokenApiImpl implements RemoteTokenApi {
     private static final String TOKEN_REQ_ID_PREFIX = "token:req_id:";
 
-    private final OAuth2AuthorizationService oAuth2AuthorizationService;
-
     private static final String lua = """
             local reqId = redis.call('GET', KEYS[1])
             if not reqId then
@@ -42,6 +39,8 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
             redis.call('SETEX', KEYS[1], ARGV[2], reqId)
             return reqId
             """;
+
+    private final OAuth2AuthorizationService oAuth2AuthorizationService;
 
     @Override
     public Result<String> getTokenReqId(String token) {
@@ -66,20 +65,13 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
 
         UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());
 
-        if (authenticationToken != null) {
-            return ok((AuthBaseUser) authenticationToken.getPrincipal());
+        AuthBaseUser baseUser;
+        if (authenticationToken == null) {
+            baseUser = new AuthThings(oAuth2Authorization.getPrincipalName(), oAuth2Authorization.getAuthorizedScopes());
         }
         else {
-            // TODO 为空则为其他授权方式登录，现仅兼容客户端模式，可扩展设备码模式
-            AuthorizationGrantType authorizationGrantType = oAuth2Authorization.getAuthorizationGrantType();
-            if (authorizationGrantType.equals(AuthorizationGrantType.CLIENT_CREDENTIALS)) {
-                AuthClient authClient = new AuthClient();
-                authClient.setClientId(oAuth2Authorization.getRegisteredClientId());
-                authClient.setClientName(oAuth2Authorization.getPrincipalName());
-
-                return ok(authClient);
-            }
-            return null;
+            baseUser = (AuthBaseUser) authenticationToken.getPrincipal();
         }
+        return ok(baseUser);
     }
 }

@@ -11,32 +11,29 @@ import java.util.Set;
 /**
  * @author : wzkris
  * @version : V1.0.1
- * @description : 授权客户端
+ * @description : 授权事物
  * @date : 2024/5/16 15:36
  */
 @Setter
 @Getter
-public class AuthClient extends AuthBaseUser {
+public class AuthThings extends AuthBaseUser {
     /**
-     * 客户端ID
+     * 名称
      */
-    private String clientId;
-    /**
-     * 客户端名称
-     */
-    private String clientName;
+    private String principalName;
 
-    public AuthClient() {
-        this(Collections.emptySet());
+    public AuthThings(String principalName) {
+        this(principalName, Collections.emptySet());
     }
 
-    public AuthClient(Set<String> grantedAuthority) {
-        super(LoginType.AUTH_CLIENT, grantedAuthority);
+    public AuthThings(String principalName, Set<String> grantedAuthority) {
+        super(LoginType.AUTH_THINGS, grantedAuthority);
+        this.principalName = principalName;
     }
 
     @Override
     public String getName() {
-        return this.getClientName();
+        return this.getPrincipalName();
     }
 
 }
