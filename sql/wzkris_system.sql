@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 26/12/2024 14:11:03
+ Date: 04/01/2025 09:37:04
 */
 
 SET NAMES utf8mb4;
@@ -121,6 +121,8 @@ INSERT INTO `global_dict_data` VALUES (82, 0, '枚举', 'enum', 'things_model_da
 INSERT INTO `global_dict_data` VALUES (83, 0, '字符串', 'string', 'things_model_datatype', NULL, 'default', 'N', 1735007483437, 1, 1735007483437, 1);
 INSERT INTO `global_dict_data` VALUES (84, 0, '数组', 'array', 'things_model_datatype', NULL, 'default', 'N', 1735007491547, 1, 1735007491547, 1);
 INSERT INTO `global_dict_data` VALUES (85, 0, '结构体', 'struct', 'things_model_datatype', NULL, 'default', 'N', 1735007508886, 1, 1735007508886, 1);
+INSERT INTO `global_dict_data` VALUES (86, 0, '设备码模式', 'urn:ietf:params:oauth:grant-type:device_code', 'authorization_grant_types', NULL, 'primary', 'N', 1735954486738, 1, 1735954494338, 1);
+INSERT INTO `global_dict_data` VALUES (87, 0, 'token交换模式', 'urn:ietf:params:oauth:grant-type:token-exchange', 'authorization_grant_types', NULL, 'primary', 'N', 1735954518903, 1, 1735954522611, 1);
 
 -- ----------------------------
 -- Table structure for global_dict_type
@@ -425,7 +427,7 @@ CREATE TABLE `sys_message`  (
 INSERT INTO `sys_message` VALUES (1867761637258874881, '测试标题', '2', '测试内容xxxx', '2', 1734144050316, 1, 1734144050316, 1);
 INSERT INTO `sys_message` VALUES (1867761817215488002, '测试标题5', '2', '内容aauuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuqqqq', '2', 1734144093219, 1, 1734144093219, 1);
 INSERT INTO `sys_message` VALUES (1867761817215488005, '测试通知7', '1', '测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测', '2', 1734144094219, 1, 1734144093219, 1);
-INSERT INTO `sys_message` VALUES (1868480718916243457, '冲钱充钱', '1', '<h1>充充充充充充充充充充充充充充充充充充充充充充充充充充充充充</h1>', '2', 1734315492740, 1, 1734316170787, 1);
+INSERT INTO `sys_message` VALUES (1868480718916243457, '冲钱充钱', '1', '<h1>充充充充充充充充充充充充充充充充充充充充充充充充充充充充充</h1>', '2', 1734315492740, 1, 1735376394791, 1);
 
 -- ----------------------------
 -- Table structure for sys_notify
@@ -460,6 +462,9 @@ CREATE TABLE `sys_notify_send`  (
 -- Records of sys_notify_send
 -- ----------------------------
 INSERT INTO `sys_notify_send` VALUES (1854445788424261634, 1, '0');
+INSERT INTO `sys_notify_send` VALUES (1873884393595662338, 1, '0');
+INSERT INTO `sys_notify_send` VALUES (1873884472104644610, 1, '0');
+INSERT INTO `sys_notify_send` VALUES (1873884863462567938, 1, '1');
 
 -- ----------------------------
 -- Table structure for sys_oper_log

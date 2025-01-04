@@ -85,7 +85,7 @@ public final class OAuth2ExceptionUtil {
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
                         Result.resp(BizCode.UNAUTHORIZED, StringUtil.nullToDefault(errorMsg, BizCode.UNAUTHORIZED.desc()));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
-                        Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, I18nUtil.message("oauth2.scope.invalid")));
+                        Result.resp(BizCode.BAD_REQUEST, I18nUtil.message("oauth2.scope.invalid"));
                 default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
             };
         }

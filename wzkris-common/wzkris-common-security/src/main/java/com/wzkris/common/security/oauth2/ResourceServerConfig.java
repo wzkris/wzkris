@@ -52,7 +52,8 @@ public final class ResourceServerConfig {
                             if (permitAllProperties.getCustoms() != null) {
                                 authorize.requestMatchers(permitAllProperties.getCustoms().toArray(String[]::new)).permitAll();
                             }
-                            authorize.anyRequest().authenticated();
+                            authorize.requestMatchers("/assets/**", "/login", "/activate").permitAll()
+                                    .anyRequest().authenticated();
                         }
                 )
                 .formLogin(Customizer.withDefaults())

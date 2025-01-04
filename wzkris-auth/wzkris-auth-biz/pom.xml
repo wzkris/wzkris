@@ -39,16 +39,16 @@
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
 
+		<!--模板引擎-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
 		<!-- wzkris Common Redis-->
 		<dependency>
 			<groupId>com.wzkris</groupId>
 			<artifactId>wzkris-common-redis</artifactId>
-		</dependency>
-
-		<!-- 引入分布式session -->
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 
 		<!-- Sentinel -->

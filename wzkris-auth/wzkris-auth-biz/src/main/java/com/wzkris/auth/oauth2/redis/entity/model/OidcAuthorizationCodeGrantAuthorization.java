@@ -16,16 +16,27 @@
 package com.wzkris.auth.oauth2.redis.entity.model;
 
 import lombok.Getter;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 @Getter
 public class OidcAuthorizationCodeGrantAuthorization extends OAuth2AuthorizationCodeGrantAuthorization {
 
     private final IdToken idToken;
+
+    @TimeToLive
+    protected Long getTimeToLive() {
+        long maxLiveTime = -1;
+        maxLiveTime = Math.max(maxLiveTime,
+                idToken != null ? ChronoUnit.SECONDS.between(idToken.getIssuedAt(), idToken.getExpiresAt()) : -1);
+
+        return maxLiveTime;
+    }
 
     // @fold:on
     public OidcAuthorizationCodeGrantAuthorization(String id, String registeredClientId, String principalName,

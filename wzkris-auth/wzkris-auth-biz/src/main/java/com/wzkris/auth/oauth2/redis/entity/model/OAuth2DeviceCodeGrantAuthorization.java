@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 @Getter
@@ -37,6 +38,17 @@ public class OAuth2DeviceCodeGrantAuthorization extends OAuth2AuthorizationGrant
     @Indexed
     private final String deviceState; // Used to correlate the request during the
     // authorization consent flow
+
+    @Override
+    public Long getTimeToLive() {
+        long maxLiveTime = -1;
+        maxLiveTime = Math.max(maxLiveTime,
+                deviceCode != null ? ChronoUnit.SECONDS.between(deviceCode.getIssuedAt(), deviceCode.getExpiresAt()) : -1);
+        maxLiveTime = Math.max(maxLiveTime,
+                userCode != null ? ChronoUnit.SECONDS.between(userCode.getIssuedAt(), userCode.getExpiresAt()) : -1);
+
+        return maxLiveTime;
+    }
 
     // @fold:on
     public OAuth2DeviceCodeGrantAuthorization(String id, String registeredClientId, String principalName,

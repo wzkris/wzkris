@@ -98,6 +98,8 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
                 .clientAuthenticationMethods(clientAuthenticationMethods -> {
                     clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
                     clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+                    clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
+                    clientAuthenticationMethods.add(ClientAuthenticationMethod.NONE);
                 })
                 .authorizationGrantTypes(authorizationGrantTypes -> {// 授权方式
                     for (String authorizedGrantType : oauth2Client.getAuthorizationGrantTypes()) {

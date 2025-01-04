@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 26/12/2024 10:25:01
+ Date: 04/01/2025 09:49:48
 */
 
 SET NAMES utf8mb4;
@@ -105,9 +105,9 @@ CREATE TABLE `oauth2_client`  (
   `client_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户端名称',
   `client_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `client_secret` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `scopes` json NULL COMMENT '权限域',
-  `authorization_grant_types` json NULL COMMENT '授权类型',
-  `redirect_uris` json NULL COMMENT '回调地址',
+  `scopes` json NOT NULL COMMENT '权限域',
+  `authorization_grant_types` json NOT NULL COMMENT '授权类型',
+  `redirect_uris` json NOT NULL COMMENT '回调地址',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '客户端状态',
   `auto_approve` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否自动放行',
   `create_at` bigint NOT NULL,
@@ -121,8 +121,8 @@ CREATE TABLE `oauth2_client`  (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2', '[\"openid\"]', '[\"password\", \"refresh_token\", \"authorization_code\", \"client_credentials\", \"sms\"]', '[\"http://localhost:9001/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1733125627072, 1);
-INSERT INTO `oauth2_client` VALUES (1860941790147440642, '测试客户端', 'test_cl', '{bcrypt}$2a$10$kLcJ/zFM6vMfmEWhsuYlHOHkpTQm4b6LT5Lvg.XiYx1koSqM7fg2u', NULL, '[\"password\"]', NULL, '0', 0, 1732518072056, 1, 1733125712791, 1);
+INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2', '[\"openid\"]', '[\"password\", \"refresh_token\", \"authorization_code\", \"client_credentials\", \"sms\"]', '[\"http://localhost:9001/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1735954764297, 1);
+INSERT INTO `oauth2_client` VALUES (2, '测试客户端', 'test_cl', '{bcrypt}$2a$10$kLcJ/zFM6vMfmEWhsuYlHOHkpTQm4b6LT5Lvg.XiYx1koSqM7fg2u', '[\"read\", \"write\"]', '[\"urn:ietf:params:oauth:grant-type:device_code\"]', '[]', '0', 0, 1732518072056, 1, 1735955145307, 1);
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -369,7 +369,7 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1735117194408, 1);
+INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 0, 1, 1713334134616, 1, 1735267827187, 1);
 INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1732349385269, 1);
 INSERT INTO `sys_role` VALUES (4, 0, '2', '员工', '1', 5, 1, 0, 1713334134616, 1, 1735088705511, 1);
 INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '3', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1734318887182, 1);
@@ -407,6 +407,7 @@ CREATE TABLE `sys_role_menu`  (
 INSERT INTO `sys_role_menu` VALUES (2, 1);
 INSERT INTO `sys_role_menu` VALUES (2, 2);
 INSERT INTO `sys_role_menu` VALUES (2, 3);
+INSERT INTO `sys_role_menu` VALUES (2, 4);
 INSERT INTO `sys_role_menu` VALUES (2, 100);
 INSERT INTO `sys_role_menu` VALUES (2, 103);
 INSERT INTO `sys_role_menu` VALUES (2, 201);
@@ -416,6 +417,7 @@ INSERT INTO `sys_role_menu` VALUES (2, 205);
 INSERT INTO `sys_role_menu` VALUES (2, 206);
 INSERT INTO `sys_role_menu` VALUES (2, 207);
 INSERT INTO `sys_role_menu` VALUES (2, 208);
+INSERT INTO `sys_role_menu` VALUES (2, 401);
 INSERT INTO `sys_role_menu` VALUES (2, 601);
 INSERT INTO `sys_role_menu` VALUES (2, 1051);
 INSERT INTO `sys_role_menu` VALUES (2, 1052);
@@ -461,6 +463,11 @@ INSERT INTO `sys_role_menu` VALUES (2, 2208);
 INSERT INTO `sys_role_menu` VALUES (2, 2209);
 INSERT INTO `sys_role_menu` VALUES (2, 2210);
 INSERT INTO `sys_role_menu` VALUES (2, 2211);
+INSERT INTO `sys_role_menu` VALUES (2, 3226);
+INSERT INTO `sys_role_menu` VALUES (2, 3227);
+INSERT INTO `sys_role_menu` VALUES (2, 3228);
+INSERT INTO `sys_role_menu` VALUES (2, 3229);
+INSERT INTO `sys_role_menu` VALUES (2, 3230);
 INSERT INTO `sys_role_menu` VALUES (3, 2);
 INSERT INTO `sys_role_menu` VALUES (3, 203);
 INSERT INTO `sys_role_menu` VALUES (3, 206);
@@ -580,8 +587,8 @@ CREATE TABLE `sys_tenant_package`  (
 -- ----------------------------
 -- Records of sys_tenant_package
 -- ----------------------------
-INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '1', '[]', 1, NULL, 1, 1713334134616, 1, 1735088764731);
-INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 401, 151, 1064, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130, 1125, 1126, 1127, 3228, 400, 3126, 3125, 3124, 3123, 3122, 3121]', 1, '通用租户套餐', 1, 1713334134616, 1, 1734747347377);
+INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'cc', '1', '[]', 1, NULL, 1, 1713334134616, 1, 1735179990954);
+INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 401, 151, 1064, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130, 1125, 1126, 1127, 3228, 3226, 400, 3126, 3125, 3124, 3123, 3122, 3121]', 1, '通用租户套餐', 1, 1713334134616, 1, 1735267380741);
 
 -- ----------------------------
 -- Table structure for sys_tenant_wallet
