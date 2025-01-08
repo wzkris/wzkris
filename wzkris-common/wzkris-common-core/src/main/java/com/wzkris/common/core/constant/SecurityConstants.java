@@ -9,16 +9,6 @@ package com.wzkris.common.core.constant;
 public interface SecurityConstants {
 
     /**
-     * token前缀
-     */
-    String TOKEN_PREFIX = "Bearer ";
-
-    /**
-     * token请求ID
-     */
-    String TOKEN_REQ_ID_HEADER = "token_req_id";
-
-    /**
      * 内部请求路径
      */
     String INNER_REQUEST_PATH = "/inner";

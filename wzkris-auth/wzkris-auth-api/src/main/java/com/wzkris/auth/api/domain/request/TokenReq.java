@@ -13,6 +13,4 @@ public class TokenReq {
     @NotBlank(message = "token {validate.notnull}")
     private String token;
 
-    @NotBlank(message = "requestId {validate.notnull}")
-    private String reqId;
 }

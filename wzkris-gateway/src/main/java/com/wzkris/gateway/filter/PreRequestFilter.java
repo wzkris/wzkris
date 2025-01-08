@@ -1,10 +1,7 @@
 package com.wzkris.gateway.filter;
 
 import com.wzkris.auth.api.RemoteTokenApi;
-import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
@@ -26,8 +23,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -79,30 +78,8 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         }
 
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StringUtil.isBlank(bearerToken)) {
-            List<String> list = request.getQueryParams().get(HttpHeaders.AUTHORIZATION);
-            if (list == null || list.isEmpty()) {
-                return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
-            }
-            bearerToken = list.get(0);
-        }
-
-        final String token = bearerToken.replaceFirst(SecurityConstants.TOKEN_PREFIX, "");
-
-        Future<Result<String>> future = executorService.submit(() -> remoteTokenApi.getTokenReqId(token));
-
-        try {
-            Result<String> result = future.get();
-
-            if (!result.isSuccess()) {
-                return WebFluxUtil.writeResponse(exchange.getResponse(), result.getCode(), I18nUtil.message("service.busy"));
-            }
-
-            mutate.header(SecurityConstants.TOKEN_REQ_ID_HEADER, result.getData());
-        }
-        catch (InterruptedException | ExecutionException e) {
-            log.error("token请求ID获取异常，errmsg：{}", e.getMessage());
-            return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.INTERNAL_ERROR);
+        if (StringUtil.isBlank(bearerToken) && request.getQueryParams().get(HttpHeaders.AUTHORIZATION) == null) {
+            return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
         }
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());

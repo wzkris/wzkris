@@ -2,11 +2,10 @@ package com.wzkris.common.core.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BusinessException;
-import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,20 +15,31 @@ import java.io.Serializable;
  *
  * @author wzkris
  */
-@Data
-@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class) // 驼峰转下划线
+@Getter
+@ToString
 public class Result<T> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -683617940437008912L;
 
-    // 业务状态码
+    /**
+     * 业务状态码
+     */
     private int code;
-    // 数据
+
+    /**
+     * 数据
+     */
     private T data;
-    // 错误信息
+
+    /**
+     * 错误信息
+     */
     private String message;
-    // 当前时间戳
+
+    /**
+     * 当前时间戳
+     */
     private long timestamp;
 
     public Result() {
@@ -68,14 +78,6 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> resp(int code, T data, String message) {
         return new Result<>(code, data, message);
-    }
-
-    public static <T> Result<T> toRes(int affectRows) {
-        return affectRows > 0 ? ok() : fail();
-    }
-
-    public static <T> Result<T> toRes(boolean b) {
-        return b ? ok() : fail();
     }
 
     /**
