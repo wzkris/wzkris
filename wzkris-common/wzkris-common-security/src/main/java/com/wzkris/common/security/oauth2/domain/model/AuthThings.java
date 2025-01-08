@@ -20,7 +20,11 @@ public class AuthThings extends AuthBaseUser {
     /**
      * 名称
      */
-    private String principalName;
+    private final String principalName;
+
+    public AuthThings() {
+        this(null);
+    }
 
     public AuthThings(String principalName) {
         this(principalName, Collections.emptySet());

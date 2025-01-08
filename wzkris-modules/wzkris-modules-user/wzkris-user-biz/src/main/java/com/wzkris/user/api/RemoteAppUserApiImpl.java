@@ -3,15 +3,16 @@ package com.wzkris.user.api;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import com.wzkris.user.api.domain.response.AppUserResp;
 import com.wzkris.user.domain.AppUser;
+import com.wzkris.user.domain.AppUserThirdinfo;
 import com.wzkris.user.mapper.AppUserMapper;
+import com.wzkris.user.mapper.AppUserThirdinfoMapper;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.wzkris.common.core.domain.Result.ok;
 
 /**
  * @author : wzkris
@@ -23,12 +24,10 @@ import static com.wzkris.common.core.domain.Result.ok;
 @InnerAuth
 @RestController
 @RequiredArgsConstructor
-public class RemoteAppUserApiImpl implements RemoteAppUserApi {
+public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUserApi {
     private final AppUserMapper appUserMapper;
+    private final AppUserThirdinfoMapper appUserThirdinfoMapper;
 
-    /**
-     * 根据手机号查询app用户
-     */
     @Override
     public Result<AppUserResp> getByPhoneNumber(String phoneNumber) {
         AppUser appUser = appUserMapper.selectByPhoneNumber(phoneNumber);
@@ -36,9 +35,17 @@ public class RemoteAppUserApiImpl implements RemoteAppUserApi {
         return ok(appUserResp);
     }
 
-    /**
-     * 更新用户登录信息
-     */
+    @Override
+    public Result<AppUserResp> getByOpenid(String openid) {
+        AppUserThirdinfo userThirdinfo = appUserThirdinfoMapper.selectByOpenid(openid);
+        if (userThirdinfo == null) {
+            return fail18n("{desc.user}{desc.not}{desc.exist}");
+        }
+        AppUser appUser = appUserMapper.selectById(userThirdinfo.getUserId());
+        AppUserResp appUserResp = BeanUtil.convert(appUser, AppUserResp.class);
+        return ok(appUserResp);
+    }
+
     @Override
     public void updateLoginInfo(LoginInfoReq loginInfoReq) {
         AppUser appUser = new AppUser(loginInfoReq.getUserId());

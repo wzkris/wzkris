@@ -16,7 +16,6 @@
 
 package com.wzkris.auth.oauth2.handler;
 
-import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.listener.event.LoginEvent;
@@ -29,6 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.GenericHttpMessageConverter;
@@ -36,6 +36,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
@@ -72,15 +73,12 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                                         Authentication authentication) throws IOException {
         // 拿到返回的token
         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
-        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
 
-        // 判断是否携带当前用户信息
-        if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(AuthBaseUser.class.getName())) {
-            AuthBaseUser baseUser = (AuthBaseUser) additionalParameters.get(AuthBaseUser.class.getName());
-            // 发布登录成功事件
+        // 发布登录成功事件
+        if (accessTokenAuthentication.getPrincipal() instanceof UsernamePasswordAuthenticationToken authenticationToken
+                && authenticationToken.getPrincipal() instanceof AuthBaseUser baseUser) {
             SpringUtil.getContext().publishEvent(new LoginEvent(baseUser, ServletUtil.getClientIP(request),
-                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
-            additionalParameters.remove(AuthBaseUser.class.getName());
+                    UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
         }
 
         // 构造响应体
@@ -97,7 +95,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         }
 
         // 追加输出参数
-        builder.additionalParameters(additionalParameters);
+        builder.additionalParameters(accessTokenAuthentication.getAdditionalParameters());
 
         ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
         this.httpMessageConverter.write(builder.build(), null, httpResponse);

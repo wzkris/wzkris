@@ -8,6 +8,8 @@ import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationProvider;
 import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.sms.SmsAuthenticationProvider;
+import com.wzkris.auth.oauth2.core.wechat.WechatAuthenticationConverter;
+import com.wzkris.auth.oauth2.core.wechat.WechatAuthenticationProvider;
 import com.wzkris.auth.oauth2.dao.CustomDaoAuthenticationProvider;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
@@ -44,6 +46,7 @@ public class AuthorizationServerConfig {
                                                         AuthorizationServerSettings serverSettings,
                                                         DeviceClientAuthenticationProvider deviceClientAuthenticationProvider,
                                                         PasswordAuthenticationProvider passwordAuthenticationProvider,
+                                                        WechatAuthenticationProvider wechatAuthenticationProvider,
                                                         SmsAuthenticationProvider smsAuthenticationProvider) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
@@ -53,10 +56,12 @@ public class AuthorizationServerConfig {
                             .accessTokenRequestConverters(authenticationConverters -> { // 从请求拿到对应参数组装成authentication
                                 authenticationConverters.add(new PasswordAuthenticationConverter());
                                 authenticationConverters.add(new SmsAuthenticationConverter());
+                                authenticationConverters.add(new WechatAuthenticationConverter());
                             })
                             .authenticationProviders(authenticationProviders -> { // 校验authentication是否合法
                                 authenticationProviders.add(passwordAuthenticationProvider);
                                 authenticationProviders.add(smsAuthenticationProvider);
+                                authenticationProviders.add(wechatAuthenticationProvider);
                             })
                             .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
                             .errorResponseHandler(new AuthenticationFailureHandlerImpl()) // 登录失败处理器

@@ -87,6 +87,11 @@
 			<artifactId>wzkris-common-security</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.wzkris</groupId>
+			<artifactId>wzkris-common-weixin-sdk</artifactId>
+		</dependency>
+
 		<!-- 接口文档 -->
 		<dependency>
 			<groupId>com.wzkris</groupId>

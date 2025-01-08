@@ -44,6 +44,15 @@ public class AuthorizationConsentController {
         this.authorizationConsentService = authorizationConsentService;
     }
 
+    private static Set<ScopeWithDescription> withDescription(Set<String> scopes) {
+        Set<ScopeWithDescription> scopeWithDescriptions = new HashSet<>();
+        for (String scope : scopes) {
+            scopeWithDescriptions.add(new ScopeWithDescription(scope));
+
+        }
+        return scopeWithDescriptions;
+    }
+
     @RequestMapping(value = "/oauth2/consent")
     public String consent(Principal principal, Model model,
                           @RequestParam(OAuth2ParameterNames.CLIENT_ID) String clientId,
@@ -90,15 +99,6 @@ public class AuthorizationConsentController {
         }
 
         return "consent";
-    }
-
-    private static Set<ScopeWithDescription> withDescription(Set<String> scopes) {
-        Set<ScopeWithDescription> scopeWithDescriptions = new HashSet<>();
-        for (String scope : scopes) {
-            scopeWithDescriptions.add(new ScopeWithDescription(scope));
-
-        }
-        return scopeWithDescriptions;
     }
 
     public static class ScopeWithDescription {

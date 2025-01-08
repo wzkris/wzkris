@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class SysTenantDTO extends SysTenant {
-    @NotBlank(message = "[username] {validate.notnull}", groups = ValidationGroups.Insert.class)
+    @NotBlank(message = "{desc.username}{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "登录用户名")
     private String username;
 
-    @NotBlank(message = "[password] {validate.notnull}", groups = ValidationGroups.Insert.class)
+    @NotBlank(message = "{desc.pwd}{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "登录密码")
     private String password;
 }

@@ -29,15 +29,6 @@ public class OidcAuthorizationCodeGrantAuthorization extends OAuth2Authorization
 
     private final IdToken idToken;
 
-    @TimeToLive
-    protected Long getTimeToLive() {
-        long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
-                idToken != null ? ChronoUnit.SECONDS.between(idToken.getIssuedAt(), idToken.getExpiresAt()) : -1);
-
-        return maxLiveTime;
-    }
-
     // @fold:on
     public OidcAuthorizationCodeGrantAuthorization(String id, String registeredClientId, String principalName,
                                                    Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken, Principal principal,
@@ -46,6 +37,15 @@ public class OidcAuthorizationCodeGrantAuthorization extends OAuth2Authorization
         super(id, registeredClientId, principalName, authorizedScopes, accessToken, refreshToken, principal,
                 authorizationRequest, authorizationCode, state);
         this.idToken = idToken;
+    }
+
+    @TimeToLive
+    protected Long getTimeToLive() {
+        long maxLiveTime = -1;
+        maxLiveTime = Math.max(maxLiveTime,
+                idToken != null ? ChronoUnit.SECONDS.between(idToken.getIssuedAt(), idToken.getExpiresAt()) : -1);
+
+        return maxLiveTime;
     }
 
     @Getter

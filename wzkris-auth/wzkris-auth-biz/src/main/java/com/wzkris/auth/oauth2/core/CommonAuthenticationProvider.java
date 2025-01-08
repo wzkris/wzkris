@@ -1,6 +1,5 @@
 package com.wzkris.auth.oauth2.core;
 
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -187,11 +186,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             additionalParameters.put(OidcParameterNames.ID_TOKEN, idToken.getTokenValue());
         }
 
-        // 传递用户信息供OAuth2后续流程使用
-        additionalParameters.put(AuthBaseUser.class.getName(), authenticationToken.getPrincipal());
-
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
-                new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);
+                new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticationToken, accessToken, refreshToken, additionalParameters);
         oAuth2AccessTokenAuthenticationToken.setAuthenticated(true);
         return oAuth2AccessTokenAuthenticationToken;
     }

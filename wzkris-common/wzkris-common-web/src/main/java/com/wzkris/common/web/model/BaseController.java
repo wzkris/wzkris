@@ -2,6 +2,7 @@ package com.wzkris.common.web.model;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.orm.utils.PageUtil;
 import org.springframework.web.bind.WebDataBinder;
@@ -88,6 +89,20 @@ public class BaseController {
      */
     public <T> Result<T> fail(String errMsg) {
         return Result.fail(errMsg);
+    }
+
+    /**
+     * 返回失败消息
+     */
+    public <T> Result<T> fail18n(String msgCode) {
+        String msg;
+        if (msgCode.startsWith("{")) {
+            msg = I18nUtil.messageRegex(msgCode);
+        }
+        else {
+            msg = I18nUtil.message(msgCode);
+        }
+        return Result.fail(msg);
     }
 
     /**

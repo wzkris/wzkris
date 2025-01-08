@@ -3,7 +3,6 @@ package com.wzkris.auth.service;
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteSysUserApi;
@@ -26,7 +25,7 @@ public class LoginUserService {
     private final RemoteSysUserApi remoteSysUserApi;
 
     @Nullable
-    public AuthBaseUser getUserByPhoneNumber(String phoneNumber) {
+    public LoginUser getUserByPhoneNumber(String phoneNumber) {
         Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
         SysUserResp userResp = result.checkData();
         return userResp == null ? null : this.checkAndBuild(userResp);
@@ -37,6 +36,11 @@ public class LoginUserService {
         Result<SysUserResp> result = remoteSysUserApi.getByUsername(username, password);
         SysUserResp userResp = result.checkData();
         return userResp == null ? null : this.checkAndBuild(userResp);
+    }
+
+    @Nullable
+    public LoginUser getUserByWechat(String channel, String wxCode) {
+        return null;
     }
 
     /**

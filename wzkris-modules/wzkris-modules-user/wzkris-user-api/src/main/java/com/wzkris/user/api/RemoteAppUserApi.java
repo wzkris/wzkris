@@ -31,6 +31,12 @@ public interface RemoteAppUserApi {
     Result<AppUserResp> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
 
     /**
+     * 根据openid查询app用户
+     */
+    @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_app_user_by_openid")
+    Result<AppUserResp> getByOpenid(@RequestParam("openid") String openid);
+
+    /**
      * 更新用户登录信息
      */
     @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/update_app_user_logininfo")

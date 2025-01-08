@@ -45,17 +45,6 @@ public abstract class OAuth2AuthorizationGrantAuthorization {
 
     private final RefreshToken refreshToken;
 
-    @TimeToLive
-    protected Long getTimeToLive() {
-        long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
-                accessToken != null ? ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()) : -1);
-        maxLiveTime = Math.max(maxLiveTime,
-                refreshToken != null ? ChronoUnit.SECONDS.between(refreshToken.getIssuedAt(), refreshToken.getExpiresAt()) : -1);
-
-        return maxLiveTime;
-    }
-
     // @fold:on
     protected OAuth2AuthorizationGrantAuthorization(String id, String registeredClientId, String principalName,
                                                     Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken) {
@@ -65,6 +54,17 @@ public abstract class OAuth2AuthorizationGrantAuthorization {
         this.authorizedScopes = authorizedScopes;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+    }
+
+    @TimeToLive
+    protected Long getTimeToLive() {
+        long maxLiveTime = -1;
+        maxLiveTime = Math.max(maxLiveTime,
+                accessToken != null ? ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()) : -1);
+        maxLiveTime = Math.max(maxLiveTime,
+                refreshToken != null ? ChronoUnit.SECONDS.between(refreshToken.getIssuedAt(), refreshToken.getExpiresAt()) : -1);
+
+        return maxLiveTime;
     }
 
     @Getter

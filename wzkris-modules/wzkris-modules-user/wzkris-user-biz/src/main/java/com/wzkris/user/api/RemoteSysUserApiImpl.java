@@ -4,6 +4,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
@@ -20,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.domain.Result.ok;
-
 
 /**
  * @author : wzkris
@@ -33,7 +32,7 @@ import static com.wzkris.common.core.domain.Result.ok;
 @InnerAuth
 @RestController
 @RequiredArgsConstructor
-public class RemoteSysUserApiImpl implements RemoteSysUserApi {
+public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUserApi {
     private final SysUserMapper userMapper;
     private final SysTenantMapper tenantMapper;
     private final PasswordEncoder passwordEncoder;
@@ -44,7 +43,7 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     public Result<SysUserResp> getByUsername(String username, String password) {
         SysUser user = userMapper.selectByUsername(username);
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ok();
+            return fail18n("{desc.username}{desc.or}{desc.pwd}{desc.error}");
         }
         SysUserResp userResp = BeanUtil.convert(user, SysUserResp.class);
         this.retrieveAllStatus(userResp);

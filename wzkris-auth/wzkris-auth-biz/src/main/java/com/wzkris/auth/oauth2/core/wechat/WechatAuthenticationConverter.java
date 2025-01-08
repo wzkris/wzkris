@@ -1,4 +1,4 @@
-package com.wzkris.auth.oauth2.core.sms;
+package com.wzkris.auth.oauth2.core.wechat;
 
 import com.wzkris.auth.oauth2.constants.OAuth2GrantTypeConstant;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
@@ -18,40 +18,40 @@ import java.util.Set;
 /**
  * @author wzkris
  * @date 2024/3/11
- * @description 短信模式转换器
+ * @description 微信登录模式转换器
  */
-public final class SmsAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+public final class WechatAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
     @Override
     protected boolean support(String grantType) {
-        return OAuth2GrantTypeConstant.SMS.equals(grantType);
+        return OAuth2GrantTypeConstant.WECHAT.equals(grantType);
     }
 
     @Override
     public void checkParams(MultiValueMap<String, String> parameters) {
         // phonenumber (REQUIRED)
-        String phoneNumber = parameters.getFirst(OAuth2ParameterConstant.PHONE_NUMBER);
-        if (!StringUtils.hasText(phoneNumber) || parameters.get(OAuth2ParameterConstant.PHONE_NUMBER).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.PHONE_NUMBER);
+        String channel = parameters.getFirst(OAuth2ParameterConstant.CHANNEL);
+        if (!StringUtils.hasText(channel) || parameters.get(OAuth2ParameterConstant.CHANNEL).size() != 1) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail", OAuth2ParameterConstant.CHANNEL);
         }
 
-        // smscode (REQUIRED)
-        String smsCode = parameters.getFirst(OAuth2ParameterConstant.SMS_CODE);
-        if (!StringUtils.hasText(smsCode) || parameters.get(OAuth2ParameterConstant.SMS_CODE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.SMS_CODE);
+        // wxcode (REQUIRED)
+        String wxCode = parameters.getFirst(OAuth2ParameterConstant.WX_CODE);
+        if (!StringUtils.hasText(wxCode) || parameters.get(OAuth2ParameterConstant.WX_CODE).size() != 1) {
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail", OAuth2ParameterConstant.WX_CODE);
         }
 
         // userType (REQUIRED)
         String userType = parameters.getFirst(OAuth2ParameterConstant.USER_TYPE);
         if (!StringUtils.hasText(userType) || parameters.get(OAuth2ParameterConstant.USER_TYPE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail", OAuth2ParameterConstant.USER_TYPE);
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail", OAuth2ParameterConstant.USER_TYPE);
         }
     }
 
     @Override
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
-        String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
-        String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
+        String channel = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.CHANNEL));
+        String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WX_CODE));
         String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.USER_TYPE));
         LoginType loginTypeEm;
         try {
@@ -61,7 +61,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
             return null;// never run this line
         }
-        return new SmsAuthenticationToken(loginTypeEm, phoneNumber, smsCode,
+        return new WechatAuthenticationToken(loginTypeEm, channel, wxCode,
                 clientPrincipal, requestedScopes, null);
     }
 

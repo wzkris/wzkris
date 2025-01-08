@@ -39,15 +39,6 @@ public class OAuth2AuthorizationCodeGrantAuthorization extends OAuth2Authorizati
     private final String state; // Used to correlate the request during the authorization
     // consent flow
 
-    @TimeToLive
-    protected Long getTimeToLive() {
-        long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
-                authorizationCode != null ? ChronoUnit.SECONDS.between(authorizationCode.getIssuedAt(), authorizationCode.getExpiresAt()) : -1);
-
-        return maxLiveTime;
-    }
-
     // @fold:on
     public OAuth2AuthorizationCodeGrantAuthorization(String id, String registeredClientId, String principalName,
                                                      Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken, Principal principal,
@@ -57,6 +48,15 @@ public class OAuth2AuthorizationCodeGrantAuthorization extends OAuth2Authorizati
         this.authorizationRequest = authorizationRequest;
         this.authorizationCode = authorizationCode;
         this.state = state;
+    }
+
+    @TimeToLive
+    protected Long getTimeToLive() {
+        long maxLiveTime = -1;
+        maxLiveTime = Math.max(maxLiveTime,
+                authorizationCode != null ? ChronoUnit.SECONDS.between(authorizationCode.getIssuedAt(), authorizationCode.getExpiresAt()) : -1);
+
+        return maxLiveTime;
     }
 
     public static class AuthorizationCode extends AbstractToken {

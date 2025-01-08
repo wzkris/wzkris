@@ -39,17 +39,6 @@ public class OAuth2DeviceCodeGrantAuthorization extends OAuth2AuthorizationGrant
     private final String deviceState; // Used to correlate the request during the
     // authorization consent flow
 
-    @Override
-    public Long getTimeToLive() {
-        long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
-                deviceCode != null ? ChronoUnit.SECONDS.between(deviceCode.getIssuedAt(), deviceCode.getExpiresAt()) : -1);
-        maxLiveTime = Math.max(maxLiveTime,
-                userCode != null ? ChronoUnit.SECONDS.between(userCode.getIssuedAt(), userCode.getExpiresAt()) : -1);
-
-        return maxLiveTime;
-    }
-
     // @fold:on
     public OAuth2DeviceCodeGrantAuthorization(String id, String registeredClientId, String principalName,
                                               Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken,
@@ -61,6 +50,17 @@ public class OAuth2DeviceCodeGrantAuthorization extends OAuth2AuthorizationGrant
         this.userCode = userCode;
         this.requestedScopes = requestedScopes;
         this.deviceState = deviceState;
+    }
+
+    @Override
+    public Long getTimeToLive() {
+        long maxLiveTime = -1;
+        maxLiveTime = Math.max(maxLiveTime,
+                deviceCode != null ? ChronoUnit.SECONDS.between(deviceCode.getIssuedAt(), deviceCode.getExpiresAt()) : -1);
+        maxLiveTime = Math.max(maxLiveTime,
+                userCode != null ? ChronoUnit.SECONDS.between(userCode.getIssuedAt(), userCode.getExpiresAt()) : -1);
+
+        return maxLiveTime;
     }
 
     public static class DeviceCode extends AbstractToken {
