@@ -1,8 +1,8 @@
-package com.wzkris.common.core.dynamicCompilation;
+package com.wzkris.common.core.dynamicexec;
 
 
-import com.wzkris.common.core.dynamicCompilation.bytecode.ClassModifier;
-import com.wzkris.common.core.dynamicCompilation.bytecode.InjectionSystem;
+import com.wzkris.common.core.dynamicexec.bytecode.ClassModifier;
+import com.wzkris.common.core.dynamicexec.bytecode.InjectionSystem;
 
 /**
  * 对类进行注入操作，即修改Class二进制中的字符串常量的符号引用，从而达到替换功能的目的

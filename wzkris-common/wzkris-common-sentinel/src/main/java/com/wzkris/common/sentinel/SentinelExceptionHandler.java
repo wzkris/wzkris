@@ -2,12 +2,10 @@ package com.wzkris.common.sentinel;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.JsonUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author : wzkris
@@ -15,19 +13,15 @@ import jakarta.servlet.http.HttpServletResponse;
  * @description : sentinel限流异常全局处理， 使用了@SentinelResource注解的不会触发
  * @date : 2023/12/7 14:31
  */
+@Slf4j
 public class SentinelExceptionHandler implements BlockExceptionHandler {
+
+    public static final String RETRY_AFTER = "Retry-After";
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, String s, BlockException e) throws Exception {
-        Result<?> result;
-        if (e instanceof AuthorityException) {
-            result = Result.resp(BizCode.UNAUTHORIZED);
-        }
-        else {
-            result = Result.resp(BizCode.BAD_REQUEST, "请求限流");
-        }
-        response.setContentType("application/json");
-        response.setStatus(200);
-        response.getWriter().write(JsonUtil.toJsonString(result));
+        log.warn("应用：‘{}’的接口‘{}’触发限流", e.getRule().getResource(), request.getRequestURI());
+        response.setHeader(RETRY_AFTER, "10");
+        response.sendError(BizCode.TOO_MANY_REQUESTS.value(), BizCode.TOO_MANY_REQUESTS.desc());
     }
 }

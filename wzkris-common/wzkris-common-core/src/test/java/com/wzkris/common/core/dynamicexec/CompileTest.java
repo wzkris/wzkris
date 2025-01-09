@@ -1,7 +1,7 @@
-package com.wzkris.common.core.dynamicCompilation;
+package com.wzkris.common.core.dynamicexec;
 
 
-import com.wzkris.common.core.dynamicCompilation.service.DynamicExecuteService;
+import com.wzkris.common.core.dynamicexec.service.DynamicExecuteService;
 import org.junit.jupiter.api.Test;
 
 public class CompileTest {

@@ -1,4 +1,4 @@
-package com.wzkris.common.core.dynamicCompilation;
+package com.wzkris.common.core.dynamicexec;
 
 
 import com.wzkris.common.core.utils.StringUtil;

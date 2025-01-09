@@ -1,10 +1,10 @@
-package com.wzkris.common.core.dynamicCompilation.service;
+package com.wzkris.common.core.dynamicexec.service;
 
 
-import com.wzkris.common.core.dynamicCompilation.ClassInjector;
-import com.wzkris.common.core.dynamicCompilation.DynamicClassLoader;
-import com.wzkris.common.core.dynamicCompilation.DynamicLoaderEngine;
-import com.wzkris.common.core.dynamicCompilation.bytecode.InjectionSystem;
+import com.wzkris.common.core.dynamicexec.ClassInjector;
+import com.wzkris.common.core.dynamicexec.DynamicClassLoader;
+import com.wzkris.common.core.dynamicexec.DynamicLoaderEngine;
+import com.wzkris.common.core.dynamicexec.bytecode.InjectionSystem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.wzkris.common.core.dynamicCompilation.compiler;
+package com.wzkris.common.core.dynamicexec.compiler;
 
 import javax.tools.SimpleJavaFileObject;
 import java.io.ByteArrayOutputStream;

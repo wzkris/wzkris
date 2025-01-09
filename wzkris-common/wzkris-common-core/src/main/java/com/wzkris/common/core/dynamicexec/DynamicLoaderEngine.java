@@ -1,7 +1,7 @@
-package com.wzkris.common.core.dynamicCompilation;
+package com.wzkris.common.core.dynamicexec;
 
 
-import com.wzkris.common.core.dynamicCompilation.compiler.ClassCompiler;
+import com.wzkris.common.core.dynamicexec.compiler.ClassCompiler;
 
 import java.io.PrintWriter;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.wzkris.common.core.dynamicCompilation.bytecode;
+package com.wzkris.common.core.dynamicexec.bytecode;
 
 import java.io.Console;
 import java.io.IOException;

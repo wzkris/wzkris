@@ -1,4 +1,4 @@
-package com.wzkris.common.core.dynamicCompilation;
+package com.wzkris.common.core.dynamicexec;
 
 import java.net.URL;
 import java.net.URLClassLoader;

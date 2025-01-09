@@ -1,10 +1,10 @@
 package com.wzkris.equipment.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.dynamicCompilation.ClassInjector;
-import com.wzkris.common.core.dynamicCompilation.DynamicClassLoader;
-import com.wzkris.common.core.dynamicCompilation.DynamicLoaderEngine;
-import com.wzkris.common.core.dynamicCompilation.bytecode.InjectionSystem;
+import com.wzkris.common.core.dynamicexec.ClassInjector;
+import com.wzkris.common.core.dynamicexec.DynamicClassLoader;
+import com.wzkris.common.core.dynamicexec.DynamicLoaderEngine;
+import com.wzkris.common.core.dynamicexec.bytecode.InjectionSystem;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.equipment.domain.req.DynamicCodeReq;
 import io.swagger.v3.oas.annotations.Operation;

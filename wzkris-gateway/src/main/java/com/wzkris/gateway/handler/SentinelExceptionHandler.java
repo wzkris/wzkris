@@ -1,12 +1,10 @@
 package com.wzkris.gateway.handler;
 
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
-import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.enums.BizCode;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -23,8 +21,9 @@ public class SentinelExceptionHandler implements BlockRequestHandler {
     @Override
     public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange, Throwable e) {
 
-        return ServerResponse.status(HttpStatus.OK)
+        return ServerResponse.status(HttpStatus.TOO_MANY_REQUESTS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(Result.resp(BizCode.BAD_REQUEST, "请求限流")));
+                .header(HttpHeaders.RETRY_AFTER, "10")
+                .build();
     }
 }

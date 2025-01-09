@@ -1,4 +1,4 @@
-package com.wzkris.common.core.dynamicCompilation.bytecode;
+package com.wzkris.common.core.dynamicexec.bytecode;
 
 /**
  * Class文件修改器
