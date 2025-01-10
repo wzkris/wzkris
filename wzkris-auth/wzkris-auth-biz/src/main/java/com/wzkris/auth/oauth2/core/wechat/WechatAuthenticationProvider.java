@@ -1,12 +1,9 @@
 package com.wzkris.auth.oauth2.core.wechat;
 
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
-import com.wzkris.auth.service.ClientUserService;
-import com.wzkris.auth.service.LoginUserService;
+import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
-import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +13,9 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author wzkris
  * @date 2024/3/11
@@ -24,36 +24,32 @@ import org.springframework.stereotype.Component;
 @Component
 public final class WechatAuthenticationProvider extends CommonAuthenticationProvider<WechatAuthenticationToken> {
 
-    private final LoginUserService loginUserService;
-    private final ClientUserService clientUserService;
+    private final List<UserInfoTemplate> userInfoTemplates;
 
     public WechatAuthenticationProvider(OAuth2AuthorizationService authorizationService,
-                                        LoginUserService loginUserService,
-                                        ClientUserService clientUserService,
+                                        List<UserInfoTemplate> userInfoTemplates,
                                         OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
         super(tokenGenerator, authorizationService);
-        this.loginUserService = loginUserService;
-        this.clientUserService = clientUserService;
+        this.userInfoTemplates = userInfoTemplates;
     }
 
     @Override
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         WechatAuthenticationToken authenticationToken = (WechatAuthenticationToken) authentication;
 
-        AuthBaseUser baseUser;
-        if (ObjUtil.equals(LoginType.SYSTEM_USER, authenticationToken.getLoginType())) {
-            baseUser = loginUserService.getUserByWechat(authenticationToken.getChannel(), authenticationToken.getWxCode());
-        }
-        else if (ObjUtil.equals(LoginType.CLIENT_USER, authenticationToken.getLoginType())) {
-            baseUser = clientUserService.getUserByWechat(authenticationToken.getChannel(), authenticationToken.getWxCode());
-        }
-        else {
+        Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
+                .filter(t -> t.checkLoginType(authenticationToken.getLoginType()))
+                .findFirst();
+
+        if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
             return null;// never run this line
         }
 
+        AuthBaseUser baseUser = templateOptional.get().loadUserByWechat(authenticationToken.getChannel(), authenticationToken.getWxCode());
+
         if (baseUser == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);

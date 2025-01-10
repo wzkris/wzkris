@@ -1,16 +1,17 @@
-package com.wzkris.auth.service;
+package com.wzkris.auth.service.impl;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.oauth2.constants.enums.WechatChannel;
+import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
+import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.domain.response.AppUserResp;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClientUserService {
+public class ClientUserService extends UserInfoTemplate {
 
     private final RemoteAppUserApi remoteAppUserApi;
 
@@ -30,16 +31,16 @@ public class ClientUserService {
     @Lazy
     private WxMaService wxMaService;
 
-    @Nullable
-    public ClientUser getUserByPhoneNumber(String phoneNumber) {
+    @Override
+    public ClientUser loadUserByPhoneNumber(String phoneNumber) {
         Result<AppUserResp> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
         AppUserResp appUserResp = result.checkData();
 
         return appUserResp == null ? null : this.checkAndBuild(appUserResp);
     }
 
-    @Nullable
-    public ClientUser getUserByWechat(String channel, String wxCode) {
+    @Override
+    public ClientUser loadUserByWechat(String channel, String wxCode) {
         if (WechatChannel.XCX.name().equals(channel)) {
             WxMaJscode2SessionResult sessionInfo = this.getOpenid(wxCode);
             Result<AppUserResp> userApiByOpenid = remoteAppUserApi.getByOpenid(sessionInfo.getOpenid());
@@ -54,6 +55,11 @@ public class ClientUserService {
 
         }
         return null;
+    }
+
+    @Override
+    public boolean checkLoginType(LoginType loginType) {
+        return LoginType.CLIENT_USER.equals(loginType);
     }
 
     private WxMaJscode2SessionResult getOpenid(String wxCode) {

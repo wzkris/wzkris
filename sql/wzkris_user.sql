@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 04/01/2025 09:49:48
+ Date: 10/01/2025 09:27:36
 */
 
 SET NAMES utf8mb4;
@@ -121,7 +121,7 @@ CREATE TABLE `oauth2_client`  (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2', '[\"openid\"]', '[\"password\", \"refresh_token\", \"authorization_code\", \"client_credentials\", \"sms\"]', '[\"http://localhost:9001/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1735954764297, 1);
+INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2', '[\"openid\"]', '[\"password\", \"sms\", \"refresh_token\"]', '[\"http://localhost:9001/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1736472115713, 1);
 INSERT INTO `oauth2_client` VALUES (2, '测试客户端', 'test_cl', '{bcrypt}$2a$10$kLcJ/zFM6vMfmEWhsuYlHOHkpTQm4b6LT5Lvg.XiYx1koSqM7fg2u', '[\"read\", \"write\"]', '[\"urn:ietf:params:oauth:grant-type:device_code\"]', '[]', '0', 0, 1732518072056, 1, 1735955145307, 1);
 
 -- ----------------------------

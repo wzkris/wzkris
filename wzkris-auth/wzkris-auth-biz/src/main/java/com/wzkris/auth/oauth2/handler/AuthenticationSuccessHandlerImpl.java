@@ -48,6 +48,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -84,18 +85,26 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         // 构造响应体
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
+        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters().isEmpty()
+                ? new HashMap<>(2) : accessTokenAuthentication.getAdditionalParameters();
 
         OAuth2AccessTokenResponse.Builder builder = OAuth2AccessTokenResponse.withToken(accessToken.getTokenValue())
                 .tokenType(accessToken.getTokenType());
+
         if (accessToken.getIssuedAt() != null && accessToken.getExpiresAt() != null) {
             builder.expiresIn(ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()));
         }
+
         if (refreshToken != null) {
             builder.refreshToken(refreshToken.getTokenValue());
+
+            if (refreshToken.getIssuedAt() != null && refreshToken.getExpiresAt() != null) {
+                additionalParameters.put("refresh_expires_in", ChronoUnit.SECONDS.between(refreshToken.getIssuedAt(), refreshToken.getExpiresAt()));
+            }
         }
 
         // 追加输出参数
-        builder.additionalParameters(accessTokenAuthentication.getAdditionalParameters());
+        builder.additionalParameters(additionalParameters);
 
         ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
         this.httpMessageConverter.write(builder.build(), null, httpResponse);

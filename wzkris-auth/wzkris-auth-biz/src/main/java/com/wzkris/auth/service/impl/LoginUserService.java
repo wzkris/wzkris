@@ -1,16 +1,17 @@
-package com.wzkris.auth.service;
+package com.wzkris.auth.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
+import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
+import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
 import com.wzkris.user.api.domain.response.SysUserResp;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -20,27 +21,27 @@ import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
-public class LoginUserService {
+public class LoginUserService extends UserInfoTemplate {
 
     private final RemoteSysUserApi remoteSysUserApi;
 
-    @Nullable
-    public LoginUser getUserByPhoneNumber(String phoneNumber) {
+    @Override
+    public LoginUser loadUserByPhoneNumber(String phoneNumber) {
         Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
         SysUserResp userResp = result.checkData();
         return userResp == null ? null : this.checkAndBuild(userResp);
     }
 
-    @Nullable
-    public LoginUser getByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+    @Override
+    public LoginUser loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         Result<SysUserResp> result = remoteSysUserApi.getByUsername(username, password);
         SysUserResp userResp = result.checkData();
         return userResp == null ? null : this.checkAndBuild(userResp);
     }
 
-    @Nullable
-    public LoginUser getUserByWechat(String channel, String wxCode) {
-        return null;
+    @Override
+    public boolean checkLoginType(LoginType loginType) {
+        return LoginType.SYSTEM_USER.equals(loginType);
     }
 
     /**

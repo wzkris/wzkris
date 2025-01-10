@@ -1,13 +1,10 @@
 package com.wzkris.auth.oauth2.core.sms;
 
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.auth.service.ClientUserService;
-import com.wzkris.auth.service.LoginUserService;
+import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
-import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +14,9 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author wzkris
  * @date 2024/3/11
@@ -25,18 +25,15 @@ import org.springframework.stereotype.Component;
 @Component
 public final class SmsAuthenticationProvider extends CommonAuthenticationProvider<SmsAuthenticationToken> {
 
-    private final LoginUserService loginUserService;
-    private final ClientUserService clientUserService;
+    private final List<UserInfoTemplate> userInfoTemplates;
     private final CaptchaService captchaService;
 
     public SmsAuthenticationProvider(OAuth2AuthorizationService authorizationService,
-                                     LoginUserService loginUserService,
-                                     ClientUserService clientUserService,
+                                     List<UserInfoTemplate> userInfoTemplates,
                                      OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
                                      CaptchaService captchaService) {
         super(tokenGenerator, authorizationService);
-        this.loginUserService = loginUserService;
-        this.clientUserService = clientUserService;
+        this.userInfoTemplates = userInfoTemplates;
         this.captchaService = captchaService;
     }
 
@@ -48,17 +45,16 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
         // 校验验证码
         captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
 
-        AuthBaseUser baseUser;
-        if (ObjUtil.equals(LoginType.SYSTEM_USER, authenticationToken.getLoginType())) {
-            baseUser = loginUserService.getUserByPhoneNumber(authenticationToken.getPhoneNumber());
-        }
-        else if (ObjUtil.equals(LoginType.CLIENT_USER, authenticationToken.getLoginType())) {
-            baseUser = clientUserService.getUserByPhoneNumber(authenticationToken.getPhoneNumber());
-        }
-        else {
+        Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
+                .filter(t -> t.checkLoginType(authenticationToken.getLoginType()))
+                .findFirst();
+
+        if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
             return null;// never run this line
         }
+
+        AuthBaseUser baseUser = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
         if (baseUser == null) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
