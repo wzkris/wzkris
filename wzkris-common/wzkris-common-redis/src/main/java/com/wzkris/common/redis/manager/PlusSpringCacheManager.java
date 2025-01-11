@@ -49,9 +49,9 @@ public class PlusSpringCacheManager implements CacheManager {
 
     private static final long DEFAULT_MAXIDLETIME = 60 * 60 * 1000;
 
-    Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
+    private static Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
 
-    ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
 
     private boolean dynamic = true;
 
@@ -91,7 +91,7 @@ public class PlusSpringCacheManager implements CacheManager {
      * @param config object
      */
     public void setConfig(Map<String, ? extends CacheConfig> config) {
-        this.configMap = (Map<String, CacheConfig>) config;
+        configMap = (Map<String, CacheConfig>) config;
     }
 
     protected CacheConfig createDefaultConfig() {

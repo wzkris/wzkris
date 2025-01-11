@@ -81,6 +81,7 @@ public class OperateLogAspect {
         try {
             // *========数据库日志=========*//
             OperLogReq operLogReq = new OperLogReq();
+            operLogReq.setUserId(LoginUserUtil.getUserId());
             operLogReq.setOperName(LoginUserUtil.getUsername());
             operLogReq.setTenantId(LoginUserUtil.getTenantId());
             operLogReq.setOperType(operateLog.operateType().getValue());

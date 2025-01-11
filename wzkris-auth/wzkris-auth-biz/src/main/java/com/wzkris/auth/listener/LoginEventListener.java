@@ -55,6 +55,7 @@ public class LoginEventListener {
             remoteSysUserApi.updateLoginInfo(loginInfoReq);
             // 插入后台登陆日志
             final LoginLogReq loginLogReq = new LoginLogReq();
+            loginLogReq.setUserId(loginUser.getUserId());
             loginLogReq.setUsername(loginUser.getUsername());
             loginLogReq.setTenantId(loginUser.getTenantId());
             loginLogReq.setLoginTime(DateUtil.current());

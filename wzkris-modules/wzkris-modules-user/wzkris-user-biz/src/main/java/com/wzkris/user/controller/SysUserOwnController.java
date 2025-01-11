@@ -24,6 +24,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,7 @@ public class SysUserOwnController extends BaseController {
     private final SysDeptMapper deptMapper;
     private final RemoteCaptchaApi remoteCaptchaApi;
     private final PasswordEncoder passwordEncoder;
+    private final static String ACCOUNT_PREFIX = "user:account";
 
     @Operation(summary = "登录信息")
     @GetMapping("/info")
@@ -59,6 +62,7 @@ public class SysUserOwnController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping("/account")
+    @Cacheable(cacheNames = ACCOUNT_PREFIX + "#1800#600", key = "@lg.getUserId()")
     public Result<SysUserAccountVO> accountVO() {
         SysUser sysUser = userMapper.selectById(LoginUserUtil.getUserId());
 
@@ -81,6 +85,7 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "修改昵称、性别")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@lg.getUserId()")
     public Result<Void> editInfo(@RequestBody EditOwnSysUserReq req) {
         SysUser user = new SysUser(LoginUserUtil.getUserId());
         user.setNickname(req.getNickname());
@@ -91,6 +96,7 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account/edit_phonenumber")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@lg.getUserId()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = LoginUserUtil.getUserId();
 
@@ -132,6 +138,7 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "更新头像")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account/edit_avatar")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@lg.getUserId()")
     public Result<Void> updateAvatar(@RequestBody String url) {
         SysUser sysUser = new SysUser(LoginUserUtil.getUserId());
         sysUser.setAvatar(url);

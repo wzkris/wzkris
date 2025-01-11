@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,7 @@ public class AppUserOwnController extends BaseController {
 
     private final AppUserMapper appUserMapper;
     private final AppUserService appUserService;
+    private final static String ACCOUNT_PREFIX = "app:account";
 
     @Operation(summary = "登录信息")
     @GetMapping("/info")
@@ -44,15 +47,16 @@ public class AppUserOwnController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping("/account")
+    @Cacheable(cacheNames = ACCOUNT_PREFIX + "#1800#600", key = "@cl.getUserId()")
     public Result<AppUserAccountVO> accountVO() {
-        AppUser appUser = appUserMapper.selectById(ClientUserUtil.getUserId());
+        AppUser user = appUserMapper.selectById(ClientUserUtil.getUserId());
 
         AppUserAccountVO accountVO = new AppUserAccountVO();
         AppUserAccountVO.UserInfo userInfo = new AppUserAccountVO.UserInfo();
-        userInfo.setNickname(appUser.getNickname());
-        userInfo.setPhoneNumber(appUser.getPhoneNumber());
-        userInfo.setGender(appUser.getGender());
-        userInfo.setAvatar(appUser.getAvatar());
+        userInfo.setNickname(user.getNickname());
+        userInfo.setPhoneNumber(user.getPhoneNumber());
+        userInfo.setGender(user.getGender());
+        userInfo.setAvatar(user.getAvatar());
 
         accountVO.setUser(userInfo);
         return ok(accountVO);
@@ -60,6 +64,7 @@ public class AppUserOwnController extends BaseController {
 
     @Operation(summary = "修改昵称、性别")
     @PostMapping("/account")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cl.getUserId()")
     public Result<?> editInfo(@RequestBody EditOwnAppUserReq userReq) {
         AppUser user = new AppUser(ClientUserUtil.getUserId());
         user.setNickname(userReq.getNickname());
@@ -69,6 +74,7 @@ public class AppUserOwnController extends BaseController {
 
     @Operation(summary = "更新头像")
     @PostMapping("/account/edit_avatar")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cl.getUserId()")
     public Result<?> updateAvatar(@RequestBody String url) {
         AppUser appUser = new AppUser(ClientUserUtil.getUserId());
         appUser.setAvatar(url);

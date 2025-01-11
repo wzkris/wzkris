@@ -38,7 +38,6 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         TokenResponse response = remoteTokenApi.checkToken(new TokenReq(token));
 
         if (!response.isSuccess()) {
-            log.error("token校验发生异常, result: {}", response);
             throw new OAuth2AuthenticationException(new OAuth2Error(response.getErrorCode()));
         }
         return this.adaptToCustomResponse(response.getPrincipal());

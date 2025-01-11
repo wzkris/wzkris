@@ -42,6 +42,9 @@ public class SysOperLog implements Serializable {
     @Schema(description = "请求方式")
     private String requestMethod;
 
+    @Schema(description = "操作人员ID")
+    private Long userId;
+
     @Schema(description = "操作人员")
     private String operName;
 

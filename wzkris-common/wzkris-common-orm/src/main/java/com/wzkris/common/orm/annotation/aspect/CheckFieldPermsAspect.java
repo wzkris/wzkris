@@ -20,9 +20,8 @@ import org.springframework.security.access.expression.ExpressionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author : wzkris
@@ -130,8 +129,8 @@ public class CheckFieldPermsAspect {
             return;
         }
 
-        if (obj instanceof List<?> list) {
-            for (Object o : list) {
+        if (obj instanceof Collection<?> collection) {
+            for (Object o : collection) {
                 if (isPrimitiveOrWrapper(o.getClass())) {
                     break;
                 }
@@ -141,16 +140,7 @@ public class CheckFieldPermsAspect {
         else if (obj instanceof Map<?, ?>) {
             log.warn("不支持返回值为Map类型的字段权限");
         }
-        else if (obj instanceof Set<?> set) {
-            for (Object o : set) {
-                if (isPrimitiveOrWrapper(o.getClass())) {
-                    break;
-                }
-                this.doHandleReadPerms(o, spel, groups);
-            }
-        }
-        else {
-            // 获取对象的类信息
+        else {// 获取对象的类信息
             Class<?> clazz = obj.getClass();
 
             for (Field field : clazz.getDeclaredFields()) {

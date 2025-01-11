@@ -15,10 +15,6 @@ import java.util.Map;
 public class OperLogReq {
 
     /**
-     * 日志主键
-     */
-    private Long operId;
-    /**
      * 租户ID
      */
     private Long tenantId;
@@ -50,6 +46,10 @@ public class OperLogReq {
      * 操作类别（0其它 1后台用户 2手机端用户）
      */
     private String operatorType;
+    /**
+     * 操作人员ID
+     */
+    private Long userId;
     /**
      * 操作人员
      */
