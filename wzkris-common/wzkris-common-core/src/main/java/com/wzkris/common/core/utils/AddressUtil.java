@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 public class AddressUtil {
+
     /**
      * IP地址查询
      */
@@ -46,8 +47,7 @@ public class AddressUtil {
             }
             log.info("获取到地理位置：{}", location);
             return location;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("获取地理位置异常，ip：{}，errMsg：{}", ip, e.getMessage());
         }
         return UNKNOWN;

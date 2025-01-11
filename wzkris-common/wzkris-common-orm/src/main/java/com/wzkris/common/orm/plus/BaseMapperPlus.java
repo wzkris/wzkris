@@ -61,8 +61,8 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             C c = voClass.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(obj, c);
             return c;
-        }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -79,8 +79,8 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             C c = voClass.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(obj, c);
             return c;
-        }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -99,9 +99,8 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
                 C c = voClass.getDeclaredConstructor().newInstance();
                 BeanUtils.copyProperties(obj, c);
                 return c;
-            }
-            catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                   NoSuchMethodException e) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 throw new BusinessException(e.getMessage());
             }
         }).collect(Collectors.toList());

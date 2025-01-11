@@ -33,9 +33,13 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class SysUserServiceImpl implements SysUserService {
+
     private final SysUserMapper userMapper;
+
     private final SysUserRoleMapper userRoleMapper;
+
     private final SysUserPostMapper userPostMapper;
+
     private final PasswordEncoder passwordEncoder;
 
     @Override

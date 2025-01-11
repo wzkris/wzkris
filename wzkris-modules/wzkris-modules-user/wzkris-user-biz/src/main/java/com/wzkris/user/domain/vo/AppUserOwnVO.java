@@ -1,6 +1,5 @@
 package com.wzkris.user.domain.vo;
 
-
 import com.wzkris.common.core.annotation.Sensitive;
 import com.wzkris.common.core.annotation.impl.SensitiveStrategy;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;

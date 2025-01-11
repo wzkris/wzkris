@@ -62,12 +62,10 @@ public class DefaultExcelResult<T> implements ExcelResult<T> {
         int errorCount = errorList.size();
         if (successCount == 0) {
             return "读取失败，未解析到数据";
-        }
-        else {
+        } else {
             if (errorCount == 0) {
                 return StrUtil.format("恭喜您，全部读取成功！共{}条", successCount);
-            }
-            else {
+            } else {
                 return "";
             }
         }

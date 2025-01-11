@@ -38,7 +38,9 @@ import java.util.Collections;
  * @since 1.1
  */
 public final class DeviceClientAuthenticationConverter implements AuthenticationConverter {
+
     private final RequestMatcher deviceAuthorizationRequestMatcher;
+
     private final RequestMatcher deviceAccessTokenRequestMatcher;
 
     public DeviceClientAuthenticationConverter(String deviceAuthorizationEndpointUri) {

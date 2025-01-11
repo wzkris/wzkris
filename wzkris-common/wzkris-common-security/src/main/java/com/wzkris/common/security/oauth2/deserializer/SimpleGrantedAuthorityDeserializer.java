@@ -16,6 +16,7 @@ import java.io.IOException;
  * @date : 2024/08/10 14:44
  */
 public class SimpleGrantedAuthorityDeserializer extends JsonDeserializer<SimpleGrantedAuthority> {
+
     @Override
     public SimpleGrantedAuthority deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);

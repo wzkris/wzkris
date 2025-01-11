@@ -34,8 +34,11 @@ import java.util.List;
 @RequestMapping("/sys_dept")
 @RequiredArgsConstructor
 public class SysDeptController extends BaseController {
+
     private final SysDeptMapper deptMapper;
+
     private final SysDeptService deptService;
+
     private final SysTenantService tenantService;
 
     @Operation(summary = "部门列表(不带分页)")
@@ -94,8 +97,7 @@ public class SysDeptController extends BaseController {
         deptService.checkDataScopes(req.getDeptId());
         if (ObjUtil.equals(req.getParentId(), req.getDeptId())) {
             return fail("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
-        }
-        else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
+        } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
                 && deptMapper.listNormalChildrenById(req.getDeptId()) > 0) {
             return fail("该部门包含未停用的子部门");
         }

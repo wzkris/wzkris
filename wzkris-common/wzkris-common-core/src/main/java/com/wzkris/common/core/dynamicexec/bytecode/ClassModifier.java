@@ -7,11 +7,17 @@ package com.wzkris.common.core.dynamicexec.bytecode;
  * @date 2022-07-04
  */
 public class ClassModifier {
+
     private static final int CONSTANT_POOL_COUNT_INDEX = 8;
+
     private static final int CONSTANT_Utf8_info = 1;
+
     private static final int[] CONSTANT_ITEM_LENGTH = {-1, -1, -1, 5, 5, 9, 9, 3, 3, 5, 5, 5, 5};
+
     private static final int u1 = 1;
+
     private static final int u2 = 2;
+
     private byte[] classByte;
 
     public ClassModifier(byte[] classByte) {
@@ -74,12 +80,10 @@ public class ClassModifier {
                     //这里不只是替换，应该是填充，把新的字节数据插入到原来的位置，然后存在后面字节的向前或者先后移动
                     classByte = bytesReplace(classByte, offset, len, strBytes);
                     return classByte;
-                }
-                else {
+                } else {
                     offset += len;
                 }
-            }
-            else {
+            } else {
                 offset += CONSTANT_ITEM_LENGTH[tag];
             }
         }

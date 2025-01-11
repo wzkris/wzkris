@@ -20,6 +20,7 @@ public enum ExecutorRouteStrategyEnum {
     SHARDING_BROADCAST(I18nUtil.getString("jobconf_route_shard"), null);
 
     private String title;
+
     private ExecutorRouter router;
 
     ExecutorRouteStrategyEnum(String title, ExecutorRouter router) {

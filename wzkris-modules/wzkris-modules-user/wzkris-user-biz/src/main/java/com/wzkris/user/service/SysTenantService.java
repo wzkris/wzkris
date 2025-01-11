@@ -1,6 +1,5 @@
 package com.wzkris.user.service;
 
-
 import com.wzkris.user.domain.dto.SysTenantDTO;
 
 import java.util.Collections;

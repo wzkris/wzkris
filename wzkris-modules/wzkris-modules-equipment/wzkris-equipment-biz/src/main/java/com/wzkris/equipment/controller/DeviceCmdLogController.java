@@ -27,6 +27,7 @@ import java.util.List;
 @RequestMapping("/device/command_log")
 @RequiredArgsConstructor
 public class DeviceCmdLogController extends BaseController {
+
     private final DeviceCmdLogMapper deviceCmdLogMapper;
 
     @Operation(summary = "分页查询")

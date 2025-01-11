@@ -23,12 +23,16 @@ import java.math.BigDecimal;
 public class SysTenantWalletMapperTest {
 
     static String password = "123456";
+
     @Autowired
     SysTenantWalletMapper tenantWalletMapper;
+
     @Autowired
     SysTenantWalletService sysTenantWalletService;
+
     @Autowired
     SysTenantWalletRecordMapper tenantWalletRecordMapper;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 

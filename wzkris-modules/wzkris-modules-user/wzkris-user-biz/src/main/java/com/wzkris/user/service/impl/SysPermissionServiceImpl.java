@@ -31,28 +31,37 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysPermissionServiceImpl implements SysPermissionService {
+
     /**
      * 全部数据权限
      */
     public static final String DATA_SCOPE_ALL = "1";
+
     /**
      * 自定数据权限
      */
     public static final String DATA_SCOPE_CUSTOM = "2";
+
     /**
      * 部门数据权限
      */
     public static final String DATA_SCOPE_DEPT = "3";
+
     /**
      * 部门及以下数据权限
      */
     public static final String DATA_SCOPE_DEPT_AND_CHILD = "4";
 
     private final SysRoleService roleService;
+
     private final SysMenuService menuService;
+
     private final SysDeptMapper deptMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
+
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override
@@ -66,8 +75,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 // 超级管理员查出所有角色
                 administrator = true;
                 grantedAuthority = Collections.singletonList("*");
-            }
-            else {
+            } else {
                 // 租户最高管理员特殊处理
                 Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
                 if (tenantPackageId != null) {
@@ -76,8 +84,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                     // 查出套餐绑定的所有权限
                     List<Long> menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
                     grantedAuthority = menuService.listPermsByMenuIds(menuIds);
-                }
-                else {
+                } else {
                     // 否则为普通用户
                     administrator = false;
                     roles = roleService.listByUserId(userId);
@@ -117,20 +124,16 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                         .map(SysDept::getDeptId)
                         .collect(Collectors.toSet());
                 break;
-            }
-            else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
+            } else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
                 deptIds.addAll(roleDeptMapper.listDeptIdByRoleIds(entry.getValue()));
-            }
-            else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
+            } else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
                 // 部门自身数据权限
                 deptIds.add(deptId);
-            }
-            else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
+            } else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
                 // 部门及以下数据权限
                 deptIds.addAll(deptMapper.listChildrenIdById(deptId));
-            }
-            else {
+            } else {
                 // 本人数据权限
                 deptIds.add(-999L);
             }

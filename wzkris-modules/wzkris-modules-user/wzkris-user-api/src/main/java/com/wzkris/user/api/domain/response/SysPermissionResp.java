@@ -16,14 +16,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SysPermissionResp {
+
     /**
      * 租户管理员
      */
     private boolean admin;
+
     /**
      * 已授权限
      */
     private List<String> grantedAuthority;
+
     /**
      * 部门数据权限
      */

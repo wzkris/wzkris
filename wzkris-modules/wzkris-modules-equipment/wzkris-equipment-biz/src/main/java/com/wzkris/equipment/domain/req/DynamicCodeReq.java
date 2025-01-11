@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 @Schema(description = "代码编译参数体")
 public class DynamicCodeReq {
+
     @NotBlank(message = "脚本代码块不能为空")
     @Schema(description = "待编译代码")
     private String code;

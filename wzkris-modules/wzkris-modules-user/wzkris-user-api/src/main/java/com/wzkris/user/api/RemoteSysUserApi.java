@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQUEST_PATH;
 
-
 /**
  * @author : wzkris
  * @version : V1.0.0

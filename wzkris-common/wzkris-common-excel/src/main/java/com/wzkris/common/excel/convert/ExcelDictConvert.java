@@ -52,8 +52,7 @@ public class ExcelDictConvert implements Converter<Object> {
         String value;
         if (object instanceof List<?> list) {
             value = list.stream().map(String::valueOf).collect(Collectors.joining(","));
-        }
-        else {
+        } else {
             value = Convert.toStr(object);
         }
         ExcelDictFormat anno = getAnnotation(contentProperty.getField());

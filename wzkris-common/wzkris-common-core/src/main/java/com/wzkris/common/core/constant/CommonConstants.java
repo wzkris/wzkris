@@ -6,6 +6,7 @@ package com.wzkris.common.core.constant;
  * @author wzkris
  */
 public class CommonConstants {
+
     /**
      * RMI 远程方法调用
      */

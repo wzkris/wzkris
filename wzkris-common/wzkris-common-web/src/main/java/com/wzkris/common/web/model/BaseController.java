@@ -98,8 +98,7 @@ public class BaseController {
         String msg;
         if (msgCode.startsWith("{")) {
             msg = I18nUtil.messageRegex(msgCode);
-        }
-        else {
+        } else {
             msg = I18nUtil.message(msgCode);
         }
         return Result.fail(msg);

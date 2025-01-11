@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * @author wzkris
  * @date 2024/3/11
@@ -21,8 +20,11 @@ import java.util.Set;
 @Getter
 @Transient
 public final class WechatAuthenticationToken extends CommonAuthenticationToken {
+
     private final LoginType loginType;
+
     private final String channel;
+
     private final String wxCode;
 
     public WechatAuthenticationToken(LoginType loginType,

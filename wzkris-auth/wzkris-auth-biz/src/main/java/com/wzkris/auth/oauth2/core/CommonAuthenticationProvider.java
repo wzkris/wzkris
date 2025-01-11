@@ -37,6 +37,7 @@ import java.util.Set;
 public abstract class CommonAuthenticationProvider<T extends CommonAuthenticationToken> implements AuthenticationProvider {
 
     private final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
+
     private final OAuth2AuthorizationService authorizationService;
 
     protected CommonAuthenticationProvider(OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
@@ -135,8 +136,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                     metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, ((ClaimAccessor) generatedAccessToken).getClaims()));
             authorizationBuilder.token(accessToken, (metadata) ->
                     metadata.put(OAuth2TokenFormat.class.getName(), OAuth2TokenFormat.REFERENCE.getValue()));
-        }
-        else {
+        } else {
             authorizationBuilder.accessToken(accessToken);
         }
 
@@ -173,8 +173,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             idToken = new OidcIdToken(generatedIdToken.getTokenValue(), generatedIdToken.getIssuedAt(),
                     generatedIdToken.getExpiresAt(), ((Jwt) generatedIdToken).getClaims());
             authorizationBuilder.token(idToken, (metadata) -> metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, idToken.getClaims()));
-        }
-        else {
+        } else {
             idToken = null;
         }
 

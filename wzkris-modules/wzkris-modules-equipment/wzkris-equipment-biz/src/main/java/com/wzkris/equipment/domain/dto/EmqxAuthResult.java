@@ -12,6 +12,7 @@ import lombok.Data;
 public class EmqxAuthResult {
 
     private String result = "ignore";
+
     private Boolean isSuperuser = false;
 
     /**

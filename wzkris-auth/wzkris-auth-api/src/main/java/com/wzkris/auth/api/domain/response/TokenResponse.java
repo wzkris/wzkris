@@ -13,6 +13,10 @@ import lombok.ToString;
 @ToString
 public class TokenResponse {
 
+    public static final String SUCCESS = "success";
+
+    public static final String TEMPORARILY_UNAVAILABLE = "temporarily_unavailable";
+
     private final boolean success;
 
     private String errorCode;
@@ -24,10 +28,6 @@ public class TokenResponse {
     public TokenResponse() {
         this.success = false;
     }
-
-    public static final String SUCCESS = "success";
-
-    public static final String TEMPORARILY_UNAVAILABLE = "temporarily_unavailable";
 
     public TokenResponse(String errorCode, String description, Object principal) {
         this.errorCode = errorCode;

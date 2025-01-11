@@ -42,12 +42,19 @@ import java.util.List;
 @RequestMapping("/sys_user")
 @RequiredArgsConstructor
 public class SysUserController extends BaseController {
+
     private final SysUserMapper userMapper;
+
     private final SysUserService userService;
+
     private final SysDeptService deptService;
+
     private final SysRoleService roleService;
+
     private final SysPostService postService;
+
     private final SysTenantService tenantService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "用户分页列表")
@@ -110,8 +117,7 @@ public class SysUserController extends BaseController {
         }
         if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
-        }
-        else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
+        } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
                 && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
@@ -127,8 +133,7 @@ public class SysUserController extends BaseController {
         userService.checkDataScopes(userReq.getUserId());
         if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
-        }
-        else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
+        } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
                 && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }

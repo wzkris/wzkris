@@ -36,8 +36,7 @@ public class LoginUserUtil extends SecurityUtil {
     public static LoginUser getLoginUser() {
         try {
             return (LoginUser) getAuthentication().getPrincipal();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }
     }

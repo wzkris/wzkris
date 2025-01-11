@@ -34,9 +34,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysRoleServiceImpl implements SysRoleService {
+
     private final SysRoleMapper roleMapper;
+
     private final SysRoleMenuMapper roleMenuMapper;
+
     private final SysUserRoleMapper userRoleMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
 
     @Override

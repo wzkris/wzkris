@@ -17,7 +17,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StationServiceImpl implements StationService {
+
     private final DeviceMapper deviceMapper;
+
     private final StationMapper stationMapper;
 
     @Override

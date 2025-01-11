@@ -36,10 +36,13 @@ public class CaptchaService {
 
     // 短信验证码前缀 + phoneNumber
     private static final String SMS_CODE_PREFIX = "captcha:sms:";
+
     // 图片验证码前缀 + uuid
     private static final String PIC_CODE_PREFIX = "captcha:pic:";
+
     // 最大重试次数
     private static final int maxRetryCount = 5;
+
     // 账号冻结缓存前缀 + username
     private static final String ACCOUNT_LOCK_PREFIX = "lock:account:";
 
@@ -71,12 +74,10 @@ public class CaptchaService {
             capStr = capText.substring(0, capText.lastIndexOf("@"));
             code = capText.substring(capText.lastIndexOf("@") + 1);
             image = captchaProducerMath.createImage(capStr);
-        }
-        else if ("char".equals(captchaType)) {
+        } else if ("char".equals(captchaType)) {
             capStr = code = captchaProducer.createText();
             image = captchaProducer.createImage(capStr);
-        }
-        else {
+        } else {
             throw new CaptchaException("captcha.type.unsupport");
         }
 

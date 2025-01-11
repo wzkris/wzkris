@@ -27,8 +27,11 @@ import java.io.IOException;
 @RequestMapping
 @RequiredArgsConstructor
 public class OAuth2Endpoint {
+
     private static final String REDIRECT_URL = "redirect_url";
+
     private final BearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
+
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
 
     @Operation(summary = "用户登出")
@@ -44,8 +47,7 @@ public class OAuth2Endpoint {
         String redirectUrl = request.getParameter(REDIRECT_URL);
         if (StrUtil.isNotBlank(redirectUrl) && StringUtil.ishttp(redirectUrl)) {
             response.sendRedirect(redirectUrl);
-        }
-        else {
+        } else {
             response.setStatus(HttpStatus.NO_CONTENT.value());
         }
     }

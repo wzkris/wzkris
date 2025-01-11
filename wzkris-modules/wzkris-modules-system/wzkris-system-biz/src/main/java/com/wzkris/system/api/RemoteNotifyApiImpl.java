@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RemoteNotifyApiImpl implements RemoteNotifyApi {
+
     private final SysNotifyService notifyService;
 
     @Override

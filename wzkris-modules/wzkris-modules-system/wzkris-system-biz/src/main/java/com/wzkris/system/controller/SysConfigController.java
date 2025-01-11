@@ -36,7 +36,9 @@ import java.util.List;
 @RequestMapping("/config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
+
     private final SysConfigMapper configMapper;
+
     private final SysConfigService configService;
 
     @Operation(summary = "分页")

@@ -27,6 +27,7 @@ import java.util.List;
 public class SysMessageOwnController extends BaseController {
 
     private final SysMessageMapper messageMapper;
+
     private final SysNotifyMapper notifyMapper;
 
     @Operation(summary = "公告分页")

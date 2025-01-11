@@ -56,8 +56,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         LoginType loginTypeEm;
         try {
             loginTypeEm = LoginType.valueOf(userType);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
             return null;// never run this line
         }

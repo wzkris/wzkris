@@ -77,8 +77,7 @@ public class SseUtil {
                     .name(eventName)
                     .reconnectTime(3000)
                     .data(msg, MediaType.APPLICATION_JSON));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.info("SSE连接:'{}'消息id:'{}'推送事件：‘{}’异常, 异常信息：{}", id, mid, eventName, e.getMessage());
         }
     }

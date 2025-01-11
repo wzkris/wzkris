@@ -41,11 +41,15 @@ import java.util.Map;
 @Controller
 @RequestMapping("/joblog")
 public class JobLogController {
+
     private static Logger logger = LoggerFactory.getLogger(JobLogController.class);
+
     @Resource
     public XxlJobInfoDao xxlJobInfoDao;
+
     @Resource
     public XxlJobLogDao xxlJobLogDao;
+
     @Resource
     private XxlJobGroupDao xxlJobGroupDao;
 
@@ -164,8 +168,7 @@ public class JobLogController {
             }
 
             return logResult;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ReturnT<LogResult>(ReturnT.FAIL_CODE, e.getMessage());
         }
@@ -189,8 +192,7 @@ public class JobLogController {
         try {
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(log.getExecutorAddress());
             runResult = executorBiz.kill(new KillParam(jobInfo.getId()));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             runResult = new ReturnT<String>(500, e.getMessage());
         }
@@ -201,8 +203,7 @@ public class JobLogController {
             log.setHandleTime(new Date());
             XxlJobCompleter.updateHandleInfoAndFinish(log);
             return new ReturnT<String>(runResult.getMsg());
-        }
-        else {
+        } else {
             return new ReturnT<String>(500, runResult.getMsg());
         }
     }
@@ -215,32 +216,23 @@ public class JobLogController {
         int clearBeforeNum = 0;
         if (type == 1) {
             clearBeforeTime = DateUtil.addMonths(new Date(), -1);    // 清理一个月之前日志数据
-        }
-        else if (type == 2) {
+        } else if (type == 2) {
             clearBeforeTime = DateUtil.addMonths(new Date(), -3);    // 清理三个月之前日志数据
-        }
-        else if (type == 3) {
+        } else if (type == 3) {
             clearBeforeTime = DateUtil.addMonths(new Date(), -6);    // 清理六个月之前日志数据
-        }
-        else if (type == 4) {
+        } else if (type == 4) {
             clearBeforeTime = DateUtil.addYears(new Date(), -1);    // 清理一年之前日志数据
-        }
-        else if (type == 5) {
+        } else if (type == 5) {
             clearBeforeNum = 1000;        // 清理一千条以前日志数据
-        }
-        else if (type == 6) {
+        } else if (type == 6) {
             clearBeforeNum = 10000;        // 清理一万条以前日志数据
-        }
-        else if (type == 7) {
+        } else if (type == 7) {
             clearBeforeNum = 30000;        // 清理三万条以前日志数据
-        }
-        else if (type == 8) {
+        } else if (type == 8) {
             clearBeforeNum = 100000;    // 清理十万条以前日志数据
-        }
-        else if (type == 9) {
+        } else if (type == 9) {
             clearBeforeNum = 0;            // 清理所有日志数据
-        }
-        else {
+        } else {
             return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("joblog_clean_type_unvalid"));
         }
 

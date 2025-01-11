@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class EditPwdReq {
+
     @NotBlank(message = "{desc.oldpwd}" + "{validate.notnull}")
     private String oldPassword;
 

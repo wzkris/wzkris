@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class RefreshDictListener {
 
     private final GlobalDictDataMapper dictDataMapper;
+
     private final GlobalDictTypeService dictTypeService;
 
     @PostConstruct

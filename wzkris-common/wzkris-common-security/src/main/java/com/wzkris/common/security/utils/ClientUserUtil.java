@@ -35,8 +35,7 @@ public class ClientUserUtil extends SecurityUtil {
     public static ClientUser getClientUser() {
         try {
             return (ClientUser) getAuthentication().getPrincipal();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }
     }

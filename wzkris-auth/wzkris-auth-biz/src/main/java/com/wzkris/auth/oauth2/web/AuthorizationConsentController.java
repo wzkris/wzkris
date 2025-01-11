@@ -35,7 +35,9 @@ import java.util.*;
  */
 @Controller
 public class AuthorizationConsentController {
+
     private final RegisteredClientRepository registeredClientRepository;
+
     private final OAuth2AuthorizationConsentService authorizationConsentService;
 
     public AuthorizationConsentController(RegisteredClientRepository registeredClientRepository,
@@ -69,8 +71,7 @@ public class AuthorizationConsentController {
         Set<String> authorizedScopes;
         if (currentAuthorizationConsent != null) {
             authorizedScopes = currentAuthorizationConsent.getScopes();
-        }
-        else {
+        } else {
             authorizedScopes = Collections.emptySet();
         }
         for (String requestedScope : StringUtils.delimitedListToStringArray(scope, " ")) {
@@ -79,8 +80,7 @@ public class AuthorizationConsentController {
             }
             if (authorizedScopes.contains(requestedScope)) {
                 previouslyApprovedScopes.add(requestedScope);
-            }
-            else {
+            } else {
                 scopesToApprove.add(requestedScope);
             }
         }
@@ -93,8 +93,7 @@ public class AuthorizationConsentController {
         model.addAttribute("userCode", userCode);
         if (StringUtils.hasText(userCode)) {
             model.addAttribute("requestURI", "/oauth2/device_verification");
-        }
-        else {
+        } else {
             model.addAttribute("requestURI", "/oauth2/authorize");
         }
 
@@ -102,7 +101,9 @@ public class AuthorizationConsentController {
     }
 
     public static class ScopeWithDescription {
+
         private static final String DEFAULT_DESCRIPTION = "UNKNOWN SCOPE - We cannot provide information about this permission, use caution when granting this.";
+
         private static final Map<String, String> scopeDescriptions = new HashMap<>();
 
         static {
@@ -129,6 +130,7 @@ public class AuthorizationConsentController {
         }
 
         public final String scope;
+
         public final String description;
 
         ScopeWithDescription(String scope) {

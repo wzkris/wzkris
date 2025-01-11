@@ -6,6 +6,7 @@ package com.wzkris.common.loadbalancer.core;
  * @description : 版本号上下文
  */
 public class VersionContext {
+
     private static final ThreadLocal<String> CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
 
     public static String getVersion() {

@@ -82,20 +82,15 @@ final class ModelMapper {
             return authorizationRequest.getScopes().contains(OidcScopes.OPENID)
                     ? convertOidcAuthorizationCodeGrantAuthorization(authorization)
                     : convertOAuth2AuthorizationCodeGrantAuthorization(authorization);
-        }
-        else if (AuthorizationGrantType.CLIENT_CREDENTIALS.equals(authorization.getAuthorizationGrantType())) {
+        } else if (AuthorizationGrantType.CLIENT_CREDENTIALS.equals(authorization.getAuthorizationGrantType())) {
             return convertOAuth2ClientCredentialsGrantAuthorization(authorization);
-        }
-        else if (AuthorizationGrantType.DEVICE_CODE.equals(authorization.getAuthorizationGrantType())) {
+        } else if (AuthorizationGrantType.DEVICE_CODE.equals(authorization.getAuthorizationGrantType())) {
             return convertOAuth2DeviceCodeGrantAuthorization(authorization);
-        }
-        else if (AuthorizationGrantType.TOKEN_EXCHANGE.equals(authorization.getAuthorizationGrantType())) {
+        } else if (AuthorizationGrantType.TOKEN_EXCHANGE.equals(authorization.getAuthorizationGrantType())) {
             return convertOAuth2TokenExchangeGrantAuthorization(authorization);
-        }
-        else if (AuthorizationGrantType.PASSWORD.equals(authorization.getAuthorizationGrantType())) {
+        } else if (AuthorizationGrantType.PASSWORD.equals(authorization.getAuthorizationGrantType())) {
             return convertOAuth2PasswordGrantAuthorization(authorization);
-        }
-        else if (OAuth2GrantTypeConstant.SMS.equals(authorization.getAuthorizationGrantType().getValue())) {
+        } else if (OAuth2GrantTypeConstant.SMS.equals(authorization.getAuthorizationGrantType().getValue())) {
             return convertOAuth2SmsGrantAuthorization(authorization);
         }
         return null;
@@ -210,8 +205,7 @@ final class ModelMapper {
             if (OAuth2TokenFormat.SELF_CONTAINED.getValue()
                     .equals(oauth2AccessToken.getMetadata(OAuth2TokenFormat.class.getName()))) {
                 tokenFormat = OAuth2TokenFormat.SELF_CONTAINED;
-            }
-            else if (OAuth2TokenFormat.REFERENCE.getValue()
+            } else if (OAuth2TokenFormat.REFERENCE.getValue()
                     .equals(oauth2AccessToken.getMetadata(OAuth2TokenFormat.class.getName()))) {
                 tokenFormat = OAuth2TokenFormat.REFERENCE;
             }
@@ -354,23 +348,17 @@ final class ModelMapper {
 
         if (authorizationGrantAuthorization instanceof OidcAuthorizationCodeGrantAuthorization authorizationGrant) {
             mapOidcAuthorizationCodeGrantAuthorization(authorizationGrant, builder);
-        }
-        else if (authorizationGrantAuthorization instanceof OAuth2AuthorizationCodeGrantAuthorization authorizationGrant) {
+        } else if (authorizationGrantAuthorization instanceof OAuth2AuthorizationCodeGrantAuthorization authorizationGrant) {
             mapOAuth2AuthorizationCodeGrantAuthorization(authorizationGrant, builder);
-        }
-        else if (authorizationGrantAuthorization instanceof OAuth2ClientCredentialsGrantAuthorization authorizationGrant) {
+        } else if (authorizationGrantAuthorization instanceof OAuth2ClientCredentialsGrantAuthorization authorizationGrant) {
             mapOAuth2ClientCredentialsGrantAuthorization(authorizationGrant, builder);
-        }
-        else if (authorizationGrantAuthorization instanceof OAuth2DeviceCodeGrantAuthorization authorizationGrant) {
+        } else if (authorizationGrantAuthorization instanceof OAuth2DeviceCodeGrantAuthorization authorizationGrant) {
             mapOAuth2DeviceCodeGrantAuthorization(authorizationGrant, builder);
-        }
-        else if (authorizationGrantAuthorization instanceof OAuth2TokenExchangeGrantAuthorization authorizationGrant) {
+        } else if (authorizationGrantAuthorization instanceof OAuth2TokenExchangeGrantAuthorization authorizationGrant) {
             mapOAuth2TokenExchangeGrantAuthorization(authorizationGrant, builder);
-        }
-        else if (authorizationGrantAuthorization instanceof OAuth2PasswordGrantAuthorization authorizationGrant) {
+        } else if (authorizationGrantAuthorization instanceof OAuth2PasswordGrantAuthorization authorizationGrant) {
             mapOAuth2PasswordGrantAuthorization(authorizationGrant, builder);
-        }
-        else if (authorizationGrantAuthorization instanceof OAuth2SmsGrantAuthorization authorizationGrant) {
+        } else if (authorizationGrantAuthorization instanceof OAuth2SmsGrantAuthorization authorizationGrant) {
             mapOAuth2SmsGrantAuthorization(authorizationGrant, builder);
         }
     }

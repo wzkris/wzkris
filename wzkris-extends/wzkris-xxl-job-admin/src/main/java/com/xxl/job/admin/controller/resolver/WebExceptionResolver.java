@@ -22,6 +22,7 @@ import java.io.IOException;
  */
 @Component
 public class WebExceptionResolver implements HandlerExceptionResolver {
+
     private static transient Logger logger = LoggerFactory.getLogger(WebExceptionResolver.class);
 
     @Override
@@ -51,13 +52,11 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
             try {
                 response.setContentType("application/json;charset=utf-8");
                 response.getWriter().print(JacksonUtil.writeValueAsString(errorResult));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
             return mv;
-        }
-        else {
+        } else {
 
             mv.addObject("exceptionMsg", errorResult.getMsg());
             mv.setViewName("/common/common.exception");

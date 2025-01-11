@@ -17,6 +17,7 @@ import java.util.Set;
 @Setter
 @Getter
 public class AuthThings extends AuthBaseUser {
+
     /**
      * 名称
      */

@@ -1,133 +1,133 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris-auth</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-auth</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-auth-biz</artifactId>
+    <artifactId>wzkris-auth-biz</artifactId>
 
-	<properties>
-		<kaptcha.version>2.3.3</kaptcha.version>
-	</properties>
+    <properties>
+        <kaptcha.version>2.3.3</kaptcha.version>
+    </properties>
 
-	<dependencies>
-		<!-- SpringCloud Alibaba Nacos -->
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-		</dependency>
+    <dependencies>
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
 
-		<!-- SpringCloud Alibaba Nacos Config -->
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-		</dependency>
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
 
-		<!-- Spring OAuth2授权服务器-->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-authorization-server</artifactId>
-		</dependency>
+        <!-- Spring OAuth2授权服务器-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
 
-		<!--模板引擎-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
+        <!--模板引擎-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
 
-		<!-- wzkris Common Redis-->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-redis</artifactId>
-		</dependency>
+        <!-- wzkris Common Redis-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
 
-		<!-- Sentinel -->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-sentinel</artifactId>
-		</dependency>
+        <!-- Sentinel -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-sentinel</artifactId>
+        </dependency>
 
-		<!-- web服务-->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-web</artifactId>
-		</dependency>
+        <!-- web服务-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
+        </dependency>
 
-		<!--本地rpc服务-->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-auth-api</artifactId>
-		</dependency>
+        <!--本地rpc服务-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-auth-api</artifactId>
+        </dependency>
 
-		<!--用户rpc服务-->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-user-api</artifactId>
-		</dependency>
+        <!--用户rpc服务-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-user-api</artifactId>
+        </dependency>
 
-		<!--系统rpc服务-->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-system-api</artifactId>
-		</dependency>
+        <!--系统rpc服务-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-system-api</artifactId>
+        </dependency>
 
-		<!-- wzkris Common Security-->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-security</artifactId>
-		</dependency>
+        <!-- wzkris Common Security-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-security</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-weixin-sdk</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-weixin-sdk</artifactId>
+        </dependency>
 
-		<!-- 接口文档 -->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-swagger</artifactId>
-		</dependency>
+        <!-- 接口文档 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-swagger</artifactId>
+        </dependency>
 
-		<!-- 验证码 -->
-		<dependency>
-			<groupId>pro.fessional</groupId>
-			<artifactId>kaptcha</artifactId>
-			<version>${kaptcha.version}</version>
-		</dependency>
+        <!-- 验证码 -->
+        <dependency>
+            <groupId>pro.fessional</groupId>
+            <artifactId>kaptcha</artifactId>
+            <version>${kaptcha.version}</version>
+        </dependency>
 
-		<!-- springBoot test-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <!-- springBoot test-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<finalName>${project.artifactId}</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring-boot.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

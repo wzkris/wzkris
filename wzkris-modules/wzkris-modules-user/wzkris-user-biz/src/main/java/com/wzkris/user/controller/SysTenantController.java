@@ -50,9 +50,13 @@ import java.util.List;
 public class SysTenantController extends BaseController {
 
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantService tenantService;
+
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
+
     private final SysUserService userService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "租户分页")

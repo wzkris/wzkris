@@ -1,48 +1,48 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris-common</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-common</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-common-excel</artifactId>
+    <artifactId>wzkris-common-excel</artifactId>
 
-	<description>
-		该模块复制于 https://gitee.com/dromara/RuoYi-Cloud-Plus.git
-	</description>
+    <description>
+        该模块复制于 https://gitee.com/dromara/RuoYi-Cloud-Plus.git
+    </description>
 
-	<properties>
-		<excel.version>4.0.2</excel.version>
-	</properties>
+    <properties>
+        <excel.version>4.0.2</excel.version>
+    </properties>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-core</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-core</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>easyexcel</artifactId>
-			<version>${excel.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>${excel.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

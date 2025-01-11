@@ -19,7 +19,9 @@ import java.io.IOException;
  * @author xuxueli 2015-9-25 18:02:56
  */
 public class JacksonUtil {
+
     private final static ObjectMapper objectMapper = new ObjectMapper();
+
     private static Logger logger = LoggerFactory.getLogger(JacksonUtil.class);
 
     public static ObjectMapper getInstance() {
@@ -36,14 +38,11 @@ public class JacksonUtil {
     public static String writeValueAsString(Object obj) {
         try {
             return getInstance().writeValueAsString(obj);
-        }
-        catch (JsonGenerationException e) {
+        } catch (JsonGenerationException e) {
             logger.error(e.getMessage(), e);
-        }
-        catch (JsonMappingException e) {
+        } catch (JsonMappingException e) {
             logger.error(e.getMessage(), e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
         return null;
@@ -60,14 +59,11 @@ public class JacksonUtil {
     public static <T> T readValue(String jsonStr, Class<T> clazz) {
         try {
             return getInstance().readValue(jsonStr, clazz);
-        }
-        catch (JsonParseException e) {
+        } catch (JsonParseException e) {
             logger.error(e.getMessage(), e);
-        }
-        catch (JsonMappingException e) {
+        } catch (JsonMappingException e) {
             logger.error(e.getMessage(), e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
         return null;
@@ -86,14 +82,11 @@ public class JacksonUtil {
         try {
             JavaType javaType = getInstance().getTypeFactory().constructParametricType(parametrized, parameterClasses);
             return getInstance().readValue(jsonStr, javaType);
-        }
-        catch (JsonParseException e) {
+        } catch (JsonParseException e) {
             logger.error(e.getMessage(), e);
-        }
-        catch (JsonMappingException e) {
+        } catch (JsonMappingException e) {
             logger.error(e.getMessage(), e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
         return null;

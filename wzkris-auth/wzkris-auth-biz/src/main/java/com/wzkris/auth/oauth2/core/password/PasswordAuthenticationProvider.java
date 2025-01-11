@@ -24,8 +24,11 @@ import java.util.List;
  */
 @Component //注册成bean方便引用
 public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider<PasswordAuthenticationToken> {
+
     private final UserInfoTemplate userInfoTemplate;
+
     private final CaptchaService captchaService;
+
     private final CaptchaConfig captchaConfig;
 
     public PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,

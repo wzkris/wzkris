@@ -20,13 +20,16 @@ import java.util.concurrent.*;
  * @author xuxueli 2015-9-1 18:05:56
  */
 public class JobCompleteHelper {
+
     private static Logger logger = LoggerFactory.getLogger(JobCompleteHelper.class);
 
     private static JobCompleteHelper instance = new JobCompleteHelper();
+
     private ThreadPoolExecutor callbackThreadPool = null;
 
     // ---------------------- monitor ----------------------
     private Thread monitorThread;
+
     private volatile boolean toStop = false;
 
     public static JobCompleteHelper getInstance() {
@@ -56,7 +59,6 @@ public class JobCompleteHelper {
                     }
                 });
 
-
         // for monitor
         monitorThread = new Thread(new Runnable() {
 
@@ -66,8 +68,7 @@ public class JobCompleteHelper {
                 // wait for JobTriggerPoolHelper-init
                 try {
                     TimeUnit.MILLISECONDS.sleep(50);
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     if (!toStop) {
                         logger.error(e.getMessage(), e);
                     }
@@ -94,8 +95,7 @@ public class JobCompleteHelper {
                             }
 
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!toStop) {
                             logger.error(">>>>>>>>>>> xxl-job, job fail monitor thread error:{}", e);
                         }
@@ -103,8 +103,7 @@ public class JobCompleteHelper {
 
                     try {
                         TimeUnit.SECONDS.sleep(60);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!toStop) {
                             logger.error(e.getMessage(), e);
                         }
@@ -131,12 +130,10 @@ public class JobCompleteHelper {
         monitorThread.interrupt();
         try {
             monitorThread.join();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
     }
-
 
     // ---------------------- helper ----------------------
 
@@ -183,6 +180,5 @@ public class JobCompleteHelper {
 
         return ReturnT.SUCCESS;
     }
-
 
 }

@@ -17,6 +17,7 @@ import java.util.Properties;
  * @date 2022-07-04
  */
 public class InjectionSystem {
+
     public static InputStream in = System.in;
 
     public static PrintStream out = System.out;

@@ -31,8 +31,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class LoginEventListener {
+
     private final RemoteLogApi remoteLogApi;
+
     private final RemoteSysUserApi remoteSysUserApi;
+
     private final RemoteAppUserApi remoteAppUserApi;
 
     /**
@@ -69,8 +72,7 @@ public class LoginEventListener {
             loginLogReq.setOs(os);
             loginLogReq.setBrowser(browser);
             remoteLogApi.insertLoginlog(loginLogReq);
-        }
-        else if (ObjUtil.equals(baseUser.getLoginType(), LoginType.CLIENT_USER)) {
+        } else if (ObjUtil.equals(baseUser.getLoginType(), LoginType.CLIENT_USER)) {
             ClientUser clientUser = (ClientUser) baseUser;
             // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());

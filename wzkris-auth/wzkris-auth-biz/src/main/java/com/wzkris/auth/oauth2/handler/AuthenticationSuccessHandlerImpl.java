@@ -133,8 +133,7 @@ class ResponseHttpMessageConverter extends OAuth2AccessTokenResponseHttpMessageC
             // 获得token
             Map<String, Object> tokenData = this.accessTokenResponseParametersConverter.convert(tokenResponse);
             jsonMessageConverter.write(Result.ok(tokenData), STRING_OBJECT_MAP.getType(), MediaType.APPLICATION_JSON, outputMessage);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new HttpMessageNotWritableException("An error occurred writing the OAuth 2.0 Access Token Response: " + ex.getMessage(), ex);
         }
     }

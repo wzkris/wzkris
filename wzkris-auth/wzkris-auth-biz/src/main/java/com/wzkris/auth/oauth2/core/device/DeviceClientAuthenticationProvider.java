@@ -37,6 +37,7 @@ import org.springframework.util.Assert;
  */
 @Component
 public final class DeviceClientAuthenticationProvider implements AuthenticationProvider {
+
     private final RegisteredClientRepository registeredClientRepository;
 
     public DeviceClientAuthenticationProvider(RegisteredClientRepository registeredClientRepository) {

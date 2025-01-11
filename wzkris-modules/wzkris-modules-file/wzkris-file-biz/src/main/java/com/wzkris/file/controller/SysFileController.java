@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 public class SysFileController extends BaseController {
+
     private final SysFileService fileService;
 
     @Operation(summary = "小文件上传")

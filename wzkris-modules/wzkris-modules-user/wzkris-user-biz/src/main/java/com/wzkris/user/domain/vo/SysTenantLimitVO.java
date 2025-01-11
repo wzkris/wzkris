@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class SysTenantLimitVO {
+
     @Schema(description = "已有账号数量")
     private Integer accountHas;
 

@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RemoteLogApiImpl implements RemoteLogApi {
+
     private final SysOperLogMapper operLogMapper;
+
     private final SysLoginLogMapper loginLogMapper;
 
     @Override

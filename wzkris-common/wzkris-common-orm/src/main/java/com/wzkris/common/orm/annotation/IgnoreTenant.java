@@ -1,8 +1,6 @@
 package com.wzkris.common.orm.annotation;
 
-
 import java.lang.annotation.*;
-
 
 /**
  * @author : wzkris

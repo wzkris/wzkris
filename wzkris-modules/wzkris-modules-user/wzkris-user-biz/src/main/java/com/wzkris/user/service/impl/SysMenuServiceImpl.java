@@ -33,10 +33,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysMenuServiceImpl implements SysMenuService {
+
     private final SysMenuMapper menuMapper;
+
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantPackageMapper tenantPackageMapper;
+
     private final SysRoleService roleService;
+
     private final SysRoleMenuMapper roleMenuMapper;
 
     @Override
@@ -67,8 +72,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
                 menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
-            }
-            else {
+            } else {
                 menuIds = this.listMenuIdByUserId(userId);
             }
             if (CollectionUtils.isEmpty(menuIds)) {
@@ -91,8 +95,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
                 menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
-            }
-            else {
+            } else {
                 menuIds = this.listMenuIdByUserId(userId);
             }
             if (CollectionUtils.isEmpty(menuIds)) {
@@ -138,8 +141,7 @@ public class SysMenuServiceImpl implements SysMenuService {
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildRouter(cMenus));
-            }
-            else if (isMenuFrame(menu)) {
+            } else if (isMenuFrame(menu)) {
                 router.setMeta(null);
                 List<RouterVO> childrenList = new ArrayList<>();
                 RouterVO children = new RouterVO();
@@ -150,8 +152,7 @@ public class SysMenuServiceImpl implements SysMenuService {
                 children.setQuery(menu.getQuery());
                 childrenList.add(children);
                 router.setChildren(childrenList);
-            }
-            else if (menu.getParentId().intValue() == 0 && isInnerLink(menu)) {
+            } else if (menu.getParentId().intValue() == 0 && isInnerLink(menu)) {
                 router.setMeta(new MetaVO(menu.getMenuName(), menu.getIcon()));
                 router.setPath("/");
                 List<RouterVO> childrenList = new ArrayList<>();
@@ -259,11 +260,9 @@ public class SysMenuServiceImpl implements SysMenuService {
         String component = MenuConstants.LAYOUT;
         if (StringUtil.isNotEmpty(menu.getComponent()) && !isMenuFrame(menu)) {
             component = menu.getComponent();
-        }
-        else if (StringUtil.isEmpty(menu.getComponent()) && menu.getParentId().intValue() != 0 && isInnerLink(menu)) {
+        } else if (StringUtil.isEmpty(menu.getComponent()) && menu.getParentId().intValue() != 0 && isInnerLink(menu)) {
             component = MenuConstants.INNER_LINK;
-        }
-        else if (StringUtil.isEmpty(menu.getComponent()) && isParentView(menu)) {
+        } else if (StringUtil.isEmpty(menu.getComponent()) && isParentView(menu)) {
             component = MenuConstants.PARENT_VIEW;
         }
         return component;

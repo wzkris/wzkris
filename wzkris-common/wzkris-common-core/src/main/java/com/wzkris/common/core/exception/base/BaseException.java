@@ -14,18 +14,22 @@ public class BaseException extends RuntimeException {
      * 功能模块
      */
     private final String modules;
+
     /**
      * 状态码
      */
     private final int biz;
+
     /**
      * 错误码，返回前端国际化信息
      */
     private final String code;
+
     /**
      * 错误码对应的参数
      */
     private final Object[] args;
+
     /**
      * 默认异常信息
      */

@@ -49,9 +49,9 @@ public class PlusSpringCacheManager implements CacheManager {
 
     private static final long DEFAULT_MAXIDLETIME = 60 * 60 * 1000;
 
-    private static Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
-
     private static final ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
+
+    private static Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
 
     private boolean dynamic = true;
 
@@ -66,6 +66,7 @@ public class PlusSpringCacheManager implements CacheManager {
      */
     @Setter
     private boolean allowNullValues = true;
+
     /**
      * -- SETTER --
      * Defines if cache aware of Spring-managed transactions.
@@ -149,8 +150,7 @@ public class PlusSpringCacheManager implements CacheManager {
         Cache oldCache = instanceMap.putIfAbsent(name, cache);
         if (oldCache != null) {
             cache = oldCache;
-        }
-        else {
+        } else {
             map.setMaxSize(config.getMaxSize());
         }
         return cache;
@@ -175,8 +175,7 @@ public class PlusSpringCacheManager implements CacheManager {
                 getCache(name);
             }
             dynamic = false;
-        }
-        else {
+        } else {
             dynamic = true;
         }
     }

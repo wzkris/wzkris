@@ -12,6 +12,7 @@ import jakarta.validation.ConstraintValidatorContext;
  * @date : 2023/12/15 10:50
  */
 public class IdCardValidator implements ConstraintValidator<IdCard, String> {
+
     @Override
     public boolean isValid(String idCard, ConstraintValidatorContext constraintValidatorContext) {
         if (idCard == null) {

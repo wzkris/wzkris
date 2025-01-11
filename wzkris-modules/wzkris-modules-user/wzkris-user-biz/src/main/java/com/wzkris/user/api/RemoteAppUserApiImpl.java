@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUserApi {
+
     private final AppUserMapper appUserMapper;
+
     private final AppUserThirdinfoMapper appUserThirdinfoMapper;
 
     @Override

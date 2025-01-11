@@ -47,14 +47,23 @@ import java.util.List;
 @RequestMapping("/sys_role")
 @RequiredArgsConstructor
 public class SysRoleController extends BaseController {
+
     private final SysRoleMapper roleMapper;
+
     private final SysRoleService roleService;
+
     private final SysUserService userService;
+
     private final SysUserRoleMapper userRoleMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
+
     private final SysRoleMenuMapper roleMenuMapper;
+
     private final SysDeptService deptService;
+
     private final SysMenuService menuService;
+
     private final SysTenantService tenantService;
 
     @Operation(summary = "角色分页")

@@ -41,13 +41,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/tenant")
 public class SysTenantOwnController extends BaseController {
+
     private final SysUserMapper userMapper;
+
     private final SysRoleMapper roleMapper;
+
     private final SysPostMapper postMapper;
+
     private final SysDeptMapper deptMapper;
+
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantWalletMapper tenantWalletMapper;
+
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "获取自身租户")
@@ -58,8 +66,7 @@ public class SysTenantOwnController extends BaseController {
         SysTenantOwnVO tenantVO;
         if (SysTenant.isSuperTenant(tenantId)) {
             tenantVO = new SysTenantOwnVO(true);// 超级租户不存在信息
-        }
-        else {
+        } else {
             tenantVO = tenantMapper.selectVOById(tenantId);
         }
         return ok(tenantVO);

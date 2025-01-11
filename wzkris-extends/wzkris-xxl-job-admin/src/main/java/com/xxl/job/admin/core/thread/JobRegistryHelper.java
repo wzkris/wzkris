@@ -19,11 +19,15 @@ import java.util.concurrent.*;
  * @author xuxueli 2016-10-02 19:10:24
  */
 public class JobRegistryHelper {
+
     private static Logger logger = LoggerFactory.getLogger(JobRegistryHelper.class);
 
     private static JobRegistryHelper instance = new JobRegistryHelper();
+
     private ThreadPoolExecutor registryOrRemoveThreadPool = null;
+
     private Thread registryMonitorThread;
+
     private volatile boolean toStop = false;
 
     public static JobRegistryHelper getInstance() {
@@ -108,16 +112,14 @@ public class JobRegistryHelper {
                                 XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().update(group);
                             }
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!toStop) {
                             logger.error(">>>>>>>>>>> xxl-job, job registry monitor thread error:{}", e);
                         }
                     }
                     try {
                         TimeUnit.SECONDS.sleep(RegistryConfig.BEAT_TIMEOUT);
-                    }
-                    catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                         if (!toStop) {
                             logger.error(">>>>>>>>>>> xxl-job, job registry monitor thread error:{}", e);
                         }
@@ -141,12 +143,10 @@ public class JobRegistryHelper {
         registryMonitorThread.interrupt();
         try {
             registryMonitorThread.join();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
     }
-
 
     // ---------------------- helper ----------------------
 
@@ -203,6 +203,5 @@ public class JobRegistryHelper {
     private void freshGroupRegistryInfo(RegistryParam registryParam) {
         // Under consideration, prevent affecting core tables
     }
-
 
 }

@@ -29,7 +29,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysDeptServiceImpl implements SysDeptService {
+
     private final SysDeptMapper deptMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
 
     @Override

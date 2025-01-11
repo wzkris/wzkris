@@ -64,8 +64,7 @@ public class DeptScopeAspect {
         if (CollUtil.isEmpty(deptScopes)) {
             // 没有部门权限数据则直接拼接-1, 查不出来即可
             expression = new ParenthesedExpressionList<>(new LongValue(-1L));
-        }
-        else {
+        } else {
             expression = new ParenthesedExpressionList<>(deptScopes.stream().map(LongValue::new).collect(Collectors.toList()));
         }
         InExpression inExpression = new InExpression(new Column(aliasColumn), expression);

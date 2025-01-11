@@ -32,6 +32,7 @@ import java.util.List;
 public class SysLoginlogController extends BaseController {
 
     private final SysLoginLogService loginLogService;
+
     private final SysLoginLogMapper loginLogMapper;
 
     @Operation(summary = "分页")

@@ -67,13 +67,11 @@ public class ClassCompiler {
                 }
 
                 return classJavaFileObject.getClassBytes();
-            }
-            else {
+            } else {
                 outputErrorMsg(diagnostics, out);
                 return null;
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace(out);
         }
 
@@ -117,8 +115,7 @@ public class ClassCompiler {
 
         if (empty(packageName)) {
             return simpleName;
-        }
-        else {
+        } else {
             return packageName + "." + simpleName;
         }
     }

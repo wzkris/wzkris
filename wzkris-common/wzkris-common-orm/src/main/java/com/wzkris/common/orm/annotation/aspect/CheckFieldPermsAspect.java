@@ -100,8 +100,7 @@ public class CheckFieldPermsAspect {
             if (fieldPerms != null) {
                 // 处理权限
                 this.handleParameterPerms(obj, field, fieldPerms, spel, groups);
-            }
-            else {
+            } else {
                 if (!isPrimitiveOrWrapper(field.getType())) { // 若是对象则递归其内部属性
                     this.handleWritePerms(ReflectUtil.getFieldValue(obj, field), spel, groups);
                 }
@@ -136,11 +135,9 @@ public class CheckFieldPermsAspect {
                 }
                 this.doHandleReadPerms(o, spel, groups);
             }
-        }
-        else if (obj instanceof Map<?, ?>) {
+        } else if (obj instanceof Map<?, ?>) {
             log.warn("不支持返回值为Map类型的字段权限");
-        }
-        else {// 获取对象的类信息
+        } else {// 获取对象的类信息
             Class<?> clazz = obj.getClass();
 
             for (Field field : clazz.getDeclaredFields()) {
@@ -154,8 +151,7 @@ public class CheckFieldPermsAspect {
                 if (fieldPerms != null) {
                     // 处理权限
                     this.handleParameterPerms(obj, field, fieldPerms, spel, groups);
-                }
-                else {
+                } else {
                     // 为空则需要判断是否是基本类型
                     if (!isPrimitiveOrWrapper(field.getType())) {
                         this.doHandleReadPerms(ReflectUtil.getFieldValue(obj, field), spel, groups);

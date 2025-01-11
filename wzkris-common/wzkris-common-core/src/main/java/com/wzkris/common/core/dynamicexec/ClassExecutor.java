@@ -1,6 +1,5 @@
 package com.wzkris.common.core.dynamicexec;
 
-
 import com.wzkris.common.core.utils.StringUtil;
 
 import java.io.PrintWriter;
@@ -28,12 +27,10 @@ public class ClassExecutor {
             method = cls.getMethod("main", String[].class);
             if (!StringUtil.isEmpty(param)) {
                 method.invoke(null, (Object) new String[]{param});
-            }
-            else {
+            } else {
                 method.invoke(null, (Object) new String[]{null});
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace(out);
         }
 

@@ -80,35 +80,28 @@ public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationServi
                 authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                         .findByDeviceStateOrDeviceCode_TokenValueOrUserCode_TokenValue(token, token, token);
             }
-        }
-        else if (OAuth2ParameterNames.STATE.equals(tokenType.getValue())) {
+        } else if (OAuth2ParameterNames.STATE.equals(tokenType.getValue())) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository.findByState(token);
             if (authorizationGrantAuthorization == null) {
                 authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                         .findByDeviceState(token);
             }
-        }
-        else if (OAuth2ParameterNames.CODE.equals(tokenType.getValue())) {
+        } else if (OAuth2ParameterNames.CODE.equals(tokenType.getValue())) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                     .findByAuthorizationCode_TokenValue(token);
-        }
-        else if (OAuth2TokenType.ACCESS_TOKEN.equals(tokenType)) {
+        } else if (OAuth2TokenType.ACCESS_TOKEN.equals(tokenType)) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                     .findByAccessToken_TokenValue(token);
-        }
-        else if (OidcParameterNames.ID_TOKEN.equals(tokenType.getValue())) {
+        } else if (OidcParameterNames.ID_TOKEN.equals(tokenType.getValue())) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                     .findByIdToken_TokenValue(token);
-        }
-        else if (OAuth2TokenType.REFRESH_TOKEN.equals(tokenType)) {
+        } else if (OAuth2TokenType.REFRESH_TOKEN.equals(tokenType)) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                     .findByRefreshToken_TokenValue(token);
-        }
-        else if (OAuth2ParameterNames.USER_CODE.equals(tokenType.getValue())) {
+        } else if (OAuth2ParameterNames.USER_CODE.equals(tokenType.getValue())) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                     .findByUserCode_TokenValue(token);
-        }
-        else if (OAuth2ParameterNames.DEVICE_CODE.equals(tokenType.getValue())) {
+        } else if (OAuth2ParameterNames.DEVICE_CODE.equals(tokenType.getValue())) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
                     .findByDeviceCode_TokenValue(token);
         }

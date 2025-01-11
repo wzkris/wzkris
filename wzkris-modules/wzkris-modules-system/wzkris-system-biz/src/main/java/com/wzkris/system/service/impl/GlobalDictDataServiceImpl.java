@@ -20,6 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GlobalDictDataServiceImpl implements GlobalDictDataService {
+
     private final GlobalDictDataMapper dictDataMapper;
 
     @Override

@@ -19,14 +19,14 @@ import org.apache.ibatis.reflection.MetaObject;
  */
 @Slf4j
 public class BaseFieldFillHandler implements MetaObjectHandler {
+
     @Override
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
             if (SecurityUtil.getLoginType().equals(LoginType.SYSTEM_USER)) {
                 fillInsert(this.getUserId(), metaObject);
-            }
-            else if (SecurityUtil.getLoginType().equals(LoginType.CLIENT_USER)) {
+            } else if (SecurityUtil.getLoginType().equals(LoginType.CLIENT_USER)) {
                 fillInsert(this.getAppUserId(), metaObject);
             }
         }
@@ -46,8 +46,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
                 && SecurityUtil.isAuthenticated()) {
             if (SecurityUtil.getLoginType().equals(LoginType.SYSTEM_USER)) {
                 fillUpdate(this.getUserId(), metaObject);
-            }
-            else if (SecurityUtil.getLoginType().equals(LoginType.CLIENT_USER)) {
+            } else if (SecurityUtil.getLoginType().equals(LoginType.CLIENT_USER)) {
                 fillUpdate(this.getAppUserId(), metaObject);
             }
         }
@@ -65,8 +64,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     private Long getUserId() {
         try {
             return LoginUserUtil.getUserId();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");
             return 0L;
         }
@@ -78,8 +76,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     private Long getAppUserId() {
         try {
             return ClientUserUtil.getUserId();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.warn("属性填充警告 => 用户未登录");
             return 0L;
         }

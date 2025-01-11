@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -16,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class SysTenantDTO extends SysTenant {
+
     @NotBlank(message = "{desc.username}{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "登录用户名")
     private String username;

@@ -18,8 +18,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysNotifyServiceImpl implements SysNotifyService {
+
     private final SysNotifyMapper notifyMapper;
+
     private final SysNotifySendMapper notifySendMapper;
+
     private final TransactionTemplate transactionTemplate;
 
     @Override

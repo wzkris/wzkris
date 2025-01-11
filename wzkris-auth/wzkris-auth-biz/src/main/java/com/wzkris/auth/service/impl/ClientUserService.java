@@ -50,8 +50,7 @@ public class ClientUserService extends UserInfoTemplate {
             }
             AppUserResp appUserResp = userApiByOpenid.getData();
             return this.checkAndBuild(appUserResp);
-        }
-        else if (WechatChannel.GZH.name().equals(channel)) {
+        } else if (WechatChannel.GZH.name().equals(channel)) {
 
         }
         return null;
@@ -65,8 +64,7 @@ public class ClientUserService extends UserInfoTemplate {
     private WxMaJscode2SessionResult getOpenid(String wxCode) {
         try {
             return wxMaService.getUserService().getSessionInfo(wxCode);
-        }
-        catch (WxErrorException e) {
+        } catch (WxErrorException e) {
             OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, e.getMessage());
             return null;// never execute
         }

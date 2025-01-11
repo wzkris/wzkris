@@ -72,15 +72,12 @@ public class LoginUserService extends UserInfoTemplate {
     private void checkAccount(SysUserResp userResp) {
         if (ObjUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
-        }
-        else if (ObjUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
+        } else if (ObjUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
-        }
-        else if (userResp.getTenantExpired() != CommonConstants.NOT_EXPIRED_TIME
+        } else if (userResp.getTenantExpired() != CommonConstants.NOT_EXPIRED_TIME
                 && userResp.getTenantExpired() < System.currentTimeMillis()) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
-        }
-        else if (ObjUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
+        } else if (ObjUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }

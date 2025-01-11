@@ -19,6 +19,7 @@ import java.io.IOException;
  */
 @Service
 public class FastDfsSysFileServiceImpl implements SysFileService {
+
     /**
      * 域名或本机访问地址
      */
@@ -34,8 +35,7 @@ public class FastDfsSysFileServiceImpl implements SysFileService {
         try {
             storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
                     FileUtil.getExtension(file), null);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
         return storePath.getFullPath();

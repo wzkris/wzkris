@@ -23,6 +23,7 @@ import static com.wzkris.common.core.domain.Result.ok;
 @RestController
 @RequiredArgsConstructor
 public class RemoteOAuth2ClientApiImpl implements RemoteOAuth2ClientApi {
+
     private final OAuth2ClientMapper oAuth2ClientMapper;
 
     @Override

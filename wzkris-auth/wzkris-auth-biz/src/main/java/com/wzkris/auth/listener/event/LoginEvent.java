@@ -14,6 +14,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginEvent {
+
     private AuthBaseUser user;
 
     private String ipAddr;

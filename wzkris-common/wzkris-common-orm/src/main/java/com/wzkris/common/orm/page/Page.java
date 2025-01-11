@@ -19,6 +19,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class Page<T> {
+
     /**
      * 列表数据
      */

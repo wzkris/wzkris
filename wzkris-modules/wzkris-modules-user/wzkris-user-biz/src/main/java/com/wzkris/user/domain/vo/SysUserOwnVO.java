@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-
 /**
  * @author : wzkris
  * @version : V1.0.1

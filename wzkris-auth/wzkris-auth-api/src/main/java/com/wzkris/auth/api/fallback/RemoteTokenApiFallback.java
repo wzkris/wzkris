@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class RemoteTokenApiFallback implements FallbackFactory<RemoteTokenApi> {
+
     @Override
     public RemoteTokenApi create(Throwable cause) {
         return new RemoteTokenApi() {

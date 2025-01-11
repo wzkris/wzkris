@@ -37,8 +37,11 @@ import java.util.List;
 @RequestMapping("/sys_post")
 @RequiredArgsConstructor
 public class SysPostController extends BaseController {
+
     private final SysPostMapper postMapper;
+
     private final SysPostService postService;
+
     private final SysTenantService tenantService;
 
     @Operation(summary = "岗位分页")

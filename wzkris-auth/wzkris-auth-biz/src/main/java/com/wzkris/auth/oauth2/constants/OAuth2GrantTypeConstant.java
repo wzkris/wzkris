@@ -6,8 +6,10 @@ package com.wzkris.auth.oauth2.constants;
  * @description 授权方式常量
  */
 public interface OAuth2GrantTypeConstant {
+
     // 短信授权
     String SMS = "sms";
+
     // 微信模式
     String WECHAT = "wechat";
 }

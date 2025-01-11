@@ -34,6 +34,7 @@ import java.util.List;
 public class SysOperlogController extends BaseController {
 
     private final SysOperLogMapper operLogMapper;
+
     private final SysOperLogService operLogService;
 
     @Operation(summary = "分页")

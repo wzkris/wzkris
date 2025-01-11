@@ -18,6 +18,7 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_REQUEST_PA
  */
 @FeignClient(value = ApplicationNameConstants.FILE, contextId = "RemoteFileApi", fallbackFactory = RemoteFileApiFallback.class)
 public interface RemoteFileApi {
+
     /**
      * 文件上传
      *

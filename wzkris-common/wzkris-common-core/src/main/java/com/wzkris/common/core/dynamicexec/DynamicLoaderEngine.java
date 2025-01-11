@@ -1,6 +1,5 @@
 package com.wzkris.common.core.dynamicexec;
 
-
 import com.wzkris.common.core.dynamicexec.compiler.ClassCompiler;
 
 import java.io.PrintWriter;
@@ -20,8 +19,7 @@ public class DynamicLoaderEngine {
             byte[] classBytes = classCompiler.compile(javaCode, out, options);
 
             return classBytes;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace(out);
         }
 
@@ -37,8 +35,7 @@ public class DynamicLoaderEngine {
             }
 
             return dynamicClass;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace(out);
         }
 
@@ -64,8 +61,7 @@ public class DynamicLoaderEngine {
             }
 
             return loadClass(classLoader, classBytes, out);
-        }
-        catch (ClassFormatError e) {
+        } catch (ClassFormatError e) {
             e.printStackTrace(out);
         }
 

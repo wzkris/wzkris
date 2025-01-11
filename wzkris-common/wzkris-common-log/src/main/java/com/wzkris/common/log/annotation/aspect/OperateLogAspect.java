@@ -49,7 +49,9 @@ public class OperateLogAspect {
      */
     public static final String[] EXCLUDE_PROPERTIES =
             {"pwd", "passwd", "password", "oldPassword", "newPassword", "confirmPassword"};
+
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
+
     @Autowired
     private RemoteLogApi remoteLogApi;
 
@@ -96,8 +98,7 @@ public class OperateLogAspect {
             if (e != null) {
                 operLogReq.setStatus(OperateStatus.FAIL.value());
                 operLogReq.setErrorMsg(StringUtil.sub(e.getMessage(), 0, 2000));
-            }
-            else if (jsonResult instanceof Result<?> result) {
+            } else if (jsonResult instanceof Result<?> result) {
                 if (!result.isSuccess()) {
                     operLogReq.setStatus(OperateStatus.FAIL.value());
                     operLogReq.setErrorMsg(StringUtil.sub(result.getMessage(), 0, 2000));
@@ -113,8 +114,7 @@ public class OperateLogAspect {
             getControllerMethodDescription(joinPoint, operateLog, operLogReq, jsonResult);
             // 保存数据库
             remoteLogApi.insertOperlog(operLogReq);
-        }
-        catch (Exception exp) {
+        } catch (Exception exp) {
             // 记录本地异常日志
             log.error("日志切面发生异常，异常信息:{}", exp.getMessage(), exp);
         }
@@ -158,21 +158,17 @@ public class OperateLogAspect {
             String params = this.argsArrayToString(joinPoint.getArgs());
             if (StringUtil.isBlank(params)) {
                 operParams = "-";
-            }
-            else if (NumberUtil.isNumber(params)) {
+            } else if (NumberUtil.isNumber(params)) {
                 operParams = params;
-            }
-            else if (params.startsWith("[")) {
+            } else if (params.startsWith("[")) {
                 List<?> list = objectMapper.readValue(params, TypeFactory.defaultInstance().constructCollectionType(List.class, Object.class));
                 operParams = objectMapper.writeValueAsString(list);
-            }
-            else {
+            } else {
                 Map<String, String> paramsMap = objectMapper.readValue(params, TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, Object.class));
                 this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
                 operParams = StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000);
             }
-        }
-        else {
+        } else {
             Map<String, String> paramsMap = ServletUtil.getParamMap(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
             this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
             operParams = StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000);
@@ -209,8 +205,7 @@ public class OperateLogAspect {
                     try {
                         String jsonObj = objectMapper.writeValueAsString(o);
                         params.append(jsonObj).append(" ");
-                    }
-                    catch (Exception ignored) {
+                    } catch (Exception ignored) {
                     }
                 }
             }
@@ -229,14 +224,12 @@ public class OperateLogAspect {
         Class<?> clazz = o.getClass();
         if (clazz.isArray()) {
             return clazz.getComponentType().isAssignableFrom(MultipartFile.class);
-        }
-        else if (Collection.class.isAssignableFrom(clazz)) {
+        } else if (Collection.class.isAssignableFrom(clazz)) {
             Collection collection = (Collection) o;
             for (Object value : collection) {
                 return value instanceof MultipartFile;
             }
-        }
-        else if (Map.class.isAssignableFrom(clazz)) {
+        } else if (Map.class.isAssignableFrom(clazz)) {
             Map map = (Map) o;
             for (Object value : map.entrySet()) {
                 Map.Entry entry = (Map.Entry) value;

@@ -30,7 +30,9 @@ import java.util.List;
 @RequestMapping("/protocol")
 @RequiredArgsConstructor
 public class ProtocolController extends BaseController {
+
     private final ProtocolMapper protocolMapper;
+
     private final ProtocolService protocolService;
 
     @Operation(summary = "分页查询")

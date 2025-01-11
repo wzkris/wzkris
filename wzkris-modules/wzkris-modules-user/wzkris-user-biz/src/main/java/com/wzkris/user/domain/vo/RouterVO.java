@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RouterVO implements Serializable {
+
     /**
      * 路由名字
      */

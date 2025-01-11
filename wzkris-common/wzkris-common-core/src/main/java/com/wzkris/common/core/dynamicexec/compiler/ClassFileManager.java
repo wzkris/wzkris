@@ -1,6 +1,5 @@
 package com.wzkris.common.core.dynamicexec.compiler;
 
-
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileObject;
@@ -14,6 +13,7 @@ import java.io.IOException;
  * @date 2022-07-04
  */
 public class ClassFileManager extends ForwardingJavaFileManager<StandardJavaFileManager> {
+
     /**
      * 保存编译后Class文件的对象
      */

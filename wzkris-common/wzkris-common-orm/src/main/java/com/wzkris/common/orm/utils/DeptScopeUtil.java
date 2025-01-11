@@ -9,6 +9,7 @@ import net.sf.jsqlparser.expression.Expression;
  * @date : 2023/12/11 10:54
  */
 public class DeptScopeUtil {
+
     // sql表达式片段
     private static final ThreadLocal<Expression> LOCAL_DATA_AUTH_SQL = new ThreadLocal<>();
 

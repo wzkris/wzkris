@@ -1,6 +1,5 @@
 package com.wzkris.common.core.dynamicexec;
 
-
 import com.wzkris.common.core.dynamicexec.bytecode.ClassModifier;
 import com.wzkris.common.core.dynamicexec.bytecode.InjectionSystem;
 

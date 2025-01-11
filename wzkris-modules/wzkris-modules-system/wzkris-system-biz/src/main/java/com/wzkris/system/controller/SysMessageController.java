@@ -36,7 +36,9 @@ import java.util.List;
 @RequestMapping("/sys_message")
 @RequiredArgsConstructor
 public class SysMessageController extends BaseController {
+
     private final SysMessageMapper messageMapper;
+
     private final SysMessageService messageService;
 
     @Operation(summary = "分页")

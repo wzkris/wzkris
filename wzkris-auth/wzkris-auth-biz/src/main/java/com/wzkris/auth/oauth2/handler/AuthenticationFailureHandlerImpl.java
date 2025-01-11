@@ -41,8 +41,7 @@ public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHa
         if (exception instanceof OAuth2AuthenticationException oAuth2AuthenticationException) {
             Result<Void> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
             JsonUtil.writeValue(response.getWriter(), result);
-        }
-        else {
+        } else {
             JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED, exception.getLocalizedMessage()));
         }
     }

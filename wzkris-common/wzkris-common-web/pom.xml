@@ -2,46 +2,46 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris-common</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-common</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-common-web</artifactId>
+    <artifactId>wzkris-common-web</artifactId>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-core</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-core</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-orm</artifactId>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-orm</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-		<!-- SpringBoot Web -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+        <!-- SpringBoot Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>io.github.linpeilie</groupId>
-			<artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>io.github.linpeilie</groupId>
+            <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+        </dependency>
 
-		<!-- SpringBoot Actuator -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
+        <!-- SpringBoot Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

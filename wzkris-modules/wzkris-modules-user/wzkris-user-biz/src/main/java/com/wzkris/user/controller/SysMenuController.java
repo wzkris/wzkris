@@ -35,7 +35,9 @@ import java.util.List;
 @PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
+
     private final SysMenuMapper menuMapper;
+
     private final SysMenuService menuService;
 
     @Operation(summary = "菜单列表")
@@ -83,8 +85,7 @@ public class SysMenuController extends BaseController {
     public Result<Void> edit(@Valid @RequestBody SysMenuReq req) {
         if (req.getIsFrame() && !StringUtil.ishttp(req.getPath())) {
             return fail("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
-        }
-        else if (req.getMenuId().equals(req.getParentId())) {
+        } else if (req.getMenuId().equals(req.getParentId())) {
             return fail("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
         }
         return toRes(menuMapper.updateById(BeanUtil.convert(req, SysMenu.class)));

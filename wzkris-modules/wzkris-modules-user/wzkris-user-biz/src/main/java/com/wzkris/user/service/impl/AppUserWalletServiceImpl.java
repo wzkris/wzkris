@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 public class AppUserWalletServiceImpl implements AppUserWalletService {
 
     private final AppUserWalletMapper appUserWalletMapper;
+
     private final AppUserWalletRecordMapper appUserWalletRecordMapper;
 
     @Override

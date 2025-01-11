@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
  * 权限不足处理类
  */
 public final class AccessDeniedHandlerImpl implements AccessDeniedHandler {
+
     private static final Logger log = LoggerFactory.getLogger(AccessDeniedHandlerImpl.class);
 
     @Override

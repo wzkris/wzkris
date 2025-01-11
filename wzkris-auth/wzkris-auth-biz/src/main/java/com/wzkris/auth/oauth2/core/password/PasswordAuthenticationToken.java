@@ -18,9 +18,13 @@ import java.util.Set;
 @Getter
 @Transient
 public final class PasswordAuthenticationToken extends CommonAuthenticationToken {
+
     private final String username;
+
     private final String password;
+
     private final String uuid;
+
     private final String code;
 
     public PasswordAuthenticationToken(String username,

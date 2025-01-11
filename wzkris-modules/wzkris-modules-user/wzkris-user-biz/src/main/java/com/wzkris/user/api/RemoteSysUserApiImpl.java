@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -33,10 +32,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUserApi {
+
     private final SysUserMapper userMapper;
+
     private final SysTenantMapper tenantMapper;
+
     private final PasswordEncoder passwordEncoder;
+
     private final SysTenantPackageMapper tenantPackageMapper;
+
     private final SysPermissionService sysPermissionService;
 
     @Override
@@ -66,8 +70,7 @@ public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUse
             userResp.setTenantStatus(CommonConstants.STATUS_ENABLE);
             userResp.setTenantExpired(CommonConstants.NOT_EXPIRED_TIME);
             userResp.setPackageStatus(CommonConstants.STATUS_ENABLE);
-        }
-        else {
+        } else {
             SysTenant tenant = tenantMapper.selectById(userResp.getTenantId());
             userResp.setTenantStatus(tenant.getStatus());
             userResp.setTenantExpired(tenant.getExpireTime());

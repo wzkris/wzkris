@@ -13,6 +13,7 @@ import java.util.List;
  */
 @Data
 public class SysUserGrantVO {
+
     @Schema(description = "用户信息")
     private SysUser user;
 

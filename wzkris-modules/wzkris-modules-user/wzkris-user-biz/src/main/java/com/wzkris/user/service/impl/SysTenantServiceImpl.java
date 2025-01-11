@@ -26,15 +26,25 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysTenantServiceImpl implements SysTenantService {
+
     private final SysUserMapper userMapper;
+
     private final SysUserService userService;
+
     private final SysRoleMapper roleMapper;
+
     private final SysRoleService roleService;
+
     private final SysDeptMapper deptMapper;
+
     private final SysPostMapper postMapper;
+
     private final PasswordEncoder passwordEncoder;
+
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantWalletMapper tenantWalletMapper;
+
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override

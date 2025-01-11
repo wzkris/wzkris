@@ -31,6 +31,7 @@ import java.util.List;
 @RequestMapping("/things_model")
 @RequiredArgsConstructor
 public class ThingsModelController extends BaseController {
+
     private final ThingsModelMapper thingsModelMapper;
 
     @Operation(summary = "分页查询")

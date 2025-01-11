@@ -26,6 +26,7 @@ import java.util.Optional;
 public final class SmsAuthenticationProvider extends CommonAuthenticationProvider<SmsAuthenticationToken> {
 
     private final List<UserInfoTemplate> userInfoTemplates;
+
     private final CaptchaService captchaService;
 
     public SmsAuthenticationProvider(OAuth2AuthorizationService authorizationService,

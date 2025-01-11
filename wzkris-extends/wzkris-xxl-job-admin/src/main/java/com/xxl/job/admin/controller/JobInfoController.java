@@ -36,10 +36,12 @@ import java.util.*;
 @Controller
 @RequestMapping("/jobinfo")
 public class JobInfoController {
+
     private static Logger logger = LoggerFactory.getLogger(JobInfoController.class);
 
     @Resource
     private XxlJobGroupDao xxlJobGroupDao;
+
     @Resource
     private XxlJobService xxlJobService;
 
@@ -49,8 +51,7 @@ public class JobInfoController {
             XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
             if (loginUser.getRole() == 1) {
                 jobGroupList = jobGroupList_all;
-            }
-            else {
+            } else {
                 List<String> groupIdStrs = new ArrayList<>();
                 if (loginUser.getPermission() != null && loginUser.getPermission().trim().length() > 0) {
                     groupIdStrs = Arrays.asList(loginUser.getPermission().trim().split(","));
@@ -160,13 +161,11 @@ public class JobInfoController {
                 lastTime = JobScheduleHelper.generateNextValidTime(paramXxlJobInfo, lastTime);
                 if (lastTime != null) {
                     result.add(DateUtil.formatDateTime(lastTime));
-                }
-                else {
+                } else {
                     break;
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ReturnT<List<String>>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")) + e.getMessage());
         }

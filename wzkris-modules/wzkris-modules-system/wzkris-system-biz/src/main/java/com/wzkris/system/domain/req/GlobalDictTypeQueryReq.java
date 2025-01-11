@@ -1,6 +1,5 @@
 package com.wzkris.system.domain.req;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

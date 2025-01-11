@@ -24,7 +24,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysPostServiceImpl implements SysPostService {
+
     private final SysPostMapper postMapper;
+
     private final SysUserPostMapper userPostMapper;
 
     @Override

@@ -10,6 +10,7 @@ import java.net.URI;
  * @date 2022-07-04
  */
 public class SourceJavaFileObject extends SimpleJavaFileObject {
+
     private final String content;
 
     /**

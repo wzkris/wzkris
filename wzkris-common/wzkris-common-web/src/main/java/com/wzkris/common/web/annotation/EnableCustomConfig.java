@@ -19,4 +19,5 @@ import java.lang.annotation.*;
 // 自动加载类
 //@Import
 public @interface EnableCustomConfig {
+
 }

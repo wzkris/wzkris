@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
     private final SysTenantWalletMapper tenantWalletMapper;
+
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override

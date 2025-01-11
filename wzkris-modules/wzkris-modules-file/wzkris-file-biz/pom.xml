@@ -2,92 +2,92 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris-modules-file</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-modules-file</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-file-biz</artifactId>
+    <artifactId>wzkris-file-biz</artifactId>
 
-	<properties>
-		<fastdfs.version>1.27.2</fastdfs.version>
-	</properties>
+    <properties>
+        <fastdfs.version>1.27.2</fastdfs.version>
+    </properties>
 
-	<dependencies>
-		<!-- SpringCloud Alibaba Nacos -->
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-		</dependency>
+    <dependencies>
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
 
-		<!-- SpringCloud Alibaba Nacos Config -->
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-		</dependency>
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
 
-		<!-- Sentinel -->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-sentinel</artifactId>
-		</dependency>
+        <!-- Sentinel -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-sentinel</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-file-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-file-api</artifactId>
+        </dependency>
 
-		<!-- FastDFS 分布式文件系统 -->
-		<dependency>
-			<groupId>com.github.tobato</groupId>
-			<artifactId>fastdfs-client</artifactId>
-			<version>${fastdfs.version}</version>
-		</dependency>
+        <!-- FastDFS 分布式文件系统 -->
+        <dependency>
+            <groupId>com.github.tobato</groupId>
+            <artifactId>fastdfs-client</artifactId>
+            <version>${fastdfs.version}</version>
+        </dependency>
 
-		<!-- Minio -->
-		<dependency>
-			<groupId>io.minio</groupId>
-			<artifactId>minio</artifactId>
-			<version>${minio.version}</version>
-		</dependency>
+        <!-- Minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-security</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-security</artifactId>
+        </dependency>
 
-		<!-- wzkris Common Swagger -->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-swagger</artifactId>
-		</dependency>
+        <!-- wzkris Common Swagger -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-swagger</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-web</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
-	<build>
-		<finalName>${project.artifactId}</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring-boot.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

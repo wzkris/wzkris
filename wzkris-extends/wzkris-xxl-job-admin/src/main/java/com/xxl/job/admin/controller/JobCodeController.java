@@ -28,6 +28,7 @@ public class JobCodeController {
 
     @Resource
     private XxlJobInfoDao xxlJobInfoDao;
+
     @Resource
     private XxlJobLogGlueDao xxlJobLogGlueDao;
 

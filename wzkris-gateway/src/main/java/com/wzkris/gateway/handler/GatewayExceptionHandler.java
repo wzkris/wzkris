@@ -48,8 +48,7 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
                 case 503 -> WebFluxUtil.writeResponse(response, BizCode.SERVICE_UNAVAILABLE);
                 default -> WebFluxUtil.writeResponse(response, respEx.getStatusCode().value(), respEx.getMessage());
             };
-        }
-        else if (e instanceof BaseException bizEx) {
+        } else if (e instanceof BaseException bizEx) {
             // 若状态码为远程调用异常，则返回前端数据需要覆盖
             String errorMsg = bizEx.getMessage();
             if (bizEx.getCode() == BizCode.RPC_INVOCATION.value()) {

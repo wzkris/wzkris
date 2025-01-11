@@ -1,6 +1,5 @@
 package com.wzkris.system.domain.req;
 
-
 import com.wzkris.system.domain.GlobalDictType;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;

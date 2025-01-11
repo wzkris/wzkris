@@ -45,7 +45,9 @@ import java.util.List;
 public class SysTenantPackageController extends BaseController {
 
     private final SysTenantPackageMapper tenantPackageMapper;
+
     private final SysTenantPackageService tenantPackageService;
+
     private final SysMenuService menuService;
 
     @Operation(summary = "套餐分页")

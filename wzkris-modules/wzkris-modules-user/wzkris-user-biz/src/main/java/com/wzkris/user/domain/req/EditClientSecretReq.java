@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 public class EditClientSecretReq {
+
     @NotNull(message = "id {validate.notnull}")
     private Long id;
 

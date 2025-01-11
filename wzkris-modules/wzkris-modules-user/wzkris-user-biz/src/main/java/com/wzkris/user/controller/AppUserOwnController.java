@@ -33,9 +33,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AppUserOwnController extends BaseController {
 
-    private final AppUserMapper appUserMapper;
-    private final AppUserService appUserService;
     private final static String ACCOUNT_PREFIX = "app:account";
+
+    private final AppUserMapper appUserMapper;
+
+    private final AppUserService appUserService;
 
     @Operation(summary = "登录信息")
     @GetMapping("/info")

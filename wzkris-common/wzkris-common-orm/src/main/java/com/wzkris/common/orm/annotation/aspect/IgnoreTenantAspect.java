@@ -1,6 +1,5 @@
 package com.wzkris.common.orm.annotation.aspect;
 
-
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;

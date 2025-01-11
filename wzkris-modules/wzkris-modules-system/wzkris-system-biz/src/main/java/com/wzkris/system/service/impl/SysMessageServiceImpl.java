@@ -19,6 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysMessageServiceImpl implements SysMessageService {
+
     private final SysMessageMapper messageMapper;
 
     @Override

@@ -11,6 +11,7 @@ import java.net.URLClassLoader;
  * @date 2022-07-04
  */
 public class DynamicClassLoader extends URLClassLoader {
+
     public DynamicClassLoader(ClassLoader parent) {
         super(new URL[0], parent);
     }

@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Schema(description = "站点信息")
 public class Station extends BaseEntity {
+
     @Serial
     private static final long serialVersionUID = -2977651045048928385L;
 

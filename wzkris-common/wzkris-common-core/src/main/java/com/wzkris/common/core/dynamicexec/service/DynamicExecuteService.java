@@ -1,6 +1,5 @@
 package com.wzkris.common.core.dynamicexec.service;
 
-
 import com.wzkris.common.core.dynamicexec.ClassInjector;
 import com.wzkris.common.core.dynamicexec.DynamicClassLoader;
 import com.wzkris.common.core.dynamicexec.DynamicLoaderEngine;
@@ -22,6 +21,7 @@ import java.util.List;
  * @date 2022-07-04
  */
 public class DynamicExecuteService {
+
     private final URLClassLoader pClassLoader;
 
     /**
@@ -68,11 +68,9 @@ public class DynamicExecuteService {
             DynamicLoaderEngine.executeMain(dynamicClassLoader, injectedClass, out, null);
 
             InjectionSystem.restore();
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace(out);
-        }
-        finally {
+        } finally {
             out.close();
         }
 
@@ -93,8 +91,7 @@ public class DynamicExecuteService {
 
             if (classLoader.getParent() instanceof URLClassLoader) {
                 classLoader = (URLClassLoader) classLoader.getParent();
-            }
-            else {
+            } else {
                 break;
             }
         }

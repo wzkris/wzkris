@@ -1,6 +1,5 @@
 package com.wzkris.common.core.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BusinessException;

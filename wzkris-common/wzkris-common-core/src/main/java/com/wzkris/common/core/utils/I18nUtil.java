@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
  * 获取i18n资源文件
  *

@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class SysFileUploadReq {
+
     /**
      * 文件名称
      */

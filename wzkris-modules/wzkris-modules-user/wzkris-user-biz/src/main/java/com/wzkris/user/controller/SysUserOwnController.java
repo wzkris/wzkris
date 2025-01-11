@@ -40,14 +40,22 @@ import org.springframework.web.bind.annotation.*;
 @IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")
 @RequiredArgsConstructor
 public class SysUserOwnController extends BaseController {
-    private final SysUserMapper userMapper;
-    private final SysUserService userService;
-    private final SysRoleService roleService;
-    private final SysPostService postService;
-    private final SysDeptMapper deptMapper;
-    private final RemoteCaptchaApi remoteCaptchaApi;
-    private final PasswordEncoder passwordEncoder;
+
     private final static String ACCOUNT_PREFIX = "user:account";
+
+    private final SysUserMapper userMapper;
+
+    private final SysUserService userService;
+
+    private final SysRoleService roleService;
+
+    private final SysPostService postService;
+
+    private final SysDeptMapper deptMapper;
+
+    private final RemoteCaptchaApi remoteCaptchaApi;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "登录信息")
     @GetMapping("/info")
