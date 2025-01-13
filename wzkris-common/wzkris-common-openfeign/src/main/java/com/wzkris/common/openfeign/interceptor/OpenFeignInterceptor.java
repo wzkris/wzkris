@@ -1,8 +1,10 @@
 package com.wzkris.common.openfeign.interceptor;
 
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.openfeign.config.IdentityProperties;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import org.slf4j.MDC;
 
 /**
  * @author : wzkris
@@ -21,5 +23,6 @@ public class OpenFeignInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         requestTemplate.header(identityProperties.getIdentityKey(), identityProperties.getIdentityValue());
+        requestTemplate.header(CommonConstants.TRACING_ID, MDC.get(CommonConstants.TRACING_ID));
     }
 }

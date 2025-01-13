@@ -1,6 +1,8 @@
 package com.wzkris.gateway.filter;
 
+import cn.hutool.core.util.IdUtil;
 import com.wzkris.auth.api.RemoteTokenApi;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.PermitAllProperties;
@@ -73,14 +75,14 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         final ServerHttpRequest request = exchange.getRequest();
         final ServerHttpRequest.Builder mutate = request.mutate();
 
-        if (StringUtil.matches(request.getURI().getPath(), permitAllProperties.getIgnores())) {
-            return chain.filter(exchange);
-        }
-
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StringUtil.isBlank(bearerToken) && request.getQueryParams().get(HttpHeaders.AUTHORIZATION) == null) {
+        if ((StringUtil.isBlank(bearerToken) && request.getQueryParams().get(HttpHeaders.AUTHORIZATION) == null)
+                && !StringUtil.matches(request.getURI().getPath(), permitAllProperties.getIgnores())) {
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
         }
+
+        // 分布式日志追踪ID
+        mutate.header(CommonConstants.TRACING_ID, IdUtil.fastUUID());
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }

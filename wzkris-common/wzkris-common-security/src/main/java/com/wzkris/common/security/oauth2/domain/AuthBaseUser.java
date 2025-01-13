@@ -9,7 +9,6 @@ import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -38,11 +37,10 @@ public abstract class AuthBaseUser implements OAuth2User {
 
     private final LoginType loginType;
 
-    @Setter
-    private Set<String> grantedAuthority;
+    private final Set<String> grantedAuthority;
 
     protected AuthBaseUser(LoginType loginType, Set<String> grantedAuthority) {
-        Assert.notNull(loginType, "登录类型不能为空");
+        Assert.notNull(loginType, "loginType cannot be null");
         this.loginType = loginType;
         this.grantedAuthority = grantedAuthority;
     }

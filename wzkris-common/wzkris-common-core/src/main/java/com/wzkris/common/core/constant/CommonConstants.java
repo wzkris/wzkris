@@ -23,6 +23,11 @@ public class CommonConstants {
     public static final String LOOKUP_LDAPS = "ldaps:";
 
     /**
+     * tracing_id
+     */
+    public static final String TRACING_ID = "Tracing-Id";
+
+    /**
      * http请求
      */
     public static final String HTTP = "http://";

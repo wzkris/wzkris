@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.auth.api.domain.response.TokenResponse;
-import com.wzkris.common.security.oauth2.deserializer.module.OAuth2JacksonModule;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -29,7 +28,6 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
 
     public CustomOpaqueTokenIntrospector(RemoteTokenApi remoteTokenApi) {
         this.remoteTokenApi = remoteTokenApi;
-        objectMapper.registerModules(new OAuth2JacksonModule());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
