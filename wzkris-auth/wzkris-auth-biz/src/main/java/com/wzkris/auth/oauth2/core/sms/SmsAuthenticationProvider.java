@@ -31,10 +31,10 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     private final CaptchaService captchaService;
 
     public SmsAuthenticationProvider(OAuth2AuthorizationService authorizationService,
-                                     List<UserInfoTemplate> userInfoTemplates,
                                      OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
+                                     List<UserInfoTemplate> userInfoTemplates,
                                      CaptchaService captchaService) {
-        super(tokenGenerator, authorizationService);
+        super(authorizationService, tokenGenerator);
         this.userInfoTemplates = userInfoTemplates;
         this.captchaService = captchaService;
     }
@@ -42,10 +42,6 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     @Override
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
-        // 校验最大次数
-        captchaService.validateMaxTryCount(authenticationToken.getPhoneNumber());
-        // 校验验证码
-        captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
                 .filter(t -> t.checkLoginType(authenticationToken.getLoginType()))
@@ -54,8 +50,14 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST,
                     "request.param.error", OAuth2ParameterConstant.USER_TYPE);
-            return null;// never run this line
         }
+
+        // 校验是否被冻结
+        captchaService.validateLockAccount(authenticationToken.getPhoneNumber());
+        // 校验最大次数
+        captchaService.validateMaxTryCount(authenticationToken.getPhoneNumber());
+        // 校验验证码
+        captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
 
         AuthBaseUser baseUser = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 

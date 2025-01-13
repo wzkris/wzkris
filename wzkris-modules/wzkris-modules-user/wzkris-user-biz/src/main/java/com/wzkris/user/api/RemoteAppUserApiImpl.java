@@ -33,19 +33,19 @@ public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUse
     @Override
     public Result<AppUserResp> getByPhoneNumber(String phoneNumber) {
         AppUser appUser = appUserMapper.selectByPhoneNumber(phoneNumber);
-        AppUserResp appUserResp = BeanUtil.convert(appUser, AppUserResp.class);
-        return ok(appUserResp);
+        AppUserResp userResp = BeanUtil.convert(appUser, AppUserResp.class);
+        return ok(userResp);
     }
 
     @Override
     public Result<AppUserResp> getByOpenid(String openid) {
         AppUserThirdinfo userThirdinfo = appUserThirdinfoMapper.selectByOpenid(openid);
         if (userThirdinfo == null) {
-            return fail18n("{desc.user}{desc.not}{desc.exist}");
+            return ok();
         }
         AppUser appUser = appUserMapper.selectById(userThirdinfo.getUserId());
-        AppUserResp appUserResp = BeanUtil.convert(appUser, AppUserResp.class);
-        return ok(appUserResp);
+        AppUserResp userResp = BeanUtil.convert(appUser, AppUserResp.class);
+        return ok(userResp);
     }
 
     @Override

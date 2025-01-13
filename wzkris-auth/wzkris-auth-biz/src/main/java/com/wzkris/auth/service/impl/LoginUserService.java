@@ -1,10 +1,16 @@
 package com.wzkris.auth.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.http.useragent.UserAgentUtil;
+import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.oauth2.constants.OAuth2GrantTypeConstant;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
@@ -13,11 +19,18 @@ import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
 import com.wzkris.user.api.domain.response.SysUserResp;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashSet;
 
@@ -25,24 +38,60 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class LoginUserService extends UserInfoTemplate {
 
+    private final CaptchaService captchaService;
+
     private final RemoteSysUserApi remoteSysUserApi;
 
+    private final PasswordEncoder passwordEncoder;
+
+    @Nullable
     @Override
     public LoginUser loadUserByPhoneNumber(String phoneNumber) {
         Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
         if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), CustomErrorCodes.VALIDATE_ERROR, result.getMessage());
+            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
         }
-        return this.checkAndBuild(result.getData());
+
+        SysUserResp userResp = result.getData();
+
+        if (userResp == null) {
+            captchaService.lockAccount(phoneNumber);
+            return null;
+        }
+
+        try {
+            return this.buildLoginUser(userResp);
+        } catch (Exception e) {
+            this.recordFailedLog(userResp, OAuth2GrantTypeConstant.SMS, e.getMessage());
+            throw e;
+        }
     }
 
+    @Nullable
     @Override
     public LoginUser loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<SysUserResp> result = remoteSysUserApi.getByUsername(username, password);
+        Result<SysUserResp> result = remoteSysUserApi.getByUsername(username);
         if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), CustomErrorCodes.VALIDATE_ERROR, result.getMessage());
+            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
         }
-        return this.checkAndBuild(result.getData());
+
+        SysUserResp userResp = result.getData();
+
+        if (userResp == null) {
+            captchaService.lockAccount(username);
+            return null;
+        }
+
+        try {
+            if (!passwordEncoder.matches(password, userResp.getPassword())) {
+                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
+            }
+
+            return this.buildLoginUser(userResp);
+        } catch (Exception e) {
+            this.recordFailedLog(userResp, AuthorizationGrantType.PASSWORD.getValue(), e.getMessage());
+            throw e;
+        }
     }
 
     @Override
@@ -53,8 +102,8 @@ public class LoginUserService extends UserInfoTemplate {
     /**
      * 构建登录用户
      */
-    private LoginUser checkAndBuild(@Nullable SysUserResp userResp) {
-        if (userResp == null) return null;
+    @Nonnull
+    private LoginUser buildLoginUser(@Nonnull SysUserResp userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 
@@ -89,4 +138,17 @@ public class LoginUserService extends UserInfoTemplate {
         }
     }
 
+    /**
+     * 记录失败日志
+     */
+    private void recordFailedLog(SysUserResp userResp, String grantType, String errorMsg) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUserId(userResp.getUserId());
+        loginUser.setUsername(userResp.getUsername());
+        loginUser.setTenantId(userResp.getTenantId());
+        SpringUtil.getContext().publishEvent(new LoginEvent(loginUser, grantType,
+                CommonConstants.STATUS_DISABLE, errorMsg, ServletUtil.getClientIP(request),
+                UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+    }
 }

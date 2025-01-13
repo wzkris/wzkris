@@ -21,7 +21,7 @@ public class CustomOAuth2Error extends OAuth2Error {
     }
 
     public CustomOAuth2Error(int code, String errorCode, String description, String uri) {
-        super(StringUtil.isBlank(errorCode) ? CustomErrorCodes.GENERAL_ERROR : errorCode, description, uri);
+        super(StringUtil.isBlank(errorCode) ? CustomErrorCodes.DEFAULT_ERROR : errorCode, description, uri);
         this.code = code;
     }
 }

@@ -32,9 +32,19 @@ public class LoginLogReq {
     private Long tenantId;
 
     /**
+     * 授权类型
+     */
+    private String grantType;
+
+    /**
      * 登录状态（0正常 1异常）
      */
     private String status;
+
+    /**
+     * 失败信息
+     */
+    private String errorMsg;
 
     /**
      * 登录ip

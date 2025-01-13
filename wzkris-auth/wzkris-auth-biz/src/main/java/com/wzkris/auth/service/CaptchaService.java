@@ -44,8 +44,11 @@ public class CaptchaService {
     // 最大重试次数
     private static final int maxRetryCount = 5;
 
-    // 账号冻结缓存前缀 + username
-    private static final String ACCOUNT_LOCK_PREFIX = "lock:account:";
+    // 账号最大尝试次数 + username
+    private static final String MAX_TRY_PREFIX = "account:max_try:";
+
+    // 账号冻结缓存 + username
+    private static final String ACCOUNT_LOCK_KEY = "account:lock:";
 
     @Resource(name = "captchaProducer")
     private Producer captchaProducer;
@@ -102,20 +105,22 @@ public class CaptchaService {
      * 验证图片验证码
      */
     public void validatePicCode(String uuid, String code) {
-        if (!StringUtil.isAllNotBlank(uuid, code)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
-        }
+        if (captchaConfig.getEnabled()) {
+            if (!StringUtil.isAllNotBlank(uuid, code)) {
+                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
+            }
 
-        String picKey = PIC_CODE_PREFIX + uuid;
+            String picKey = PIC_CODE_PREFIX + uuid;
 
-        String realCode = RedisUtil.getObj(picKey);
-        if (StringUtil.isBlank(realCode)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
+            String realCode = RedisUtil.getObj(picKey);
+            if (StringUtil.isBlank(realCode)) {
+                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
+            }
+            if (!StringUtil.equalsIgnoreCase(code, realCode)) {
+                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
+            }
+            RedisUtil.delObj(picKey);
         }
-        if (!StringUtil.equalsIgnoreCase(code, realCode)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
-        }
-        RedisUtil.delObj(picKey);
     }
 
     /**
@@ -158,13 +163,39 @@ public class CaptchaService {
      */
     public void validateMaxTryCount(String username) {
         // 密码重试缓存key
-        String lockKey = ACCOUNT_LOCK_PREFIX + username;
+        String lockKey = MAX_TRY_PREFIX + username;
         Integer retryCount = ObjectUtil.defaultIfNull(RedisUtil.getObj(lockKey), 0);
         if (retryCount > maxRetryCount) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.TOO_MANY_REQUESTS.value(), CustomErrorCodes.FREQUENT_RETRY, "frequent.retry");
         }
         ++retryCount;
         RedisUtil.setObj(lockKey, retryCount, 300); // 默认冻结5分钟
+    }
+
+    /**
+     * 校验账号是否被冻结
+     */
+    public void validateLockAccount(String username) {
+        String lockKey = ACCOUNT_LOCK_KEY + username;
+        if (RedisUtil.hasKey(lockKey)) {
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), CustomErrorCodes.VALIDATE_ERROR, "service.busy");
+        }
+    }
+
+    /**
+     * 冻结账号
+     */
+    public void lockAccount(String username) {
+        String lockKey = ACCOUNT_LOCK_KEY + username;
+        RedisUtil.setObj(lockKey, "", 600);
+    }
+
+    /**
+     * 移除冻结账号
+     */
+    public void unlockAccount(String username) {
+        String lockKey = ACCOUNT_LOCK_KEY + username;
+        RedisUtil.delObj(lockKey);
     }
 
 }

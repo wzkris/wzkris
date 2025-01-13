@@ -18,7 +18,8 @@ package com.wzkris.auth.oauth2.handler;
 
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wzkris.auth.listener.event.LoginSuccessEvent;
+import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -38,6 +39,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessTokenResponseMapConverter;
@@ -74,19 +76,20 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                                         Authentication authentication) throws IOException {
         // 拿到返回的token
         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
+        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters().isEmpty()
+                ? new HashMap<>(2) : accessTokenAuthentication.getAdditionalParameters();
 
         // 发布登录成功事件
         if (accessTokenAuthentication.getPrincipal() instanceof UsernamePasswordAuthenticationToken authenticationToken
                 && authenticationToken.getPrincipal() instanceof AuthBaseUser baseUser) {
-            SpringUtil.getContext().publishEvent(new LoginSuccessEvent(baseUser, ServletUtil.getClientIP(request),
-                    UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+            String grantType = additionalParameters.get(AuthorizationGrantType.class.getName()).toString();
+            SpringUtil.getContext().publishEvent(new LoginEvent(baseUser, grantType, CommonConstants.STATUS_ENABLE,
+                    "", ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
         }
 
         // 构造响应体
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
-        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters().isEmpty()
-                ? new HashMap<>(2) : accessTokenAuthentication.getAdditionalParameters();
 
         OAuth2AccessTokenResponse.Builder builder = OAuth2AccessTokenResponse.withToken(accessToken.getTokenValue())
                 .tokenType(accessToken.getTokenType());

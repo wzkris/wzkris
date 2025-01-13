@@ -37,14 +37,14 @@ import java.util.Set;
  */
 public abstract class CommonAuthenticationProvider<T extends CommonAuthenticationToken> implements AuthenticationProvider {
 
-    private final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
-
     private final OAuth2AuthorizationService authorizationService;
 
-    protected CommonAuthenticationProvider(OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                           OAuth2AuthorizationService authorizationService) {
-        this.tokenGenerator = tokenGenerator;
+    private final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
+
+    protected CommonAuthenticationProvider(OAuth2AuthorizationService authorizationService,
+                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
         this.authorizationService = authorizationService;
+        this.tokenGenerator = tokenGenerator;
     }
 
     protected final OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
@@ -188,6 +188,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (idToken != null) {
             additionalParameters.put(OidcParameterNames.ID_TOKEN, idToken.getTokenValue());
         }
+
+        additionalParameters.put(AuthorizationGrantType.class.getName(), commonAuthenticationToken.getGrantType().getValue());
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticationToken, accessToken, refreshToken, additionalParameters);

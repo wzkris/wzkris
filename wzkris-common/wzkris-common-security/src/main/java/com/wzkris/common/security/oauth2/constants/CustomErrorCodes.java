@@ -7,8 +7,8 @@ package com.wzkris.common.security.oauth2.constants;
  */
 public class CustomErrorCodes {
 
-    // 通用异常
-    public static final String GENERAL_ERROR = "general_error";
+    // 默认异常
+    public static final String DEFAULT_ERROR = "default_error";
 
     // 频繁重试
     public static final String FREQUENT_RETRY = "frequent_retry";

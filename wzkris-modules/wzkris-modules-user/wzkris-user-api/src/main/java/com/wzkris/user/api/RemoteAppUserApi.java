@@ -16,7 +16,7 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQ
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : rpc - 系统用户
+ * @description : rpc - APP用户
  * @date : 2024/4/15 16:20
  */
 @FeignClient(value = ApplicationNameConstants.USER, contextId = "RemoteAppUserApi",

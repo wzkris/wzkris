@@ -28,9 +28,9 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
     private final List<UserInfoTemplate> userInfoTemplates;
 
     public WechatAuthenticationProvider(OAuth2AuthorizationService authorizationService,
-                                        List<UserInfoTemplate> userInfoTemplates,
-                                        OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
-        super(tokenGenerator, authorizationService);
+                                        OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
+                                        List<UserInfoTemplate> userInfoTemplates) {
+        super(authorizationService, tokenGenerator);
         this.userInfoTemplates = userInfoTemplates;
     }
 

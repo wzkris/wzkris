@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 11/01/2025 14:18:44
+ Date: 14/01/2025 08:42:56
 */
 
 SET NAMES utf8mb4;
@@ -201,9 +201,11 @@ DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log`  (
   `log_id` bigint NOT NULL,
   `tenant_id` bigint NOT NULL DEFAULT 0 COMMENT '租户ID',
-  `user_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL COMMENT '用户ID',
   `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
+  `grant_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '授权类型',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '登录状态（0正常 1异常）',
+  `error_msg` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败信息',
   `login_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '登录ip',
   `login_location` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '登录地址',
   `browser` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '浏览器类型',
@@ -215,8 +217,9 @@ CREATE TABLE `sys_login_log`  (
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
-INSERT INTO `sys_login_log` VALUES (1877947171725807617, 0, 1, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1736572470225);
-INSERT INTO `sys_login_log` VALUES (1877947387933790209, 0, 1, 'admin', '0', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1736572522499);
+INSERT INTO `sys_login_log` VALUES (1878725689120645122, 0, 1, 'admin', 'password', '0', '', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1736758083971);
+INSERT INTO `sys_login_log` VALUES (1878726101143904257, 0, 1, 'admin', 'password', '1', '密码错误', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1736758182145);
+INSERT INTO `sys_login_log` VALUES (1878965120473382914, 0, 1, 'admin', 'password', '0', '', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', 1736815168193);
 
 -- ----------------------------
 -- Table structure for sys_message
@@ -280,7 +283,7 @@ CREATE TABLE `sys_notify_send`  (
 -- ----------------------------
 INSERT INTO `sys_notify_send` VALUES (1854445788424261634, 1, '0');
 INSERT INTO `sys_notify_send` VALUES (1873884393595662338, 1, '0');
-INSERT INTO `sys_notify_send` VALUES (1873884472104644610, 1, '0');
+INSERT INTO `sys_notify_send` VALUES (1873884472104644610, 1, '1');
 INSERT INTO `sys_notify_send` VALUES (1873884863462567938, 1, '1');
 
 -- ----------------------------

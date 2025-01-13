@@ -3,7 +3,7 @@ package com.wzkris.auth.listener;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.listener.event.LoginSuccessEvent;
+import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
@@ -43,19 +43,27 @@ public class LoginEventListener {
      **/
     @Async
     @EventListener
-    public void loginEvent(LoginSuccessEvent event) {
+    public void loginEvent(LoginEvent event) {
         final AuthBaseUser baseUser = event.getUser();
+        final String grantType = event.getGrantType();
+        final String status = event.getStatus();
+        final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
-        log.info("监听到用户’{}‘登录成功事件, 登录IP：{}", baseUser.getName(), ipAddr);
+
+        boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
+        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", baseUser.getName(),
+                loginSuccess ? "成功" : "失败", ipAddr);
 
         if (ObjUtil.equals(baseUser.getLoginType(), LoginType.SYSTEM_USER)) {
             LoginUser loginUser = (LoginUser) baseUser;
-            // 更新用户登录信息
-            LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
-            loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(DateUtil.current());
-            remoteSysUserApi.updateLoginInfo(loginInfoReq);
+            if (loginSuccess) {
+                // 更新用户登录信息
+                LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
+                loginInfoReq.setLoginIp(ipAddr);
+                loginInfoReq.setLoginDate(DateUtil.current());
+                remoteSysUserApi.updateLoginInfo(loginInfoReq);
+            }
             // 插入后台登陆日志
             final LoginLogReq loginLogReq = new LoginLogReq();
             loginLogReq.setUserId(loginUser.getUserId());
@@ -63,7 +71,9 @@ public class LoginEventListener {
             loginLogReq.setTenantId(loginUser.getTenantId());
             loginLogReq.setLoginTime(DateUtil.current());
             loginLogReq.setLoginIp(ipAddr);
-            loginLogReq.setStatus(CommonConstants.STATUS_ENABLE);
+            loginLogReq.setGrantType(grantType);
+            loginLogReq.setStatus(status);
+            loginLogReq.setErrorMsg(errorMsg);
             loginLogReq.setLoginLocation(AddressUtil.getRealAddressByIp(ipAddr));
             // 获取客户端操作系统
             String os = userAgent.getOs().getName();
@@ -72,7 +82,8 @@ public class LoginEventListener {
             loginLogReq.setOs(os);
             loginLogReq.setBrowser(browser);
             remoteLogApi.insertLoginlog(loginLogReq);
-        } else if (ObjUtil.equals(baseUser.getLoginType(), LoginType.CLIENT_USER)) {
+        } else if (ObjUtil.equals(baseUser.getLoginType(), LoginType.CLIENT_USER)
+                && loginSuccess) {
             ClientUser clientUser = (ClientUser) baseUser;
             // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());

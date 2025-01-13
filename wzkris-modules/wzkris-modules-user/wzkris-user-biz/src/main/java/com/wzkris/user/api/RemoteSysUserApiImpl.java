@@ -17,6 +17,7 @@ import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPermissionService;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,11 +45,8 @@ public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUse
     private final SysPermissionService sysPermissionService;
 
     @Override
-    public Result<SysUserResp> getByUsername(String username, String password) {
+    public Result<SysUserResp> getByUsername(String username) {
         SysUser user = userMapper.selectByUsername(username);
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return fail18n("{desc.username}{desc.or}{desc.pwd}{desc.error}");
-        }
         SysUserResp userResp = BeanUtil.convert(user, SysUserResp.class);
         this.retrieveAllStatus(userResp);
         return ok(userResp);
@@ -65,7 +63,8 @@ public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUse
     /**
      * 查询状态
      */
-    private void retrieveAllStatus(SysUserResp userResp) {
+    private void retrieveAllStatus(@Nullable SysUserResp userResp) {
+        if (userResp == null) return;
         if (SysTenant.isSuperTenant(userResp.getTenantId())) {
             userResp.setTenantStatus(CommonConstants.STATUS_ENABLE);
             userResp.setTenantExpired(CommonConstants.NOT_EXPIRED_TIME);

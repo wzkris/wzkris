@@ -1,6 +1,5 @@
 package com.wzkris.auth.oauth2.core.password;
 
-import com.wzkris.auth.config.CaptchaConfig;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
@@ -30,30 +29,26 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     private final CaptchaService captchaService;
 
-    private final CaptchaConfig captchaConfig;
-
     public PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                          List<UserInfoTemplate> UserInfoTemplates,
-                                          CaptchaService captchaService,
-                                          CaptchaConfig captchaConfig) {
-        super(tokenGenerator, authorizationService);
-        this.userInfoTemplate = UserInfoTemplates.stream()
+                                          List<UserInfoTemplate> userInfoTemplates,
+                                          CaptchaService captchaService) {
+        super(authorizationService, tokenGenerator);
+        this.userInfoTemplate = userInfoTemplates.stream()
                 .filter(t -> t.checkLoginType(LoginType.SYSTEM_USER))
                 .findFirst().get();
         this.captchaService = captchaService;
-        this.captchaConfig = captchaConfig;
     }
 
     @Override
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
-        // 验证码校验
-        if (captchaConfig.getEnabled()) {
-            captchaService.validatePicCode(authenticationToken.getUuid(), authenticationToken.getCode());
-        }
+        // 校验是否被冻结
+        captchaService.validateLockAccount(authenticationToken.getUsername());
         // 校验最大次数
         captchaService.validateMaxTryCount(authenticationToken.getUsername());
+        // 验证码校验
+        captchaService.validatePicCode(authenticationToken.getUuid(), authenticationToken.getCode());
 
         AuthBaseUser baseUser = userInfoTemplate.loadByUsernameAndPassword(authenticationToken.getUsername(), authenticationToken.getPassword());
 
