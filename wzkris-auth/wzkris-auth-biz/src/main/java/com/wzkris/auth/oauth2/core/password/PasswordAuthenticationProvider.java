@@ -4,6 +4,7 @@ import com.wzkris.auth.config.CaptchaConfig;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
@@ -58,7 +59,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         if (baseUser == null) {
             // 抛出异常
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);

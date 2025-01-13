@@ -3,7 +3,7 @@ package com.wzkris.auth.listener;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.listener.event.LoginSuccessEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
@@ -43,7 +43,7 @@ public class LoginEventListener {
      **/
     @Async
     @EventListener
-    public void loginEvent(LoginEvent event) {
+    public void loginEvent(LoginSuccessEvent event) {
         final AuthBaseUser baseUser = event.getUser();
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();

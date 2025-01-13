@@ -3,6 +3,7 @@ package com.wzkris.auth.oauth2.core.wechat;
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,14 +43,15 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
                 .findFirst();
 
         if (templateOptional.isEmpty()) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST,
+                    "request.param.error", OAuth2ParameterConstant.USER_TYPE);
             return null;// never run this line
         }
 
         AuthBaseUser baseUser = templateOptional.get().loadUserByWechat(authenticationToken.getChannel(), authenticationToken.getWxCode());
 
         if (baseUser == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);

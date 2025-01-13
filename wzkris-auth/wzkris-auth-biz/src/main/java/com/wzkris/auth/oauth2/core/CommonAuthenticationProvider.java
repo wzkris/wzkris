@@ -1,5 +1,6 @@
 package com.wzkris.auth.oauth2.core;
 
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -53,7 +54,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         if (clientPrincipal == null || !clientPrincipal.isAuthenticated()) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
         }
 
         return clientPrincipal;
@@ -65,11 +66,11 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     @Nonnull
     protected final Set<String> checkClient(CommonAuthenticationToken authenticationToken, RegisteredClient registeredClient) {
         if (registeredClient == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.client.invalid");
         }
 
         if (!registeredClient.getAuthorizationGrantTypes().contains(authenticationToken.getGrantType())) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.unsupport.granttype");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.unsupport.granttype");
         }
 
         Set<String> authorizedScopes = new LinkedHashSet<>();
@@ -77,7 +78,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (!authenticationToken.getScopes().isEmpty()) {
             for (String requestedScope : authenticationToken.getScopes()) {
                 if (!registeredClient.getScopes().contains(requestedScope)) {
-                    OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
+                    OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
                 }
             }
             authorizedScopes.addAll(registeredClient.getScopes());
@@ -125,7 +126,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
         OAuth2Token generatedAccessToken = this.tokenGenerator.generate(tokenContext);
         if (generatedAccessToken == null) {
-            OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the access_token.");
+            OAuth2ExceptionUtil.throwError(BizCode.INTERNAL_ERROR.value(), OAuth2ErrorCodes.SERVER_ERROR,
+                    "The token generator failed to generate the access_token.");
         }
 
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
@@ -149,7 +151,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.REFRESH_TOKEN).build();
             OAuth2Token generatedRefreshToken = this.tokenGenerator.generate(tokenContext);
             if (!(generatedRefreshToken instanceof OAuth2RefreshToken)) {
-                OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the refresh_token.");
+                OAuth2ExceptionUtil.throwError(BizCode.INTERNAL_ERROR.value(), OAuth2ErrorCodes.SERVER_ERROR,
+                        "The token generator failed to generate the refresh_token.");
             }
 
             refreshToken = (OAuth2RefreshToken) generatedRefreshToken;
@@ -167,7 +170,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                 // @formatter:on
             OAuth2Token generatedIdToken = this.tokenGenerator.generate(tokenContext);
             if (!(generatedIdToken instanceof Jwt)) {
-                OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the id_token.");
+                OAuth2ExceptionUtil.throwError(BizCode.INTERNAL_ERROR.value(), OAuth2ErrorCodes.SERVER_ERROR,
+                        "The token generator failed to generate the id_token.");
             }
 
             idToken = new OidcIdToken(generatedIdToken.getTokenValue(), generatedIdToken.getIssuedAt(),

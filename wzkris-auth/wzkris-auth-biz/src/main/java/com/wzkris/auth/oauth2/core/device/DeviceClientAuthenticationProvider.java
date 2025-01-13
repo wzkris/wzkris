@@ -15,6 +15,7 @@
  */
 package com.wzkris.auth.oauth2.core.device;
 
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -51,18 +52,18 @@ public final class DeviceClientAuthenticationProvider implements AuthenticationP
                 (DeviceClientAuthenticationToken) authentication;
 
         if (!ClientAuthenticationMethod.NONE.equals(deviceClientAuthentication.getClientAuthenticationMethod())) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
         String clientId = deviceClientAuthentication.getPrincipal().toString();
         RegisteredClient registeredClient = this.registeredClientRepository.findByClientId(clientId);
         if (registeredClient == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
         if (!registeredClient.getClientAuthenticationMethods().contains(
                 deviceClientAuthentication.getClientAuthenticationMethod())) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
         return new DeviceClientAuthenticationToken(registeredClient,

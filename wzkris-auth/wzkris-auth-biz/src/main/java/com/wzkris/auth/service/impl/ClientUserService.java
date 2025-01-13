@@ -7,6 +7,7 @@ import com.wzkris.auth.oauth2.constants.enums.WechatChannel;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
@@ -65,7 +66,7 @@ public class ClientUserService extends UserInfoTemplate {
         try {
             return wxMaService.getUserService().getSessionInfo(wxCode);
         } catch (WxErrorException e) {
-            OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, e.getMessage());
+            OAuth2ExceptionUtil.throwError(BizCode.THIRD_SERVICE.value(), e.getMessage());
             return null;// never execute
         }
     }
@@ -89,7 +90,7 @@ public class ClientUserService extends UserInfoTemplate {
      */
     private void checkAccount(AppUserResp appUserResp) {
         if (ObjUtil.equals(appUserResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 

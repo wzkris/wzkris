@@ -8,6 +8,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.google.code.kaptcha.Producer;
 import com.wzkris.auth.config.CaptchaConfig;
 import com.wzkris.auth.domain.vo.KaptchaVO;
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.param.CaptchaException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -102,17 +103,17 @@ public class CaptchaService {
      */
     public void validatePicCode(String uuid, String code) {
         if (!StringUtil.isAllNotBlank(uuid, code)) {
-            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
         }
 
         String picKey = PIC_CODE_PREFIX + uuid;
 
         String realCode = RedisUtil.getObj(picKey);
         if (StringUtil.isBlank(realCode)) {
-            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
         }
         if (!StringUtil.equalsIgnoreCase(code, realCode)) {
-            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
         }
         RedisUtil.delObj(picKey);
     }
@@ -127,7 +128,7 @@ public class CaptchaService {
         String smsKey = SMS_CODE_PREFIX + phoneNumber;
         if (RedisUtil.hasKey(smsKey)) {
             // 存在则不允许多次调用
-            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.FREQUENT_RETRY, "frequent.retry");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.TOO_MANY_REQUESTS.value(), CustomErrorCodes.FREQUENT_RETRY, "frequent.retry");
         }
         // TODO 调用SMS发送验证码
         String smsCode = RandomUtil.randomNumbers(6);
@@ -144,10 +145,10 @@ public class CaptchaService {
 
         String code = RedisUtil.getObj(smsKey);
         if (StringUtil.isBlank(code)) {
-            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
         }
         if (ObjUtil.notEqual(smsCode, code)) {
-            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
         }
         RedisUtil.delObj(smsKey);
     }
@@ -160,7 +161,7 @@ public class CaptchaService {
         String lockKey = ACCOUNT_LOCK_PREFIX + username;
         Integer retryCount = ObjectUtil.defaultIfNull(RedisUtil.getObj(lockKey), 0);
         if (retryCount > maxRetryCount) {
-            OAuth2ExceptionUtil.throwErrorI18n(CustomErrorCodes.FREQUENT_RETRY, "frequent.retry");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.TOO_MANY_REQUESTS.value(), CustomErrorCodes.FREQUENT_RETRY, "frequent.retry");
         }
         ++retryCount;
         RedisUtil.setObj(lockKey, retryCount, 300); // 默认冻结5分钟

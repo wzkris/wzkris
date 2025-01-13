@@ -4,6 +4,7 @@ import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,14 +52,15 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                 .findFirst();
 
         if (templateOptional.isEmpty()) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "request.param.error", OAuth2ParameterConstant.USER_TYPE);
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST,
+                    "request.param.error", OAuth2ParameterConstant.USER_TYPE);
             return null;// never run this line
         }
 
         AuthBaseUser baseUser = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
         if (baseUser == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);

@@ -7,8 +7,8 @@ package com.wzkris.common.security.oauth2.constants;
  */
 public class CustomErrorCodes {
 
-    // 404
-    public static final String NOT_FOUND = "not_found";
+    // 通用异常
+    public static final String GENERAL_ERROR = "general_error";
 
     // 频繁重试
     public static final String FREQUENT_RETRY = "frequent_retry";

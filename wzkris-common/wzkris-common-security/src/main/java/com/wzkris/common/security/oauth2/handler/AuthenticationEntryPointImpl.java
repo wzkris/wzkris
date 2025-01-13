@@ -28,7 +28,7 @@ public final class AuthenticationEntryPointImpl implements AuthenticationEntryPo
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
         if (exception instanceof OAuth2AuthenticationException oAuth2AuthenticationException) {
-            Result<Void> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
+            Result<?> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
             JsonUtil.writeValue(response.getWriter(), result);
         } else {
             JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED, exception.getLocalizedMessage()));

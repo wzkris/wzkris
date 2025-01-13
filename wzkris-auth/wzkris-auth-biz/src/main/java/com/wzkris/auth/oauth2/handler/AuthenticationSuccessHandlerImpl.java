@@ -18,7 +18,7 @@ package com.wzkris.auth.oauth2.handler;
 
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.listener.event.LoginSuccessEvent;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -78,7 +78,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         // 发布登录成功事件
         if (accessTokenAuthentication.getPrincipal() instanceof UsernamePasswordAuthenticationToken authenticationToken
                 && authenticationToken.getPrincipal() instanceof AuthBaseUser baseUser) {
-            SpringUtil.getContext().publishEvent(new LoginEvent(baseUser, ServletUtil.getClientIP(request),
+            SpringUtil.getContext().publishEvent(new LoginSuccessEvent(baseUser, ServletUtil.getClientIP(request),
                     UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
         }
 
