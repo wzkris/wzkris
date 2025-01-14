@@ -59,10 +59,10 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     SysUser selectByUsername(String username);
 
     /**
-     * 根据用户名获取密码
+     * 根据ID获取密码
      */
-    @Select("select password from sys_user where username = #{username}")
-    String selectPwdByUserName(String username);
+    @Select("select password from sys_user where user_id = #{userId}")
+    String selectPwdById(Long userId);
 
     /**
      * 根据用户id获取手机号
@@ -89,7 +89,9 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
             <script>
                 SELECT COUNT(*) FROM sys_user WHERE user_id IN
                     <foreach collection="userIds" item="userId" open="(" separator="," close=")">
-                        #{userId}
+                        <if test="userId != null and userId != ''">
+                            #{userId}
+                        </if>
                     </foreach>
             </script>
             """)

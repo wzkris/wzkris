@@ -125,7 +125,7 @@ public class SysTenantPackageController extends BaseController {
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("tenant_package:remove")
-    public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @RequestBody List<Long> packageIds) {
+    public Result<Void> remove(@NotEmpty(message = "{desc.package}id{validate.notnull}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
             return fail("删除失败, 套餐正在使用");
         }

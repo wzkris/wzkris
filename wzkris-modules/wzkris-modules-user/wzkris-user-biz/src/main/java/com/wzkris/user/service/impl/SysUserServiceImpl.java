@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
@@ -23,7 +24,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 管理员 业务层处理
@@ -86,6 +86,9 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateUser(SysUser user, List<Long> roleIds, List<Long> postIds) {
+        if (StringUtil.isNotBlank(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         boolean success = userMapper.updateById(user) > 0;
         if (success) {
             // 删除用户与角色关联
@@ -166,13 +169,15 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void checkDataScopes(List<Long> userIds) {
-        userIds = userIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(userIds)) {
             if (userIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
-                throw new AccessDeniedException("无法访问超级管理员数据");
+                throw new AccessDeniedException("禁止访问此数据");
+            }
+            if (userIds.contains(LoginUserUtil.getUserId())) {
+                throw new AccessDeniedException("禁止访问自身数据");
             }
             if (userMapper.checkDataScopes(userIds) != userIds.size()) {
-                throw new AccessDeniedException("没有用户数据访问权限");
+                throw new AccessDeniedException("无此用户数据访问权限");
             }
         }
     }

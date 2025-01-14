@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 10/01/2025 09:27:36
+ Date: 14/01/2025 10:25:15
 */
 
 SET NAMES utf8mb4;
@@ -150,7 +150,7 @@ CREATE TABLE `sys_dept`  (
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
-INSERT INTO `sys_dept` VALUES (100, 0, 0, '0', '最高部门', '0', 0, '15888888888', '', 1713334134616, 1, 20240403145415, 1);
+INSERT INTO `sys_dept` VALUES (100, 0, 0, '0', '最高部门', '0', 0, '15888888888', '', 1713334134616, 1, 1736820637744, 1);
 INSERT INTO `sys_dept` VALUES (105, 0, 114, '0,100,114', 'jeecg集团', '1', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 1735110050181, 1);
 INSERT INTO `sys_dept` VALUES (114, 0, 1858433026613760002, '0,100,1858433026613760002', 'pig开源联盟', '0', 0, NULL, NULL, 1713334134616, 1, 1735110050184, 1);
 INSERT INTO `sys_dept` VALUES (1775382319191453698, 1774671331416821762, 0, '0', '默认租户部门', '0', 0, NULL, NULL, 1713334134616, 1774671331412627456, 20240412112834, 1);
@@ -245,7 +245,7 @@ INSERT INTO `sys_menu` VALUES (1125, '余额记录', 601, 3, '#', NULL, NULL, 'B
 INSERT INTO `sys_menu` VALUES (1126, '商户提现', 601, 1, '#', NULL, NULL, 'B', '0', 'tenant:withdrawal', '#', 0, 0, 1, 1732598071539, 1, 1732598191196, 1);
 INSERT INTO `sys_menu` VALUES (1127, '商户余额信息', 601, 0, '#', NULL, NULL, 'B', '0', 'tenant:wallet_info', '#', 0, 0, 1, 1732597687278, 1, 1732598171530, 1);
 INSERT INTO `sys_menu` VALUES (1128, '租户列表', 601, 10, '#', NULL, NULL, 'B', '0', 'tenant:list', '#', 0, 0, 1, 1730530211713, 1, 1730530211713, 1);
-INSERT INTO `sys_menu` VALUES (1129, '重置租户操作密码', 601, 11, '#', NULL, NULL, 'B', '0', 'tenant:edit_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1732598183996, 1);
+INSERT INTO `sys_menu` VALUES (1129, '重置租户操作密码', 601, 11, '#', NULL, NULL, 'B', '0', 'tenant:reset_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1736821496818, 1);
 INSERT INTO `sys_menu` VALUES (1130, '商户基本信息', 601, 20, '#', '', NULL, 'B', '0', 'tenant:getinfo', '#', 0, 0, 1, 1724380930192, 1, 1732597854658, 1);
 INSERT INTO `sys_menu` VALUES (1131, '租户详情', 601, 9, '#', NULL, NULL, 'B', '0', 'tenant:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1132, '租户新增', 601, 4, '#', NULL, NULL, 'B', '0', 'tenant:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
@@ -659,8 +659,8 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '1', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1732947864801, NULL, 1713334134616, 1, 1734156343758, 1);
-INSERT INTO `sys_user` VALUES (2, 0, 100, 'wzkris', '111111@1.com', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1731992153861, NULL, 1713334134616, 1, 1734578386768, 1);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '1', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1732947864801, NULL, 1713334134616, 1, 1736564467147, 1);
+INSERT INTO `sys_user` VALUES (2, 0, 100, 'wzkris', '111111@1.com', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1731992153861, NULL, 1713334134616, 1, 1736576284877, 1);
 INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', '127.0.0.1', 1732598359333, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$v544q0b/1YjPbVQJDRKZrOnXoRxRcR.eyxIUd33TMRNCNXdVh.1Eu', '127.0.0.1', 1731648341626, NULL, 1730796054646, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (1856251200466030593, 1774671331416821762, 1775382319191453698, '___sub_', NULL, 'xxxxxx', NULL, '0', '2', NULL, '{bcrypt}$2a$10$nRc3b1tgQQCQ/58unpvsHuP9q02lQVJru0JgBR/oePVUcjyc/Pl8a', NULL, NULL, NULL, 1731399748330, 1774671331412627456, 1731399941611, 1774671331412627456);

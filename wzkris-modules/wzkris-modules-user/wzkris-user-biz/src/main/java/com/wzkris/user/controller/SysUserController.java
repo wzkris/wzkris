@@ -1,9 +1,11 @@
 package com.wzkris.user.controller;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -18,6 +20,7 @@ import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.domain.vo.SysUserGrantVO;
 import com.wzkris.user.domain.vo.SysUserVO;
+import com.wzkris.user.listener.event.CreateUserEvent;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -114,14 +117,23 @@ public class SysUserController extends BaseController {
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
         if (!tenantService.checkAccountLimit(LoginUserUtil.getTenantId())) {
             return fail("账号数量已达上限，请联系管理员");
-        }
-        if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
+        } else if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
                 && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
-        return toRes(userService.insertUser(BeanUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
+        SysUser user = BeanUtil.convert(userReq, SysUser.class);
+        String password = RandomUtil.randomNumbers(8);
+        user.setPassword(password);
+
+        boolean success = userService.insertUser(user, userReq.getRoleIds(), userReq.getPostIds());
+        if (success) {
+            SpringUtil.getContext().publishEvent(
+                    new CreateUserEvent(LoginUserUtil.getUserId(), userReq.getUsername(), password)
+            );
+        }
+        return toRes(success);
     }
 
     @Operation(summary = "修改用户")
@@ -137,8 +149,9 @@ public class SysUserController extends BaseController {
                 && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
             return fail("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
-        userReq.setPassword(null);
-        return toRes(userService.updateUser(BeanUtil.convert(userReq, SysUser.class), userReq.getRoleIds(), userReq.getPostIds()));
+        SysUser user = BeanUtil.convert(userReq, SysUser.class);
+
+        return toRes(userService.updateUser(user, userReq.getRoleIds(), userReq.getPostIds()));
     }
 
     @Operation(summary = "删除用户")
@@ -161,9 +174,9 @@ public class SysUserController extends BaseController {
     @CheckPerms("sys_user:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
         // 校验权限
-        userService.checkDataScopes(req.getUserId());
+        userService.checkDataScopes(req.getId());
 
-        SysUser update = new SysUser(req.getUserId());
+        SysUser update = new SysUser(req.getId());
         update.setPassword(passwordEncoder.encode(req.getPassword()));
         return toRes(userMapper.updateById(update));
     }

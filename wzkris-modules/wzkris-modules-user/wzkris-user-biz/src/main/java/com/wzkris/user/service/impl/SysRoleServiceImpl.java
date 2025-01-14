@@ -186,10 +186,9 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @param roleIds 待操作的角色id数组
      */
     public void checkDataScopes(List<Long> roleIds) {
-        roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(roleIds)) {
             if (roleMapper.checkDataScopes(roleIds) != roleIds.size()) {
-                throw new AccessDeniedException("没有角色数据访问权限");
+                throw new AccessDeniedException("无此角色数据访问权限");
             }
         }
     }

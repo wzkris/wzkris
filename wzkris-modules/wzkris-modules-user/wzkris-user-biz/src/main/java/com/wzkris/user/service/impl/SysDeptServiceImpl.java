@@ -18,7 +18,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -172,10 +171,9 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public void checkDataScopes(List<Long> deptIds) {
-        deptIds = deptIds.stream().filter(Objects::nonNull).toList();
         if (ObjUtil.isNotEmpty(deptIds)) {
             if (deptMapper.checkDataScopes(deptIds) != deptIds.size()) {
-                throw new AccessDeniedException("没有部门数据权限");
+                throw new AccessDeniedException("无此部门数据访问权限");
             }
         }
     }

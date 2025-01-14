@@ -112,7 +112,7 @@ public class SysMessageController extends BaseController {
     @OperateLog(title = "系统消息", subTitle = "删除草稿", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("sys_message:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "[msgIds] {validate.notnull}") List<Long> msgIds) {
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.message}id{validate.notnull}") List<Long> msgIds) {
         if (!messageService.checkIsClose(msgIds)) {
             return fail("仅关闭消息可以删除");
         }

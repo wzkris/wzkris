@@ -12,9 +12,9 @@ import java.util.List;
 @Data
 public class SysRole2UsersReq {
 
-    @NotNull(message = "[roleId] {validate.notnull}")
+    @NotNull(message = "{desc.role}id{validate.notnull}")
     private Long roleId;
 
-    @NotEmpty(message = "[userIds] {validate.notnull}")
+    @NotEmpty(message = "{desc.user}id{validate.notnull}")
     private List<Long> userIds;
 }

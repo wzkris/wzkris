@@ -14,7 +14,7 @@ import java.util.List;
 @Schema(description = "绑定参数")
 public class BindingReq {
 
-    @NotNull(message = "[id] {validate.notnull}")
+    @NotNull(message = "id {validate.notnull}")
     @Schema(description = "被绑定的对象")
     private Long id;
 

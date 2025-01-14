@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 枚举固定值校验注解
+ * @description : 枚举固定值校验注解，null视为通过
  * @date : 2024/12/25 16:40
  */
 @Retention(RetentionPolicy.RUNTIME)

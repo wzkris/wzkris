@@ -88,7 +88,9 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
             <script>
                 SELECT COUNT(*) FROM sys_dept WHERE dept_id IN
                     <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
-                        #{deptId}
+                        <if test="deptId != null and deptId != ''">
+                            #{deptId}
+                        </if>
                     </foreach>
             </script>
             """)

@@ -39,7 +39,9 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
             <script>
                 SELECT COUNT(*) FROM sys_role WHERE role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
-                        #{roleId}
+                        <if test="roleId != null and roleId != ''">
+                            #{roleId}
+                        </if>
                     </foreach>
             </script>
             """)

@@ -1,6 +1,6 @@
 package com.wzkris.user.service;
 
-import com.wzkris.user.domain.dto.SysTenantDTO;
+import com.wzkris.user.domain.SysTenant;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,9 +15,11 @@ public interface SysTenantService {
     /**
      * 添加租户, 会创建租户管理员账号
      *
-     * @param tenantDTO 参数
+     * @param tenant   参数
+     * @param username 登录账户
+     * @param password 登录密码
      */
-    void insertTenant(SysTenantDTO tenantDTO);
+    boolean insertTenant(SysTenant tenant, String username, String password);
 
     /**
      * 删除租户及相关信息(hard delete)

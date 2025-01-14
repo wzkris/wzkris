@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -124,11 +125,10 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "修改密码")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account/edit_password")
-    public Result<Void> editPwd(@RequestBody @Valid EditPwdReq req) {
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
+    public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
+        Long userId = LoginUserUtil.getUserId();
 
-        String username = loginUser.getUsername();
-        String password = userMapper.selectPwdByUserName(username);
+        String password = userMapper.selectPwdById(userId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), password)) {
             return fail("修改密码失败，旧密码错误");
@@ -138,8 +138,8 @@ public class SysUserOwnController extends BaseController {
             return fail("新密码不能与旧密码相同");
         }
 
-        SysUser update = new SysUser(loginUser.getUserId());
-        update.setPassword(passwordEncoder.encode(password));
+        SysUser update = new SysUser(userId);
+        update.setPassword(passwordEncoder.encode(req.getNewPassword()));
         return toRes(userMapper.updateById(update));
     }
 

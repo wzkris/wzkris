@@ -1,7 +1,5 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
@@ -152,7 +150,7 @@ public class SysRoleController extends BaseController {
     @OperateLog(title = "角色管理", subTitle = "删除角色", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("sys_role:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "[roleIds] {validate.notnull}") List<Long> roleIds) {
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.role}id{validate.notnull}") List<Long> roleIds) {
         // 权限校验
         roleService.checkDataScopes(roleIds);
         roleService.checkRoleUse(roleIds);
@@ -183,9 +181,6 @@ public class SysRoleController extends BaseController {
     @PostMapping("/authorize/cancel")
     @CheckPerms("sys_role:auth")
     public Result<Void> cancelAuth(@RequestBody @Valid SysUserRole userRole) {
-        if (ObjUtil.equals(userRole.getUserId(), LoginUserUtil.getUserId())) {
-            return fail("不能对自己解除授权");
-        }
         // 校验角色权限
         roleService.checkDataScopes(userRole.getRoleId());
         // 校验用户权限
@@ -198,9 +193,6 @@ public class SysRoleController extends BaseController {
     @PostMapping("/authorize/cancel_batch")
     @CheckPerms("sys_role:auth")
     public Result<Void> cancelAuth(@RequestBody @Valid SysRole2UsersReq req) {
-        if (CollUtil.contains(req.getUserIds(), LoginUserUtil.getUserId())) {
-            return fail("不能对自己解除授权");
-        }
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
         // 校验用户权限
@@ -213,9 +205,6 @@ public class SysRoleController extends BaseController {
     @PostMapping("/authorize_user")
     @CheckPerms("sys_role:auth")
     public Result<Void> batchAuth(@RequestBody @Valid SysRole2UsersReq req) {
-        if (CollUtil.contains(req.getUserIds(), LoginUserUtil.getUserId())) {
-            return fail("不能授权自己");
-        }
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
         // 校验用户权限
