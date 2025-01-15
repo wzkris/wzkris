@@ -3,6 +3,7 @@ package com.wzkris.user.service;
 import com.wzkris.user.domain.SysRole;
 import jakarta.annotation.Nullable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -86,10 +87,12 @@ public interface SysRoleService {
      *
      * @param roleIds 待操作的角色id数组
      */
-    void checkDataScopes(List<Long> roleIds);
+    void checkDataScopes(Collection<Long> roleIds);
 
     default void checkDataScopes(Long roleId) {
-        this.checkDataScopes(Collections.singletonList(roleId));
+        if (roleId != null) {
+            this.checkDataScopes(Collections.singleton(roleId));
+        }
     }
 
 }

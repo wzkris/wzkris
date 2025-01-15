@@ -9,6 +9,7 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
+import com.wzkris.user.domain.req.SysUserQueryReq;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,27 +45,27 @@ public class SysUserServiceImpl implements SysUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<SysUser> list(SysUser user) {
-        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
+    public List<SysUser> list(SysUserQueryReq queryReq) {
+        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
         return userMapper.selectListInScope(lqw);
     }
 
     @Override
-    public List<SysUser> listAllocated(SysUser user, Long roleId) {
+    public List<SysUser> listAllocated(SysUserQueryReq queryReq, Long roleId) {
         List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
         if (CollectionUtils.isEmpty(userIds)) {
             return Collections.emptyList();
         }
-        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
+        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
         lqw.in(SysUser::getUserId, userIds);
         return userMapper.selectListInScope(lqw);
     }
 
     @Override
-    public List<SysUser> listUnallocated(SysUser user, Long roleId) {
+    public List<SysUser> listUnallocated(SysUserQueryReq queryReq, Long roleId) {
         List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
 
-        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(user);
+        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
         if (!CollectionUtils.isEmpty(userIds)) {
             lqw.notIn(SysUser::getUserId, userIds);
         }
@@ -133,17 +135,16 @@ public class SysUserServiceImpl implements SysUserService {
         }
     }
 
-    private LambdaQueryWrapper<SysUser> buildQueryWrapper(SysUser user) {
+    private LambdaQueryWrapper<SysUser> buildQueryWrapper(SysUserQueryReq queryReq) {
         return new LambdaQueryWrapper<SysUser>()
-                .eq(StringUtil.isNotNull(user.getTenantId()), SysUser::getTenantId, user.getTenantId())
-                .like(StringUtil.isNotNull(user.getUsername()), SysUser::getUsername, user.getUsername())
-                .like(StringUtil.isNotNull(user.getNickname()), SysUser::getNickname, user.getNickname())
-                .like(StringUtil.isNotNull(user.getPhoneNumber()), SysUser::getPhoneNumber, user.getPhoneNumber())
-                .like(StringUtil.isNotNull(user.getEmail()), SysUser::getEmail, user.getEmail())
-                .eq(StringUtil.isNotNull(user.getGender()), SysUser::getGender, user.getGender())
-                .eq(StringUtil.isNotNull(user.getStatus()), SysUser::getStatus, user.getStatus())
-                .eq(StringUtil.isNotNull(user.getStatus()), SysUser::getStatus, user.getStatus())
-                .eq(StringUtil.isNotNull(user.getDeptId()), SysUser::getDeptId, user.getDeptId())
+                .eq(StringUtil.isNotNull(queryReq.getTenantId()), SysUser::getTenantId, queryReq.getTenantId())
+                .like(StringUtil.isNotNull(queryReq.getUsername()), SysUser::getUsername, queryReq.getUsername())
+                .like(StringUtil.isNotNull(queryReq.getNickname()), SysUser::getNickname, queryReq.getNickname())
+                .like(StringUtil.isNotNull(queryReq.getPhoneNumber()), SysUser::getPhoneNumber, queryReq.getPhoneNumber())
+                .like(StringUtil.isNotNull(queryReq.getEmail()), SysUser::getEmail, queryReq.getEmail())
+                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
+                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
+                .eq(StringUtil.isNotNull(queryReq.getDeptId()), SysUser::getDeptId, queryReq.getDeptId())
                 .orderByDesc(SysUser::getUserId);
     }
 
@@ -168,15 +169,15 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public void checkDataScopes(List<Long> userIds) {
+    public void checkDataScopes(Collection<Long> userIds) {
         if (ObjUtil.isNotEmpty(userIds)) {
             if (userIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
-                throw new AccessDeniedException("禁止访问此数据");
+                throw new AccessDeniedException("禁止访问超级管理员数据");
             }
             if (userIds.contains(LoginUserUtil.getUserId())) {
-                throw new AccessDeniedException("禁止访问自身数据");
+                throw new AccessDeniedException("userId：‘" + LoginUserUtil.getUserId() + "'禁止访问自身数据");
             }
-            if (userMapper.checkDataScopes(userIds) != userIds.size()) {
+            if (!userMapper.checkDataScopes(userIds)) {
                 throw new AccessDeniedException("无此用户数据访问权限");
             }
         }

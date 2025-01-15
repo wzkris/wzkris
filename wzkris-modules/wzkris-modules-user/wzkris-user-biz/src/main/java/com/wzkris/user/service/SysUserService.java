@@ -1,9 +1,11 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysUser;
+import com.wzkris.user.domain.req.SysUserQueryReq;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,25 +19,27 @@ public interface SysUserService {
     /**
      * 列表查询
      *
-     * @param user 筛选条件
+     * @param queryReq 筛选条件
      */
-    List<SysUser> list(SysUser user);
+    List<SysUser> list(SysUserQueryReq queryReq);
 
     /**
      * 根据条件分页查询已分配用户角色列表
      *
-     * @param roleId 管理员信息
+     * @param queryReq 筛选条件
+     * @param roleId   管理员信息
      * @return 管理员信息集合信息
      */
-    List<SysUser> listAllocated(SysUser user, Long roleId);
+    List<SysUser> listAllocated(SysUserQueryReq queryReq, Long roleId);
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
-     * @param roleId 管理员信息
+     * @param queryReq 筛选条件
+     * @param roleId   管理员信息
      * @return 管理员信息集合信息
      */
-    List<SysUser> listUnallocated(SysUser user, Long roleId);
+    List<SysUser> listUnallocated(SysUserQueryReq queryReq, Long roleId);
 
     /**
      * 新增管理员信息
@@ -91,7 +95,7 @@ public interface SysUserService {
      *
      * @param userIds 被操作的对象id
      */
-    void checkDataScopes(List<Long> userIds);
+    void checkDataScopes(Collection<Long> userIds);
 
     /**
      * 校验是否有数据权限
@@ -99,7 +103,9 @@ public interface SysUserService {
      * @param userId 被操作的对象id
      */
     default void checkDataScopes(Long userId) {
-        this.checkDataScopes(Collections.singletonList(userId));
+        if (userId != null) {
+            this.checkDataScopes(Collections.singleton(userId));
+        }
     }
 
 }

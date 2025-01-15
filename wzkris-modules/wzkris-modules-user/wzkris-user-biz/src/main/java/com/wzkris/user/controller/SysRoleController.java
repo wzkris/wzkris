@@ -13,10 +13,7 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserRole;
-import com.wzkris.user.domain.req.EditStatusReq;
-import com.wzkris.user.domain.req.SysRole2UsersReq;
-import com.wzkris.user.domain.req.SysRoleQueryReq;
-import com.wzkris.user.domain.req.SysRoleReq;
+import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
@@ -137,7 +134,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @CheckPerms("user:edit")
+    @CheckPerms("sys_role:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         roleService.checkDataScopes(statusReq.getId());
@@ -161,18 +158,22 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "查询已授权的用户列表")
     @GetMapping("/authorize/allocated_list")
     @CheckPerms("sys_role:list")
-    public Result<Page<SysUser>> allocatedList(SysUser user, Long roleId) {
+    public Result<Page<SysUser>> allocatedList(SysUserQueryReq queryReq, Long roleId) {
+        // 校验角色权限
+        roleService.checkDataScopes(roleId);
         startPage();
-        List<SysUser> list = userService.listAllocated(user, roleId);
+        List<SysUser> list = userService.listAllocated(queryReq, roleId);
         return getDataTable(list);
     }
 
     @Operation(summary = "查询未授权的用户列表")
     @GetMapping("/authorize/unallocated_list")
     @CheckPerms("sys_role:list")
-    public Result<Page<SysUser>> unallocatedList(SysUser user, Long roleId) {
+    public Result<Page<SysUser>> unallocatedList(SysUserQueryReq queryReq, Long roleId) {
+        // 校验角色权限
+        roleService.checkDataScopes(roleId);
         startPage();
-        List<SysUser> list = userService.listUnallocated(user, roleId);
+        List<SysUser> list = userService.listUnallocated(queryReq, roleId);
         return getDataTable(list);
     }
 

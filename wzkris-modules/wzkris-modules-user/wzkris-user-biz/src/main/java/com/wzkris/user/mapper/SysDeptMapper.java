@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -82,11 +83,13 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * 查看当前部门是否有待操作部门的操作权限
      *
      * @param deptIds 待操作的部门id
-     * @return 影响行数，可访问数量
+     * @return 是否
      */
+    @DeptScope
     @Select("""
             <script>
-                SELECT COUNT(*) FROM sys_dept WHERE dept_id IN
+                SELECT CASE WHEN COUNT(*) = ${deptIds.size()} THEN 1 ELSE 0 END AS match_result
+                    FROM sys_dept WHERE dept_id IN
                     <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
                         <if test="deptId != null and deptId != ''">
                             #{deptId}
@@ -94,6 +97,5 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
                     </foreach>
             </script>
             """)
-    @DeptScope
-    int checkDataScopes(@Param("deptIds") List<Long> deptIds);
+    boolean checkDataScopes(@Param("deptIds") Collection<Long> deptIds);
 }
