@@ -4,7 +4,6 @@ import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.equipment.domain.Product;
 import org.springframework.stereotype.Repository;
 
-
 /**
  * (Product)表数据库访问层
  *
@@ -13,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProductMapper extends BaseMapperPlus<Product> {
+
 }

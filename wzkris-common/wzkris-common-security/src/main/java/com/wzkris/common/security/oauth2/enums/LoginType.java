@@ -16,7 +16,7 @@ public enum LoginType {
      */
     CLIENT_USER,
     /**
-     * 授权客户端
+     * 授权事物
      */
-    AUTH_CLIENT
+    AUTH_THINGS
 }

@@ -38,6 +38,7 @@ import java.util.List;
 public class AppUserController extends BaseController {
 
     private final AppUserMapper appUserMapper;
+
     private final AppUserService appUserService;
 
     @Operation(summary = "用户分页列表")

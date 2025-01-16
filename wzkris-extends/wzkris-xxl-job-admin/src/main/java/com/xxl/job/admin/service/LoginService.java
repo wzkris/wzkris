@@ -25,7 +25,6 @@ public class LoginService {
     @Resource
     private XxlJobUserDao xxlJobUserDao;
 
-
     private String makeToken(XxlJobUser xxlJobUser) {
         String tokenJson = JacksonUtil.writeValueAsString(xxlJobUser);
         String tokenHex = new BigInteger(tokenJson.getBytes()).toString(16);
@@ -40,7 +39,6 @@ public class LoginService {
         }
         return xxlJobUser;
     }
-
 
     public ReturnT<String> login(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean ifRemember) {
 
@@ -89,8 +87,7 @@ public class LoginService {
             XxlJobUser cookieUser = null;
             try {
                 cookieUser = parseToken(cookieToken);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logout(request, response);
             }
             if (cookieUser != null) {
@@ -104,6 +101,5 @@ public class LoginService {
         }
         return null;
     }
-
 
 }

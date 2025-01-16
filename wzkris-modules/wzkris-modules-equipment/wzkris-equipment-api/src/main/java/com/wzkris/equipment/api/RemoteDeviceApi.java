@@ -6,4 +6,5 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(value = ApplicationNameConstants.EQUIPMENT, contextId = "RemoteDeviceApi", fallbackFactory = RemoteDeviceApiFallback.class)
 public interface RemoteDeviceApi {
+
 }

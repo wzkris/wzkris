@@ -17,9 +17,11 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli 2015-9-1 18:05:56
  */
 public class JobFailMonitorHelper {
+
     private static Logger logger = LoggerFactory.getLogger(JobFailMonitorHelper.class);
 
     private static JobFailMonitorHelper instance = new JobFailMonitorHelper();
+
     private Thread monitorThread;
 
     // ---------------------- monitor ----------------------
@@ -64,8 +66,7 @@ public class JobFailMonitorHelper {
                                 if (info != null) {
                                     boolean alarmResult = XxlJobAdminConfig.getAdminConfig().getJobAlarmer().alarm(info, log);
                                     newAlarmStatus = alarmResult ? 2 : 3;
-                                }
-                                else {
+                                } else {
                                     newAlarmStatus = 1;
                                 }
 
@@ -73,8 +74,7 @@ public class JobFailMonitorHelper {
                             }
                         }
 
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!toStop) {
                             logger.error(">>>>>>>>>>> xxl-job, job fail monitor thread error:{}", e);
                         }
@@ -82,8 +82,7 @@ public class JobFailMonitorHelper {
 
                     try {
                         TimeUnit.SECONDS.sleep(10);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!toStop) {
                             logger.error(e.getMessage(), e);
                         }
@@ -106,8 +105,7 @@ public class JobFailMonitorHelper {
         monitorThread.interrupt();
         try {
             monitorThread.join();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
     }

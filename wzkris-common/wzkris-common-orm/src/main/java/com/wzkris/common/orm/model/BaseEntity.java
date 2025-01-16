@@ -18,7 +18,6 @@ import java.io.Serializable;
 @FieldNameConstants
 public class BaseEntity implements Serializable {
 
-
     /**
      * 创建时间
      */

@@ -43,8 +43,7 @@ public class DynamicTenantUtil {
                 List<Long> add = new ArrayList<>();
                 add.add(tenantId);
                 LOCAL_DYNAMIC_TENANT.set(add);
-            }
-            else {
+            } else {
                 LOCAL_DYNAMIC_TENANT.get().add(0, tenantId);
             }
         }
@@ -57,8 +56,7 @@ public class DynamicTenantUtil {
         if (LOCAL_DYNAMIC_TENANT.get() != null) {
             if (LOCAL_DYNAMIC_TENANT.get().size() > 1) {
                 LOCAL_DYNAMIC_TENANT.get().remove(0);
-            }
-            else {
+            } else {
                 LOCAL_DYNAMIC_TENANT.remove();
             }
         }
@@ -72,8 +70,7 @@ public class DynamicTenantUtil {
         if (LOCAL_IGNORE.get() == null) {
             LOCAL_IGNORE.set(new AtomicInteger(1));
             InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
-        }
-        else {
+        } else {
             LOCAL_IGNORE.set(new AtomicInteger(LOCAL_IGNORE.get().incrementAndGet()));
         }
     }
@@ -86,8 +83,7 @@ public class DynamicTenantUtil {
             int count = LOCAL_IGNORE.get().decrementAndGet();
             if (count > 0) {
                 LOCAL_IGNORE.set(new AtomicInteger(count));
-            }
-            else {
+            } else {
                 LOCAL_IGNORE.remove();
                 InterceptorIgnoreHelper.clearIgnoreStrategy();
             }
@@ -109,12 +105,10 @@ public class DynamicTenantUtil {
             try {
                 enableIgnore();
                 runnable.run();
-            }
-            finally {
+            } finally {
                 disableIgnore();
             }
-        }
-        else {
+        } else {
             runnable.run();
         }
     }
@@ -134,12 +128,10 @@ public class DynamicTenantUtil {
             try {
                 enableIgnore();
                 return supplier.get();
-            }
-            finally {
+            } finally {
                 disableIgnore();
             }
-        }
-        else {
+        } else {
             return supplier.get();
         }
     }
@@ -159,12 +151,10 @@ public class DynamicTenantUtil {
             try {
                 enableIgnore();
                 return supplier.get();
-            }
-            finally {
+            } finally {
                 disableIgnore();
             }
-        }
-        else {
+        } else {
             return supplier.get();
         }
     }
@@ -185,12 +175,10 @@ public class DynamicTenantUtil {
             try {
                 set(tenantId);
                 runnable.run();
-            }
-            finally {
+            } finally {
                 remove();
             }
-        }
-        else {
+        } else {
             runnable.run();
         }
     }
@@ -210,12 +198,10 @@ public class DynamicTenantUtil {
             try {
                 set(tenantId);
                 return supplier.get();
-            }
-            finally {
+            } finally {
                 remove();
             }
-        }
-        else {
+        } else {
             return supplier.get();
         }
     }
@@ -232,12 +218,10 @@ public class DynamicTenantUtil {
             try {
                 set(tenantId);
                 return supplier.get();
-            }
-            finally {
+            } finally {
                 remove();
             }
-        }
-        else {
+        } else {
             return supplier.get();
         }
     }
@@ -247,6 +231,7 @@ public class DynamicTenantUtil {
      */
     @FunctionalInterface
     public interface ThrowingSupplier<T, E extends Throwable> {
+
         T get() throws E;
     }
 }

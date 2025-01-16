@@ -17,6 +17,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
  */
 @EnableWebSecurity
 public class WebSecurityConfigurer {
+
     private final String userContextPath;
 
     public WebSecurityConfigurer(AdminServerProperties adminServerProperties) {

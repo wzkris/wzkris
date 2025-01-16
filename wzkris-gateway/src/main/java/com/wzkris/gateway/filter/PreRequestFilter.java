@@ -1,10 +1,9 @@
 package com.wzkris.gateway.filter;
 
+import cn.hutool.core.util.IdUtil;
 import com.wzkris.auth.api.RemoteTokenApi;
-import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
@@ -26,8 +25,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +40,16 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
+
+    private static final ExecutorService executorService = new ThreadPoolExecutor(
+            Runtime.getRuntime().availableProcessors() * 3,
+            Runtime.getRuntime().availableProcessors() * 3 * 2,
+            10L,
+            TimeUnit.SECONDS,
+            new SynchronousQueue<>(),
+            new DefaultThreadFactory("token-requestid-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("token_request_id")),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+    );
 
     @Autowired
     private PermitAllProperties permitAllProperties;
@@ -53,16 +64,6 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
     }
 
-    private static final ExecutorService executorService = new ThreadPoolExecutor(
-            Runtime.getRuntime().availableProcessors() * 3,
-            Runtime.getRuntime().availableProcessors() * 3 * 2,
-            10L,
-            TimeUnit.SECONDS,
-            new SynchronousQueue<>(),
-            new DefaultThreadFactory("token-requestid-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("token_request_id")),
-            new ThreadPoolExecutor.CallerRunsPolicy()
-    );
-
     /**
      * do something
      *
@@ -74,38 +75,14 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         final ServerHttpRequest request = exchange.getRequest();
         final ServerHttpRequest.Builder mutate = request.mutate();
 
-        if (StringUtil.matches(request.getURI().getPath(), permitAllProperties.getIgnores())) {
-            return chain.filter(exchange);
-        }
-
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StringUtil.isBlank(bearerToken)) {
-            List<String> list = request.getQueryParams().get(HttpHeaders.AUTHORIZATION);
-            if (list == null || list.isEmpty()) {
-                return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
-            }
-            bearerToken = list.get(0);
+        if ((StringUtil.isBlank(bearerToken) && request.getQueryParams().get(HttpHeaders.AUTHORIZATION) == null)
+                && !StringUtil.matches(request.getURI().getPath(), permitAllProperties.getIgnores())) {
+            return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
         }
 
-        final String token = bearerToken.replaceFirst(SecurityConstants.TOKEN_PREFIX, "");
-
-        Future<Result<String>> future = executorService.submit(() -> {
-            return remoteTokenApi.getTokenReqId(token);
-        });
-
-        try {
-            Result<String> result = future.get();
-
-            if (!result.isSuccess()) {
-                return WebFluxUtil.writeResponse(exchange.getResponse(), result.getCode(), I18nUtil.message("service.busy"));
-            }
-
-            mutate.header(SecurityConstants.TOKEN_REQ_ID_HEADER, result.getData());
-        }
-        catch (InterruptedException | ExecutionException e) {
-            log.error("token请求ID获取异常，errmsg：{}", e.getMessage());
-            return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.INTERNAL_ERROR);
-        }
+        // 分布式日志追踪ID
+        mutate.header(CommonConstants.TRACING_ID, IdUtil.fastUUID());
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }

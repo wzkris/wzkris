@@ -1,6 +1,5 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
@@ -41,13 +40,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/tenant")
 public class SysTenantOwnController extends BaseController {
+
     private final SysUserMapper userMapper;
+
     private final SysRoleMapper roleMapper;
+
     private final SysPostMapper postMapper;
+
     private final SysDeptMapper deptMapper;
+
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantWalletMapper tenantWalletMapper;
+
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "获取自身租户")
@@ -58,8 +65,7 @@ public class SysTenantOwnController extends BaseController {
         SysTenantOwnVO tenantVO;
         if (SysTenant.isSuperTenant(tenantId)) {
             tenantVO = new SysTenantOwnVO(true);// 超级租户不存在信息
-        }
-        else {
+        } else {
             tenantVO = tenantMapper.selectVOById(tenantId);
         }
         return ok(tenantVO);
@@ -104,19 +110,21 @@ public class SysTenantOwnController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "租户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
-    @PreAuthorize("@LoginUserUtil.isAdmin()")// 只允许租户的超级管理员修改
-    public Result<Void> editOperPwd(@RequestBody @Valid EditPwdReq req) {
-        if (StringUtil.length(req.getOldPassword()) != 6 || StringUtil.length(req.getNewPassword()) != 6) {
-            return fail("密码长度不正确");
+    @PreAuthorize("@lg.isAdmin()")// 只允许租户的超级管理员修改
+    public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
+        Long tenantId = LoginUserUtil.getTenantId();
+
+        String operPwd = tenantMapper.selectOperPwdById(tenantId);
+
+        if (!passwordEncoder.matches(req.getOldPassword(), operPwd)) {
+            return fail("修改密码失败，旧密码错误");
         }
-        if (!NumberUtil.isNumber(req.getOldPassword()) || !NumberUtil.isNumber(req.getNewPassword())) {
-            return fail("密码不正确");
+
+        if (passwordEncoder.matches(req.getNewPassword(), operPwd)) {
+            return fail("新密码不能与旧密码相同");
         }
-        SysTenant sysTenant = tenantMapper.selectById(LoginUserUtil.getTenantId());
-        if (!passwordEncoder.matches(req.getOldPassword(), sysTenant.getOperPwd())) {
-            return fail("密码错误");
-        }
-        SysTenant update = new SysTenant(sysTenant.getTenantId());
+
+        SysTenant update = new SysTenant(tenantId);
         update.setOperPwd(passwordEncoder.encode(req.getNewPassword()));
         return toRes(tenantMapper.updateById(update));
     }

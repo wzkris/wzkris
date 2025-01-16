@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -93,6 +92,7 @@ public class MqttUtil {
     public static class MqttClientPool {
 
         private final List<MqttClient> instance = new ArrayList<>();
+
         private int round = 0;
 
         private void add(MqttClient client) {
@@ -164,8 +164,7 @@ public class MqttUtil {
                 MqttDeliveryToken deliveryToken = mqttTopic.publish(message);
                 deliveryToken.waitForCompletion(sendTimeout);// 等待操作完成
                 return deliveryToken.getException() == null;// 为空代表发送成功
-            }
-            catch (MqttException e) {
+            } catch (MqttException e) {
                 log.error("发布消息时发生异常，errmsg：{}", e.getMessage());
                 return false;
             }
@@ -179,8 +178,7 @@ public class MqttUtil {
                 for (MqttClient mqttClient : instance) {
                     mqttClient.subscribe(topic, qos);
                 }
-            }
-            catch (MqttException e) {
+            } catch (MqttException e) {
                 log.error("订阅主题时发生异常，errmsg：{}", e.getMessage());
             }
         }

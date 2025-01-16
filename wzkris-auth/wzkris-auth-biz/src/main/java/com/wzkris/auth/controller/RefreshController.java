@@ -1,6 +1,6 @@
 package com.wzkris.auth.controller;
 
-import com.wzkris.auth.oauth2.service.RedisRegisteredClientRepository;
+import com.wzkris.auth.oauth2.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.RemoteOAuth2ClientApi;
@@ -25,12 +25,12 @@ public class RefreshController extends BaseController {
     private RemoteOAuth2ClientApi remoteOAuth2ClientApi;
 
     @Autowired
-    private RedisRegisteredClientRepository registeredClientRepository;
+    private OAuth2RegisteredClientRepository registeredClientRepository;
 
     @Operation(summary = "刷新缓存")
     @PostMapping("/refresh_client")
-    public Result<Void> logout(@RequestBody String clientId) {
-        registeredClientRepository.remove(clientId);
+    public Result<Void> refresh_client(@RequestBody String clientId) {
+        registeredClientRepository.deleteById(clientId);
         return ok();
     }
 }

@@ -11,6 +11,7 @@ import java.util.Map;
  */
 @Data
 public class SysUserQueryReq {
+
     @Schema(description = "租户ID")
     private Long tenantId;
 

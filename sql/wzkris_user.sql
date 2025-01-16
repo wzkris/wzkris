@@ -11,7 +11,7 @@
  Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 26/12/2024 10:25:01
+ Date: 15/01/2025 10:42:57
 */
 
 SET NAMES utf8mb4;
@@ -105,9 +105,9 @@ CREATE TABLE `oauth2_client`  (
   `client_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '客户端名称',
   `client_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `client_secret` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `scopes` json NULL COMMENT '权限域',
-  `authorization_grant_types` json NULL COMMENT '授权类型',
-  `redirect_uris` json NULL COMMENT '回调地址',
+  `scopes` json NOT NULL COMMENT '权限域',
+  `authorization_grant_types` json NOT NULL COMMENT '授权类型',
+  `redirect_uris` json NOT NULL COMMENT '回调地址',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '客户端状态',
   `auto_approve` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否自动放行',
   `create_at` bigint NOT NULL,
@@ -121,8 +121,8 @@ CREATE TABLE `oauth2_client`  (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2', '[\"openid\"]', '[\"password\", \"refresh_token\", \"authorization_code\", \"client_credentials\", \"sms\"]', '[\"http://localhost:9001/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1733125627072, 1);
-INSERT INTO `oauth2_client` VALUES (1860941790147440642, '测试客户端', 'test_cl', '{bcrypt}$2a$10$kLcJ/zFM6vMfmEWhsuYlHOHkpTQm4b6LT5Lvg.XiYx1koSqM7fg2u', NULL, '[\"password\"]', NULL, '0', 0, 1732518072056, 1, 1733125712791, 1);
+INSERT INTO `oauth2_client` VALUES (1, '系统', 'server', '{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2', '[\"openid\"]', '[\"password\", \"sms\", \"refresh_token\"]', '[\"http://localhost:9001/oauth2/authorization_code_callback\"]', '0', 0, 1713334134616, 1, 1736472115713, 1);
+INSERT INTO `oauth2_client` VALUES (2, '测试客户端', 'test_cl', '{bcrypt}$2a$10$kLcJ/zFM6vMfmEWhsuYlHOHkpTQm4b6LT5Lvg.XiYx1koSqM7fg2u', '[\"read\", \"write\"]', '[\"urn:ietf:params:oauth:grant-type:device_code\"]', '[]', '0', 0, 1732518072056, 1, 1735955145307, 1);
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -150,10 +150,10 @@ CREATE TABLE `sys_dept`  (
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
-INSERT INTO `sys_dept` VALUES (100, 0, 0, '0', '最高部门', '0', 0, '15888888888', '', 1713334134616, 1, 20240403145415, 1);
+INSERT INTO `sys_dept` VALUES (100, 0, 0, '0', '最高部门', '0', 0, '15888888888', '', 1713334134616, 1, 1736820637744, 1);
 INSERT INTO `sys_dept` VALUES (105, 0, 114, '0,100,114', 'jeecg集团', '1', 3, '15888888888', 'jeecg@qq.com', 1713334134616, 1, 1735110050181, 1);
 INSERT INTO `sys_dept` VALUES (114, 0, 1858433026613760002, '0,100,1858433026613760002', 'pig开源联盟', '0', 0, NULL, NULL, 1713334134616, 1, 1735110050184, 1);
-INSERT INTO `sys_dept` VALUES (1775382319191453698, 1774671331416821762, 0, '0', '默认租户部门', '0', 0, NULL, NULL, 1713334134616, 1774671331412627456, 20240412112834, 1);
+INSERT INTO `sys_dept` VALUES (1775382319191453698, 1774671331416821762, 0, '0', '默认租户部门', '0', 0, NULL, NULL, 1713334134616, 1774671331412627456, 1736905432568, 1856251200466030593);
 INSERT INTO `sys_dept` VALUES (1775387364419072002, 1774671331416821762, 1775382319191453698, '0,1775382319191453698', '默认租户销售部门', '0', 0, '13566699669', NULL, 1713334134616, 1774671331412627456, 20240403132635, 1);
 INSERT INTO `sys_dept` VALUES (1857293481839091714, 1853719125330489346, 0, '0', '2号', '0', 0, NULL, NULL, 1731648247581, 1, 1731648247581, 1);
 INSERT INTO `sys_dept` VALUES (1857293508972044290, 1853719125330489346, 1857293481839091714, '0,1857293481839091714', 'xx', '0', 0, NULL, NULL, 1731648254040, 1, 1731648254040, 1);
@@ -245,7 +245,7 @@ INSERT INTO `sys_menu` VALUES (1125, '余额记录', 601, 3, '#', NULL, NULL, 'B
 INSERT INTO `sys_menu` VALUES (1126, '商户提现', 601, 1, '#', NULL, NULL, 'B', '0', 'tenant:withdrawal', '#', 0, 0, 1, 1732598071539, 1, 1732598191196, 1);
 INSERT INTO `sys_menu` VALUES (1127, '商户余额信息', 601, 0, '#', NULL, NULL, 'B', '0', 'tenant:wallet_info', '#', 0, 0, 1, 1732597687278, 1, 1732598171530, 1);
 INSERT INTO `sys_menu` VALUES (1128, '租户列表', 601, 10, '#', NULL, NULL, 'B', '0', 'tenant:list', '#', 0, 0, 1, 1730530211713, 1, 1730530211713, 1);
-INSERT INTO `sys_menu` VALUES (1129, '重置租户操作密码', 601, 11, '#', NULL, NULL, 'B', '0', 'tenant:edit_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1732598183996, 1);
+INSERT INTO `sys_menu` VALUES (1129, '重置租户操作密码', 601, 11, '#', NULL, NULL, 'B', '0', 'tenant:reset_operpwd', '#', 0, 0, 1, 1730882615318, 1, 1736821496818, 1);
 INSERT INTO `sys_menu` VALUES (1130, '商户基本信息', 601, 20, '#', '', NULL, 'B', '0', 'tenant:getinfo', '#', 0, 0, 1, 1724380930192, 1, 1732597854658, 1);
 INSERT INTO `sys_menu` VALUES (1131, '租户详情', 601, 9, '#', NULL, NULL, 'B', '0', 'tenant:query', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
 INSERT INTO `sys_menu` VALUES (1132, '租户新增', 601, 4, '#', NULL, NULL, 'B', '0', 'tenant:add', '#', 0, 0, 1, 1713334134616, 1, 1714113020581, 1);
@@ -369,10 +369,10 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 1, 1, 1713334134616, 1, 1735117194408, 1);
+INSERT INTO `sys_role` VALUES (2, 0, '1', '开发者', '0', 99, 0, 1, 1713334134616, 1, 1735267827187, 1);
 INSERT INTO `sys_role` VALUES (3, 0, '4', '观察者', '0', 97, 1, 1, 1713334134616, 1, 1732349385269, 1);
 INSERT INTO `sys_role` VALUES (4, 0, '2', '员工', '1', 5, 1, 0, 1713334134616, 1, 1735088705511, 1);
-INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '3', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1734318887182, 1);
+INSERT INTO `sys_role` VALUES (1775445330027577345, 1774671331416821762, '4', '默认租户角色', '0', 0, 1, 1, 1713334134616, 1774671331412627456, 1736905905732, 1774671331412627456);
 INSERT INTO `sys_role` VALUES (1858701878891327490, 0, '4', 'xxx', '0', 0, 1, 1, 1731984035599, 2, 1731984035599, 2);
 
 -- ----------------------------
@@ -407,6 +407,7 @@ CREATE TABLE `sys_role_menu`  (
 INSERT INTO `sys_role_menu` VALUES (2, 1);
 INSERT INTO `sys_role_menu` VALUES (2, 2);
 INSERT INTO `sys_role_menu` VALUES (2, 3);
+INSERT INTO `sys_role_menu` VALUES (2, 4);
 INSERT INTO `sys_role_menu` VALUES (2, 100);
 INSERT INTO `sys_role_menu` VALUES (2, 103);
 INSERT INTO `sys_role_menu` VALUES (2, 201);
@@ -416,6 +417,7 @@ INSERT INTO `sys_role_menu` VALUES (2, 205);
 INSERT INTO `sys_role_menu` VALUES (2, 206);
 INSERT INTO `sys_role_menu` VALUES (2, 207);
 INSERT INTO `sys_role_menu` VALUES (2, 208);
+INSERT INTO `sys_role_menu` VALUES (2, 401);
 INSERT INTO `sys_role_menu` VALUES (2, 601);
 INSERT INTO `sys_role_menu` VALUES (2, 1051);
 INSERT INTO `sys_role_menu` VALUES (2, 1052);
@@ -461,6 +463,11 @@ INSERT INTO `sys_role_menu` VALUES (2, 2208);
 INSERT INTO `sys_role_menu` VALUES (2, 2209);
 INSERT INTO `sys_role_menu` VALUES (2, 2210);
 INSERT INTO `sys_role_menu` VALUES (2, 2211);
+INSERT INTO `sys_role_menu` VALUES (2, 3226);
+INSERT INTO `sys_role_menu` VALUES (2, 3227);
+INSERT INTO `sys_role_menu` VALUES (2, 3228);
+INSERT INTO `sys_role_menu` VALUES (2, 3229);
+INSERT INTO `sys_role_menu` VALUES (2, 3230);
 INSERT INTO `sys_role_menu` VALUES (3, 2);
 INSERT INTO `sys_role_menu` VALUES (3, 203);
 INSERT INTO `sys_role_menu` VALUES (3, 206);
@@ -513,6 +520,7 @@ INSERT INTO `sys_role_menu` VALUES (4, 4207);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 203);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 205);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 206);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 208);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2037);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2038);
@@ -524,6 +532,10 @@ INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2142);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2143);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2144);
 INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2145);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2207);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2208);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2209);
+INSERT INTO `sys_role_menu` VALUES (1775445330027577345, 2210);
 
 -- ----------------------------
 -- Table structure for sys_tenant
@@ -556,8 +568,8 @@ CREATE TABLE `sys_tenant`  (
 -- ----------------------------
 -- Records of sys_tenant
 -- ----------------------------
-INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$JHoZHN4go8y7T1EEgs3sfOTvfySwCN8bLxVZM.3pB7hk0oNLSmIxS', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1, 1733894016830);
-INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$PFnKxjjXZuFnwdvLAqrFd.m5lls2JcXWJ2gcMQYphGv0I6K0Fwgrm', '1', NULL, '第二个', 1773620875265482754, 1733896268000, 5, 5, 5, 5, 1, 1730796054571, 1, 1733901461866);
+INSERT INTO `sys_tenant` VALUES (1774671331416821762, 1774671331412627456, '0', '0000', '测试租户', '{bcrypt}$2a$10$UrTLkkEl/6bnXZ1n8rNgF.yf2j9BQ5yuKKYS9h062FOTzSFGwp.FW', '0', NULL, NULL, 1773625804122202113, -1, 5, 5, 5, 5, 1, 1713334134616, 1774671331412627456, 1736842576500);
+INSERT INTO `sys_tenant` VALUES (1853719125330489346, 1853719125066248192, '0', '00', '租户2', '{bcrypt}$2a$10$V./HVBW5IfQiV5qkOgPXJeqw0j53D7iNDfB89pX9XEPoZnazS4oGe', '1', NULL, '第二个', 1773620875265482754, 1733896268000, 5, 5, 5, 5, 1, 1730796054571, 1, 1736836842644);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package
@@ -580,8 +592,8 @@ CREATE TABLE `sys_tenant_package`  (
 -- ----------------------------
 -- Records of sys_tenant_package
 -- ----------------------------
-INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'c', '1', '[]', 1, NULL, 1, 1713334134616, 1, 1735088764731);
-INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 401, 151, 1064, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130, 1125, 1126, 1127, 3228, 400, 3126, 3125, 3124, 3123, 3122, 3121]', 1, '通用租户套餐', 1, 1713334134616, 1, 1734747347377);
+INSERT INTO `sys_tenant_package` VALUES (1773620875265482754, 'cc', '1', '[]', 1, NULL, 1, 1713334134616, 1, 1735179990954);
+INSERT INTO `sys_tenant_package` VALUES (1773625804122202113, '默认套餐', '0', '[1, 104, 2, 3, 601, 4, 401, 151, 1064, 203, 2078, 2062, 2064, 2077, 2072, 2071, 206, 2207, 2211, 2210, 2209, 2208, 205, 2040, 2039, 2038, 2037, 208, 2145, 2144, 2143, 2142, 2141, 1130, 1125, 1126, 1127, 3228, 3226, 400, 3126, 3125, 3124, 3123, 3122, 3121]', 1, '通用租户套餐', 1, 1713334134616, 1, 1735267380741);
 
 -- ----------------------------
 -- Table structure for sys_tenant_wallet
@@ -652,12 +664,13 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '1', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1732947864801, NULL, 1713334134616, 1, 1734156343758, 1);
-INSERT INTO `sys_user` VALUES (2, 0, 100, 'wzkris', '111111@1.com', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1731992153861, NULL, 1713334134616, 1, 1734578386768, 1);
-INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$omhFd0wHbTQeALj2bMkVv.kBTk2.grgWI1gHdeF2TtsHVPO/UwmGm', '127.0.0.1', 1732598359333, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '1', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1732947864801, NULL, 1713334134616, 1, 1736564467147, 1);
+INSERT INTO `sys_user` VALUES (2, 0, 100, 'wzkris', '111111@1.com', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1731992153861, NULL, 1713334134616, 1, 1736576284877, 1);
+INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$r9wPHZ9nQNMMZJ5G/CJvDu2DMYEZKfwlH4O2JMuOpd/qPEsZG5yGm', '127.0.0.1', 1732598359333, NULL, 1713334134616, 1, 1736842656181, 1774671331412627456);
 INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$v544q0b/1YjPbVQJDRKZrOnXoRxRcR.eyxIUd33TMRNCNXdVh.1Eu', '127.0.0.1', 1731648341626, NULL, 1730796054646, 1, NULL, NULL);
-INSERT INTO `sys_user` VALUES (1856251200466030593, 1774671331416821762, 1775382319191453698, '___sub_', NULL, 'xxxxxx', NULL, '0', '2', NULL, '{bcrypt}$2a$10$nRc3b1tgQQCQ/58unpvsHuP9q02lQVJru0JgBR/oePVUcjyc/Pl8a', NULL, NULL, NULL, 1731399748330, 1774671331412627456, 1731399941611, 1774671331412627456);
-INSERT INTO `sys_user` VALUES (1856869914760638466, 1774671331416821762, NULL, 'ccccccc', NULL, 'zzzz', NULL, '0', '2', NULL, '{bcrypt}$2a$10$NnSa6nPOcCQkJI8u19EgKuIND0rggfB3qAucSA7mAJwDzTc2uJBEu', NULL, NULL, NULL, 1731547261314, 1, 1731547261314, 1);
+INSERT INTO `sys_user` VALUES (1856251200466030593, 1774671331416821762, 1775382319191453698, '___sub_', NULL, 'xxxxxx', NULL, '0', '2', NULL, '{bcrypt}$2a$10$JvLIOD/DEO1FX/WMcFSFo.avkZad7UGvAvLrMRRmrT1Ijm0WEtfD.', NULL, NULL, NULL, 1731399748330, 1774671331412627456, 1736905399472, 1774671331412627456);
+INSERT INTO `sys_user` VALUES (1879065533604380673, 0, NULL, 'aaaaaa', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$rcE3GsqLyGU9Fv.nFUkqgORNCa7mITWvmK2YfmkoLuCVJln3cc6li', NULL, NULL, NULL, 1736839109221, 1, 1736840790803, 1879065533604380673);
+INSERT INTO `sys_user` VALUES (1879343473835601921, 1774671331416821762, 1775387364419072002, 'xxxxxx', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$y176RAaaALmxIXeR29d4i.XUsuB/4macwo6WVcmxYEfzijUAWPSMy', NULL, NULL, NULL, 1736905375336, 1774671331412627456, 1736905375336, 1774671331412627456);
 
 -- ----------------------------
 -- Table structure for sys_user_post
@@ -689,6 +702,5 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES (2, 2);
 INSERT INTO `sys_user_role` VALUES (1856251200466030593, 1775445330027577345);
-INSERT INTO `sys_user_role` VALUES (1856869914760638466, 1775445330027577345);
 
 SET FOREIGN_KEY_CHECKS = 1;

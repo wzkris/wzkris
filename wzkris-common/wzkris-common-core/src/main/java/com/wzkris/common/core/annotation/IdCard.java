@@ -19,6 +19,7 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER})
 @Constraint(validatedBy = {IdCardValidator.class})
 public @interface IdCard {
+
     String message()
 
             default "{validate.idcard.illegal}";

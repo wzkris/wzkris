@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzkris.equipment.mapper.DeviceMapper">
 
-	<select id="selectVOById" resultType="DeviceVO">
-		SELECT d.*, p.pdt_name, c.ptc_name, s.station_name
-		FROM device d LEFT JOIN product p on d.pdt_id = p.pdt_id
-		LEFT JOIN protocol c on p.ptc_id = c.ptc_id
-		LEFT JOIN station s on d.station_id = s.station_id
-		WHERE device_id = #{deviceId}
-	</select>
+    <select id="selectVOById" resultType="DeviceVO">
+        SELECT d.*, p.pdt_name, c.ptc_name, s.station_name
+        FROM device d LEFT JOIN product p on d.pdt_id = p.pdt_id
+        LEFT JOIN protocol c on p.ptc_id = c.ptc_id
+        LEFT JOIN station s on d.station_id = s.station_id
+        WHERE device_id = #{deviceId}
+    </select>
 
 </mapper>
 

@@ -6,6 +6,7 @@ import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author : wzkris
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
+@Component("cl")// 加入Spring容器以用于SPEL
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClientUserUtil extends SecurityUtil {
 
@@ -33,8 +35,7 @@ public class ClientUserUtil extends SecurityUtil {
     public static ClientUser getClientUser() {
         try {
             return (ClientUser) getAuthentication().getPrincipal();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }
     }

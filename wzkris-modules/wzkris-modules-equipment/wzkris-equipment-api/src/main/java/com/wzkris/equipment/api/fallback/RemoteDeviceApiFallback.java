@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class RemoteDeviceApiFallback implements FallbackFactory<RemoteDeviceApi> {
+
     @Override
     public RemoteDeviceApi create(Throwable cause) {
         return new RemoteDeviceApi() {

@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class KaptchaVO {
+
     @Schema(description = "是否启用")
     private boolean captchaEnabled;
 

@@ -2,6 +2,7 @@ package com.wzkris.user.mapperTest;
 
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.SysTenantWallet;
 import com.wzkris.user.domain.SysTenantWalletRecord;
@@ -22,14 +23,24 @@ import java.math.BigDecimal;
 public class SysTenantWalletMapperTest {
 
     static String password = "123456";
+
     @Autowired
     SysTenantWalletMapper tenantWalletMapper;
+
     @Autowired
     SysTenantWalletService sysTenantWalletService;
+
     @Autowired
     SysTenantWalletRecordMapper tenantWalletRecordMapper;
+
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Test
+    public void test2() {
+        String message = I18nUtil.messageRegex("{desc.username}{desc.or}{desc.pwd}{desc.error}");
+        System.out.println(message);
+    }
 
     @Test
     public void test() {

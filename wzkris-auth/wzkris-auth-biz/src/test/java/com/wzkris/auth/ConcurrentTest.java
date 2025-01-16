@@ -16,10 +16,15 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @DisplayName("并发测试")
 public class ConcurrentTest {
+
     final static Integer max = 1000;
+
     final static Object obj = new Object();
+
     static Integer num = 0;
+
     static Lock lock = new ReentrantLock();
+
     static Condition condition = lock.newCondition();
 
     @Test
@@ -35,8 +40,7 @@ public class ConcurrentTest {
                         if (num < max) {
                             obj.wait();
                         }
-                    }
-                    catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                     }
                 }
             }
@@ -51,8 +55,7 @@ public class ConcurrentTest {
                         if (num < max) {
                             obj.wait();
                         }
-                    }
-                    catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                     }
                 }
             }
@@ -69,8 +72,7 @@ public class ConcurrentTest {
             System.out.println("await");
             condition.await();
             System.out.println("wake up");
-        }
-        finally {
+        } finally {
             lock.unlock();
             System.out.println("await unlock");
         }
@@ -81,8 +83,7 @@ public class ConcurrentTest {
         try {
             condition.signal();
             System.out.println("signal");
-        }
-        finally {
+        } finally {
             lock.unlock();
             System.out.println("signal unlock");
         }
@@ -106,16 +107,14 @@ public class ConcurrentTest {
         new Thread(() -> {
             try {
                 conditionWait();
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }).start();
         new Thread(() -> {
             try {
                 conditionSignal();
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }).start();
@@ -140,8 +139,7 @@ public class ConcurrentTest {
         Thread t1 = new Thread(() -> {
             try {
                 semaphore.acquire();
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             System.out.println(Thread.currentThread().getName() + "：获取信号量");
@@ -151,8 +149,7 @@ public class ConcurrentTest {
         Thread t2 = new Thread(() -> {
             try {
                 semaphore.acquire();
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             System.out.println(Thread.currentThread().getName() + "：获取信号量");
@@ -173,8 +170,7 @@ public class ConcurrentTest {
                 String exchange = exchanger.exchange(b);
                 System.out.println(Thread.currentThread().getName() + ":" + b);
                 System.out.println("exchange000:" + exchange);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
@@ -199,7 +195,9 @@ public class ConcurrentTest {
     static class RTask extends RecursiveTask<Integer> {
 
         private final int threshold;// 阈值
+
         private final int start;
+
         private final int end;
 
         public RTask(int threshold, int start, int end) {
@@ -215,8 +213,7 @@ public class ConcurrentTest {
                 for (int i = start; i <= end; i++) {
                     sum += i;
                 }
-            }
-            else {
+            } else {
                 System.out.println(Thread.currentThread().getName());
                 // 如果任务大于阈值，就分裂成两个子任务计算
                 int middle = (start + end) / 2;

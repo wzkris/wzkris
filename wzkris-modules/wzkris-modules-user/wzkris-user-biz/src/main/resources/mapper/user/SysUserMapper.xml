@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzkris.user.mapper.SysUserMapper">
 
-	<delete id="deleteByTenantIds">
-		DELETE FROM sys_user WHERE tenant_id IN
-		<foreach collection="tenantIds" item="tenantId" open="(" separator="," close=")">
-			#{tenantId}
-		</foreach>
-	</delete>
+    <delete id="deleteByTenantIds">
+        DELETE FROM sys_user WHERE tenant_id IN
+        <foreach collection="tenantIds" item="tenantId" open="(" separator="," close=")">
+            #{tenantId}
+        </foreach>
+    </delete>
 
 </mapper>

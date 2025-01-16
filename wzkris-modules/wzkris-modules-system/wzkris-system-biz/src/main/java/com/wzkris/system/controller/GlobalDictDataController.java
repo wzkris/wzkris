@@ -33,7 +33,9 @@ import java.util.List;
 @RequestMapping("/dict/data")
 @RequiredArgsConstructor
 public class GlobalDictDataController extends BaseController {
+
     private final GlobalDictDataMapper dictDataMapper;
+
     private final GlobalDictDataService dictDataService;
 
     @Operation(summary = "分页")

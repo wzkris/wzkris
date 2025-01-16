@@ -14,6 +14,7 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
 @EnableAdminServer
 @SpringBootApplication
 public class MonitorServerApplication {
+
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(MonitorServerApplication.class);
         springApplication.addListeners(new ApplicationPidFileWriter());

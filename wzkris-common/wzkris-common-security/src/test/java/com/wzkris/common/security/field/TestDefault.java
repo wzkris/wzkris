@@ -6,5 +6,6 @@ import java.util.List;
 
 @Data
 public class TestDefault {
+
     private List<Long> ids;
 }

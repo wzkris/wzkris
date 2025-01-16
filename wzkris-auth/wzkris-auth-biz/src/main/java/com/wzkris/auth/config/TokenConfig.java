@@ -16,18 +16,22 @@ import org.springframework.context.annotation.Configuration;
 @RefreshScope
 @ConfigurationProperties(prefix = "token-config")
 public class TokenConfig {
+
     /**
      * access_token 有效期（单位：秒）
      **/
     private int accessTokenTimeOut;
+
     /**
      * refresh_token 有效期 （单位：秒）
      **/
     private int refreshTokenTimeOut;
+
     /**
      * authorization_code 有效期 （单位：秒）
      */
     private int authorizationCodeTimeOut;
+
     /**
      * device_code 有效期 （单位：秒）
      */

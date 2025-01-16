@@ -1,6 +1,5 @@
 package com.wzkris.common.security.config;
 
-
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -17,6 +16,7 @@ import java.util.List;
 @RefreshScope
 @ConfigurationProperties(prefix = "security.ignore")
 public class PermitAllProperties {
+
     /**
      * 公共配置
      */

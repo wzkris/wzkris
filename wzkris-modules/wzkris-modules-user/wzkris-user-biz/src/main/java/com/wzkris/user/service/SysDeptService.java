@@ -3,6 +3,7 @@ package com.wzkris.user.service;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,10 +64,10 @@ public interface SysDeptService {
      *
      * @param deptIds 部门id
      */
-    void checkDataScopes(List<Long> deptIds);
+    void checkDataScopes(Collection<Long> deptIds);
 
     default void checkDataScopes(Long deptId) {
-        this.checkDataScopes(Collections.singletonList(deptId));
+        this.checkDataScopes(Collections.singleton(deptId));
     }
 
 }

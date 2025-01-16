@@ -17,7 +17,6 @@ import java.util.List;
 @Repository
 public interface SysUserRoleMapper {
 
-
     /**
      * 根据角色id查出所有关联的管理员id
      *

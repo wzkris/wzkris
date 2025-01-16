@@ -1,5 +1,6 @@
 package com.wzkris.auth.oauth2.core;
 
+import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2EndpointUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
@@ -53,7 +54,7 @@ public abstract class CommonAuthenticationConverter<T extends OAuth2Authorizatio
         // scope (OPTIONAL)
         String scope = parameters.getFirst(OAuth2ParameterNames.SCOPE);
         if (StringUtils.hasText(scope) && parameters.get(OAuth2ParameterNames.SCOPE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
         }
 
         Set<String> requestedScopes = null;
@@ -67,7 +68,7 @@ public abstract class CommonAuthenticationConverter<T extends OAuth2Authorizatio
         // 获取当前已经认证的客户端信息
         Authentication clientPrincipal = SecurityContextHolder.getContext().getAuthentication();
         if (clientPrincipal == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
         }
 
         // 扩展信息

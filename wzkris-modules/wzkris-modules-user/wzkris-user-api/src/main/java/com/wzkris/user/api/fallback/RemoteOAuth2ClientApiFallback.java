@@ -19,6 +19,7 @@ import static com.wzkris.common.core.domain.Result.resp;
 @Slf4j
 @Component
 public class RemoteOAuth2ClientApiFallback implements FallbackFactory<RemoteOAuth2ClientApi> {
+
     @Override
     public RemoteOAuth2ClientApi create(Throwable cause) {
         return new RemoteOAuth2ClientApi() {

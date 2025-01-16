@@ -22,6 +22,7 @@ import java.io.IOException;
 @Primary
 @Service
 public class LocalSysFileServiceImpl implements SysFileService {
+
     @Autowired
     private LocalConfig localConfig;
 
@@ -48,8 +49,7 @@ public class LocalSysFileServiceImpl implements SysFileService {
                     byte[] bytes = FileUtil.readBytes(filePath);
                     ost.write(bytes);
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new BusinessException(e.getMessage());
             }
             // 删除切片文件

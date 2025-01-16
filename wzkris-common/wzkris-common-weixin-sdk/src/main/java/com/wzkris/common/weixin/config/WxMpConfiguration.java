@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @ConditionalOnProperty(value = "weixin.mp.enable")
 public class WxMpConfiguration {
+
     private final WxMpProperties properties;
 
     public WxMpConfiguration(WxMpProperties properties) {
@@ -42,8 +43,7 @@ public class WxMpConfiguration {
                     WxMpDefaultConfigImpl configStorage;
                     if (this.properties.isUseRedis()) {
                         configStorage = new WxMpRedissonConfigImpl(RedisUtil.getClient(), a.getAppId());
-                    }
-                    else {
+                    } else {
                         configStorage = new WxMpDefaultConfigImpl();
                     }
 

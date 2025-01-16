@@ -4,7 +4,6 @@ import com.wzkris.common.redis.util.RedisUtil;
 
 import java.util.Map;
 
-
 /**
  * 系统配置缓存工具类
  *

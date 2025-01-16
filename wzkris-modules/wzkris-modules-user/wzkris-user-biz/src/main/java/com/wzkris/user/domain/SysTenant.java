@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,11 +30,9 @@ public class SysTenant extends BaseEntity {
     @Schema(description = "联系电话")
     private String contactPhone;
 
-    @NotBlank(message = "[tenantName] {validate.notnull}")
     @Schema(description = "租户名称")
     private String tenantName;
 
-    @Size(min = 6, max = 6, message = "[operPwd] {validate.size.illegal}")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "操作密码")
     private String operPwd;

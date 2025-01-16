@@ -33,16 +33,14 @@ public class ExecutorRouteConsistentHash extends ExecutorRouter {
         MessageDigest md5;
         try {
             md5 = MessageDigest.getInstance("MD5");
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("MD5 not supported", e);
         }
         md5.reset();
         byte[] keyBytes = null;
         try {
             keyBytes = key.getBytes("UTF-8");
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Unknown string :" + key, e);
         }
 

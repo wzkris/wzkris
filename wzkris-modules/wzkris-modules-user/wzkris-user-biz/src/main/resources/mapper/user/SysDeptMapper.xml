@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzkris.user.mapper.SysDeptMapper">
 
-	<select id="listChildren" resultType="SysDept">
-		SELECT * FROM sys_dept
-		<where>
-			<if test="deptId != null and deptId != 0">
-				AND (dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
-			</if>
-			<if test="deptName != null and deptName != ''">
-				AND dept_name LIKE CONCAT('%', #{deptName}, '%')
-			</if>
-			<if test="status != null and status != ''">
-				AND status = #{status}
-			</if>
-		</where>
-		ORDER BY dept_sort, dept_id DESC
-	</select>
+    <select id="listChildren" resultType="SysDept">
+        SELECT * FROM sys_dept
+        <where>
+            <if test="deptId != null and deptId != 0">
+                AND (dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
+            </if>
+            <if test="deptName != null and deptName != ''">
+                AND dept_name LIKE CONCAT('%', #{deptName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY dept_sort, dept_id DESC
+    </select>
 
 </mapper>

@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 public final class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         log.info("token校验失败，请求URI：{}，详细信息：{}", request.getRequestURI(), exception.getMessage());
@@ -27,10 +28,9 @@ public final class AuthenticationEntryPointImpl implements AuthenticationEntryPo
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
         if (exception instanceof OAuth2AuthenticationException oAuth2AuthenticationException) {
-            Result<Void> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
+            Result<?> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
             JsonUtil.writeValue(response.getWriter(), result);
-        }
-        else {
+        } else {
             JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED, exception.getLocalizedMessage()));
         }
     }

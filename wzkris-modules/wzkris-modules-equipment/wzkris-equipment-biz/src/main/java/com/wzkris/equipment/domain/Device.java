@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Schema(description = "实体类: 设备信息")
 public class Device extends BaseEntity {
+
     @Serial
     private static final long serialVersionUID = 253601802815121784L;
 

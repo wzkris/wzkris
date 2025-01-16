@@ -25,8 +25,14 @@ public class SysLoginLog implements Serializable {
     @TableId
     private Long logId;
 
+    @Schema(description = "用户ID")
+    private Long userId;
+
     @Schema(description = "用户名")
     private String username;
+
+    @Schema(description = "授权类型")
+    private String grantType;
 
     @Schema(description = "租户ID")
     private Long tenantId;
@@ -39,6 +45,9 @@ public class SysLoginLog implements Serializable {
 
     @Schema(description = "登录状态（0正常 1异常）")
     private String status;
+    
+    @Schema(description = "失败信息")
+    private String errorMsg;
 
     @Schema(description = "浏览器类型")
     private String browser;

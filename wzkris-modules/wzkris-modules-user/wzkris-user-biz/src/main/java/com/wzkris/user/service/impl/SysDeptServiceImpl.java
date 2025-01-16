@@ -17,8 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +30,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysDeptServiceImpl implements SysDeptService {
+
     private final SysDeptMapper deptMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
 
     @Override
@@ -169,11 +172,10 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public void checkDataScopes(List<Long> deptIds) {
-        deptIds = deptIds.stream().filter(Objects::nonNull).toList();
+    public void checkDataScopes(Collection<Long> deptIds) {
         if (ObjUtil.isNotEmpty(deptIds)) {
-            if (deptMapper.checkDataScopes(deptIds) != deptIds.size()) {
-                throw new AccessDeniedException("没有部门数据权限");
+            if (!deptMapper.checkDataScopes(new HashSet<>(deptIds))) {
+                throw new AccessDeniedException("无此部门数据访问权限");
             }
         }
     }

@@ -39,13 +39,15 @@ import java.util.List;
 @Tag(name = "租户套餐管理")
 @Validated
 @RequiredArgsConstructor
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RestController
 @RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {
 
     private final SysTenantPackageMapper tenantPackageMapper;
+
     private final SysTenantPackageService tenantPackageService;
+
     private final SysMenuService menuService;
 
     @Operation(summary = "套餐分页")
@@ -123,7 +125,7 @@ public class SysTenantPackageController extends BaseController {
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("tenant_package:remove")
-    public Result<Void> remove(@NotEmpty(message = "[packageId] {validate.notnull}") @RequestBody List<Long> packageIds) {
+    public Result<Void> remove(@NotEmpty(message = "{desc.package}id{validate.notnull}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
             return fail("删除失败, 套餐正在使用");
         }

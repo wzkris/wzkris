@@ -29,7 +29,9 @@ import java.util.*;
 public class CellMergeStrategy extends AbstractMergeStrategy implements WorkbookWriteHandler {
 
     private final List<CellRangeAddress> cellList;
+
     private final boolean hasTitle;
+
     private int rowIndex;
 
     public CellMergeStrategy(List<?> list, boolean hasTitle) {
@@ -97,8 +99,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
                 int colNum = mergeFieldsIndex.get(j);
                 if (!map.containsKey(field)) {
                     map.put(field, new RepeatCell(val, i));
-                }
-                else {
+                } else {
                     RepeatCell repeatCell = map.get(field);
                     Object cellValue = repeatCell.getValue();
                     if (cellValue == null || "".equals(cellValue)) {
@@ -111,13 +112,11 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
                             cellList.add(new CellRangeAddress(repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
                         }
                         map.put(field, new RepeatCell(val, i));
-                    }
-                    else if (i == list.size() - 1) {
+                    } else if (i == list.size() - 1) {
                         if (i > repeatCell.getCurrent() && isMerge(list, i, field)) {
                             cellList.add(new CellRangeAddress(repeatCell.getCurrent() + rowIndex, i + rowIndex, colNum, colNum));
                         }
-                    }
-                    else if (!isMerge(list, i, field)) {
+                    } else if (!isMerge(list, i, field)) {
                         if ((i - repeatCell.getCurrent() > 1)) {
                             cellList.add(new CellRangeAddress(repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
                         }

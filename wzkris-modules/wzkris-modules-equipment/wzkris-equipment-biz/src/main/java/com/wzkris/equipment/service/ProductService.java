@@ -9,6 +9,7 @@ import com.wzkris.equipment.domain.Product;
  * @since 2024-12-04 14:40:00
  */
 public interface ProductService {
+
     /**
      * 添加设备
      *

@@ -40,11 +40,9 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
         if (NumberUtil.isNumber(dynamicTenant)) {
             DynamicTenantUtil.set(Long.valueOf(dynamicTenant));
-        }
-        else if (StringUtil.equals(dynamicTenant, IGNORE_TYPE)) {
+        } else if (StringUtil.equals(dynamicTenant, IGNORE_TYPE)) {
             DynamicTenantUtil.enableIgnore();
-        }
-        else if (dynamicTenant != null) {
+        } else if (dynamicTenant != null) {
             return false;// 不是合法请求头数据则直接返回
         }
 
@@ -59,8 +57,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
         if (dynamicTenant != null) {
             if (NumberUtil.isNumber(dynamicTenant.toString())) {
                 DynamicTenantUtil.remove();
-            }
-            else if (StringUtil.equals(dynamicTenant.toString(), IGNORE_TYPE)) {
+            } else if (StringUtil.equals(dynamicTenant.toString(), IGNORE_TYPE)) {
                 DynamicTenantUtil.disableIgnore();
             }
         }

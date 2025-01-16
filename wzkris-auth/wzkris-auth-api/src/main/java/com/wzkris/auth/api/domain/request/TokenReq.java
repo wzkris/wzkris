@@ -10,11 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TokenReq {
 
-    // token
-    @NotBlank(message = "[token] {validate.notnull}")
+    @NotBlank(message = "token {validate.notnull}")
     private String token;
 
-    // 请求ID
-    @NotBlank(message = "[reqId] {validate.notnull}")
-    private String reqId;
 }

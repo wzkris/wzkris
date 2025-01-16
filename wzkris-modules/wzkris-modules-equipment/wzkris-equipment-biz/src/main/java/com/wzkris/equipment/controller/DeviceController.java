@@ -40,7 +40,9 @@ import java.util.List;
 @RequestMapping("/device")
 @RequiredArgsConstructor
 public class DeviceController extends BaseController {
+
     private final DeviceMapper deviceMapper;
+
     private final DeviceService deviceService;
 
     @Operation(summary = "分页查询")

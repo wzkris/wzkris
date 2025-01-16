@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.wzkris.common.security.oauth2.domain.model.AuthClient;
+import com.wzkris.common.security.oauth2.domain.model.AuthThings;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -32,17 +31,16 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LoginUser.class),
         @JsonSubTypes.Type(value = ClientUser.class),
-        @JsonSubTypes.Type(value = AuthClient.class)
+        @JsonSubTypes.Type(value = AuthThings.class)
 })
 public abstract class AuthBaseUser implements OAuth2User {
 
     private final LoginType loginType;
 
-    @Setter
-    private Set<String> grantedAuthority;
+    private final Set<String> grantedAuthority;
 
     protected AuthBaseUser(LoginType loginType, Set<String> grantedAuthority) {
-        Assert.notNull(loginType, "登录类型不能为空");
+        Assert.notNull(loginType, "loginType cannot be null");
         this.loginType = loginType;
         this.grantedAuthority = grantedAuthority;
     }

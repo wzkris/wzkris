@@ -12,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author wzkris
  */
 public class PageSupport {
+
     /**
      * 当前记录起始索引
      */
@@ -41,7 +42,6 @@ public class PageSupport {
     public static <T> Page<T> initPage(int pageNum, int pageSize) {
         return new Page<>(pageNum, pageSize);
     }
-
 
     public static <T> Page<T> buildPageRequest() {
         return initPage();

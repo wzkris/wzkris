@@ -31,6 +31,7 @@ public class UserController {
 
     @Resource
     private XxlJobUserDao xxlJobUserDao;
+
     @Resource
     private XxlJobGroupDao xxlJobGroupDao;
 
@@ -125,8 +126,7 @@ public class UserController {
             }
             // md5 password
             xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
-        }
-        else {
+        } else {
             xxlJobUser.setPassword(null);
         }
 

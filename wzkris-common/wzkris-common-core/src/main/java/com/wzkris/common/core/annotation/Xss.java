@@ -18,6 +18,7 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER})
 @Constraint(validatedBy = {XssValidator.class})
 public @interface Xss {
+
     String message()
 
             default "{validate.xss.forbid}";

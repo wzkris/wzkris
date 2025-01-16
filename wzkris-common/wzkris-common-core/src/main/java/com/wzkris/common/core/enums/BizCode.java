@@ -36,6 +36,7 @@ public enum BizCode {
 
     // 状态码
     private final int code;
+
     // 状态码描述
     private final String desc;
 

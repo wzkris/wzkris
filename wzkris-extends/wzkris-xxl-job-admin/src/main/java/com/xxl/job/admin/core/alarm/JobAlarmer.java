@@ -16,9 +16,11 @@ import java.util.Map;
 
 @Component
 public class JobAlarmer implements ApplicationContextAware, InitializingBean {
+
     private static Logger logger = LoggerFactory.getLogger(JobAlarmer.class);
 
     private ApplicationContext applicationContext;
+
     private List<JobAlarm> jobAlarmList;
 
     @Override
@@ -50,8 +52,7 @@ public class JobAlarmer implements ApplicationContextAware, InitializingBean {
                 boolean resultItem = false;
                 try {
                     resultItem = alarm.doAlarm(info, jobLog);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
                 if (!resultItem) {

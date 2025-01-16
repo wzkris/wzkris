@@ -5,6 +5,7 @@ import com.wzkris.auth.api.domain.request.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
@@ -23,7 +24,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -34,14 +38,24 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "系统账户")
 @RestController
 @RequestMapping("/user")
+@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")
 @RequiredArgsConstructor
 public class SysUserOwnController extends BaseController {
+
+    private final static String ACCOUNT_PREFIX = "user:account";
+
     private final SysUserMapper userMapper;
+
     private final SysUserService userService;
+
     private final SysRoleService roleService;
+
     private final SysPostService postService;
+
     private final SysDeptMapper deptMapper;
+
     private final RemoteCaptchaApi remoteCaptchaApi;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "登录信息")
@@ -57,6 +71,7 @@ public class SysUserOwnController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping("/account")
+    @Cacheable(cacheNames = ACCOUNT_PREFIX + "#1800#600", key = "@lg.getUserId()")
     public Result<SysUserAccountVO> accountVO() {
         SysUser sysUser = userMapper.selectById(LoginUserUtil.getUserId());
 
@@ -79,6 +94,7 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "修改昵称、性别")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@lg.getUserId()")
     public Result<Void> editInfo(@RequestBody EditOwnSysUserReq req) {
         SysUser user = new SysUser(LoginUserUtil.getUserId());
         user.setNickname(req.getNickname());
@@ -89,6 +105,7 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account/edit_phonenumber")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@lg.getUserId()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = LoginUserUtil.getUserId();
 
@@ -108,11 +125,10 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "修改密码")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account/edit_password")
-    public Result<Void> editPwd(@RequestBody @Valid EditPwdReq req) {
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
+    public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
+        Long userId = LoginUserUtil.getUserId();
 
-        String username = loginUser.getUsername();
-        String password = userMapper.selectPwdByUserName(username);
+        String password = userMapper.selectPwdById(userId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), password)) {
             return fail("修改密码失败，旧密码错误");
@@ -122,14 +138,15 @@ public class SysUserOwnController extends BaseController {
             return fail("新密码不能与旧密码相同");
         }
 
-        SysUser update = new SysUser(loginUser.getUserId());
-        update.setPassword(passwordEncoder.encode(password));
+        SysUser update = new SysUser(userId);
+        update.setPassword(passwordEncoder.encode(req.getNewPassword()));
         return toRes(userMapper.updateById(update));
     }
 
     @Operation(summary = "更新头像")
     @OperateLog(title = "系统账户", operateType = OperateType.UPDATE)
     @PostMapping("/account/edit_avatar")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@lg.getUserId()")
     public Result<Void> updateAvatar(@RequestBody String url) {
         SysUser sysUser = new SysUser(LoginUserUtil.getUserId());
         sysUser.setAvatar(url);

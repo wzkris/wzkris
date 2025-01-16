@@ -27,8 +27,7 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         try {
             gen.writeString(strategy.desensitizer().apply(value));
-        }
-        catch (BeansException e) {
+        } catch (BeansException e) {
             log.error("脱敏实现不存在, 采用默认处理 => {}", e.getMessage());
             gen.writeString(value);
         }

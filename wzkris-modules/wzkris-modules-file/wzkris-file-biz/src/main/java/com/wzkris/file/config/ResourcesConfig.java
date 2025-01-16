@@ -15,6 +15,7 @@ import java.io.File;
  */
 @Configuration
 public class ResourcesConfig implements WebMvcConfigurer {
+
     @Autowired
     private LocalConfig localConfig;
 

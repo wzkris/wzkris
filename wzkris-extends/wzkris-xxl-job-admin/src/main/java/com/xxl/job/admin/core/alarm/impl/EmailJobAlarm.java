@@ -25,6 +25,7 @@ import java.util.Set;
  */
 @Component
 public class EmailJobAlarm implements JobAlarm {
+
     private static Logger logger = LoggerFactory.getLogger(EmailJobAlarm.class);
 
     /**
@@ -103,8 +104,7 @@ public class EmailJobAlarm implements JobAlarm {
                     helper.setText(content, true);
 
                     XxlJobAdminConfig.getAdminConfig().getMailSender().send(mimeMessage);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     logger.error(">>>>>>>>>>> xxl-job, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
 
                     alarmResult = false;

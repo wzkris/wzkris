@@ -1,23 +1,26 @@
 package com.wzkris.user.controller;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
-import com.wzkris.user.domain.dto.SysTenantDTO;
-import com.wzkris.user.domain.req.EditStatusReq;
-import com.wzkris.user.domain.req.SysTenantQueryReq;
-import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
+import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.SysTenantVO;
+import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import com.wzkris.user.service.SysTenantService;
@@ -44,15 +47,19 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @IgnoreTenant// 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantService tenantService;
+
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
+
     private final SysUserService userService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "租户分页")
@@ -112,22 +119,35 @@ public class SysTenantController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("tenant:add")
-    public Result<Void> add(@Validated @RequestBody SysTenantDTO tenantDTO) {
-        if (userService.checkUsedByUsername(null, tenantDTO.getUsername())) {
-            return fail("登录账号'" + tenantDTO.getUsername() + "'已存在");
+    public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysTenantReq tenantReq) {
+        if (userService.checkUsedByUsername(null, tenantReq.getUsername())) {
+            return fail("登录账号'" + tenantReq.getUsername() + "'已存在");
         }
-        tenantService.insertTenant(tenantDTO);
-        return ok();
+        SysTenant tenant = BeanUtil.convert(tenantReq, SysTenant.class);
+
+        String operPwd = RandomUtil.randomNumbers(6);
+        tenant.setOperPwd(operPwd);
+
+        String password = RandomUtil.randomNumbers(8);
+        boolean success = tenantService.insertTenant(tenant, tenantReq.getUsername(), password);
+        if (success) {
+            SpringUtil.getContext().publishEvent(
+                    new CreateTenantEvent(LoginUserUtil.getUserId(), tenantReq.getUsername(), tenantReq.getTenantName(), password, operPwd)
+            );
+        }
+        return toRes(success);
     }
 
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("tenant:edit")
-    public Result<Void> edit(@RequestBody SysTenant sysTenant) {
-        sysTenant.setAdministrator(null);
-        sysTenant.setOperPwd(null);
-        return toRes(tenantMapper.updateById(sysTenant));
+    public Result<Void> edit(@Validated @RequestBody SysTenantReq tenantReq) {
+        SysTenant tenant = BeanUtil.convert(tenantReq, SysTenant.class);
+
+        tenant.setAdministrator(null);
+        tenant.setOperPwd(null);
+        return toRes(tenantMapper.updateById(tenant));
     }
 
     @Operation(summary = "修改租户状态")
@@ -142,14 +162,14 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", operateType = OperateType.UPDATE)
-    @PostMapping("/edit_operpwd")
-    @CheckPerms("tenant:edit_operpwd")
-    public Result<Void> editOperPwd(@RequestBody SysTenant sysTenant) {
-        if (StringUtil.length(sysTenant.getOperPwd()) != 6 || !NumberUtil.isNumber(sysTenant.getOperPwd())) {
+    @PostMapping("/reset_operpwd")
+    @CheckPerms("tenant:reset_operpwd")
+    public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
+        if (StringUtil.length(req.getPassword()) != 6 || !NumberUtil.isNumber(req.getPassword())) {
             return fail("操作密码必须为6位数字");
         }
-        SysTenant update = new SysTenant(sysTenant.getTenantId());
-        update.setOperPwd(passwordEncoder.encode(sysTenant.getOperPwd()));
+        SysTenant update = new SysTenant(req.getId());
+        update.setOperPwd(passwordEncoder.encode(req.getPassword()));
         return toRes(tenantMapper.updateById(update));
     }
 
@@ -157,7 +177,7 @@ public class SysTenantController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("tenant:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "[tenantIds] {validate.notnull}") List<Long> tenantIds) {
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.tenant}id{validate.notnull}") List<Long> tenantIds) {
         tenantService.deleteByIds(tenantIds);
         return ok();
     }

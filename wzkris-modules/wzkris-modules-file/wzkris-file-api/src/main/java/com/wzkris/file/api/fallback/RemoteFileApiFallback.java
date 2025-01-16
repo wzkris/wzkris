@@ -21,7 +21,6 @@ import static com.wzkris.common.core.domain.Result.resp;
 @Component
 public class RemoteFileApiFallback implements FallbackFactory<RemoteFileApi> {
 
-
     @Override
     public RemoteFileApi create(Throwable cause) {
 

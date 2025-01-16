@@ -68,8 +68,7 @@ public class LocalCacheUtil {
         LocalCacheData localCacheData = cacheRepository.get(key);
         if (localCacheData != null && System.currentTimeMillis() < localCacheData.getTimeoutTime()) {
             return localCacheData.getVal();
-        }
-        else {
+        } else {
             remove(key);
             return null;
         }
@@ -93,8 +92,11 @@ public class LocalCacheUtil {
     }
 
     private static class LocalCacheData {
+
         private String key;
+
         private Object val;
+
         private long timeoutTime;
 
         public LocalCacheData() {

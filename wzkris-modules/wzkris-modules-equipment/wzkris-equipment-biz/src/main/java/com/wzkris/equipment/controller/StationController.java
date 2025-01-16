@@ -36,7 +36,9 @@ import java.util.List;
 @RequestMapping("/station")
 @RequiredArgsConstructor
 public class StationController extends BaseController {
+
     private final StationMapper stationMapper;
+
     private final StationService stationService;
 
     @Operation(summary = "分页查询")
@@ -108,8 +110,7 @@ public class StationController extends BaseController {
         Station station = stationMapper.selectById(bindingReq.getId());
         if (station == null) {
             return fail("站点不存在");
-        }
-        else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, station.getStatus())) {
+        } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, station.getStatus())) {
             return fail("该站点已被禁用, 禁止绑定设备");
         }
         stationService.bindDevice(bindingReq.getId(), bindingReq.getBindingIds());

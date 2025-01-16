@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +32,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysRoleServiceImpl implements SysRoleService {
+
     private final SysRoleMapper roleMapper;
+
     private final SysRoleMenuMapper roleMenuMapper;
+
     private final SysUserRoleMapper userRoleMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
 
     @Override
@@ -181,11 +183,10 @@ public class SysRoleServiceImpl implements SysRoleService {
      *
      * @param roleIds 待操作的角色id数组
      */
-    public void checkDataScopes(List<Long> roleIds) {
-        roleIds = roleIds.stream().filter(Objects::nonNull).toList();
+    public void checkDataScopes(Collection<Long> roleIds) {
         if (ObjUtil.isNotEmpty(roleIds)) {
-            if (roleMapper.checkDataScopes(roleIds) != roleIds.size()) {
-                throw new AccessDeniedException("没有角色数据访问权限");
+            if (!roleMapper.checkDataScopes(new HashSet<>(roleIds))) {
+                throw new AccessDeniedException("无此角色数据访问权限");
             }
         }
     }

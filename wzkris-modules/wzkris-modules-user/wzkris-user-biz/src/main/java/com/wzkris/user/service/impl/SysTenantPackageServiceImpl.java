@@ -17,6 +17,7 @@ import java.util.List;
 public class SysTenantPackageServiceImpl implements SysTenantPackageService {
 
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override

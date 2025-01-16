@@ -14,21 +14,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SysNotifySend {
 
-    @Schema(description = "接收用户ID")
-    private Long userId;
-
     @Schema(description = "通知ID")
     private Long notifyId;
 
-    @Schema(description = "发送时间")
-    private Long sendTime;
+    @Schema(description = "接收用户ID")
+    private Long userId;
 
     @Schema(description = "已读1 未读0")
     private String readState;
 
-    public SysNotifySend(Long userId, Long notifyId) {
-        this.userId = userId;
+    public SysNotifySend(Long notifyId, Long userId) {
         this.notifyId = notifyId;
+        this.userId = userId;
         this.readState = MessageConstants.NOTIFY_UNREAD;
     }
 }

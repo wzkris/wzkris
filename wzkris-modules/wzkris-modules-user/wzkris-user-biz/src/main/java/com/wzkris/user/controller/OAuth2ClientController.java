@@ -38,7 +38,9 @@ import java.util.List;
 public class OAuth2ClientController extends BaseController {
 
     private final PasswordEncoder passwordEncoder;
+
     private final OAuth2ClientMapper oauth2ClientMapper;
+
     private final OAuth2ClientService oAuth2ClientService;
 
     @Operation(summary = "分页")

@@ -32,7 +32,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class GlobalDictTypeServiceImpl implements GlobalDictTypeService {
+
     private final GlobalDictTypeMapper dictTypeMapper;
+
     private final GlobalDictDataMapper dictDataMapper;
 
     @Override

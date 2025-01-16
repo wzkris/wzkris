@@ -33,9 +33,10 @@ import java.util.List;
 @RequestMapping("/dict/type")
 @RequiredArgsConstructor
 public class GlobalDictTypeController extends BaseController {
-    private final GlobalDictTypeMapper dictTypeMapper;
-    private final GlobalDictTypeService dictTypeService;
 
+    private final GlobalDictTypeMapper dictTypeMapper;
+
+    private final GlobalDictTypeService dictTypeService;
 
     @Operation(summary = "分页")
     @GetMapping("/list")

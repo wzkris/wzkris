@@ -15,6 +15,7 @@ import static com.wzkris.common.core.domain.Result.ok;
 @RestController
 @RequiredArgsConstructor
 public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
+
     private final CaptchaService captchaService;
 
     @Override

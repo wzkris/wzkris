@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,10 +60,10 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     SysUser selectByUsername(String username);
 
     /**
-     * 根据用户名获取密码
+     * 根据ID获取密码
      */
-    @Select("select password from sys_user where username = #{username}")
-    String selectPwdByUserName(String username);
+    @Select("select password from sys_user where user_id = #{userId}")
+    String selectPwdById(Long userId);
 
     /**
      * 根据用户id获取手机号
@@ -82,17 +83,20 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      * 检验权限
      *
      * @param userIds 待操作管理员id
-     * @return 返回可操作数量
+     * @return 返回是否
      */
     @DeptScope
     @Select("""
             <script>
-                SELECT COUNT(*) FROM sys_user WHERE user_id IN
+                SELECT CASE WHEN COUNT(*) = ${userIds.size()} THEN 1 ELSE 0 END AS match_result
+                    FROM sys_user WHERE user_id IN
                     <foreach collection="userIds" item="userId" open="(" separator="," close=")">
-                        #{userId}
+                        <if test="userId != null and userId != ''">
+                            #{userId}
+                        </if>
                     </foreach>
             </script>
             """)
-    int checkDataScopes(@Param("userIds") List<Long> userIds);
+    boolean checkDataScopes(@Param("userIds") Collection<Long> userIds);
 
 }

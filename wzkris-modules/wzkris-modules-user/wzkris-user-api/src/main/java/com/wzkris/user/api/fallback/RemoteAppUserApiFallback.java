@@ -32,6 +32,12 @@ public class RemoteAppUserApiFallback implements FallbackFactory<RemoteAppUserAp
             }
 
             @Override
+            public Result<AppUserResp> getByOpenid(String openid) {
+                log.error("查询app用户信息发生异常，errMsg：{}", cause.getMessage(), cause);
+                return resp(FeignErrorUtil.getCode(cause), null, cause.getMessage());
+            }
+
+            @Override
             public void updateLoginInfo(LoginInfoReq loginInfoReq) {
                 log.error("更新app用户登录信息发生异常，errMsg：{}", cause.getMessage(), cause);
             }

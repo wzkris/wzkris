@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.domain.*;
-import com.wzkris.user.domain.dto.SysTenantDTO;
 import com.wzkris.user.mapper.*;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysTenantService;
@@ -26,33 +25,45 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysTenantServiceImpl implements SysTenantService {
+
     private final SysUserMapper userMapper;
+
     private final SysUserService userService;
+
     private final SysRoleMapper roleMapper;
+
     private final SysRoleService roleService;
+
     private final SysDeptMapper deptMapper;
+
     private final SysPostMapper postMapper;
+
     private final PasswordEncoder passwordEncoder;
+
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantWalletMapper tenantWalletMapper;
+
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertTenant(SysTenantDTO tenantDTO) {
+    public boolean insertTenant(SysTenant tenant, String username, String password) {
         long userId = IdUtil.getSnowflakeNextId();
+        tenant.setAdministrator(userId);
 
-        tenantDTO.setAdministrator(userId);
-        tenantDTO.setOperPwd(passwordEncoder.encode(tenantDTO.getOperPwd()));
-        tenantMapper.insert(tenantDTO);
-        SysTenantWallet wallet = new SysTenantWallet(tenantDTO.getTenantId());
+        tenant.setOperPwd(passwordEncoder.encode(tenant.getOperPwd()));
+        tenantMapper.insert(tenant);
+
+        SysTenantWallet wallet = new SysTenantWallet(tenant.getTenantId());
         tenantWalletMapper.insert(wallet);
+
         SysUser user = new SysUser();
         user.setUserId(userId);
-        user.setTenantId(tenantDTO.getTenantId());
-        user.setUsername(tenantDTO.getUsername());
-        user.setPassword(tenantDTO.getPassword());
-        userService.insertUser(user, null, null);
+        user.setTenantId(tenant.getTenantId());
+        user.setUsername(username);
+        user.setPassword(password);
+        return userService.insertUser(user, null, null);
     }
 
     @Override

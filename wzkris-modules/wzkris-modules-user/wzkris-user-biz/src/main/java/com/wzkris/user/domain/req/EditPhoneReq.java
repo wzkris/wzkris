@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class EditPhoneReq {
+
     @PhoneNumber
     @NotBlank(message = "{desc.phonenumber}" + "{validate.notnull}")
     private String phoneNumber;

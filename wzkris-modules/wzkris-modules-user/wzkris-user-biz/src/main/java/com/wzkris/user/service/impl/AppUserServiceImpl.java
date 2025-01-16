@@ -28,13 +28,19 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Service
 @RequiredArgsConstructor
 public class AppUserServiceImpl implements AppUserService {
+
     private final AppUserMapper appUserMapper;
+
     private final AppUserThirdinfoMapper appUserThirdinfoMapper;
+
     private final AppUserWalletMapper appUserWalletMapper;
+
     private final TransactionTemplate transactionTemplate;
+
     @Autowired
     @Lazy
     private WxMaService wxMaService;
+
     @Autowired
     @Lazy
     private WxMpService wxMpService;
@@ -52,8 +58,7 @@ public class AppUserServiceImpl implements AppUserService {
         WxMaJscode2SessionResult sessionInfo;
         try {
             sessionInfo = wxMaService.getUserService().getSessionInfo(jscode);
-        }
-        catch (WxErrorException e) {
+        } catch (WxErrorException e) {
             throw new ThirdServiceException(e.getError().getErrorMsg());
         }
 
@@ -67,8 +72,7 @@ public class AppUserServiceImpl implements AppUserService {
         WxMaPhoneNumberInfo phoneNumber;
         try {
             phoneNumber = wxMaService.getUserService().getPhoneNumber(code);
-        }
-        catch (WxErrorException e) {
+        } catch (WxErrorException e) {
             log.error("获取小程序用户手机号发生异常，errmsg：{}", e.getError());
             throw new ThirdServiceException(e.getError().getErrorMsg());
         }
@@ -92,8 +96,7 @@ public class AppUserServiceImpl implements AppUserService {
         WxOAuth2AccessToken accessToken;
         try {
             accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
-        }
-        catch (WxErrorException e) {
+        } catch (WxErrorException e) {
             throw new ThirdServiceException(e.getError().getErrorMsg());
         }
 

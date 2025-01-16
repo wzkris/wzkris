@@ -14,8 +14,10 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @RefreshScope
 @ConfigurationProperties(prefix = "security.feign")
 public class IdentityProperties {
+
     // 安全key
     private String identityKey;
+
     // 安全value
     private String identityValue;
 }

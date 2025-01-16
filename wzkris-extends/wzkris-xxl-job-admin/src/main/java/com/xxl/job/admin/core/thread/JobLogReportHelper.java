@@ -17,10 +17,13 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli 2019-11-22
  */
 public class JobLogReportHelper {
+
     private static Logger logger = LoggerFactory.getLogger(JobLogReportHelper.class);
 
     private static JobLogReportHelper instance = new JobLogReportHelper();
+
     private Thread logrThread;
+
     private volatile boolean toStop = false;
 
     public static JobLogReportHelper getInstance() {
@@ -35,7 +38,6 @@ public class JobLogReportHelper {
 
                 // last clean log time
                 long lastCleanLogTime = 0;
-
 
                 while (!toStop) {
 
@@ -87,8 +89,7 @@ public class JobLogReportHelper {
                             }
                         }
 
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!toStop) {
                             logger.error(">>>>>>>>>>> xxl-job, job log report thread error:{}", e);
                         }
@@ -122,8 +123,7 @@ public class JobLogReportHelper {
 
                     try {
                         TimeUnit.MINUTES.sleep(1);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!toStop) {
                             logger.error(e.getMessage(), e);
                         }
@@ -146,8 +146,7 @@ public class JobLogReportHelper {
         logrThread.interrupt();
         try {
             logrThread.join();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
     }

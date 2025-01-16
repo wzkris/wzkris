@@ -14,7 +14,14 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginEvent {
+
     private AuthBaseUser user;
+
+    private String grantType;
+
+    private String status;
+
+    private String errorMsg;
 
     private String ipAddr;
 

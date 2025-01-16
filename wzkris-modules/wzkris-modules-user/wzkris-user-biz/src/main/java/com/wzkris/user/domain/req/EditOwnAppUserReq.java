@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class EditOwnAppUserReq {
+
     @Schema(description = "用户昵称")
     private String nickname;
 

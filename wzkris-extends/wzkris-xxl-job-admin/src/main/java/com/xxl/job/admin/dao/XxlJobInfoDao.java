@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-
 /**
  * job info
  *
@@ -46,6 +45,5 @@ public interface XxlJobInfoDao {
     public List<XxlJobInfo> scheduleJobQuery(@Param("maxNextTime") long maxNextTime, @Param("pagesize") int pagesize);
 
     public int scheduleUpdate(XxlJobInfo xxlJobInfo);
-
 
 }

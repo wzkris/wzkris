@@ -3,10 +3,7 @@ package com.wzkris.common.redis.util;
 import com.wzkris.common.core.utils.SpringUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.redisson.api.RLock;
-import org.redisson.api.RMap;
-import org.redisson.api.RMapCache;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 
 import java.time.Duration;
 import java.util.List;
@@ -71,8 +68,17 @@ public class RedisUtil {
      *
      * @return 删除个数
      */
-    public static long delObj(final List<String> keys) {
+    public static long delObjs(final List<String> keys) {
         return redissonclient.getKeys().delete(keys.toArray(new String[0]));
+    }
+
+    /**
+     * 获取桶
+     *
+     * @param key 缓存的键值
+     */
+    public static <T> RBucket<T> getBucket(final String key) {
+        return redissonclient.getBucket(key);
     }
 
     /**

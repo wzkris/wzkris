@@ -21,10 +21,12 @@ public class LocalConfig {
      * 域名前缀
      */
     public String domain;
+
     /**
      * 资源映射路径 前缀
      */
     public String prefix;
+
     /**
      * 存储地址
      */

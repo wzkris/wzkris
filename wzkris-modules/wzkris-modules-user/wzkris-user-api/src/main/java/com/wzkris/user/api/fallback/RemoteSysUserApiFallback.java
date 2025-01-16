@@ -28,7 +28,7 @@ public class RemoteSysUserApiFallback implements FallbackFactory<RemoteSysUserAp
         log.error("-----------用户服务发生熔断-----------");
         return new RemoteSysUserApi() {
             @Override
-            public Result<SysUserResp> getByUsername(String username, String password) {
+            public Result<SysUserResp> getByUsername(String username) {
                 log.error("查询系统用户信息发生异常，errMsg：{}", cause.getMessage(), cause);
                 return resp(FeignErrorUtil.getCode(cause), null, cause.getMessage());
             }

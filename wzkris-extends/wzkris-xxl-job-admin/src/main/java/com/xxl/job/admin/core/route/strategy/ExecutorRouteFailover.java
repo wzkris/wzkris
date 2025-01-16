@@ -24,8 +24,7 @@ public class ExecutorRouteFailover extends ExecutorRouter {
             try {
                 ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
                 beatResult = executorBiz.beat();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 beatResult = new ReturnT<String>(ReturnT.FAIL_CODE, "" + e);
             }

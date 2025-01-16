@@ -39,7 +39,7 @@ public @interface CheckPerms {
      */
     Mode mode() default Mode.AND;
 
-    public enum Mode {
+    enum Mode {
         /**
          * 与
          */

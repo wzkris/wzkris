@@ -22,8 +22,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+
     private final DeviceMapper deviceMapper;
+
     private final ProductMapper productMapper;
+
     private final ThingsModelMapper thingsModelMapper;
 
     @Override

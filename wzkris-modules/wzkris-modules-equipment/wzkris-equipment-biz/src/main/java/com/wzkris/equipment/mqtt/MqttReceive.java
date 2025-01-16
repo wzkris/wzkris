@@ -19,8 +19,7 @@ public class MqttReceive implements MqttCallback {
     public void connectionLost(Throwable cause) {
         if (cause instanceof MqttException e) {
             log.error("mqtt连接丢失,异常信息：{}, 错误代码：{}", e.getMessage(), e.getReasonCode(), cause);
-        }
-        else {
+        } else {
             log.error("mqtt连接丢失,异常信息：{}", cause.getMessage(), cause);
         }
     }
@@ -31,8 +30,7 @@ public class MqttReceive implements MqttCallback {
             String data = new String(message.getPayload());
 
             log.info("接收到消息：{}，来自主题：{}", data, topic);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("接收到消息处理异常，异常信息：{}", e.getMessage(), e);
         }
     }

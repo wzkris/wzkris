@@ -10,6 +10,7 @@ import com.wzkris.common.orm.page.PageSupport;
  * @date : 2024/1/11 16:41
  */
 public class PageUtil {
+
     // 线程持有分页数据
     protected static final ThreadLocal<Page<?>> LOCAL_PAGE = new ThreadLocal<>();
 
@@ -31,12 +32,10 @@ public class PageUtil {
         if (clear) {
             try {
                 return (Page<T>) LOCAL_PAGE.get();
-            }
-            finally {
+            } finally {
                 clear();
             }
-        }
-        else {
+        } else {
             return (Page<T>) LOCAL_PAGE.get();
         }
     }

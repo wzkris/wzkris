@@ -22,6 +22,7 @@ import java.security.NoSuchAlgorithmException;
  */
 @Service
 public class MinioSysFileServiceImpl implements SysFileService {
+
     @Autowired
     private MinioConfig minioConfig;
 
@@ -45,10 +46,9 @@ public class MinioSysFileServiceImpl implements SysFileService {
                     .contentType(file.getContentType())
                     .build();
             client.putObject(args);
-        }
-        catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
-               InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
-               XmlParserException e) {
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
+                 InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
+                 XmlParserException e) {
             throw new RuntimeException(e.getMessage());
         }
         return minioConfig.getBucketName() + "/" + fileName;

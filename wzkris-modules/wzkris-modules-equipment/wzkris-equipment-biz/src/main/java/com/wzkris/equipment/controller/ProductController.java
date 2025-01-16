@@ -32,7 +32,9 @@ import java.util.List;
 @RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductController extends BaseController {
+
     private final ProductMapper productMapper;
+
     private final ProductService productService;
 
     @Operation(summary = "分页查询")
@@ -91,8 +93,7 @@ public class ProductController extends BaseController {
     public Result<Void> deleteById(@RequestBody Long pdtId) {
         if (productService.checkDeviceUsed(pdtId)) {
             return fail("删除失败，该产品与设备关联使用中");
-        }
-        else if (productService.checkThingsModelUsed(pdtId)) {
+        } else if (productService.checkThingsModelUsed(pdtId)) {
             return fail("删除失败，该产品与物模型关联使用中");
         }
         return toRes(productMapper.deleteById(pdtId));

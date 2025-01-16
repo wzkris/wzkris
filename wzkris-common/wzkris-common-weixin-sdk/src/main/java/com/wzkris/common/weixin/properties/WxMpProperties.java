@@ -31,6 +31,7 @@ public class WxMpProperties {
 
     @Data
     public static class MpConfig {
+
         /**
          * 设置微信公众号的appid
          */

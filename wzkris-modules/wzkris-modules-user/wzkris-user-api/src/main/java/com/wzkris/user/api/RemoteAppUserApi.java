@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQUEST_PATH;
 
-
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : rpc - 系统用户
+ * @description : rpc - APP用户
  * @date : 2024/4/15 16:20
  */
 @FeignClient(value = ApplicationNameConstants.USER, contextId = "RemoteAppUserApi",
@@ -29,6 +28,12 @@ public interface RemoteAppUserApi {
      */
     @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_app_user_by_phonenumber")
     Result<AppUserResp> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
+
+    /**
+     * 根据openid查询app用户
+     */
+    @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_app_user_by_openid")
+    Result<AppUserResp> getByOpenid(@RequestParam("openid") String openid);
 
     /**
      * 更新用户登录信息

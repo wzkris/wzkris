@@ -6,6 +6,7 @@ package com.wzkris.common.core.constant;
  * @author wzkris
  */
 public class CommonConstants {
+
     /**
      * RMI 远程方法调用
      */
@@ -20,6 +21,11 @@ public class CommonConstants {
      * LDAPS 远程方法调用
      */
     public static final String LOOKUP_LDAPS = "ldaps:";
+
+    /**
+     * tracing_id
+     */
+    public static final String TRACING_ID = "Tracing-Id";
 
     /**
      * http请求

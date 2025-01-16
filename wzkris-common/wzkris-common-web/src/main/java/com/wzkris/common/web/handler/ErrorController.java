@@ -22,6 +22,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("${server.error.path:${error.path:/error}}")
 public class ErrorController extends BasicErrorController {
+
     private static final ErrorProperties errorProperties;
 
     static {

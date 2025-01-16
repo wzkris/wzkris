@@ -2,27 +2,27 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>wzkris-common</artifactId>
-		<groupId>com.wzkris</groupId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <artifactId>wzkris-common</artifactId>
+        <groupId>com.wzkris</groupId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-common-stream</artifactId>
+    <artifactId>wzkris-common-stream</artifactId>
 
-	<description>消息队列服务，提供基础消息能力</description>
+    <description>消息队列服务，提供基础消息能力</description>
 
 
-	<dependencies>
+    <dependencies>
 
-		<!-- 消息队列 -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
-		</dependency>
+        <!-- 消息队列 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

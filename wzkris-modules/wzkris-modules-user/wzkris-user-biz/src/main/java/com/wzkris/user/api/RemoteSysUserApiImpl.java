@@ -4,6 +4,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
+import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
@@ -16,12 +17,9 @@ import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPermissionService;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.wzkris.common.core.domain.Result.ok;
-
 
 /**
  * @author : wzkris
@@ -33,19 +31,19 @@ import static com.wzkris.common.core.domain.Result.ok;
 @InnerAuth
 @RestController
 @RequiredArgsConstructor
-public class RemoteSysUserApiImpl implements RemoteSysUserApi {
+public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUserApi {
+
     private final SysUserMapper userMapper;
+
     private final SysTenantMapper tenantMapper;
-    private final PasswordEncoder passwordEncoder;
+
     private final SysTenantPackageMapper tenantPackageMapper;
+
     private final SysPermissionService sysPermissionService;
 
     @Override
-    public Result<SysUserResp> getByUsername(String username, String password) {
+    public Result<SysUserResp> getByUsername(String username) {
         SysUser user = userMapper.selectByUsername(username);
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ok();
-        }
         SysUserResp userResp = BeanUtil.convert(user, SysUserResp.class);
         this.retrieveAllStatus(userResp);
         return ok(userResp);
@@ -62,13 +60,13 @@ public class RemoteSysUserApiImpl implements RemoteSysUserApi {
     /**
      * 查询状态
      */
-    private void retrieveAllStatus(SysUserResp userResp) {
+    private void retrieveAllStatus(@Nullable SysUserResp userResp) {
+        if (userResp == null) return;
         if (SysTenant.isSuperTenant(userResp.getTenantId())) {
             userResp.setTenantStatus(CommonConstants.STATUS_ENABLE);
             userResp.setTenantExpired(CommonConstants.NOT_EXPIRED_TIME);
             userResp.setPackageStatus(CommonConstants.STATUS_ENABLE);
-        }
-        else {
+        } else {
             SysTenant tenant = tenantMapper.selectById(userResp.getTenantId());
             userResp.setTenantStatus(tenant.getStatus());
             userResp.setTenantExpired(tenant.getExpireTime());
