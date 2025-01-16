@@ -19,7 +19,6 @@ import com.wzkris.user.service.SysPermissionService;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -37,8 +36,6 @@ public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUse
     private final SysUserMapper userMapper;
 
     private final SysTenantMapper tenantMapper;
-
-    private final PasswordEncoder passwordEncoder;
 
     private final SysTenantPackageMapper tenantPackageMapper;
 

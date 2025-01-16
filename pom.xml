@@ -15,23 +15,23 @@
         <revision>4.1.0</revision>
         <project.encoding>UTF-8</project.encoding>
         <java.version>17</java.version>
-        <spring-boot.version>3.3.0</spring-boot.version>
-        <spring-cloud.version>2023.0.3</spring-cloud.version>
-        <spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
-        <spring-statemachine.version>3.2.0</spring-statemachine.version>
+        <spring-boot.version>3.3.7</spring-boot.version>
+        <spring-cloud.version>2023.0.5</spring-cloud.version>
+        <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
+        <spring-statemachine.version>4.0.0</spring-statemachine.version>
         <lombok.version>1.18.28</lombok.version>
-        <mysql.version>8.0.33</mysql.version>
+        <mysql.version>8.3.0</mysql.version>
         <netty.version>4.1.110.Final</netty.version>
         <redisson.version>3.31.0</redisson.version>
         <dynamic-ds.version>4.2.0</dynamic-ds.version>
-        <hutool.version>5.8.27</hutool.version>
+        <hutool.version>5.8.35</hutool.version>
         <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
         <caffeine.version>3.1.8</caffeine.version>
         <minio.version>8.2.2</minio.version>
         <knife4j.version>4.5.0</knife4j.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
-        <xxl-job.version>2.4.1</xxl-job.version>
+        <xxl-job.version>2.4.2</xxl-job.version>
 
         <!-- 插件版本 -->
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
