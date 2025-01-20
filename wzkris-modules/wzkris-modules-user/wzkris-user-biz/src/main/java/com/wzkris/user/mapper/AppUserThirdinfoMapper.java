@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppUserThirdinfoMapper extends BaseMapperPlus<AppUserThirdinfo> {
 
-    @Select("SELECT * FROM app_user_thirdinfo WHERE openid = #{openid}")
-    AppUserThirdinfo selectByOpenid(String openid);
+    @Select("SELECT * FROM app_user_thirdinfo WHERE identifier = #{identifier}")
+    AppUserThirdinfo selectByIdentifier(String identifier);
 }

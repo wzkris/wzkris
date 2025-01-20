@@ -41,13 +41,13 @@ import java.util.stream.Collectors;
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
 
-    private static final ExecutorService executorService = new ThreadPoolExecutor(
+    private static final ExecutorService executor = new ThreadPoolExecutor(
             Runtime.getRuntime().availableProcessors() * 3,
             Runtime.getRuntime().availableProcessors() * 3 * 2,
             10L,
             TimeUnit.SECONDS,
             new SynchronousQueue<>(),
-            new DefaultThreadFactory("token-requestid-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("token_request_id")),
+            new DefaultThreadFactory("pre-requestfilter-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("gateway-http-group")),
             new ThreadPoolExecutor.CallerRunsPolicy()
     );
 
@@ -82,7 +82,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         }
 
         // 分布式日志追踪ID
-        mutate.header(CommonConstants.TRACING_ID, IdUtil.fastUUID());
+        mutate.header(CommonConstants.X_TRACING_ID, IdUtil.fastUUID());
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }

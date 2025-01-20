@@ -59,21 +59,16 @@ public class SysTenantOwnController extends BaseController {
 
     @Operation(summary = "获取自身租户")
     @GetMapping("/getinfo")
-    @CheckPerms("tenant:getinfo")
+    @CheckPerms("tenant:information")
     public Result<SysTenantOwnVO> getInfo() {
         Long tenantId = LoginUserUtil.getTenantId();
-        SysTenantOwnVO tenantVO;
-        if (SysTenant.isSuperTenant(tenantId)) {
-            tenantVO = new SysTenantOwnVO(true);// 超级租户不存在信息
-        } else {
-            tenantVO = tenantMapper.selectVOById(tenantId);
-        }
+        SysTenantOwnVO tenantVO = tenantMapper.selectVOById(tenantId);
         return ok(tenantVO);
     }
 
-    @Operation(summary = "获取租户限制信息")
+    @Operation(summary = "获取租户关联信息")
     @GetMapping("/limit_info")
-    @CheckPerms("tenant:getinfo")
+    @CheckPerms("tenant:information")
     public Result<SysTenantLimitVO> limitInfo() {
         SysTenantLimitVO limitVO = new SysTenantLimitVO();
         limitVO.setAccountHas(Math.toIntExact(userMapper.selectCount(null)));

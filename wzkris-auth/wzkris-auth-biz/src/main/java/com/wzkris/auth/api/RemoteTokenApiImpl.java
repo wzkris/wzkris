@@ -30,13 +30,13 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
     public TokenResponse checkToken(TokenReq tokenReq) {
         OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(tokenReq.getToken(), OAuth2TokenType.ACCESS_TOKEN);
         if (oAuth2Authorization == null) {
-            return TokenResponse.failed(OAuth2ErrorCodes.INVALID_TOKEN, "token check failed");
+            return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check failed");
         }
 
         OAuth2AccessToken accessToken = oAuth2Authorization.getAccessToken().getToken();
 
         if (accessToken.getExpiresAt() == null || accessToken.getExpiresAt().isBefore(Instant.now())) {
-            return TokenResponse.failed(OAuth2ErrorCodes.INVALID_TOKEN, "token check expired");
+            return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check expired");
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());

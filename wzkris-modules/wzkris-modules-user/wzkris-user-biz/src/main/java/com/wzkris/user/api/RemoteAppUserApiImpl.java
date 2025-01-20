@@ -1,6 +1,9 @@
 package com.wzkris.user.api;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.exception.ThirdServiceException;
 import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.common.web.model.BaseController;
@@ -10,8 +13,14 @@ import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.AppUserThirdinfo;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.mapper.AppUserThirdinfoMapper;
+import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -28,7 +37,19 @@ public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUse
 
     private final AppUserMapper appUserMapper;
 
+    private final AppUserService appUserService;
+
     private final AppUserThirdinfoMapper appUserThirdinfoMapper;
+
+    private final TransactionTemplate transactionTemplate;
+
+    @Autowired
+    @Lazy
+    private WxMaService wxMaService;
+
+    @Autowired
+    @Lazy
+    private WxMpService wxMpService;
 
     @Override
     public Result<AppUserResp> getByPhoneNumber(String phoneNumber) {
@@ -38,10 +59,47 @@ public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUse
     }
 
     @Override
-    public Result<AppUserResp> getByOpenid(String openid) {
-        AppUserThirdinfo userThirdinfo = appUserThirdinfoMapper.selectByOpenid(openid);
+    public Result<AppUserResp> getOrRegisterByIdentifier(String identifierType, String authCode) {
+        AppUserThirdinfo.IdentifierType type;
+        try {
+            type = AppUserThirdinfo.IdentifierType.valueOf(identifierType);
+        } catch (IllegalArgumentException e) {
+            return resp(BizCode.BAD_REQUEST.value(), "identifierType is illegal");
+        }
+
+        String identifier;
+        switch (type) {
+            case WX_XCX -> {
+                try {
+                    identifier = wxMaService.getUserService().getSessionInfo(authCode).getOpenid();
+                } catch (WxErrorException e) {
+                    throw new ThirdServiceException(e.getError().getErrorMsg());
+                }
+
+            }
+            case WX_GZH -> {
+                try {
+                    identifier = wxMpService.getOAuth2Service().getAccessToken(authCode).getOpenId();
+                } catch (WxErrorException e) {
+                    throw new ThirdServiceException(e.getError().getErrorMsg());
+                }
+            }
+            default -> identifier = null;
+        }
+
+        AppUserThirdinfo userThirdinfo = appUserThirdinfoMapper.selectByIdentifier(identifier);
         if (userThirdinfo == null) {
-            return ok();
+            userThirdinfo = transactionTemplate.execute(status -> {
+                AppUser appUser = new AppUser();
+                appUserService.insertUser(appUser);
+
+                AppUserThirdinfo userthirdinfo = new AppUserThirdinfo();
+                userthirdinfo.setUserId(appUser.getUserId());
+                userthirdinfo.setIdentifier(identifier);
+                userthirdinfo.setIdentifierType(AppUserThirdinfo.IdentifierType.WX_XCX.getValue());
+                appUserThirdinfoMapper.insert(userthirdinfo);
+                return userthirdinfo;
+            });
         }
         AppUser appUser = appUserMapper.selectById(userThirdinfo.getUserId());
         AppUserResp userResp = BeanUtil.convert(appUser, AppUserResp.class);

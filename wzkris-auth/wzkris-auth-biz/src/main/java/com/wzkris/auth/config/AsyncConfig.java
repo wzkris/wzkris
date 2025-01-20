@@ -61,7 +61,7 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setThreadFactory(new ThreadFactory() {
             @Override
             public Thread newThread(@NotNull Runnable r) {
-                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.TRACING_ID)));
+                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.X_TRACING_ID)));
             }
         });
         executor.setDaemon(true);

@@ -6,7 +6,6 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
-import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
@@ -61,10 +60,10 @@ public class SysUserOwnController extends BaseController {
     @Operation(summary = "登录信息")
     @GetMapping("/info")
     public Result<SysUserOwnVO> loginUser() {
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
         SysUserOwnVO userOwnVO = new SysUserOwnVO();
-        userOwnVO.setAdmin(loginUser.getAdmin());
-        userOwnVO.setUsername(loginUser.getUsername());
+        userOwnVO.setAdmin(LoginUserUtil.isAdmin());
+        userOwnVO.setSuperTenant(LoginUserUtil.isSuperTenant());
+        userOwnVO.setUsername(LoginUserUtil.getUsername());
         userOwnVO.setAuthorities(LoginUserUtil.getAuthorities());
         return ok(userOwnVO);
     }

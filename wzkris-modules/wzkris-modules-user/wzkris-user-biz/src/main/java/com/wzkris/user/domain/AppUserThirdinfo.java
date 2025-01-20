@@ -17,16 +17,14 @@ public class AppUserThirdinfo {
     @TableId
     private Long userId;
 
-    private String openid;
-
-    private String appId;
+    private String identifier;
 
     @Schema(description = "渠道")
-    private String channel;
+    private String identifierType;
 
     @Getter
     @AllArgsConstructor
-    public enum Channel {
+    public enum IdentifierType {
 
         WX_XCX("wx_xcx"),
 

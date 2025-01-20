@@ -17,7 +17,7 @@ public abstract class UserInfoTemplate {
     }
 
     @Nullable
-    public AuthBaseUser loadUserByWechat(String channel, String wxCode) {
+    public AuthBaseUser loadUserByWechat(String identifierType, String wxCode) {
         return null;
     }
 

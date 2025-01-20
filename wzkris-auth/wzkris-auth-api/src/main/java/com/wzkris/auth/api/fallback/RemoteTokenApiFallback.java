@@ -18,7 +18,7 @@ public class RemoteTokenApiFallback implements FallbackFactory<RemoteTokenApi> {
             public TokenResponse checkToken(TokenReq tokenReq) {
                 log.error("验证token发生异常，errMsg：{}", cause.getMessage());
 
-                return TokenResponse.unavailable(cause.getMessage());
+                return TokenResponse.error503(cause.getMessage());
             }
         };
     }

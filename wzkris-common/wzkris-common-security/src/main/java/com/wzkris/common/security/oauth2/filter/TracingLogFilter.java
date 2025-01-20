@@ -24,12 +24,12 @@ public class TracingLogFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String tracingId = request.getHeader(CommonConstants.TRACING_ID);
+        String tracingId = request.getHeader(CommonConstants.X_TRACING_ID);
         if (StringUtil.isBlank(tracingId)) {
             tracingId = IdUtil.fastUUID();
         }
-        MDC.put(CommonConstants.TRACING_ID, tracingId);
-        response.setHeader(CommonConstants.TRACING_ID, tracingId);
+        MDC.put(CommonConstants.X_TRACING_ID, tracingId);
+        response.setHeader(CommonConstants.X_TRACING_ID, tracingId);
 
         try {
             filterChain.doFilter(request, response);

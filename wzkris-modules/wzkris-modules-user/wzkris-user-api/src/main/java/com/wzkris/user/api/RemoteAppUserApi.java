@@ -30,10 +30,10 @@ public interface RemoteAppUserApi {
     Result<AppUserResp> getByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber);
 
     /**
-     * 根据openid查询app用户
+     * 根据authCode去不同渠道获取三方唯一标识，并转换成用户信息
      */
-    @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_app_user_by_openid")
-    Result<AppUserResp> getByOpenid(@RequestParam("openid") String openid);
+    @GetMapping(INNER_NOAUTH_REQUEST_PATH + "/query_app_user_or_register")
+    Result<AppUserResp> getOrRegisterByIdentifier(@RequestParam("identifierType") String identifierType, @RequestParam("authCode") String authCode);
 
     /**
      * 更新用户登录信息

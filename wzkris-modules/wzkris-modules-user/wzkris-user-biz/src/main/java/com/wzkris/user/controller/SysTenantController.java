@@ -64,7 +64,7 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "租户分页")
     @GetMapping("/list")
-    @CheckPerms("tenant:list")
+    @CheckPerms("tenant:information")
     public Result<Page<SysTenantVO>> listPage(SysTenantQueryReq queryReq) {
         startPage();
         List<SysTenantVO> list = tenantMapper.selectVOList(this.buildQueryWrapper(queryReq));

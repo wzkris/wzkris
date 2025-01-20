@@ -23,6 +23,6 @@ public class OpenFeignInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         requestTemplate.header(identityProperties.getIdentityKey(), identityProperties.getIdentityValue());
-        requestTemplate.header(CommonConstants.TRACING_ID, MDC.get(CommonConstants.TRACING_ID));
+        requestTemplate.header(CommonConstants.X_TRACING_ID, MDC.get(CommonConstants.X_TRACING_ID));
     }
 }

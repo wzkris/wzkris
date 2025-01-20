@@ -83,6 +83,8 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         if (accessTokenAuthentication.getPrincipal() instanceof UsernamePasswordAuthenticationToken authenticationToken
                 && authenticationToken.getPrincipal() instanceof AuthBaseUser baseUser) {
             String grantType = additionalParameters.get(AuthorizationGrantType.class.getName()).toString();
+            additionalParameters.remove(AuthorizationGrantType.class.getName());
+
             SpringUtil.getContext().publishEvent(new LoginEvent(baseUser, grantType, CommonConstants.STATUS_ENABLE,
                     "", ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
         }
