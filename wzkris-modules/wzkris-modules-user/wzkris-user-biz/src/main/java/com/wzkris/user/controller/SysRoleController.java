@@ -132,7 +132,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @CheckPerms("sys_role:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {

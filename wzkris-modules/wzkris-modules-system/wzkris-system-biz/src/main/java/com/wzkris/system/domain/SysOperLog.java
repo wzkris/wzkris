@@ -1,6 +1,8 @@
 package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
+import com.wzkris.common.orm.annotation.FieldPerms;
 import com.wzkris.system.api.domain.request.OperLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,9 +38,11 @@ public class SysOperLog implements Serializable {
     @Schema(description = "操作类型（0其它 1新增 2修改 3删除）")
     private String operType;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求方法")
     private String method;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求方式")
     private String requestMethod;
 
@@ -48,15 +52,18 @@ public class SysOperLog implements Serializable {
     @Schema(description = "操作人员")
     private String operName;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求url")
     private String operUrl;
 
     @Schema(description = "操作地址")
     private String operIp;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求参数")
     private String operParam;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "返回参数")
     private String jsonResult;
 

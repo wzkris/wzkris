@@ -111,7 +111,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "新增用户")
-    @OperateLog(title = "后台管理", subTitle = "新增用户", operateType = OperateType.INSERT)
+    @OperateLog(title = "系统用户", subTitle = "新增用户", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("sys_user:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
@@ -137,7 +137,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "修改用户")
-    @OperateLog(title = "后台管理", subTitle = "修改用户", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统用户", subTitle = "修改用户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("sys_user:edit")
     public Result<Void> edit(@Validated @RequestBody SysUserReq userReq) {
@@ -155,7 +155,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "删除用户")
-    @OperateLog(title = "后台管理", subTitle = "删除用户", operateType = OperateType.DELETE)
+    @OperateLog(title = "系统用户", subTitle = "删除用户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("sys_user:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
@@ -169,7 +169,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "重置密码")
-    @OperateLog(title = "后台管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统用户", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset_password")
     @CheckPerms("sys_user:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
@@ -182,7 +182,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @CheckPerms("sys_user:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -194,7 +194,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "后台管理", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
+    @OperateLog(title = "系统用户", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
     @CheckPerms("sys_user:export")
     public void export(HttpServletResponse response, SysUserQueryReq queryReq) {
@@ -218,7 +218,7 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "用户授权角色")
-    @OperateLog(title = "后台管理", subTitle = "授权用户角色", operateType = OperateType.GRANT)
+    @OperateLog(title = "系统用户", subTitle = "授权用户角色", operateType = OperateType.GRANT)
     @PostMapping("/authorize_role")
     @CheckPerms("sys_user:edit")
     public Result<Void> authRole(@RequestBody @Valid SysUser2RolesReq req) {

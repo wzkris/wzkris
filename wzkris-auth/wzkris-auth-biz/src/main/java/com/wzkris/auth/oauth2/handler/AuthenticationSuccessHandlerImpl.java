@@ -79,16 +79,6 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters().isEmpty()
                 ? new HashMap<>(2) : accessTokenAuthentication.getAdditionalParameters();
 
-        // 发布登录成功事件
-        if (accessTokenAuthentication.getPrincipal() instanceof UsernamePasswordAuthenticationToken authenticationToken
-                && authenticationToken.getPrincipal() instanceof AuthBaseUser baseUser) {
-            String grantType = additionalParameters.get(AuthorizationGrantType.class.getName()).toString();
-            additionalParameters.remove(AuthorizationGrantType.class.getName());
-
-            SpringUtil.getContext().publishEvent(new LoginEvent(baseUser, grantType, CommonConstants.STATUS_ENABLE,
-                    "", ServletUtil.getClientIP(request), UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
-        }
-
         // 构造响应体
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();

@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "租户信息")
+@Tag(name = "商户信息")
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -103,7 +103,7 @@ public class SysTenantOwnController extends BaseController {
     }
 
     @Operation(summary = "修改操作密码")
-    @OperateLog(title = "租户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "商户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
     @PreAuthorize("@lg.isAdmin()")// 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
@@ -125,7 +125,7 @@ public class SysTenantOwnController extends BaseController {
     }
 
     @Operation(summary = "提现")
-    @OperateLog(title = "租户信息", subTitle = "提现", operateType = OperateType.OTHER)
+    @OperateLog(title = "商户信息", subTitle = "提现", operateType = OperateType.OTHER)
     @PostMapping("/wallet/withdrawal")
     @CheckPerms("tenant:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WithdrawalReq req) {

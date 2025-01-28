@@ -1,10 +1,12 @@
 package com.wzkris.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.annotation.CheckFieldPerms;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.web.model.BaseController;
@@ -28,7 +30,6 @@ import java.util.List;
  */
 @Tag(name = "操作日志")
 @RestController
-@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RequestMapping("/operlog")
 @RequiredArgsConstructor
 public class SysOperlogController extends BaseController {
@@ -40,6 +41,7 @@ public class SysOperlogController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @CheckPerms("operlog:list")
+    @CheckFieldPerms(value = "@ps.hasPerms('operlog:field')", groups = ValidationGroups.Select.class)
     public Result<Page<SysOperLog>> list(SysOperLogQueryReq queryReq) {
         startPage();
         List<SysOperLog> list = operLogMapper.selectList(this.buildQueryWrapper(queryReq));
