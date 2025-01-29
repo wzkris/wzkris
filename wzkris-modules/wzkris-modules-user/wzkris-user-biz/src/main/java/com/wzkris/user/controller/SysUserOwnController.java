@@ -109,7 +109,7 @@ public class SysUserOwnController extends BaseController {
         Long userId = LoginUserUtil.getUserId();
 
         if (userService.checkUsedByPhoneNumber(userId, req.getPhoneNumber())) {
-            return fail("该手机号已被使用");
+            return error412("该手机号已被使用");
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
@@ -130,11 +130,11 @@ public class SysUserOwnController extends BaseController {
         String password = userMapper.selectPwdById(userId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), password)) {
-            return fail("修改密码失败，旧密码错误");
+            return error412("修改密码失败，旧密码错误");
         }
 
         if (passwordEncoder.matches(req.getNewPassword(), password)) {
-            return fail("新密码不能与旧密码相同");
+            return error412("新密码不能与旧密码相同");
         }
 
         SysUser update = new SysUser(userId);

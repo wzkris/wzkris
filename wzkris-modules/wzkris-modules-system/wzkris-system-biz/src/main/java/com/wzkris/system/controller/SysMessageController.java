@@ -79,7 +79,7 @@ public class SysMessageController extends BaseController {
     @CheckPerms("sys_message:edit")
     public Result<Void> edit(@RequestBody SysMessageReq req) {
         if (!messageService.checkIsDraft(req.getMsgId())) {
-            return fail("仅草稿可以修改");
+            return error412("仅草稿可以修改");
         }
         return toRes(messageMapper.updateById(BeanUtil.convert(req, SysMessage.class)));
     }
@@ -90,7 +90,7 @@ public class SysMessageController extends BaseController {
     @CheckPerms("sys_message:publish")
     public Result<Void> publish(@RequestBody Long msgId) {
         if (!messageService.checkIsDraft(msgId)) {
-            return fail("非草稿状态不可以发布");
+            return error412("非草稿状态不可以发布");
         }
         SysMessage update = new SysMessage(msgId);
         update.setStatus(MessageConstants.STATUS_PUBLISH);
@@ -114,7 +114,7 @@ public class SysMessageController extends BaseController {
     @CheckPerms("sys_message:remove")
     public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.message}id{validate.notnull}") List<Long> msgIds) {
         if (!messageService.checkIsClose(msgIds)) {
-            return fail("仅关闭消息可以删除");
+            return error412("仅关闭消息可以删除");
         }
         return toRes(messageMapper.deleteByIds(msgIds));
     }

@@ -92,9 +92,9 @@ public class ProductController extends BaseController {
     @CheckPerms("product:remove")
     public Result<Void> deleteById(@RequestBody Long pdtId) {
         if (productService.checkDeviceUsed(pdtId)) {
-            return fail("删除失败，该产品与设备关联使用中");
+            return error412("删除失败，该产品与设备关联使用中");
         } else if (productService.checkThingsModelUsed(pdtId)) {
-            return fail("删除失败，该产品与物模型关联使用中");
+            return error412("删除失败，该产品与物模型关联使用中");
         }
         return toRes(productMapper.deleteById(pdtId));
     }

@@ -15,7 +15,7 @@ public final class UtilException extends BaseException {
     }
 
     public UtilException(String code, Object[] args) {
-        this(BizCode.FAIL.value(), code, args);
+        this(BizCode.INTERNAL_ERROR.value(), code, args);
     }
 
     public UtilException(int biz, String code, Object[] args) {

@@ -15,6 +15,6 @@ public class FeignErrorUtil {
         if (cause instanceof FeignException exception) {
             return exception.status();
         }
-        return BizCode.RPC_INVOCATION.value();
+        return BizCode.RPC_ERROR.value();
     }
 }

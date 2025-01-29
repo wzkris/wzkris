@@ -20,7 +20,7 @@ public final class BusinessException extends BaseException {
     }
 
     public BusinessException(String message) {
-        this(BizCode.FAIL.value(), message);
+        this(BizCode.INVOKE_FAIL.value(), message);
     }
 
     /**

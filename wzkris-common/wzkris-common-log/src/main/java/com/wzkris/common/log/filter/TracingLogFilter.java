@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.filter;
+package com.wzkris.common.log.filter;
 
 import cn.hutool.core.util.IdUtil;
 import com.wzkris.common.core.constant.CommonConstants;

@@ -2,7 +2,6 @@ package com.wzkris.common.security.oauth2;
 
 import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.common.security.config.PermitAllProperties;
-import com.wzkris.common.security.oauth2.filter.TracingLogFilter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
@@ -21,7 +20,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 /**
  * @author : wzkris
@@ -59,7 +57,6 @@ public final class ResourceServerConfig {
                         }
                 )
                 .formLogin(Customizer.withDefaults())
-                .addFilterBefore(new TracingLogFilter(), SecurityContextHolderFilter.class)
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
