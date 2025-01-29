@@ -76,13 +76,13 @@ public class SysDeptController extends BaseController {
         // 校验权限
         deptService.checkDataScopes(req.getParentId());
         if (!tenantService.checkDeptLimit(LoginUserUtil.getTenantId())) {
-            return fail("部门数量已达上限，请联系管理员");
+            return error412("部门数量已达上限，请联系管理员");
         }
         if (StringUtil.isNotNull(req.getParentId()) && req.getParentId() != 0) {
             SysDept info = deptMapper.selectById(req.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点
             if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
-                return fail("无法在被禁用的部门下添加下级");
+                return error412("无法在被禁用的部门下添加下级");
             }
         }
         return toRes(deptService.insertDept(BeanUtil.convert(req, SysDept.class)));
@@ -96,10 +96,10 @@ public class SysDeptController extends BaseController {
         // 校验权限
         deptService.checkDataScopes(req.getDeptId());
         if (ObjUtil.equals(req.getParentId(), req.getDeptId())) {
-            return fail("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
+            return error412("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
         } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
                 && deptMapper.listNormalChildrenById(req.getDeptId()) > 0) {
-            return fail("该部门包含未停用的子部门");
+            return error412("该部门包含未停用的子部门");
         }
         return toRes(deptService.updateDept(BeanUtil.convert(req, SysDept.class)));
     }
@@ -111,10 +111,10 @@ public class SysDeptController extends BaseController {
     public Result<?> remove(@RequestBody Long deptId) {
         deptService.checkDataScopes(deptId);
         if (deptService.hasChildByDeptId(deptId)) {
-            return fail("存在下级部门,不允许删除");
+            return error412("存在下级部门,不允许删除");
         }
         if (deptService.checkDeptExistUser(deptId)) {
-            return fail("部门存在用户,不允许删除");
+            return error412("部门存在用户,不允许删除");
         }
         deptService.deleteById(deptId);
         return ok();

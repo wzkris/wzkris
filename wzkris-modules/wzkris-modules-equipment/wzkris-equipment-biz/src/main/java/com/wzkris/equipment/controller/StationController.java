@@ -109,9 +109,9 @@ public class StationController extends BaseController {
     public Result<Void> bindingDevice(@RequestBody @Valid BindingReq bindingReq) {
         Station station = stationMapper.selectById(bindingReq.getId());
         if (station == null) {
-            return fail("站点不存在");
+            return error412("站点不存在");
         } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, station.getStatus())) {
-            return fail("该站点已被禁用, 禁止绑定设备");
+            return error412("该站点已被禁用, 禁止绑定设备");
         }
         stationService.bindDevice(bindingReq.getId(), bindingReq.getBindingIds());
         return ok();
@@ -124,7 +124,7 @@ public class StationController extends BaseController {
     public Result<Void> unbindingDevice(@RequestBody @Valid BindingReq bindingReq) {
         Station station = stationMapper.selectById(bindingReq.getId());
         if (station == null) {
-            return fail("站点不存在");
+            return error412("站点不存在");
         }
         stationService.unbindDevice(bindingReq.getId(), bindingReq.getBindingIds());
         return ok();
@@ -136,7 +136,7 @@ public class StationController extends BaseController {
     @CheckPerms("station:remove")
     public Result<Void> deleteById(@RequestBody Long stationId) {
         if (stationService.checkStationUsed(stationId)) {
-            return fail("删除失败, 该站点正在使用");
+            return error412("删除失败, 该站点正在使用");
         }
         return toRes(stationMapper.deleteById(stationId));
     }

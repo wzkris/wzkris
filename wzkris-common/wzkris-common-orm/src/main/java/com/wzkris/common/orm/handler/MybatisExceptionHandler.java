@@ -11,6 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static com.wzkris.common.core.domain.Result.error500;
 import static com.wzkris.common.core.domain.Result.resp;
 
 /**
@@ -37,7 +38,7 @@ public class MybatisExceptionHandler {
     @ExceptionHandler(MyBatisSystemException.class)
     public Result<Void> handleCannotFindDataSourceException(MyBatisSystemException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',Mybatis异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return resp(BizCode.INTERNAL_ERROR, "未找到数据源，请联系管理员确认");
+        return error500("未找到数据源，请联系管理员确认");
     }
 
     /**
@@ -46,6 +47,6 @@ public class MybatisExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public Result<?> handleSqlException(DataAccessException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到sql异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return resp(BizCode.INTERNAL_ERROR, "sql异常，请联系管理员");
+        return error500("sql异常，请联系管理员");
     }
 }

@@ -116,7 +116,7 @@ public class SysRoleController extends BaseController {
     @CheckPerms("sys_role:add")
     public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
         if (!tenantService.checkRoleLimit(LoginUserUtil.getTenantId())) {
-            return fail("角色数量已达上限，请联系管理员");
+            return error412("角色数量已达上限，请联系管理员");
         }
         return toRes(roleService.insertRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }

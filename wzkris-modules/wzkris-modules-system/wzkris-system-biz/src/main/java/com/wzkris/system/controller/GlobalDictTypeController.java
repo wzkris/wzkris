@@ -67,7 +67,7 @@ public class GlobalDictTypeController extends BaseController {
     @CheckPerms("dict:add")
     public Result<Void> add(@Validated @RequestBody GlobalDictTypeReq req) {
         if (dictTypeService.checkDictTypeUnique(req.getTypeId(), req.getDictType())) {
-            return fail("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
+            return error412("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictTypeService.insertDictType(BeanUtil.convert(req, GlobalDictType.class)));
     }
@@ -78,7 +78,7 @@ public class GlobalDictTypeController extends BaseController {
     @CheckPerms("dict:edit")
     public Result<Void> edit(@Validated @RequestBody GlobalDictTypeReq req) {
         if (dictTypeService.checkDictTypeUnique(req.getTypeId(), req.getDictType())) {
-            return fail("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
+            return error412("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictTypeService.updateDictType(BeanUtil.convert(req, GlobalDictType.class)));
     }
@@ -89,7 +89,7 @@ public class GlobalDictTypeController extends BaseController {
     @CheckPerms("dict:remove")
     public Result<Void> remove(@RequestBody List<Long> typeIds) {
         if (dictTypeService.checkDictTypeUsed(typeIds)) {
-            return fail("删除失败，该字典类型已被使用");
+            return error412("删除失败，该字典类型已被使用");
         }
         dictTypeService.deleteByIds(typeIds);
         return ok();

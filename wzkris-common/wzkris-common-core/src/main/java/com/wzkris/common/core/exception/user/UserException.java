@@ -16,7 +16,7 @@ public class UserException extends BaseException {
     }
 
     public UserException(String code, Object[] args) {
-        this(BizCode.FAIL.value(), code, args);
+        this(BizCode.INVOKE_FAIL.value(), code, args);
     }
 
     public UserException(int biz, String code) {

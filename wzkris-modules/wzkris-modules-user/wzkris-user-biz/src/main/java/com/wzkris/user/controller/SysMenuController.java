@@ -73,7 +73,7 @@ public class SysMenuController extends BaseController {
     @CheckPerms("menu:add")
     public Result<Void> add(@Valid @RequestBody SysMenuReq req) {
         if (req.getIsFrame() && !StringUtil.ishttp(req.getPath())) {
-            return fail("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
+            return error412("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         return toRes(menuMapper.insert(BeanUtil.convert(req, SysMenu.class)));
     }
@@ -84,9 +84,9 @@ public class SysMenuController extends BaseController {
     @CheckPerms("menu:edit")
     public Result<Void> edit(@Valid @RequestBody SysMenuReq req) {
         if (req.getIsFrame() && !StringUtil.ishttp(req.getPath())) {
-            return fail("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
+            return error412("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         } else if (req.getMenuId().equals(req.getParentId())) {
-            return fail("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
+            return error412("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
         }
         return toRes(menuMapper.updateById(BeanUtil.convert(req, SysMenu.class)));
     }
@@ -97,10 +97,10 @@ public class SysMenuController extends BaseController {
     @CheckPerms("menu:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
         if (menuService.hasChildByMenuId(menuId)) {
-            return fail("存在子菜单,不允许删除");
+            return error412("存在子菜单,不允许删除");
         }
         if (menuService.checkMenuExistRole(menuId)) {
-            return fail("菜单已分配,不允许删除");
+            return error412("菜单已分配,不允许删除");
         }
         menuService.deleteById(menuId);
         return ok();

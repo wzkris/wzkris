@@ -11,7 +11,7 @@ import com.wzkris.common.core.exception.base.BaseException;
 public class FileException extends BaseException {
 
     public FileException(String code, Object[] args) {
-        this(BizCode.FAIL.value(), code, args);
+        this(BizCode.INVOKE_FAIL.value(), code, args);
     }
 
     public FileException(int biz, String code, Object[] args) {

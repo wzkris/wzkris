@@ -99,7 +99,7 @@ public class ProtocolController extends BaseController {
     @CheckPerms("protocol:remove")
     public Result<?> deleteById(@RequestBody Long ptcId) {
         if (protocolService.checkProtocolUsed(ptcId)) {
-            return fail("删除失败，该协议被产品使用中");
+            return error412("删除失败，该协议被产品使用中");
         }
         return toRes(protocolMapper.deleteById(ptcId));
     }

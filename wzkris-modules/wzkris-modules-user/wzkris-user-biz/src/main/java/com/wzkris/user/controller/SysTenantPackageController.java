@@ -127,7 +127,7 @@ public class SysTenantPackageController extends BaseController {
     @CheckPerms("tenant_package:remove")
     public Result<Void> remove(@NotEmpty(message = "{desc.package}id{validate.notnull}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
-            return fail("删除失败, 套餐正在使用");
+            return error412("删除失败, 套餐正在使用");
         }
         return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }

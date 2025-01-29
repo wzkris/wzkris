@@ -74,7 +74,7 @@ public class SysPostController extends BaseController {
     @CheckPerms("post:add")
     public Result<Void> add(@Validated @RequestBody SysPostReq req) {
         if (!tenantService.checkPostLimit(LoginUserUtil.getTenantId())) {
-            return fail("岗位数量已达上限，请联系管理员");
+            return error412("岗位数量已达上限，请联系管理员");
         }
         return toRes(postMapper.insert(BeanUtil.convert(req, SysPost.class)));
     }
@@ -93,7 +93,7 @@ public class SysPostController extends BaseController {
     @CheckPerms("post:remove")
     public Result<Void> remove(@RequestBody List<Long> postIds) {
         if (postService.checkPostUse(postIds)) {
-            return fail("岗位已被使用,不允许删除");
+            return error412("岗位已被使用,不允许删除");
         }
         postService.deleteByPostIds(postIds);
         return ok();

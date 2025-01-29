@@ -17,7 +17,7 @@ public final class BusinessExceptionI18n extends BaseException {
 
     // 指向国际化信息
     public BusinessExceptionI18n(String code, Object... args) {
-        this(BizCode.FAIL.value(), code, args);
+        this(BizCode.INVOKE_FAIL.value(), code, args);
     }
 
     @Override
