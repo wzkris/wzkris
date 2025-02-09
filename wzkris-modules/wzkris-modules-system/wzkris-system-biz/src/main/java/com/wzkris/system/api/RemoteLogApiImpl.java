@@ -1,17 +1,16 @@
 package com.wzkris.system.api;
 
 import com.wzkris.common.core.utils.BeanUtil;
-import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.system.api.domain.request.LoginLogReq;
 import com.wzkris.system.api.domain.request.OperLogReq;
 import com.wzkris.system.domain.SysLoginLog;
 import com.wzkris.system.domain.SysOperLog;
 import com.wzkris.system.mapper.SysLoginLogMapper;
 import com.wzkris.system.mapper.SysOperLogMapper;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : wzkris
@@ -19,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @description : 操作日志RPC
  * @date : 2023/3/13 16:13
  */
-@Hidden
-@InnerAuth
-@RestController
+@Service
+@DubboService
 @RequiredArgsConstructor
 public class RemoteLogApiImpl implements RemoteLogApi {
 

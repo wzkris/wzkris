@@ -3,6 +3,7 @@ package com.wzkris.system.api.domain.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  * @author wzkris
  */
 @Data
-public class OperLogReq {
+public class OperLogReq implements Serializable {
 
     /**
      * 租户ID

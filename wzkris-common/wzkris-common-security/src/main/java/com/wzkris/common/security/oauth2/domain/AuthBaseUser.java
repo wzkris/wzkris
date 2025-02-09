@@ -1,7 +1,6 @@
 package com.wzkris.common.security.oauth2.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.wzkris.common.security.oauth2.domain.model.AuthThings;
@@ -10,10 +9,13 @@ import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.Assert;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -33,7 +35,10 @@ import java.util.Set;
         @JsonSubTypes.Type(value = ClientUser.class),
         @JsonSubTypes.Type(value = AuthThings.class)
 })
-public abstract class AuthBaseUser implements OAuth2User {
+public abstract class AuthBaseUser implements OAuth2User, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     private final LoginType loginType;
 
@@ -58,11 +63,4 @@ public abstract class AuthBaseUser implements OAuth2User {
         return AuthorityUtils.createAuthorityList(this.grantedAuthority);
     }
 
-    /**
-     * 用作反序列化
-     */
-    @JsonProperty(value = "@class", access = JsonProperty.Access.READ_ONLY)
-    public String getClazz() {
-        return this.getClass().getName();
-    }
 }

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.exception.UtilException;
+import com.wzkris.common.core.exception.util.UtilException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -94,9 +94,9 @@ public class JsonUtil {
      * @param clazz 对象类型
      * @return bean
      */
-    public static <T> T parseObject(Object obj, Class<T> clazz) {
+    public static <T> T parseObject(String obj, Class<T> clazz) {
         try {
-            return objectMapper.convertValue(obj, clazz);
+            return objectMapper.readValue(obj, clazz);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");

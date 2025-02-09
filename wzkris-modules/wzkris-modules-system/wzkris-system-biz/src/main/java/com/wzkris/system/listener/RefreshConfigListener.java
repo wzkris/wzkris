@@ -3,9 +3,9 @@ package com.wzkris.system.listener;
 import com.wzkris.system.listener.event.RefreshConfigEvent;
 import com.wzkris.system.service.SysConfigService;
 import com.wzkris.system.utils.ConfigCacheUtil;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -19,14 +19,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RefreshConfigListener {
+public class RefreshConfigListener implements CommandLineRunner {
 
     private final SysConfigService configService;
-
-    @PostConstruct
-    public void loadingCache() {
-        configService.loadingConfigCache();
-    }
 
     /**
      * 异步刷新缓存
@@ -35,5 +30,10 @@ public class RefreshConfigListener {
     @EventListener
     public void loginEvent(RefreshConfigEvent configEvent) {
         ConfigCacheUtil.setKey(configEvent.getKey(), configEvent.getValue());
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        configService.loadingConfigCache();
     }
 }

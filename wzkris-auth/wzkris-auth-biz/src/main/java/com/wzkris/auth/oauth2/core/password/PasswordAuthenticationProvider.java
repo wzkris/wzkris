@@ -4,6 +4,8 @@ import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.exception.BaseException;
+import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
@@ -43,12 +45,16 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     @Override
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
-        // 校验是否被冻结
-        captchaService.validateLockAccount(authenticationToken.getUsername());
-        // 校验最大次数
-        captchaService.validateMaxTryCount(authenticationToken.getUsername());
-        // 验证码校验
-        captchaService.validatePicCode(authenticationToken.getUuid(), authenticationToken.getCode());
+        try {
+            // 校验是否被冻结
+            captchaService.validateLockAccount(authenticationToken.getUsername());
+            // 校验最大次数
+            captchaService.validateMaxTryCount(authenticationToken.getUsername());
+            // 验证码校验
+            captchaService.validatePicCode(authenticationToken.getUuid(), authenticationToken.getCode());
+        } catch (BaseException e) {
+            OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
+        }
 
         AuthBaseUser baseUser = userInfoTemplate.loadByUsernameAndPassword(authenticationToken.getUsername(), authenticationToken.getPassword());
 

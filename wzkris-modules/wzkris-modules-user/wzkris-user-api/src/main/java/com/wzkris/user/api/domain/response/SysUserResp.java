@@ -2,13 +2,15 @@ package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * sys用户信息
  *
  * @author wzkris
  */
 @Data
-public class SysUserResp {
+public class SysUserResp implements Serializable {
 
     private Long userId;
 

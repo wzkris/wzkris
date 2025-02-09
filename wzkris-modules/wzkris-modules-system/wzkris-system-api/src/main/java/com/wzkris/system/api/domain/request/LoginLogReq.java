@@ -2,6 +2,8 @@ package com.wzkris.system.api.domain.request;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -9,7 +11,7 @@ import lombok.Data;
  * @date : 2023/8/26 14:35
  */
 @Data
-public class LoginLogReq {
+public class LoginLogReq implements Serializable {
 
     /**
      * ID

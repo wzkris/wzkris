@@ -6,8 +6,8 @@ spring:
     # 应用名称
     name: wzkris-user
   profiles:
-    # 环境配置
     active: @profiles.active@
+    include: dubbo
   cloud:
     nacos:
       # 注册地址
@@ -16,8 +16,6 @@ spring:
       username: @nacos.username@
       password: @nacos.password@
       discovery:
-        metadata:
-          version: 0.1.1
         namespace: @nacos.namespace@
         group: @nacos.group@
       config:

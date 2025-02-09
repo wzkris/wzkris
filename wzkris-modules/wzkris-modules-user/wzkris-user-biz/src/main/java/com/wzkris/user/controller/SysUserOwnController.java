@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,6 +54,7 @@ public class SysUserOwnController extends BaseController {
 
     private final SysDeptMapper deptMapper;
 
+    @DubboReference
     private final RemoteCaptchaApi remoteCaptchaApi;
 
     private final PasswordEncoder passwordEncoder;
@@ -113,8 +115,7 @@ public class SysUserOwnController extends BaseController {
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        Result<Void> result = remoteCaptchaApi.validateSms(smsCheckReq);
-        result.checkData();
+        remoteCaptchaApi.validateSms(smsCheckReq);
 
         SysUser user = new SysUser(userId);
         user.setPhoneNumber(req.getPhoneNumber());

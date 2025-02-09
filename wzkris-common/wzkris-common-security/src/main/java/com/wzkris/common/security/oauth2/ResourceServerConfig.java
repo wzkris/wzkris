@@ -9,6 +9,7 @@ import com.wzkris.common.security.oauth2.resolver.CustomBearerTokenResolver;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
@@ -35,6 +36,7 @@ public final class ResourceServerConfig {
 
     private final PermitAllProperties permitAllProperties;
 
+    @DubboReference
     private final RemoteTokenApi remoteTokenApi;
 
     @Bean

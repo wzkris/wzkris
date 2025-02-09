@@ -7,6 +7,7 @@ import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.listener.event.CreateUserEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SendNotifyListener {
 
+    @DubboReference
     private final RemoteNotifyApi remoteNotifyApi;
 
     @Async

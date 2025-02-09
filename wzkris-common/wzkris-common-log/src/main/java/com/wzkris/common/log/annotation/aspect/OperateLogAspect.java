@@ -18,11 +18,11 @@ import com.wzkris.system.api.domain.request.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -50,10 +50,11 @@ public class OperateLogAspect {
 
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
-    @Autowired
-    private RemoteLogApi remoteLogApi;
+    @DubboReference
+    private final RemoteLogApi remoteLogApi;
 
-    public OperateLogAspect() {
+    public OperateLogAspect(RemoteLogApi remoteLogApi) {
+        this.remoteLogApi = remoteLogApi;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);// 配置null不序列化, 避免大量无用参数存入DB
     }
 

@@ -206,7 +206,6 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                 CommonConstants.STATUS_ENABLE, "", ServletUtil.getClientIP(request),
                 UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
 
-
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticationToken, accessToken, refreshToken, additionalParameters);
         oAuth2AccessTokenAuthenticationToken.setAuthenticated(true);

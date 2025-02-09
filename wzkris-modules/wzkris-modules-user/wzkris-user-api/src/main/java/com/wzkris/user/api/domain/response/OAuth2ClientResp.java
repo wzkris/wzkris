@@ -2,6 +2,7 @@ package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @author wzkris
  */
 @Data
-public class OAuth2ClientResp {
+public class OAuth2ClientResp implements Serializable {
 
     // 客户端id 等价于app_id
     private String clientId;

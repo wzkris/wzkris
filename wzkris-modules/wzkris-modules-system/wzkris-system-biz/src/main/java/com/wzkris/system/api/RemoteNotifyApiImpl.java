@@ -1,13 +1,12 @@
 package com.wzkris.system.api;
 
-import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.system.api.domain.request.SendNotifyReq;
 import com.wzkris.system.constant.MessageConstants;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.service.SysNotifyService;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 
 /**
  * @author : wzkris
@@ -15,9 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @description : 通知RPC
  * @since : 2024/12/16 12:55
  */
-@Hidden
-@InnerAuth
-@RestController
+@Service
+@DubboService
 @RequiredArgsConstructor
 public class RemoteNotifyApiImpl implements RemoteNotifyApi {
 

@@ -16,23 +16,32 @@
         wzkris-common-datasource多数据源
     </description>
 
+    <properties>
+        <dynamic-ds.version>4.2.0</dynamic-ds.version>
+    </properties>
+
     <dependencies>
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.shardingsphere</groupId>-->
-        <!--            <artifactId>shardingsphere-jdbc-core</artifactId>-->
-        <!--        </dependency>-->
-
         <!-- Dynamic DataSource -->
-        <!--        <dependency>-->
-        <!--            <groupId>com.baomidou</groupId>-->
-        <!--            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>${dynamic-ds.version}</version>
+        </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.shardingsphere</groupId>-->
-        <!--            <artifactId>shardingsphere-cluster-mode-repository-zookeeper</artifactId>-->
-        <!--        </dependency>-->
+        <!--            &lt;!&ndash; 分片策略 &ndash;&gt;-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.apache.shardingsphere</groupId>-->
+        <!--                <artifactId>shardingsphere-jdbc-core</artifactId>-->
+        <!--                <version>${shardingsphere.version}</version>-->
+        <!--            </dependency>-->
+
+        <!--            &lt;!&ndash;集群策略&ndash;&gt;-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.apache.shardingsphere</groupId>-->
+        <!--                <artifactId>shardingsphere-cluster-mode-repository-zookeeper</artifactId>-->
+        <!--                <version>${shardingsphere.version}</version>-->
+        <!--            </dependency>-->
 
     </dependencies>
 </project>

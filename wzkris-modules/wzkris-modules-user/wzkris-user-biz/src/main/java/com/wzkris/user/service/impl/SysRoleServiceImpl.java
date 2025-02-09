@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.exception.BusinessExceptionI18n;
+import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
@@ -174,7 +174,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
         if (userRoleMapper.countByRoleIds(roleIds) > 0) {
-            throw new BusinessExceptionI18n("business.allocated");
+            throw new BusinessException("business.allocated");
         }
     }
 

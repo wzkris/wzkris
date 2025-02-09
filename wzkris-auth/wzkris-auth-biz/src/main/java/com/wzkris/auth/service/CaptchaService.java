@@ -9,14 +9,12 @@ import com.google.code.kaptcha.Producer;
 import com.wzkris.auth.config.CaptchaConfig;
 import com.wzkris.auth.domain.vo.KaptchaVO;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.param.CaptchaException;
+import com.wzkris.common.core.exception.captcha.CaptchaException;
+import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
-import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Resource;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,17 +105,17 @@ public class CaptchaService {
     public void validatePicCode(String uuid, String code) {
         if (captchaConfig.getEnabled()) {
             if (!StringUtil.isAllNotBlank(uuid, code)) {
-                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.notnull");
+                throw new CaptchaException(BizCode.PRECONDITION_FAILED.value(), "captcha.notnull");
             }
 
             String picKey = PIC_CODE_PREFIX + uuid;
 
             String realCode = RedisUtil.getObj(picKey);
             if (StringUtil.isBlank(realCode)) {
-                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
+                throw new CaptchaException(BizCode.PRECONDITION_FAILED.value(), "captcha.expired");
             }
             if (!StringUtil.equalsIgnoreCase(code, realCode)) {
-                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
+                throw new CaptchaException(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
             }
             RedisUtil.delObj(picKey);
         }
@@ -133,7 +131,7 @@ public class CaptchaService {
         String smsKey = SMS_CODE_PREFIX + phoneNumber;
         if (RedisUtil.hasKey(smsKey)) {
             // 存在则不允许多次调用
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.TOO_MANY_REQUESTS.value(), CustomErrorCodes.FREQUENT_RETRY, "frequent.retry");
+            throw new BusinessException(BizCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
         }
         // TODO 调用SMS发送验证码
         String smsCode = RandomUtil.randomNumbers(6);
@@ -145,15 +143,15 @@ public class CaptchaService {
     /**
      * 校验短信验证码
      */
-    public void validateSmsCode(@NonNull String phoneNumber, @Nonnull String smsCode) {
+    public void validateSmsCode(@Nonnull String phoneNumber, @Nonnull String smsCode) {
         String smsKey = SMS_CODE_PREFIX + phoneNumber;
 
         String code = RedisUtil.getObj(smsKey);
         if (StringUtil.isBlank(code)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.expired");
+            throw new CaptchaException(BizCode.PRECONDITION_FAILED.value(), "captcha.expired");
         }
         if (ObjUtil.notEqual(smsCode, code)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "captcha.error");
+            throw new CaptchaException(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
         }
         RedisUtil.delObj(smsKey);
     }
@@ -166,7 +164,7 @@ public class CaptchaService {
         String lockKey = MAX_TRY_PREFIX + username;
         Integer retryCount = ObjectUtil.defaultIfNull(RedisUtil.getObj(lockKey), 0);
         if (retryCount > maxRetryCount) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.TOO_MANY_REQUESTS.value(), CustomErrorCodes.FREQUENT_RETRY, "frequent.retry");
+            throw new BusinessException(BizCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
         }
         ++retryCount;
         RedisUtil.setObj(lockKey, retryCount, 300); // 默认冻结5分钟
@@ -178,7 +176,7 @@ public class CaptchaService {
     public void validateLockAccount(String username) {
         String lockKey = ACCOUNT_LOCK_KEY + username;
         if (RedisUtil.hasKey(lockKey)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), CustomErrorCodes.VALIDATE_ERROR, "service.busy");
+            throw new BusinessException(BizCode.BAD_REQUEST.value(), "service.busy");
         }
     }
 

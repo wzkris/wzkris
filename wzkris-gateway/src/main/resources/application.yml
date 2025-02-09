@@ -6,9 +6,6 @@ spring:
   application:
     # 应用名称
     name: wzkris-gateway
-  profiles:
-    # 环境配置
-    active: @profiles.active@
   cloud:
     nacos:
       # 注册地址

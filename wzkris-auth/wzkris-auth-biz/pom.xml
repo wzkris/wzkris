@@ -28,15 +28,9 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- Spring OAuth2授权服务器-->
         <dependency>
             <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-authorization-server</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            <artifactId>spring-security-oauth2-client</artifactId>
         </dependency>
 
         <!--模板引擎-->
@@ -49,6 +43,12 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+
+        <!-- 日志追踪-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-log</artifactId>
         </dependency>
 
         <!-- Sentinel -->

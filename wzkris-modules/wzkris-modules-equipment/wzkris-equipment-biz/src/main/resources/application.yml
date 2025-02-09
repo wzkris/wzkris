@@ -6,8 +6,8 @@ spring:
     # 应用名称
     name: wzkris-equipment
   profiles:
-    # 环境配置
     active: @profiles.active@
+    include: dubbo
   cloud:
     stream:
       function:

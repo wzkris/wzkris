@@ -1,12 +1,8 @@
 package com.wzkris.user.api;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
-import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.ThirdServiceException;
+import com.wzkris.common.core.exception.service.ThirdServiceException;
 import com.wzkris.common.core.utils.BeanUtil;
-import com.wzkris.common.openfeign.annotation.InnerAuth;
-import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import com.wzkris.user.api.domain.response.AppUserResp;
 import com.wzkris.user.domain.AppUser;
@@ -14,14 +10,14 @@ import com.wzkris.user.domain.AppUserThirdinfo;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.mapper.AppUserThirdinfoMapper;
 import com.wzkris.user.service.AppUserService;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : wzkris
@@ -29,11 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @description : 内部app用户接口
  * @date : 2024/4/15 16:20
  */
-@Hidden
-@InnerAuth
-@RestController
+@Service
+@DubboService
 @RequiredArgsConstructor
-public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUserApi {
+public class RemoteAppUserApiImpl implements RemoteAppUserApi {
 
     private final AppUserMapper appUserMapper;
 
@@ -52,20 +47,14 @@ public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUse
     private WxMpService wxMpService;
 
     @Override
-    public Result<AppUserResp> getByPhoneNumber(String phoneNumber) {
+    public AppUserResp getByPhoneNumber(String phoneNumber) {
         AppUser appUser = appUserMapper.selectByPhoneNumber(phoneNumber);
-        AppUserResp userResp = BeanUtil.convert(appUser, AppUserResp.class);
-        return ok(userResp);
+        return BeanUtil.convert(appUser, AppUserResp.class);
     }
 
     @Override
-    public Result<AppUserResp> getOrRegisterByIdentifier(String identifierType, String authCode) {
-        AppUserThirdinfo.IdentifierType type;
-        try {
-            type = AppUserThirdinfo.IdentifierType.valueOf(identifierType);
-        } catch (IllegalArgumentException e) {
-            return resp(BizCode.BAD_REQUEST.value(), "identifierType is illegal");
-        }
+    public AppUserResp getOrRegisterByIdentifier(String identifierType, String authCode) {
+        AppUserThirdinfo.IdentifierType type = AppUserThirdinfo.IdentifierType.valueOf(identifierType);
 
         String identifier;
         switch (type) {
@@ -102,8 +91,7 @@ public class RemoteAppUserApiImpl extends BaseController implements RemoteAppUse
             });
         }
         AppUser appUser = appUserMapper.selectById(userThirdinfo.getUserId());
-        AppUserResp userResp = BeanUtil.convert(appUser, AppUserResp.class);
-        return ok(userResp);
+        return BeanUtil.convert(appUser, AppUserResp.class);
     }
 
     @Override

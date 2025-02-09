@@ -17,6 +17,7 @@ import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -32,10 +33,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LoginEventListener {
 
+    @DubboReference
     private final RemoteLogApi remoteLogApi;
 
+    @DubboReference
     private final RemoteSysUserApi remoteSysUserApi;
 
+    @DubboReference
     private final RemoteAppUserApi remoteAppUserApi;
 
     /**

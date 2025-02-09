@@ -14,9 +14,9 @@ import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -149,7 +149,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public boolean checkUsedByUsername(@Nullable Long userId, @NotNull String username) {
+    public boolean checkUsedByUsername(@Nullable Long userId, @Nonnull String username) {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getUsername, username)
@@ -159,7 +159,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public boolean checkUsedByPhoneNumber(@org.jetbrains.annotations.Nullable Long userId, @NotNull String phonenumber) {
+    public boolean checkUsedByPhoneNumber(@Nullable Long userId, @Nonnull String phonenumber) {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getPhoneNumber, phonenumber)

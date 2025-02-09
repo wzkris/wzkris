@@ -1,7 +1,6 @@
 package com.wzkris.gateway.filter;
 
 import cn.hutool.core.util.IdUtil;
-import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
@@ -16,7 +15,6 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -53,10 +51,6 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
 
     @Autowired
     private PermitAllProperties permitAllProperties;
-
-    @Lazy
-    @Autowired
-    private RemoteTokenApi remoteTokenApi;
 
     @Bean
     @ConditionalOnMissingBean

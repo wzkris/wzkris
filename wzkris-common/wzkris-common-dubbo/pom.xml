@@ -1,0 +1,38 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-common</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>wzkris-common-dubbo</artifactId>
+
+    <properties>
+        <dubbo.version>3.3.3</dubbo.version>
+    </properties>
+
+    <dependencies>
+
+        <!--  核心包-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

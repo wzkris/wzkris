@@ -18,7 +18,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import com.wzkris.common.core.exception.UtilException;
+import com.wzkris.common.core.exception.util.UtilException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;

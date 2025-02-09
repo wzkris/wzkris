@@ -3,6 +3,8 @@ package com.wzkris.auth.api.domain.response;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -11,7 +13,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-public class TokenResponse {
+public class TokenResponse implements Serializable {
 
     private boolean success = false;
 

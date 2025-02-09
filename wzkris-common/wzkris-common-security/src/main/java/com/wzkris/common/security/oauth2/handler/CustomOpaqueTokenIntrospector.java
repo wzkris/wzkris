@@ -1,12 +1,11 @@
 package com.wzkris.common.security.oauth2.handler;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.auth.api.domain.response.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -22,13 +21,11 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 @Slf4j
 public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
+    @DubboReference
     private final RemoteTokenApi remoteTokenApi;
 
     public CustomOpaqueTokenIntrospector(RemoteTokenApi remoteTokenApi) {
         this.remoteTokenApi = remoteTokenApi;
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override
@@ -38,10 +35,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         if (!response.isSuccess()) {
             throw new OAuth2AuthenticationException(new OAuth2Error(response.getErrorCode()));
         }
-        return this.adaptToCustomResponse(response.getPrincipal());
+        return (AuthBaseUser) response.getPrincipal();
     }
 
-    private AuthBaseUser adaptToCustomResponse(Object responseEntity) {
-        return objectMapper.convertValue(responseEntity, AuthBaseUser.class);
-    }
 }

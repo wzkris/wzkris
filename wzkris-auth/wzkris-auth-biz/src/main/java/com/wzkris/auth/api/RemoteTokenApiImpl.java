@@ -2,25 +2,23 @@ package com.wzkris.auth.api;
 
 import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.auth.api.domain.response.TokenResponse;
-import com.wzkris.common.openfeign.annotation.InnerAuth;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.AuthThings;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.Instant;
 
-@Hidden
-@InnerAuth
-@RestController
+@Service
+@DubboService
 @RequiredArgsConstructor
 public class RemoteTokenApiImpl implements RemoteTokenApi {
 

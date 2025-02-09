@@ -7,7 +7,6 @@ import com.wzkris.auth.oauth2.constants.OAuth2GrantTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -47,12 +46,7 @@ public class LoginUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginUser loadUserByPhoneNumber(String phoneNumber) {
-        Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
-        if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
-        }
-
-        SysUserResp userResp = result.getData();
+        SysUserResp userResp = remoteSysUserApi.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber);
@@ -70,12 +64,7 @@ public class LoginUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginUser loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<SysUserResp> result = remoteSysUserApi.getByUsername(username);
-        if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
-        }
-
-        SysUserResp userResp = result.getData();
+        SysUserResp userResp = remoteSysUserApi.getByUsername(username);
 
         if (userResp == null) {
             captchaService.lockAccount(username);
@@ -108,9 +97,8 @@ public class LoginUserService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<SysPermissionResp> permissionDTOResult = remoteSysUserApi
+        SysPermissionResp permissions = remoteSysUserApi
                 .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
-        SysPermissionResp permissions = permissionDTOResult.checkData();
 
         LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));
         loginUser.setAdmin(permissions.getAdmin());

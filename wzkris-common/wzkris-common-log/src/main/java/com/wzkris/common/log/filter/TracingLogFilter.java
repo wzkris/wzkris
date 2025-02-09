@@ -24,8 +24,10 @@ public class TracingLogFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // 网关转发从头拿
         String tracingId = request.getHeader(CommonConstants.X_TRACING_ID);
         if (StringUtil.isBlank(tracingId)) {
+            log.warn("请求疑似非从网关转发, 请求地址‘{}’, IP'{}'", request.getRequestURI(), request.getRemoteAddr());
             tracingId = IdUtil.fastUUID();
         }
         MDC.put(CommonConstants.X_TRACING_ID, tracingId);

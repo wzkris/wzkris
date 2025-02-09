@@ -2,25 +2,20 @@ package com.wzkris.auth.api;
 
 import com.wzkris.auth.api.domain.request.SmsCheckReq;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.openfeign.annotation.InnerAuth;
-import io.swagger.v3.oas.annotations.Hidden;
+import com.wzkris.common.core.exception.captcha.CaptchaException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 
-import static com.wzkris.common.core.domain.Result.ok;
-
-@Hidden
-@InnerAuth
-@RestController
+@Service
+@DubboService
 @RequiredArgsConstructor
 public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
 
     private final CaptchaService captchaService;
 
     @Override
-    public Result<Void> validateSms(SmsCheckReq smsCheckReq) {
+    public void validateSms(SmsCheckReq smsCheckReq) throws CaptchaException {
         captchaService.validateSmsCode(smsCheckReq.getPhoneNumber(), smsCheckReq.getSmsCode());
-        return ok();
     }
 }

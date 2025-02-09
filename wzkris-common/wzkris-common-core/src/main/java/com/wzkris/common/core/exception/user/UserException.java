@@ -1,7 +1,7 @@
 package com.wzkris.common.core.exception.user;
 
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.base.BaseException;
+import com.wzkris.common.core.exception.BaseException;
 
 /**
  * @author : wzkris
@@ -11,19 +11,11 @@ import com.wzkris.common.core.exception.base.BaseException;
  */
 public class UserException extends BaseException {
 
-    public UserException(String code) {
-        this(code, null);
-    }
-
-    public UserException(String code, Object[] args) {
+    public UserException(String code, Object... args) {
         this(BizCode.INVOKE_FAIL.value(), code, args);
     }
 
-    public UserException(int biz, String code) {
-        this(biz, code, null);
-    }
-
-    public UserException(int biz, String code, Object[] args) {
+    public UserException(int biz, String code, Object... args) {
         super("用户异常", biz, code, args, null);
     }
 }

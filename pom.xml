@@ -22,8 +22,6 @@
         <lombok.version>1.18.28</lombok.version>
         <mysql.version>8.3.0</mysql.version>
         <netty.version>4.1.110.Final</netty.version>
-        <redisson.version>3.31.0</redisson.version>
-        <dynamic-ds.version>4.2.0</dynamic-ds.version>
         <hutool.version>5.8.35</hutool.version>
         <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
@@ -31,7 +29,6 @@
         <minio.version>8.2.2</minio.version>
         <knife4j.version>4.5.0</knife4j.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
-        <xxl-job.version>2.4.2</xxl-job.version>
 
         <!-- 插件版本 -->
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
@@ -134,45 +131,11 @@
                 <version>${lombok.version}</version>
             </dependency>
 
-            <!-- Redisson所需依赖 -->
-            <dependency>
-                <groupId>org.redisson</groupId>
-                <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>${redisson.version}</version>
-            </dependency>
-
-            <!-- Dynamic DataSource -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-                <version>${dynamic-ds.version}</version>
-            </dependency>
-
-            <!--            &lt;!&ndash; 分片策略 &ndash;&gt;-->
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.shardingsphere</groupId>-->
-            <!--                <artifactId>shardingsphere-jdbc-core</artifactId>-->
-            <!--                <version>${shardingsphere.version}</version>-->
-            <!--            </dependency>-->
-
-            <!--            &lt;!&ndash;集群策略&ndash;&gt;-->
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.shardingsphere</groupId>-->
-            <!--                <artifactId>shardingsphere-cluster-mode-repository-zookeeper</artifactId>-->
-            <!--                <version>${shardingsphere.version}</version>-->
-            <!--            </dependency>-->
-
             <!-- 线程传递值 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>transmittable-thread-local</artifactId>
                 <version>${transmittable-thread-local.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.xuxueli</groupId>
-                <artifactId>xxl-job-core</artifactId>
-                <version>${xxl-job.version}</version>
             </dependency>
 
             <dependency>
@@ -237,8 +200,8 @@
                 <nacos.server>localhost:8848</nacos.server>
                 <nacos.username>dev</nacos.username>
                 <nacos.password>nacos</nacos.password>
-                <nacos.namespace>wzkris-dev</nacos.namespace>
-                <nacos.group>wzkris</nacos.group>
+                <nacos.namespace>application-dev</nacos.namespace>
+                <nacos.group>APPLICATION_GROUP</nacos.group>
             </properties>
             <activation>
                 <!-- 默认环境 -->
@@ -252,8 +215,8 @@
                 <nacos.server>localhost:8848</nacos.server>
                 <nacos.username>prod</nacos.username>
                 <nacos.password>nacos</nacos.password>
-                <nacos.namespace>wzkris-prod</nacos.namespace>
-                <nacos.group>wzkris</nacos.group>
+                <nacos.namespace>application-prod</nacos.namespace>
+                <nacos.group>APPLICATION_GROUP</nacos.group>
             </properties>
         </profile>
     </profiles>

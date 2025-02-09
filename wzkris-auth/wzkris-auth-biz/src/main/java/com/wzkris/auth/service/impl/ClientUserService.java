@@ -4,7 +4,6 @@ import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
@@ -30,12 +29,7 @@ public class ClientUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public ClientUser loadUserByPhoneNumber(String phoneNumber) {
-        Result<AppUserResp> result = remoteAppUserApi.getByPhoneNumber(phoneNumber);
-        if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
-        }
-
-        AppUserResp userResp = result.getData();
+        AppUserResp userResp = remoteAppUserApi.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber);
@@ -48,13 +42,8 @@ public class ClientUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public ClientUser loadUserByWechat(String identifierType, String wxCode) {
-        Result<AppUserResp> result = remoteAppUserApi.getOrRegisterByIdentifier(identifierType, wxCode);
+        AppUserResp userResp = remoteAppUserApi.getOrRegisterByIdentifier(identifierType, wxCode);
 
-        if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
-        }
-
-        AppUserResp userResp = result.getData();
         if (userResp == null) {
             return null;
         }
