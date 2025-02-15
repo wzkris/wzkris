@@ -22,9 +22,7 @@ import java.util.Set;
  */
 public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
-    private static final String CODE = "code";
-
-    private static final String UUID = "uuid";
+    private static final String CAPTCHA_ID = "captchaId";
 
     @Override
     protected boolean support(String grantType) {
@@ -52,9 +50,8 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
         String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
         String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
-        String code = StringUtil.toStringOrNull(additionalParameters.get(CODE));
-        String uuid = StringUtil.toStringOrNull(additionalParameters.get(UUID));
-        return new PasswordAuthenticationToken(username, password, uuid, code, clientPrincipal, requestedScopes, null);
+        String captchaId = StringUtil.toStringOrNull(additionalParameters.get(CAPTCHA_ID));
+        return new PasswordAuthenticationToken(username, password, captchaId, clientPrincipal, requestedScopes, null);
     }
 
 }

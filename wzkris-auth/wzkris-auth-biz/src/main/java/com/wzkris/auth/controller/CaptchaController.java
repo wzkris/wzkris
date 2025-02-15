@@ -1,19 +1,27 @@
 package com.wzkris.auth.controller;
 
+import cloud.tianai.captcha.application.ImageCaptchaApplication;
+import cloud.tianai.captcha.application.vo.CaptchaResponse;
+import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
+import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
+import cloud.tianai.captcha.common.response.ApiResponse;
+import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
+import cn.hutool.core.util.RandomUtil;
 import com.wzkris.auth.domain.req.SmsCodeReq;
-import com.wzkris.auth.domain.vo.KaptchaVO;
-import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.common.captcha.model.CheckCaptchaReq;
+import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-
-import static com.wzkris.common.core.domain.Result.ok;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : wzkris
@@ -22,26 +30,42 @@ import static com.wzkris.common.core.domain.Result.ok;
  * @date : 2023/4/17 14:42
  */
 @Tag(name = "验证码")
+@Slf4j
 @Validated
 @RestController
-@RequestMapping
+@RequestMapping("/captcha")
 @RequiredArgsConstructor
-public class CaptchaController {
+public class CaptchaController extends BaseController {
 
     private final CaptchaService captchaService;
 
-    @Operation(summary = "图片验证码")
-    @GetMapping("/code")
-    public Result<KaptchaVO> code() throws IOException {
-        KaptchaVO picCaptcha = captchaService.createPicCode();
+    private final ImageCaptchaApplication application;
 
-        return ok(picCaptcha);
+    @Operation(summary = "生成验证码")
+    @PostMapping("/generate")
+    public CaptchaResponse<ImageCaptchaVO> genCaptcha() {
+        // 参数1为具体的验证码类型， 默认支持 SLIDER、ROTATE、WORD_IMAGE_CLICK、CONCAT 等验证码类型，详见： `CaptchaTypeConstant`类
+        return application.generateCaptcha(CaptchaTypeConstant.SLIDER);
+    }
+
+    @Operation(summary = "校验验证码")
+    @PostMapping("/check")
+    public ApiResponse<?> checkCaptcha(@RequestBody CheckCaptchaReq req) {
+        ApiResponse<?> response = application.matching(req.getId(), req.getData());
+        return response.isSuccess() ? ApiResponse.ofSuccess(req.getId()) : response;
     }
 
     @Operation(summary = "短信验证码")
     @PostMapping("/sms_code")
-    public Result<Integer> smsCode(@RequestBody @Valid SmsCodeReq req) {
-        captchaService.validatePicCode(req.getUuid(), req.getCode());
-        return ok(captchaService.createSmsCode(req.getPhone()));
+    public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
+        boolean valid = ((SecondaryVerificationApplication) application).secondaryVerification(req.getCaptchaId());
+        if (!valid) {
+            return error412("验证码失败");
+        }
+        // TODO 发送短信
+        String code = RandomUtil.randomNumbers(6);
+        log.info("手机号：{} 验证码是：{}", req.getPhone(), code);
+        captchaService.setCaptcha(req.getPhone(), code);
+        return ok();
     }
 }

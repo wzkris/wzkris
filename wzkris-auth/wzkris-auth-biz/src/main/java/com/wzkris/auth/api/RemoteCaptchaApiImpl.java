@@ -1,7 +1,7 @@
 package com.wzkris.auth.api;
 
 import com.wzkris.auth.api.domain.request.SmsCheckReq;
-import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -16,6 +16,6 @@ public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
 
     @Override
     public void validateSms(SmsCheckReq smsCheckReq) throws CaptchaException {
-        captchaService.validateSmsCode(smsCheckReq.getPhoneNumber(), smsCheckReq.getSmsCode());
+        captchaService.validateCaptcha(smsCheckReq.getPhoneNumber(), smsCheckReq.getSmsCode());
     }
 }

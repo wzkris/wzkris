@@ -2,8 +2,8 @@ package com.wzkris.auth.oauth2.core.sms;
 
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
-import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
@@ -56,11 +56,9 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         try {
             // 校验是否被冻结
-            captchaService.validateLockAccount(authenticationToken.getPhoneNumber());
-            // 校验最大次数
-            captchaService.validateMaxTryCount(authenticationToken.getPhoneNumber());
+            captchaService.validateLock(authenticationToken.getPhoneNumber());
             // 校验验证码
-            captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
+            captchaService.validateCaptcha(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
         }

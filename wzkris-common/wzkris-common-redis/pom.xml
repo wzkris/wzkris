@@ -21,6 +21,13 @@
     </properties>
 
     <dependencies>
+
+        <!-- wzkris Common Core-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-core</artifactId>
+        </dependency>
+
         <!-- Redisson所需依赖 -->
         <dependency>
             <groupId>org.redisson</groupId>
@@ -28,10 +35,5 @@
             <version>${redisson.version}</version>
         </dependency>
 
-        <!-- wzkris Common Core-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-core</artifactId>
-        </dependency>
     </dependencies>
 </project>

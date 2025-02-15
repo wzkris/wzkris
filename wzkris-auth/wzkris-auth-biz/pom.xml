@@ -11,10 +11,6 @@
 
     <artifactId>wzkris-auth-biz</artifactId>
 
-    <properties>
-        <kaptcha.version>2.3.3</kaptcha.version>
-    </properties>
-
     <dependencies>
         <!-- SpringCloud Alibaba Nacos -->
         <dependency>
@@ -43,6 +39,12 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+
+        <!-- 验证码-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-captcha</artifactId>
         </dependency>
 
         <!-- 日志追踪-->
@@ -91,13 +93,6 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-swagger</artifactId>
-        </dependency>
-
-        <!-- 验证码 -->
-        <dependency>
-            <groupId>pro.fessional</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>${kaptcha.version}</version>
         </dependency>
 
         <!-- springBoot test-->

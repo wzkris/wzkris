@@ -1,8 +1,8 @@
 package com.wzkris.auth.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
-import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
