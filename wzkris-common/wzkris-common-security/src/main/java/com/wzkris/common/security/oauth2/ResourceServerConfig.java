@@ -48,13 +48,8 @@ public final class ResourceServerConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
                             // 配置url白名单
-                            if (permitAllProperties.getCommons() != null) {
-                                authorize.requestMatchers(permitAllProperties.getCommons().toArray(String[]::new)).permitAll();
-                            }
-                            if (permitAllProperties.getCustoms() != null) {
-                                authorize.requestMatchers(permitAllProperties.getCustoms().toArray(String[]::new)).permitAll();
-                            }
-                            authorize.requestMatchers("/assets/**", "/login", "/activate").permitAll()
+                            authorize.requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new)).permitAll()
+                                    .requestMatchers("/assets/**", "/login", "/activate").permitAll()
                                     .anyRequest().authenticated();
                         }
                 )
