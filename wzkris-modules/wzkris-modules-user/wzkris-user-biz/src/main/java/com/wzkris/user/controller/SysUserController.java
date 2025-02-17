@@ -79,7 +79,7 @@ public class SysUserController extends BaseController {
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), "u.status", queryReq.getStatus())
                 .eq(StringUtil.isNotNull(queryReq.getDeptId()), "u.dept_id", queryReq.getDeptId())
                 .between(queryReq.getParams().get("beginTime") != null && queryReq.getParams().get("endTime") != null,
-                        "u.create_id", queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
+                        "u.creator_id", queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
                 .orderByDesc("u.user_id");
     }
 

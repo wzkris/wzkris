@@ -38,9 +38,9 @@ CREATE TABLE `device`  (
   `online_time` bigint NULL DEFAULT NULL COMMENT '上线时间',
   `offline_time` bigint NULL DEFAULT NULL COMMENT '下线时间',
   `create_at` bigint NOT NULL COMMENT '创建时间',
-  `create_id` bigint NOT NULL COMMENT '创建者',
+  `creator_id` bigint NOT NULL COMMENT '创建者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`device_id`) USING BTREE,
   UNIQUE INDEX `uk_cmcid`(`cmcid` ASC) USING BTREE,
   INDEX `t_id`(`tenant_id` ASC) USING BTREE,
@@ -598,9 +598,9 @@ CREATE TABLE `product`  (
   `pdt_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '产品类型\r\n0 直连产品 1 网关产品 2 网关子产品',
   `ptc_id` bigint NOT NULL COMMENT '协议ID',
   `remark` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '产品描述',
-  `create_id` bigint NOT NULL COMMENT '创建者',
+  `creator_id` bigint NOT NULL COMMENT '创建者',
   `create_at` bigint NOT NULL COMMENT '创建时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`pdt_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '产品表' ROW_FORMAT = DYNAMIC;
@@ -625,9 +625,9 @@ CREATE TABLE `protocol`  (
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '内容',
   `parameter` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '示例参数',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '状态(字典值：0启用  1停用)',
-  `create_id` bigint NOT NULL COMMENT '创建者',
+  `creator_id` bigint NOT NULL COMMENT '创建者',
   `create_at` bigint NOT NULL COMMENT '创建时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`ptc_id`) USING BTREE
@@ -653,9 +653,9 @@ CREATE TABLE `station`  (
   `station_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '电站名称',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '站点状态',
   `create_at` bigint NOT NULL,
-  `create_id` bigint NOT NULL,
+  `creator_id` bigint NOT NULL,
   `update_at` bigint NULL DEFAULT NULL,
-  `update_id` bigint NULL DEFAULT NULL,
+  `updater_id` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`station_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '站点信息' ROW_FORMAT = DYNAMIC;
 
@@ -678,9 +678,9 @@ CREATE TABLE `things_model`  (
   `model_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '模型类别（1-属性，2-服务，3-事件）',
   `datatype` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '数据类型（integer、decimal、string、bool、array、enum）',
   `specs` json NULL COMMENT '数据定义',
-  `create_id` bigint NULL DEFAULT NULL COMMENT '创建者',
+  `creator_id` bigint NULL DEFAULT NULL COMMENT '创建者',
   `create_at` bigint NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`model_id`) USING BTREE,
   UNIQUE INDEX `uk`(`pdt_id` ASC, `identifier` ASC) USING BTREE

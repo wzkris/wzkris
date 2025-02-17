@@ -30,7 +30,7 @@ public class BaseEntity implements Serializable {
      */
     @JsonIgnore
     @TableField(fill = FieldFill.INSERT)
-    private Long createId;
+    private Long creatorId;
 
     /**
      * 更新时间
@@ -44,5 +44,5 @@ public class BaseEntity implements Serializable {
      */
     @JsonIgnore
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateId;
+    private Long updaterId;
 }

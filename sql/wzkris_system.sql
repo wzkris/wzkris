@@ -34,9 +34,9 @@ CREATE TABLE `global_dict_data`  (
   `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '表格回显样式',
   `is_default` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
   `create_at` bigint NOT NULL COMMENT '创建时间',
-  `create_id` bigint NOT NULL COMMENT '创建者',
+  `creator_id` bigint NOT NULL COMMENT '创建者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`data_id`) USING BTREE,
   INDEX `idx_dict_type`(`dict_type` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
@@ -133,9 +133,9 @@ CREATE TABLE `global_dict_type`  (
   `dict_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典名称',
   `dict_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
   `create_at` bigint NOT NULL COMMENT '创建时间',
-  `create_id` bigint NOT NULL COMMENT '创建者',
+  `creator_id` bigint NOT NULL COMMENT '创建者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`type_id`) USING BTREE,
   UNIQUE INDEX `uk_dict_type`(`dict_type` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
@@ -179,9 +179,9 @@ CREATE TABLE `sys_config`  (
   `config_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '参数键值',
   `config_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Y' COMMENT '系统内置（Y是 N否）',
   `create_at` bigint NOT NULL COMMENT '创建时间',
-  `create_id` bigint NOT NULL COMMENT '创建者',
+  `creator_id` bigint NOT NULL COMMENT '创建者',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新时间',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新者',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新者',
   PRIMARY KEY (`config_id`) USING BTREE,
   UNIQUE INDEX `uk_config_key`(`config_key` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '参数配置表' ROW_FORMAT = DYNAMIC;
@@ -254,9 +254,9 @@ CREATE TABLE `sys_message`  (
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '消息内容',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0' COMMENT '消息状态（0草稿 1关闭 2已发送）',
   `create_at` bigint NOT NULL COMMENT '创建者',
-  `create_id` bigint NOT NULL COMMENT '创建时间',
+  `creator_id` bigint NOT NULL COMMENT '创建时间',
   `update_at` bigint NULL DEFAULT NULL COMMENT '更新者',
-  `update_id` bigint NULL DEFAULT NULL COMMENT '更新时间',
+  `updater_id` bigint NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`msg_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统消息表' ROW_FORMAT = DYNAMIC;
 

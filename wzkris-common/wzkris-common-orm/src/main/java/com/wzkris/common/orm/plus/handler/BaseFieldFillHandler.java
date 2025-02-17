@@ -36,8 +36,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         Long current = DateUtil.current();
         this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-        this.setFieldValByName(BaseEntity.Fields.createId, userId, metaObject);
-        this.setFieldValByName(BaseEntity.Fields.updateId, userId, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.creatorId, userId, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     private void fillUpdate(Long userId, MetaObject metaObject) {
         Long current = DateUtil.current();
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
-        this.setFieldValByName(BaseEntity.Fields.updateId, userId, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
     }
 
     /**

@@ -58,9 +58,9 @@ public class SysTenantOwnController extends BaseController {
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "获取自身租户")
-    @GetMapping("/getinfo")
+    @GetMapping("/info")
     @CheckPerms("tenant:information")
-    public Result<SysTenantOwnVO> getInfo() {
+    public Result<SysTenantOwnVO> tenantInfo() {
         Long tenantId = LoginUserUtil.getTenantId();
         SysTenantOwnVO tenantVO = tenantMapper.selectVOById(tenantId);
         return ok(tenantVO);
