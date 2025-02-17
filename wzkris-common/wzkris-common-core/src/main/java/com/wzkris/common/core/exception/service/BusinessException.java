@@ -19,8 +19,4 @@ public final class BusinessException extends BaseException {
         this(BizCode.INVOKE_FAIL.value(), code, args);
     }
 
-    @Override
-    public String getDefaultMessage() {
-        return this.getMessage();
-    }
 }

@@ -11,6 +11,7 @@ import com.wzkris.auth.domain.req.SmsCodeReq;
 import com.wzkris.common.captcha.model.CheckCaptchaReq;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.redis.annotation.RateLimit;
 import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +42,7 @@ public class CaptchaController extends BaseController {
 
     private final ImageCaptchaApplication application;
 
+    @RateLimit
     @Operation(summary = "生成验证码")
     @PostMapping("/generate")
     public CaptchaResponse<ImageCaptchaVO> genCaptcha() {
