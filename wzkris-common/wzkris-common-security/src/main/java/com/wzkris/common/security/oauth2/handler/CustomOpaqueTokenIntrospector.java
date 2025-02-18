@@ -5,7 +5,6 @@ import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.auth.api.domain.response.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -21,7 +20,6 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 @Slf4j
 public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    @DubboReference
     private final RemoteTokenApi remoteTokenApi;
 
     public CustomOpaqueTokenIntrospector(RemoteTokenApi remoteTokenApi) {

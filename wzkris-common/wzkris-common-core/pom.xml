@@ -48,10 +48,16 @@
             <artifactId>mapstruct-plus</artifactId>
         </dependency>
 
-        <!-- 本地缓存-->
+        <!-- 本地缓存 -->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- logback输出 -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
 
         <!-- 参数校验 -->

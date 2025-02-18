@@ -1,5 +1,6 @@
 package com.wzkris.user;
 
+import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -10,14 +11,9 @@ public class PatternTest {
 
     @Test
     public void test() {
-        String pattern = "^\\S*$";
-        Pattern compile = Pattern.compile(pattern);
-        log.info("{}", compile.matcher("ss你好").lookingAt());
-        log.info("{}", compile.matcher("ssA").lookingAt());
-        log.info("{}", compile.matcher("s s").lookingAt());
-        log.info("{}", compile.matcher("ss").lookingAt());
-        log.info("{}", compile.matcher("s，s").lookingAt());
-        log.info("{}", compile.matcher("s,s").lookingAt());
+        PasswordEncoderDelegate delegate = new PasswordEncoderDelegate();
+        boolean encode = delegate.isEncode("{}");
+        System.out.println(encode);
     }
 
 }

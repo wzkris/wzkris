@@ -6,6 +6,7 @@ import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
 import com.wzkris.common.security.oauth2.resolver.CustomBearerTokenResolver;
+import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -82,7 +82,7 @@ public final class ResourceServerConfig {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new PasswordEncoderDelegate();
     }
 }
 
