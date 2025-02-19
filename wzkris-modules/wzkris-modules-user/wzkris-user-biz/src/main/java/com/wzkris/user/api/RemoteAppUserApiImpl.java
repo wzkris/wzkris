@@ -57,23 +57,18 @@ public class RemoteAppUserApiImpl implements RemoteAppUserApi {
         AppUserThirdinfo.IdentifierType type = AppUserThirdinfo.IdentifierType.valueOf(identifierType);
 
         String identifier;
-        switch (type) {
-            case WX_XCX -> {
-                try {
+        try {
+            switch (type) {
+                case WX_XCX -> {
                     identifier = wxMaService.getUserService().getSessionInfo(authCode).getOpenid();
-                } catch (WxErrorException e) {
-                    throw new ThirdServiceException(e.getError().getErrorMsg());
                 }
-
-            }
-            case WX_GZH -> {
-                try {
+                case WX_GZH -> {
                     identifier = wxMpService.getOAuth2Service().getAccessToken(authCode).getOpenId();
-                } catch (WxErrorException e) {
-                    throw new ThirdServiceException(e.getError().getErrorMsg());
                 }
+                default -> identifier = null;
             }
-            default -> identifier = null;
+        } catch (WxErrorException e) {
+            throw new ThirdServiceException(e.getError().getErrorMsg());
         }
 
         AppUserThirdinfo userThirdinfo = appUserThirdinfoMapper.selectByIdentifier(identifier);

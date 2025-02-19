@@ -32,7 +32,7 @@ public class ClientUserService extends UserInfoTemplate {
         AppUserResp userResp = remoteAppUserApi.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.lockAccount(phoneNumber);
+            captchaService.lockAccount(phoneNumber, 600);
             return null;
         }
 

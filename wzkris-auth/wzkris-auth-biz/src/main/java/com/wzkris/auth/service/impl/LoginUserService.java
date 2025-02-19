@@ -49,7 +49,7 @@ public class LoginUserService extends UserInfoTemplate {
         SysUserResp userResp = remoteSysUserApi.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.lockAccount(phoneNumber);
+            captchaService.lockAccount(phoneNumber, 600);
             return null;
         }
 
@@ -67,7 +67,7 @@ public class LoginUserService extends UserInfoTemplate {
         SysUserResp userResp = remoteSysUserApi.getByUsername(username);
 
         if (userResp == null) {
-            captchaService.lockAccount(username);
+            captchaService.lockAccount(username, 600);
             return null;
         }
 

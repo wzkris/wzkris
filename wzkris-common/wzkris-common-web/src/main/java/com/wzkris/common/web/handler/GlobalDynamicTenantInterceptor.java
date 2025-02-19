@@ -20,8 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
-    // 动态租户ID切换
-
     private static final String IGNORE_TYPE = "all";
 
     @Override
@@ -43,6 +41,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
         } else if (StringUtil.equals(dynamicTenant, IGNORE_TYPE)) {
             DynamicTenantUtil.enableIgnore();
         } else if (dynamicTenant != null) {
+            response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
             return false;// 不是合法请求头数据则直接返回
         }
 

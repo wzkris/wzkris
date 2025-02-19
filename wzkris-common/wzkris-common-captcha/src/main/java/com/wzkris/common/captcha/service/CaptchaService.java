@@ -7,10 +7,12 @@ import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RScript;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Collections;
 
 /**
  * 验证码服务
@@ -21,7 +23,9 @@ import java.time.Duration;
 @Service
 public class CaptchaService {
 
-    private static final String ACCOUNT_LOCK_KEY = "account:lock:";
+    private static final String LOCK_PREFIX = "captcha:lock:";
+
+    private static final String MAXTRY_PREFIX = "captcha:max_try:";
 
     @Autowired
     private ImageCaptchaProperties captchaProperties;
@@ -32,13 +36,8 @@ public class CaptchaService {
      * @param key 前缀
      */
     public void setCaptcha(String key, String code) {
-        String fullKey = captchaProperties.getPrefix() + ":" + key;
-        if (RedisUtil.hasKey(fullKey)) {
-            // 存在则不允许多次调用
-            throw new CaptchaException(BizCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
-        }
-        RedisUtil.setObj(fullKey, code,
-                Duration.ofMillis(captchaProperties.getExpire().getOrDefault("default", 120000L)));
+        RedisUtil.setObj(captchaProperties.getPrefix() + ":" + key, code,
+                Duration.ofMillis(captchaProperties.getExpire().getOrDefault("default", 120_000L)));
     }
 
     /**
@@ -57,17 +56,52 @@ public class CaptchaService {
     }
 
     /**
-     * 冻结账号
+     * 验证最大尝试次数
+     *
+     * @param key     唯一标识
+     * @param maxTry  最大尝试次数, 超出则抛出异常
+     * @param timeout 超时时长（秒）
      */
-    public void lockAccount(String key) {
-        RedisUtil.setObj(ACCOUNT_LOCK_KEY + key, "", 600);
+    public void validateMaxTry(String key, int maxTry, int timeout) {
+        // 构建 Redis 中的键名
+        String counterKey = MAXTRY_PREFIX + key;
+
+        // 定义 Lua 脚本
+        String luaScript =
+                "local currentTry = redis.call('get', KEYS[1]) or 0 " +
+                        "if tonumber(currentTry) >= tonumber(ARGV[1]) then " +
+                        "    return 0 " +
+                        "else " +
+                        "    redis.call('incr', KEYS[1]) " +
+                        "    redis.call('expire', KEYS[1], ARGV[2]) " +
+                        "    return 1 " +
+                        "end";
+
+        // 执行 Lua 脚本
+        RScript script = RedisUtil.getClient().getScript();
+        Long result = script.eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, Collections.singletonList(counterKey), maxTry, timeout);
+
+        // 检查结果
+        if (result == 0) {
+            throw new CaptchaException(BizCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
+        }
+    }
+
+    /**
+     * 冻结账号
+     *
+     * @param key     唯一标识
+     * @param timeout 冻结时长（秒）
+     */
+    public void lockAccount(String key, int timeout) {
+        RedisUtil.setObj(LOCK_PREFIX + key, "", timeout);
     }
 
     /**
      * 校验账号是否被冻结
      */
     public void validateLock(String key) {
-        if (RedisUtil.hasKey(ACCOUNT_LOCK_KEY + key)) {
+        if (RedisUtil.hasKey(LOCK_PREFIX + key)) {
             throw new CaptchaException(BizCode.BAD_REQUEST.value(), "service.busy");
         }
     }

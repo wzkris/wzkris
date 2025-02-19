@@ -34,6 +34,7 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
         super(AuthorizationGrantType.PASSWORD, clientPrincipal, scopes, additionalParameters);
         Assert.notNull(username, "username cannot be null");
         Assert.notNull(password, "password cannot be null");
+        Assert.notNull(captchaId, "captchaId cannot be null");
         this.username = username;
         this.password = password;
         this.captchaId = captchaId;
