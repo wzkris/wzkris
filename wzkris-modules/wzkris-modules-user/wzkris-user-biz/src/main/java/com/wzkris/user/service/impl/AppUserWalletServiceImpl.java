@@ -28,7 +28,7 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             AppUserWalletRecord record = new AppUserWalletRecord();
             record.setUserId(userId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_INCOME);
+            record.setRecordType(UserConstants.WALLET_INCOME);
             record.setCreateAt(System.currentTimeMillis());
             appUserWalletRecordMapper.insert(record);
         }
@@ -43,7 +43,7 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             AppUserWalletRecord record = new AppUserWalletRecord();
             record.setUserId(userId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_OUTCOME);
+            record.setRecordType(UserConstants.WALLET_OUTCOME);
             record.setCreateAt(System.currentTimeMillis());
             appUserWalletRecordMapper.insert(record);
         }

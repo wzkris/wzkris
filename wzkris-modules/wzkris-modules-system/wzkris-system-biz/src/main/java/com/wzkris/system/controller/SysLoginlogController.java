@@ -49,8 +49,8 @@ public class SysLoginlogController extends BaseController {
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), SysLoginLog::getStatus, queryReq.getStatus())
                 .like(StringUtil.isNotNull(queryReq.getUsername()), SysLoginLog::getUsername, queryReq.getUsername())
                 .like(StringUtil.isNotNull(queryReq.getLoginLocation()), SysLoginLog::getLoginLocation, queryReq.getLoginLocation())
-                .between(queryReq.getParams().get("beginTime") != null && queryReq.getParams().get("endTime") != null,
-                        SysLoginLog::getLoginTime, queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
+                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysLoginLog::getLoginTime, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
                 .orderByDesc(SysLoginLog::getLogId);
     }
 

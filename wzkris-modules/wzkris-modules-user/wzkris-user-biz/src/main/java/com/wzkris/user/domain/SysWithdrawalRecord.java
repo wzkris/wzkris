@@ -43,7 +43,10 @@ public class SysWithdrawalRecord {
     private Long creatorId;
 
     @Schema(description = "创建时间")
-    private Long createTime;
+    private Long createAt;
+
+    @Schema(description = "完成时间")
+    private Long completeAt;
 
     @Schema(description = "备注")
     private String remark;

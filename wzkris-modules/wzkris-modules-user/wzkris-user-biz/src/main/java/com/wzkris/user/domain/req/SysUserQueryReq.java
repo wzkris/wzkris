@@ -1,16 +1,14 @@
 package com.wzkris.user.domain.req;
 
+import com.wzkris.common.web.model.QueryReq;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 前端查询条件
  */
 @Data
-public class SysUserQueryReq {
+public class SysUserQueryReq extends QueryReq {
 
     @Schema(description = "租户ID")
     private Long tenantId;
@@ -33,13 +31,4 @@ public class SysUserQueryReq {
     @Schema(description = "用户状态")
     private String status;
 
-    @Schema(description = "请求参数")
-    private Map<String, Object> params;
-
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(2);
-        }
-        return params;
-    }
 }

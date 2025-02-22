@@ -55,8 +55,8 @@ public class SysOperlogController extends BaseController {
                 .like(StringUtil.isNotBlank(queryReq.getSubTitle()), SysOperLog::getSubTitle, queryReq.getSubTitle())
                 .eq(StringUtil.isNotNull(queryReq.getOperType()), SysOperLog::getOperType, queryReq.getOperType())
                 .like(StringUtil.isNotBlank(queryReq.getOperName()), SysOperLog::getOperName, queryReq.getOperName())
-                .between(queryReq.getParams().get("beginTime") != null && queryReq.getParams().get("endTime") != null,
-                        SysOperLog::getOperTime, queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
+                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysOperLog::getOperTime, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
                 .orderByDesc(SysOperLog::getOperId);
     }
 
