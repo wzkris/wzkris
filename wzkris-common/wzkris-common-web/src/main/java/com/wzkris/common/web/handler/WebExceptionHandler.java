@@ -145,7 +145,7 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     public Result<?> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',捕获到运行时异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.error("请求地址'{} {}',捕获到运行时异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
         if (e.getClass().getName().startsWith("java.lang")) { //JAVA异常则捕获，否则原样往外抛
             return error500(e.getMessage());
         }

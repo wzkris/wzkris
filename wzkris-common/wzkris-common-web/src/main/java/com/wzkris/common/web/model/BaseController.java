@@ -1,6 +1,6 @@
 package com.wzkris.common.web.model;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.date.DateUtil;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.orm.utils.PageUtil;
@@ -8,6 +8,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
 import java.beans.PropertyEditorSupport;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class BaseController {
     }
 
     /**
-     * 将前台传递过来的日期格式的字符串，自动转化为Date类型
+     * 将前台传递过来的日期格式的字符串，自动转化为对应类型
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -43,9 +44,16 @@ public class BaseController {
         binder.registerCustomEditor(LocalDateTime.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) {
-                setValue(LocalDateTimeUtil.parse(text));
+                setValue(DateUtil.parse(text).toLocalDateTime());
             }
         });
+        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                setValue(DateUtil.parse(text).toLocalDateTime().toLocalDate());
+            }
+        });
+
     }
 
     /**

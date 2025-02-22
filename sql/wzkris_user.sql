@@ -11,7 +11,7 @@
  Target Server Version : 80035 (8.0.35)
  File Encoding         : 65001
 
- Date: 17/02/2025 16:25:16
+ Date: 21/02/2025 15:45:29
 */
 
 SET NAMES utf8mb4;
@@ -83,10 +83,10 @@ INSERT INTO `app_user_wallet` VALUES (1826896461245968384, 0.00, '0');
 DROP TABLE IF EXISTS `app_user_wallet_record`;
 CREATE TABLE `app_user_wallet_record`  (
   `record_id` bigint NOT NULL,
-  `user_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL COMMENT '用户ID',
   `amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '金额',
-  `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '记录类型',
-  `create_at` bigint NOT NULL COMMENT '时间',
+  `record_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '记录类型',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
   `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`record_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户钱包记录' ROW_FORMAT = DYNAMIC;
@@ -660,9 +660,9 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '1', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0:0:0:0:0:0:0:1', 1739777539889, NULL, 1713334134616, 1, NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 100, 'admin', 'xxxxx@163.com', 'nick_admin', '15888888888', '0', '1', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0:0:0:0:0:0:0:1', 1740121079177, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (2, 0, 100, 'wzkris', '111111@1.com', 'nick_kris', NULL, '0', '0', NULL, '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '127.0.0.1', 1731992153861, NULL, 1713334134616, 1, 1736576284877, 1);
-INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$r9wPHZ9nQNMMZJ5G/CJvDu2DMYEZKfwlH4O2JMuOpd/qPEsZG5yGm', '127.0.0.1', 1732598359333, NULL, 1713334134616, 1, 1736842656181, 1774671331412627456);
+INSERT INTO `sys_user` VALUES (1774671331412627456, 1774671331416821762, NULL, 'testtt', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$r9wPHZ9nQNMMZJ5G/CJvDu2DMYEZKfwlH4O2JMuOpd/qPEsZG5yGm', '0:0:0:0:0:0:0:1', 1739953020697, NULL, 1713334134616, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (1853719125066248192, 1853719125330489346, NULL, 'testtt2', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$v544q0b/1YjPbVQJDRKZrOnXoRxRcR.eyxIUd33TMRNCNXdVh.1Eu', '127.0.0.1', 1731648341626, NULL, 1730796054646, 1, NULL, NULL);
 INSERT INTO `sys_user` VALUES (1856251200466030593, 1774671331416821762, 1775382319191453698, '___sub_', NULL, 'xxxxxx', NULL, '0', '2', NULL, '{bcrypt}$2a$10$JvLIOD/DEO1FX/WMcFSFo.avkZad7UGvAvLrMRRmrT1Ijm0WEtfD.', NULL, NULL, NULL, 1731399748330, 1774671331412627456, 1736905399472, 1774671331412627456);
 INSERT INTO `sys_user` VALUES (1879343473835601921, 1774671331416821762, 1775387364419072002, 'xxxxxx', NULL, NULL, NULL, '0', '2', NULL, '{bcrypt}$2a$10$y176RAaaALmxIXeR29d4i.XUsuB/4macwo6WVcmxYEfzijUAWPSMy', NULL, NULL, NULL, 1736905375336, 1774671331412627456, 1736905375336, 1774671331412627456);
@@ -711,11 +711,12 @@ CREATE TABLE `sys_withdrawal_record`  (
   `amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '金额',
   `error_msg` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '错误信息',
   `creator_id` bigint NOT NULL COMMENT '创建者',
-  `create_time` bigint NOT NULL COMMENT '创建时间',
+  `create_at` bigint NOT NULL COMMENT '创建时间',
+  `complete_at` bigint NULL DEFAULT NULL COMMENT '完成时间',
   `remark` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`withdrawal_id`) USING BTREE,
   UNIQUE INDEX `uk`(`order_no` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 127 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统提现记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 127 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统提现记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_withdrawal_record
