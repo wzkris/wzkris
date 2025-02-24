@@ -1,6 +1,7 @@
 package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
+@TableName(schema = "biz_sys")
 public class SysConfig extends BaseEntity {
 
     @TableId

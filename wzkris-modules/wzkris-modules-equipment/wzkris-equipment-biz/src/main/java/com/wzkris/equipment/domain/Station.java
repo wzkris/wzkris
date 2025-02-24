@@ -1,6 +1,7 @@
 package com.wzkris.equipment.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @Schema(description = "站点信息")
+@TableName(schema = "biz_public")
 public class Station extends BaseEntity {
 
     @Serial

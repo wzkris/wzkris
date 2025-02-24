@@ -5,7 +5,7 @@
 <mapper namespace="com.wzkris.user.mapper.SysUserMapper">
 
     <delete id="deleteByTenantIds">
-        DELETE FROM sys_user WHERE tenant_id IN
+        DELETE FROM biz_sys.sys_user WHERE tenant_id IN
         <foreach collection="tenantIds" item="tenantId" open="(" separator="," close=")">
             #{tenantId}
         </foreach>

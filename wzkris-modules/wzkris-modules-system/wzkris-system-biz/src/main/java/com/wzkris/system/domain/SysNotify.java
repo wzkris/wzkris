@@ -1,8 +1,12 @@
 package com.wzkris.system.domain;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 系统消息发送表
@@ -10,6 +14,7 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
+@TableName(schema = "biz_sys")
 public class SysNotify {
 
     @TableId
@@ -25,9 +30,9 @@ public class SysNotify {
     private String content;
 
     @Schema(description = "创建时间")
-    private Long createAt;
+    private Date createAt;
 
     public SysNotify() {
-        this.createAt = System.currentTimeMillis();
+        this.createAt = DateUtil.date();
     }
 }

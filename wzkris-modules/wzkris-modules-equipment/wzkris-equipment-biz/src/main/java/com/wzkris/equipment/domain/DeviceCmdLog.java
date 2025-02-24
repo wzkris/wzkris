@@ -1,5 +1,6 @@
 package com.wzkris.equipment.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Schema(description = "实体类: 设备指令日志")
+@TableName(schema = "biz_sys")
 public class DeviceCmdLog {
 
     @Schema(description = "设备ID")

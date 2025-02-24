@@ -25,7 +25,7 @@ import java.util.List;
 @AutoMappers({
         @AutoMapper(target = OAuth2ClientResp.class),
 })
-@TableName(autoResultMap = true, value = "oauth2_client")
+@TableName(schema = "biz_sys", autoResultMap = true, value = "oauth2_client")
 public class OAuth2Client extends BaseEntity {
 
     @TableId

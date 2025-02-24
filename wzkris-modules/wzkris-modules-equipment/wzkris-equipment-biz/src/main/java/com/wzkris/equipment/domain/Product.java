@@ -1,6 +1,7 @@
 package com.wzkris.equipment.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.io.Serial;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class Product extends BaseEntity {
 
     @Serial

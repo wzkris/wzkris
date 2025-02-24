@@ -32,7 +32,7 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
      */
     @Select("""
             <script>
-                SELECT perms FROM sys_menu WHERE status = '0' AND menu_id IN
+                SELECT perms FROM biz_sys.sys_menu WHERE status = '0' AND menu_id IN
                     <foreach collection="menuIds" item="menuId" separator="," open="(" close=")">
                         #{menuId}
                     </foreach>

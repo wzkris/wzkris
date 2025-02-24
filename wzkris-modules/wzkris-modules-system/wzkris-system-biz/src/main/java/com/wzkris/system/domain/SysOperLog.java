@@ -1,6 +1,7 @@
 package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.orm.annotation.FieldPerms;
 import com.wzkris.system.api.domain.request.OperLogReq;
@@ -10,6 +11,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 操作日志记录表 sys_oper_log
@@ -18,6 +20,7 @@ import java.io.Serializable;
  */
 @Data
 @AutoMapper(target = OperLogReq.class)
+@TableName(schema = "biz_sys")
 public class SysOperLog implements Serializable {
 
     @Serial
@@ -77,6 +80,6 @@ public class SysOperLog implements Serializable {
     private String errorMsg;
 
     @Schema(description = "操作时间")
-    private Long operTime;
+    private Date operTime;
 
 }

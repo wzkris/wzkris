@@ -16,6 +16,6 @@ public interface SysOperLogMapper extends BaseMapperPlus<SysOperLog> {
     /**
      * 清空操作日志
      */
-    @Update("truncate TABLE sys_oper_log")
+    @Update("truncate TABLE biz_sys.sys_oper_log")
     void clearAll();
 }

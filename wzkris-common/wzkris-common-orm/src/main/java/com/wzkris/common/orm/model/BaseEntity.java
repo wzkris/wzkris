@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Entity基类 审计字段
@@ -23,7 +24,7 @@ public class BaseEntity implements Serializable {
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @TableField(fill = FieldFill.INSERT)
-    private Long createAt;
+    private Date createAt;
 
     /**
      * 创建者
@@ -37,7 +38,7 @@ public class BaseEntity implements Serializable {
      */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateAt;
+    private Date updateAt;
 
     /**
      * 更新者

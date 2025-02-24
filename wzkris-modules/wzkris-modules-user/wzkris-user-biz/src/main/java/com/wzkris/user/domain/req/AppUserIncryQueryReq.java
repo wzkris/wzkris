@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Schema(description = "用户增长请求")
@@ -17,9 +17,9 @@ public class AppUserIncryQueryReq {
 
     @NotNull(message = "需要参数开始日期")
     @Schema(description = "开始日期")
-    private LocalDateTime beginTime;
+    private Date beginTime;
 
     @NotNull(message = "需要参数结束日期")
     @Schema(description = "结束日期")
-    private LocalDateTime endTime;
+    private Date endTime;
 }

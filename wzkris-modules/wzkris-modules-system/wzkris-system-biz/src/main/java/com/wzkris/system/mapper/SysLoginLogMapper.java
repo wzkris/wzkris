@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SysLoginLogMapper extends BaseMapperPlus<SysLoginLog> {
 
-    @Update("truncate sys_login_log")
+    @Update("truncate biz_sys.sys_login_log")
     void clearAll();
 }

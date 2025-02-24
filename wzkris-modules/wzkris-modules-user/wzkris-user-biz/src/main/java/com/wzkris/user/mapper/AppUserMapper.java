@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface AppUserMapper extends BaseMapperPlus<AppUser> {
 
-    @Select("SELECT * FROM app_user WHERE phone_number = #{phoneNumber}")
+    @Select("SELECT * FROM biz_app.app_user WHERE phone_number = #{phoneNumber}")
     AppUser selectByPhoneNumber(String phoneNumber);
 
     List<AppUserIncryVO> listIncryVO(AppUserIncryQueryReq queryReq);

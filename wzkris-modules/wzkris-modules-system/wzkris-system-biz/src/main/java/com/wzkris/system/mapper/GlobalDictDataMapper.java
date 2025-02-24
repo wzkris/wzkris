@@ -19,7 +19,7 @@ public interface GlobalDictDataMapper extends BaseMapperPlus<GlobalDictData> {
 
     @Select("""
             <script>
-                SELECT * FROM global_dict_data WHERE dict_type IN
+                SELECT * FROM biz_sys.global_dict_data WHERE dict_type IN
                 <foreach collection="dictTypes" item="dictType" open="(" close=")" separator=",">
              	    #{dictType}
                 </foreach>
@@ -34,7 +34,7 @@ public interface GlobalDictDataMapper extends BaseMapperPlus<GlobalDictData> {
      * @param dictType 字典类型
      * @return 字典数据集合信息
      */
-    @Select("SELECT * FROM global_dict_data WHERE dict_type = #{dictType} ORDER BY dict_sort")
+    @Select("SELECT * FROM biz_sys.global_dict_data WHERE dict_type = #{dictType} ORDER BY dict_sort")
     List<GlobalDictData> listByType(String dictType);
 
     /**
@@ -44,7 +44,7 @@ public interface GlobalDictDataMapper extends BaseMapperPlus<GlobalDictData> {
      * @param newDictType 新旧字典类型
      * @return 结果
      */
-    @Update("UPDATE global_dict_data SET dict_type = #{newDictType} WHERE dict_type = #{oldDictType}")
+    @Update("UPDATE biz_sys.global_dict_data SET dict_type = #{newDictType} WHERE dict_type = #{oldDictType}")
     int updateDictByType(@Param("oldDictType") String oldDictType, @Param("newDictType") String newDictType);
 
 }

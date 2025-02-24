@@ -2,6 +2,7 @@ package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class SysMenu extends BaseEntity {
 
     @TableId

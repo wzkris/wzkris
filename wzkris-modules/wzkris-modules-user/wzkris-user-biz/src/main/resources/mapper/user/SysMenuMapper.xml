@@ -5,7 +5,7 @@
 <mapper namespace="com.wzkris.user.mapper.SysMenuMapper">
 
     <select id="listRouteTree" resultType="SysMenu">
-        SELECT * FROM sys_menu
+        SELECT * FROM biz_sys.sys_menu
         WHERE menu_type IN ('D', 'M') AND status = '0' AND is_visible = true
         <if test="menuIds != null and !menuIds.isEmpty()">
             AND menu_id IN

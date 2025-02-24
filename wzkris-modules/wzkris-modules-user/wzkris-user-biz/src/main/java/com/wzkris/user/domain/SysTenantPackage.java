@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName(autoResultMap = true)
+@TableName(schema = "biz_sys", autoResultMap = true)
 public class SysTenantPackage extends BaseEntity {
 
     @TableId

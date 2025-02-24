@@ -17,7 +17,7 @@ public interface SysNotifySendMapper {
 
     @Insert("""
             <script>
-                INSERT INTO sys_notify_send(notify_id, user_id, read_state) VALUES
+                INSERT INTO biz_sys.sys_notify_send(notify_id, user_id, read_state) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.notifyId},  #{item.userId},  #{item.readState})
                     </foreach>

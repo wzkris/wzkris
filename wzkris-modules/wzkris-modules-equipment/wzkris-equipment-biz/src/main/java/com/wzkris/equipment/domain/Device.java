@@ -1,6 +1,7 @@
 package com.wzkris.equipment.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * (Device)实体类
@@ -18,6 +20,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @Schema(description = "实体类: 设备信息")
+@TableName(schema = "biz_public")
 public class Device extends BaseEntity {
 
     @Serial
@@ -57,10 +60,10 @@ public class Device extends BaseEntity {
     private String alarm;
 
     @Schema(description = "上线时间")
-    private Long onlineTime;
+    private Date onlineTime;
 
     @Schema(description = "下线时间")
-    private Long offlineTime;
+    private Date offlineTime;
 
     public Device(Long deviceId) {
         this.deviceId = deviceId;

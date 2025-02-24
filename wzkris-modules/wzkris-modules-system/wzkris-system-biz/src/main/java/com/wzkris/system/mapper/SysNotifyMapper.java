@@ -16,7 +16,7 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
 
     @Select("""
             <script>
-                SELECT * FROM sys_notify_send s LEFT JOIN sys_notify n ON s.notify_id = n.notify_id
+                SELECT * FROM biz_sys.sys_notify_send s LEFT JOIN biz_sys.sys_notify n ON s.notify_id = n.notify_id
                 WHERE user_id = #{userId}
             	    <if test="notifyType != null and notifyType != ''">
             	        AND notify_type = #{notifyType}
@@ -32,7 +32,7 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
     /**
      * 已读通知
      */
-    @Update("UPDATE sys_notify_send SET read_state = '1' WHERE notify_id = #{notifyId} AND user_id = #{userId}")
+    @Update("UPDATE biz_sys.sys_notify_send SET read_state = '1' WHERE notify_id = #{notifyId} AND user_id = #{userId}")
     int readNotify(@Param("notifyId") Long notifyId, @Param("userId") Long userId);
 
     /**
@@ -40,7 +40,7 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
      */
     @Select("""
             <script>
-                SELECT COUNT(*) FROM sys_notify_send s LEFT JOIN sys_notify n ON s.notify_id = n.notify_id
+                SELECT COUNT(*) FROM biz_sys.sys_notify_send s LEFT JOIN biz_sys.sys_notify n ON s.notify_id = n.notify_id
                 WHERE user_id = #{userId} AND read_state = '0'
                     <if test="notifyType != null and notifyType != ''">
             	        AND notify_type = #{notifyType}

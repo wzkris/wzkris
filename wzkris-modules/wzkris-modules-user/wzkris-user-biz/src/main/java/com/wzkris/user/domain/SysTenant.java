@@ -1,6 +1,7 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class SysTenant extends BaseEntity {
 
     @TableId

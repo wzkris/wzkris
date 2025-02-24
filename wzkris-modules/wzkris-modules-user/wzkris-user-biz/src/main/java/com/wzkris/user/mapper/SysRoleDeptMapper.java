@@ -25,7 +25,7 @@ public interface SysRoleDeptMapper {
      * @return 部门id集合
      */
     @DeptScope
-    @Select("SELECT dept_id FROM sys_role_dept WHERE role_id = #{roleId}")
+    @Select("SELECT dept_id FROM biz_sys.sys_role_dept WHERE role_id = #{roleId}")
     List<Long> listDeptIdByRoleId(Long roleId);
 
     /**
@@ -37,7 +37,7 @@ public interface SysRoleDeptMapper {
     @DeptScope
     @Select("""
             <script>
-                SELECT dept_id FROM sys_role_dept WHERE role_id IN
+                SELECT dept_id FROM biz_sys.sys_role_dept WHERE role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
@@ -51,7 +51,7 @@ public interface SysRoleDeptMapper {
      * @param roleId 角色ID
      * @return 结果
      */
-    @Delete("DELETE FROM sys_role_dept WHERE role_id = #{roleId}")
+    @Delete("DELETE FROM biz_sys.sys_role_dept WHERE role_id = #{roleId}")
     int deleteByRoleId(Long roleId);
 
     /**
@@ -62,7 +62,7 @@ public interface SysRoleDeptMapper {
      */
     @Delete("""
             <script>
-                DELETE FROM sys_role_dept WHERE role_id IN
+                DELETE FROM biz_sys.sys_role_dept WHERE role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
@@ -76,7 +76,7 @@ public interface SysRoleDeptMapper {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Delete("DELETE FROM sys_role_dept WHERE dept_id = #{deptId}")
+    @Delete("DELETE FROM biz_sys.sys_role_dept WHERE dept_id = #{deptId}")
     int deleteByDeptId(Long deptId);
 
     /**
@@ -86,7 +86,7 @@ public interface SysRoleDeptMapper {
      * @return 结果
      */
     @DeptScope
-    @Select("SELECT COUNT(*) FROM sys_role_dept WHERE dept_id = #{deptId}")
+    @Select("SELECT COUNT(*) FROM biz_sys.sys_role_dept WHERE dept_id = #{deptId}")
     int countRoleDeptByDeptId(Long deptId);
 
     /**
@@ -97,7 +97,7 @@ public interface SysRoleDeptMapper {
      */
     @Insert("""
             <script>
-                INSERT INTO sys_role_dept(role_id, dept_id) VALUES
+                INSERT INTO biz_sys.sys_role_dept(role_id, dept_id) VALUES
                     <foreach item="item" index="index" collection="list" separator=",">
                         (#{item.roleId}, #{item.deptId})
                     </foreach>

@@ -87,7 +87,7 @@ public class OperateLogAspect {
             operLogReq.setTenantId(LoginUserUtil.getTenantId());
             operLogReq.setOperType(operateLog.operateType().getValue());
             operLogReq.setStatus(OperateStatus.SUCCESS.value());
-            operLogReq.setOperTime(DateUtil.current());
+            operLogReq.setOperTime(DateUtil.date());
             // 请求的地址
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String ip = ServletUtil.getClientIP(request);

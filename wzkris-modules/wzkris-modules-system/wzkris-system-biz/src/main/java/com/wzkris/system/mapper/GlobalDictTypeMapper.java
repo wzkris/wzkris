@@ -19,7 +19,7 @@ public interface GlobalDictTypeMapper extends BaseMapperPlus<GlobalDictType> {
      * @param dictType 字典类型
      * @return 字典类型
      */
-    @Select("SELECT * FROM sys_dict_type WHERE dict_type = #{dictType}")
+    @Select("SELECT * FROM biz_sys.sys_dict_type WHERE dict_type = #{dictType}")
     GlobalDictType selectByType(String dictType);
 
 }

@@ -1,6 +1,7 @@
 package com.wzkris.equipment.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Schema(description = "实体类: 物模型")
+@TableName(schema = "biz_sys")
 public class ThingsModel extends BaseEntity {
 
     @TableId

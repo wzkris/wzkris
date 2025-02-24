@@ -1,6 +1,7 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * 用户对象 sys_user
  *
@@ -24,6 +27,7 @@ import lombok.NoArgsConstructor;
         @AutoMapper(target = SysUserResp.class)
 })
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class SysUser extends BaseEntity {
 
     @TableId
@@ -64,7 +68,7 @@ public class SysUser extends BaseEntity {
     private String loginIp;
 
     @Schema(description = "最近登录日期")
-    private Long loginDate;
+    private Date loginDate;
 
     @Schema(description = "用户额外信息")
     private String remark;

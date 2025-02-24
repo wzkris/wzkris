@@ -1,5 +1,6 @@
 package com.wzkris.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.system.constant.MessageConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class SysNotifySend {
 
     @Schema(description = "通知ID")

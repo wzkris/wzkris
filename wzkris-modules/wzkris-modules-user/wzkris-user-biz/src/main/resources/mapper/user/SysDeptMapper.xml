@@ -5,7 +5,7 @@
 <mapper namespace="com.wzkris.user.mapper.SysDeptMapper">
 
     <select id="listChildren" resultType="SysDept">
-        SELECT * FROM sys_dept
+        SELECT * FROM biz_sys.sys_dept
         <where>
             <if test="deptId != null and deptId != 0">
                 AND (dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))

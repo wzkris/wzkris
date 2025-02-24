@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,7 +104,7 @@ public class OperLogReq implements Serializable {
     /**
      * 操作时间
      */
-    private Long operTime;
+    private Date operTime;
 
     /**
      * 请求参数
