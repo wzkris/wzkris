@@ -1,14 +1,14 @@
 package com.wzkris.system.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.system.domain.SysNotify;
 import com.wzkris.system.domain.SysNotifySend;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
-import com.wzkris.system.listener.event.SystemPushAlertEvent;
+import com.wzkris.system.listener.event.SystemPushEvent;
 import com.wzkris.system.mapper.SysNotifyMapper;
 import com.wzkris.system.mapper.SysNotifySendMapper;
 import com.wzkris.system.service.SysNotifyService;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -26,10 +26,7 @@ public class SysNotifyServiceImpl implements SysNotifyService {
     private final TransactionTemplate transactionTemplate;
 
     @Override
-    public boolean sendNotify(List<Long> toUsers, SimpleMessageDTO messageDTO) {
-        if (ObjUtil.isEmpty(toUsers)) {
-            return false;
-        }
+    public boolean sendNotify(@Nonnull List<Long> toUsers, SimpleMessageDTO messageDTO) {
         Boolean execute = transactionTemplate.execute(status -> {
             SysNotify notify = new SysNotify();
             notify.setNotifyType(messageDTO.getType());
@@ -40,7 +37,7 @@ public class SysNotifyServiceImpl implements SysNotifyService {
                     .map(uid -> new SysNotifySend(notify.getNotifyId(), uid)).toList();
             return notifySendMapper.insert(list) > 0;
         });
-        SpringUtil.getContext().publishEvent(new SystemPushAlertEvent(toUsers, messageDTO));
+        SpringUtil.getContext().publishEvent(new SystemPushEvent(toUsers, messageDTO));
         return Boolean.TRUE.equals(execute);
     }
 }

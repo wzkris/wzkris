@@ -33,7 +33,7 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
      * 已读通知
      */
     @Update("UPDATE sys_notify_send SET read_state = '1' WHERE notify_id = #{notifyId} AND user_id = #{userId}")
-    int readNotify(@Param("notifyId") Long notifyId, @Param("userId") Long userId);
+    int markRead(@Param("notifyId") Long notifyId, @Param("userId") Long userId);
 
     /**
      * 最大统计100

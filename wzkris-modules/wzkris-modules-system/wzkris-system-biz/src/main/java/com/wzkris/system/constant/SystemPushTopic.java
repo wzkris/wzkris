@@ -3,12 +3,12 @@ package com.wzkris.system.constant;
 /**
  * 系统推送事件名
  */
-public class SystemPushEventName {
+public class SystemPushTopic {
 
     /**
      * 系统通知推送
      */
-    public static final String SYSTEM_NOTIFY = "system_notify";
+    public static final String SYSTEM_NOTIFY = "wzkris/publish/msg/";
 
     /**
      * 设备通知推送

@@ -1,7 +1,7 @@
 package com.wzkris.system.controller;
 
 import com.wzkris.common.security.utils.LoginUserUtil;
-import com.wzkris.system.utils.SseUtil;
+import com.wzkris.common.web.utils.SseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -72,6 +72,12 @@
             <artifactId>wzkris-common-orm</artifactId>
         </dependency>
 
+        <!-- mqtt消息队列 -->
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
+        </dependency>
+
         <!-- wzkris Common ORM -->
         <dependency>
             <groupId>com.wzkris</groupId>
