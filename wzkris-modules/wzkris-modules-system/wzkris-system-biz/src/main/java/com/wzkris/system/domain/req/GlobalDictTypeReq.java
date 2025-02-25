@@ -23,7 +23,8 @@ public class GlobalDictTypeReq {
 
     @NotBlank(message = "{desc.dict}{desc.type}" + "{validate.notnull}")
     @Size(min = 2, max = 50, message = "{desc.dict}{desc.type}" + "{validate.size.illegal}")
-    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{desc.dict}{desc.type}{validate.illegal}")// 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
+    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{desc.dict}{desc.type}{validate.illegal}")
+// 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
     @Schema(description = "字典类型")
     private String dictType;
 }

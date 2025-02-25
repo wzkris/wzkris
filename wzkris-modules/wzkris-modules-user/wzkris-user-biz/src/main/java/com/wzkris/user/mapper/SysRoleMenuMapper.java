@@ -40,7 +40,7 @@ public interface SysRoleMenuMapper {
      * @return 结果
      */
     @Select("SELECT EXISTS(SELECT * FROM biz_sys.sys_role_menu WHERE menu_id = #{menuId})")
-    int checkMenuExistRole(Long menuId);
+    boolean checkMenuExistRole(Long menuId);
 
     /**
      * 通过角色ID删除角色和菜单关联

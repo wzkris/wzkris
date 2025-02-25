@@ -22,8 +22,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -67,7 +65,7 @@ public class LoginEventListener {
                 // 更新用户登录信息
                 LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
                 loginInfoReq.setLoginIp(ipAddr);
-                loginInfoReq.setLoginDate(Date.now());
+                loginInfoReq.setLoginDate(DateUtil.date());
                 remoteSysUserApi.updateLoginInfo(loginInfoReq);
             }
             // 插入后台登陆日志
@@ -75,7 +73,7 @@ public class LoginEventListener {
             loginLogReq.setUserId(loginUser.getUserId());
             loginLogReq.setUsername(loginUser.getUsername());
             loginLogReq.setTenantId(loginUser.getTenantId());
-            loginLogReq.setLoginTime(DateUtil.current());
+            loginLogReq.setLoginTime(DateUtil.date());
             loginLogReq.setLoginIp(ipAddr);
             loginLogReq.setGrantType(grantType);
             loginLogReq.setStatus(status);
@@ -94,7 +92,7 @@ public class LoginEventListener {
             // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(Date.now());
+            loginInfoReq.setLoginDate(DateUtil.date());
             remoteAppUserApi.updateLoginInfo(loginInfoReq);
         }
     }

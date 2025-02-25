@@ -78,8 +78,8 @@ public class SysUserController extends BaseController {
                 .like(StringUtil.isNotNull(queryReq.getEmail()), "email", queryReq.getEmail())
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), "u.status", queryReq.getStatus())
                 .eq(StringUtil.isNotNull(queryReq.getDeptId()), "u.dept_id", queryReq.getDeptId())
-                .between(queryReq.getParams().get("beginTime") != null && queryReq.getParams().get("endTime") != null,
-                        "u.creator_id", queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
+                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        "u.create_at", queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
                 .orderByDesc("u.user_id");
     }
 

@@ -3,7 +3,6 @@ package com.wzkris.user.api.domain.response;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * OAuth2 客户端传输层
@@ -20,13 +19,13 @@ public class OAuth2ClientResp implements Serializable {
     private String clientSecret;
 
     // 权限域
-    private List<String> scopes;
+    private String[] scopes;
 
     // 授权类型
-    private List<String> authorizationGrantTypes;
+    private String[] authorizationGrantTypes;
 
     // 回调地址
-    private List<String> redirectUris;
+    private String[] redirectUris;
 
     // 客户端状态
     private String status;

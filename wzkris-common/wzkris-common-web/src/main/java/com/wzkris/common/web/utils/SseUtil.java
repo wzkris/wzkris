@@ -1,4 +1,4 @@
-package com.wzkris.system.utils;
+package com.wzkris.common.web.utils;
 
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.AccessLevel;

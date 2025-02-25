@@ -205,7 +205,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public boolean checkMenuExistRole(Long menuId) {
-        return roleMenuMapper.checkMenuExistRole(menuId) > 0;
+        return roleMenuMapper.checkMenuExistRole(menuId);
     }
 
     @Override

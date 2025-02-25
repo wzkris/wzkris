@@ -110,6 +110,15 @@ public class WebExceptionHandler {
     /**
      * 参数验证异常
      */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public Result<?> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
+        log.error("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        return error412(e.getMessage());
+    }
+
+    /**
+     * 参数验证异常
+     */
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public Result<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         String message = e.getBindingResult().getFieldError().getDefaultMessage();

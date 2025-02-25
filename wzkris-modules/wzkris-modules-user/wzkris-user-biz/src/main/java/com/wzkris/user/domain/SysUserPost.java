@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户和岗位关联 sys_user_post
+ * 用户和岗位关联 biz_sys.sys_user_post
  *
  * @author wzkris
  */

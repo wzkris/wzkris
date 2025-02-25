@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-02-24 10:16:52
+-- Started on 2025-03-03 14:07:12
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 6 (class 2615 OID 33084)
+-- TOC entry 6 (class 2615 OID 34670)
 -- Name: biz_sys; Type: SCHEMA; Schema: -; Owner: wz
 --
 
@@ -33,7 +33,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 215 (class 1259 OID 33085)
+-- TOC entry 215 (class 1259 OID 34671)
 -- Name: global_dict_data; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -56,7 +56,7 @@ CREATE TABLE biz_sys.global_dict_data (
 ALTER TABLE biz_sys.global_dict_data OWNER TO wz;
 
 --
--- TOC entry 3375 (class 0 OID 0)
+-- TOC entry 3377 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: TABLE global_dict_data; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -65,7 +65,7 @@ COMMENT ON TABLE biz_sys.global_dict_data IS '字典数据表';
 
 
 --
--- TOC entry 3376 (class 0 OID 0)
+-- TOC entry 3378 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.data_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -74,7 +74,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.data_id IS '字典编码';
 
 
 --
--- TOC entry 3377 (class 0 OID 0)
+-- TOC entry 3379 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.dict_sort; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -83,7 +83,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.dict_sort IS '字典排序';
 
 
 --
--- TOC entry 3378 (class 0 OID 0)
+-- TOC entry 3380 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.dict_label; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -92,7 +92,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.dict_label IS '字典标签';
 
 
 --
--- TOC entry 3379 (class 0 OID 0)
+-- TOC entry 3381 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.dict_value; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -101,7 +101,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.dict_value IS '字典键值';
 
 
 --
--- TOC entry 3380 (class 0 OID 0)
+-- TOC entry 3382 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.dict_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -110,7 +110,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.dict_type IS '字典类型';
 
 
 --
--- TOC entry 3381 (class 0 OID 0)
+-- TOC entry 3383 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.css_class; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -119,7 +119,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.css_class IS '样式属性（其他�
 
 
 --
--- TOC entry 3382 (class 0 OID 0)
+-- TOC entry 3384 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.list_class; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -128,7 +128,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.list_class IS '表格回显样式';
 
 
 --
--- TOC entry 3383 (class 0 OID 0)
+-- TOC entry 3385 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.is_default; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -137,7 +137,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.is_default IS '是否默认（Y是 N�
 
 
 --
--- TOC entry 3384 (class 0 OID 0)
+-- TOC entry 3386 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -146,7 +146,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.creator_id IS '创建者';
 
 
 --
--- TOC entry 3385 (class 0 OID 0)
+-- TOC entry 3387 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: COLUMN global_dict_data.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -155,7 +155,7 @@ COMMENT ON COLUMN biz_sys.global_dict_data.updater_id IS '更新者';
 
 
 --
--- TOC entry 216 (class 1259 OID 33088)
+-- TOC entry 216 (class 1259 OID 34674)
 -- Name: global_dict_type; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -173,7 +173,7 @@ CREATE TABLE biz_sys.global_dict_type (
 ALTER TABLE biz_sys.global_dict_type OWNER TO wz;
 
 --
--- TOC entry 3386 (class 0 OID 0)
+-- TOC entry 3388 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: TABLE global_dict_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -182,7 +182,7 @@ COMMENT ON TABLE biz_sys.global_dict_type IS '字典类型表';
 
 
 --
--- TOC entry 3387 (class 0 OID 0)
+-- TOC entry 3389 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN global_dict_type.type_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -191,7 +191,7 @@ COMMENT ON COLUMN biz_sys.global_dict_type.type_id IS '字典主键';
 
 
 --
--- TOC entry 3388 (class 0 OID 0)
+-- TOC entry 3390 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN global_dict_type.dict_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -200,7 +200,7 @@ COMMENT ON COLUMN biz_sys.global_dict_type.dict_name IS '字典名称';
 
 
 --
--- TOC entry 3389 (class 0 OID 0)
+-- TOC entry 3391 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN global_dict_type.dict_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -209,7 +209,7 @@ COMMENT ON COLUMN biz_sys.global_dict_type.dict_type IS '字典类型';
 
 
 --
--- TOC entry 3390 (class 0 OID 0)
+-- TOC entry 3392 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN global_dict_type.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -218,7 +218,7 @@ COMMENT ON COLUMN biz_sys.global_dict_type.creator_id IS '创建者';
 
 
 --
--- TOC entry 3391 (class 0 OID 0)
+-- TOC entry 3393 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN global_dict_type.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -227,7 +227,7 @@ COMMENT ON COLUMN biz_sys.global_dict_type.updater_id IS '更新者';
 
 
 --
--- TOC entry 217 (class 1259 OID 33091)
+-- TOC entry 217 (class 1259 OID 34677)
 -- Name: sys_config; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -247,7 +247,7 @@ CREATE TABLE biz_sys.sys_config (
 ALTER TABLE biz_sys.sys_config OWNER TO wz;
 
 --
--- TOC entry 3392 (class 0 OID 0)
+-- TOC entry 3394 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: TABLE sys_config; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -256,7 +256,7 @@ COMMENT ON TABLE biz_sys.sys_config IS '参数配置表';
 
 
 --
--- TOC entry 3393 (class 0 OID 0)
+-- TOC entry 3395 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN sys_config.config_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -265,7 +265,7 @@ COMMENT ON COLUMN biz_sys.sys_config.config_id IS '参数主键';
 
 
 --
--- TOC entry 3394 (class 0 OID 0)
+-- TOC entry 3396 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN sys_config.config_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -274,7 +274,7 @@ COMMENT ON COLUMN biz_sys.sys_config.config_name IS '参数名称';
 
 
 --
--- TOC entry 3395 (class 0 OID 0)
+-- TOC entry 3397 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN sys_config.config_key; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -283,7 +283,7 @@ COMMENT ON COLUMN biz_sys.sys_config.config_key IS '参数键名';
 
 
 --
--- TOC entry 3396 (class 0 OID 0)
+-- TOC entry 3398 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN sys_config.config_value; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -292,7 +292,7 @@ COMMENT ON COLUMN biz_sys.sys_config.config_value IS '参数键值';
 
 
 --
--- TOC entry 3397 (class 0 OID 0)
+-- TOC entry 3399 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN sys_config.config_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -301,7 +301,7 @@ COMMENT ON COLUMN biz_sys.sys_config.config_type IS '系统内置（Y是 N否）
 
 
 --
--- TOC entry 3398 (class 0 OID 0)
+-- TOC entry 3400 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN sys_config.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -310,7 +310,7 @@ COMMENT ON COLUMN biz_sys.sys_config.creator_id IS '创建者';
 
 
 --
--- TOC entry 3399 (class 0 OID 0)
+-- TOC entry 3401 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN sys_config.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -319,7 +319,7 @@ COMMENT ON COLUMN biz_sys.sys_config.updater_id IS '更新者';
 
 
 --
--- TOC entry 218 (class 1259 OID 33096)
+-- TOC entry 218 (class 1259 OID 34682)
 -- Name: sys_login_log; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -331,7 +331,7 @@ CREATE TABLE biz_sys.sys_login_log (
     grant_type character varying(32) NOT NULL,
     status character(1) NOT NULL,
     error_msg character varying(50) NOT NULL,
-    login_ip character varying(50) NOT NULL,
+    login_ip inet NOT NULL,
     login_location character varying(50) NOT NULL,
     browser character varying(50) NOT NULL,
     os character varying(50) NOT NULL,
@@ -342,7 +342,7 @@ CREATE TABLE biz_sys.sys_login_log (
 ALTER TABLE biz_sys.sys_login_log OWNER TO wz;
 
 --
--- TOC entry 3400 (class 0 OID 0)
+-- TOC entry 3402 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: TABLE sys_login_log; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -351,7 +351,7 @@ COMMENT ON TABLE biz_sys.sys_login_log IS '后台登录日志';
 
 
 --
--- TOC entry 3401 (class 0 OID 0)
+-- TOC entry 3403 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -360,7 +360,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3402 (class 0 OID 0)
+-- TOC entry 3404 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.user_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -369,7 +369,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.user_id IS '用户ID';
 
 
 --
--- TOC entry 3403 (class 0 OID 0)
+-- TOC entry 3405 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.username; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -378,7 +378,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.username IS '用户名';
 
 
 --
--- TOC entry 3404 (class 0 OID 0)
+-- TOC entry 3406 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.grant_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -387,7 +387,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.grant_type IS '授权类型';
 
 
 --
--- TOC entry 3405 (class 0 OID 0)
+-- TOC entry 3407 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -396,7 +396,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.status IS '登录状态（0正常 1异�
 
 
 --
--- TOC entry 3406 (class 0 OID 0)
+-- TOC entry 3408 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.error_msg; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -405,7 +405,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.error_msg IS '失败信息';
 
 
 --
--- TOC entry 3407 (class 0 OID 0)
+-- TOC entry 3409 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.login_ip; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -414,7 +414,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.login_ip IS '登录ip';
 
 
 --
--- TOC entry 3408 (class 0 OID 0)
+-- TOC entry 3410 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.login_location; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -423,7 +423,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.login_location IS '登录地址';
 
 
 --
--- TOC entry 3409 (class 0 OID 0)
+-- TOC entry 3411 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.browser; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -432,7 +432,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.browser IS '浏览器类型';
 
 
 --
--- TOC entry 3410 (class 0 OID 0)
+-- TOC entry 3412 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.os; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -441,7 +441,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.os IS '操作系统';
 
 
 --
--- TOC entry 3411 (class 0 OID 0)
+-- TOC entry 3413 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN sys_login_log.login_time; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -450,7 +450,7 @@ COMMENT ON COLUMN biz_sys.sys_login_log.login_time IS '登录时间';
 
 
 --
--- TOC entry 219 (class 1259 OID 33099)
+-- TOC entry 219 (class 1259 OID 34685)
 -- Name: sys_message; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -470,7 +470,7 @@ CREATE TABLE biz_sys.sys_message (
 ALTER TABLE biz_sys.sys_message OWNER TO wz;
 
 --
--- TOC entry 3412 (class 0 OID 0)
+-- TOC entry 3414 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: TABLE sys_message; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -479,7 +479,7 @@ COMMENT ON TABLE biz_sys.sys_message IS '系统消息表';
 
 
 --
--- TOC entry 3413 (class 0 OID 0)
+-- TOC entry 3415 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN sys_message.msg_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -488,7 +488,7 @@ COMMENT ON COLUMN biz_sys.sys_message.msg_id IS '消息ID';
 
 
 --
--- TOC entry 3414 (class 0 OID 0)
+-- TOC entry 3416 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN sys_message.title; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -497,7 +497,7 @@ COMMENT ON COLUMN biz_sys.sys_message.title IS '消息标题';
 
 
 --
--- TOC entry 3415 (class 0 OID 0)
+-- TOC entry 3417 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN sys_message.msg_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -506,7 +506,7 @@ COMMENT ON COLUMN biz_sys.sys_message.msg_type IS '消息类型（1系统公告 
 
 
 --
--- TOC entry 3416 (class 0 OID 0)
+-- TOC entry 3418 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN sys_message.content; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -515,7 +515,7 @@ COMMENT ON COLUMN biz_sys.sys_message.content IS '消息内容';
 
 
 --
--- TOC entry 3417 (class 0 OID 0)
+-- TOC entry 3419 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN sys_message.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -524,7 +524,7 @@ COMMENT ON COLUMN biz_sys.sys_message.status IS '消息状态（0草稿 1关闭 
 
 
 --
--- TOC entry 3418 (class 0 OID 0)
+-- TOC entry 3420 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN sys_message.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -533,7 +533,7 @@ COMMENT ON COLUMN biz_sys.sys_message.creator_id IS '创建时间';
 
 
 --
--- TOC entry 3419 (class 0 OID 0)
+-- TOC entry 3421 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN sys_message.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -542,7 +542,7 @@ COMMENT ON COLUMN biz_sys.sys_message.updater_id IS '更新时间';
 
 
 --
--- TOC entry 220 (class 1259 OID 33104)
+-- TOC entry 220 (class 1259 OID 34690)
 -- Name: sys_notify; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -558,7 +558,7 @@ CREATE TABLE biz_sys.sys_notify (
 ALTER TABLE biz_sys.sys_notify OWNER TO wz;
 
 --
--- TOC entry 3420 (class 0 OID 0)
+-- TOC entry 3422 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: TABLE sys_notify; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -567,7 +567,7 @@ COMMENT ON TABLE biz_sys.sys_notify IS '系统通知表';
 
 
 --
--- TOC entry 3421 (class 0 OID 0)
+-- TOC entry 3423 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN sys_notify.notify_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -576,7 +576,7 @@ COMMENT ON COLUMN biz_sys.sys_notify.notify_type IS '通知类型（0系统通�
 
 
 --
--- TOC entry 3422 (class 0 OID 0)
+-- TOC entry 3424 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN sys_notify.title; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -585,7 +585,7 @@ COMMENT ON COLUMN biz_sys.sys_notify.title IS '标题';
 
 
 --
--- TOC entry 3423 (class 0 OID 0)
+-- TOC entry 3425 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN sys_notify.content; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -594,7 +594,7 @@ COMMENT ON COLUMN biz_sys.sys_notify.content IS '通知内容';
 
 
 --
--- TOC entry 3424 (class 0 OID 0)
+-- TOC entry 3426 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN sys_notify.create_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -603,7 +603,7 @@ COMMENT ON COLUMN biz_sys.sys_notify.create_at IS '创建时间';
 
 
 --
--- TOC entry 221 (class 1259 OID 33107)
+-- TOC entry 221 (class 1259 OID 34693)
 -- Name: sys_notify_send; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -617,7 +617,7 @@ CREATE TABLE biz_sys.sys_notify_send (
 ALTER TABLE biz_sys.sys_notify_send OWNER TO wz;
 
 --
--- TOC entry 3425 (class 0 OID 0)
+-- TOC entry 3427 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: TABLE sys_notify_send; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -626,7 +626,7 @@ COMMENT ON TABLE biz_sys.sys_notify_send IS '通知发送表';
 
 
 --
--- TOC entry 3426 (class 0 OID 0)
+-- TOC entry 3428 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_notify_send.notify_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -635,7 +635,7 @@ COMMENT ON COLUMN biz_sys.sys_notify_send.notify_id IS '系统消息ID';
 
 
 --
--- TOC entry 3427 (class 0 OID 0)
+-- TOC entry 3429 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_notify_send.user_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -644,7 +644,7 @@ COMMENT ON COLUMN biz_sys.sys_notify_send.user_id IS '接收用户ID';
 
 
 --
--- TOC entry 3428 (class 0 OID 0)
+-- TOC entry 3430 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_notify_send.read_state; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -653,7 +653,7 @@ COMMENT ON COLUMN biz_sys.sys_notify_send.read_state IS '已读1 未读0';
 
 
 --
--- TOC entry 222 (class 1259 OID 33110)
+-- TOC entry 222 (class 1259 OID 34696)
 -- Name: sys_oper_log; Type: TABLE; Schema: biz_sys; Owner: wz
 --
 
@@ -668,8 +668,8 @@ CREATE TABLE biz_sys.sys_oper_log (
     user_id bigint NOT NULL,
     oper_name character varying(50) NOT NULL,
     oper_url character varying(200) NOT NULL,
-    oper_ip character varying(128) NOT NULL,
-    oper_location character varying(255),
+    oper_ip inet NOT NULL,
+    oper_location character varying(100),
     oper_param text,
     json_result text,
     status character(1) NOT NULL,
@@ -681,7 +681,7 @@ CREATE TABLE biz_sys.sys_oper_log (
 ALTER TABLE biz_sys.sys_oper_log OWNER TO wz;
 
 --
--- TOC entry 3429 (class 0 OID 0)
+-- TOC entry 3431 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: TABLE sys_oper_log; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -690,7 +690,7 @@ COMMENT ON TABLE biz_sys.sys_oper_log IS '操作日志记录';
 
 
 --
--- TOC entry 3430 (class 0 OID 0)
+-- TOC entry 3432 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -699,7 +699,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_id IS '日志主键';
 
 
 --
--- TOC entry 3431 (class 0 OID 0)
+-- TOC entry 3433 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -708,7 +708,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3432 (class 0 OID 0)
+-- TOC entry 3434 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.title; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -717,7 +717,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.title IS '模块标题';
 
 
 --
--- TOC entry 3433 (class 0 OID 0)
+-- TOC entry 3435 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.sub_title; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -726,7 +726,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.sub_title IS '子标题';
 
 
 --
--- TOC entry 3434 (class 0 OID 0)
+-- TOC entry 3436 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -735,7 +735,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_type IS '操作类型（0其他 1新
 
 
 --
--- TOC entry 3435 (class 0 OID 0)
+-- TOC entry 3437 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.method; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -744,7 +744,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.method IS '方法名称';
 
 
 --
--- TOC entry 3436 (class 0 OID 0)
+-- TOC entry 3438 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.request_method; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -753,7 +753,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.request_method IS '请求方式';
 
 
 --
--- TOC entry 3437 (class 0 OID 0)
+-- TOC entry 3439 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.user_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -762,7 +762,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.user_id IS '操作人员ID';
 
 
 --
--- TOC entry 3438 (class 0 OID 0)
+-- TOC entry 3440 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -771,7 +771,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_name IS '操作人员';
 
 
 --
--- TOC entry 3439 (class 0 OID 0)
+-- TOC entry 3441 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_url; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -780,7 +780,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_url IS '请求URL';
 
 
 --
--- TOC entry 3440 (class 0 OID 0)
+-- TOC entry 3442 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_ip; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -789,7 +789,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_ip IS '主机地址';
 
 
 --
--- TOC entry 3441 (class 0 OID 0)
+-- TOC entry 3443 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_location; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -798,7 +798,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_location IS '操作地点';
 
 
 --
--- TOC entry 3442 (class 0 OID 0)
+-- TOC entry 3444 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_param; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -807,7 +807,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_param IS '请求参数';
 
 
 --
--- TOC entry 3443 (class 0 OID 0)
+-- TOC entry 3445 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.json_result; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -816,7 +816,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.json_result IS '返回参数';
 
 
 --
--- TOC entry 3444 (class 0 OID 0)
+-- TOC entry 3446 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -825,7 +825,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.status IS '操作状态（0正常 1异常
 
 
 --
--- TOC entry 3445 (class 0 OID 0)
+-- TOC entry 3447 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.error_msg; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -834,7 +834,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.error_msg IS '错误消息';
 
 
 --
--- TOC entry 3446 (class 0 OID 0)
+-- TOC entry 3448 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_oper_log.oper_time; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -843,7 +843,7 @@ COMMENT ON COLUMN biz_sys.sys_oper_log.oper_time IS '操作时间';
 
 
 --
--- TOC entry 3362 (class 0 OID 33085)
+-- TOC entry 3364 (class 0 OID 34671)
 -- Dependencies: 215
 -- Data for Name: global_dict_data; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -932,7 +932,7 @@ COPY biz_sys.global_dict_data (data_id, dict_sort, dict_label, dict_value, dict_
 
 
 --
--- TOC entry 3363 (class 0 OID 33088)
+-- TOC entry 3365 (class 0 OID 34674)
 -- Dependencies: 216
 -- Data for Name: global_dict_type; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -966,7 +966,7 @@ COPY biz_sys.global_dict_type (type_id, dict_name, dict_type, creator_id, update
 
 
 --
--- TOC entry 3364 (class 0 OID 33091)
+-- TOC entry 3366 (class 0 OID 34677)
 -- Dependencies: 217
 -- Data for Name: sys_config; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -977,7 +977,7 @@ COPY biz_sys.sys_config (config_id, config_name, config_key, config_value, confi
 
 
 --
--- TOC entry 3365 (class 0 OID 33096)
+-- TOC entry 3367 (class 0 OID 34682)
 -- Dependencies: 218
 -- Data for Name: sys_login_log; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1011,29 +1011,36 @@ COPY biz_sys.sys_login_log (log_id, tenant_id, user_id, username, grant_type, st
 1879345755956350977	1774671331416821762	1856251200466030593	___sub_	password	0		127.0.0.1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-01-15 09:51:59+08
 1879347169319358466	0	2	wzkris	password	0		127.0.0.1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-01-15 09:57:36+08
 1879350439844679681	0	1	admin	password	0		127.0.0.1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-01-15 10:10:36+08
-1891405734091632641	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-17 16:34:02+08
-1891407556315394050	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-17 16:41:16+08
-1891751684630863873	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-18 15:28:43+08
-1891751876448968706	1774671331416821762	1774671331412627456	testtt	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-18 15:29:29+08
-1892044795118800897	1774671331416821762	1774671331412627456	testtt	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 10:53:26+08
-1892088769313447937	1774671331416821762	1774671331412627456	testtt	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:48:10+08
-1892089328233816066	1774671331416821762	1774671331412627456	testtt	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:50:23+08
-1892089636531937281	1774671331416821762	1774671331412627456	testtt	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:51:37+08
-1892089947740905474	1774671331416821762	1774671331412627456	testtt	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:52:51+08
-1892126225995882498	1774671331416821762	1774671331412627456	testtt	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 16:17:00+08
-1892130041822621697	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 16:32:10+08
-1892821588901519362	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-21 14:20:08+08
-1892831113419317249	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-21 14:57:59+08
-1893127782929235969	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:36:50+08
-1893128099938926593	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:38:06+08
-1893129694210654210	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:44:26+08
-1893130012206006274	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:45:42+08
-1893130611542687745	0	1	admin	password	0		0:0:0:0:0:0:0:1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:48:05+08
+1891405734091632641	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-17 16:34:02+08
+1891407556315394050	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-17 16:41:16+08
+1891751684630863873	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-18 15:28:43+08
+1891751876448968706	1774671331416821762	1774671331412627456	testtt	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-18 15:29:29+08
+1892044795118800897	1774671331416821762	1774671331412627456	testtt	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 10:53:26+08
+1892088769313447937	1774671331416821762	1774671331412627456	testtt	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:48:10+08
+1892089328233816066	1774671331416821762	1774671331412627456	testtt	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:50:23+08
+1892089636531937281	1774671331416821762	1774671331412627456	testtt	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:51:37+08
+1892089947740905474	1774671331416821762	1774671331412627456	testtt	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 13:52:51+08
+1892126225995882498	1774671331416821762	1774671331412627456	testtt	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 16:17:00+08
+1892130041822621697	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-19 16:32:10+08
+1892821588901519362	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-21 14:20:08+08
+1892831113419317249	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-21 14:57:59+08
+1893127782929235969	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:36:50+08
+1893128099938926593	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:38:06+08
+1893129694210654210	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:44:26+08
+1893130012206006274	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:45:42+08
+1893130611542687745	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-22 10:48:05+08
+1894669618206437378	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-26 16:43:32.829+08
+1895017495038423042	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-27 15:45:53.103+08
+1895017578119196673	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-27 15:46:13.004+08
+1895017644137541634	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-27 15:46:28.741+08
+1895017860223889410	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-27 15:47:20.26+08
+1895030301494243329	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-27 16:36:46.477+08
+1895274344463699969	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-02-28 08:46:30.804+08
 \.
 
 
 --
--- TOC entry 3366 (class 0 OID 33099)
+-- TOC entry 3368 (class 0 OID 34685)
 -- Dependencies: 219
 -- Data for Name: sys_message; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1047,7 +1054,7 @@ COPY biz_sys.sys_message (msg_id, title, msg_type, content, status, creator_id, 
 
 
 --
--- TOC entry 3367 (class 0 OID 33104)
+-- TOC entry 3369 (class 0 OID 34690)
 -- Dependencies: 220
 -- Data for Name: sys_notify; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1057,14 +1064,11 @@ COPY biz_sys.sys_notify (notify_id, notify_type, title, content, create_at) FROM
 1873884393595662338	0	重要通知	zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz	2024-12-31 08:10:29+08
 1873884472104644610	0	重要通知	zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz	2024-12-31 08:10:47+08
 1873884863462567938	0	重要通知	zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz	2024-12-31 08:12:21+08
-1879056739268706306	0	租户创建成功	租户：1111创建成功，登录账号：1111，临时登录密码：36770974，临时操作密码：676482	2025-01-14 14:43:32+08
-1879065533864361986	0	账号创建成功	用户：aaaaaa创建成功，临时登录密码：66485484	2025-01-14 15:18:29+08
-1879343474221420545	0	系统用户创建成功	用户账号：xxxxxx创建成功，临时登录密码：60043090	2025-01-15 09:42:55+08
 \.
 
 
 --
--- TOC entry 3368 (class 0 OID 33107)
+-- TOC entry 3370 (class 0 OID 34693)
 -- Dependencies: 221
 -- Data for Name: sys_notify_send; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1074,14 +1078,11 @@ COPY biz_sys.sys_notify_send (notify_id, user_id, read_state) FROM stdin;
 1873884393595662338	1	0
 1873884472104644610	1	1
 1873884863462567938	1	1
-1879056739268706306	1	0
-1879065533864361986	1	1
-1879343474221420545	1774671331412627456	0
 \.
 
 
 --
--- TOC entry 3369 (class 0 OID 33110)
+-- TOC entry 3371 (class 0 OID 34696)
 -- Dependencies: 222
 -- Data for Name: sys_oper_log; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1135,33 +1136,20 @@ COPY biz_sys.sys_oper_log (oper_id, tenant_id, title, sub_title, oper_type, meth
 1879070986094657538	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":1,"message":"修改密码失败，旧密码错误","timestamp":1736840409192}	1	修改密码失败，旧密码错误	2025-01-14 15:40:09+08
 1879071004079833090	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":1,"message":"修改密码失败，旧密码错误","timestamp":1736840413480}	1	修改密码失败，旧密码错误	2025-01-14 15:40:13+08
 1879071213765672962	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":0,"message":"Success","timestamp":1736840463468}	0	\N	2025-01-14 15:41:03+08
-1879071247554985986	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":1,"message":"新密码长度至少要8位且不能包含空格","timestamp":1736840471512}	1	新密码长度至少要8位且不能包含空格	2025-01-14 15:41:11+08
-1879071259856879618	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":1,"message":"修改密码失败，旧密码错误","timestamp":1736840474445}	1	修改密码失败，旧密码错误	2025-01-14 15:41:14+08
-1879071282564841473	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":1,"message":"新密码不能与旧密码相同","timestamp":1736840479874}	1	新密码不能与旧密码相同	2025-01-14 15:41:19+08
-1879071303955791873	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":0,"message":"Success","timestamp":1736840484973}	0	\N	2025-01-14 15:41:24+08
-1879072047161294849	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":0,"message":"Success","timestamp":1736840662170}	0	\N	2025-01-14 15:44:22+08
-1879072068766154754	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":1,"message":"修改密码失败，旧密码错误","timestamp":1736840667321}	1	修改密码失败，旧密码错误	2025-01-14 15:44:27+08
-1879072586729144322	0	系统账户		2	com.wzkris.user.controller.SysUserOwnController.editPwd()	POST	1879065533604380673	aaaaaa	/user/account/edit_password	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":0,"message":"Success","timestamp":1736840790809}	0	\N	2025-01-14 15:46:30+08
-1879079105369620481	0	租户管理	重置操作密码	2	com.wzkris.user.controller.SysTenantController.resetOperPwd()	POST	1	admin	/sys_tenant/reset_operpwd	127.0.0.1	内网IP	{"password":"**","id":1774671331416821762}	{"code":0,"message":"Success","timestamp":1736842344927}	0	\N	2025-01-14 16:12:24+08
-1879080054771302401	1774671331416821762	商户信息	修改操作密码	2	com.wzkris.user.controller.SysTenantOwnController.editOperPwd()	POST	1774671331412627456	testtt	/tenant/edit_operpwd	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":1,"message":"修改密码失败，旧密码错误","timestamp":1736842571270}	1	修改密码失败，旧密码错误	2025-01-14 16:16:11+08
-1879080076506185730	1774671331416821762	商户信息	修改操作密码	2	com.wzkris.user.controller.SysTenantOwnController.editOperPwd()	POST	1774671331412627456	testtt	/tenant/edit_operpwd	127.0.0.1	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":0,"message":"Success","timestamp":1736842576515}	0	\N	2025-01-14 16:16:16+08
-1879080317959684097	1774671331416821762	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1774671331412627456	testtt	/sys_user/remove	127.0.0.1	内网IP	[1856869914760638466]	{"code":0,"message":"Success","timestamp":1736842634082}	0	\N	2025-01-14 16:17:14+08
-1879080410657996801	1774671331416821762	系统用户	重置密码	2	com.wzkris.user.controller.SysUserController.resetPwd()	POST	1774671331412627456	testtt	/sys_user/reset_password	127.0.0.1	内网IP	{"password":"**","id":1774671331412627456}	{"code":0,"message":"Success","timestamp":1736842656183}	0	\N	2025-01-14 16:17:36+08
-1879339960753623041	1774671331416821762	系统用户	修改用户	2	com.wzkris.user.controller.SysUserController.edit()	POST	1774671331412627456	testtt	/sys_user/edit	127.0.0.1	内网IP	{"roleIds":[1775445330027577345],"gender":"2","postIds":[],"deptId":1775382319191453698,"nickname":"xxxxxx","userId":1856251200466030593,"username":"___sub_","status":"0"}	{"code":0,"message":"Success","timestamp":1736904537669}	0	\N	2025-01-15 09:28:57+08
-1879343474041065473	1774671331416821762	系统用户	新增用户	1	com.wzkris.user.controller.SysUserController.add()	POST	1774671331412627456	testtt	/sys_user/add	127.0.0.1	内网IP	{"deptId":1775387364419072002,"username":"xxxxxx"}	{"code":0,"message":"Success","timestamp":1736905375350}	0	\N	2025-01-15 09:42:55+08
-1879343575140569090	1774671331416821762	系统用户	重置密码	2	com.wzkris.user.controller.SysUserController.resetPwd()	POST	1774671331412627456	testtt	/sys_user/reset_password	127.0.0.1	内网IP	{"password":"**","id":1856251200466030593}	{"code":0,"message":"Success","timestamp":1736905399480}	0	\N	2025-01-15 09:43:19+08
-1879343713959448578	1774671331416821762	部门管理	修改部门	2	com.wzkris.user.controller.SysDeptController.edit()	POST	1856251200466030593	___sub_	/sys_dept/edit	127.0.0.1	内网IP	{"deptSort":0,"deptName":"默认租户部门","deptId":1775382319191453698,"tenantId":1774671331416821762,"ancestors":"0","parentId":0,"status":"0"}	{"code":0,"message":"Success","timestamp":1736905432576}	0	\N	2025-01-15 09:43:52+08
-1879343944780386306	1774671331416821762	角色管理	修改角色	2	com.wzkris.user.controller.SysRoleController.edit()	POST	1774671331412627456	testtt	/sys_role/edit	127.0.0.1	内网IP	{"isMenuDisplay":true,"roleId":1775445330027577345,"roleName":"默认租户角色","isDeptDisplay":true,"deptIds":[],"dataScope":"4","menuIds":[2,203,2071,205,2040,2039,2038,2037,208,2145,2144,2143,2142,2141],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1736905487608}	0	\N	2025-01-15 09:44:47+08
-1879345698922205186	1774671331416821762	角色管理	修改角色	2	com.wzkris.user.controller.SysRoleController.edit()	POST	1774671331412627456	testtt	/sys_role/edit	127.0.0.1	内网IP	{"isMenuDisplay":true,"roleId":1775445330027577345,"roleName":"默认租户角色","isDeptDisplay":true,"deptIds":[],"dataScope":"4","menuIds":[2,203,206,2071,2207,2210,2209,2208,205,2040,2039,2038,2037,208,2145,2144,2143,2142,2141],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1736905905786}	0	\N	2025-01-15 09:51:45+08
-1879347297866387458	0	角色管理	批量用户授权	4	com.wzkris.user.controller.SysRoleController.batchAuth()	POST	2	wzkris	/sys_role/authorize_user	127.0.0.1	内网IP	{"roleId":4,"userIds":[2]}	\N	1	无此角色数据访问权限	2025-01-15 09:58:07+08
-1879349193607909377	0	系统用户	状态修改	2	com.wzkris.user.controller.SysRoleController.editStatus()	POST	2	wzkris	/sys_role/edit_status	127.0.0.1	内网IP	{"id":4,"status":"0"}	\N	1	无此角色数据访问权限	2025-01-15 10:05:38+08
-1879350263432253442	0	系统用户	状态修改	2	com.wzkris.user.controller.SysRoleController.editStatus()	POST	2	wzkris	/sys_role/edit_status	127.0.0.1	内网IP	{"id":4,"status":"0"}	\N	1	无此角色数据访问权限	2025-01-15 10:09:54+08
-1891405846922604545	0	系统消息	关闭公告	2	com.wzkris.system.controller.SysMessageController.close()	POST	1	admin	/sys_message/close	0:0:0:0:0:0:0:1	内网IP	1868480718916243457	{"code":0,"message":"Success","timestamp":1739781269150}	0	\N	2025-02-17 16:34:29+08
+1895274433869484033	0	系统用户	修改用户	2	com.wzkris.user.controller.SysUserController.edit()	POST	1	admin	/sys_user/edit	::1	内网IP	{"roleIds":[],"gender":"2","postIds":[],"userId":1895034552073261057,"username":"asdfasdfaedf","status":"0"}	{"code":0,"message":"Success","timestamp":1740703612188}	0	\N	2025-02-28 08:46:52.188+08
+1895274820521398274	0	系统用户	修改用户	2	com.wzkris.user.controller.SysUserController.edit()	POST	1	admin	/sys_user/edit	::1	内网IP	{"roleIds":[],"gender":"2","postIds":[],"deptId":1895034475141337089,"userId":1895034552073261057,"username":"asdfasdfaedf","status":"0"}	{"code":0,"message":"Success","timestamp":1740703704368}	0	\N	2025-02-28 08:48:24.368+08
+1895274879111630850	0	系统用户	修改用户	2	com.wzkris.user.controller.SysUserController.edit()	POST	1	admin	/sys_user/edit	::1	内网IP	{"roleIds":[],"gender":"2","postIds":[],"deptId":1895034475141337089,"userId":1895034552073261057,"username":"asdfasdfaedf","status":"0"}	{"code":0,"message":"Success","timestamp":1740703718337}	0	\N	2025-02-28 08:48:38.337+08
+1895274960460156929	0	系统用户	修改用户	2	com.wzkris.user.controller.SysUserController.edit()	POST	1	admin	/sys_user/edit	::1	内网IP	{"roleIds":[],"gender":"2","postIds":[],"userId":1895034552073261057,"username":"asdfasdfaedf","status":"0"}	{"code":0,"message":"Success","timestamp":1740703737736}	0	\N	2025-02-28 08:48:57.736+08
+1895275135127752706	0	系统用户	修改用户	2	com.wzkris.user.controller.SysUserController.edit()	POST	1	admin	/sys_user/edit	::1	内网IP	{"roleIds":[],"gender":"2","postIds":[],"userId":1895034552073261057,"username":"asdfasdfaedf","status":"0"}	{"code":0,"message":"Success","timestamp":1740703779376}	0	\N	2025-02-28 08:49:39.376+08
+1895275513693048833	0	系统用户	修改用户	2	com.wzkris.user.controller.SysUserController.edit()	POST	1	admin	/sys_user/edit	::1	内网IP	{"roleIds":[],"gender":"2","postIds":[],"userId":1895034552073261057,"username":"asdfasdfaedf","status":"0"}	{"code":0,"message":"Success","timestamp":1740703869634}	0	\N	2025-02-28 08:51:09.634+08
+1895281164297105409	0	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1	admin	/sys_user/remove	::1	内网IP	[1895034552073261057]	{"code":0,"message":"Success","timestamp":1740705216781}	0	\N	2025-02-28 09:13:36.781+08
+1895281184501067778	0	部门管理	删除部门	3	com.wzkris.user.controller.SysDeptController.remove()	POST	1	admin	/sys_dept/remove	::1	内网IP	1895034495743758338	{"code":0,"message":"Success","timestamp":1740705221663}	0	\N	2025-02-28 09:13:41.663+08
+1895281193653039105	0	部门管理	删除部门	3	com.wzkris.user.controller.SysDeptController.remove()	POST	1	admin	/sys_dept/remove	::1	内网IP	1895034475141337089	{"code":0,"message":"Success","timestamp":1740705223843}	0	\N	2025-02-28 09:13:43.843+08
 \.
 
 
 --
--- TOC entry 3202 (class 2606 OID 33117)
+-- TOC entry 3202 (class 2606 OID 34702)
 -- Name: global_dict_data global_dict_data_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1170,7 +1158,7 @@ ALTER TABLE ONLY biz_sys.global_dict_data
 
 
 --
--- TOC entry 3205 (class 2606 OID 33120)
+-- TOC entry 3205 (class 2606 OID 34704)
 -- Name: global_dict_type global_dict_type_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1179,7 +1167,7 @@ ALTER TABLE ONLY biz_sys.global_dict_type
 
 
 --
--- TOC entry 3208 (class 2606 OID 33123)
+-- TOC entry 3208 (class 2606 OID 34706)
 -- Name: sys_config sys_config_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1188,7 +1176,7 @@ ALTER TABLE ONLY biz_sys.sys_config
 
 
 --
--- TOC entry 3211 (class 2606 OID 33125)
+-- TOC entry 3212 (class 2606 OID 34708)
 -- Name: sys_login_log sys_login_log_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1197,7 +1185,7 @@ ALTER TABLE ONLY biz_sys.sys_login_log
 
 
 --
--- TOC entry 3213 (class 2606 OID 33127)
+-- TOC entry 3214 (class 2606 OID 34710)
 -- Name: sys_message sys_message_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1206,7 +1194,7 @@ ALTER TABLE ONLY biz_sys.sys_message
 
 
 --
--- TOC entry 3215 (class 2606 OID 33129)
+-- TOC entry 3216 (class 2606 OID 34712)
 -- Name: sys_notify sys_notify_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1215,7 +1203,7 @@ ALTER TABLE ONLY biz_sys.sys_notify
 
 
 --
--- TOC entry 3217 (class 2606 OID 33131)
+-- TOC entry 3218 (class 2606 OID 34714)
 -- Name: sys_notify_send sys_notify_send_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1224,7 +1212,7 @@ ALTER TABLE ONLY biz_sys.sys_notify_send
 
 
 --
--- TOC entry 3219 (class 2606 OID 33133)
+-- TOC entry 3221 (class 2606 OID 34716)
 -- Name: sys_oper_log sys_oper_log_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -1233,7 +1221,7 @@ ALTER TABLE ONLY biz_sys.sys_oper_log
 
 
 --
--- TOC entry 3203 (class 1259 OID 33350)
+-- TOC entry 3203 (class 1259 OID 34717)
 -- Name: i_dict_type; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -1241,7 +1229,23 @@ CREATE INDEX i_dict_type ON biz_sys.global_dict_data USING btree (dict_type);
 
 
 --
--- TOC entry 3209 (class 1259 OID 33352)
+-- TOC entry 3210 (class 1259 OID 34718)
+-- Name: i_sys_login_log_login_time; Type: INDEX; Schema: biz_sys; Owner: wz
+--
+
+CREATE INDEX i_sys_login_log_login_time ON biz_sys.sys_login_log USING brin (login_time);
+
+
+--
+-- TOC entry 3219 (class 1259 OID 34719)
+-- Name: i_sys_oper_log_oper_time; Type: INDEX; Schema: biz_sys; Owner: wz
+--
+
+CREATE INDEX i_sys_oper_log_oper_time ON biz_sys.sys_oper_log USING brin (oper_time);
+
+
+--
+-- TOC entry 3209 (class 1259 OID 34720)
 -- Name: u_i_config_key; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -1249,14 +1253,14 @@ CREATE UNIQUE INDEX u_i_config_key ON biz_sys.sys_config USING btree (config_key
 
 
 --
--- TOC entry 3206 (class 1259 OID 33351)
+-- TOC entry 3206 (class 1259 OID 34721)
 -- Name: u_i_dict_type; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
 CREATE UNIQUE INDEX u_i_dict_type ON biz_sys.global_dict_type USING btree (dict_type);
 
 
--- Completed on 2025-02-24 10:16:52
+-- Completed on 2025-03-03 14:07:12
 
 --
 -- PostgreSQL database dump complete

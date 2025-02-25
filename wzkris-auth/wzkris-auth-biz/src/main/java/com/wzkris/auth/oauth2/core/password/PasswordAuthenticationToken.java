@@ -1,6 +1,7 @@
 package com.wzkris.auth.oauth2.core.password;
 
 import com.wzkris.auth.oauth2.core.CommonAuthenticationToken;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.Transient;
@@ -30,7 +31,7 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
                                        String captchaId,
                                        Authentication clientPrincipal,
                                        Set<String> scopes,
-                                       Map<String, Object> additionalParameters) {
+                                       @Nullable Map<String, Object> additionalParameters) {
         super(AuthorizationGrantType.PASSWORD, clientPrincipal, scopes, additionalParameters);
         Assert.notNull(username, "username cannot be null");
         Assert.notNull(password, "password cannot be null");

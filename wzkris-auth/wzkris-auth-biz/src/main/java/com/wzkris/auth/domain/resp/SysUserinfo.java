@@ -1,6 +1,5 @@
-package com.wzkris.user.domain.vo;
+package com.wzkris.auth.domain.resp;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,14 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
- * @author : wzkris
- * @version : V1.0.1
- * @description : 登录用户信息VO
- * @date : 2024/4/13 14:13
+ * 用户信息
+ *
+ * @author wzkris
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)// 默认值不序列化
-public class SysUserOwnVO {
+public class SysUserinfo {
 
     @Schema(description = "是否租户管理员")
     private boolean admin;

@@ -58,10 +58,10 @@ public class SysMessageOwnController extends BaseController {
         return getDataTable(list);
     }
 
-    @Operation(summary = "通知读取")
-    @PostMapping("/read_notify")
-    public Result<Void> readNotify(@RequestBody Long notifyId) {
-        return toRes(notifyMapper.readNotify(notifyId, LoginUserUtil.getUserId()));
+    @Operation(summary = "通知已读")
+    @PostMapping("/mark_read")
+    public Result<Void> markRead(@RequestBody Long notifyId) {
+        return toRes(notifyMapper.markRead(notifyId, LoginUserUtil.getUserId()));
     }
 
     @Operation(summary = "未读数量统计")

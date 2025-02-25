@@ -19,7 +19,7 @@ public interface DeviceCmdLogMapper {
 
     @Select("""
             <script>
-                    SELECT * FROM device_cmd_log
+                    SELECT * FROM biz_sys.device_cmd_log
                         <where>
                             <if test="null != deviceId and '' != deviceId">
                                 AND device_id = #{deviceId}
@@ -44,7 +44,7 @@ public interface DeviceCmdLogMapper {
      */
     @Insert("""
             <script>
-                INSERT INTO device_cmd_log(device_id, receive_time, cmd, tenant_id, cmd_type, cmd_data) VALUES
+                INSERT INTO biz_sys.device_cmd_log(device_id, receive_time, cmd, tenant_id, cmd_type, cmd_data) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.deviceId}, #{item.receiveTime}, #{item.cmd}, #{item.tenantId}, #{item.cmdType}, #{item.cmdData})
                     </foreach>

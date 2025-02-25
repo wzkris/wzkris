@@ -6,6 +6,7 @@ import com.wzkris.user.domain.SysTenantPackage;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,6 +27,6 @@ public interface SysTenantPackageMapper extends BaseMapperPlus<SysTenantPackage>
                         .select(SysTenantPackage::getMenuIds)
                         .eq(SysTenantPackage::getPackageId, packageId)
         );
-        return tenantPackage == null ? Collections.emptyList() : tenantPackage.getMenuIds();
+        return tenantPackage == null ? Collections.emptyList() : Arrays.asList(tenantPackage.getMenuIds());
     }
 }

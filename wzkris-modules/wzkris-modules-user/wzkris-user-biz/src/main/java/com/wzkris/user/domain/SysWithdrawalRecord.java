@@ -8,9 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
- * 系统提现记录 sys_user_role
+ * 系统提现记录 biz_sys.sys_user_role
  *
  * @author wzkris
  */
@@ -45,10 +46,10 @@ public class SysWithdrawalRecord {
     private Long creatorId;
 
     @Schema(description = "创建时间")
-    private Long createAt;
+    private Date createAt;
 
     @Schema(description = "完成时间")
-    private Long completeAt;
+    private Date completeAt;
 
     @Schema(description = "备注")
     private String remark;

@@ -1,5 +1,6 @@
 package com.wzkris.common.orm.plus.handler;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
@@ -33,7 +34,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     }
 
     private void fillInsert(Long userId, MetaObject metaObject) {
-        Long current = DateUtil.current();
+        DateTime current = DateUtil.date();
         this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.creatorId, userId, metaObject);
@@ -53,7 +54,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     }
 
     private void fillUpdate(Long userId, MetaObject metaObject) {
-        Long current = DateUtil.current();
+        DateTime current = DateUtil.date();
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
     }

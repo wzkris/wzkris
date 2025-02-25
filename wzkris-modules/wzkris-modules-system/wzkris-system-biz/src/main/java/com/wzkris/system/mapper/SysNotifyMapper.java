@@ -33,7 +33,7 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
      * 已读通知
      */
     @Update("UPDATE biz_sys.sys_notify_send SET read_state = '1' WHERE notify_id = #{notifyId} AND user_id = #{userId}")
-    int readNotify(@Param("notifyId") Long notifyId, @Param("userId") Long userId);
+    int markRead(@Param("notifyId") Long notifyId, @Param("userId") Long userId);
 
     /**
      * 最大统计100
@@ -45,7 +45,7 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
                     <if test="notifyType != null and notifyType != ''">
             	        AND notify_type = #{notifyType}
             	    </if>
-                ORDER BY s.notify_id DESC LIMIT 100
+                LIMIT 100
             </script>
             """)
     int countUnread(@Param("userId") Long userId, @Nullable @Param("notifyType") String notifyType);

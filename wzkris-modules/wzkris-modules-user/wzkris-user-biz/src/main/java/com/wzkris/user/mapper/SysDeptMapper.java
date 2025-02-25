@@ -76,7 +76,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Select("SELECT COUNT(*) FROM sys_user WHERE dept_id = #{deptId} LIMIT 1")
+    @Select("SELECT COUNT(*) FROM biz_sys.sys_user WHERE dept_id = #{deptId} LIMIT 1")
     int checkDeptExistUser(Long deptId);
 
     /**

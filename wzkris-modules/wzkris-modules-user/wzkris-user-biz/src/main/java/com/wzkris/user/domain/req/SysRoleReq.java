@@ -29,6 +29,7 @@ public class SysRoleReq {
     @Schema(description = "角色名称")
     private String roleName;
 
+    @NotBlank(message = "{desc.status}" + "{validate.notnull}")
     @EnumsCheck(values = {CommonConstants.STATUS_DISABLE, CommonConstants.STATUS_ENABLE})
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;

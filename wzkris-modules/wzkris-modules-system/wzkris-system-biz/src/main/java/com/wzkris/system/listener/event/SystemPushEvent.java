@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "系统推送弹窗事件")
-public class SystemPushAlertEvent {
+public class SystemPushEvent {
 
     private List<?> ids;
 

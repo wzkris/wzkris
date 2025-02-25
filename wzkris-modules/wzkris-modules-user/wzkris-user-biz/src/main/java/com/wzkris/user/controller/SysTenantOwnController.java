@@ -96,9 +96,9 @@ public class SysTenantOwnController extends BaseController {
 
     private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantWalletRecord>()
-                .like(StringUtil.isNotBlank(queryReq.getType()), SysTenantWalletRecord::getType, queryReq.getType())
-                .between(queryReq.getParams().get("beginTime") != null && queryReq.getParams().get("endTime") != null,
-                        SysTenantWalletRecord::getCreateAt, queryReq.getParams().get("beginTime"), queryReq.getParams().get("endTime"))
+                .like(StringUtil.isNotBlank(queryReq.getType()), SysTenantWalletRecord::getRecordType, queryReq.getType())
+                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysTenantWalletRecord::getCreateAt, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
                 .orderByDesc(SysTenantWalletRecord::getRecordId);
     }
 

@@ -1,5 +1,6 @@
 package com.wzkris.user.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.AppUserWalletRecord;
 import com.wzkris.user.mapper.AppUserWalletMapper;
@@ -29,7 +30,7 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             record.setUserId(userId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_INCOME);
-            record.setCreateAt(System.currentTimeMillis());
+            record.setCreateAt(DateUtil.date());
             appUserWalletRecordMapper.insert(record);
         }
         return suc;
@@ -44,7 +45,7 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             record.setUserId(userId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_OUTCOME);
-            record.setCreateAt(System.currentTimeMillis());
+            record.setCreateAt(DateUtil.date());
             appUserWalletRecordMapper.insert(record);
         }
         return suc;

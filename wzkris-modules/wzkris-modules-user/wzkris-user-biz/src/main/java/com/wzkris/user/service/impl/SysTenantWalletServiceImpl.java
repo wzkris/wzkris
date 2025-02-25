@@ -1,5 +1,6 @@
 package com.wzkris.user.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.mapper.SysTenantWalletMapper;
@@ -28,8 +29,8 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             SysTenantWalletRecord record = new SysTenantWalletRecord();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_INCOME);
-            record.setCreateAt(System.currentTimeMillis());
+            record.setRecordType(UserConstants.WALLET_INCOME);
+            record.setCreateAt(DateUtil.date());
             tenantWalletRecordMapper.insert(record);
         }
         return suc;
@@ -43,8 +44,8 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             SysTenantWalletRecord record = new SysTenantWalletRecord();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_OUTCOME);
-            record.setCreateAt(System.currentTimeMillis());
+            record.setRecordType(UserConstants.WALLET_OUTCOME);
+            record.setCreateAt(DateUtil.date());
             tenantWalletRecordMapper.insert(record);
         }
         return suc;

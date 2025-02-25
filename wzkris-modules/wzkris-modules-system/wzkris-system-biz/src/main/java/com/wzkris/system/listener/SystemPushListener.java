@@ -2,11 +2,11 @@ package com.wzkris.system.listener;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.web.utils.SseUtil;
 import com.wzkris.system.constant.MessageConstants;
-import com.wzkris.system.constant.SystemPushEventName;
+import com.wzkris.system.constant.SystemPushTopic;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
-import com.wzkris.system.listener.event.SystemPushAlertEvent;
-import com.wzkris.system.utils.SseUtil;
+import com.wzkris.system.listener.event.SystemPushEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,21 +24,21 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SystemPushAlertListener {
+public class SystemPushListener {
 
     private static void doSystemPush(String type, String eventName, List<?> ids, ObjectNode msg) {
         switch (type) {
-            case MessageConstants.NOTIFY_TYPE_SYSTEM -> eventName = SystemPushEventName.SYSTEM_NOTIFY;
-            case MessageConstants.NOTIFY_TYPE_DEVICE -> eventName = SystemPushEventName.DEVICE_NOTIFY;
+            case MessageConstants.NOTIFY_TYPE_SYSTEM -> eventName = SystemPushTopic.SYSTEM_NOTIFY;
+            case MessageConstants.NOTIFY_TYPE_DEVICE -> eventName = SystemPushTopic.DEVICE_NOTIFY;
         }
         SseUtil.sendBatch(ids, eventName, msg);
     }
 
     @Async
     @EventListener
-    public void loginEvent(SystemPushAlertEvent alertEvent) {
-        List<?> ids = alertEvent.getIds();
-        SimpleMessageDTO messageDTO = alertEvent.getMessageDTO();
+    public void loginEvent(SystemPushEvent pushEvent) {
+        List<?> ids = pushEvent.getIds();
+        SimpleMessageDTO messageDTO = pushEvent.getMessageDTO();
         String eventName = null;
         ObjectNode msg = JsonUtil.createObjectNode();
         msg.put("title", messageDTO.getTitle());

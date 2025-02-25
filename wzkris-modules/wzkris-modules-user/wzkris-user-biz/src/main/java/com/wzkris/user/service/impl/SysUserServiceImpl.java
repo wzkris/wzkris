@@ -102,6 +102,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(List<Long> userIds) {
         userMapper.deleteByIds(userIds);
         userRoleMapper.deleteByUserIds(userIds);
