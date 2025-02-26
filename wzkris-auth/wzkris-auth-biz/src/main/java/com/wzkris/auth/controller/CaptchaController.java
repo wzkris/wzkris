@@ -3,7 +3,6 @@ package com.wzkris.auth.controller;
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.application.vo.CaptchaResponse;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
-import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
 import cn.hutool.core.util.RandomUtil;
@@ -19,10 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author : wzkris
@@ -45,9 +41,9 @@ public class CaptchaController extends BaseController {
     @RateLimit
     @Operation(summary = "生成验证码")
     @PostMapping("/generate")
-    public CaptchaResponse<ImageCaptchaVO> genCaptcha() {
+    public CaptchaResponse<ImageCaptchaVO> genCaptcha(@RequestParam(required = false) String type) {
         // 参数1为具体的验证码类型， 默认支持 SLIDER、ROTATE、WORD_IMAGE_CLICK、CONCAT 等验证码类型，详见： `CaptchaTypeConstant`类
-        return application.generateCaptcha(CaptchaTypeConstant.SLIDER);
+        return application.generateCaptcha(type);
     }
 
     @Operation(summary = "校验验证码")
