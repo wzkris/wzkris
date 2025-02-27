@@ -49,9 +49,9 @@ public class SysTenantServiceImpl implements SysTenantService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertTenant(SysTenant tenant, String username, String password) {
-        if (!passwordEncoder.isEncode(tenant.getOperPwd()))
+        if (!passwordEncoder.isEncode(tenant.getOperPwd())) {
             tenant.setOperPwd(passwordEncoder.encode(tenant.getOperPwd()));
-
+        }
         long userId = IdUtil.getSnowflakeNextId();
         tenant.setAdministrator(userId);
         tenantMapper.insert(tenant);

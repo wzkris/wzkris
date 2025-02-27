@@ -2,7 +2,6 @@ package com.wzkris.auth.domain.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
@@ -24,5 +23,5 @@ public class SysUserinfo {
     private String username;
 
     @Schema(description = "权限")
-    private Collection<? extends GrantedAuthority> authorities;
+    private Collection<String> authorities;
 }

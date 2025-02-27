@@ -1,6 +1,7 @@
 package com.wzkris.user.domain.req;
 
 import com.wzkris.common.core.annotation.EnumsCheck;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.user.domain.SysRole;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -19,6 +20,7 @@ import java.util.List;
 @Schema(description = "系统角色添加修改参数体")
 public class SysRoleReq {
 
+    @NotNull(groups = ValidationGroups.Update.class, message = "id {validate.notnull}")
     private Long roleId;
 
     @Schema(description = "数据范围（1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限）")

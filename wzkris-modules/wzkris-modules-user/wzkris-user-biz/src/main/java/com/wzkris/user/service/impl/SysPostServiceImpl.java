@@ -3,8 +3,10 @@ package com.wzkris.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.SysPost;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.service.SysPostService;
@@ -30,9 +32,12 @@ public class SysPostServiceImpl implements SysPostService {
     private final SysUserPostMapper userPostMapper;
 
     @Override
-    public List<SysPost> listCanGranted() {
+    public List<SelectVO> listSelect(String postName) {
         return postMapper.selectList(Wrappers.lambdaQuery(SysPost.class)
-                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE));
+                .select(SysPost::getPostId, SysPost::getPostName)
+                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(postName), SysPost::getPostName, postName)
+        ).stream().map(SelectVO::new).collect(Collectors.toList());
     }
 
     @Override

@@ -31,13 +31,13 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
             ${ew.customSqlSegment}
             """)
     @DeptScope(tableAlias = "d")
-    List<SysUserVO> selectVOInScope(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+    List<SysUserVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
     /**
      * 带权限查询列表
      */
     @DeptScope
-    default List<SysUser> selectListInScope(Wrapper<SysUser> queryWrapper) {
+    default List<SysUser> selectLists(Wrapper<SysUser> queryWrapper) {
         return this.selectList(queryWrapper);
     }
 
@@ -88,7 +88,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     @DeptScope
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(*) = ${userIds.size()} THEN 1 ELSE 0 END AS match_result
+                SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN 1 ELSE 0 END
                     FROM biz_sys.sys_user WHERE user_id IN
                     <foreach collection="userIds" item="userId" open="(" separator="," close=")">
                         <if test="userId != null and userId != ''">

@@ -1,6 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -66,7 +67,7 @@ public class SysRoleController extends BaseController {
     @CheckPerms("sys_role:list")
     public Result<Page<SysRole>> listPage(SysRoleQueryReq req) {
         startPage();
-        List<SysRole> list = roleMapper.selectListInScope(this.buildQueryWrapper(req));
+        List<SysRole> list = roleMapper.selectLists(this.buildQueryWrapper(req));
         return getDataTable(list);
     }
 
@@ -89,19 +90,19 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "角色菜单选择树")
     @GetMapping({"/menu_select_tree/", "/menu_select_tree/{roleId}"})
     @CheckPerms("sys_role:list")
-    public Result<CheckedSelectTreeVO> roleMenuTreeList(@PathVariable(required = false) Long roleId) {
+    public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(roleId == null ? Collections.emptyList() : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        checkedSelectTreeVO.setSelectTrees(menuService.listMenuSelectTree(LoginUserUtil.getUserId()));
+        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUserUtil.getUserId()));
         return ok(checkedSelectTreeVO);
     }
 
     @Operation(summary = "角色部门选择树")
-    @GetMapping({"/dept_select_tree/{roleId}", "/dept_select_tree/{roleId}"})
+    @GetMapping({"/dept_select_tree/", "/dept_select_tree/{roleId}"})
     @CheckPerms("sys_role:query")
-    public Result<CheckedSelectTreeVO> deptTree(@PathVariable(required = false) Long roleId) {
+    public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
@@ -125,7 +126,7 @@ public class SysRoleController extends BaseController {
     @OperateLog(title = "角色管理", subTitle = "修改角色", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("sys_role:edit")
-    public Result<Void> edit(@Validated @RequestBody SysRoleReq roleReq) {
+    public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysRoleReq roleReq) {
         // 权限校验
         roleService.checkDataScopes(roleReq.getRoleId());
         return toRes(roleService.updateRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));

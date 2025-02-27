@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,7 @@ public class OAuth2Endpoint extends BaseController {
         userinfo.setAdmin(LoginUserUtil.isAdmin());
         userinfo.setSuperTenant(LoginUserUtil.isSuperTenant());
         userinfo.setUsername(LoginUserUtil.getUsername());
-        userinfo.setAuthorities(LoginUserUtil.getAuthorities());
+        userinfo.setAuthorities(AuthorityUtils.authorityListToSet(LoginUserUtil.getAuthorities()));
         return ok(userinfo);
     }
 

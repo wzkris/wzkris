@@ -7,6 +7,7 @@ import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.type.ArrayTypeHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz_sys", autoResultMap = true)
 public class SysDept extends BaseEntity {
 
     @TableId
@@ -30,8 +31,9 @@ public class SysDept extends BaseEntity {
     @Schema(description = "父部门ID")
     private Long parentId;
 
+    @TableField(typeHandler = ArrayTypeHandler.class)
     @Schema(description = "祖级列表")
-    private String ancestors;
+    private Long[] ancestors;
 
     @Schema(description = "部门名称")
     private String deptName;

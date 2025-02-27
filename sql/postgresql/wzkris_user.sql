@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-03-03 13:47:22
+-- Started on 2025-03-22 14:09:31
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -66,7 +66,7 @@ CREATE TABLE biz_app.app_user (
 ALTER TABLE biz_app.app_user OWNER TO wz;
 
 --
--- TOC entry 3472 (class 0 OID 0)
+-- TOC entry 3474 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: TABLE app_user; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -75,7 +75,7 @@ COMMENT ON TABLE biz_app.app_user IS '用户信息表';
 
 
 --
--- TOC entry 3473 (class 0 OID 0)
+-- TOC entry 3475 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.user_id; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -84,7 +84,7 @@ COMMENT ON COLUMN biz_app.app_user.user_id IS '用户ID';
 
 
 --
--- TOC entry 3474 (class 0 OID 0)
+-- TOC entry 3476 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.nickname; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -93,7 +93,7 @@ COMMENT ON COLUMN biz_app.app_user.nickname IS '用户昵称';
 
 
 --
--- TOC entry 3475 (class 0 OID 0)
+-- TOC entry 3477 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.phone_number; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -102,7 +102,7 @@ COMMENT ON COLUMN biz_app.app_user.phone_number IS '手机号码';
 
 
 --
--- TOC entry 3476 (class 0 OID 0)
+-- TOC entry 3478 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.status; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -111,7 +111,7 @@ COMMENT ON COLUMN biz_app.app_user.status IS '状态值';
 
 
 --
--- TOC entry 3477 (class 0 OID 0)
+-- TOC entry 3479 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.gender; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -120,7 +120,7 @@ COMMENT ON COLUMN biz_app.app_user.gender IS '用户性别（0男 1女 2未知�
 
 
 --
--- TOC entry 3478 (class 0 OID 0)
+-- TOC entry 3480 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.avatar; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -129,7 +129,7 @@ COMMENT ON COLUMN biz_app.app_user.avatar IS '头像地址';
 
 
 --
--- TOC entry 3479 (class 0 OID 0)
+-- TOC entry 3481 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.login_ip; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -138,7 +138,7 @@ COMMENT ON COLUMN biz_app.app_user.login_ip IS '登录ip';
 
 
 --
--- TOC entry 3480 (class 0 OID 0)
+-- TOC entry 3482 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.login_date; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -147,7 +147,7 @@ COMMENT ON COLUMN biz_app.app_user.login_date IS '登录时间';
 
 
 --
--- TOC entry 3481 (class 0 OID 0)
+-- TOC entry 3483 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.creator_id; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -156,7 +156,7 @@ COMMENT ON COLUMN biz_app.app_user.creator_id IS '创建者';
 
 
 --
--- TOC entry 3482 (class 0 OID 0)
+-- TOC entry 3484 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: COLUMN app_user.updater_id; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -179,7 +179,7 @@ CREATE TABLE biz_app.app_user_thirdinfo (
 ALTER TABLE biz_app.app_user_thirdinfo OWNER TO wz;
 
 --
--- TOC entry 3483 (class 0 OID 0)
+-- TOC entry 3485 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: TABLE app_user_thirdinfo; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -188,7 +188,7 @@ COMMENT ON TABLE biz_app.app_user_thirdinfo IS '第三方信息';
 
 
 --
--- TOC entry 3484 (class 0 OID 0)
+-- TOC entry 3486 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN app_user_thirdinfo.identifier; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -197,7 +197,7 @@ COMMENT ON COLUMN biz_app.app_user_thirdinfo.identifier IS '三方唯一标识�
 
 
 --
--- TOC entry 3485 (class 0 OID 0)
+-- TOC entry 3487 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: COLUMN app_user_thirdinfo.identifier_type; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -220,7 +220,7 @@ CREATE TABLE biz_app.app_user_wallet (
 ALTER TABLE biz_app.app_user_wallet OWNER TO wz;
 
 --
--- TOC entry 3486 (class 0 OID 0)
+-- TOC entry 3488 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: TABLE app_user_wallet; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -229,7 +229,7 @@ COMMENT ON TABLE biz_app.app_user_wallet IS '用户钱包';
 
 
 --
--- TOC entry 3487 (class 0 OID 0)
+-- TOC entry 3489 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN app_user_wallet.balance; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -238,7 +238,7 @@ COMMENT ON COLUMN biz_app.app_user_wallet.balance IS '余额, 元';
 
 
 --
--- TOC entry 3488 (class 0 OID 0)
+-- TOC entry 3490 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN app_user_wallet.status; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -264,7 +264,7 @@ CREATE TABLE biz_app.app_user_wallet_record (
 ALTER TABLE biz_app.app_user_wallet_record OWNER TO wz;
 
 --
--- TOC entry 3489 (class 0 OID 0)
+-- TOC entry 3491 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: TABLE app_user_wallet_record; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -273,7 +273,7 @@ COMMENT ON TABLE biz_app.app_user_wallet_record IS '用户钱包记录';
 
 
 --
--- TOC entry 3490 (class 0 OID 0)
+-- TOC entry 3492 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN app_user_wallet_record.user_id; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -282,7 +282,7 @@ COMMENT ON COLUMN biz_app.app_user_wallet_record.user_id IS '用户ID';
 
 
 --
--- TOC entry 3491 (class 0 OID 0)
+-- TOC entry 3493 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN app_user_wallet_record.amount; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -291,7 +291,7 @@ COMMENT ON COLUMN biz_app.app_user_wallet_record.amount IS '金额, 元';
 
 
 --
--- TOC entry 3492 (class 0 OID 0)
+-- TOC entry 3494 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN app_user_wallet_record.record_type; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -300,7 +300,7 @@ COMMENT ON COLUMN biz_app.app_user_wallet_record.record_type IS '记录类型';
 
 
 --
--- TOC entry 3493 (class 0 OID 0)
+-- TOC entry 3495 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN app_user_wallet_record.create_at; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -309,7 +309,7 @@ COMMENT ON COLUMN biz_app.app_user_wallet_record.create_at IS '创建时间';
 
 
 --
--- TOC entry 3494 (class 0 OID 0)
+-- TOC entry 3496 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: COLUMN app_user_wallet_record.remark; Type: COMMENT; Schema: biz_app; Owner: wz
 --
@@ -342,7 +342,7 @@ CREATE TABLE biz_sys.oauth2_client (
 ALTER TABLE biz_sys.oauth2_client OWNER TO wz;
 
 --
--- TOC entry 3495 (class 0 OID 0)
+-- TOC entry 3497 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: TABLE oauth2_client; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -351,7 +351,7 @@ COMMENT ON TABLE biz_sys.oauth2_client IS 'OAUTH2客户端';
 
 
 --
--- TOC entry 3496 (class 0 OID 0)
+-- TOC entry 3498 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN oauth2_client.client_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -360,7 +360,7 @@ COMMENT ON COLUMN biz_sys.oauth2_client.client_name IS '客户端名称';
 
 
 --
--- TOC entry 3497 (class 0 OID 0)
+-- TOC entry 3499 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN oauth2_client.scopes; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -369,7 +369,7 @@ COMMENT ON COLUMN biz_sys.oauth2_client.scopes IS '权限域';
 
 
 --
--- TOC entry 3498 (class 0 OID 0)
+-- TOC entry 3500 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN oauth2_client.authorization_grant_types; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -378,7 +378,7 @@ COMMENT ON COLUMN biz_sys.oauth2_client.authorization_grant_types IS '授权类�
 
 
 --
--- TOC entry 3499 (class 0 OID 0)
+-- TOC entry 3501 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN oauth2_client.redirect_uris; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -387,7 +387,7 @@ COMMENT ON COLUMN biz_sys.oauth2_client.redirect_uris IS '回调地址';
 
 
 --
--- TOC entry 3500 (class 0 OID 0)
+-- TOC entry 3502 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN oauth2_client.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -396,7 +396,7 @@ COMMENT ON COLUMN biz_sys.oauth2_client.status IS '客户端状态';
 
 
 --
--- TOC entry 3501 (class 0 OID 0)
+-- TOC entry 3503 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: COLUMN oauth2_client.auto_approve; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -412,8 +412,8 @@ COMMENT ON COLUMN biz_sys.oauth2_client.auto_approve IS '是否自动放行';
 CREATE TABLE biz_sys.sys_dept (
     dept_id bigint NOT NULL,
     tenant_id bigint NOT NULL,
-    parent_id bigint NOT NULL,
-    ancestors character varying(500) NOT NULL,
+    parent_id bigint DEFAULT 0 NOT NULL,
+    ancestors bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     dept_name character varying(30),
     status character(1),
     dept_sort integer,
@@ -429,7 +429,7 @@ CREATE TABLE biz_sys.sys_dept (
 ALTER TABLE biz_sys.sys_dept OWNER TO wz;
 
 --
--- TOC entry 3502 (class 0 OID 0)
+-- TOC entry 3504 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: TABLE sys_dept; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -438,7 +438,7 @@ COMMENT ON TABLE biz_sys.sys_dept IS '部门表';
 
 
 --
--- TOC entry 3503 (class 0 OID 0)
+-- TOC entry 3505 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.dept_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -447,7 +447,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.dept_id IS '部门id';
 
 
 --
--- TOC entry 3504 (class 0 OID 0)
+-- TOC entry 3506 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -456,7 +456,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3505 (class 0 OID 0)
+-- TOC entry 3507 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.parent_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -465,7 +465,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.parent_id IS '父部门id';
 
 
 --
--- TOC entry 3506 (class 0 OID 0)
+-- TOC entry 3508 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.ancestors; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -474,7 +474,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.ancestors IS '祖级列表';
 
 
 --
--- TOC entry 3507 (class 0 OID 0)
+-- TOC entry 3509 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.dept_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -483,7 +483,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.dept_name IS '部门名称';
 
 
 --
--- TOC entry 3508 (class 0 OID 0)
+-- TOC entry 3510 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -492,7 +492,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.status IS '0代表正常 1代表停用';
 
 
 --
--- TOC entry 3509 (class 0 OID 0)
+-- TOC entry 3511 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.dept_sort; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -501,7 +501,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.dept_sort IS '显示顺序';
 
 
 --
--- TOC entry 3510 (class 0 OID 0)
+-- TOC entry 3512 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.contact; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -510,7 +510,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.contact IS '联系电话';
 
 
 --
--- TOC entry 3511 (class 0 OID 0)
+-- TOC entry 3513 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.email; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -519,7 +519,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.email IS '邮箱';
 
 
 --
--- TOC entry 3512 (class 0 OID 0)
+-- TOC entry 3514 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -528,7 +528,7 @@ COMMENT ON COLUMN biz_sys.sys_dept.creator_id IS '创建者';
 
 
 --
--- TOC entry 3513 (class 0 OID 0)
+-- TOC entry 3515 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_dept.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -566,7 +566,7 @@ CREATE TABLE biz_sys.sys_menu (
 ALTER TABLE biz_sys.sys_menu OWNER TO wz;
 
 --
--- TOC entry 3514 (class 0 OID 0)
+-- TOC entry 3516 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: TABLE sys_menu; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -575,7 +575,7 @@ COMMENT ON TABLE biz_sys.sys_menu IS '菜单权限表';
 
 
 --
--- TOC entry 3515 (class 0 OID 0)
+-- TOC entry 3517 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.menu_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -584,7 +584,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.menu_id IS '菜单ID';
 
 
 --
--- TOC entry 3516 (class 0 OID 0)
+-- TOC entry 3518 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.menu_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -593,7 +593,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.menu_name IS '菜单名称';
 
 
 --
--- TOC entry 3517 (class 0 OID 0)
+-- TOC entry 3519 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.parent_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -602,7 +602,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.parent_id IS '父菜单ID';
 
 
 --
--- TOC entry 3518 (class 0 OID 0)
+-- TOC entry 3520 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.menu_sort; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -611,7 +611,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.menu_sort IS '显示顺序';
 
 
 --
--- TOC entry 3519 (class 0 OID 0)
+-- TOC entry 3521 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.path; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -620,7 +620,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.path IS '路由地址';
 
 
 --
--- TOC entry 3520 (class 0 OID 0)
+-- TOC entry 3522 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.component; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -629,7 +629,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.component IS '组件路径';
 
 
 --
--- TOC entry 3521 (class 0 OID 0)
+-- TOC entry 3523 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.query; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -638,7 +638,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.query IS '路由参数';
 
 
 --
--- TOC entry 3522 (class 0 OID 0)
+-- TOC entry 3524 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.menu_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -647,7 +647,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.menu_type IS '菜单类型（M目录 C菜单 
 
 
 --
--- TOC entry 3523 (class 0 OID 0)
+-- TOC entry 3525 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -656,7 +656,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.status IS '菜单状态（0正常 1停用）'
 
 
 --
--- TOC entry 3524 (class 0 OID 0)
+-- TOC entry 3526 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.perms; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -665,7 +665,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.perms IS '权限标识';
 
 
 --
--- TOC entry 3525 (class 0 OID 0)
+-- TOC entry 3527 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.icon; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -674,7 +674,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.icon IS '菜单图标';
 
 
 --
--- TOC entry 3526 (class 0 OID 0)
+-- TOC entry 3528 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.is_frame; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -683,7 +683,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.is_frame IS '是否为外链';
 
 
 --
--- TOC entry 3527 (class 0 OID 0)
+-- TOC entry 3529 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.is_cache; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -692,7 +692,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.is_cache IS '是否缓存';
 
 
 --
--- TOC entry 3528 (class 0 OID 0)
+-- TOC entry 3530 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.is_visible; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -701,7 +701,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.is_visible IS '是否显示';
 
 
 --
--- TOC entry 3529 (class 0 OID 0)
+-- TOC entry 3531 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.create_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -710,7 +710,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.create_at IS '创建时间';
 
 
 --
--- TOC entry 3530 (class 0 OID 0)
+-- TOC entry 3532 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -719,7 +719,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.creator_id IS '创建者';
 
 
 --
--- TOC entry 3531 (class 0 OID 0)
+-- TOC entry 3533 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.update_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -728,7 +728,7 @@ COMMENT ON COLUMN biz_sys.sys_menu.update_at IS '更新时间';
 
 
 --
--- TOC entry 3532 (class 0 OID 0)
+-- TOC entry 3534 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: COLUMN sys_menu.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -758,7 +758,7 @@ CREATE TABLE biz_sys.sys_post (
 ALTER TABLE biz_sys.sys_post OWNER TO wz;
 
 --
--- TOC entry 3533 (class 0 OID 0)
+-- TOC entry 3535 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: TABLE sys_post; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -767,7 +767,7 @@ COMMENT ON TABLE biz_sys.sys_post IS '岗位信息表';
 
 
 --
--- TOC entry 3534 (class 0 OID 0)
+-- TOC entry 3536 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.post_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -776,7 +776,7 @@ COMMENT ON COLUMN biz_sys.sys_post.post_id IS '岗位ID';
 
 
 --
--- TOC entry 3535 (class 0 OID 0)
+-- TOC entry 3537 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -785,7 +785,7 @@ COMMENT ON COLUMN biz_sys.sys_post.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3536 (class 0 OID 0)
+-- TOC entry 3538 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.post_code; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -794,7 +794,7 @@ COMMENT ON COLUMN biz_sys.sys_post.post_code IS '岗位编码';
 
 
 --
--- TOC entry 3537 (class 0 OID 0)
+-- TOC entry 3539 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.post_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -803,7 +803,7 @@ COMMENT ON COLUMN biz_sys.sys_post.post_name IS '岗位名称';
 
 
 --
--- TOC entry 3538 (class 0 OID 0)
+-- TOC entry 3540 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -812,7 +812,7 @@ COMMENT ON COLUMN biz_sys.sys_post.status IS '状态（0正常 1停用）';
 
 
 --
--- TOC entry 3539 (class 0 OID 0)
+-- TOC entry 3541 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.post_sort; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -821,7 +821,7 @@ COMMENT ON COLUMN biz_sys.sys_post.post_sort IS '显示顺序';
 
 
 --
--- TOC entry 3540 (class 0 OID 0)
+-- TOC entry 3542 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -830,7 +830,7 @@ COMMENT ON COLUMN biz_sys.sys_post.creator_id IS '创建者';
 
 
 --
--- TOC entry 3541 (class 0 OID 0)
+-- TOC entry 3543 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN sys_post.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -862,7 +862,7 @@ CREATE TABLE biz_sys.sys_role (
 ALTER TABLE biz_sys.sys_role OWNER TO wz;
 
 --
--- TOC entry 3542 (class 0 OID 0)
+-- TOC entry 3544 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: TABLE sys_role; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -871,7 +871,7 @@ COMMENT ON TABLE biz_sys.sys_role IS '角色信息表';
 
 
 --
--- TOC entry 3543 (class 0 OID 0)
+-- TOC entry 3545 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.role_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -880,7 +880,7 @@ COMMENT ON COLUMN biz_sys.sys_role.role_id IS '角色ID';
 
 
 --
--- TOC entry 3544 (class 0 OID 0)
+-- TOC entry 3546 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -889,7 +889,7 @@ COMMENT ON COLUMN biz_sys.sys_role.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3545 (class 0 OID 0)
+-- TOC entry 3547 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.data_scope; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -898,7 +898,7 @@ COMMENT ON COLUMN biz_sys.sys_role.data_scope IS '数据范围（1：全部数�
 
 
 --
--- TOC entry 3546 (class 0 OID 0)
+-- TOC entry 3548 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.role_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -907,7 +907,7 @@ COMMENT ON COLUMN biz_sys.sys_role.role_name IS '角色名称';
 
 
 --
--- TOC entry 3547 (class 0 OID 0)
+-- TOC entry 3549 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -916,7 +916,7 @@ COMMENT ON COLUMN biz_sys.sys_role.status IS '状态（0正常，1停用）';
 
 
 --
--- TOC entry 3548 (class 0 OID 0)
+-- TOC entry 3550 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.role_sort; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -925,7 +925,7 @@ COMMENT ON COLUMN biz_sys.sys_role.role_sort IS '显示顺序';
 
 
 --
--- TOC entry 3549 (class 0 OID 0)
+-- TOC entry 3551 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.is_menu_display; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -934,7 +934,7 @@ COMMENT ON COLUMN biz_sys.sys_role.is_menu_display IS '菜单选项是否关联�
 
 
 --
--- TOC entry 3550 (class 0 OID 0)
+-- TOC entry 3552 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.is_dept_display; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -943,7 +943,7 @@ COMMENT ON COLUMN biz_sys.sys_role.is_dept_display IS '部门选项是否关联�
 
 
 --
--- TOC entry 3551 (class 0 OID 0)
+-- TOC entry 3553 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.create_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -952,7 +952,7 @@ COMMENT ON COLUMN biz_sys.sys_role.create_at IS '创建时间';
 
 
 --
--- TOC entry 3552 (class 0 OID 0)
+-- TOC entry 3554 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -961,7 +961,7 @@ COMMENT ON COLUMN biz_sys.sys_role.creator_id IS '创建者';
 
 
 --
--- TOC entry 3553 (class 0 OID 0)
+-- TOC entry 3555 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.update_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -970,7 +970,7 @@ COMMENT ON COLUMN biz_sys.sys_role.update_at IS '更新时间';
 
 
 --
--- TOC entry 3554 (class 0 OID 0)
+-- TOC entry 3556 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: COLUMN sys_role.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -992,7 +992,7 @@ CREATE TABLE biz_sys.sys_role_dept (
 ALTER TABLE biz_sys.sys_role_dept OWNER TO wz;
 
 --
--- TOC entry 3555 (class 0 OID 0)
+-- TOC entry 3557 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: TABLE sys_role_dept; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1001,7 +1001,7 @@ COMMENT ON TABLE biz_sys.sys_role_dept IS '角色数据权限关联表';
 
 
 --
--- TOC entry 3556 (class 0 OID 0)
+-- TOC entry 3558 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: COLUMN sys_role_dept.role_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1010,7 +1010,7 @@ COMMENT ON COLUMN biz_sys.sys_role_dept.role_id IS '角色id';
 
 
 --
--- TOC entry 3557 (class 0 OID 0)
+-- TOC entry 3559 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: COLUMN sys_role_dept.dept_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1032,7 +1032,7 @@ CREATE TABLE biz_sys.sys_role_menu (
 ALTER TABLE biz_sys.sys_role_menu OWNER TO wz;
 
 --
--- TOC entry 3558 (class 0 OID 0)
+-- TOC entry 3560 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: TABLE sys_role_menu; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1041,7 +1041,7 @@ COMMENT ON TABLE biz_sys.sys_role_menu IS '角色和菜单关联表';
 
 
 --
--- TOC entry 3559 (class 0 OID 0)
+-- TOC entry 3561 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: COLUMN sys_role_menu.role_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1050,7 +1050,7 @@ COMMENT ON COLUMN biz_sys.sys_role_menu.role_id IS '角色ID';
 
 
 --
--- TOC entry 3560 (class 0 OID 0)
+-- TOC entry 3562 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: COLUMN sys_role_menu.menu_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1089,7 +1089,7 @@ CREATE TABLE biz_sys.sys_tenant (
 ALTER TABLE biz_sys.sys_tenant OWNER TO wz;
 
 --
--- TOC entry 3561 (class 0 OID 0)
+-- TOC entry 3563 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: TABLE sys_tenant; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1098,7 +1098,7 @@ COMMENT ON TABLE biz_sys.sys_tenant IS '租户表';
 
 
 --
--- TOC entry 3562 (class 0 OID 0)
+-- TOC entry 3564 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1107,7 +1107,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.tenant_id IS '租户编号';
 
 
 --
--- TOC entry 3563 (class 0 OID 0)
+-- TOC entry 3565 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.administrator; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1116,7 +1116,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.administrator IS '管理员ID';
 
 
 --
--- TOC entry 3564 (class 0 OID 0)
+-- TOC entry 3566 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.tenant_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1125,7 +1125,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.tenant_type IS '租户类型';
 
 
 --
--- TOC entry 3565 (class 0 OID 0)
+-- TOC entry 3567 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.contact_phone; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1134,7 +1134,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.contact_phone IS '联系电话';
 
 
 --
--- TOC entry 3566 (class 0 OID 0)
+-- TOC entry 3568 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.tenant_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1143,7 +1143,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.tenant_name IS '租户名称';
 
 
 --
--- TOC entry 3567 (class 0 OID 0)
+-- TOC entry 3569 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.oper_pwd; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1152,7 +1152,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.oper_pwd IS '操作密码';
 
 
 --
--- TOC entry 3568 (class 0 OID 0)
+-- TOC entry 3570 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1161,7 +1161,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.status IS '租户状态';
 
 
 --
--- TOC entry 3569 (class 0 OID 0)
+-- TOC entry 3571 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.domain; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1170,7 +1170,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.domain IS '域名';
 
 
 --
--- TOC entry 3570 (class 0 OID 0)
+-- TOC entry 3572 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.remark; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1179,7 +1179,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.remark IS '备注';
 
 
 --
--- TOC entry 3571 (class 0 OID 0)
+-- TOC entry 3573 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.package_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1188,7 +1188,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.package_id IS '租户套餐编号';
 
 
 --
--- TOC entry 3572 (class 0 OID 0)
+-- TOC entry 3574 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.expire_time; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1197,7 +1197,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.expire_time IS '过期时间（-1不限制�
 
 
 --
--- TOC entry 3573 (class 0 OID 0)
+-- TOC entry 3575 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.account_limit; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1206,7 +1206,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.account_limit IS '账号数量（-1不限�
 
 
 --
--- TOC entry 3574 (class 0 OID 0)
+-- TOC entry 3576 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.role_limit; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1215,7 +1215,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.role_limit IS '角色数量（-1不限制�
 
 
 --
--- TOC entry 3575 (class 0 OID 0)
+-- TOC entry 3577 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.post_limit; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1224,7 +1224,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.post_limit IS '岗位数量（-1不限制�
 
 
 --
--- TOC entry 3576 (class 0 OID 0)
+-- TOC entry 3578 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.dept_limit; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1233,7 +1233,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.dept_limit IS '部门数量（-1不限制�
 
 
 --
--- TOC entry 3577 (class 0 OID 0)
+-- TOC entry 3579 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1242,7 +1242,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.creator_id IS '创建者';
 
 
 --
--- TOC entry 3578 (class 0 OID 0)
+-- TOC entry 3580 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.create_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1251,7 +1251,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.create_at IS '创建时间';
 
 
 --
--- TOC entry 3579 (class 0 OID 0)
+-- TOC entry 3581 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1260,7 +1260,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.updater_id IS '更新者';
 
 
 --
--- TOC entry 3580 (class 0 OID 0)
+-- TOC entry 3582 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN sys_tenant.update_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1290,7 +1290,7 @@ CREATE TABLE biz_sys.sys_tenant_package (
 ALTER TABLE biz_sys.sys_tenant_package OWNER TO wz;
 
 --
--- TOC entry 3581 (class 0 OID 0)
+-- TOC entry 3583 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: TABLE sys_tenant_package; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1299,7 +1299,7 @@ COMMENT ON TABLE biz_sys.sys_tenant_package IS '租户套餐表';
 
 
 --
--- TOC entry 3582 (class 0 OID 0)
+-- TOC entry 3584 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.package_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1308,7 +1308,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.package_id IS '租户套餐id';
 
 
 --
--- TOC entry 3583 (class 0 OID 0)
+-- TOC entry 3585 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.package_name; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1317,7 +1317,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.package_name IS '套餐名称';
 
 
 --
--- TOC entry 3584 (class 0 OID 0)
+-- TOC entry 3586 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1326,7 +1326,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.status IS '状态（0正常 1停用
 
 
 --
--- TOC entry 3585 (class 0 OID 0)
+-- TOC entry 3587 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.menu_ids; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1335,7 +1335,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.menu_ids IS '套餐绑定的菜单'
 
 
 --
--- TOC entry 3586 (class 0 OID 0)
+-- TOC entry 3588 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.is_menu_display; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1344,7 +1344,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.is_menu_display IS '菜单树选择
 
 
 --
--- TOC entry 3587 (class 0 OID 0)
+-- TOC entry 3589 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.remark; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1353,7 +1353,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.remark IS '备注';
 
 
 --
--- TOC entry 3588 (class 0 OID 0)
+-- TOC entry 3590 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1362,7 +1362,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.creator_id IS '创建者';
 
 
 --
--- TOC entry 3589 (class 0 OID 0)
+-- TOC entry 3591 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.create_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1371,7 +1371,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.create_at IS '创建时间';
 
 
 --
--- TOC entry 3590 (class 0 OID 0)
+-- TOC entry 3592 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1380,7 +1380,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_package.updater_id IS '更新者';
 
 
 --
--- TOC entry 3591 (class 0 OID 0)
+-- TOC entry 3593 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.update_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1403,7 +1403,7 @@ CREATE TABLE biz_sys.sys_tenant_wallet (
 ALTER TABLE biz_sys.sys_tenant_wallet OWNER TO wz;
 
 --
--- TOC entry 3592 (class 0 OID 0)
+-- TOC entry 3594 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: TABLE sys_tenant_wallet; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1412,7 +1412,7 @@ COMMENT ON TABLE biz_sys.sys_tenant_wallet IS '租户钱包';
 
 
 --
--- TOC entry 3593 (class 0 OID 0)
+-- TOC entry 3595 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: COLUMN sys_tenant_wallet.balance; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1421,7 +1421,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_wallet.balance IS '余额, 元';
 
 
 --
--- TOC entry 3594 (class 0 OID 0)
+-- TOC entry 3596 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: COLUMN sys_tenant_wallet.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1447,7 +1447,7 @@ CREATE TABLE biz_sys.sys_tenant_wallet_record (
 ALTER TABLE biz_sys.sys_tenant_wallet_record OWNER TO wz;
 
 --
--- TOC entry 3595 (class 0 OID 0)
+-- TOC entry 3597 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: TABLE sys_tenant_wallet_record; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1456,7 +1456,7 @@ COMMENT ON TABLE biz_sys.sys_tenant_wallet_record IS '租户钱包记录';
 
 
 --
--- TOC entry 3596 (class 0 OID 0)
+-- TOC entry 3598 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1465,7 +1465,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_wallet_record.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3597 (class 0 OID 0)
+-- TOC entry 3599 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.amount; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1474,7 +1474,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_wallet_record.amount IS '金额, 单位元'
 
 
 --
--- TOC entry 3598 (class 0 OID 0)
+-- TOC entry 3600 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.record_type; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1483,7 +1483,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_wallet_record.record_type IS '记录类型'
 
 
 --
--- TOC entry 3599 (class 0 OID 0)
+-- TOC entry 3601 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.create_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1492,7 +1492,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant_wallet_record.create_at IS '创建时间';
 
 
 --
--- TOC entry 3600 (class 0 OID 0)
+-- TOC entry 3602 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.remark; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1530,7 +1530,7 @@ CREATE TABLE biz_sys.sys_user (
 ALTER TABLE biz_sys.sys_user OWNER TO wz;
 
 --
--- TOC entry 3601 (class 0 OID 0)
+-- TOC entry 3603 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: TABLE sys_user; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1539,7 +1539,7 @@ COMMENT ON TABLE biz_sys.sys_user IS '用户信息表';
 
 
 --
--- TOC entry 3602 (class 0 OID 0)
+-- TOC entry 3604 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.user_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1548,7 +1548,7 @@ COMMENT ON COLUMN biz_sys.sys_user.user_id IS '管理员ID';
 
 
 --
--- TOC entry 3603 (class 0 OID 0)
+-- TOC entry 3605 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1557,7 +1557,7 @@ COMMENT ON COLUMN biz_sys.sys_user.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3604 (class 0 OID 0)
+-- TOC entry 3606 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.dept_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1566,7 +1566,7 @@ COMMENT ON COLUMN biz_sys.sys_user.dept_id IS '部门ID';
 
 
 --
--- TOC entry 3605 (class 0 OID 0)
+-- TOC entry 3607 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.username; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1575,7 +1575,7 @@ COMMENT ON COLUMN biz_sys.sys_user.username IS '用户账号';
 
 
 --
--- TOC entry 3606 (class 0 OID 0)
+-- TOC entry 3608 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.email; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1584,7 +1584,7 @@ COMMENT ON COLUMN biz_sys.sys_user.email IS '用户邮箱';
 
 
 --
--- TOC entry 3607 (class 0 OID 0)
+-- TOC entry 3609 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.nickname; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1593,7 +1593,7 @@ COMMENT ON COLUMN biz_sys.sys_user.nickname IS '用户昵称';
 
 
 --
--- TOC entry 3608 (class 0 OID 0)
+-- TOC entry 3610 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.phone_number; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1602,7 +1602,7 @@ COMMENT ON COLUMN biz_sys.sys_user.phone_number IS '手机号码';
 
 
 --
--- TOC entry 3609 (class 0 OID 0)
+-- TOC entry 3611 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1611,7 +1611,7 @@ COMMENT ON COLUMN biz_sys.sys_user.status IS '状态值';
 
 
 --
--- TOC entry 3610 (class 0 OID 0)
+-- TOC entry 3612 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.gender; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1620,7 +1620,7 @@ COMMENT ON COLUMN biz_sys.sys_user.gender IS '用户性别（0男 1女 2未知�
 
 
 --
--- TOC entry 3611 (class 0 OID 0)
+-- TOC entry 3613 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.avatar; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1629,7 +1629,7 @@ COMMENT ON COLUMN biz_sys.sys_user.avatar IS '头像地址';
 
 
 --
--- TOC entry 3612 (class 0 OID 0)
+-- TOC entry 3614 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.password; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1638,7 +1638,7 @@ COMMENT ON COLUMN biz_sys.sys_user.password IS '密码';
 
 
 --
--- TOC entry 3613 (class 0 OID 0)
+-- TOC entry 3615 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.login_ip; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1647,7 +1647,7 @@ COMMENT ON COLUMN biz_sys.sys_user.login_ip IS '登录ip';
 
 
 --
--- TOC entry 3614 (class 0 OID 0)
+-- TOC entry 3616 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.login_date; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1656,7 +1656,7 @@ COMMENT ON COLUMN biz_sys.sys_user.login_date IS '登录时间';
 
 
 --
--- TOC entry 3615 (class 0 OID 0)
+-- TOC entry 3617 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.remark; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1665,7 +1665,7 @@ COMMENT ON COLUMN biz_sys.sys_user.remark IS '备注';
 
 
 --
--- TOC entry 3616 (class 0 OID 0)
+-- TOC entry 3618 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1674,7 +1674,7 @@ COMMENT ON COLUMN biz_sys.sys_user.creator_id IS '创建者';
 
 
 --
--- TOC entry 3617 (class 0 OID 0)
+-- TOC entry 3619 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: COLUMN sys_user.updater_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1696,7 +1696,7 @@ CREATE TABLE biz_sys.sys_user_post (
 ALTER TABLE biz_sys.sys_user_post OWNER TO wz;
 
 --
--- TOC entry 3618 (class 0 OID 0)
+-- TOC entry 3620 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: TABLE sys_user_post; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1705,7 +1705,7 @@ COMMENT ON TABLE biz_sys.sys_user_post IS '用户与岗位关联表';
 
 
 --
--- TOC entry 3619 (class 0 OID 0)
+-- TOC entry 3621 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: COLUMN sys_user_post.user_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1714,7 +1714,7 @@ COMMENT ON COLUMN biz_sys.sys_user_post.user_id IS '管理员ID';
 
 
 --
--- TOC entry 3620 (class 0 OID 0)
+-- TOC entry 3622 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: COLUMN sys_user_post.post_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1736,7 +1736,7 @@ CREATE TABLE biz_sys.sys_user_role (
 ALTER TABLE biz_sys.sys_user_role OWNER TO wz;
 
 --
--- TOC entry 3621 (class 0 OID 0)
+-- TOC entry 3623 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: TABLE sys_user_role; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1745,7 +1745,7 @@ COMMENT ON TABLE biz_sys.sys_user_role IS '用户和角色关联表';
 
 
 --
--- TOC entry 3622 (class 0 OID 0)
+-- TOC entry 3624 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: COLUMN sys_user_role.user_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1754,7 +1754,7 @@ COMMENT ON COLUMN biz_sys.sys_user_role.user_id IS '管理员ID';
 
 
 --
--- TOC entry 3623 (class 0 OID 0)
+-- TOC entry 3625 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: COLUMN sys_user_role.role_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1785,7 +1785,7 @@ CREATE TABLE biz_sys.sys_withdrawal_record (
 ALTER TABLE biz_sys.sys_withdrawal_record OWNER TO wz;
 
 --
--- TOC entry 3624 (class 0 OID 0)
+-- TOC entry 3626 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: TABLE sys_withdrawal_record; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1794,7 +1794,7 @@ COMMENT ON TABLE biz_sys.sys_withdrawal_record IS '系统提现记录';
 
 
 --
--- TOC entry 3625 (class 0 OID 0)
+-- TOC entry 3627 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.withdrawal_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1803,7 +1803,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.withdrawal_id IS 'id';
 
 
 --
--- TOC entry 3626 (class 0 OID 0)
+-- TOC entry 3628 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.order_no; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1812,7 +1812,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.order_no IS '订单号';
 
 
 --
--- TOC entry 3627 (class 0 OID 0)
+-- TOC entry 3629 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.status; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1824,7 +1824,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.status IS '状态
 
 
 --
--- TOC entry 3628 (class 0 OID 0)
+-- TOC entry 3630 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.tenant_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1833,7 +1833,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.tenant_id IS '租户id';
 
 
 --
--- TOC entry 3629 (class 0 OID 0)
+-- TOC entry 3631 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.request_params; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1842,7 +1842,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.request_params IS '第三方请�
 
 
 --
--- TOC entry 3630 (class 0 OID 0)
+-- TOC entry 3632 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.amount; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1851,7 +1851,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.amount IS '金额, 单位元';
 
 
 --
--- TOC entry 3631 (class 0 OID 0)
+-- TOC entry 3633 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.error_msg; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1860,7 +1860,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.error_msg IS '错误信息';
 
 
 --
--- TOC entry 3632 (class 0 OID 0)
+-- TOC entry 3634 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.creator_id; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1869,7 +1869,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.creator_id IS '创建者';
 
 
 --
--- TOC entry 3633 (class 0 OID 0)
+-- TOC entry 3635 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.create_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1878,7 +1878,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.create_at IS '创建时间';
 
 
 --
--- TOC entry 3634 (class 0 OID 0)
+-- TOC entry 3636 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.complete_at; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1887,7 +1887,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.complete_at IS '完成时间';
 
 
 --
--- TOC entry 3635 (class 0 OID 0)
+-- TOC entry 3637 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: COLUMN sys_withdrawal_record.remark; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
@@ -1896,7 +1896,7 @@ COMMENT ON COLUMN biz_sys.sys_withdrawal_record.remark IS '备注';
 
 
 --
--- TOC entry 3448 (class 0 OID 33062)
+-- TOC entry 3450 (class 0 OID 33062)
 -- Dependencies: 216
 -- Data for Name: app_user; Type: TABLE DATA; Schema: biz_app; Owner: wz
 --
@@ -1907,7 +1907,7 @@ COPY biz_app.app_user (user_id, nickname, phone_number, status, gender, avatar, 
 
 
 --
--- TOC entry 3449 (class 0 OID 33067)
+-- TOC entry 3451 (class 0 OID 33067)
 -- Dependencies: 217
 -- Data for Name: app_user_thirdinfo; Type: TABLE DATA; Schema: biz_app; Owner: wz
 --
@@ -1917,7 +1917,7 @@ COPY biz_app.app_user_thirdinfo (user_id, identifier, identifier_type) FROM stdi
 
 
 --
--- TOC entry 3450 (class 0 OID 33073)
+-- TOC entry 3452 (class 0 OID 33073)
 -- Dependencies: 218
 -- Data for Name: app_user_wallet; Type: TABLE DATA; Schema: biz_app; Owner: wz
 --
@@ -1928,7 +1928,7 @@ COPY biz_app.app_user_wallet (user_id, balance, status) FROM stdin;
 
 
 --
--- TOC entry 3451 (class 0 OID 33078)
+-- TOC entry 3453 (class 0 OID 33078)
 -- Dependencies: 219
 -- Data for Name: app_user_wallet_record; Type: TABLE DATA; Schema: biz_app; Owner: wz
 --
@@ -1938,7 +1938,7 @@ COPY biz_app.app_user_wallet_record (record_id, user_id, amount, record_type, cr
 
 
 --
--- TOC entry 3452 (class 0 OID 34566)
+-- TOC entry 3454 (class 0 OID 34566)
 -- Dependencies: 220
 -- Data for Name: oauth2_client; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1949,7 +1949,7 @@ COPY biz_sys.oauth2_client (id, client_name, client_id, client_secret, scopes, a
 
 
 --
--- TOC entry 3453 (class 0 OID 34574)
+-- TOC entry 3455 (class 0 OID 34574)
 -- Dependencies: 221
 -- Data for Name: sys_dept; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1959,7 +1959,7 @@ COPY biz_sys.sys_dept (dept_id, tenant_id, parent_id, ancestors, dept_name, stat
 
 
 --
--- TOC entry 3466 (class 0 OID 35226)
+-- TOC entry 3468 (class 0 OID 35226)
 -- Dependencies: 234
 -- Data for Name: sys_menu; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -1996,7 +1996,6 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 404	设备地图	4	10	map	equipment/map/index	\N	M	0	\N	map	f	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 500	订单管理	5	100	order	trade/order/index	\N	M	0	order:list	list	f	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 501	优惠券管理	5	1	coupon	trade/coupon/index	\N	M	0	coupon:list	coupon	f	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
-502	交易投诉	5	5	feedback	trade/feedback/index	\N	M	0	\N	feedback	f	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 601	商户信息	3	100	info	user/tenant/index	\N	M	0	tenant:information	information	f	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 602	租户套餐管理	3	50	package	user/tenant/package/index	\N	M	0	tenant_package:list	package	f	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 700	客户端管理	2	3	client	user/client/index	\N	M	0	oauth2_client:list	wechat	f	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
@@ -2098,19 +2097,19 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 
 
 --
--- TOC entry 3454 (class 0 OID 34583)
+-- TOC entry 3456 (class 0 OID 34583)
 -- Dependencies: 222
 -- Data for Name: sys_post; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
 
 COPY biz_sys.sys_post (post_id, tenant_id, post_code, post_name, status, post_sort, creator_id, updater_id, create_at, update_at) FROM stdin;
 1	0	CEO	执行总裁	0	1	1	1	2024-04-17 14:08:54.616+08	2024-06-22 15:36:26.749+08
-4	0	CTO	首席技术官	1	3	1	2	2024-04-17 14:08:54.616+08	2024-08-27 14:26:42.367+08
+4	0	CTO	首席技术官	0	3	1	1	2024-04-17 14:08:54.616+08	2025-03-22 11:23:49.288+08
 \.
 
 
 --
--- TOC entry 3455 (class 0 OID 34586)
+-- TOC entry 3457 (class 0 OID 34586)
 -- Dependencies: 223
 -- Data for Name: sys_role; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2120,7 +2119,7 @@ COPY biz_sys.sys_role (role_id, tenant_id, data_scope, role_name, status, role_s
 
 
 --
--- TOC entry 3456 (class 0 OID 34591)
+-- TOC entry 3458 (class 0 OID 34591)
 -- Dependencies: 224
 -- Data for Name: sys_role_dept; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2130,7 +2129,7 @@ COPY biz_sys.sys_role_dept (role_id, dept_id) FROM stdin;
 
 
 --
--- TOC entry 3457 (class 0 OID 34594)
+-- TOC entry 3459 (class 0 OID 34594)
 -- Dependencies: 225
 -- Data for Name: sys_role_menu; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2140,7 +2139,7 @@ COPY biz_sys.sys_role_menu (role_id, menu_id) FROM stdin;
 
 
 --
--- TOC entry 3458 (class 0 OID 34597)
+-- TOC entry 3460 (class 0 OID 34597)
 -- Dependencies: 226
 -- Data for Name: sys_tenant; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2150,7 +2149,7 @@ COPY biz_sys.sys_tenant (tenant_id, administrator, tenant_type, contact_phone, t
 
 
 --
--- TOC entry 3459 (class 0 OID 34600)
+-- TOC entry 3461 (class 0 OID 34600)
 -- Dependencies: 227
 -- Data for Name: sys_tenant_package; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2161,7 +2160,7 @@ COPY biz_sys.sys_tenant_package (package_id, package_name, status, menu_ids, is_
 
 
 --
--- TOC entry 3460 (class 0 OID 34607)
+-- TOC entry 3462 (class 0 OID 34607)
 -- Dependencies: 228
 -- Data for Name: sys_tenant_wallet; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2171,7 +2170,7 @@ COPY biz_sys.sys_tenant_wallet (tenant_id, balance, status) FROM stdin;
 
 
 --
--- TOC entry 3461 (class 0 OID 34610)
+-- TOC entry 3463 (class 0 OID 34610)
 -- Dependencies: 229
 -- Data for Name: sys_tenant_wallet_record; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2181,18 +2180,18 @@ COPY biz_sys.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type
 
 
 --
--- TOC entry 3462 (class 0 OID 34613)
+-- TOC entry 3464 (class 0 OID 34613)
 -- Dependencies: 230
 -- Data for Name: sys_user; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
 
 COPY biz_sys.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	0	\N	admin	xxxxx@163.com	nick_admin	15888888888	0	1	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	::1	2025-03-02 10:19:06.324+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1	0	\N	admin	xxxxx@163.com	nick_admin	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	::1	2025-03-22 12:50:19.24+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
 --
--- TOC entry 3463 (class 0 OID 34618)
+-- TOC entry 3465 (class 0 OID 34618)
 -- Dependencies: 231
 -- Data for Name: sys_user_post; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2202,7 +2201,7 @@ COPY biz_sys.sys_user_post (user_id, post_id) FROM stdin;
 
 
 --
--- TOC entry 3464 (class 0 OID 34621)
+-- TOC entry 3466 (class 0 OID 34621)
 -- Dependencies: 232
 -- Data for Name: sys_user_role; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2212,7 +2211,7 @@ COPY biz_sys.sys_user_role (user_id, role_id) FROM stdin;
 
 
 --
--- TOC entry 3465 (class 0 OID 34624)
+-- TOC entry 3467 (class 0 OID 34624)
 -- Dependencies: 233
 -- Data for Name: sys_withdrawal_record; Type: TABLE DATA; Schema: biz_sys; Owner: wz
 --
@@ -2222,7 +2221,7 @@ COPY biz_sys.sys_withdrawal_record (withdrawal_id, order_no, status, tenant_id, 
 
 
 --
--- TOC entry 3257 (class 2606 OID 33066)
+-- TOC entry 3259 (class 2606 OID 33066)
 -- Name: app_user app_user_pkey; Type: CONSTRAINT; Schema: biz_app; Owner: wz
 --
 
@@ -2231,7 +2230,7 @@ ALTER TABLE ONLY biz_app.app_user
 
 
 --
--- TOC entry 3260 (class 2606 OID 33071)
+-- TOC entry 3262 (class 2606 OID 33071)
 -- Name: app_user_thirdinfo app_user_thirdinfo_pkey; Type: CONSTRAINT; Schema: biz_app; Owner: wz
 --
 
@@ -2240,7 +2239,7 @@ ALTER TABLE ONLY biz_app.app_user_thirdinfo
 
 
 --
--- TOC entry 3263 (class 2606 OID 33077)
+-- TOC entry 3265 (class 2606 OID 33077)
 -- Name: app_user_wallet app_user_wallet_pkey; Type: CONSTRAINT; Schema: biz_app; Owner: wz
 --
 
@@ -2249,7 +2248,7 @@ ALTER TABLE ONLY biz_app.app_user_wallet
 
 
 --
--- TOC entry 3265 (class 2606 OID 33082)
+-- TOC entry 3267 (class 2606 OID 33082)
 -- Name: app_user_wallet_record app_user_wallet_record_pkey; Type: CONSTRAINT; Schema: biz_app; Owner: wz
 --
 
@@ -2258,7 +2257,7 @@ ALTER TABLE ONLY biz_app.app_user_wallet_record
 
 
 --
--- TOC entry 3268 (class 2606 OID 34630)
+-- TOC entry 3270 (class 2606 OID 34630)
 -- Name: oauth2_client oauth2_client_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2267,7 +2266,7 @@ ALTER TABLE ONLY biz_sys.oauth2_client
 
 
 --
--- TOC entry 3273 (class 2606 OID 34632)
+-- TOC entry 3275 (class 2606 OID 34632)
 -- Name: sys_dept sys_dept_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2276,7 +2275,7 @@ ALTER TABLE ONLY biz_sys.sys_dept
 
 
 --
--- TOC entry 3304 (class 2606 OID 35231)
+-- TOC entry 3306 (class 2606 OID 35231)
 -- Name: sys_menu sys_menu_copy1_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2285,7 +2284,7 @@ ALTER TABLE ONLY biz_sys.sys_menu
 
 
 --
--- TOC entry 3275 (class 2606 OID 34636)
+-- TOC entry 3277 (class 2606 OID 34636)
 -- Name: sys_post sys_post_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2294,7 +2293,7 @@ ALTER TABLE ONLY biz_sys.sys_post
 
 
 --
--- TOC entry 3279 (class 2606 OID 34638)
+-- TOC entry 3281 (class 2606 OID 34638)
 -- Name: sys_role_dept sys_role_dept_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2303,7 +2302,7 @@ ALTER TABLE ONLY biz_sys.sys_role_dept
 
 
 --
--- TOC entry 3281 (class 2606 OID 34640)
+-- TOC entry 3283 (class 2606 OID 34640)
 -- Name: sys_role_menu sys_role_menu_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2312,7 +2311,7 @@ ALTER TABLE ONLY biz_sys.sys_role_menu
 
 
 --
--- TOC entry 3277 (class 2606 OID 34642)
+-- TOC entry 3279 (class 2606 OID 34642)
 -- Name: sys_role sys_role_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2321,7 +2320,7 @@ ALTER TABLE ONLY biz_sys.sys_role
 
 
 --
--- TOC entry 3286 (class 2606 OID 34644)
+-- TOC entry 3288 (class 2606 OID 34644)
 -- Name: sys_tenant_package sys_tenant_package_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2330,7 +2329,7 @@ ALTER TABLE ONLY biz_sys.sys_tenant_package
 
 
 --
--- TOC entry 3283 (class 2606 OID 34646)
+-- TOC entry 3285 (class 2606 OID 34646)
 -- Name: sys_tenant sys_tenant_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2339,7 +2338,7 @@ ALTER TABLE ONLY biz_sys.sys_tenant
 
 
 --
--- TOC entry 3288 (class 2606 OID 34648)
+-- TOC entry 3290 (class 2606 OID 34648)
 -- Name: sys_tenant_wallet sys_tenant_wallet_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2348,7 +2347,7 @@ ALTER TABLE ONLY biz_sys.sys_tenant_wallet
 
 
 --
--- TOC entry 3291 (class 2606 OID 34650)
+-- TOC entry 3293 (class 2606 OID 34650)
 -- Name: sys_tenant_wallet_record sys_tenant_wallet_record_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2357,7 +2356,7 @@ ALTER TABLE ONLY biz_sys.sys_tenant_wallet_record
 
 
 --
--- TOC entry 3293 (class 2606 OID 34652)
+-- TOC entry 3295 (class 2606 OID 34652)
 -- Name: sys_user sys_user_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2366,7 +2365,7 @@ ALTER TABLE ONLY biz_sys.sys_user
 
 
 --
--- TOC entry 3297 (class 2606 OID 34654)
+-- TOC entry 3299 (class 2606 OID 34654)
 -- Name: sys_user_post sys_user_post_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2375,7 +2374,7 @@ ALTER TABLE ONLY biz_sys.sys_user_post
 
 
 --
--- TOC entry 3299 (class 2606 OID 34656)
+-- TOC entry 3301 (class 2606 OID 34656)
 -- Name: sys_user_role sys_user_role_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2384,7 +2383,7 @@ ALTER TABLE ONLY biz_sys.sys_user_role
 
 
 --
--- TOC entry 3302 (class 2606 OID 34658)
+-- TOC entry 3304 (class 2606 OID 34658)
 -- Name: sys_withdrawal_record sys_withdrawal_record_pkey; Type: CONSTRAINT; Schema: biz_sys; Owner: wz
 --
 
@@ -2393,7 +2392,7 @@ ALTER TABLE ONLY biz_sys.sys_withdrawal_record
 
 
 --
--- TOC entry 3266 (class 1259 OID 34722)
+-- TOC entry 3268 (class 1259 OID 34722)
 -- Name: i_app_user_wallet_record_user_id; Type: INDEX; Schema: biz_app; Owner: wz
 --
 
@@ -2401,7 +2400,7 @@ CREATE INDEX i_app_user_wallet_record_user_id ON biz_app.app_user_wallet_record 
 
 
 --
--- TOC entry 3258 (class 1259 OID 34167)
+-- TOC entry 3260 (class 1259 OID 34167)
 -- Name: u_i_app_user_phone_number; Type: INDEX; Schema: biz_app; Owner: wz
 --
 
@@ -2409,7 +2408,7 @@ CREATE UNIQUE INDEX u_i_app_user_phone_number ON biz_app.app_user USING btree (p
 
 
 --
--- TOC entry 3261 (class 1259 OID 33072)
+-- TOC entry 3263 (class 1259 OID 33072)
 -- Name: u_i_identifier; Type: INDEX; Schema: biz_app; Owner: wz
 --
 
@@ -2417,7 +2416,7 @@ CREATE UNIQUE INDEX u_i_identifier ON biz_app.app_user_thirdinfo USING btree (id
 
 
 --
--- TOC entry 3270 (class 1259 OID 34659)
+-- TOC entry 3272 (class 1259 OID 35380)
 -- Name: sys_dept_i_ancestors; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2425,7 +2424,7 @@ CREATE INDEX sys_dept_i_ancestors ON biz_sys.sys_dept USING btree (ancestors);
 
 
 --
--- TOC entry 3271 (class 1259 OID 34660)
+-- TOC entry 3273 (class 1259 OID 34660)
 -- Name: sys_dept_i_parent_id; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2433,7 +2432,7 @@ CREATE INDEX sys_dept_i_parent_id ON biz_sys.sys_dept USING btree (parent_id);
 
 
 --
--- TOC entry 3305 (class 1259 OID 35232)
+-- TOC entry 3307 (class 1259 OID 35232)
 -- Name: sys_menu_i_parent_id_copy1; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2441,7 +2440,7 @@ CREATE INDEX sys_menu_i_parent_id_copy1 ON biz_sys.sys_menu USING btree (parent_
 
 
 --
--- TOC entry 3289 (class 1259 OID 34662)
+-- TOC entry 3291 (class 1259 OID 34662)
 -- Name: sys_tenant_wallet_record_i_tenant_id; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2449,7 +2448,7 @@ CREATE INDEX sys_tenant_wallet_record_i_tenant_id ON biz_sys.sys_tenant_wallet_r
 
 
 --
--- TOC entry 3300 (class 1259 OID 34663)
+-- TOC entry 3302 (class 1259 OID 34663)
 -- Name: sys_withdrawal_record_i_order_no; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2457,7 +2456,7 @@ CREATE UNIQUE INDEX sys_withdrawal_record_i_order_no ON biz_sys.sys_withdrawal_r
 
 
 --
--- TOC entry 3284 (class 1259 OID 34664)
+-- TOC entry 3286 (class 1259 OID 34664)
 -- Name: u_i_administrator; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2465,7 +2464,7 @@ CREATE UNIQUE INDEX u_i_administrator ON biz_sys.sys_tenant USING btree (adminis
 
 
 --
--- TOC entry 3269 (class 1259 OID 34665)
+-- TOC entry 3271 (class 1259 OID 34665)
 -- Name: u_i_client_id; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2473,7 +2472,7 @@ CREATE UNIQUE INDEX u_i_client_id ON biz_sys.oauth2_client USING btree (client_i
 
 
 --
--- TOC entry 3294 (class 1259 OID 34666)
+-- TOC entry 3296 (class 1259 OID 34666)
 -- Name: u_i_sys_user_phone_number; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
@@ -2481,14 +2480,14 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz_sys.sys_user USING btree (p
 
 
 --
--- TOC entry 3295 (class 1259 OID 34667)
+-- TOC entry 3297 (class 1259 OID 34667)
 -- Name: u_i_sys_user_username; Type: INDEX; Schema: biz_sys; Owner: wz
 --
 
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz_sys.sys_user USING btree (username);
 
 
--- Completed on 2025-03-03 13:47:22
+-- Completed on 2025-03-22 14:09:31
 
 --
 -- PostgreSQL database dump complete

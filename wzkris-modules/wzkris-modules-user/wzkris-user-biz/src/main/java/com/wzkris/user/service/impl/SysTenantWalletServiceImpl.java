@@ -37,6 +37,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean decryBalance(Long tenantId, BigDecimal amount) {
         amount = amount.abs();
         boolean suc = tenantWalletMapper.decryBalance(tenantId, amount) > 0;

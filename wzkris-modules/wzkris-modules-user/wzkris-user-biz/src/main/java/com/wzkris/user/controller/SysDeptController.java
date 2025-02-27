@@ -1,6 +1,7 @@
 package com.wzkris.user.controller;
 
 import cn.hutool.core.util.ObjUtil;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
@@ -49,16 +50,6 @@ public class SysDeptController extends BaseController {
         return ok(depts);
     }
 
-    @Operation(summary = "查询部门列表（排除节点）")
-    @GetMapping("/list/exclude/{deptId}")
-    @CheckPerms("dept:list")
-    public Result<List<SysDept>> excludeChild(@PathVariable Long deptId) {
-        List<SysDept> depts = deptMapper.listChildren(new SysDeptQueryReq());
-        depts.removeIf(d -> d.getDeptId().intValue() == deptId
-                || StringUtil.split(d.getAncestors(), ",", true, true).contains(String.valueOf(deptId)));
-        return ok(depts);
-    }
-
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/{deptId}")
     @CheckPerms("dept:query")
@@ -92,13 +83,13 @@ public class SysDeptController extends BaseController {
     @OperateLog(title = "部门管理", subTitle = "修改部门", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("dept:edit")
-    public Result<?> edit(@Validated @RequestBody SysDeptReq req) {
+    public Result<?> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysDeptReq req) {
         // 校验权限
         deptService.checkDataScopes(req.getDeptId());
         if (ObjUtil.equals(req.getParentId(), req.getDeptId())) {
             return error412("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
         } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
-                && deptMapper.listNormalChildrenById(req.getDeptId()) > 0) {
+                && deptMapper.checkExistNormalChildren(req.getDeptId())) {
             return error412("该部门包含未停用的子部门");
         }
         return toRes(deptService.updateDept(BeanUtil.convert(req, SysDept.class)));
@@ -110,10 +101,10 @@ public class SysDeptController extends BaseController {
     @CheckPerms("dept:remove")
     public Result<?> remove(@RequestBody Long deptId) {
         deptService.checkDataScopes(deptId);
-        if (deptService.hasChildByDeptId(deptId)) {
+        if (deptMapper.checkExistChildren(deptId)) {
             return error412("存在下级部门,不允许删除");
         }
-        if (deptService.checkDeptExistUser(deptId)) {
+        if (deptMapper.checkExistUser(deptId)) {
             return error412("部门存在用户,不允许删除");
         }
         deptService.deleteById(deptId);

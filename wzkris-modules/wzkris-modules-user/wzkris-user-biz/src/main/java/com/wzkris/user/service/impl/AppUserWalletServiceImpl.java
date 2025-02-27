@@ -37,6 +37,7 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean decryBalance(Long userId, BigDecimal amount) {
         amount = amount.abs();
         boolean suc = appUserWalletMapper.decryBalance(userId, amount) > 0;
