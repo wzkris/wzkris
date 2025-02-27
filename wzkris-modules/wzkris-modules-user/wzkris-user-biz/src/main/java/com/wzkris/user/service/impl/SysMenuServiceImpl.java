@@ -64,7 +64,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public List<SelectTreeVO> listMenuSelectTree(Long userId) {
+    public List<SelectTreeVO> listSelectTree(Long userId) {
         List<Long> menuIds = null;
         if (!SysUser.isSuperAdmin(userId)) {
             // 去关联表中查绑定的菜单ID

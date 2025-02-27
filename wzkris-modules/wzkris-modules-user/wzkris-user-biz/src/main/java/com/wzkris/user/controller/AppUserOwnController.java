@@ -1,14 +1,11 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
-import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.req.EditOwnAppUserReq;
 import com.wzkris.user.domain.vo.AppUserAccountVO;
-import com.wzkris.user.domain.vo.AppUserOwnVO;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,14 +35,6 @@ public class AppUserOwnController extends BaseController {
     private final AppUserMapper appUserMapper;
 
     private final AppUserService appUserService;
-
-    @Operation(summary = "登录信息")
-    @GetMapping("/info")
-    public Result<AppUserOwnVO> appUser() {
-        ClientUser clientUser = ClientUserUtil.getClientUser();
-        AppUserOwnVO appUserOwnVO = BeanUtil.convert(clientUser, AppUserOwnVO.class);
-        return ok(appUserOwnVO);
-    }
 
     @Operation(summary = "账户信息")
     @GetMapping("/account")

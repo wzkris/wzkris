@@ -10,6 +10,8 @@ public class SysDeptQueryReq {
 
     private Long deptId;
 
+    private Long parentId;
+
     @Schema(description = "部门名称")
     private String deptName;
 

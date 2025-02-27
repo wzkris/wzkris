@@ -17,8 +17,8 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.export.SysUserExport;
 import com.wzkris.user.domain.req.*;
+import com.wzkris.user.domain.vo.CheckedSelectVO;
 import com.wzkris.user.domain.vo.SelectTreeVO;
-import com.wzkris.user.domain.vo.SysUserGrantVO;
 import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.listener.event.CreateUserEvent;
 import com.wzkris.user.mapper.SysUserMapper;
@@ -32,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,7 +66,7 @@ public class SysUserController extends BaseController {
     @CheckPerms("sys_user:list")
     public Result<Page<SysUserVO>> listPage(SysUserQueryReq queryReq) {
         startPage();
-        List<SysUserVO> list = userMapper.selectVOInScope(this.buildPageWrapper(queryReq));
+        List<SysUserVO> list = userMapper.selectVOList(this.buildPageWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -83,31 +84,40 @@ public class SysUserController extends BaseController {
                 .orderByDesc("u.user_id");
     }
 
-    @Operation(summary = "部门选择树")
-    @GetMapping("/dept_tree")
+    @Operation(summary = "用户-部门选择树")
+    @GetMapping("/dept_select_tree")
     @CheckPerms("sys_user:list")
-    public Result<List<SelectTreeVO>> deptTree(String deptName) {
+    public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
         return ok(deptService.listSelectTree(deptName));
     }
 
+    @Operation(summary = "用户-角色选择列表")
+    @GetMapping({"/role_select/", "/role_select/{userId}"})
+    @CheckPerms("sys_user:list")
+    public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
+        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
+        checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : roleService.listIdByUserId(userId));
+        checkedSelectVO.setSelects(roleService.listSelect(roleName));
+        return ok(checkedSelectVO);
+    }
+
+    @Operation(summary = "用户-岗位选择列表")
+    @GetMapping({"/post_select/", "/post_select/{userId}"})
+    @CheckPerms("sys_user:list")
+    public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
+        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
+        checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : postService.listIdByUserId(userId));
+        checkedSelectVO.setSelects(postService.listSelect(postName));
+        return ok(checkedSelectVO);
+    }
+
     @Operation(summary = "用户详细信息")
-    @GetMapping({"/{userId}", "/"})
+    @GetMapping("/{userId}")
     @CheckPerms("sys_user:query")
-    public Result<SysUserGrantVO> getInfo(@PathVariable(required = false) Long userId) {
+    public Result<SysUser> getInfo(@PathVariable Long userId) {
         // 校验权限
         userService.checkDataScopes(userId);
-
-        SysUserGrantVO resp = new SysUserGrantVO();
-        // 可授权角色、岗位、部门
-        resp.setRoles(roleService.listCanGranted());
-        resp.setPosts(postService.listCanGranted());
-        if (StringUtil.isNotNull(userId)) {
-            resp.setUser(userMapper.selectById(userId));
-            // 已授权角色与岗位
-            resp.setRoleIds(roleService.listIdByUserId(userId));
-            resp.setPostIds(postService.listIdByUserId(userId));
-        }
-        return ok(resp);
+        return ok(userMapper.selectById(userId));
     }
 
     @Operation(summary = "新增用户")
@@ -198,23 +208,9 @@ public class SysUserController extends BaseController {
     @PostMapping("/export")
     @CheckPerms("sys_user:export")
     public void export(HttpServletResponse response, SysUserQueryReq queryReq) {
-        List<SysUserVO> list = userMapper.selectVOInScope(this.buildPageWrapper(queryReq));
+        List<SysUserVO> list = userMapper.selectVOList(this.buildPageWrapper(queryReq));
         List<SysUserExport> convert = BeanUtil.convert(list, SysUserExport.class);
         ExcelUtil.exportExcel(convert, "后台用户数据", SysUserExport.class, response);
-    }
-
-    @Operation(summary = "根据用户id获取授权角色")
-    @GetMapping("/authorize_role/{userId}")
-    @CheckPerms("sys_user:query")
-    public Result<SysUserGrantVO> authRole(@PathVariable Long userId) {
-        // 校验权限
-        userService.checkDataScopes(userId);
-
-        SysUserGrantVO resp = new SysUserGrantVO();
-        resp.setUser(userMapper.selectById(userId));
-        resp.setRoleIds(roleService.listIdByUserId(userId));
-        resp.setRoles(roleService.listCanGranted());
-        return ok(resp);
     }
 
     @Operation(summary = "用户授权角色")

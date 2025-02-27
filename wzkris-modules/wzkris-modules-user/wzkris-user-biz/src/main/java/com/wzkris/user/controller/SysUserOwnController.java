@@ -13,7 +13,6 @@ import com.wzkris.user.domain.req.EditOwnSysUserReq;
 import com.wzkris.user.domain.req.EditPhoneReq;
 import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.domain.vo.SysUserAccountVO;
-import com.wzkris.user.domain.vo.SysUserOwnVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPostService;
@@ -58,17 +57,6 @@ public class SysUserOwnController extends BaseController {
     private final RemoteCaptchaApi remoteCaptchaApi;
 
     private final PasswordEncoder passwordEncoder;
-
-    @Operation(summary = "登录信息")
-    @GetMapping("/info")
-    public Result<SysUserOwnVO> loginUser() {
-        SysUserOwnVO userOwnVO = new SysUserOwnVO();
-        userOwnVO.setAdmin(LoginUserUtil.isAdmin());
-        userOwnVO.setSuperTenant(LoginUserUtil.isSuperTenant());
-        userOwnVO.setUsername(LoginUserUtil.getUsername());
-        userOwnVO.setAuthorities(LoginUserUtil.getAuthorities());
-        return ok(userOwnVO);
-    }
 
     @Operation(summary = "账户信息")
     @GetMapping("/account")

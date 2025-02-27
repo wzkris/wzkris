@@ -28,7 +28,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             SysTenantWalletRecord record = new SysTenantWalletRecord();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_INCOME);
+            record.setRecordType(UserConstants.WALLET_INCOME);
             record.setCreateAt(System.currentTimeMillis());
             tenantWalletRecordMapper.insert(record);
         }
@@ -43,7 +43,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             SysTenantWalletRecord record = new SysTenantWalletRecord();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_OUTCOME);
+            record.setRecordType(UserConstants.WALLET_OUTCOME);
             record.setCreateAt(System.currentTimeMillis());
             tenantWalletRecordMapper.insert(record);
         }

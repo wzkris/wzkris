@@ -1,6 +1,7 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.wzkris.common.core.constant.CommonConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,7 @@ public class AppUserWallet {
 
     public AppUserWallet(Long userId) {
         this.userId = userId;
+        this.balance = BigDecimal.ZERO;
+        this.status = CommonConstants.STATUS_ENABLE;
     }
 }

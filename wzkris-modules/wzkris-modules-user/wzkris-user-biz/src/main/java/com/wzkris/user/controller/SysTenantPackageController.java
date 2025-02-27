@@ -83,7 +83,7 @@ public class SysTenantPackageController extends BaseController {
     public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
-        checkedSelectTreeVO.setSelectTrees(menuService.listMenuSelectTree(LoginUserUtil.getUserId()));
+        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUserUtil.getUserId()));
         return ok(checkedSelectTreeVO);
     }
 

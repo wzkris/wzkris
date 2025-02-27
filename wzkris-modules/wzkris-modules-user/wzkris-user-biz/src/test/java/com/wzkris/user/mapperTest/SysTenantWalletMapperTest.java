@@ -65,7 +65,7 @@ public class SysTenantWalletMapperTest {
         Assert.state(rows, "增加余额失败");
         SysTenantWalletRecord record = tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .eq(SysTenantWalletRecord::getTenantId, tenantId)
-                .eq(SysTenantWalletRecord::getType, UserConstants.WALLET_INCOME));
+                .eq(SysTenantWalletRecord::getRecordType, UserConstants.WALLET_INCOME));
         Assert.notNull(record, "增加余额记录失败");
     }
 
@@ -74,7 +74,7 @@ public class SysTenantWalletMapperTest {
         Assert.state(rows, "扣减余额失败");
         SysTenantWalletRecord record = tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .eq(SysTenantWalletRecord::getTenantId, tenantId)
-                .eq(SysTenantWalletRecord::getType, UserConstants.WALLET_OUTCOME));
+                .eq(SysTenantWalletRecord::getRecordType, UserConstants.WALLET_OUTCOME));
         Assert.notNull(record, "扣减余额记录失败");
     }
 

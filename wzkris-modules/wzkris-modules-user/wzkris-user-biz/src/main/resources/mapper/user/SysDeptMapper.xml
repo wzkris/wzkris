@@ -7,6 +7,9 @@
     <select id="listChildren" resultType="SysDept">
         SELECT * FROM sys_dept
         <where>
+            <if test="parentId != null and parentId != 0">
+                AND FIND_IN_SET(#{parentId}, ancestors)
+            </if>
             <if test="deptId != null and deptId != 0">
                 AND (dept_id = #{deptId} OR FIND_IN_SET(#{deptId}, ancestors))
             </if>

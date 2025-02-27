@@ -28,7 +28,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
             ${ew.customSqlSegment}
             """)
     @DeptScope(tableAlias = "rd")
-    List<SysRole> selectListInScope(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
+    List<SysRole> selectLists(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
 
     /**
      * 校验是否有该角色操作权限
@@ -39,7 +39,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
     @DeptScope(tableAlias = "rd")
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN 1 ELSE 0 END AS match_result
+                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN 1 ELSE 0 END
                         FROM sys_role r LEFT JOIN sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         <if test="roleId != null and roleId != ''">

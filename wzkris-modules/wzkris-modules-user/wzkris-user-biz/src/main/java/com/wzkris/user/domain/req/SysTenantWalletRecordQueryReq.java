@@ -13,6 +13,6 @@ public class SysTenantWalletRecordQueryReq extends QueryReq {
     private Long tenantId;
 
     @Schema(description = "记录类型 0-收入 1-支出")
-    private String type;
+    private String recordType;
 
 }

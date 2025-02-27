@@ -45,7 +45,7 @@ public interface SysNotifyMapper extends BaseMapperPlus<SysNotify> {
                     <if test="notifyType != null and notifyType != ''">
             	        AND notify_type = #{notifyType}
             	    </if>
-                ORDER BY s.notify_id DESC LIMIT 100
+                LIMIT 100
             </script>
             """)
     int countUnread(@Param("userId") Long userId, @Nullable @Param("notifyType") String notifyType);

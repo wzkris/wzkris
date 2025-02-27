@@ -50,7 +50,7 @@ xxl.job:
 
 #mqtt基本配置
 mqtt:
-  enable: true
+  enable: false
   settings:
     car:
       clientNum: 3

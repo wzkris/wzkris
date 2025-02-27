@@ -1,6 +1,7 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysPost;
+import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
@@ -13,9 +14,9 @@ import java.util.List;
 public interface SysPostService {
 
     /**
-     * 查询可以授权的岗位
+     * 查询可以选择的岗位
      */
-    List<SysPost> listCanGranted();
+    List<SelectVO> listSelect(String postName);
 
     /**
      * 根据用户id查询关联岗位(正常状态)

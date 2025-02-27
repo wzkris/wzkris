@@ -47,7 +47,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public List<SysUser> list(SysUserQueryReq queryReq) {
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
-        return userMapper.selectListInScope(lqw);
+        return userMapper.selectLists(lqw);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
         lqw.in(SysUser::getUserId, userIds);
-        return userMapper.selectListInScope(lqw);
+        return userMapper.selectLists(lqw);
     }
 
     @Override
@@ -69,13 +69,15 @@ public class SysUserServiceImpl implements SysUserService {
         if (!CollectionUtils.isEmpty(userIds)) {
             lqw.notIn(SysUser::getUserId, userIds);
         }
-        return userMapper.selectListInScope(lqw);
+        return userMapper.selectLists(lqw);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertUser(SysUser user, List<Long> roleIds, List<Long> postIds) {
-        if (!passwordEncoder.isEncode(user.getPassword())) user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getPassword() != null && !passwordEncoder.isEncode(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         boolean success = userMapper.insert(user) > 0;
         if (success) {
             // 新增用户与角色管理
@@ -88,7 +90,9 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateUser(SysUser user, List<Long> roleIds, List<Long> postIds) {
-        if (!passwordEncoder.isEncode(user.getPassword())) user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getPassword() != null && !passwordEncoder.isEncode(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         boolean success = userMapper.updateById(user) > 0;
         if (success) {
             // 删除用户与角色关联
@@ -102,6 +106,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(List<Long> userIds) {
         userMapper.deleteByIds(userIds);
         userRoleMapper.deleteByUserIds(userIds);

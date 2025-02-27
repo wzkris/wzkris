@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.service.BusinessException;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
 import com.wzkris.user.domain.SysUserRole;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -42,9 +44,12 @@ public class SysRoleServiceImpl implements SysRoleService {
     private final SysRoleDeptMapper roleDeptMapper;
 
     @Override
-    public List<SysRole> listCanGranted() {
-        return roleMapper.selectListInScope(Wrappers.lambdaQuery(SysRole.class).
-                eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE));
+    public List<SelectVO> listSelect(String roleName) {
+        return roleMapper.selectLists(Wrappers.lambdaQuery(SysRole.class)
+                .select(SysRole::getRoleId, SysRole::getRoleName)
+                .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(roleName), SysRole::getRoleName, roleName)
+        ).stream().map(SelectVO::new).collect(Collectors.toList());
     }
 
     @Override

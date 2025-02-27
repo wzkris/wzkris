@@ -41,7 +41,7 @@ public class SysDeptServiceImpl implements SysDeptService {
                 .select(SysDept::getDeptId, SysDept::getParentId, SysDept::getDeptName)
                 .like(StringUtil.isNotEmpty(deptName), SysDept::getDeptName, deptName);
 
-        List<SysDept> depts = deptMapper.selectListInScope(lqw);
+        List<SysDept> depts = deptMapper.selectLists(lqw);
         return this.buildDeptTreeSelect(depts);
     }
 
@@ -79,16 +79,11 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public boolean hasChildByDeptId(Long deptId) {
-        int result = deptMapper.hasChildByDeptId(deptId);
-        return result > 0;
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertDept(SysDept dept) {
         SysDept parent = deptMapper.selectByIdForUpdate(dept.getParentId());
-        dept.setAncestors(parent.getAncestors() + "," + dept.getParentId());
+        dept.setAncestors(parent == null ? "0" : parent.getAncestors() + "," + dept.getParentId());
+        dept.setParentId(dept.getParentId() == null ? 0 : dept.getParentId());
         return deptMapper.insert(dept) > 0;
     }
 
@@ -163,12 +158,6 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     private boolean hasChild(List<SysDept> list, SysDept t) {
         return !CollectionUtils.isEmpty(getChildList(list, t));
-    }
-
-    @Override
-    public boolean checkDeptExistUser(Long deptId) {
-        int result = deptMapper.checkDeptExistUser(deptId);
-        return result > 0;
     }
 
     @Override
