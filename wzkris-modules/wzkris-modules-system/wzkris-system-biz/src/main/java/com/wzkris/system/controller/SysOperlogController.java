@@ -66,13 +66,4 @@ public class SysOperlogController extends BaseController {
     public Result<?> remove(@RequestBody Long[] operIds) {
         return toRes(operLogMapper.deleteByIds(Arrays.asList(operIds)));
     }
-
-    @Operation(summary = "清空日志")
-    @OperateLog(title = "操作日志", subTitle = "清空日志", operateType = OperateType.DELETE)
-    @PostMapping("/clean")
-    @CheckPerms("operlog:remove")
-    public Result<?> clean() {
-        operLogMapper.clearAll();
-        return ok();
-    }
 }

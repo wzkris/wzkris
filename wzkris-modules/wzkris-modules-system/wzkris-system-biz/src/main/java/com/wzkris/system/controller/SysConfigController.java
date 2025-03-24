@@ -15,7 +15,6 @@ import com.wzkris.system.domain.req.SysConfigQueryReq;
 import com.wzkris.system.domain.req.SysConfigReq;
 import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
-import com.wzkris.system.utils.ConfigCacheUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +29,10 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "系统配置")
+@Tag(name = "参数管理")
 @RestController
 @PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
-@RequestMapping("/config")
+@RequestMapping("/sys_config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
 
@@ -43,7 +42,7 @@ public class SysConfigController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckPerms("config:list")
+    @CheckPerms("sys_config:list")
     public Result<Page<SysConfig>> list(SysConfigQueryReq queryReq) {
         startPage();
         List<SysConfig> list = configMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -60,24 +59,15 @@ public class SysConfigController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{configId}")
+    @CheckPerms("sys_config:query")
     public Result<SysConfig> getInfo(@PathVariable Long configId) {
         return ok(configMapper.selectById(configId));
-    }
-
-    @Operation(summary = "键名查询参数值")
-    @GetMapping("/configKey/{configKey}")
-    public Result<String> getConfigKey(@PathVariable String configKey) {
-        String configValue = ConfigCacheUtil.getConfigValueByKey(configKey);
-        if (StringUtil.isNotEmpty(configValue)) {
-            return ok(configValue);
-        }
-        return ok(configMapper.selectValueByKey(configKey));
     }
 
     @Operation(summary = "添加参数")
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("config:add")
+    @CheckPerms("sys_config:add")
     public Result<Void> add(@Validated @RequestBody SysConfigReq req) {
         if (configService.checkUsedByConfigKey(null, req.getConfigKey())) {
             return error412("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
@@ -88,7 +78,7 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "修改参数")
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("config:edit")
+    @CheckPerms("sys_config:edit")
     public Result<Void> edit(@Validated @RequestBody SysConfigReq req) {
         if (configService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
             return error412("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
@@ -99,24 +89,19 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "删除参数")
     @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("config:remove")
-    public Result<Void> remove(@RequestBody List<Long> configIds) {
-        List<SysConfig> configs = configMapper.selectByIds(configIds);
-
-        for (SysConfig config : configs) {
-            if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
-                return error412(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
-            }
+    @CheckPerms("sys_config:remove")
+    public Result<Void> remove(@RequestBody Long configId) {
+        SysConfig config = configMapper.selectById(configId);
+        if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
+            return error412(StringUtil.format("内置参数'{}'不能删除", config.getConfigKey()));
         }
-        configService.deleteByIds(configIds);
-        return ok();
+        return toRes(configService.deleteById(configId));
     }
 
     @Operation(summary = "刷新参数缓存")
     @PostMapping("/refresh_cache")
-    @CheckPerms("config:remove")
+    @CheckPerms("sys_config:remove")
     public Result<Void> refreshCache() {
-        ConfigCacheUtil.clearAll();
         configService.loadingConfigCache();
         return ok();
     }

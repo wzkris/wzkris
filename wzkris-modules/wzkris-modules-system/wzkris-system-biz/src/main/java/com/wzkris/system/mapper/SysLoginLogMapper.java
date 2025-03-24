@@ -2,7 +2,6 @@ package com.wzkris.system.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.system.domain.SysLoginLog;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,6 +13,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SysLoginLogMapper extends BaseMapperPlus<SysLoginLog> {
 
-    @Update("truncate biz_sys.sys_login_log")
-    void clearAll();
 }

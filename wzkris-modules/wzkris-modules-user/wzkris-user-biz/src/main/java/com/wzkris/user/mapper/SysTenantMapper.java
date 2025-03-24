@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysTenant;
-import com.wzkris.user.domain.vo.SysTenantOwnVO;
+import com.wzkris.user.domain.vo.SysTenantProfileVO;
 import com.wzkris.user.domain.vo.SysTenantVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -40,12 +40,8 @@ public interface SysTenantMapper extends BaseMapperPlus<SysTenant> {
     Long selectPackageIdByUserId(Long userId);
 
     @Select("""
-             SELECT u.username AS administrator, t.*
-             FROM biz_sys.sys_tenant t
-             LEFT JOIN biz_sys.sys_user u ON
-             t.administrator = u.user_id
-             WHERE t.tenant_id = #{tenantId}
+             SELECT t.*, t.tenant_type AS "type", t.tenant_name AS "name" FROM biz_sys.sys_tenant t WHERE t.tenant_id = #{tenantId}
             """)
-    SysTenantOwnVO selectVOById(Long tenantId);
+    SysTenantProfileVO selectVOById(Long tenantId);
 
 }

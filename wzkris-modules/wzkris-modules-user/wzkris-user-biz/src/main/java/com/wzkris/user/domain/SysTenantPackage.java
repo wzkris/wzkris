@@ -34,9 +34,6 @@ public class SysTenantPackage extends BaseEntity {
     @Schema(description = "套餐绑定的菜单")
     private Long[] menuIds;
 
-    @Schema(description = "菜单树选择项是否关联显示")
-    private Boolean isMenuDisplay;
-
     @Schema(description = "备注")
     private String remark;
 

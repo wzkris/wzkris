@@ -1,6 +1,7 @@
 package com.wzkris.user.controller;
 
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
@@ -13,7 +14,9 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.domain.export.OAuth2ClientExport;
 import com.wzkris.user.domain.req.EditClientSecretReq;
+import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.OAuth2ClientQueryReq;
+import com.wzkris.user.domain.req.OAuth2ClientReq;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
 import com.wzkris.user.service.OAuth2ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,11 +72,11 @@ public class OAuth2ClientController extends BaseController {
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckPerms("oauth2_client:edit")
-    public Result<Void> edit(@RequestBody OAuth2Client client) {
-        return toRes(oauth2ClientMapper.updateById(client));
+    public Result<Void> edit(@RequestBody OAuth2ClientReq clientReq) {
+        return toRes(oauth2ClientMapper.updateById(BeanUtil.convert(clientReq, OAuth2Client.class)));
     }
 
-    @Operation(summary = "根据id修改密钥")
+    @Operation(summary = "修改密钥")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改密钥", operateType = OperateType.UPDATE)
     @PostMapping("/edit_secret")
     @CheckPerms("oauth2_client:edit_secret")
@@ -84,13 +87,26 @@ public class OAuth2ClientController extends BaseController {
         return toRes(oauth2ClientMapper.updateById(update));
     }
 
+    @Operation(summary = "状态修改")
+    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @PostMapping("/edit_status")
+    @CheckPerms("app_user:edit")
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
+        // 校验权限
+        OAuth2Client update = new OAuth2Client();
+        update.setId(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
+        return toRes(oauth2ClientMapper.updateById(update));
+    }
+
     @Operation(summary = "添加客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckPerms("oauth2_client:add")
-    public Result<Void> add(@RequestBody @Valid OAuth2Client client) {
-        client.setClientSecret(passwordEncoder.encode(client.getClientSecret()));
-        return toRes(oauth2ClientMapper.insert(client));
+    public Result<Void> add(@RequestBody @Valid OAuth2ClientReq clientReq) {
+        clientReq.setClientSecret(passwordEncoder.encode(RandomUtil.randomString(16)));
+
+        return toRes(oauth2ClientMapper.insert(BeanUtil.convert(clientReq, OAuth2Client.class)));
     }
 
     @Operation(summary = "删除客户端")

@@ -9,7 +9,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
@@ -88,20 +88,20 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "角色菜单选择树")
-    @GetMapping({"/menu_select_tree/", "/menu_select_tree/{roleId}"})
-    @CheckPerms("sys_role:list")
+    @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{roleId}"})
+    @CheckPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(roleId == null ? Collections.emptyList() : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUserUtil.getUserId()));
+        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUtil.getUserId()));
         return ok(checkedSelectTreeVO);
     }
 
     @Operation(summary = "角色部门选择树")
-    @GetMapping({"/dept_select_tree/", "/dept_select_tree/{roleId}"})
-    @CheckPerms("sys_role:query")
+    @GetMapping({"/dept_checked_select_tree/", "/dept_checked_select_tree/{roleId}"})
+    @CheckPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
@@ -116,7 +116,7 @@ public class SysRoleController extends BaseController {
     @PostMapping("/add")
     @CheckPerms("sys_role:add")
     public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
-        if (!tenantService.checkRoleLimit(LoginUserUtil.getTenantId())) {
+        if (!tenantService.checkRoleLimit(LoginUtil.getTenantId())) {
             return error412("角色数量已达上限，请联系管理员");
         }
         return toRes(roleService.insertRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
@@ -148,7 +148,7 @@ public class SysRoleController extends BaseController {
     @OperateLog(title = "角色管理", subTitle = "删除角色", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("sys_role:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.role}id{validate.notnull}") List<Long> roleIds) {
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
         // 权限校验
         roleService.checkDataScopes(roleIds);
         roleService.checkRoleUse(roleIds);

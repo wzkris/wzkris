@@ -1,19 +1,24 @@
 package com.wzkris.user;
 
-import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
+import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-
-import java.util.regex.Pattern;
 
 @Slf4j
 public class PatternTest {
 
     @Test
     public void test() {
-        PasswordEncoderDelegate delegate = new PasswordEncoderDelegate();
-        boolean encode = delegate.isEncode("{}");
-        System.out.println(encode);
+        try {
+            DynamicTenantUtil.enableIgnore();
+            try {
+                DynamicTenantUtil.enableIgnore();
+            } finally {
+                DynamicTenantUtil.disableIgnore();
+            }
+        } finally {
+            DynamicTenantUtil.disableIgnore();
+        }
     }
 
 }

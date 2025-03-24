@@ -23,9 +23,6 @@ public class SysMessage extends BaseEntity {
     @Schema(description = "标题")
     private String title;
 
-    @Schema(description = "消息类型（1系统公告 2APP公告）")
-    private String msgType;
-
     @Schema(description = "内容")
     private String content;
 

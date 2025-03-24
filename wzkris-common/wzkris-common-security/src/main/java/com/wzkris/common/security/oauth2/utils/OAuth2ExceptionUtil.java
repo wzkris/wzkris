@@ -80,7 +80,7 @@ public final class OAuth2ExceptionUtil {
             return Result.resp(BizCode.BAD_REQUEST, StringUtil.nullToDefault(errorMsg, I18nUtil.message("oauth2.unsupport.granttype")));
         } else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
-                case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法则返回子状态
+                case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法
                         Result.resp(BizCode.UNAUTHORIZED);
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
                         Result.resp(BizCode.UNAUTHORIZED, StringUtil.nullToDefault(errorMsg, BizCode.UNAUTHORIZED.desc()));

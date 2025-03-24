@@ -14,7 +14,6 @@ import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
 import com.wzkris.user.service.SysRoleService;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -65,7 +64,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override
-    public SysPermissionResp getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
+    public SysPermissionResp getPermission(Long userId, Long tenantId, @Nullable Long deptId) {
         return DynamicTenantUtil.switcht(tenantId, () -> {
             List<SysRole> roles;
             List<String> grantedAuthority;

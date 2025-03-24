@@ -4,9 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzkris.user.mapper.SysMenuMapper">
 
-    <select id="listRouteTree" resultType="SysMenu">
+    <select id="listRouter" resultType="SysMenu">
         SELECT * FROM biz_sys.sys_menu
-        WHERE menu_type IN ('D', 'M') AND status = '0' AND is_visible = true
+        WHERE menu_type IN ('D', 'M', 'I', 'O') AND status = '0'
         <if test="menuIds != null and !menuIds.isEmpty()">
             AND menu_id IN
             <foreach collection="menuIds" item="menuId" separator="," open="(" close=")">

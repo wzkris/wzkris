@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
@@ -81,10 +81,10 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public String getRoleGroup() {
-        if (LoginUserUtil.isAdmin()) {
+        if (LoginUtil.isAdmin()) {
             return "超级管理员";
         }
-        List<SysRole> roles = this.listByUserId(LoginUserUtil.getUserId());
+        List<SysRole> roles = this.listByUserId(LoginUtil.getUserId());
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }
 

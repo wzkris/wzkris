@@ -10,8 +10,8 @@ import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.resolver.CustomBearerTokenResolver;
-import com.wzkris.common.security.utils.ClientUserUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.ClientUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,17 +47,17 @@ public class OAuth2Endpoint extends BaseController {
     @GetMapping("/sysuserinfo")
     public Result<SysUserinfo> loginUser() {
         SysUserinfo userinfo = new SysUserinfo();
-        userinfo.setAdmin(LoginUserUtil.isAdmin());
-        userinfo.setSuperTenant(LoginUserUtil.isSuperTenant());
-        userinfo.setUsername(LoginUserUtil.getUsername());
-        userinfo.setAuthorities(AuthorityUtils.authorityListToSet(LoginUserUtil.getAuthorities()));
+        userinfo.setAdmin(LoginUtil.isAdmin());
+        userinfo.setSuperTenant(LoginUtil.isSuperTenant());
+        userinfo.setUsername(LoginUtil.getUsername());
+        userinfo.setAuthorities(AuthorityUtils.authorityListToSet(LoginUtil.getAuthorities()));
         return ok(userinfo);
     }
 
     @Operation(summary = "用户信息")
     @GetMapping("/appuserinfo")
     public Result<AppUserinfo> clientUser() {
-        ClientUser clientUser = ClientUserUtil.getClientUser();
+        ClientUser clientUser = ClientUtil.getClientUser();
         AppUserinfo userinfo = BeanUtil.convert(clientUser, AppUserinfo.class);
         return ok(userinfo);
     }

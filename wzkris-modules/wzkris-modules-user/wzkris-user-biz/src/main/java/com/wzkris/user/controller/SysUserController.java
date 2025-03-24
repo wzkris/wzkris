@@ -12,7 +12,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.export.SysUserExport;
@@ -36,11 +36,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 用户管理
+ * 系统用户管理
  *
  * @author wzkris
  */
-@Tag(name = "用户管理")
+@Tag(name = "系统用户")
 @Validated
 @RestController
 @RequestMapping("/sys_user")
@@ -86,15 +86,16 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户-部门选择树")
     @GetMapping("/dept_select_tree")
-    @CheckPerms("sys_user:list")
+    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
         return ok(deptService.listSelectTree(deptName));
     }
 
     @Operation(summary = "用户-角色选择列表")
-    @GetMapping({"/role_select/", "/role_select/{userId}"})
-    @CheckPerms("sys_user:list")
+    @GetMapping({"/role_checked_select/", "/role_checked_select/{userId}"})
+    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
+        userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
         checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : roleService.listIdByUserId(userId));
         checkedSelectVO.setSelects(roleService.listSelect(roleName));
@@ -102,9 +103,10 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "用户-岗位选择列表")
-    @GetMapping({"/post_select/", "/post_select/{userId}"})
-    @CheckPerms("sys_user:list")
+    @GetMapping({"/post_checked_select/", "/post_checked_select/{userId}"})
+    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
+        userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
         checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : postService.listIdByUserId(userId));
         checkedSelectVO.setSelects(postService.listSelect(postName));
@@ -125,7 +127,7 @@ public class SysUserController extends BaseController {
     @PostMapping("/add")
     @CheckPerms("sys_user:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
-        if (!tenantService.checkAccountLimit(LoginUserUtil.getTenantId())) {
+        if (!tenantService.checkAccountLimit(LoginUtil.getTenantId())) {
             return error412("账号数量已达上限，请联系管理员");
         } else if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
             return error412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
@@ -140,7 +142,7 @@ public class SysUserController extends BaseController {
         boolean success = userService.insertUser(user, userReq.getRoleIds(), userReq.getPostIds());
         if (success) {
             SpringUtil.getContext().publishEvent(
-                    new CreateUserEvent(LoginUserUtil.getUserId(), userReq.getUsername(), password)
+                    new CreateUserEvent(LoginUtil.getUserId(), userReq.getUsername(), password)
             );
         }
         return toRes(success);

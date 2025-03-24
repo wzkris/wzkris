@@ -4,8 +4,6 @@ import com.wzkris.system.domain.SysConfig;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.util.List;
-
 /**
  * 参数配置 服务层
  *
@@ -35,9 +33,9 @@ public interface SysConfigService {
     /**
      * 批量删除参数信息
      *
-     * @param configIds 需要删除的参数ID
+     * @param configId 参数ID
      */
-    void deleteByIds(List<Long> configIds);
+    boolean deleteById(Long configId);
 
     /**
      * 校验参数键名是否唯一

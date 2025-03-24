@@ -22,7 +22,7 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
      *
      * @return 菜单列表
      */
-    List<SysMenu> listRouteTree(@Nullable @Param("menuIds") List<Long> menuIds);
+    List<SysMenu> listRouter(@Nullable @Param("menuIds") List<Long> menuIds);
 
     /**
      * 根据ID集合查询权限

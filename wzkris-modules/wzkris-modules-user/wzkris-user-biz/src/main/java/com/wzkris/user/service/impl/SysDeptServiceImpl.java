@@ -35,7 +35,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public List<SelectTreeVO> listSelectTree(String deptName) {
         LambdaQueryWrapper<SysDept> lqw = Wrappers.lambdaQuery(SysDept.class)
-                .select(SysDept::getDeptId, SysDept::getDeptName)
+                .select(SysDept::getDeptId, SysDept::getParentId, SysDept::getDeptName)
                 .like(StringUtil.isNotEmpty(deptName), SysDept::getDeptName, deptName);
 
         List<SysDept> depts = deptMapper.selectLists(lqw);
@@ -103,9 +103,12 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(Long deptId) {
-        deptMapper.deleteById(deptId);
-        roleDeptMapper.deleteByDeptId(deptId);
+    public boolean deleteById(Long deptId) {
+        boolean success = deptMapper.deleteById(deptId) > 0;
+        if (success) {
+            roleDeptMapper.deleteByDeptId(deptId);
+        }
+        return success;
     }
 
     /**

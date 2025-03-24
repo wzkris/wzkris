@@ -9,10 +9,8 @@ import com.wzkris.user.api.domain.response.OAuth2ClientResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.apache.ibatis.type.ArrayTypeHandler;
-import org.hibernate.validator.constraints.Length;
 
 /**
  * OAuth2 表
@@ -29,19 +27,15 @@ public class OAuth2Client extends BaseEntity {
     @TableId
     private Long id;
 
-    @NotBlank(message = "[clientName] {validate.notnull}")
     @Schema(description = "客户端名称")
     private String clientName;
 
     @Schema(description = "客户端状态")
     private String status;
 
-    @NotBlank(message = "[clientId] {validate.notnull}")
     @Schema(description = "客户端id 等价于app_id")
     private String clientId;
 
-    @NotBlank(message = "[clientSecret] {validate.notnull}")
-    @Length(min = 6, max = 6, message = "[clientSecret] {validate.size.illegal}")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "客户端密钥 等价于app_secret")
     private String clientSecret;

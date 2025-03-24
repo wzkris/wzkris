@@ -80,19 +80,9 @@ public interface SysRoleDeptMapper {
     int deleteByDeptId(Long deptId);
 
     /**
-     * 查询部门使用数量
-     *
-     * @param deptId 部门ID
-     * @return 结果
-     */
-    @DeptScope
-    @Select("SELECT COUNT(*) FROM biz_sys.sys_role_dept WHERE dept_id = #{deptId}")
-    int countRoleDeptByDeptId(Long deptId);
-
-    /**
      * 批量新增角色部门信息
      *
-     * @param sysRoleDeptList 角色部门列表
+     * @param list 角色部门列表
      * @return 结果
      */
     @Insert("""
@@ -103,6 +93,6 @@ public interface SysRoleDeptMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(List<SysRoleDept> sysRoleDeptList);
+    int insertBatch(@Param("list") List<SysRoleDept> list);
 
 }

@@ -4,15 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.constant.MessageConstants;
 import com.wzkris.system.domain.SysMessage;
 import com.wzkris.system.domain.vo.SysAnnouncementVO;
-import com.wzkris.system.domain.vo.SysNotifyVO;
+import com.wzkris.system.domain.vo.SysNoticeVO;
 import com.wzkris.system.domain.vo.UnreadVO;
 import com.wzkris.system.mapper.SysMessageMapper;
-import com.wzkris.system.mapper.SysNotifyMapper;
+import com.wzkris.system.mapper.SysNoticeMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,47 +28,37 @@ public class SysMessageOwnController extends BaseController {
 
     private final SysMessageMapper messageMapper;
 
-    private final SysNotifyMapper notifyMapper;
+    private final SysNoticeMapper noticeMapper;
 
     @Operation(summary = "公告分页")
-    @GetMapping("/announcement/list")
-    public Result<Page<SysAnnouncementVO>> announcementList() {
+    @GetMapping("/list")
+    public Result<Page<SysAnnouncementVO>> pageResult() {
         LambdaQueryWrapper<SysMessage> lqw = Wrappers.lambdaQuery(SysMessage.class)
                 .eq(SysMessage::getStatus, MessageConstants.STATUS_PUBLISH)
-                .eq(SysMessage::getMsgType, MessageConstants.TYPE_SYSTEM)
                 .orderByDesc(SysMessage::getMsgId);
         startPage();
         List<SysAnnouncementVO> list = messageMapper.selectList2VO(lqw, SysAnnouncementVO.class);
         return getDataTable(list);
     }
 
-    @Operation(summary = "系统通知分页")
-    @GetMapping("/system_notify/list")
-    public Result<Page<SysNotifyVO>> systemNotify(String readState) {
+    @Operation(summary = "通知分页")
+    @GetMapping("/notice/list")
+    public Result<Page<SysNoticeVO>> listNotice(String readState, String noticeType) {
         startPage();
-        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM, readState);
-        return getDataTable(list);
-    }
-
-    @Operation(summary = "设备通知分页")
-    @GetMapping("/device_notify/list")
-    public Result<Page<SysNotifyVO>> deviceNotify(String readState) {
-        startPage();
-        List<SysNotifyVO> list = notifyMapper.listNotify(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE, readState);
+        List<SysNoticeVO> list = noticeMapper.listNotice(LoginUtil.getUserId(), noticeType, readState);
         return getDataTable(list);
     }
 
     @Operation(summary = "通知已读")
-    @PostMapping("/mark_read")
-    public Result<Void> markRead(@RequestBody Long notifyId) {
-        return toRes(notifyMapper.markRead(notifyId, LoginUserUtil.getUserId()));
+    @PostMapping("/notice/mark_read")
+    public Result<Void> markRead(@RequestBody Long noticeId) {
+        return toRes(noticeMapper.markRead(noticeId, LoginUtil.getUserId()));
     }
 
-    @Operation(summary = "未读数量统计")
-    @GetMapping("/unread_count")
+    @Operation(summary = "未读通知统计")
+    @GetMapping("/notice/unread_count")
     public Result<UnreadVO> unreadCount() {
-        int system = notifyMapper.countUnread(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_SYSTEM);
-        int device = notifyMapper.countUnread(LoginUserUtil.getUserId(), MessageConstants.NOTIFY_TYPE_DEVICE);
-        return ok(new UnreadVO(system, device));
+        int count = noticeMapper.countUnread(LoginUtil.getUserId(), null);
+        return ok(new UnreadVO(count, 0));
     }
 }

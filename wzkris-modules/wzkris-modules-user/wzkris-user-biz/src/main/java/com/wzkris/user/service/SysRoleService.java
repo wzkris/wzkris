@@ -28,7 +28,7 @@ public interface SysRoleService {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRole> listByUserId(@Nullable Long userId);
+    List<SysRole> listByUserId(Long userId);
 
     /**
      * 根据用户ID查询关联角色ID(正常状态)
@@ -36,7 +36,7 @@ public interface SysRoleService {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<Long> listIdByUserId(@Nullable Long userId);
+    List<Long> listIdByUserId(Long userId);
 
     /**
      * 获取当前角色组

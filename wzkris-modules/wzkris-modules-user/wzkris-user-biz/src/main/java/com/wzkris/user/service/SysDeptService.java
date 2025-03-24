@@ -41,7 +41,7 @@ public interface SysDeptService {
      *
      * @param deptId 部门ID
      */
-    void deleteById(Long deptId);
+    boolean deleteById(Long deptId);
 
     /**
      * 校验部门是否有数据权限

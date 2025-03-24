@@ -9,14 +9,9 @@ package com.wzkris.common.core.constant;
 public interface SecurityConstants {
 
     /**
-     * 内部请求路径
+     * 默认用户ID
      */
-    String INNER_REQUEST_PATH = "/inner";
-
-    /**
-     * 内部免鉴权请求路径
-     */
-    String INNER_NOAUTH_REQUEST_PATH = "/inner/noauth";
+    Long DEFAULT_USER_ID = 0L;
 
     /**
      * 超级管理员ID

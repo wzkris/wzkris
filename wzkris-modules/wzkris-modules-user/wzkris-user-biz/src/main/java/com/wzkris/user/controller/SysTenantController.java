@@ -14,15 +14,17 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.req.*;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.domain.vo.SysTenantVO;
 import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
+import com.wzkris.user.service.SysTenantPackageService;
 import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,11 +62,13 @@ public class SysTenantController extends BaseController {
 
     private final SysUserService userService;
 
+    private final SysTenantPackageService tenantPackageService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "租户分页")
     @GetMapping("/list")
-    @CheckPerms("tenant:information")
+    @CheckPerms("sys_tenant:list")
     public Result<Page<SysTenantVO>> listPage(SysTenantQueryReq queryReq) {
         startPage();
         List<SysTenantVO> list = tenantMapper.selectVOList(this.buildQueryWrapper(queryReq));
@@ -80,26 +84,31 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "租户选择列表(带分页)")
     @GetMapping("/selectlist")
-    public Result<Page<SysTenant>> selectlist(String tenantName) {
+    public Result<Page<SelectVO>> selectlist(String tenantName) {
         startPage();
-        LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
-                .select(SysTenant::getTenantId, SysTenant::getTenantName)
-                .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName);
-        List<SysTenant> list = tenantMapper.selectList(lqw);
+        List<SelectVO> list = tenantService.listSelect(tenantName);
         return getDataTable(list);
+    }
+
+    @Operation(summary = "套餐选择列表")
+    @GetMapping("/package_select")
+    @CheckPerms(value = {"sys_tenant:add", "sys_tenant:edit"}, mode = CheckPerms.Mode.OR)
+    public Result<List<SelectVO>> packageSelect(String packageName) {
+        List<SelectVO> selectVOS = tenantPackageService.listSelect(packageName);
+        return ok(selectVOS);
     }
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/{tenantId}")
-    @CheckPerms("tenant:query")
-    public Result<SysTenant> queryByid(@NotNull(message = "[tenantId] {validate.notnull}")
+    @CheckPerms("sys_tenant:query")
+    public Result<SysTenant> queryByid(@NotNull(message = "{desc.tenant}{desc.id}{validate.notnull}")
                                        @PathVariable Long tenantId) {
         return ok(tenantMapper.selectById(tenantId));
     }
 
     @Operation(summary = "分页获取租户钱包记录")
     @GetMapping("/wallet_record/list")
-    @CheckPerms("wallet_record:list")
+    @CheckPerms("sys_tenant:wallet_record:list")
     public Result<Page<SysTenantWalletRecord>> listWalletPage(SysTenantWalletRecordQueryReq queryReq) {
         startPage();
         List<SysTenantWalletRecord> recordList = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
@@ -109,7 +118,7 @@ public class SysTenantController extends BaseController {
     private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantWalletRecord>()
                 .eq(StringUtil.isNotNull(queryReq.getTenantId()), SysTenantWalletRecord::getTenantId, queryReq.getTenantId())
-                .like(StringUtil.isNotBlank(queryReq.getType()), SysTenantWalletRecord::getRecordType, queryReq.getType())
+                .like(StringUtil.isNotBlank(queryReq.getRecordType()), SysTenantWalletRecord::getRecordType, queryReq.getRecordType())
                 .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
                         SysTenantWalletRecord::getCreateAt, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
                 .orderByDesc(SysTenantWalletRecord::getRecordId);
@@ -118,7 +127,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "新增租户")
     @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("tenant:add")
+    @CheckPerms("sys_tenant:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysTenantReq tenantReq) {
         if (userService.checkUsedByUsername(null, tenantReq.getUsername())) {
             return error412("登录账号'" + tenantReq.getUsername() + "'已存在");
@@ -132,7 +141,7 @@ public class SysTenantController extends BaseController {
         boolean success = tenantService.insertTenant(tenant, tenantReq.getUsername(), password);
         if (success) {
             SpringUtil.getContext().publishEvent(
-                    new CreateTenantEvent(LoginUserUtil.getUserId(), tenantReq.getUsername(), tenantReq.getTenantName(), password, operPwd)
+                    new CreateTenantEvent(LoginUtil.getUserId(), tenantReq.getUsername(), tenantReq.getTenantName(), password, operPwd)
             );
         }
         return toRes(success);
@@ -141,7 +150,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("tenant:edit")
+    @CheckPerms("sys_tenant:edit")
     public Result<Void> edit(@Validated @RequestBody SysTenantReq tenantReq) {
         SysTenant tenant = BeanUtil.convert(tenantReq, SysTenant.class);
 
@@ -153,7 +162,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "修改租户状态")
     @OperateLog(title = "租户管理", subTitle = "修改租户状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @CheckPerms("tenant:edit")
+    @CheckPerms("sys_tenant:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         SysTenant update = new SysTenant(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -163,7 +172,7 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset_operpwd")
-    @CheckPerms("tenant:reset_operpwd")
+    @CheckPerms("sys_tenant:reset_operpwd")
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
         if (StringUtil.length(req.getPassword()) != 6 || !NumberUtil.isNumber(req.getPassword())) {
             return error412("操作密码必须为6位数字");
@@ -176,8 +185,8 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "删除租户")
     @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("tenant:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.tenant}id{validate.notnull}") List<Long> tenantIds) {
+    @CheckPerms("sys_tenant:remove")
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.tenant}{desc.id}{validate.notnull}") List<Long> tenantIds) {
         tenantService.deleteByIds(tenantIds);
         return ok();
     }

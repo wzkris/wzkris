@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class SysUser2RolesReq {
 
-    @NotNull(message = "{desc.user}id{validate.notnull}")
+    @NotNull(message = "{desc.user}{desc.id}{validate.notnull}")
     private Long userId;
 
     private List<Long> roleIds;

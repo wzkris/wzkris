@@ -4,9 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.user.domain.*;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.*;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysTenantService;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 租户层
@@ -45,6 +48,14 @@ public class SysTenantServiceImpl implements SysTenantService {
     private final SysTenantWalletMapper tenantWalletMapper;
 
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
+
+    @Override
+    public List<SelectVO> listSelect(String tenantName) {
+        LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
+                .select(SysTenant::getTenantId, SysTenant::getTenantName)
+                .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName);
+        return tenantMapper.selectList(lqw).stream().map(SelectVO::new).collect(Collectors.toList());
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

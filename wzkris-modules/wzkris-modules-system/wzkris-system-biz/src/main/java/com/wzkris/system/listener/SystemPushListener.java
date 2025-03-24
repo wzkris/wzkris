@@ -28,8 +28,8 @@ public class SystemPushListener {
 
     private static void doSystemPush(String type, String eventName, List<?> ids, ObjectNode msg) {
         switch (type) {
-            case MessageConstants.NOTIFY_TYPE_SYSTEM -> eventName = SystemPushTopic.SYSTEM_NOTIFY;
-            case MessageConstants.NOTIFY_TYPE_DEVICE -> eventName = SystemPushTopic.DEVICE_NOTIFY;
+            case MessageConstants.NOTICE_TYPE_SYSTEM -> eventName = SystemPushTopic.SYSTEM_NOTIFY;
+            case MessageConstants.NOTICE_TYPE_DEVICE -> eventName = SystemPushTopic.DEVICE_NOTIFY;
         }
         SseUtil.sendBatch(ids, eventName, msg);
     }

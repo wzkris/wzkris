@@ -62,13 +62,4 @@ public class SysLoginlogController extends BaseController {
         return toRes(loginLogMapper.deleteByIds(logIds));
     }
 
-    @Operation(summary = "清空日志")
-    @OperateLog(title = "登录日志", subTitle = "清空日志", operateType = OperateType.DELETE)
-    @PostMapping("/clean")
-    @CheckPerms("loginlog:remove")
-    public Result<?> clean() {
-        loginLogMapper.clearAll();
-        return ok();
-    }
-
 }

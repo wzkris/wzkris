@@ -6,46 +6,46 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 /**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 动态租户工具
- * @date : 2023/12/11 10:54
+ * 动态租户工具类
+ *
+ * <p>保持原始方法签名不变的安全优化版本</p>
+ *
+ * @author wzkris
+ * @version 1.0.1
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DynamicTenantUtil {
+public final class DynamicTenantUtil {
 
-    private static final ThreadLocal<List<Long>> LOCAL_DYNAMIC_TENANT = new ThreadLocal<>();
+    private static final ThreadLocal<Deque<Long>> LOCAL_DYNAMIC_TENANT = new ThreadLocal<>();
 
     private static final ThreadLocal<AtomicInteger> LOCAL_IGNORE = new ThreadLocal<>();
 
     /**
      * 获取动态租户
-     * 当前线程内生效
      */
     public static Long get() {
-        return LOCAL_DYNAMIC_TENANT.get() == null ? null : LOCAL_DYNAMIC_TENANT.get().get(0);
+        Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
+        return stack == null || stack.isEmpty() ? null : stack.peek();
     }
 
     /**
-     * 设置动态租户，若设置了值则一定会走租户拦截
-     * 当前线程内生效
+     * 设置动态租户
      */
     public static void set(Long tenantId) {
-        if (tenantId != null) {// 避免get到null值无法判断是不存在还是set null
-            if (LOCAL_DYNAMIC_TENANT.get() == null) {
-                List<Long> add = new ArrayList<>();
-                add.add(tenantId);
-                LOCAL_DYNAMIC_TENANT.set(add);
-            } else {
-                LOCAL_DYNAMIC_TENANT.get().add(0, tenantId);
+        if (tenantId != null) {
+            Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
+            if (stack == null) {
+                stack = new ArrayDeque<>();
+                LOCAL_DYNAMIC_TENANT.set(stack);
             }
+            stack.push(tenantId);
         }
     }
 
@@ -53,25 +53,26 @@ public class DynamicTenantUtil {
      * 清理线程变量
      */
     public static void remove() {
-        if (LOCAL_DYNAMIC_TENANT.get() != null) {
-            if (LOCAL_DYNAMIC_TENANT.get().size() > 1) {
-                LOCAL_DYNAMIC_TENANT.get().remove(0);
-            } else {
+        Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
+        if (stack != null && !stack.isEmpty()) {
+            stack.pop();
+            if (stack.isEmpty()) {
                 LOCAL_DYNAMIC_TENANT.remove();
             }
         }
     }
 
     /**
-     * 开启忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭)
-     * 开启后则不会再走租户拦截器
+     * 开启忽略租户
      */
     public static void enableIgnore() {
-        if (LOCAL_IGNORE.get() == null) {
-            LOCAL_IGNORE.set(new AtomicInteger(1));
+        AtomicInteger counter = LOCAL_IGNORE.get();
+        if (counter == null) {
+            counter = new AtomicInteger(0);
+            LOCAL_IGNORE.set(counter);
+        }
+        if (counter.getAndIncrement() == 0) {
             InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
-        } else {
-            LOCAL_IGNORE.set(new AtomicInteger(LOCAL_IGNORE.get().incrementAndGet()));
         }
     }
 
@@ -79,29 +80,27 @@ public class DynamicTenantUtil {
      * 关闭忽略租户
      */
     public static void disableIgnore() {
-        if (LOCAL_IGNORE.get() != null) {
-            int count = LOCAL_IGNORE.get().decrementAndGet();
-            if (count > 0) {
-                LOCAL_IGNORE.set(new AtomicInteger(count));
-            } else {
-                LOCAL_IGNORE.remove();
-                InterceptorIgnoreHelper.clearIgnoreStrategy();
-            }
+        AtomicInteger counter = LOCAL_IGNORE.get();
+        if (counter != null && counter.decrementAndGet() <= 0) {
+            LOCAL_IGNORE.remove();
+            InterceptorIgnoreHelper.clearIgnoreStrategy();
         }
     }
 
+    /**
+     * 忽略租户执行
+     */
     public static void ignore(Runnable runnable) {
         ignoreIf(true, runnable);
     }
 
     /**
-     * 在忽略租户中执行
-     *
-     * @param igno     是否忽略
-     * @param runnable 执行方法
+     * 条件忽略租户执行
      */
-    public static void ignoreIf(boolean igno, Runnable runnable) {
-        if (igno) {
+    public static void ignoreIf(boolean ignore, Runnable runnable) {
+        if (runnable == null) return;
+
+        if (ignore) {
             try {
                 enableIgnore();
                 runnable.run();
@@ -113,65 +112,68 @@ public class DynamicTenantUtil {
         }
     }
 
+    /**
+     * 忽略租户执行带返回值
+     */
     public static <T> T ignore(Supplier<T> supplier) {
         return ignoreIf(true, supplier);
     }
 
     /**
-     * 在忽略租户中执行
-     *
-     * @param igno     是否忽略
-     * @param supplier 执行方法
+     * 条件忽略租户执行带返回值
      */
-    public static <T> T ignoreIf(boolean igno, Supplier<T> supplier) {
-        if (igno) {
+    public static <T> T ignoreIf(boolean ignore, Supplier<T> supplier) {
+        if (supplier == null) return null;
+
+        if (ignore) {
             try {
                 enableIgnore();
                 return supplier.get();
             } finally {
                 disableIgnore();
             }
-        } else {
-            return supplier.get();
         }
+        return supplier.get();
     }
 
+    /**
+     * 忽略租户执行(可抛异常)
+     */
     public static <T> T ignoreWithThrowable(ThrowingSupplier<T, Throwable> supplier) throws Throwable {
         return ignoreIfWithThrowable(true, supplier);
     }
 
     /**
-     * 在忽略租户中执行, 并且会抛出异常
-     *
-     * @param igno     是否忽略
-     * @param supplier 执行方法
+     * 条件忽略租户执行(可抛异常)
      */
-    public static <T> T ignoreIfWithThrowable(boolean igno, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
-        if (igno) {
+    public static <T> T ignoreIfWithThrowable(boolean ignore, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+        if (supplier == null) return null;
+
+        if (ignore) {
             try {
                 enableIgnore();
                 return supplier.get();
             } finally {
                 disableIgnore();
             }
-        } else {
-            return supplier.get();
         }
+        return supplier.get();
     }
 
+    /**
+     * 切换租户执行
+     */
     public static void switcht(Long tenantId, Runnable runnable) {
         switchtIf(true, tenantId, runnable);
     }
 
     /**
-     * 切换租户并执行代码块
-     *
-     * @param swch     执行条件
-     * @param tenantId 租户ID
-     * @param runnable 表达式
+     * 条件切换租户执行
      */
     public static void switchtIf(boolean swch, Long tenantId, Runnable runnable) {
-        if (swch) {
+        if (runnable == null) return;
+
+        if (swch && tenantId != null) {
             try {
                 set(tenantId);
                 runnable.run();
@@ -184,50 +186,63 @@ public class DynamicTenantUtil {
     }
 
     /**
-     * 有返回值的切换租户并执行代码块
+     * 切换租户执行带返回值
      */
     public static <T> T switcht(Long tenantId, Supplier<T> supplier) {
         return switchtIf(true, tenantId, supplier);
     }
 
     /**
-     * 有返回值的切换租户并执行代码块
+     * 条件切换租户执行带返回值
      */
     public static <T> T switchtIf(boolean swch, Long tenantId, Supplier<T> supplier) {
-        if (swch) {
+        if (supplier == null) return null;
+
+        if (swch && tenantId != null) {
             try {
                 set(tenantId);
                 return supplier.get();
             } finally {
                 remove();
             }
-        } else {
-            return supplier.get();
         }
+        return supplier.get();
     }
 
+    /**
+     * 切换租户执行(可抛异常)
+     */
     public static <T> T switchtWithThrowable(Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
         return switchtIfWithThrowable(true, tenantId, supplier);
     }
 
     /**
-     * 有返回值的切换租户并执行代码块, 并且会抛出异常
+     * 条件切换租户执行(可抛异常)
      */
     public static <T> T switchtIfWithThrowable(boolean swch, Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
-        if (swch) {
+        if (supplier == null) return null;
+
+        if (swch && tenantId != null) {
             try {
                 set(tenantId);
                 return supplier.get();
             } finally {
                 remove();
             }
-        } else {
-            return supplier.get();
         }
+        return supplier.get();
     }
 
     /**
-     * 自定义抛异常的Supplier
+     * 清理所有线程变量
+     */
+    public static void clear() {
+        LOCAL_DYNAMIC_TENANT.remove();
+        LOCAL_IGNORE.remove();
+    }
+
+    /**
+     * 可抛出异常的Supplier接口
      */
     @FunctionalInterface
     public interface ThrowingSupplier<T, E extends Throwable> {

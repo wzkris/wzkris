@@ -9,7 +9,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
@@ -44,7 +44,7 @@ public class SysDeptController extends BaseController {
 
     @Operation(summary = "部门列表(不带分页)")
     @GetMapping("/list")
-    @CheckPerms("dept:list")
+    @CheckPerms("sys_dept:list")
     public Result<List<SysDept>> list(SysDeptQueryReq queryReq) {
         List<SysDept> depts = deptMapper.listChildren(queryReq);
         return ok(depts);
@@ -52,7 +52,7 @@ public class SysDeptController extends BaseController {
 
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/{deptId}")
-    @CheckPerms("dept:query")
+    @CheckPerms("sys_dept:query")
     public Result<?> getInfo(@PathVariable Long deptId) {
         // 校验权限
         deptService.checkDataScopes(deptId);
@@ -62,11 +62,11 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "新增部门")
     @OperateLog(title = "部门管理", subTitle = "新增部门", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("dept:add")
+    @CheckPerms("sys_dept:add")
     public Result<?> add(@Validated @RequestBody SysDeptReq req) {
         // 校验权限
         deptService.checkDataScopes(req.getParentId());
-        if (!tenantService.checkDeptLimit(LoginUserUtil.getTenantId())) {
+        if (!tenantService.checkDeptLimit(LoginUtil.getTenantId())) {
             return error412("部门数量已达上限，请联系管理员");
         }
         if (StringUtil.isNotNull(req.getParentId()) && req.getParentId() != 0) {
@@ -82,7 +82,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "修改部门")
     @OperateLog(title = "部门管理", subTitle = "修改部门", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("dept:edit")
+    @CheckPerms("sys_dept:edit")
     public Result<?> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysDeptReq req) {
         // 校验权限
         deptService.checkDataScopes(req.getDeptId());
@@ -98,7 +98,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "删除部门")
     @OperateLog(title = "部门管理", subTitle = "删除部门", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("dept:remove")
+    @CheckPerms("sys_dept:remove")
     public Result<?> remove(@RequestBody Long deptId) {
         deptService.checkDataScopes(deptId);
         if (deptMapper.checkExistChildren(deptId)) {
@@ -107,8 +107,7 @@ public class SysDeptController extends BaseController {
         if (deptMapper.checkExistUser(deptId)) {
             return error412("部门存在用户,不允许删除");
         }
-        deptService.deleteById(deptId);
-        return ok();
+        return toRes(deptService.deleteById(deptId));
     }
 
 }
