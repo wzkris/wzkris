@@ -1,5 +1,6 @@
 package com.wzkris.system.service.impl;
 
+import cn.hutool.core.stream.StreamUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -13,7 +14,8 @@ import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 参数配置 服务层实现
@@ -28,10 +30,9 @@ public class SysConfigServiceImpl implements SysConfigService {
 
     @Override
     public void loadingConfigCache() {
-        List<SysConfig> configsList = configMapper.selectList(null);
-        for (SysConfig config : configsList) {
-            ConfigCacheUtil.setKey(config.getConfigKey(), config.getConfigValue());
-        }
+        Map<String, String> map = StreamUtil.of(configMapper.selectList(null))
+                .collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue));
+        ConfigCacheUtil.set(map);
     }
 
     @Override
@@ -53,11 +54,13 @@ public class SysConfigServiceImpl implements SysConfigService {
     }
 
     @Override
-    public void deleteByIds(List<Long> configIds) {
-        if (configMapper.deleteByIds(configIds) > 0) {
-            ConfigCacheUtil.clearAll();
-            loadingConfigCache();
+    public boolean deleteById(Long configId) {
+        SysConfig config = configMapper.selectById(configId);
+        boolean success = configMapper.deleteById(configId) > 0;
+        if (success) {
+            ConfigCacheUtil.remove(config.getConfigKey());
         }
+        return success;
     }
 
     @Override

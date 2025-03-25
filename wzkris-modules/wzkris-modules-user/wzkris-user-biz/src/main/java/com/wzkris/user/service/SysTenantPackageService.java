@@ -1,5 +1,7 @@
 package com.wzkris.user.service;
 
+import com.wzkris.user.domain.vo.SelectVO;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,13 @@ import java.util.List;
  * @author wzkris
  */
 public interface SysTenantPackageService {
+
+    /**
+     * 查询可选择套餐
+     *
+     * @return 套餐列表
+     */
+    List<SelectVO> listSelect(String packageName);
 
     /**
      * 校验套餐是否被使用

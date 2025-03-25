@@ -86,15 +86,16 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户-部门选择树")
     @GetMapping("/dept_select_tree")
-    @CheckPerms("sys_user:list")
+    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
         return ok(deptService.listSelectTree(deptName));
     }
 
     @Operation(summary = "用户-角色选择列表")
-    @GetMapping({"/role_select/", "/role_select/{userId}"})
-    @CheckPerms("sys_user:list")
+    @GetMapping({"/role_checked_select/", "/role_select/{userId}"})
+    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
+        userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
         checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : roleService.listIdByUserId(userId));
         checkedSelectVO.setSelects(roleService.listSelect(roleName));
@@ -102,9 +103,10 @@ public class SysUserController extends BaseController {
     }
 
     @Operation(summary = "用户-岗位选择列表")
-    @GetMapping({"/post_select/", "/post_select/{userId}"})
-    @CheckPerms("sys_user:list")
+    @GetMapping({"/post_checked_select/", "/post_select/{userId}"})
+    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
+        userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
         checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : postService.listIdByUserId(userId));
         checkedSelectVO.setSelects(postService.listSelect(postName));

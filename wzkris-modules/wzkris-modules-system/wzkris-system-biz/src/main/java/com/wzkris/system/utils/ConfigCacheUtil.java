@@ -1,6 +1,7 @@
 package com.wzkris.system.utils;
 
 import com.wzkris.common.redis.util.RedisUtil;
+import org.redisson.api.RMap;
 
 import java.util.Map;
 
@@ -11,25 +12,26 @@ import java.util.Map;
  */
 public class ConfigCacheUtil {
 
-    public static final String CONFIG_KEY_PREFIX = "sys_config";
+    public static final String CACHE_KEY = "sys_config";
 
-    public static <T> T getConfigValueByKey(String configKey) {
-        return (T) RedisUtil.getRMap(CONFIG_KEY_PREFIX).get(configKey);
+    public static <T> T get(String key) {
+        RMap<String, T> rMap = RedisUtil.getRMap(CACHE_KEY);
+        return rMap.get(key);
     }
 
-    public static void setKey(String configKey, String configValue) {
-        RedisUtil.getRMap(CONFIG_KEY_PREFIX).put(configKey, configValue);
+    public static void put(String key, String value) {
+        RedisUtil.getRMap(CACHE_KEY).put(key, value);
     }
 
-    public static void setConfig(Map<String, Object> map) {
-        RedisUtil.getRMap(CONFIG_KEY_PREFIX).putAll(map);
+    public static void remove(String key) {
+        RedisUtil.getRMap(CACHE_KEY).remove(key);
     }
 
-    public static void deleteByKey(String configKey) {
-        RedisUtil.getRMap(CONFIG_KEY_PREFIX).remove(configKey);
+    public static <T> void set(Map<String, T> map) {
+        RedisUtil.getRMap(CACHE_KEY).putAll(map);
     }
 
     public static void clearAll() {
-        RedisUtil.getRMap(CONFIG_KEY_PREFIX).delete();
+        RedisUtil.getRMap(CACHE_KEY).delete();
     }
 }

@@ -1,8 +1,8 @@
 package com.wzkris.system.service.impl;
 
+import cn.hutool.core.stream.StreamUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.system.domain.GlobalDictData;
@@ -39,16 +39,16 @@ public class GlobalDictTypeServiceImpl implements GlobalDictTypeService {
 
     @Override
     public void loadingDictCache() {
-        Map<String, List<GlobalDictData>> dictDataMap = dictDataMapper.selectList(null)
-                .stream()
-                .collect(Collectors.groupingBy(GlobalDictData::getDictType, Collectors.collectingAndThen(Collectors.toList(), list -> {
-                    // 对每个List进行排序
-                    list.sort(Comparator.comparing(GlobalDictData::getDictSort));
-                    return list;
-                })));
-        for (Map.Entry<String, List<GlobalDictData>> entry : dictDataMap.entrySet()) {
-            DictCacheUtil.setDictCache(entry.getKey(), entry.getValue());
-        }
+        Map<String, List<GlobalDictData>> map =
+                StreamUtil.of(dictDataMapper.selectList(null))
+                        .collect(
+                                Collectors.groupingBy(GlobalDictData::getDictType,
+                                        Collectors.collectingAndThen(Collectors.toList(), list -> {
+                                            // 对每个List进行排序
+                                            list.sort(Comparator.comparing(GlobalDictData::getDictSort));
+                                            return list;
+                                        })));
+        DictCacheUtil.set(map);
     }
 
     @Override
@@ -75,26 +75,20 @@ public class GlobalDictTypeServiceImpl implements GlobalDictTypeService {
     }
 
     @Override
-    public boolean checkDictTypeUnique(@Nullable Long typeId, @Nonnull String dictType) {
+    public boolean checkUsedByDictType(@Nullable Long typeId, @Nonnull String dictType) {
         LambdaQueryWrapper<GlobalDictType> lqw = new LambdaQueryWrapper<GlobalDictType>()
                 .eq(GlobalDictType::getDictType, dictType)
-                .ne(ObjUtil.isNotNull(typeId), GlobalDictType::getTypeId, dictType);
+                .ne(ObjUtil.isNotNull(typeId), GlobalDictType::getTypeId, typeId);
         return dictTypeMapper.exists(lqw);
     }
 
     @Override
-    public boolean checkDictTypeUsed(List<Long> typeIds) {
-        List<String> dictTypes = dictTypeMapper.selectByIds(typeIds).stream().map(GlobalDictType::getDictType).toList();
-        LambdaQueryWrapper<GlobalDictData> lqw = Wrappers.lambdaQuery(GlobalDictData.class)
-                .in(GlobalDictData::getDictType, dictTypes);
-        return dictDataMapper.exists(lqw);
-    }
-
-    @Override
-    public void deleteByIds(List<Long> typeIds) {
-        if (dictTypeMapper.deleteByIds(typeIds) > 0) {
+    public boolean deleteById(Long typeId) {
+        boolean success = dictTypeMapper.deleteById(typeId) > 0;
+        if (success) {
             DictCacheUtil.clearAll();
             loadingDictCache();
         }
+        return success;
     }
 }

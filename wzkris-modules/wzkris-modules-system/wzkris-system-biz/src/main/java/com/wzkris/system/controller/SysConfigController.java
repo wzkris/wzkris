@@ -33,7 +33,7 @@ import java.util.List;
 @Tag(name = "系统配置")
 @RestController
 @PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
-@RequestMapping("/config")
+@RequestMapping("/sys_config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
 
@@ -65,9 +65,9 @@ public class SysConfigController extends BaseController {
     }
 
     @Operation(summary = "键名查询参数值")
-    @GetMapping("/configKey/{configKey}")
+    @GetMapping("/key/{configKey}")
     public Result<String> getConfigKey(@PathVariable String configKey) {
-        String configValue = ConfigCacheUtil.getConfigValueByKey(configKey);
+        String configValue = ConfigCacheUtil.get(configKey);
         if (StringUtil.isNotEmpty(configValue)) {
             return ok(configValue);
         }
@@ -100,16 +100,12 @@ public class SysConfigController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("config:remove")
-    public Result<Void> remove(@RequestBody List<Long> configIds) {
-        List<SysConfig> configs = configMapper.selectByIds(configIds);
-
-        for (SysConfig config : configs) {
-            if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
-                return error412(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
-            }
+    public Result<Void> remove(@RequestBody Long configId) {
+        SysConfig config = configMapper.selectById(configId);
+        if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
+            return error412(StringUtil.format("内置参数'{}'不能删除", config.getConfigKey()));
         }
-        configService.deleteByIds(configIds);
-        return ok();
+        return toRes(configService.deleteById(configId));
     }
 
     @Operation(summary = "刷新参数缓存")

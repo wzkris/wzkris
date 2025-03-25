@@ -4,8 +4,6 @@ import com.wzkris.system.domain.GlobalDictType;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.util.List;
-
 /**
  * 字典 业务层
  *
@@ -33,26 +31,18 @@ public interface GlobalDictTypeService {
     boolean updateDictType(GlobalDictType globalDictType);
 
     /**
-     * 校验字典类型是否唯一
+     * 校验字典类型是否被使用
      *
      * @param typeId   字典ID
      * @param dictType 字典类型
      * @return 结果
      */
-    boolean checkDictTypeUnique(@Nullable Long typeId, @Nonnull String dictType);
-
-    /**
-     * 校验字典类型是否被使用
-     *
-     * @param typeIds 字典类型ID
-     * @return 结果
-     */
-    boolean checkDictTypeUsed(List<Long> typeIds);
+    boolean checkUsedByDictType(@Nullable Long typeId, @Nonnull String dictType);
 
     /**
      * 批量删除字典信息
      *
-     * @param typeIds 需要删除的字典ID
+     * @param typeId 字典ID
      */
-    void deleteByIds(List<Long> typeIds);
+    boolean deleteById(Long typeId);
 }

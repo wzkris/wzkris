@@ -7,6 +7,7 @@ import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -41,9 +42,11 @@ public class SysTenantReq {
     @Schema(description = "备注")
     private String remark;
 
+    @NotNull(message = "{desc.tenant}{desc.package}{validate.notnull}")
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
+    @NotNull(message = "{desc.expireTime}{validate.notnull}")
     @Schema(description = "过期时间（-1不限制）")
     private Long expireTime;
 

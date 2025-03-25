@@ -16,20 +16,28 @@ public interface GlobalDictDataService {
      *
      * @param dataIds 数据ID
      */
-    void deleteDictData(List<Long> dataIds);
+    boolean deleteDictData(List<Long> dataIds);
 
     /**
      * 新增保存字典数据信息
      *
      * @param dictData 字典数据信息
      */
-    void insertDictData(GlobalDictData dictData);
+    boolean insertDictData(GlobalDictData dictData);
 
     /**
      * 修改保存字典数据信息
      *
      * @param globalDictData 字典数据信息
      */
-    void updateDictData(GlobalDictData globalDictData);
+    boolean updateDictData(GlobalDictData globalDictData);
+
+    /**
+     * 校验字典类型是否唯一
+     *
+     * @param dictType 字典类型
+     * @return 结果
+     */
+    boolean checkUsedByDictType(String dictType);
 
 }

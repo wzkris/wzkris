@@ -13,6 +13,7 @@ import com.wzkris.system.domain.GlobalDictType;
 import com.wzkris.system.domain.req.GlobalDictTypeQueryReq;
 import com.wzkris.system.domain.req.GlobalDictTypeReq;
 import com.wzkris.system.mapper.GlobalDictTypeMapper;
+import com.wzkris.system.service.GlobalDictDataService;
 import com.wzkris.system.service.GlobalDictTypeService;
 import com.wzkris.system.utils.DictCacheUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +38,8 @@ public class GlobalDictTypeController extends BaseController {
     private final GlobalDictTypeMapper dictTypeMapper;
 
     private final GlobalDictTypeService dictTypeService;
+
+    private final GlobalDictDataService dictDataService;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
@@ -66,7 +69,7 @@ public class GlobalDictTypeController extends BaseController {
     @PostMapping("/add")
     @CheckPerms("dict:add")
     public Result<Void> add(@Validated @RequestBody GlobalDictTypeReq req) {
-        if (dictTypeService.checkDictTypeUnique(req.getTypeId(), req.getDictType())) {
+        if (dictTypeService.checkUsedByDictType(req.getTypeId(), req.getDictType())) {
             return error412("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictTypeService.insertDictType(BeanUtil.convert(req, GlobalDictType.class)));
@@ -77,7 +80,7 @@ public class GlobalDictTypeController extends BaseController {
     @PostMapping("/edit")
     @CheckPerms("dict:edit")
     public Result<Void> edit(@Validated @RequestBody GlobalDictTypeReq req) {
-        if (dictTypeService.checkDictTypeUnique(req.getTypeId(), req.getDictType())) {
+        if (dictTypeService.checkUsedByDictType(req.getTypeId(), req.getDictType())) {
             return error412("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictTypeService.updateDictType(BeanUtil.convert(req, GlobalDictType.class)));
@@ -87,12 +90,12 @@ public class GlobalDictTypeController extends BaseController {
     @OperateLog(title = "字典类型", subTitle = "删除字典", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("dict:remove")
-    public Result<Void> remove(@RequestBody List<Long> typeIds) {
-        if (dictTypeService.checkDictTypeUsed(typeIds)) {
+    public Result<Void> remove(@RequestBody Long typeId) {
+        GlobalDictType dictType = dictTypeMapper.selectById(typeId);
+        if (dictDataService.checkUsedByDictType(dictType.getDictType())) {
             return error412("删除失败，该字典类型已被使用");
         }
-        dictTypeService.deleteByIds(typeIds);
-        return ok();
+        return toRes(dictTypeService.deleteById(typeId));
     }
 
     @Operation(summary = "刷新字典缓存")

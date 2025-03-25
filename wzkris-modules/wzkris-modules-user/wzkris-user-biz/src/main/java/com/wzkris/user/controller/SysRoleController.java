@@ -88,7 +88,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "角色菜单选择树")
-    @GetMapping({"/menu_select_tree/", "/menu_select_tree/{roleId}"})
+    @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{roleId}"})
     @CheckPerms("sys_role:list")
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
@@ -100,7 +100,7 @@ public class SysRoleController extends BaseController {
     }
 
     @Operation(summary = "角色部门选择树")
-    @GetMapping({"/dept_select_tree/", "/dept_select_tree/{roleId}"})
+    @GetMapping({"/dept_checked_select_tree/", "/dept_checked_select_tree/{roleId}"})
     @CheckPerms("sys_role:query")
     public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验

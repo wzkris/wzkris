@@ -1,7 +1,6 @@
 package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -66,19 +65,8 @@ public class SysTenantPackageController extends BaseController {
                 .orderByDesc(SysTenantPackage::getPackageId);
     }
 
-    @Operation(summary = "套餐选择列表(不带分页)")
-    @GetMapping("/selectlist")
-    @CheckPerms(value = {"tenant:add", "tenant:edit"}, mode = CheckPerms.Mode.OR)// 租户添加修改时使用
-    public Result<List<SysTenantPackage>> selectList(String packageName) {
-        LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
-                .select(SysTenantPackage::getPackageId, SysTenantPackage::getPackageName)
-                .eq(SysTenantPackage::getStatus, CommonConstants.STATUS_ENABLE)
-                .like(StringUtil.isNotBlank(packageName), SysTenantPackage::getPackageName, packageName);
-        return ok(tenantPackageMapper.selectList(lqw));
-    }
-
     @Operation(summary = "套餐菜单选择树")
-    @GetMapping({"/menu_select_tree/", "/menu_select_tree/{packageId}"})
+    @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{packageId}"})
     @CheckPerms("tenant_package:list")
     public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
@@ -90,7 +78,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "套餐详细信息")
     @GetMapping("/{packageId}")
     @CheckPerms("tenant_package:query")
-    public Result<SysTenantPackage> getInfo(@NotNull(message = "[packageId] {validate.notnull}")
+    public Result<SysTenantPackage> getInfo(@NotNull(message = "{desc.package}id{validate.notnull}")
                                             @PathVariable Long packageId) {
         return ok(tenantPackageMapper.selectById(packageId));
     }

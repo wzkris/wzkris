@@ -46,7 +46,7 @@ public class RefreshDictListener {
         Map<String, List<GlobalDictData>> dictType = dictData.stream().collect(Collectors.groupingBy(GlobalDictData::getDictType));
 
         for (Map.Entry<String, List<GlobalDictData>> entry : dictType.entrySet()) {
-            DictCacheUtil.setDictCache(entry.getKey(), dictData);
+            DictCacheUtil.put(entry.getKey(), dictData);
         }
     }
 }

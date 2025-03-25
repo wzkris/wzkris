@@ -29,7 +29,7 @@ public class RefreshConfigListener implements CommandLineRunner {
     @Async
     @EventListener
     public void loginEvent(RefreshConfigEvent configEvent) {
-        ConfigCacheUtil.setKey(configEvent.getKey(), configEvent.getValue());
+        ConfigCacheUtil.put(configEvent.getKey(), configEvent.getValue());
     }
 
     @Override

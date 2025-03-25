@@ -24,27 +24,39 @@ public class GlobalDictDataServiceImpl implements GlobalDictDataService {
     private final GlobalDictDataMapper dictDataMapper;
 
     @Override
-    public void deleteDictData(List<Long> dataIds) {
+    public boolean deleteDictData(List<Long> dataIds) {
         List<String> dictTypes = dictDataMapper.selectList(Wrappers.lambdaQuery(GlobalDictData.class)
                         .select(GlobalDictData::getDictType)
                         .in(GlobalDictData::getDataId, dataIds))
                 .stream().map(GlobalDictData::getDictType).toList();
-        if (dictDataMapper.deleteByIds(dataIds) > 0) {
+        boolean success = dictDataMapper.deleteByIds(dataIds) > 0;
+        if (success) {
             SpringUtil.getContext().publishEvent(new RefreshDictEvent(dictTypes));
         }
+        return success;
     }
 
     @Override
-    public void insertDictData(GlobalDictData dictData) {
-        if (dictDataMapper.insert(dictData) > 0) {
+    public boolean insertDictData(GlobalDictData dictData) {
+        boolean success = dictDataMapper.insert(dictData) > 0;
+        if (success) {
             SpringUtil.getContext().publishEvent(new RefreshDictEvent(Collections.singletonList(dictData.getDictType())));
         }
+        return success;
     }
 
     @Override
-    public void updateDictData(GlobalDictData data) {
-        if (dictDataMapper.updateById(data) > 0) {
+    public boolean updateDictData(GlobalDictData data) {
+        boolean success = dictDataMapper.updateById(data) > 0;
+        if (success) {
             SpringUtil.getContext().publishEvent(new RefreshDictEvent(Collections.singletonList(data.getDictType())));
         }
+        return success;
+    }
+
+    @Override
+    public boolean checkUsedByDictType(String dictType) {
+        return dictDataMapper.exists(Wrappers.lambdaQuery(GlobalDictData.class)
+                .eq(GlobalDictData::getDictType, dictType));
     }
 }

@@ -19,10 +19,12 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.req.*;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.domain.vo.SysTenantVO;
 import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
+import com.wzkris.user.service.SysTenantPackageService;
 import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,6 +62,8 @@ public class SysTenantController extends BaseController {
 
     private final SysUserService userService;
 
+    private final SysTenantPackageService tenantPackageService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "租户分页")
@@ -87,6 +91,14 @@ public class SysTenantController extends BaseController {
                 .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName);
         List<SysTenant> list = tenantMapper.selectList(lqw);
         return getDataTable(list);
+    }
+
+    @Operation(summary = "套餐选择列表")
+    @GetMapping("/package_select")
+    @CheckPerms(value = {"tenant:add", "tenant:edit"}, mode = CheckPerms.Mode.OR)
+    public Result<List<SelectVO>> packageSelect(String packageName) {
+        List<SelectVO> selectVOS = tenantPackageService.listSelect(packageName);
+        return ok(selectVOS);
     }
 
     @Operation(summary = "ID获取租户详细信息")

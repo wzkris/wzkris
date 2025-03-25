@@ -65,7 +65,7 @@ public class GlobalDictDataController extends BaseController {
     @Operation(summary = "类型查询字典数据")
     @GetMapping("/type/{dictType}")
     public Result<List<GlobalDictData>> dictType(@PathVariable String dictType) {
-        List<GlobalDictData> dictCache = DictCacheUtil.getDictCache(dictType);
+        List<GlobalDictData> dictCache = DictCacheUtil.get(dictType);
         if (dictCache != null) {
             return ok(dictCache);
         }
@@ -77,8 +77,7 @@ public class GlobalDictDataController extends BaseController {
     @PostMapping("/add")
     @CheckPerms("dict:add")
     public Result<?> add(@Validated @RequestBody GlobalDictDataReq req) {
-        dictDataService.insertDictData(BeanUtil.convert(req, GlobalDictData.class));
-        return ok();
+        return toRes(dictDataService.insertDictData(BeanUtil.convert(req, GlobalDictData.class)));
     }
 
     @Operation(summary = "修改字典")
@@ -86,16 +85,14 @@ public class GlobalDictDataController extends BaseController {
     @PostMapping("/edit")
     @CheckPerms("dict:edit")
     public Result<?> edit(@Validated @RequestBody GlobalDictDataReq req) {
-        dictDataService.updateDictData(BeanUtil.convert(req, GlobalDictData.class));
-        return ok();
+        return toRes(dictDataService.updateDictData(BeanUtil.convert(req, GlobalDictData.class)));
     }
 
     @Operation(summary = "删除字典")
-    @OperateLog(title = "字典类型", subTitle = "删除字典", operateType = OperateType.DELETE)
+    @OperateLog(title = "字典数据", subTitle = "删除字典", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckPerms("dict:remove")
     public Result<?> remove(@RequestBody List<Long> dataIds) {
-        dictDataService.deleteDictData(dataIds);
-        return ok();
+        return toRes(dictDataService.deleteDictData(dataIds));
     }
 }
