@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysConfigServiceImpl implements SysConfigService {
 
-    private final SysConfigMapper configMapper;
-
     private static final String DICT_KEY = "sys_config";
+
+    private final SysConfigMapper configMapper;
 
     private RMap<String, String> cache() {
         return RedisUtil.getRMap(DICT_KEY);

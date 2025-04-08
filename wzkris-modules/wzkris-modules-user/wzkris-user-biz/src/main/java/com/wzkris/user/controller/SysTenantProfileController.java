@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
@@ -14,8 +14,8 @@ import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
 import com.wzkris.user.domain.req.WithdrawalReq;
-import com.wzkris.user.domain.vo.SysTenantUsedQuotaVO;
 import com.wzkris.user.domain.vo.SysTenantProfileVO;
+import com.wzkris.user.domain.vo.SysTenantUsedQuotaVO;
 import com.wzkris.user.domain.vo.SysTenantWalletVO;
 import com.wzkris.user.mapper.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +59,7 @@ public class SysTenantProfileController extends BaseController {
 
     @Operation(summary = "获取信息")
     @GetMapping
-    @CheckPerms("tenant:info")
+    @CheckSystemPerms("tenant:info")
     public Result<SysTenantProfileVO> tenantInfo() {
         Long tenantId = LoginUtil.getTenantId();
         SysTenantProfileVO profileVO = tenantMapper.selectVOById(tenantId);
@@ -68,7 +68,7 @@ public class SysTenantProfileController extends BaseController {
 
     @Operation(summary = "获取已使用配额")
     @GetMapping("/used_quota")
-    @CheckPerms("tenant:info")
+    @CheckSystemPerms("tenant:info")
     public Result<SysTenantUsedQuotaVO> limitInfo() {
         SysTenantUsedQuotaVO usedQuotaVO = new SysTenantUsedQuotaVO();
         usedQuotaVO.setAccountHas(Math.toIntExact(userMapper.selectCount(null)));
@@ -80,14 +80,14 @@ public class SysTenantProfileController extends BaseController {
 
     @Operation(summary = "余额信息")
     @GetMapping("/wallet_info")
-    @CheckPerms("tenant:wallet_info")
+    @CheckSystemPerms("tenant:wallet_info")
     public Result<SysTenantWalletVO> walletInfo() {
         return ok(tenantWalletMapper.selectById2VO(LoginUtil.getTenantId(), SysTenantWalletVO.class));
     }
 
     @Operation(summary = "获取钱包记录")
     @GetMapping("/wallet_record/list")
-    @CheckPerms("tenant:wallet_record:list")
+    @CheckSystemPerms("tenant:wallet_record:list")
     public Result<Page<SysTenantWalletRecord>> listWalletPage(SysTenantWalletRecordQueryReq queryReq) {
         startPage();
         List<SysTenantWalletRecord> recordList = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
@@ -127,7 +127,7 @@ public class SysTenantProfileController extends BaseController {
     @Operation(summary = "提现")
     @OperateLog(title = "商户信息", subTitle = "提现", operateType = OperateType.OTHER)
     @PostMapping("/wallet/withdrawal")
-    @CheckPerms("tenant:withdrawal")
+    @CheckSystemPerms("tenant:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WithdrawalReq req) {
         SysTenant sysTenant = tenantMapper.selectById(LoginUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {

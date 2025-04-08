@@ -23,7 +23,7 @@ public @interface CheckPerms {
      *
      * @return /
      */
-    LoginType loginType() default LoginType.SYSTEM_USER;
+    LoginType checkType();
 
     /**
      * 需要校验的权限码 [ 数组 ]

@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * 租户表 sys_tenant
  *
@@ -51,8 +53,8 @@ public class SysTenant extends BaseEntity {
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
-    @Schema(description = "过期时间（-1不限制）")
-    private Long expireTime;
+    @Schema(description = "过期时间")
+    private Date expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
     private Integer accountLimit;

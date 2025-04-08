@@ -1,6 +1,7 @@
 package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
@@ -73,7 +74,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             if (SysUser.isSuperAdmin(userId)) {
                 // 超级管理员查出所有角色
                 administrator = true;
-                grantedAuthority = Collections.singletonList("*");
+                grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
             } else {
                 // 租户最高管理员特殊处理
                 Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);

@@ -1,7 +1,5 @@
 package com.wzkris.user.domain.vo;
 
-import com.wzkris.common.core.annotation.Sensitive;
-import com.wzkris.common.core.annotation.impl.SensitiveStrategy;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

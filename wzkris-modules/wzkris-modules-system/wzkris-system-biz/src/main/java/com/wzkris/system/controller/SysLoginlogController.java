@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysLoginLog;
 import com.wzkris.system.domain.req.SysLoginLogQueryReq;
@@ -37,7 +37,7 @@ public class SysLoginlogController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckPerms("loginlog:list")
+    @CheckSystemPerms("loginlog:list")
     public Result<Page<SysLoginLog>> list(SysLoginLogQueryReq queryReq) {
         startPage();
         List<SysLoginLog> list = loginLogMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -57,7 +57,7 @@ public class SysLoginlogController extends BaseController {
     @Operation(summary = "删除日志")
     @OperateLog(title = "登录日志", subTitle = "删除日志", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("loginlog:remove")
+    @CheckSystemPerms("loginlog:remove")
     public Result<?> remove(@RequestBody List<Long> logIds) {
         return toRes(loginLogMapper.deleteByIds(logIds));
     }

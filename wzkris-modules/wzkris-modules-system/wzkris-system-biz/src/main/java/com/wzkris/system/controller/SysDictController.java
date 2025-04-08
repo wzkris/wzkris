@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysDict;
 import com.wzkris.system.domain.req.SysDictQueryReq;
@@ -37,7 +37,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckPerms("sys_dict:list")
+    @CheckSystemPerms("sys_dict:list")
     public Result<Page<SysDict>> list(SysDictQueryReq queryReq) {
         startPage();
         LambdaQueryWrapper<SysDict> lqw = this.buildQueryWrapper(queryReq);
@@ -53,7 +53,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{dictId}")
-    @CheckPerms("sys_dict:query")
+    @CheckSystemPerms("sys_dict:query")
     public Result<SysDict> getInfo(@PathVariable Long dictId) {
         return ok(dictMapper.selectById(dictId));
     }
@@ -61,7 +61,7 @@ public class SysDictController extends BaseController {
     @Operation(summary = "新增")
     @OperateLog(title = "数据字典", subTitle = "添加字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("sys_dict:add")
+    @CheckSystemPerms("sys_dict:add")
     public Result<Void> add(@Validated @RequestBody SysDictReq req) {
         if (dictService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return error412("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
@@ -72,7 +72,7 @@ public class SysDictController extends BaseController {
     @Operation(summary = "修改")
     @OperateLog(title = "数据字典", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("sys_dict:edit")
+    @CheckSystemPerms("sys_dict:edit")
     public Result<Void> edit(@Validated @RequestBody SysDictReq req) {
         if (dictService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return error412("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
@@ -83,14 +83,14 @@ public class SysDictController extends BaseController {
     @Operation(summary = "删除")
     @OperateLog(title = "数据字典", subTitle = "删除字典", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("sys_dict:remove")
+    @CheckSystemPerms("sys_dict:remove")
     public Result<Void> remove(@RequestBody Long dictId) {
         return toRes(dictService.deleteById(dictId));
     }
 
     @Operation(summary = "刷新字典缓存")
     @PostMapping("/refreshCache")
-    @CheckPerms("sys_dict:remove")
+    @CheckSystemPerms("sys_dict:remove")
     public Result<?> refreshCache() {
         dictService.loadingDictCache();
         return ok();

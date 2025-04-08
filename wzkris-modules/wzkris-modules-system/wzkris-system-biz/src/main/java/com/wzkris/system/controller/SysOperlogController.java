@@ -8,7 +8,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.CheckFieldPerms;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysOperLog;
 import com.wzkris.system.domain.req.SysOperLogQueryReq;
@@ -39,7 +39,7 @@ public class SysOperlogController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckPerms("operlog:list")
+    @CheckSystemPerms("operlog:list")
     @CheckFieldPerms(value = "@ps.hasPerms('operlog:field')", groups = ValidationGroups.Select.class)
     public Result<Page<SysOperLog>> list(SysOperLogQueryReq queryReq) {
         startPage();
@@ -62,7 +62,7 @@ public class SysOperlogController extends BaseController {
     @Operation(summary = "删除日志")
     @OperateLog(title = "操作日志", subTitle = "删除日志", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("operlog:remove")
+    @CheckSystemPerms("operlog:remove")
     public Result<?> remove(@RequestBody Long[] operIds) {
         return toRes(operLogMapper.deleteByIds(Arrays.asList(operIds)));
     }

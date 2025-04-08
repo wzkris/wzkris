@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-04-03 16:49:45
+-- Started on 2025-04-08 13:15:50
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1064,7 +1064,7 @@ CREATE TABLE biz_sys.sys_tenant (
     domain character varying(100),
     remark character varying(200),
     package_id bigint NOT NULL,
-    expire_time bigint NOT NULL,
+    expire_time timestamp(6) with time zone NOT NULL,
     account_limit smallint NOT NULL,
     role_limit smallint NOT NULL,
     post_limit smallint NOT NULL,
@@ -1183,7 +1183,7 @@ COMMENT ON COLUMN biz_sys.sys_tenant.package_id IS '租户套餐编号';
 -- Name: COLUMN sys_tenant.expire_time; Type: COMMENT; Schema: biz_sys; Owner: wz
 --
 
-COMMENT ON COLUMN biz_sys.sys_tenant.expire_time IS '过期时间（-1不限制）';
+COMMENT ON COLUMN biz_sys.sys_tenant.expire_time IS '过期时间';
 
 
 --
@@ -1994,7 +1994,7 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450000104	日志管理	1906263415450000001	1	syslog	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:33:36.928+08	1
 1906263415450000150	操作日志	1906263415450000104	1	oper	system/syslog/oper/index	\N	M	0	operlog:list	carbon:touch-interaction	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:35:38.829+08	1
 1906263415450000151	登录日志	1906263415450000104	2	login	system/syslog/login/index	\N	M	0	loginlog:list	carbon:login	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:35:23.263+08	1
-1906272182215585793	商户信息	0	100	tenant	\N	\N	M	0	tenant:info	carbon:information-filled	f	f	2025-03-30 17:07:59.723+08	1	2025-04-03 14:50:16.503+08	1
+1906272182215585793	商户信息	0	100	tenant	\N	\N	M	0	tenant:info	carbon:information-filled	f	f	2025-03-30 17:07:59.723+08	1	2025-04-07 09:09:08.254+08	1
 1906263415450000003	平台管理	0	80	platform	\N	\N	D	0	\N	carbon:platforms	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:24.342+08	1
 1906263415450000002	用户管理	0	50	user	\N	\N	D	0	\N	carbon:user	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:20.926+08	1
 1906263415450002014	菜单新增	1906263415450000207	2	#	\N	\N	B	0	sys_menu:add	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:17+08	1
@@ -2085,7 +2085,6 @@ COPY biz_sys.sys_role_menu (role_id, menu_id) FROM stdin;
 --
 
 COPY biz_sys.sys_tenant (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, account_limit, role_limit, post_limit, dept_limit, creator_id, create_at, updater_id, update_at) FROM stdin;
-1907662334942928897	1907662334930345984	0	\N	1111	{bcrypt}$2a$10$tjdIuWey.1RMq2WuBuYNNe0is0QhDCTRaIo3Slmm395.OK2yP9lg6	0	\N	\N	1773625804122202113	1743696000000	5	5	5	5	1	2025-04-03 13:11:57.96+08	1	2025-04-03 13:11:57.96+08
 \.
 
 
@@ -2107,7 +2106,6 @@ COPY biz_sys.sys_tenant_package (package_id, package_name, status, menu_ids, rem
 --
 
 COPY biz_sys.sys_tenant_wallet (tenant_id, balance, status) FROM stdin;
-1907662334942928897	0.00	0
 \.
 
 
@@ -2128,9 +2126,7 @@ COPY biz_sys.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type
 --
 
 COPY biz_sys.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1907296418460012546	0	\N	111111	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$yorWdGHNRqQFpOtyX1MyqeYeX9Xauh2Id2MwJAkk5yvfOtJ46NJBe	\N	\N	\N	1	1	2025-04-02 12:57:56.671+08	2025-04-02 12:57:56.671+08
-1907662334930345984	1907662334942928897	\N	222222	\N		\N	0	2	\N	{bcrypt}$2a$10$ei0FkgwoLdVTXR9jvRi9q.RStOU.eihOpII2NWSHoqcePP9Y8CgLK	192.168.0.112	2025-04-03 13:13:01.449+08	\N	1	1907662334930345984	2025-04-03 13:11:58.048+08	2025-04-03 13:18:10.022+08
-1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	0	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-03 13:20:03.183+08	\N	1	1	2024-04-17 14:08:54.616+08	2025-04-03 13:25:36.376+08
+1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-08 13:03:02.827+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -2431,7 +2427,7 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz_sys.sys_user USING btree (p
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz_sys.sys_user USING btree (username);
 
 
--- Completed on 2025-04-03 16:49:45
+-- Completed on 2025-04-08 13:15:50
 
 --
 -- PostgreSQL database dump complete

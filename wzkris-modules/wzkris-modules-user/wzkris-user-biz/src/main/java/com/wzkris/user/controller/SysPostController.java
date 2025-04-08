@@ -8,7 +8,7 @@ import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysPost;
@@ -46,7 +46,7 @@ public class SysPostController extends BaseController {
 
     @Operation(summary = "岗位分页")
     @GetMapping("/list")
-    @CheckPerms("sys_post:list")
+    @CheckSystemPerms("sys_post:list")
     public Result<Page<SysPost>> listPage(SysPostQueryReq req) {
         startPage();
         List<SysPost> list = postMapper.selectList(this.buildQueryWrapper(req));
@@ -63,7 +63,7 @@ public class SysPostController extends BaseController {
 
     @Operation(summary = "岗位详细信息")
     @GetMapping("/{postId}")
-    @CheckPerms("sys_post:query")
+    @CheckSystemPerms("sys_post:query")
     public Result<SysPost> getInfo(@PathVariable Long postId) {
         return ok(postMapper.selectById(postId));
     }
@@ -71,7 +71,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "新增岗位")
     @OperateLog(title = "岗位管理", subTitle = "新增岗位", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("sys_post:add")
+    @CheckSystemPerms("sys_post:add")
     public Result<Void> add(@Validated @RequestBody SysPostReq req) {
         if (!tenantService.checkPostLimit(LoginUtil.getTenantId())) {
             return error412("岗位数量已达上限，请联系管理员");
@@ -82,7 +82,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "修改岗位")
     @OperateLog(title = "岗位管理", subTitle = "修改岗位", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("sys_post:edit")
+    @CheckSystemPerms("sys_post:edit")
     public Result<Void> edit(@Validated @RequestBody SysPostReq req) {
         return toRes(postMapper.updateById(BeanUtil.convert(req, SysPost.class)));
     }
@@ -90,7 +90,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "删除岗位")
     @OperateLog(title = "岗位管理", subTitle = "删除岗位", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("sys_post:remove")
+    @CheckSystemPerms("sys_post:remove")
     public Result<Void> remove(@RequestBody List<Long> postIds) {
         if (postService.checkPostUse(postIds)) {
             return error412("岗位已被使用,不允许删除");
@@ -102,7 +102,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "导出")
     @OperateLog(title = "岗位管理", subTitle = "导出岗位数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
-    @CheckPerms("sys_post:export")
+    @CheckSystemPerms("sys_post:export")
     public void export(HttpServletResponse response, SysPostQueryReq req) {
         List<SysPost> list = postMapper.selectList(this.buildQueryWrapper(req));
         List<SysPostExport> convert = BeanUtil.convert(list, SysPostExport.class);

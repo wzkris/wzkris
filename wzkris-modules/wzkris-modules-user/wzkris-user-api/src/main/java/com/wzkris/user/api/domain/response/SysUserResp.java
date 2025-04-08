@@ -3,6 +3,7 @@ package com.wzkris.user.api.domain.response;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * sys用户信息
@@ -32,7 +33,7 @@ public class SysUserResp implements Serializable {
 
     private String tenantStatus;
 
-    private Long tenantExpired;
+    private Date tenantExpired;
 
     private String packageStatus;
 

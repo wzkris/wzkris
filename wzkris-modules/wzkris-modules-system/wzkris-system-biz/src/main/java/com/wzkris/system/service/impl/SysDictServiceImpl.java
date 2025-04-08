@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysDictServiceImpl implements SysDictService {
 
-    private final SysDictMapper dictMapper;
-
     private static final String DICT_KEY = "sys_dict";
+
+    private final SysDictMapper dictMapper;
 
     private RMap<String, SysDict.DictData[]> cache() {
         return RedisUtil.getRMap(DICT_KEY);

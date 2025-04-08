@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.LoginUtil;
@@ -82,7 +83,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public String getRoleGroup() {
         if (LoginUtil.isAdmin()) {
-            return "超级管理员";
+            return SecurityConstants.SUPER_ADMIN_NAME;
         }
         List<SysRole> roles = this.listByUserId(LoginUtil.getUserId());
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));

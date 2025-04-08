@@ -12,6 +12,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
@@ -63,7 +64,7 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
-    @CheckPerms("sys_user:list")
+    @CheckSystemPerms("sys_user:list")
     public Result<Page<SysUserVO>> listPage(SysUserQueryReq queryReq) {
         startPage();
         List<SysUserVO> list = userMapper.selectVOList(this.buildPageWrapper(queryReq));
@@ -86,14 +87,14 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户-部门选择树")
     @GetMapping("/dept_select_tree")
-    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
         return ok(deptService.listSelectTree(deptName));
     }
 
     @Operation(summary = "用户-角色选择列表")
     @GetMapping({"/role_checked_select/", "/role_checked_select/{userId}"})
-    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
         userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
@@ -104,7 +105,7 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户-岗位选择列表")
     @GetMapping({"/post_checked_select/", "/post_checked_select/{userId}"})
-    @CheckPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
         userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
@@ -115,7 +116,7 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户详细信息")
     @GetMapping("/{userId}")
-    @CheckPerms("sys_user:query")
+    @CheckSystemPerms("sys_user:query")
     public Result<SysUser> getInfo(@PathVariable Long userId) {
         // 校验权限
         userService.checkDataScopes(userId);
@@ -125,7 +126,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "新增用户")
     @OperateLog(title = "系统用户", subTitle = "新增用户", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("sys_user:add")
+    @CheckSystemPerms("sys_user:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
         if (!tenantService.checkAccountLimit(LoginUtil.getTenantId())) {
             return error412("账号数量已达上限，请联系管理员");
@@ -151,7 +152,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "修改用户")
     @OperateLog(title = "系统用户", subTitle = "修改用户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("sys_user:edit")
+    @CheckSystemPerms("sys_user:edit")
     public Result<Void> edit(@Validated @RequestBody SysUserReq userReq) {
         // 校验权限
         userService.checkDataScopes(userReq.getUserId());
@@ -169,7 +170,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "删除用户")
     @OperateLog(title = "系统用户", subTitle = "删除用户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("sys_user:remove")
+    @CheckSystemPerms("sys_user:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
         // 校验权限
         userService.checkDataScopes(userIds);
@@ -183,7 +184,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "重置密码")
     @OperateLog(title = "系统用户", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset_password")
-    @CheckPerms("sys_user:edit")
+    @CheckSystemPerms("sys_user:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
         // 校验权限
         userService.checkDataScopes(req.getId());
@@ -196,7 +197,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @CheckPerms("sys_user:edit")
+    @CheckSystemPerms("sys_user:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         userService.checkDataScopes(statusReq.getId());
@@ -208,7 +209,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "导出")
     @OperateLog(title = "系统用户", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
     @PostMapping("/export")
-    @CheckPerms("sys_user:export")
+    @CheckSystemPerms("sys_user:export")
     public void export(HttpServletResponse response, SysUserQueryReq queryReq) {
         List<SysUserVO> list = userMapper.selectVOList(this.buildPageWrapper(queryReq));
         List<SysUserExport> convert = BeanUtil.convert(list, SysUserExport.class);
@@ -218,7 +219,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "用户授权角色")
     @OperateLog(title = "系统用户", subTitle = "授权用户角色", operateType = OperateType.GRANT)
     @PostMapping("/authorize_role")
-    @CheckPerms("sys_user:edit")
+    @CheckSystemPerms("sys_user:edit")
     public Result<Void> authRole(@RequestBody @Valid SysUser2RolesReq req) {
         // 校验用户可操作权限
         userService.checkDataScopes(req.getUserId());

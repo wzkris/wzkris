@@ -2,7 +2,6 @@ package com.wzkris.user.mapperTest;
 
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.AppUserWallet;
 import com.wzkris.user.domain.SysTenantWallet;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;

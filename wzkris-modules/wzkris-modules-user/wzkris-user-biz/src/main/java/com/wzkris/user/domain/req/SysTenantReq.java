@@ -11,6 +11,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -48,8 +50,8 @@ public class SysTenantReq {
     private Long packageId;
 
     @NotNull(message = "{desc.expireTime}{validate.notnull}")
-    @Schema(description = "过期时间（-1不限制）")
-    private Long expireTime;
+    @Schema(description = "过期时间")
+    private Date expireTime;
 
     @NotNull(message = "账号数量{validate.notnull}")
     @Schema(description = "账号数量（-1不限制）")

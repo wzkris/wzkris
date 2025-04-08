@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenantPackage;
@@ -51,7 +51,7 @@ public class SysTenantPackageController extends BaseController {
 
     @Operation(summary = "套餐分页")
     @GetMapping("/list")
-    @CheckPerms("tenant_package:list")
+    @CheckSystemPerms("tenant_package:list")
     public Result<Page<SysTenantPackage>> listPage(SysTenantPackageQueryReq queryReq) {
         startPage();
         List<SysTenantPackage> list = tenantPackageMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -67,7 +67,7 @@ public class SysTenantPackageController extends BaseController {
 
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{packageId}"})
-    @CheckPerms("tenant_package:query")
+    @CheckSystemPerms("tenant_package:query")
     public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
@@ -77,7 +77,7 @@ public class SysTenantPackageController extends BaseController {
 
     @Operation(summary = "套餐详细信息")
     @GetMapping("/{packageId}")
-    @CheckPerms("tenant_package:query")
+    @CheckSystemPerms("tenant_package:query")
     public Result<SysTenantPackage> getInfo(@NotNull(message = "{desc.package}{desc.id}{validate.notnull}")
                                             @PathVariable Long packageId) {
         return ok(tenantPackageMapper.selectById(packageId));
@@ -86,7 +86,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "新增租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "新增套餐", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("tenant_package:add")
+    @CheckSystemPerms("tenant_package:add")
     public Result<Void> add(@Valid @RequestBody SysTenantPackageReq req) {
         return toRes(tenantPackageMapper.insert(BeanUtil.convert(req, SysTenantPackage.class)));
     }
@@ -94,7 +94,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "修改租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "修改套餐", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("tenant_package:edit")
+    @CheckSystemPerms("tenant_package:edit")
     public Result<Void> edit(@Valid @RequestBody SysTenantPackageReq req) {
         return toRes(tenantPackageMapper.updateById(BeanUtil.convert(req, SysTenantPackage.class)));
     }
@@ -102,7 +102,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "修改租户套餐状态")
     @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @CheckPerms("tenant_package:edit")
+    @CheckSystemPerms("tenant_package:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         SysTenantPackage update = new SysTenantPackage(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -112,7 +112,7 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "删除租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("tenant_package:remove")
+    @CheckSystemPerms("tenant_package:remove")
     public Result<Void> remove(@NotEmpty(message = "{desc.package}{desc.id}{validate.notnull}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
             return error412("删除失败, 套餐正在使用");

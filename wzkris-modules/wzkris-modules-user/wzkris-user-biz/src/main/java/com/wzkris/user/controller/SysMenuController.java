@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.constant.MenuConstants;
@@ -43,7 +43,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
-    @CheckPerms("sys_menu:list")
+    @CheckSystemPerms("sys_menu:list")
     public Result<List<SysMenu>> list(SysMenuQueryReq queryReq) {
         List<SysMenu> menus = menuMapper.selectList(this.buildQueryWrapper(queryReq));
         return ok(menus);
@@ -63,7 +63,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @CheckPerms("sys_menu:query")
+    @CheckSystemPerms("sys_menu:query")
     public Result<SysMenu> getInfo(@PathVariable Long menuId) {
         return ok(menuMapper.selectById(menuId));
     }
@@ -71,7 +71,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("sys_menu:add")
+    @CheckSystemPerms("sys_menu:add")
     public Result<Void> add(@Validated @RequestBody SysMenuReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
                 && !StringUtil.ishttp(req.getPath())) {
@@ -83,7 +83,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("sys_menu:edit")
+    @CheckSystemPerms("sys_menu:edit")
     public Result<Void> edit(@Validated @RequestBody SysMenuReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
                 && !StringUtil.ishttp(req.getPath())) {
@@ -97,7 +97,7 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("sys_menu:remove")
+    @CheckSystemPerms("sys_menu:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
         if (menuService.checkMenuExistChild(menuId)) {
             return error412("存在子菜单,不允许删除");

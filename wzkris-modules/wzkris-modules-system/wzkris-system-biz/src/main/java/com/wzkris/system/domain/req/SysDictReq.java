@@ -28,8 +28,8 @@ public class SysDictReq {
     @Schema(description = "字典名称")
     private String dictName;
 
-    @NotNull(message = "{desc.dict}{desc.value}"+ "{validate.notnull}")
-    @Size(min = 1, message = "{desc.dict}{desc.value}"+ "{validate.size.illegal}")
+    @NotNull(message = "{desc.dict}{desc.value}" + "{validate.notnull}")
+    @Size(min = 1, message = "{desc.dict}{desc.value}" + "{validate.size.illegal}")
     @Schema(description = "字典键值")
     private SysDict.DictData[] dictValue;
 

@@ -9,6 +9,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysRole;
@@ -64,7 +65,7 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "角色分页")
     @GetMapping("/list")
-    @CheckPerms("sys_role:list")
+    @CheckSystemPerms("sys_role:list")
     public Result<Page<SysRole>> listPage(SysRoleQueryReq req) {
         startPage();
         List<SysRole> list = roleMapper.selectLists(this.buildQueryWrapper(req));
@@ -80,7 +81,7 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "角色详细信息")
     @GetMapping("/{roleId}")
-    @CheckPerms("sys_role:query")
+    @CheckSystemPerms("sys_role:query")
     public Result<SysRole> getInfo(@PathVariable Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
@@ -89,7 +90,7 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "角色菜单选择树")
     @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{roleId}"})
-    @CheckPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
@@ -101,7 +102,7 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "角色部门选择树")
     @GetMapping({"/dept_checked_select_tree/", "/dept_checked_select_tree/{roleId}"})
-    @CheckPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
@@ -114,7 +115,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "新增角色")
     @OperateLog(title = "角色管理", subTitle = "新增角色", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("sys_role:add")
+    @CheckSystemPerms("sys_role:add")
     public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
         if (!tenantService.checkRoleLimit(LoginUtil.getTenantId())) {
             return error412("角色数量已达上限，请联系管理员");
@@ -125,7 +126,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "修改角色")
     @OperateLog(title = "角色管理", subTitle = "修改角色", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("sys_role:edit")
+    @CheckSystemPerms("sys_role:edit")
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysRoleReq roleReq) {
         // 权限校验
         roleService.checkDataScopes(roleReq.getRoleId());
@@ -135,7 +136,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @CheckPerms("sys_role:edit")
+    @CheckSystemPerms("sys_role:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         roleService.checkDataScopes(statusReq.getId());
@@ -147,7 +148,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "删除角色")
     @OperateLog(title = "角色管理", subTitle = "删除角色", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("sys_role:remove")
+    @CheckSystemPerms("sys_role:remove")
     public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
         // 权限校验
         roleService.checkDataScopes(roleIds);
@@ -158,7 +159,7 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "查询已授权的用户列表")
     @GetMapping("/authorize/allocated_list")
-    @CheckPerms("sys_role:list")
+    @CheckSystemPerms("sys_role:list")
     public Result<Page<SysUser>> allocatedList(SysUserQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleService.checkDataScopes(roleId);
@@ -169,7 +170,7 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "查询未授权的用户列表")
     @GetMapping("/authorize/unallocated_list")
-    @CheckPerms("sys_role:list")
+    @CheckSystemPerms("sys_role:list")
     public Result<Page<SysUser>> unallocatedList(SysUserQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleService.checkDataScopes(roleId);
@@ -181,7 +182,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "取消授权")
     @OperateLog(title = "角色管理", subTitle = "取消授权", operateType = OperateType.GRANT)
     @PostMapping("/authorize/cancel")
-    @CheckPerms("sys_role:auth")
+    @CheckSystemPerms("sys_role:auth")
     public Result<Void> cancelAuth(@RequestBody @Valid SysUserRole userRole) {
         // 校验角色权限
         roleService.checkDataScopes(userRole.getRoleId());
@@ -193,7 +194,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "批量取消授权")
     @OperateLog(title = "角色管理", subTitle = "批量取消授权", operateType = OperateType.GRANT)
     @PostMapping("/authorize/cancel_batch")
-    @CheckPerms("sys_role:auth")
+    @CheckSystemPerms("sys_role:auth")
     public Result<Void> cancelAuth(@RequestBody @Valid SysRole2UsersReq req) {
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
@@ -205,7 +206,7 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "批量用户授权")
     @OperateLog(title = "角色管理", subTitle = "批量用户授权", operateType = OperateType.GRANT)
     @PostMapping("/authorize_user")
-    @CheckPerms("sys_role:auth")
+    @CheckSystemPerms("sys_role:auth")
     public Result<Void> batchAuth(@RequestBody @Valid SysRole2UsersReq req) {
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
