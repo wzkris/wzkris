@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.user.domain.SysPost;
@@ -76,14 +77,19 @@ public class SysPostServiceImpl implements SysPostService {
     }
 
     @Override
-    public void deleteByPostIds(List<Long> postIds) {
-        postMapper.deleteByIds(postIds);
-        userPostMapper.deleteByPostIds(postIds);
+    public boolean deleteByPostIds(List<Long> postIds) {
+        boolean success = postMapper.deleteByIds(postIds) > 0;
+        if (success) {
+            userPostMapper.deleteByPostIds(postIds);
+        }
+        return success;
     }
 
     @Override
-    public boolean checkPostUse(List<Long> postIds) {
-        return userPostMapper.countByPostIds(postIds) > 0;
+    public void checkPostUsed(List<Long> postIds) {
+        if (userPostMapper.checkExistByPostIds(postIds)) {
+            throw new BusinessException("business.allocated");
+        }
     }
 
 }

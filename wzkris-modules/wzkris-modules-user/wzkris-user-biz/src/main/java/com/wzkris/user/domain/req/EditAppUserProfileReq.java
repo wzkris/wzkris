@@ -7,7 +7,7 @@ import lombok.Data;
  * 修改个人信息
  */
 @Data
-public class EditOwnAppUserReq {
+public class EditAppUserProfileReq {
 
     @Schema(description = "用户昵称")
     private String nickname;

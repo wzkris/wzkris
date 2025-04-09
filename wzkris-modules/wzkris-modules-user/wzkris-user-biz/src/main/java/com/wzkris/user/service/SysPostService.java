@@ -44,11 +44,11 @@ public interface SysPostService {
      *
      * @param postIds 需要删除的岗位ID
      */
-    void deleteByPostIds(List<Long> postIds);
+    boolean deleteByPostIds(List<Long> postIds);
 
     /**
      * 校验岗位是否被用户关联
      */
-    boolean checkPostUse(List<Long> postIds);
+    void checkPostUsed(List<Long> postIds);
 
 }

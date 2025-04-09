@@ -15,7 +15,12 @@ public class RemoteCaptchaApiImpl implements RemoteCaptchaApi {
     private final CaptchaService captchaService;
 
     @Override
-    public void validateSms(SmsCheckReq smsCheckReq) throws CaptchaException {
-        captchaService.validateCaptcha(smsCheckReq.getPhoneNumber(), smsCheckReq.getSmsCode());
+    public boolean validateSms(SmsCheckReq smsCheckReq) throws CaptchaException {
+        try {
+            captchaService.validateCaptcha(smsCheckReq.getPhoneNumber(), smsCheckReq.getSmsCode());
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

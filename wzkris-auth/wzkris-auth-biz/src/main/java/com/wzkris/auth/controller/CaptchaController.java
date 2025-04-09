@@ -58,7 +58,7 @@ public class CaptchaController extends BaseController {
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
         boolean valid = ((SecondaryVerificationApplication) application).secondaryVerification(req.getCaptchaId());
         if (!valid) {
-            return error412("验证码异常");
+            return err412("验证码异常");
         }
         captchaService.validateMaxTry(req.getPhone(), 1, 120);
         // TODO 发送短信

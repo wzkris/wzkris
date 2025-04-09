@@ -84,13 +84,15 @@ public interface SysUserRoleMapper {
      */
     @Select("""
             <script>
-                SELECT COUNT(*) FROM biz_sys.sys_user_role WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
-                        #{roleId}
-                    </foreach>
+                SELECT EXISTS(
+                    SELECT role_id FROM biz_sys.sys_user_role WHERE role_id IN
+                        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                            #{roleId}
+                        </foreach>
+                    )
             </script>
             """)
-    int countByRoleIds(@Param("roleIds") List<Long> roleIds);
+    boolean checkExistByRoleIds(@Param("roleIds") List<Long> roleIds);
 
     /**
      * 批量新增用户角色信息

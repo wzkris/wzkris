@@ -9,9 +9,9 @@ import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.req.EditOwnSysUserReq;
 import com.wzkris.user.domain.req.EditPhoneReq;
 import com.wzkris.user.domain.req.EditPwdReq;
+import com.wzkris.user.domain.req.EditSysUserProfileReq;
 import com.wzkris.user.domain.vo.SysUserProfileVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysUserMapper;
@@ -85,10 +85,10 @@ public class SysUserProfileController extends BaseController {
     @OperateLog(title = "用户信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
     @PostMapping
     @CacheEvict(cacheNames = PROFILE_KEY, key = "@lg.getUserId()")
-    public Result<Void> editInfo(@RequestBody EditOwnSysUserReq req) {
+    public Result<Void> editProfile(@RequestBody EditSysUserProfileReq profileReq) {
         SysUser user = new SysUser(LoginUtil.getUserId());
-        user.setNickname(req.getNickname());
-        user.setGender(req.getGender());
+        user.setNickname(profileReq.getNickname());
+        user.setGender(profileReq.getGender());
         return toRes(userMapper.updateById(user));
     }
 
@@ -99,12 +99,14 @@ public class SysUserProfileController extends BaseController {
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = LoginUtil.getUserId();
 
-        if (userService.checkUsedByPhoneNumber(userId, req.getPhoneNumber())) {
-            return error412("该手机号已被使用");
+        if (userService.checkExistByPhoneNumber(userId, req.getPhoneNumber())) {
+            return err412("该手机号已被使用");
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        remoteCaptchaApi.validateSms(smsCheckReq);
+        if (!remoteCaptchaApi.validateSms(smsCheckReq)) {
+            return err412("验证码错误");
+        }
 
         SysUser user = new SysUser(userId);
         user.setPhoneNumber(req.getPhoneNumber());
@@ -120,11 +122,11 @@ public class SysUserProfileController extends BaseController {
         String password = userMapper.selectPwdById(userId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), password)) {
-            return error412("修改密码失败，旧密码错误");
+            return err412("修改密码失败，旧密码错误");
         }
 
         if (passwordEncoder.matches(req.getNewPassword(), password)) {
-            return error412("新密码不能与旧密码相同");
+            return err412("新密码不能与旧密码相同");
         }
 
         SysUser update = new SysUser(userId);

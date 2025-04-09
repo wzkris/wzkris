@@ -11,7 +11,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class GenericException extends BaseException {
 
     public GenericException(int biz, String message) {
-        super("业务异常", biz, null, null, message);
+        super("通用异常", biz, null, null, message);
     }
 
     public GenericException(String message) {

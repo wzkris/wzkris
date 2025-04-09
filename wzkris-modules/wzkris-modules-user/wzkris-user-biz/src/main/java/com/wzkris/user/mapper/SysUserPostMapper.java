@@ -43,13 +43,15 @@ public interface SysUserPostMapper {
      */
     @Select("""
             <script>
-                SELECT COUNT(*) FROM biz_sys.sys_user_post WHERE post_id IN
-                    <foreach collection="postIds" item="postId" open="(" separator="," close=")">
-                        #{postId}
-                    </foreach>
+                SELECT EXISTS( 
+                    SELECT post_id FROM biz_sys.sys_user_post WHERE post_id IN
+                        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+                            #{postId}
+                        </foreach>
+                    )
             </script>
             """)
-    int countByPostIds(@Param("postIds") List<Long> postIds);
+    boolean checkExistByPostIds(@Param("postIds") List<Long> postIds);
 
     /**
      * 批量删除用户和岗位关联

@@ -33,10 +33,14 @@ public enum BizCode {
     // 三方服务异常
     THIRD_SERVICE(3000, "Invoke Third Service Error");
 
-    // 状态码
+    /**
+     * 状态码
+     */
     private final int code;
 
-    // 状态码描述
+    /**
+     * 描述
+     */
     private final String desc;
 
     public final int value() {

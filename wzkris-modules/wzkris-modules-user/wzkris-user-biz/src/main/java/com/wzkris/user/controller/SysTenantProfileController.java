@@ -112,11 +112,11 @@ public class SysTenantProfileController extends BaseController {
         String operPwd = tenantMapper.selectOperPwdById(tenantId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), operPwd)) {
-            return error412("修改密码失败，旧密码错误");
+            return err412("修改密码失败，旧密码错误");
         }
 
         if (passwordEncoder.matches(req.getNewPassword(), operPwd)) {
-            return error412("新密码不能与旧密码相同");
+            return err412("新密码不能与旧密码相同");
         }
 
         SysTenant update = new SysTenant(tenantId);
@@ -131,7 +131,7 @@ public class SysTenantProfileController extends BaseController {
     public Result<Void> withdrawal(@RequestBody @Valid WithdrawalReq req) {
         SysTenant sysTenant = tenantMapper.selectById(LoginUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
-            return error412("密码错误");
+            return err412("密码错误");
         }
         // TODO 实际提现
         return ok();

@@ -15,5 +15,5 @@ public interface RemoteCaptchaApi {
     /**
      * 校验手机号验证码
      */
-    void validateSms(@Valid SmsCheckReq smsCheckReq) throws CaptchaException;
+    boolean validateSms(@Valid SmsCheckReq smsCheckReq) throws CaptchaException;
 }

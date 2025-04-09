@@ -4,7 +4,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.utils.ClientUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
-import com.wzkris.user.domain.req.EditOwnAppUserReq;
+import com.wzkris.user.domain.req.EditAppUserProfileReq;
 import com.wzkris.user.domain.vo.AppUserAccountVO;
 import com.wzkris.user.mapper.AppUserMapper;
 import com.wzkris.user.service.AppUserService;
@@ -56,10 +56,10 @@ public class AppUserProfileController extends BaseController {
     @Operation(summary = "修改昵称、性别")
     @PostMapping
     @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cl.getUserId()")
-    public Result<?> editInfo(@RequestBody EditOwnAppUserReq userReq) {
+    public Result<?> editInfo(@RequestBody EditAppUserProfileReq profileReq) {
         AppUser user = new AppUser(ClientUtil.getUserId());
-        user.setNickname(userReq.getNickname());
-        user.setGender(userReq.getGender());
+        user.setNickname(profileReq.getNickname());
+        user.setGender(profileReq.getGender());
         return toRes(appUserMapper.updateById(user));
     }
 

@@ -49,7 +49,7 @@ public class WxJsTicketController extends BaseController {
             return resp(e.getError().getErrorCode(), e.getError().getErrorMsg());
         } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
-            return error412("暂时无法使用微信jsticket");
+            return err412("暂时无法使用微信jsticket");
         }
     }
 
@@ -57,7 +57,7 @@ public class WxJsTicketController extends BaseController {
     @GetMapping("/js_ticket_sign")
     public Result<?> JsapiSignature(String url) {
         if (!StringUtil.ishttp(url)) {
-            return error412("url格式不正确");
+            return err412("url格式不正确");
         }
         try {
             long timestamp = System.currentTimeMillis() / 1000;
@@ -77,7 +77,7 @@ public class WxJsTicketController extends BaseController {
             return resp(e.getError().getErrorCode(), e.getError().getErrorMsg());
         } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
-            return error412("暂时无法使用微信js签名");
+            return err412("暂时无法使用微信js签名");
         }
     }
 

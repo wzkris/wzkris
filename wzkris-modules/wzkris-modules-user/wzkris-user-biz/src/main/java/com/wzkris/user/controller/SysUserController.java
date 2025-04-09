@@ -129,12 +129,12 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
         if (!tenantService.checkAccountLimit(LoginUtil.getTenantId())) {
-            return error412("账号数量已达上限，请联系管理员");
-        } else if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
-            return error412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
+            return err412("账号数量已达上限，请联系管理员");
+        } else if (userService.checkExistByUsername(userReq.getUserId(), userReq.getUsername())) {
+            return err412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
-                && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
-            return error412("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
+                && userService.checkExistByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
+            return err412("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         SysUser user = BeanUtil.convert(userReq, SysUser.class);
         String password = RandomUtil.randomNumbers(8);
@@ -156,11 +156,11 @@ public class SysUserController extends BaseController {
     public Result<Void> edit(@Validated @RequestBody SysUserReq userReq) {
         // 校验权限
         userService.checkDataScopes(userReq.getUserId());
-        if (userService.checkUsedByUsername(userReq.getUserId(), userReq.getUsername())) {
-            return error412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
+        if (userService.checkExistByUsername(userReq.getUserId(), userReq.getUsername())) {
+            return err412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
-                && userService.checkUsedByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
-            return error412("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
+                && userService.checkExistByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
+            return err412("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         SysUser user = BeanUtil.convert(userReq, SysUser.class);
 
@@ -175,10 +175,9 @@ public class SysUserController extends BaseController {
         // 校验权限
         userService.checkDataScopes(userIds);
         if (tenantService.checkAdministrator(userIds)) {
-            return error412("删除失败，用户包含租户超级管理员");
+            return err412("删除失败，用户包含租户超级管理员");
         }
-        userService.deleteByIds(userIds);
-        return ok();
+        return toRes(userService.deleteByIds(userIds));
     }
 
     @Operation(summary = "重置密码")
@@ -208,7 +207,7 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "导出")
     @OperateLog(title = "系统用户", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
-    @PostMapping("/export")
+    @GetMapping("/export")
     @CheckSystemPerms("sys_user:export")
     public void export(HttpServletResponse response, SysUserQueryReq queryReq) {
         List<SysUserVO> list = userMapper.selectVOList(this.buildPageWrapper(queryReq));
@@ -225,9 +224,7 @@ public class SysUserController extends BaseController {
         userService.checkDataScopes(req.getUserId());
         // 校验角色可操作权限
         roleService.checkDataScopes(req.getRoleIds());
-        // 分配权限
-        userService.allocateRoles(req.getUserId(), req.getRoleIds());
-        return ok();
+        return toRes(userService.allocateRoles(req.getUserId(), req.getRoleIds()));
     }
 
 }

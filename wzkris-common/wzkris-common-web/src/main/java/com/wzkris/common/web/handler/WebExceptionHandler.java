@@ -40,7 +40,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Result<?> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',不支持媒体类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return error400(I18nUtil.message("request.media.error"));
+        return err400(I18nUtil.message("request.media.error"));
     }
 
     /**
@@ -49,7 +49,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',请求数据格式异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return error400(I18nUtil.message("request.param.error"));
+        return err400(I18nUtil.message("request.param.error"));
     }
 
     /**
@@ -58,7 +58,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Result<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到方法入参异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return error400(e.getMessage());
+        return err400(e.getMessage());
     }
 
     /**
@@ -67,7 +67,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(ServletRequestBindingException.class)
     public Result<?> handleNestedServletException(ServletRequestBindingException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到请求绑定异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return error400(e.getMessage());
+        return err400(e.getMessage());
     }
 
     /**
@@ -76,7 +76,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(MultipartException.class)
     public Result<?> handleMultipartException(MultipartException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',文件异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return error400(e.getMessage());
+        return err400(e.getMessage());
     }
 
     /**
@@ -113,7 +113,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public Result<?> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return error412(e.getMessage());
+        return err412(e.getMessage());
     }
 
     /**
@@ -123,7 +123,7 @@ public class WebExceptionHandler {
     public Result<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
         log.error("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), message);
-        return error412(message);
+        return err412(message);
     }
 
     /**
@@ -138,7 +138,7 @@ public class WebExceptionHandler {
             err = I18nUtil.messageRegex(err);
         } catch (Exception ignore) {
         }
-        return error412(err);
+        return err412(err);
     }
 
     /**
@@ -146,7 +146,7 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler(DemoModeException.class)
     public Result<?> handleDemoModeException(DemoModeException e, HttpServletRequest request) {
-        return error400(e.getMessage());
+        return err400(e.getMessage());
     }
 
     /**
@@ -156,7 +156,7 @@ public class WebExceptionHandler {
     public Result<?> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到运行时异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
         if (e.getClass().getName().startsWith("java.lang")) { //JAVA异常则捕获，否则原样往外抛
-            return error500(e.getMessage());
+            return err500(e.getMessage());
         }
         throw e;
     }

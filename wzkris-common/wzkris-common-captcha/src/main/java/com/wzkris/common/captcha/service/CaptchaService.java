@@ -4,6 +4,7 @@ import cloud.tianai.captcha.application.ImageCaptchaProperties;
 import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
+import com.wzkris.common.core.exception.request.TooManyRequestException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -47,10 +48,10 @@ public class CaptchaService {
         String fullKey = captchaProperties.getPrefix() + ":" + key;
         String realcode = RedisUtil.getObj(fullKey);
         if (StringUtil.isBlank(realcode)) {
-            throw new CaptchaException(BizCode.PRECONDITION_FAILED.value(), "captcha.expired");
+            throw new CaptchaException("captcha.expired");
         }
         if (ObjUtil.notEqual(realcode, code)) {
-            throw new CaptchaException(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
+            throw new CaptchaException("captcha.error");
         }
         RedisUtil.delObj(fullKey);
     }
@@ -82,8 +83,8 @@ public class CaptchaService {
         Long result = script.eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, Collections.singletonList(counterKey), maxTry, timeout);
 
         // 检查结果
-        if (result == 0) {
-            throw new CaptchaException(BizCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
+        if (result.intValue() == 0) {
+            throw new TooManyRequestException();
         }
     }
 

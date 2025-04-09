@@ -2,7 +2,6 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.req.SysUserQueryReq;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import java.util.Collection;
@@ -64,7 +63,7 @@ public interface SysUserService {
      *
      * @param userIds 用户ID
      */
-    void deleteByIds(List<Long> userIds);
+    boolean deleteByIds(List<Long> userIds);
 
     /**
      * 批量授权角色
@@ -72,7 +71,7 @@ public interface SysUserService {
      * @param userId  管理员ID
      * @param roleIds 角色组
      */
-    void allocateRoles(Long userId, List<Long> roleIds);
+    boolean allocateRoles(Long userId, List<Long> roleIds);
 
     /**
      * 校验用户名是否被使用
@@ -80,7 +79,7 @@ public interface SysUserService {
      * @param userId   用户ID
      * @param username 用户名
      */
-    boolean checkUsedByUsername(@Nullable Long userId, @Nonnull String username);
+    boolean checkExistByUsername(@Nullable Long userId, String username);
 
     /**
      * 校验手机号是否被使用
@@ -88,7 +87,7 @@ public interface SysUserService {
      * @param userId      用户ID
      * @param phonenumber 手机号
      */
-    boolean checkUsedByPhoneNumber(@Nullable Long userId, @Nonnull String phonenumber);
+    boolean checkExistByPhoneNumber(@Nullable Long userId, String phonenumber);
 
     /**
      * 校验是否有数据权限

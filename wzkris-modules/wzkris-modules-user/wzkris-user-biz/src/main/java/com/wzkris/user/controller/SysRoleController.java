@@ -118,7 +118,7 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:add")
     public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
         if (!tenantService.checkRoleLimit(LoginUtil.getTenantId())) {
-            return error412("角色数量已达上限，请联系管理员");
+            return err412("角色数量已达上限，请联系管理员");
         }
         return toRes(roleService.insertRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
@@ -152,9 +152,8 @@ public class SysRoleController extends BaseController {
     public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
         // 权限校验
         roleService.checkDataScopes(roleIds);
-        roleService.checkRoleUse(roleIds);
-        roleService.deleteByIds(roleIds);
-        return ok();
+        roleService.checkRoleUsed(roleIds);
+        return toRes(roleService.deleteByIds(roleIds));
     }
 
     @Operation(summary = "查询已授权的用户列表")
@@ -212,8 +211,7 @@ public class SysRoleController extends BaseController {
         roleService.checkDataScopes(req.getRoleId());
         // 校验用户权限
         userService.checkDataScopes(req.getUserIds());
-        roleService.allocateUsers(req.getRoleId(), req.getUserIds());
-        return ok();
+        return toRes(roleService.allocateUsers(req.getRoleId(), req.getUserIds()));
     }
 
 }
