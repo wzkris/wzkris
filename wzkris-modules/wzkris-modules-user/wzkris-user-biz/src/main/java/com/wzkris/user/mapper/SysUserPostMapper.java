@@ -23,7 +23,7 @@ public interface SysUserPostMapper {
      * @param userId 用户ID
      * @return 结果
      */
-    @Select("SELECT post_id FROM sys_user_post WHERE user_id = #{userId}")
+    @Select("SELECT post_id FROM biz_sys.sys_user_post WHERE user_id = #{userId}")
     List<Long> listPostIdByUserId(Long userId);
 
     /**
@@ -32,7 +32,7 @@ public interface SysUserPostMapper {
      * @param userId 用户ID
      * @return 结果
      */
-    @Delete("DELETE FROM sys_user_post WHERE user_id = #{userId}")
+    @Delete("DELETE FROM biz_sys.sys_user_post WHERE user_id = #{userId}")
     int deleteByUserId(Long userId);
 
     /**
@@ -43,7 +43,7 @@ public interface SysUserPostMapper {
      */
     @Select("""
             <script>
-                SELECT COUNT(*) FROM sys_user_post WHERE post_id IN
+                SELECT COUNT(*) FROM biz_sys.sys_user_post WHERE post_id IN
                     <foreach collection="postIds" item="postId" open="(" separator="," close=")">
                         #{postId}
                     </foreach>
@@ -59,7 +59,7 @@ public interface SysUserPostMapper {
      */
     @Delete("""
             <script>
-                DELETE FROM sys_user_post WHERE user_id IN
+                DELETE FROM biz_sys.sys_user_post WHERE user_id IN
                     <foreach collection="userIds" item="userId" open="(" separator="," close=")">
                         #{userId}
                     </foreach>
@@ -75,7 +75,7 @@ public interface SysUserPostMapper {
      */
     @Delete("""
             <script>
-                DELETE FROM sys_user_post WHERE post_id IN
+                DELETE FROM biz_sys.sys_user_post WHERE post_id IN
                     <foreach collection="postIds" item="postId" open="(" separator="," close=")">
                         #{postId}
                     </foreach>
@@ -91,7 +91,7 @@ public interface SysUserPostMapper {
      */
     @Insert("""
             <script>
-                INSERT INTO sys_user_post(user_id, post_id) VALUES
+                INSERT INTO biz_sys.sys_user_post(user_id, post_id) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.userId}, #{item.postId})
                     </foreach>

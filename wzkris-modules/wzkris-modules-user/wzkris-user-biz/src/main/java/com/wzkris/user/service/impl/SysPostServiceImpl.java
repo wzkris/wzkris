@@ -3,8 +3,11 @@ package com.wzkris.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.user.domain.SysPost;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.service.SysPostService;
@@ -30,9 +33,12 @@ public class SysPostServiceImpl implements SysPostService {
     private final SysUserPostMapper userPostMapper;
 
     @Override
-    public List<SysPost> listCanGranted() {
+    public List<SelectVO> listSelect(String postName) {
         return postMapper.selectList(Wrappers.lambdaQuery(SysPost.class)
-                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE));
+                .select(SysPost::getPostId, SysPost::getPostName)
+                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(postName), SysPost::getPostName, postName)
+        ).stream().map(SelectVO::new).collect(Collectors.toList());
     }
 
     @Override
@@ -62,10 +68,10 @@ public class SysPostServiceImpl implements SysPostService {
 
     @Override
     public String getPostGroup() {
-        if (LoginUserUtil.isAdmin()) {
-            return "超级管理员";
+        if (LoginUtil.isAdmin()) {
+            return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<SysPost> sysPosts = this.listByUserId(LoginUserUtil.getUserId());
+        List<SysPost> sysPosts = this.listByUserId(LoginUtil.getUserId());
         return sysPosts.stream().map(SysPost::getPostName).collect(Collectors.joining(","));
     }
 

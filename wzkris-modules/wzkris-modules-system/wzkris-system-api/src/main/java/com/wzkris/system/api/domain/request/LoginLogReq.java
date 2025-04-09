@@ -2,6 +2,9 @@ package com.wzkris.system.api.domain.request;
 
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -9,7 +12,7 @@ import lombok.Data;
  * @date : 2023/8/26 14:35
  */
 @Data
-public class LoginLogReq {
+public class LoginLogReq implements Serializable {
 
     /**
      * ID
@@ -69,5 +72,5 @@ public class LoginLogReq {
     /**
      * 登录时间
      */
-    private Long loginTime;
+    private Date loginTime;
 }

@@ -7,8 +7,11 @@ import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @author : wzkris
@@ -22,6 +25,7 @@ public class SysTenantReq {
 
     private Long tenantId;
 
+    @NotBlank(message = "{desc.tenant}{desc.type}{validate.notnull}")
     @Schema(description = "租户类型 0-个人 1-企业")
     private String tenantType;
 
@@ -41,21 +45,27 @@ public class SysTenantReq {
     @Schema(description = "备注")
     private String remark;
 
+    @NotNull(message = "{desc.tenant}{desc.package}{validate.notnull}")
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
-    @Schema(description = "过期时间（-1不限制）")
-    private Long expireTime;
+    @NotNull(message = "{desc.expireTime}{validate.notnull}")
+    @Schema(description = "过期时间")
+    private Date expireTime;
 
+    @NotNull(message = "账号数量{validate.notnull}")
     @Schema(description = "账号数量（-1不限制）")
     private Integer accountLimit;
 
+    @NotNull(message = "角色数量{validate.notnull}")
     @Schema(description = "角色数量（-1不限制）")
     private Integer roleLimit;
 
+    @NotNull(message = "岗位数量{validate.notnull}")
     @Schema(description = "岗位数量（-1不限制）")
     private Integer postLimit;
 
+    @NotNull(message = "部门数量{validate.notnull}")
     @Schema(description = "部门数量（-1不限制）")
     private Integer deptLimit;
 

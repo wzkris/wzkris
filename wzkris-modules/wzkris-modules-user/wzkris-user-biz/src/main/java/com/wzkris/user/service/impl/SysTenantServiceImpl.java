@@ -4,18 +4,21 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.user.domain.*;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.*;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 租户层
@@ -38,7 +41,7 @@ public class SysTenantServiceImpl implements SysTenantService {
 
     private final SysPostMapper postMapper;
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoderDelegate passwordEncoder;
 
     private final SysTenantMapper tenantMapper;
 
@@ -47,12 +50,21 @@ public class SysTenantServiceImpl implements SysTenantService {
     private final SysTenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override
+    public List<SelectVO> listSelect(String tenantName) {
+        LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
+                .select(SysTenant::getTenantId, SysTenant::getTenantName)
+                .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName);
+        return tenantMapper.selectList(lqw).stream().map(SelectVO::new).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertTenant(SysTenant tenant, String username, String password) {
+        if (!passwordEncoder.isEncode(tenant.getOperPwd())) {
+            tenant.setOperPwd(passwordEncoder.encode(tenant.getOperPwd()));
+        }
         long userId = IdUtil.getSnowflakeNextId();
         tenant.setAdministrator(userId);
-
-        tenant.setOperPwd(passwordEncoder.encode(tenant.getOperPwd()));
         tenantMapper.insert(tenant);
 
         SysTenantWallet wallet = new SysTenantWallet(tenant.getTenantId());

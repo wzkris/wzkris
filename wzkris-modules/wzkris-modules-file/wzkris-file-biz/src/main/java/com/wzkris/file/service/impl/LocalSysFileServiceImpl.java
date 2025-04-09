@@ -1,6 +1,6 @@
 package com.wzkris.file.service.impl;
 
-import com.wzkris.common.core.exception.BusinessException;
+import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.file.config.LocalConfig;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;
@@ -50,7 +50,7 @@ public class LocalSysFileServiceImpl implements SysFileService {
                     ost.write(bytes);
                 }
             } catch (IOException e) {
-                throw new BusinessException(e.getMessage());
+                throw new GenericException(e.getMessage());
             }
             // 删除切片文件
             FileUtil.del(dir);

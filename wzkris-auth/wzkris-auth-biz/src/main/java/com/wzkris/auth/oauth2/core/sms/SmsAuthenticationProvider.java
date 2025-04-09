@@ -2,9 +2,11 @@ package com.wzkris.auth.oauth2.core.sms;
 
 import com.wzkris.auth.oauth2.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.oauth2.core.CommonAuthenticationProvider;
-import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.exception.BaseException;
+import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,12 +54,14 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     "request.param.error", OAuth2ParameterConstant.USER_TYPE);
         }
 
-        // 校验是否被冻结
-        captchaService.validateLockAccount(authenticationToken.getPhoneNumber());
-        // 校验最大次数
-        captchaService.validateMaxTryCount(authenticationToken.getPhoneNumber());
-        // 校验验证码
-        captchaService.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
+        try {
+            // 校验是否被冻结
+            captchaService.validateLock(authenticationToken.getPhoneNumber());
+            // 校验验证码
+            captchaService.validateCaptcha(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
+        } catch (BaseException e) {
+            OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
+        }
 
         AuthBaseUser baseUser = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 

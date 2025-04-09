@@ -1,9 +1,10 @@
 package com.wzkris.common.web.handler;
 
 import cn.hutool.core.util.NumberUtil;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,41 +20,39 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
-    // 动态租户ID切换
-    private static final String DYNAMIC_TENANT = "dynamicTenant";
-
     private static final String IGNORE_TYPE = "all";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // handle login request
-        if (!LoginUserUtil.isLogin()) {
+        if (!LoginUtil.isLogin()) {
             return true;
         }
 
         // handle super tenant request
-        if (!LoginUserUtil.isSuperTenant()) {
+        if (!LoginUtil.isSuperTenant()) {
             return true;
         }
 
-        String dynamicTenant = request.getHeader(DYNAMIC_TENANT);
+        String dynamicTenant = request.getHeader(CommonConstants.X_TENANT_ID);
 
         if (NumberUtil.isNumber(dynamicTenant)) {
             DynamicTenantUtil.set(Long.valueOf(dynamicTenant));
         } else if (StringUtil.equals(dynamicTenant, IGNORE_TYPE)) {
             DynamicTenantUtil.enableIgnore();
         } else if (dynamicTenant != null) {
+            response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
             return false;// 不是合法请求头数据则直接返回
         }
 
-        request.setAttribute(DYNAMIC_TENANT, dynamicTenant);
+        request.setAttribute(CommonConstants.X_TENANT_ID, dynamicTenant);
         return true;
     }
 
     // 请求完成后的回调
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        Object dynamicTenant = request.getAttribute(DYNAMIC_TENANT);
+        Object dynamicTenant = request.getAttribute(CommonConstants.X_TENANT_ID);
         if (dynamicTenant != null) {
             if (NumberUtil.isNumber(dynamicTenant.toString())) {
                 DynamicTenantUtil.remove();

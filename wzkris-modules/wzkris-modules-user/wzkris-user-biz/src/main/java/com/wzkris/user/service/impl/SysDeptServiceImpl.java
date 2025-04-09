@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +38,7 @@ public class SysDeptServiceImpl implements SysDeptService {
                 .select(SysDept::getDeptId, SysDept::getParentId, SysDept::getDeptName)
                 .like(StringUtil.isNotEmpty(deptName), SysDept::getDeptName, deptName);
 
-        List<SysDept> depts = deptMapper.selectListInScope(lqw);
+        List<SysDept> depts = deptMapper.selectLists(lqw);
         return this.buildDeptTreeSelect(depts);
     }
 
@@ -79,25 +76,25 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public boolean hasChildByDeptId(Long deptId) {
-        int result = deptMapper.hasChildByDeptId(deptId);
-        return result > 0;
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertDept(SysDept dept) {
         SysDept parent = deptMapper.selectByIdForUpdate(dept.getParentId());
-        dept.setAncestors(parent.getAncestors() + "," + dept.getParentId());
+        if (parent != null) {
+            Long[] newAncestors = Arrays.copyOf(parent.getAncestors(), parent.getAncestors().length + 1);
+            newAncestors[newAncestors.length - 1] = parent.getDeptId();
+            dept.setAncestors(newAncestors);
+        }
+        dept.setParentId(parent == null ? null : dept.getParentId());
         return deptMapper.insert(dept) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateDept(SysDept dept) {
-        SysDept parentDept = deptMapper.selectByIdForUpdate(dept.getParentId());
-        if (StringUtil.isNotNull(parentDept)) {
-            String newAncestors = parentDept.getAncestors() + "," + parentDept.getDeptId();
+        SysDept parent = deptMapper.selectByIdForUpdate(dept.getParentId());
+        if (StringUtil.isNotNull(parent)) {
+            Long[] newAncestors = Arrays.copyOf(parent.getAncestors(), parent.getAncestors().length + 1);
+            newAncestors[newAncestors.length - 1] = parent.getDeptId();
             dept.setAncestors(newAncestors);
             updateDeptChildren(dept.getDeptId(), newAncestors, dept.getAncestors());
         }
@@ -105,9 +102,13 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public void deleteById(Long deptId) {
-        deptMapper.deleteById(deptId);
-        roleDeptMapper.deleteByDeptId(deptId);
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteById(Long deptId) {
+        boolean success = deptMapper.deleteById(deptId) > 0;
+        if (success) {
+            roleDeptMapper.deleteByDeptId(deptId);
+        }
+        return success;
     }
 
     /**
@@ -117,18 +118,43 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @param newAncestors 新的父ID集合
      * @param oldAncestors 旧的父ID集合
      */
-    public void updateDeptChildren(Long deptId, String newAncestors, String oldAncestors) {
-        List<SysDept> children = deptMapper.listChildren(new SysDeptQueryReq(deptId));
+    public void updateDeptChildren(Long deptId, Long[] newAncestors, Long[] oldAncestors) {
+        // 查出子元素并更新祖先列表
+        SysDeptQueryReq queryReq = new SysDeptQueryReq();
+        queryReq.setParentId(deptId);
+        List<SysDept> children = deptMapper.listChildren(queryReq);
         List<SysDept> updateList = children.stream().map(child -> {
-            String ancestors = child.getAncestors().replaceFirst(oldAncestors, newAncestors);
+            // 替换旧的祖先路径为新的祖先路径
+            Long[] updatedAncestors = replaceAncestors(child.getAncestors(), oldAncestors, newAncestors);
+
+            // 创建新的部门对象，设置更新后的祖先路径
             SysDept sysDept = new SysDept(child.getDeptId());
-            sysDept.setAncestors(ancestors);
+            sysDept.setAncestors(updatedAncestors);
             return sysDept;
         }).toList();
         if (!CollectionUtils.isEmpty(updateList)) {
             // 批量更新
             deptMapper.updateById(updateList);
         }
+    }
+
+    private Long[] replaceAncestors(Long[] childAncestors, Long[] oldAncestors, Long[] newAncestors) {
+        // 将数组转换为列表以便操作
+        List<Long> childAncestorsList = new ArrayList<>(Arrays.asList(childAncestors));
+        List<Long> oldAncestorsList = Arrays.asList(oldAncestors);
+        List<Long> newAncestorsList = Arrays.asList(newAncestors);
+
+        // 找到旧祖先路径的起始位置
+        int startIndex = Collections.indexOfSubList(childAncestorsList, oldAncestorsList);
+
+        // 如果找到旧祖先路径，则替换为新祖先路径
+        if (startIndex != -1) {
+            childAncestorsList.subList(startIndex, startIndex + oldAncestorsList.size()).clear();
+            childAncestorsList.addAll(startIndex, newAncestorsList);
+        }
+
+        // 将列表转换回数组
+        return childAncestorsList.toArray(new Long[0]);
     }
 
     /**
@@ -163,12 +189,6 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     private boolean hasChild(List<SysDept> list, SysDept t) {
         return !CollectionUtils.isEmpty(getChildList(list, t));
-    }
-
-    @Override
-    public boolean checkDeptExistUser(Long deptId) {
-        int result = deptMapper.checkDeptExistUser(deptId);
-        return result > 0;
     }
 
     @Override

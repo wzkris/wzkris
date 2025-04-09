@@ -4,8 +4,10 @@ import com.wzkris.common.core.utils.SpringUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.redisson.api.*;
+import org.redisson.api.options.KeysScanOptions;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +30,7 @@ public class RedisUtil {
      * @param key 缓存键值
      * @return 缓存键值对应的数据
      */
+    @SuppressWarnings("unchecked")
     public static <T> T getObj(final String key) {
         return (T) redissonclient.getBucket(key).get();
     }
@@ -164,7 +167,11 @@ public class RedisUtil {
      * 模糊匹配key
      */
     public static List<String> keysByPattern(final String keyPattern, final int count) {
-        return redissonclient.getKeys().getKeysStreamByPattern(keyPattern, count).toList();
+        List<String> keys = new ArrayList<>();
+        redissonclient.getKeys().getKeys(KeysScanOptions.defaults().pattern(keyPattern)
+                        .limit(count))
+                .forEach(keys::add);
+        return keys;
     }
 
     /**

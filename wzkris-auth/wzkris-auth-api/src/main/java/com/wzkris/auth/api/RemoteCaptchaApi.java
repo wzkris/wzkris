@@ -1,15 +1,8 @@
 package com.wzkris.auth.api;
 
 import com.wzkris.auth.api.domain.request.SmsCheckReq;
-import com.wzkris.auth.api.fallback.RemoteCaptchaApiFallback;
-import com.wzkris.common.core.constant.ApplicationNameConstants;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.exception.captcha.CaptchaException;
 import jakarta.validation.Valid;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQUEST_PATH;
 
 /**
  * @author : wzkris
@@ -17,12 +10,10 @@ import static com.wzkris.common.core.constant.SecurityConstants.INNER_NOAUTH_REQ
  * @description : rpc - 验证码服务
  * @date : 2023/8/21 11:27
  */
-@FeignClient(value = ApplicationNameConstants.AUTH, contextId = "RemoteCaptchaApi", fallbackFactory = RemoteCaptchaApiFallback.class)
 public interface RemoteCaptchaApi {
 
     /**
      * 校验手机号验证码
      */
-    @PostMapping(INNER_NOAUTH_REQUEST_PATH + "/sms/validate")
-    Result<Void> validateSms(@RequestBody @Valid SmsCheckReq smsCheckReq);
+    void validateSms(@Valid SmsCheckReq smsCheckReq) throws CaptchaException;
 }

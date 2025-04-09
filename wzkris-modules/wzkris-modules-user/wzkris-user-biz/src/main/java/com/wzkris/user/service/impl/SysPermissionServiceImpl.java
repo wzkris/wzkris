@@ -1,6 +1,7 @@
 package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
@@ -14,7 +15,6 @@ import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
 import com.wzkris.user.service.SysRoleService;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -65,7 +65,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override
-    public SysPermissionResp getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
+    public SysPermissionResp getPermission(Long userId, Long tenantId, @Nullable Long deptId) {
         return DynamicTenantUtil.switcht(tenantId, () -> {
             List<SysRole> roles;
             List<String> grantedAuthority;
@@ -74,7 +74,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             if (SysUser.isSuperAdmin(userId)) {
                 // 超级管理员查出所有角色
                 administrator = true;
-                grantedAuthority = Collections.singletonList("*");
+                grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
             } else {
                 // 租户最高管理员特殊处理
                 Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);

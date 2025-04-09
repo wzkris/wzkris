@@ -1,6 +1,7 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * 租户表 sys_tenant
  *
@@ -16,6 +19,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class SysTenant extends BaseEntity {
 
     @TableId
@@ -49,8 +53,8 @@ public class SysTenant extends BaseEntity {
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
-    @Schema(description = "过期时间（-1不限制）")
-    private Long expireTime;
+    @Schema(description = "过期时间")
+    private Date expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
     private Integer accountLimit;

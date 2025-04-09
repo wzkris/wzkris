@@ -1,7 +1,7 @@
 package com.wzkris.file.utils;
 
 import cn.hutool.core.date.DateUtil;
-import com.wzkris.common.core.exception.UtilException;
+import com.wzkris.common.core.exception.util.UtilException;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;

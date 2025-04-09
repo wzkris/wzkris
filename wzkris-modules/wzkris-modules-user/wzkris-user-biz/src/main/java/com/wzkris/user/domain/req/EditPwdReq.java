@@ -15,7 +15,7 @@ public class EditPwdReq {
     private String oldPassword;
 
     @Pattern(regexp = "^\\d{6}$", message = "{desc.newpwd}{validate.illegal}", groups = OperPwd.class)
-    @Pattern(regexp = "^\\S{8,20}$", message = "{desc.newpwd}{validate.illegal}", groups = LoginPwd.class)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])\\S{8,20}$", message = "{desc.newpwd}{validate.illegal}", groups = LoginPwd.class)
     @NotBlank(message = "{desc.newpwd}" + "{validate.notnull}", groups = {LoginPwd.class, OperPwd.class})
     private String newPassword;
 

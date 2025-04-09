@@ -56,13 +56,13 @@ public class CheckFieldPermsAspect {
         String spel = checkFieldPerms.value();
         Class<?>[] groups = checkFieldPerms.groups();
 
-        if (rw == CheckFieldPerms.Perms.WRITE) {
+        if (rw == CheckFieldPerms.Perms.ALL || rw == CheckFieldPerms.Perms.WRITE) {
             this.handleWritePerms(point.getArgs(), spel, groups);
         }
 
         Object proceed = point.proceed();
 
-        if (rw == CheckFieldPerms.Perms.READ) {
+        if (rw == CheckFieldPerms.Perms.ALL || rw == CheckFieldPerms.Perms.READ) {
             this.handleReadPerms(proceed, spel, groups);
         }
         return proceed;

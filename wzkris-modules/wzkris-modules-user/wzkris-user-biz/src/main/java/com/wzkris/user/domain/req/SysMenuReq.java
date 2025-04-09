@@ -25,6 +25,7 @@ public class SysMenuReq {
     @Schema(description = "菜单名称")
     private String menuName;
 
+    @NotNull(message = "{desc.parentNode}{validate.notnull}")
     @Schema(description = "父菜单ID")
     private Long parentId;
 
@@ -42,9 +43,6 @@ public class SysMenuReq {
     @Schema(description = "路由参数")
     private String query;
 
-    @Schema(description = "是否外链")
-    private Boolean isFrame;
-
     @Schema(description = "是否缓存")
     private Boolean isCache;
 
@@ -52,8 +50,9 @@ public class SysMenuReq {
     private Boolean isVisible;
 
     @NotBlank(message = "{desc.type}" + "{validate.notnull}")
-    @EnumsCheck(values = {MenuConstants.TYPE_DIR, MenuConstants.TYPE_MENU, MenuConstants.TYPE_BUTTON, MenuConstants.TYPE_FIELD})
-    @Schema(description = "菜单类型（D目录 M菜单 B按钮 F字段）")
+    @EnumsCheck(values = {MenuConstants.TYPE_DIR, MenuConstants.TYPE_MENU, MenuConstants.TYPE_BUTTON,
+            MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK})
+    @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
 
     @EnumsCheck(values = {CommonConstants.STATUS_ENABLE, CommonConstants.STATUS_DISABLE})

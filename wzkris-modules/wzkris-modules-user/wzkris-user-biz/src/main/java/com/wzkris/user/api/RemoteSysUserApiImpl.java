@@ -1,10 +1,7 @@
 package com.wzkris.user.api;
 
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
-import com.wzkris.common.openfeign.annotation.InnerAuth;
-import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
@@ -16,10 +13,10 @@ import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.service.SysPermissionService;
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 
 /**
  * @author : wzkris
@@ -27,11 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @description : 内部系统用户接口
  * @date : 2024/4/15 16:20
  */
-@Hidden
-@InnerAuth
-@RestController
+@Service
+@DubboService
 @RequiredArgsConstructor
-public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUserApi {
+public class RemoteSysUserApiImpl implements RemoteSysUserApi {
 
     private final SysUserMapper userMapper;
 
@@ -42,19 +38,19 @@ public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUse
     private final SysPermissionService sysPermissionService;
 
     @Override
-    public Result<SysUserResp> getByUsername(String username) {
+    public SysUserResp getByUsername(String username) {
         SysUser user = userMapper.selectByUsername(username);
         SysUserResp userResp = BeanUtil.convert(user, SysUserResp.class);
         this.retrieveAllStatus(userResp);
-        return ok(userResp);
+        return userResp;
     }
 
     @Override
-    public Result<SysUserResp> getByPhoneNumber(String phoneNumber) {
+    public SysUserResp getByPhoneNumber(String phoneNumber) {
         SysUser sysUser = userMapper.selectByPhoneNumber(phoneNumber);
         SysUserResp userResp = BeanUtil.convert(sysUser, SysUserResp.class);
         this.retrieveAllStatus(userResp);
-        return ok(userResp);
+        return userResp;
     }
 
     /**
@@ -76,10 +72,10 @@ public class RemoteSysUserApiImpl extends BaseController implements RemoteSysUse
     }
 
     @Override
-    public Result<SysPermissionResp> getPermission(QueryPermsReq queryPermsReq) {
+    public SysPermissionResp getPermission(QueryPermsReq queryPermsReq) {
         SysPermissionResp permission = sysPermissionService
                 .getPermission(queryPermsReq.getUserId(), queryPermsReq.getTenantId(), queryPermsReq.getDeptId());
-        return ok(permission);
+        return permission;
     }
 
     @Override

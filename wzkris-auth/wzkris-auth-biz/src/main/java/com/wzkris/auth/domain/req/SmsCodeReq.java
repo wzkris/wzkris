@@ -13,12 +13,8 @@ import org.hibernate.validator.constraints.Length;
 public class SmsCodeReq {
 
     @NotBlank(message = "{captcha.notnull}")
-    @Length(min = 32, max = 32, message = "{captcha.error}")
-    private String uuid;
-
-    @NotBlank(message = "{captcha.notnull}")
-    @Length(min = 1, max = 8, message = "{captcha.error}")
-    private String code;
+    @Length(min = 1, max = 100, message = "{captcha.error}")
+    private String captchaId;
 
     @NotBlank(message = "{desc.phonenumber}{validate.notnull}")
     @Length(min = 11, max = 11, message = "{desc.phonenumber}{desc.error}")

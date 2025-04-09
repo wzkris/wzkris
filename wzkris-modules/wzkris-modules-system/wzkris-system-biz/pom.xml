@@ -12,6 +12,10 @@
 
     <artifactId>wzkris-system-biz</artifactId>
 
+    <properties>
+        <xxl-job.version>2.4.2</xxl-job.version>
+    </properties>
+
     <dependencies>
         <!-- SpringCloud Alibaba Nacos -->
         <dependency>
@@ -68,6 +72,12 @@
             <artifactId>wzkris-common-orm</artifactId>
         </dependency>
 
+        <!-- mqtt消息队列 -->
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
+        </dependency>
+
         <!-- wzkris Common ORM -->
         <dependency>
             <groupId>com.wzkris</groupId>
@@ -89,6 +99,7 @@
         <dependency>
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
+            <version>${xxl-job.version}</version>
         </dependency>
 
     </dependencies>

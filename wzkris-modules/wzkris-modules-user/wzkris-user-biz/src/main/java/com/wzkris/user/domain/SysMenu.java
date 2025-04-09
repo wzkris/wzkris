@@ -2,6 +2,7 @@ package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class SysMenu extends BaseEntity {
 
     @TableId
@@ -40,16 +42,13 @@ public class SysMenu extends BaseEntity {
     @Schema(description = "路由参数")
     private String query;
 
-    @Schema(description = "是否外链")
-    private Boolean isFrame;
-
     @Schema(description = "是否缓存")
     private Boolean isCache;
 
     @Schema(description = "是否显示")
     private Boolean isVisible;
 
-    @Schema(description = "菜单类型（D目录 M菜单 B按钮 F字段）")
+    @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
 
     @Schema(description = "菜单状态（0正常 1停用）")// 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示

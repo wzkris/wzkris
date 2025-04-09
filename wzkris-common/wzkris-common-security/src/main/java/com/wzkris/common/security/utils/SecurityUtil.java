@@ -44,7 +44,8 @@ public class SecurityUtil {
         Authentication authentication = getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken);
+                && !(authentication instanceof AnonymousAuthenticationToken)
+                && authentication.getPrincipal() instanceof AuthBaseUser;
     }
 
     /**

@@ -4,12 +4,15 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.exception.BusinessExceptionI18n;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.exception.service.BusinessException;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
 import com.wzkris.user.domain.SysUserRole;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -42,9 +45,12 @@ public class SysRoleServiceImpl implements SysRoleService {
     private final SysRoleDeptMapper roleDeptMapper;
 
     @Override
-    public List<SysRole> listCanGranted() {
-        return roleMapper.selectListInScope(Wrappers.lambdaQuery(SysRole.class).
-                eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE));
+    public List<SelectVO> listSelect(String roleName) {
+        return roleMapper.selectLists(Wrappers.lambdaQuery(SysRole.class)
+                .select(SysRole::getRoleId, SysRole::getRoleName)
+                .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(roleName), SysRole::getRoleName, roleName)
+        ).stream().map(SelectVO::new).collect(Collectors.toList());
     }
 
     @Override
@@ -76,10 +82,10 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public String getRoleGroup() {
-        if (LoginUserUtil.isAdmin()) {
-            return "超级管理员";
+        if (LoginUtil.isAdmin()) {
+            return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<SysRole> roles = this.listByUserId(LoginUserUtil.getUserId());
+        List<SysRole> roles = this.listByUserId(LoginUtil.getUserId());
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }
 
@@ -174,7 +180,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
         if (userRoleMapper.countByRoleIds(roleIds) > 0) {
-            throw new BusinessExceptionI18n("business.allocated");
+            throw new BusinessException("business.allocated");
         }
     }
 

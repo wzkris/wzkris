@@ -1,7 +1,6 @@
 package com.wzkris.gateway.filter;
 
 import cn.hutool.core.util.IdUtil;
-import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
@@ -16,7 +15,6 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -41,22 +39,18 @@ import java.util.stream.Collectors;
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
 
-    private static final ExecutorService executorService = new ThreadPoolExecutor(
+    private static final ExecutorService executor = new ThreadPoolExecutor(
             Runtime.getRuntime().availableProcessors() * 3,
             Runtime.getRuntime().availableProcessors() * 3 * 2,
             10L,
             TimeUnit.SECONDS,
             new SynchronousQueue<>(),
-            new DefaultThreadFactory("token-requestid-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("token_request_id")),
+            new DefaultThreadFactory("pre-requestfilter-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("gateway-http-group")),
             new ThreadPoolExecutor.CallerRunsPolicy()
     );
 
     @Autowired
     private PermitAllProperties permitAllProperties;
-
-    @Lazy
-    @Autowired
-    private RemoteTokenApi remoteTokenApi;
 
     @Bean
     @ConditionalOnMissingBean
@@ -82,7 +76,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         }
 
         // 分布式日志追踪ID
-        mutate.header(CommonConstants.TRACING_ID, IdUtil.fastUUID());
+        mutate.header(CommonConstants.X_TRACING_ID, IdUtil.fastUUID());
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }

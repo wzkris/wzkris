@@ -1,0 +1,21 @@
+package com.wzkris.common.core.exception.request;
+
+import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.exception.BaseException;
+
+/**
+ * @author : wzkris
+ * @version : V1.0.0
+ * @description : 限流异常
+ * @date : 2025/02/17 09:01
+ */
+public final class TooManyRequestException extends BaseException {
+
+    public TooManyRequestException() {
+        this(BizCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
+    }
+
+    public TooManyRequestException(int biz, String code, Object... args) {
+        super("限流异常", biz, code, args, null);
+    }
+}

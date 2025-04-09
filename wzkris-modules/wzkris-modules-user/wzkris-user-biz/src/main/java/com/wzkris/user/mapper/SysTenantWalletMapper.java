@@ -17,10 +17,10 @@ import java.math.BigDecimal;
 public interface SysTenantWalletMapper extends BaseMapperPlus<SysTenantWallet> {
 
     // 增加余额
-    @Update("UPDATE sys_tenant_wallet SET balance = balance + #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0")
+    @Update("UPDATE biz_sys.sys_tenant_wallet SET balance = balance + #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0")
     int incryBalance(@Param("tenantId") Long tenantId, @Param("amount") BigDecimal amount);
 
     // 扣减余额
-    @Update("UPDATE sys_tenant_wallet SET balance = balance - #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0 AND balance >= #{amount}")
+    @Update("UPDATE biz_sys.sys_tenant_wallet SET balance = balance - #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0 AND balance >= #{amount}")
     int decryBalance(@Param("tenantId") Long tenantId, @Param("amount") BigDecimal amount);
 }

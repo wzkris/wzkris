@@ -1,6 +1,7 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysRole;
+import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
 
 import java.util.Collection;
@@ -15,11 +16,11 @@ import java.util.List;
 public interface SysRoleService {
 
     /**
-     * 查询可授权角色
+     * 查询可选择角色
      *
      * @return 角色列表
      */
-    List<SysRole> listCanGranted();
+    List<SelectVO> listSelect(String roleName);
 
     /**
      * 根据用户ID查询关联角色(正常状态)
@@ -27,7 +28,7 @@ public interface SysRoleService {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRole> listByUserId(@Nullable Long userId);
+    List<SysRole> listByUserId(Long userId);
 
     /**
      * 根据用户ID查询关联角色ID(正常状态)
@@ -35,7 +36,7 @@ public interface SysRoleService {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<Long> listIdByUserId(@Nullable Long userId);
+    List<Long> listIdByUserId(Long userId);
 
     /**
      * 获取当前角色组

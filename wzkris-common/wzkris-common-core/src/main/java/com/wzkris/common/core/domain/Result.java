@@ -2,7 +2,7 @@ package com.wzkris.common.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.BusinessException;
+import com.wzkris.common.core.exception.service.GenericException;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -59,12 +59,24 @@ public class Result<T> implements Serializable {
         return resp(BizCode.OK.value(), data, BizCode.OK.desc());
     }
 
-    public static <T> Result<T> fail() {
-        return fail(BizCode.FAIL.desc());
+    public static <T> Result<T> error400(String message) {
+        return resp(BizCode.BAD_REQUEST, message);
     }
 
-    public static <T> Result<T> fail(String message) {
-        return resp(BizCode.FAIL, message);
+    public static <T> Result<T> error412(String message) {
+        return resp(BizCode.PRECONDITION_FAILED, message);
+    }
+
+    public static <T> Result<T> error500(String message) {
+        return resp(BizCode.INTERNAL_ERROR, message);
+    }
+
+    public static <T> Result<T> INVOKE_FAIL() {
+        return resp(BizCode.INVOKE_FAIL);
+    }
+
+    public static <T> Result<T> RPC_ERROR() {
+        return resp(BizCode.RPC_ERROR);
     }
 
     public static <T> Result<T> resp(BizCode bizCode) {
@@ -91,10 +103,10 @@ public class Result<T> implements Serializable {
      * 校验返回结果是否正常，若不是则抛出业务异常
      */
     @JsonIgnore
-    public T checkData() throws BusinessException {
+    public T checkData() throws GenericException {
         if (this.isSuccess()) {
             return this.data;
         }
-        throw new BusinessException(this.code, this.message);
+        throw new GenericException(this.code, this.message);
     }
 }

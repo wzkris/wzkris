@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,16 +15,8 @@ import java.util.List;
  */
 @Data
 @RefreshScope
-@ConfigurationProperties(prefix = "security.ignore")
+@ConfigurationProperties(prefix = "security")
 public class PermitAllProperties {
 
-    /**
-     * 公共配置
-     */
-    private List<String> commons;
-
-    /**
-     * 自定义配置
-     */
-    private List<String> customs;
+    private List<String> ignores = new ArrayList<>();
 }

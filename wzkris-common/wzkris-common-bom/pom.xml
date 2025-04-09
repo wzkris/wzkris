@@ -25,6 +25,13 @@
             <!-- 核心模块 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-captcha</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
                 <artifactId>wzkris-common-core</artifactId>
                 <version>${revision}</version>
             </dependency>
@@ -74,7 +81,7 @@
             <!--rpc服务 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-openfeign</artifactId>
+                <artifactId>wzkris-common-dubbo</artifactId>
                 <version>${revision}</version>
             </dependency>
 

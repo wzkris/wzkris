@@ -2,9 +2,9 @@ package com.wzkris.user.config;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.exception.BusinessException;
+import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.security.thread.TracingIdRunnable;
-import org.jetbrains.annotations.NotNull;
+import jakarta.annotation.Nonnull;
 import org.slf4j.MDC;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ public class AsyncConfig implements AsyncConfigurer {
             if (ArrayUtil.isNotEmpty(objects)) {
                 sb.append(", Parameter value - ").append(Arrays.toString(objects));
             }
-            throw new BusinessException(sb.toString());
+            throw new GenericException(sb.toString());
         };
     }
 
@@ -60,8 +60,8 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         executor.setThreadFactory(new ThreadFactory() {
             @Override
-            public Thread newThread(@NotNull Runnable r) {
-                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.TRACING_ID)));
+            public Thread newThread(@Nonnull Runnable r) {
+                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.X_TRACING_ID)));
             }
         });
         executor.setDaemon(true);

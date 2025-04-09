@@ -1,6 +1,7 @@
 package com.wzkris.user.domain.req;
 
 import com.wzkris.common.core.annotation.EnumsCheck;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.user.domain.SysDept;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -18,6 +19,7 @@ import org.hibernate.validator.constraints.Range;
 @Schema(description = "系统部门添加修改参数体")
 public class SysDeptReq {
 
+    @NotNull(groups = ValidationGroups.Update.class, message = "id {validate.notnull}")
     private Long deptId;
 
     @Schema(description = "租户ID")
@@ -27,7 +29,7 @@ public class SysDeptReq {
     private Long parentId;
 
     @Schema(description = "祖级列表")
-    private String ancestors;
+    private Long[] ancestors;
 
     @NotBlank(message = "{desc.dept}{desc.name}" + "{validate.notnull}")
     @Size(min = 2, max = 30, message = "{desc.dept}{desc.name}" + "{validate.size.illegal}")

@@ -2,14 +2,15 @@ package com.wzkris.common.security.oauth2;
 
 import com.wzkris.auth.api.RemoteTokenApi;
 import com.wzkris.common.security.config.PermitAllProperties;
-import com.wzkris.common.security.oauth2.filter.TracingLogFilter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.handler.CustomOpaqueTokenIntrospector;
 import com.wzkris.common.security.oauth2.resolver.CustomBearerTokenResolver;
+import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
@@ -18,10 +19,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 /**
  * @author : wzkris
@@ -37,6 +36,7 @@ public final class ResourceServerConfig {
 
     private final PermitAllProperties permitAllProperties;
 
+    @DubboReference
     private final RemoteTokenApi remoteTokenApi;
 
     @Bean
@@ -48,18 +48,12 @@ public final class ResourceServerConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
                             // 配置url白名单
-                            if (permitAllProperties.getCommons() != null) {
-                                authorize.requestMatchers(permitAllProperties.getCommons().toArray(String[]::new)).permitAll();
-                            }
-                            if (permitAllProperties.getCustoms() != null) {
-                                authorize.requestMatchers(permitAllProperties.getCustoms().toArray(String[]::new)).permitAll();
-                            }
-                            authorize.requestMatchers("/assets/**", "/login", "/activate").permitAll()
+                            authorize.requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new)).permitAll()
+                                    .requestMatchers("/assets/**", "/login", "/activate").permitAll()
                                     .anyRequest().authenticated();
                         }
                 )
                 .formLogin(Customizer.withDefaults())
-                .addFilterBefore(new TracingLogFilter(), SecurityContextHolderFilter.class)
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
@@ -88,7 +82,7 @@ public final class ResourceServerConfig {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new PasswordEncoderDelegate();
     }
 }
 

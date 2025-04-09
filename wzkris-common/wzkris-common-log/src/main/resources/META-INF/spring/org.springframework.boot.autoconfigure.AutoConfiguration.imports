@@ -1,2 +1,2 @@
 com.wzkris.common.log.annotation.aspect.OperateLogAspect
-com.wzkris.common.log.interceptor.TracingLogInterceptor
+com.wzkris.common.log.filter.TracingLogFilter

@@ -12,7 +12,7 @@ com.wzkris
 │       └── wzkris-common-excel                        // excel处理
 │       └── wzkris-common-loadbanlancer                // rpc均衡负载
 │       └── wzkris-common-log                          // 日志记录
-│       └── wzkris-common-openfeign                    // rpc
+│       └── wzkris-common-dubbo                        // rpc
 │       └── wzkris-common-orm                          // 持久层框架
 │       └── wzkris-common-redis                        // 缓存服务
 │       └── wzkris-common-seata                        // 分布式事务
@@ -36,7 +36,7 @@ com.wzkris
 ## 内置功能
 
 1. 顾客管理：APP端用户信息管理。
-2. 后台用户：租户下的登录账户信息（管理员属于特殊租户）。
+2. 系统用户：租户下的登录账户信息（管理员属于特殊租户）。
 2. 租户管理：租户信息，租户套餐，租户钱包。
 2. 客户端管理：OAuth2客户端。
 3. 部门管理：配置部门，树结构展现支持数据权限。
@@ -57,7 +57,7 @@ com.wzkris
 - 后端框架：SpringCloud + SringCloudAlibaba + SpringBoot
 - 安全框架：Spring-Authorization-Server
 - 持久层框架：Mybatis-Plus
-- RPC框架：OpenFeign
+- RPC框架：Dubbo3
 - 定时任务：xxl-job
 - 中间件：Nacos + Mysql + Redis（至少需要这三个组件项目才可以运行，MQ根据需要自行搭配Spring-stream）
 

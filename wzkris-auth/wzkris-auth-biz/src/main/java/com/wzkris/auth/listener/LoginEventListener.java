@@ -17,6 +17,7 @@ import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.request.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -32,10 +33,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LoginEventListener {
 
+    @DubboReference
     private final RemoteLogApi remoteLogApi;
 
+    @DubboReference
     private final RemoteSysUserApi remoteSysUserApi;
 
+    @DubboReference
     private final RemoteAppUserApi remoteAppUserApi;
 
     /**
@@ -61,7 +65,7 @@ public class LoginEventListener {
                 // 更新用户登录信息
                 LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
                 loginInfoReq.setLoginIp(ipAddr);
-                loginInfoReq.setLoginDate(DateUtil.current());
+                loginInfoReq.setLoginDate(DateUtil.date());
                 remoteSysUserApi.updateLoginInfo(loginInfoReq);
             }
             // 插入后台登陆日志
@@ -69,7 +73,7 @@ public class LoginEventListener {
             loginLogReq.setUserId(loginUser.getUserId());
             loginLogReq.setUsername(loginUser.getUsername());
             loginLogReq.setTenantId(loginUser.getTenantId());
-            loginLogReq.setLoginTime(DateUtil.current());
+            loginLogReq.setLoginTime(DateUtil.date());
             loginLogReq.setLoginIp(ipAddr);
             loginLogReq.setGrantType(grantType);
             loginLogReq.setStatus(status);
@@ -88,7 +92,7 @@ public class LoginEventListener {
             // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(DateUtil.current());
+            loginInfoReq.setLoginDate(DateUtil.date());
             remoteAppUserApi.updateLoginInfo(loginInfoReq);
         }
     }

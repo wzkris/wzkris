@@ -17,10 +17,10 @@ import java.math.BigDecimal;
 public interface AppUserWalletMapper extends BaseMapperPlus<AppUserWallet> {
 
     // 增加余额
-    @Update("UPDATE app_user_wallet SET balance = balance + #{amount} WHERE user_id = #{userId} AND #{amount} > 0")
+    @Update("UPDATE biz_app.app_user_wallet SET balance = balance + #{amount} WHERE user_id = #{userId} AND #{amount} > 0")
     int incryBalance(@Param("userId") Long userId, @Param("amount") BigDecimal amount);
 
     // 扣减余额
-    @Update("UPDATE app_user_wallet SET balance = balance - #{amount} WHERE user_id = #{userId} AND #{amount} > 0 AND balance >= #{amount}")
+    @Update("UPDATE biz_app.app_user_wallet SET balance = balance - #{amount} WHERE user_id = #{userId} AND #{amount} > 0 AND balance >= #{amount}")
     int decryBalance(@Param("userId") Long userId, @Param("amount") BigDecimal amount);
 }

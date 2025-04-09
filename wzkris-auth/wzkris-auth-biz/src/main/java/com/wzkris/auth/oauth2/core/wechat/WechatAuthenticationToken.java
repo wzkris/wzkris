@@ -23,21 +23,22 @@ public final class WechatAuthenticationToken extends CommonAuthenticationToken {
 
     private final LoginType loginType;
 
-    private final String channel;
+    private final String identifierType;
 
     private final String wxCode;
 
     public WechatAuthenticationToken(LoginType loginType,
-                                     String channel,
+                                     String identifierType,
                                      String wxCode,
                                      Authentication clientPrincipal,
                                      Set<String> scopes,
                                      Map<String, Object> additionalParameters) {
         super(new AuthorizationGrantType(OAuth2GrantTypeConstant.WECHAT), clientPrincipal, scopes, additionalParameters);
-        Assert.notNull(loginType, "userType cannot be null");
-        Assert.notNull(wxCode, "code cannot be null");
+        Assert.notNull(loginType, "loginType cannot be null");
+        Assert.notNull(identifierType, "identifierType cannot be null");
+        Assert.notNull(wxCode, "wxCode cannot be null");
         this.loginType = loginType;
-        this.channel = channel;
+        this.identifierType = identifierType;
         this.wxCode = wxCode;
     }
 }

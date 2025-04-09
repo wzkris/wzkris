@@ -23,23 +23,28 @@ public class MenuConstants {
     public static final String TYPE_BUTTON = "B";
 
     /**
-     * 菜单类型（字段权限）
+     * 菜单类型（内链）
      */
-    public static final String TYPE_FIELD = "F";
+    public static final String TYPE_INNERLINK = "I";
 
     /**
-     * Layout组件标识
+     * 菜单类型（外链）
      */
-    public final static String LAYOUT = "Layout";
+    public static final String TYPE_OUTLINK = "O";
 
     /**
-     * ParentView组件标识
+     * 内嵌组件
      */
-    public final static String PARENT_VIEW = "ParentView";
+    public final static String IFRAME_VIEW = "IFrameView";
 
     /**
-     * InnerLink组件标识
+     * 外链组件
      */
-    public final static String INNER_LINK = "InnerLink";
+    public final static String LINK = "link";
+
+    /**
+     * 基础布局组件
+     */
+    public final static String LAYOUT = "BasicLayout";
 
 }

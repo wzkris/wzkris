@@ -12,17 +12,17 @@ import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.system.api.RemoteLogApi;
 import com.wzkris.system.api.domain.request.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -50,10 +50,11 @@ public class OperateLogAspect {
 
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
-    @Autowired
-    private RemoteLogApi remoteLogApi;
+    @DubboReference
+    private final RemoteLogApi remoteLogApi;
 
-    public OperateLogAspect() {
+    public OperateLogAspect(RemoteLogApi remoteLogApi) {
+        this.remoteLogApi = remoteLogApi;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);// 配置null不序列化, 避免大量无用参数存入DB
     }
 
@@ -81,12 +82,12 @@ public class OperateLogAspect {
         try {
             // *========数据库日志=========*//
             OperLogReq operLogReq = new OperLogReq();
-            operLogReq.setUserId(LoginUserUtil.getUserId());
-            operLogReq.setOperName(LoginUserUtil.getUsername());
-            operLogReq.setTenantId(LoginUserUtil.getTenantId());
+            operLogReq.setUserId(LoginUtil.getUserId());
+            operLogReq.setOperName(LoginUtil.getUsername());
+            operLogReq.setTenantId(LoginUtil.getTenantId());
             operLogReq.setOperType(operateLog.operateType().getValue());
             operLogReq.setStatus(OperateStatus.SUCCESS.value());
-            operLogReq.setOperTime(DateUtil.current());
+            operLogReq.setOperTime(DateUtil.date());
             // 请求的地址
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String ip = ServletUtil.getClientIP(request);

@@ -11,10 +11,6 @@
 
     <artifactId>wzkris-auth-biz</artifactId>
 
-    <properties>
-        <kaptcha.version>2.3.3</kaptcha.version>
-    </properties>
-
     <dependencies>
         <!-- SpringCloud Alibaba Nacos -->
         <dependency>
@@ -28,15 +24,9 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- Spring OAuth2授权服务器-->
         <dependency>
             <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-authorization-server</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            <artifactId>spring-security-oauth2-client</artifactId>
         </dependency>
 
         <!--模板引擎-->
@@ -49,6 +39,18 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+
+        <!-- 验证码-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-captcha</artifactId>
+        </dependency>
+
+        <!-- 日志追踪-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-log</artifactId>
         </dependency>
 
         <!-- Sentinel -->
@@ -87,22 +89,10 @@
             <artifactId>wzkris-common-security</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-weixin-sdk</artifactId>
-        </dependency>
-
         <!-- 接口文档 -->
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-swagger</artifactId>
-        </dependency>
-
-        <!-- 验证码 -->
-        <dependency>
-            <groupId>pro.fessional</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>${kaptcha.version}</version>
         </dependency>
 
         <!-- springBoot test-->

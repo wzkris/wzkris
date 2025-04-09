@@ -19,7 +19,7 @@ public class TracingIdRunnable implements Runnable {
 
     @Override
     public void run() {
-        MDC.put(CommonConstants.TRACING_ID, traceId);
+        MDC.put(CommonConstants.X_TRACING_ID, traceId);
         try {
             delegate.run();
         } finally {

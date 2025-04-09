@@ -1,6 +1,7 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,21 +13,20 @@ import lombok.Getter;
  * @author wzkris
  */
 @Data
+@TableName(schema = "biz_app")
 public class AppUserThirdinfo {
 
     @TableId
     private Long userId;
 
-    private String openid;
-
-    private String appId;
+    private String identifier;
 
     @Schema(description = "渠道")
-    private String channel;
+    private String identifierType;
 
     @Getter
     @AllArgsConstructor
-    public enum Channel {
+    public enum IdentifierType {
 
         WX_XCX("wx_xcx"),
 

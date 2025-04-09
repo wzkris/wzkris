@@ -3,6 +3,8 @@ package com.wzkris.system.domain.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @Schema(description = "公告信息")
 public class SysAnnouncementVO {
@@ -16,5 +18,5 @@ public class SysAnnouncementVO {
     private String content;
 
     @Schema(description = "创建时间")
-    private Long createAt;
+    private Date createAt;
 }

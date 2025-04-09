@@ -3,6 +3,8 @@ package com.wzkris.user.api.domain.response;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
+import java.io.Serializable;
+
 /**
  * app用户传输层
  *
@@ -10,7 +12,7 @@ import lombok.experimental.FieldNameConstants;
  */
 @Data
 @FieldNameConstants
-public class AppUserResp {
+public class AppUserResp implements Serializable {
 
     private Long userId;
 

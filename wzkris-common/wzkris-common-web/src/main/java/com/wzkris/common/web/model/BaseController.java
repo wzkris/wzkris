@@ -1,14 +1,14 @@
 package com.wzkris.common.web.model;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.date.DateUtil;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.orm.page.Page;
 import com.wzkris.common.orm.utils.PageUtil;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
 import java.beans.PropertyEditorSupport;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class BaseController {
     }
 
     /**
-     * 将前台传递过来的日期格式的字符串，自动转化为Date类型
+     * 将前台传递过来的日期格式的字符串，自动转化为对应类型
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -44,9 +44,16 @@ public class BaseController {
         binder.registerCustomEditor(LocalDateTime.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) {
-                setValue(LocalDateTimeUtil.parse(text));
+                setValue(DateUtil.parse(text).toLocalDateTime());
             }
         });
+        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                setValue(DateUtil.parse(text).toLocalDateTime().toLocalDate());
+            }
+        });
+
     }
 
     /**
@@ -80,28 +87,8 @@ public class BaseController {
     /**
      * 返回失败消息
      */
-    public <T> Result<T> fail() {
-        return Result.fail();
-    }
-
-    /**
-     * 返回失败消息
-     */
-    public <T> Result<T> fail(String errMsg) {
-        return Result.fail(errMsg);
-    }
-
-    /**
-     * 返回失败消息
-     */
-    public <T> Result<T> fail18n(String msgCode) {
-        String msg;
-        if (msgCode.startsWith("{")) {
-            msg = I18nUtil.messageRegex(msgCode);
-        } else {
-            msg = I18nUtil.message(msgCode);
-        }
-        return Result.fail(msg);
+    public <T> Result<T> error412(String errMsg) {
+        return Result.error412(errMsg);
     }
 
     /**
@@ -111,7 +98,7 @@ public class BaseController {
      * @return 操作结果
      */
     protected <T> Result<T> toRes(int rows) {
-        return rows > 0 ? ok() : fail();
+        return toRes(rows > 0);
     }
 
     /**
@@ -121,7 +108,7 @@ public class BaseController {
      * @return 操作结果
      */
     protected <T> Result<T> toRes(boolean result) {
-        return result ? ok() : fail();
+        return result ? ok() : Result.INVOKE_FAIL();
     }
 
 }

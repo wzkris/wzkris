@@ -24,11 +24,11 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
      * 带权限查询列表
      */
     @Select("""
-            SELECT DISTINCT r.* FROM sys_role r LEFT JOIN sys_role_dept rd ON r.role_id = rd.role_id
+            SELECT DISTINCT r.* FROM biz_sys.sys_role r LEFT JOIN biz_sys.sys_role_dept rd ON r.role_id = rd.role_id
             ${ew.customSqlSegment}
             """)
     @DeptScope(tableAlias = "rd")
-    List<SysRole> selectListInScope(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
+    List<SysRole> selectLists(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
 
     /**
      * 校验是否有该角色操作权限
@@ -39,8 +39,8 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
     @DeptScope(tableAlias = "rd")
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN 1 ELSE 0 END AS match_result
-                        FROM sys_role r LEFT JOIN sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
+                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN 1 ELSE 0 END
+                        FROM biz_sys.sys_role r LEFT JOIN biz_sys.sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         <if test="roleId != null and roleId != ''">
                             #{roleId}

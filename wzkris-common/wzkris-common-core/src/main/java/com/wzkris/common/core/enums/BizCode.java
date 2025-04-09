@@ -10,13 +10,10 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum BizCode {
-    FAIL(1, "Operate Fail"),
     OK(0, "Success"),
     BAD_REQUEST(400, "Bad Request"),
     // 401未认证
     UNAUTHORIZED(401, "Unauthorized"),
-    // 401子状态 非法token
-    INVALID_TOKEN(450, "Invalid token"),
     // 403禁止访问
     FORBID(403, "Forbidden"),
     NOT_FOUND(404, "Not Found"),
@@ -29,10 +26,12 @@ public enum BizCode {
     BAD_GATEWAY(502, "Bad Gateway"),
     // 服务不可用
     SERVICE_UNAVAILABLE(503, "Service Unavailable"),
+    // 调用失败
+    INVOKE_FAIL(1000, "Invoke Fail"),
     // 远程调用异常
-    RPC_INVOCATION(1001, "Rpc Error"),
+    RPC_ERROR(1100, "Rpc Error"),
     // 三方服务异常
-    THIRD_SERVICE(3003, "Third Service Error");
+    THIRD_SERVICE(3000, "Invoke Third Service Error");
 
     // 状态码
     private final int code;

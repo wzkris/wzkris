@@ -48,7 +48,7 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
             return null;// never run this line
         }
 
-        AuthBaseUser baseUser = templateOptional.get().loadUserByWechat(authenticationToken.getChannel(), authenticationToken.getWxCode());
+        AuthBaseUser baseUser = templateOptional.get().loadUserByWechat(authenticationToken.getIdentifierType(), authenticationToken.getWxCode());
 
         if (baseUser == null) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");

@@ -5,7 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
@@ -14,11 +15,10 @@ import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -42,12 +42,12 @@ public class SysUserServiceImpl implements SysUserService {
 
     private final SysUserPostMapper userPostMapper;
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoderDelegate passwordEncoder;
 
     @Override
     public List<SysUser> list(SysUserQueryReq queryReq) {
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
-        return userMapper.selectListInScope(lqw);
+        return userMapper.selectLists(lqw);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
         lqw.in(SysUser::getUserId, userIds);
-        return userMapper.selectListInScope(lqw);
+        return userMapper.selectLists(lqw);
     }
 
     @Override
@@ -69,13 +69,15 @@ public class SysUserServiceImpl implements SysUserService {
         if (!CollectionUtils.isEmpty(userIds)) {
             lqw.notIn(SysUser::getUserId, userIds);
         }
-        return userMapper.selectListInScope(lqw);
+        return userMapper.selectLists(lqw);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertUser(SysUser user, List<Long> roleIds, List<Long> postIds) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getPassword() != null && !passwordEncoder.isEncode(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         boolean success = userMapper.insert(user) > 0;
         if (success) {
             // 新增用户与角色管理
@@ -88,7 +90,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateUser(SysUser user, List<Long> roleIds, List<Long> postIds) {
-        if (StringUtil.isNotBlank(user.getPassword())) {
+        if (user.getPassword() != null && !passwordEncoder.isEncode(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         boolean success = userMapper.updateById(user) > 0;
@@ -104,6 +106,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(List<Long> userIds) {
         userMapper.deleteByIds(userIds);
         userRoleMapper.deleteByUserIds(userIds);
@@ -149,7 +152,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public boolean checkUsedByUsername(@Nullable Long userId, @NotNull String username) {
+    public boolean checkUsedByUsername(@Nullable Long userId, @Nonnull String username) {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getUsername, username)
@@ -159,7 +162,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public boolean checkUsedByPhoneNumber(@org.jetbrains.annotations.Nullable Long userId, @NotNull String phonenumber) {
+    public boolean checkUsedByPhoneNumber(@Nullable Long userId, @Nonnull String phonenumber) {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getPhoneNumber, phonenumber)
@@ -174,8 +177,8 @@ public class SysUserServiceImpl implements SysUserService {
             if (userIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
                 throw new AccessDeniedException("禁止访问超级管理员数据");
             }
-            if (userIds.contains(LoginUserUtil.getUserId())) {
-                throw new AccessDeniedException("userId：‘" + LoginUserUtil.getUserId() + "'禁止访问自身数据");
+            if (userIds.contains(LoginUtil.getUserId())) {
+                throw new AccessDeniedException("userId：‘" + LoginUtil.getUserId() + "'禁止访问自身数据");
             }
             if (!userMapper.checkDataScopes(userIds)) {
                 throw new AccessDeniedException("无此用户数据访问权限");

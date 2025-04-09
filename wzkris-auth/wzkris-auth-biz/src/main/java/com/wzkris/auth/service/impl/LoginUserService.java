@@ -4,10 +4,9 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.oauth2.constants.OAuth2GrantTypeConstant;
-import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -47,15 +46,10 @@ public class LoginUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginUser loadUserByPhoneNumber(String phoneNumber) {
-        Result<SysUserResp> result = remoteSysUserApi.getByPhoneNumber(phoneNumber);
-        if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
-        }
-
-        SysUserResp userResp = result.getData();
+        SysUserResp userResp = remoteSysUserApi.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.lockAccount(phoneNumber);
+            captchaService.lockAccount(phoneNumber, 600);
             return null;
         }
 
@@ -70,15 +64,10 @@ public class LoginUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginUser loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<SysUserResp> result = remoteSysUserApi.getByUsername(username);
-        if (!result.isSuccess()) {
-            OAuth2ExceptionUtil.throwError(result.getCode(), result.getMessage());
-        }
-
-        SysUserResp userResp = result.getData();
+        SysUserResp userResp = remoteSysUserApi.getByUsername(username);
 
         if (userResp == null) {
-            captchaService.lockAccount(username);
+            captchaService.lockAccount(username, 600);
             return null;
         }
 
@@ -108,9 +97,8 @@ public class LoginUserService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<SysPermissionResp> permissionDTOResult = remoteSysUserApi
+        SysPermissionResp permissions = remoteSysUserApi
                 .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
-        SysPermissionResp permissions = permissionDTOResult.checkData();
 
         LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));
         loginUser.setAdmin(permissions.getAdmin());
@@ -130,8 +118,7 @@ public class LoginUserService extends UserInfoTemplate {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         } else if (ObjUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
-        } else if (userResp.getTenantExpired() != CommonConstants.NOT_EXPIRED_TIME
-                && userResp.getTenantExpired() < System.currentTimeMillis()) {
+        } else if (userResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
         } else if (ObjUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
