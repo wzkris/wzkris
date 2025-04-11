@@ -15,7 +15,6 @@ import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -107,26 +106,30 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByIds(List<Long> userIds) {
-        userMapper.deleteByIds(userIds);
-        userRoleMapper.deleteByUserIds(userIds);
-        userPostMapper.deleteByUserIds(userIds);
+    public boolean deleteByIds(List<Long> userIds) {
+        boolean success = userMapper.deleteByIds(userIds) > 0;
+        if (success) {
+            userRoleMapper.deleteByUserIds(userIds);
+            userPostMapper.deleteByUserIds(userIds);
+        }
+        return success;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void allocateRoles(Long userId, List<Long> roleIds) {
+    public boolean allocateRoles(Long userId, List<Long> roleIds) {
         userRoleMapper.deleteByUserId(userId);
-        this.insertUserRole(userId, roleIds);
+        return this.insertUserRole(userId, roleIds);
     }
 
-    private void insertUserRole(Long userId, List<Long> roleIds) {
+    private boolean insertUserRole(Long userId, List<Long> roleIds) {
         if (ObjUtil.isNotEmpty(roleIds)) {
             List<SysUserRole> list = roleIds.stream()
                     .map(roleId -> new SysUserRole(userId, roleId))
                     .toList();
-            userRoleMapper.insertBatch(list);
+            return userRoleMapper.insertBatch(list) > 0;
         }
+        return false;
     }
 
     private void insertUserPost(Long userId, List<Long> postIds) {
@@ -152,7 +155,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public boolean checkUsedByUsername(@Nullable Long userId, @Nonnull String username) {
+    public boolean checkExistByUsername(@Nullable Long userId, String username) {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getUsername, username)
@@ -162,7 +165,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public boolean checkUsedByPhoneNumber(@Nullable Long userId, @Nonnull String phonenumber) {
+    public boolean checkExistByPhoneNumber(@Nullable Long userId, String phonenumber) {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getPhoneNumber, phonenumber)

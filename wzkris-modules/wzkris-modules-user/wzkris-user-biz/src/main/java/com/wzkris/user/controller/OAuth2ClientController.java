@@ -119,10 +119,10 @@ public class OAuth2ClientController extends BaseController {
 
     @Operation(summary = "导出")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "导出客户端数据", operateType = OperateType.EXPORT)
-    @PostMapping("/export")
+    @GetMapping("/export")
     @CheckSystemPerms("oauth2_client:export")
-    public void export(HttpServletResponse response, OAuth2ClientQueryReq req) {
-        List<OAuth2Client> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
+    public void export(HttpServletResponse response, OAuth2ClientQueryReq queryReq) {
+        List<OAuth2Client> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(queryReq));
         List<OAuth2ClientExport> convert = BeanUtil.convert(list, OAuth2ClientExport.class);
         ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, response);
     }

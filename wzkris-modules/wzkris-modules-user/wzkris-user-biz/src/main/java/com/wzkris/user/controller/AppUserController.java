@@ -80,10 +80,10 @@ public class AppUserController extends BaseController {
 
     @Operation(summary = "导出")
     @OperateLog(title = "用户管理", operateType = OperateType.EXPORT)
-    @PostMapping("/export")
+    @GetMapping("/export")
     @CheckSystemPerms("app_user:export")
-    public void export(HttpServletResponse response, AppUserQueryReq req) {
-        List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
+    public void export(HttpServletResponse response, AppUserQueryReq queryReq) {
+        List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(queryReq));
         List<AppUserExport> convert = BeanUtil.convert(list, AppUserExport.class);
         ExcelUtil.exportExcel(convert, "用户数据", AppUserExport.class, response);
     }

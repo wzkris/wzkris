@@ -11,7 +11,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  *
  * @author wzkris
  */
-public class PageSupport {
+public final class PageSupport {
 
     /**
      * 当前记录起始索引
@@ -27,13 +27,13 @@ public class PageSupport {
      * 封装分页对象
      */
     public static <T> Page<T> initPage() {
-        Page<T> page = new Page<>();
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
-            return page;
+            return new Page<>();
         }
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 
+        Page<T> page = new Page<>();
         page.setPageNum(Convert.toLong(request.getParameter(PAGE_NUM), page.getPageNum()));
         page.setPageSize(Convert.toLong(request.getParameter(PAGE_SIZE), page.getPageSize()));
         return page;

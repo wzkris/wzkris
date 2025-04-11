@@ -67,21 +67,21 @@ public interface SysRoleService {
      * @param roleId  角色ID
      * @param userIds 需要删除的用户数据ID
      */
-    void allocateUsers(Long roleId, List<Long> userIds);
+    boolean allocateUsers(Long roleId, List<Long> userIds);
 
     /**
      * 批量删除角色信息
      *
      * @param roleIds 需要删除的角色ID
      */
-    void deleteByIds(List<Long> roleIds);
+    boolean deleteByIds(List<Long> roleIds);
 
     /**
      * 校验角色是否被用户关联
      *
      * @param roleIds 角色组
      */
-    void checkRoleUse(List<Long> roleIds);
+    void checkRoleUsed(List<Long> roleIds);
 
     /**
      * 校验是否有角色的数据权限

@@ -11,12 +11,12 @@ import com.wzkris.common.core.exception.BaseException;
  */
 public final class BusinessException extends BaseException {
 
-    public BusinessException(int biz, String code, Object... args) {
-        super("业务异常", biz, code, args, null);
-    }
-
     public BusinessException(String code, Object... args) {
         this(BizCode.INVOKE_FAIL.value(), code, args);
+    }
+
+    public BusinessException(int biz, String code, Object... args) {
+        super("业务异常", biz, code, args, null);
     }
 
 }

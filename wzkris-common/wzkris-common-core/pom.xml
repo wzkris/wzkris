@@ -78,18 +78,6 @@
             <artifactId>hutool-core</artifactId>
         </dependency>
 
-        <!-- hutool http -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-http</artifactId>
-        </dependency>
-
-        <!-- hutool加解密 -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-crypto</artifactId>
-        </dependency>
-
         <!-- Java Servlet -->
         <dependency>
             <groupId>jakarta.servlet</groupId>

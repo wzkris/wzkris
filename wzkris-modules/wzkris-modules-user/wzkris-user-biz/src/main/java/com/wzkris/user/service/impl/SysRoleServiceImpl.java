@@ -24,7 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -122,14 +125,15 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public void allocateUsers(Long roleId, List<Long> userIds) {
+    public boolean allocateUsers(Long roleId, List<Long> userIds) {
         if (ObjUtil.isNotEmpty(userIds)) {
             // 新增用户与角色管理
             List<SysUserRole> list = userIds.stream()
                     .map(userId -> new SysUserRole(userId, roleId))
                     .toList();
-            userRoleMapper.insertBatch(list);
+            return userRoleMapper.insertBatch(list) > 0;
         }
+        return false;
     }
 
     /**
@@ -165,21 +169,24 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByIds(List<Long> roleIds) {
-        // 删除角色与菜单关联
-        roleMenuMapper.deleteByRoleIds(roleIds);
-        // 删除角色与部门关联
-        roleDeptMapper.deleteByRoleIds(roleIds);
-        // 删除角色与用户关联
-        userRoleMapper.deleteByRoleIds(roleIds);
-        roleMapper.deleteByIds(roleIds);
+    public boolean deleteByIds(List<Long> roleIds) {
+        boolean success = roleMapper.deleteByIds(roleIds) > 0;
+        if (success) {
+            // 删除角色与菜单关联
+            roleMenuMapper.deleteByRoleIds(roleIds);
+            // 删除角色与部门关联
+            roleDeptMapper.deleteByRoleIds(roleIds);
+            // 删除角色与用户关联
+            userRoleMapper.deleteByRoleIds(roleIds);
+        }
+        return success;
     }
 
     @Override
-    public void checkRoleUse(List<Long> roleIds) {
+    public void checkRoleUsed(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (userRoleMapper.countByRoleIds(roleIds) > 0) {
+        if (userRoleMapper.checkExistByRoleIds(roleIds)) {
             throw new BusinessException("business.allocated");
         }
     }
@@ -191,7 +198,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     public void checkDataScopes(Collection<Long> roleIds) {
         if (ObjUtil.isNotEmpty(roleIds)) {
-            if (!roleMapper.checkDataScopes(new HashSet<>(roleIds))) {
+            if (!roleMapper.checkDataScopes(roleIds)) {
                 throw new AccessDeniedException("无此角色数据访问权限");
             }
         }

@@ -1,6 +1,7 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.http.HttpUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.net.url.UrlQuery;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -149,7 +150,7 @@ public class SysMenuServiceImpl implements SysMenuService {
                     menu.getIcon(),
                     !menu.getIsVisible(),
                     menu.getIsCache(),
-                    HttpUtil.decodeParamMap(menu.getQuery(), StandardCharsets.UTF_8));
+                    Convert.toMap(String.class, String.class, UrlQuery.of(menu.getQuery(), StandardCharsets.UTF_8).getQueryMap()));
 
             // 处理菜单类型
             if (StringUtil.equals(MenuConstants.TYPE_DIR, menu.getMenuType())) {

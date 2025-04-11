@@ -130,8 +130,8 @@ public class SysTenantController extends BaseController {
     @PostMapping("/add")
     @CheckSystemPerms("sys_tenant:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysTenantReq tenantReq) {
-        if (userService.checkUsedByUsername(null, tenantReq.getUsername())) {
-            return error412("登录账号'" + tenantReq.getUsername() + "'已存在");
+        if (userService.checkExistByUsername(null, tenantReq.getUsername())) {
+            return err412("登录账号'" + tenantReq.getUsername() + "'已存在");
         }
         SysTenant tenant = BeanUtil.convert(tenantReq, SysTenant.class);
 
@@ -176,7 +176,7 @@ public class SysTenantController extends BaseController {
     @CheckSystemPerms("sys_tenant:reset_operpwd")
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
         if (StringUtil.length(req.getPassword()) != 6 || !NumberUtil.isNumber(req.getPassword())) {
-            return error412("操作密码必须为6位数字");
+            return err412("操作密码必须为6位数字");
         }
         SysTenant update = new SysTenant(req.getId());
         update.setOperPwd(passwordEncoder.encode(req.getPassword()));

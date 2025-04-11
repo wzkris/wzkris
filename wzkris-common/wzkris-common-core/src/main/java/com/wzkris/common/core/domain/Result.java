@@ -59,24 +59,20 @@ public class Result<T> implements Serializable {
         return resp(BizCode.OK.value(), data, BizCode.OK.desc());
     }
 
-    public static <T> Result<T> error400(String message) {
+    public static <T> Result<T> err400(String message) {
         return resp(BizCode.BAD_REQUEST, message);
     }
 
-    public static <T> Result<T> error412(String message) {
+    public static <T> Result<T> err412(String message) {
         return resp(BizCode.PRECONDITION_FAILED, message);
     }
 
-    public static <T> Result<T> error500(String message) {
+    public static <T> Result<T> err500(String message) {
         return resp(BizCode.INTERNAL_ERROR, message);
     }
 
-    public static <T> Result<T> INVOKE_FAIL() {
+    public static <T> Result<T> err1000() {
         return resp(BizCode.INVOKE_FAIL);
-    }
-
-    public static <T> Result<T> RPC_ERROR() {
-        return resp(BizCode.RPC_ERROR);
     }
 
     public static <T> Result<T> resp(BizCode bizCode) {
