@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-04-08 13:15:50
+-- Started on 2025-04-11 14:10:05
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1969,17 +1969,12 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450001136	套餐新增	1906263415450000602	5	#	\N	\N	B	0	tenant_package:add	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450001137	套餐修改	1906263415450000602	4	#	\N	\N	B	0	tenant_package:edit	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450001138	套餐删除	1906263415450000602	2	#	\N	\N	B	0	tenant_package:remove	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
-1906263415450001210	客户端详情	1906263415450000700	1	#	\N	\N	B	0	oauth2_client:query	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
-1906263415450001211	客户端修改	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:edit	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450000205	部门管理	1906263415450000002	70	sysdept	user/sysdept/index	\N	M	0	sys_dept:list	carbon:departure	f	t	2024-05-26 12:30:16+08	1	2025-03-28 11:03:44+08	1
 1906263415450000206	角色管理	1906263415450000002	99	sysrole	user/sysrole/index	\N	M	0	sys_role:list	carbon:user-role	f	t	2024-05-26 12:30:16+08	1	2025-03-28 11:00:45+08	1
 1906263415450000208	岗位管理	1906263415450000002	8	syspost	user/syspost/index	\N	M	0	sys_post:list	carbon:user-service-desk	f	t	2024-05-26 12:30:16+08	1	2025-03-28 11:05:10+08	1
 1906263415450001046	字典查询	1906263415450000102	1	#	\N	\N	B	0	sys_dict:query	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:13:44+08	1
 1906263415450001047	字典新增	1906263415450000102	2	#	\N	\N	B	0	sys_dict:add	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:13:34+08	1
 1906263415450001048	字典修改	1906263415450000102	3	#	\N	\N	B	0	sys_dict:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:13:28+08	1
-1906263415450001212	客户端添加	1906263415450000700	3	#	\N	\N	B	0	oauth2_client:add	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
-1906263415450001213	客户端删除	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:remove	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
-1906263415450001214	客户端导出	1906263415450000700	4	#	\N	\N	B	0	oauth2_client:export	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450001215	修改密钥	1906263415450000700	5	#	\N	\N	B	0	oauth2_client:edit_secret	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450002001	用户查询	1906263415450000201	1	#	\N	\N	B	0	app_user:query	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450002002	用户新增	1906263415450000201	2	#	\N	\N	B	0	app_user:add	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
@@ -1997,6 +1992,11 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906272182215585793	商户信息	0	100	tenant	\N	\N	M	0	tenant:info	carbon:information-filled	f	f	2025-03-30 17:07:59.723+08	1	2025-04-07 09:09:08.254+08	1
 1906263415450000003	平台管理	0	80	platform	\N	\N	D	0	\N	carbon:platforms	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:24.342+08	1
 1906263415450000002	用户管理	0	50	user	\N	\N	D	0	\N	carbon:user	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:20.926+08	1
+1906263415450001214	终端导出	1906263415450000700	4	#	\N	\N	B	0	oauth2_client:export	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:11.674+08	1
+1906263415450001212	终端添加	1906263415450000700	3	#	\N	\N	B	0	oauth2_client:add	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:18.31+08	1
+1906263415450001213	终端删除	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:25.507+08	1
+1906263415450001211	终端修改	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:31.062+08	1
+1906263415450001210	终端详情	1906263415450000700	1	#	\N	\N	B	0	oauth2_client:query	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:38.251+08	1
 1906263415450002014	菜单新增	1906263415450000207	2	#	\N	\N	B	0	sys_menu:add	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:17+08	1
 1906263415450002015	菜单修改	1906263415450000207	3	#	\N	\N	B	0	sys_menu:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:10+08	1
 1906263415450002016	菜单删除	1906263415450000207	4	#	\N	\N	B	0	sys_menu:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:05+08	1
@@ -2024,7 +2024,6 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450000304	服务监控	1906263415450000101	5	http://localhost:9100/	\N	\N	O	0	monitor:server:list	carbon:link	f	t	2024-05-26 12:30:16+08	1	2025-03-30 10:08:19+08	1
 1906263415450002143	岗位修改	1906263415450000208	3	#	\N	\N	B	0	sys_post:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:32:42+08	1
 1906263415450002144	岗位删除	1906263415450000208	4	#	\N	\N	B	0	sys_post:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:32:37+08	1
-1906263415450002207	权限授予	1906263415450000206	6	#	\N	\N	B	0	sys_role:auth	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450002208	角色查询	1906263415450000206	1	#	\N	\N	B	0	sys_role:query	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450002209	角色新增	1906263415450000206	2	#	\N	\N	B	0	sys_role:add	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
 1906263415450002210	角色修改	1906263415450000206	3	#	\N	\N	B	0	sys_role:edit	#	f	t	2024-05-26 12:30:16+08	1	2024-05-26 12:30:16+08	1
@@ -2033,6 +2032,8 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450000301	系统接口	1906263415450000101	2	http://localhost:8080/doc.html	\N	\N	I	0	tool:swagger:list	carbon:link	f	t	2024-05-26 12:30:16+08	1	2025-04-01 12:38:18.133+08	1
 1906263415450000303	Nacos控制台	1906263415450000101	4	http://localhost:8848/nacos	\N	\N	O	0	monitor:nacos:list	carbon:link	f	t	2024-05-26 12:30:16+08	1	2025-04-01 12:39:17.991+08	1
 1906263415450000102	字典管理	1906263415450000001	6	sysdict	system/sysdict/index	\N	M	0	sys_dict:list	carbon:text-vertical-alignment	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:20:22.958+08	1
+1910569625749024770	授权角色	1906263415450000203	0	#	\N	\N	B	0	sys_user:grant_role	#	f	t	2025-04-11 13:44:30.104+08	1	2025-04-11 13:44:30.104+08	1
+1906263415450002207	权限授予	1906263415450000206	6	#	\N	\N	B	0	sys_role:grant_user	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 13:55:09.036+08	1
 \.
 
 
@@ -2085,6 +2086,7 @@ COPY biz_sys.sys_role_menu (role_id, menu_id) FROM stdin;
 --
 
 COPY biz_sys.sys_tenant (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, account_limit, role_limit, post_limit, dept_limit, creator_id, create_at, updater_id, update_at) FROM stdin;
+1910557183820165122	1910557183820165120	0	\N	test	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-04-20 00:00:00+08	5	5	5	5	1	2025-04-11 12:55:03.715+08	1	2025-04-11 12:55:03.715+08
 \.
 
 
@@ -2106,6 +2108,7 @@ COPY biz_sys.sys_tenant_package (package_id, package_name, status, menu_ids, rem
 --
 
 COPY biz_sys.sys_tenant_wallet (tenant_id, balance, status) FROM stdin;
+1910557183820165122	0.00	0
 \.
 
 
@@ -2126,7 +2129,8 @@ COPY biz_sys.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type
 --
 
 COPY biz_sys.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-08 13:03:02.827+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-11 14:08:46.335+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-11 14:04:07.486+08	\N	1	1910557183820165120	2025-04-11 12:55:03.816+08	2025-04-11 14:08:30.064+08
 \.
 
 
@@ -2427,7 +2431,7 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz_sys.sys_user USING btree (p
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz_sys.sys_user USING btree (username);
 
 
--- Completed on 2025-04-08 13:15:50
+-- Completed on 2025-04-11 14:10:05
 
 --
 -- PostgreSQL database dump complete

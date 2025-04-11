@@ -6,7 +6,7 @@
 
     <delete id="deleteByTenantIds">
         DELETE FROM biz_sys.sys_user WHERE tenant_id IN
-        <foreach collection="tenantIds" item="tenantId" open="(" separator="," close=")">
+        <foreach collection="list" item="tenantId" open="(" separator="," close=")">
             #{tenantId}
         </foreach>
     </delete>

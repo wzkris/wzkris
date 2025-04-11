@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author wzkris
  */
-@Tag(name = "用户信息")
+@Tag(name = "个人信息")
 @RestController
 @RequestMapping("/user_profile")
 @IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")
@@ -82,7 +82,7 @@ public class SysUserProfileController extends BaseController {
     }
 
     @Operation(summary = "修改基本信息")
-    @OperateLog(title = "用户信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
     @PostMapping
     @CacheEvict(cacheNames = PROFILE_KEY, key = "@lg.getUserId()")
     public Result<Void> editProfile(@RequestBody EditSysUserProfileReq profileReq) {
@@ -93,7 +93,7 @@ public class SysUserProfileController extends BaseController {
     }
 
     @Operation(summary = "修改手机号")
-    @OperateLog(title = "用户信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
     @PostMapping("/edit_phonenumber")
     @CacheEvict(cacheNames = PROFILE_KEY, key = "@lg.getUserId()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
@@ -114,7 +114,7 @@ public class SysUserProfileController extends BaseController {
     }
 
     @Operation(summary = "修改密码")
-    @OperateLog(title = "用户信息", subTitle = "修改密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "修改密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_password")
     public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
         Long userId = LoginUtil.getUserId();
@@ -135,7 +135,7 @@ public class SysUserProfileController extends BaseController {
     }
 
     @Operation(summary = "更新头像")
-    @OperateLog(title = "用户信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
     @PostMapping("/edit_avatar")
     @CacheEvict(cacheNames = PROFILE_KEY, key = "@lg.getUserId()")
     public Result<Void> updateAvatar(@RequestBody String url) {

@@ -5,7 +5,6 @@ import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -90,12 +89,12 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN 1 ELSE 0 END
                     FROM biz_sys.sys_dept WHERE dept_id IN
-                    <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
+                    <foreach collection="collection" item="deptId" open="(" separator="," close=")">
                         <if test="deptId != null and deptId != ''">
                             #{deptId}
                         </if>
                     </foreach>
             </script>
             """)
-    boolean checkDataScopes(@Param("deptIds") Collection<Long> deptIds);
+    boolean checkDataScopes(Collection<Long> deptIds);
 }

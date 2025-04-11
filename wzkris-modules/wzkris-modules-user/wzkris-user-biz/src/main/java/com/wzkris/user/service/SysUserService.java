@@ -2,6 +2,7 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.req.SysUserQueryReq;
+import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
 
 import java.util.Collection;
@@ -26,19 +27,19 @@ public interface SysUserService {
      * 根据条件分页查询已分配用户角色列表
      *
      * @param queryReq 筛选条件
-     * @param roleId   管理员信息
-     * @return 管理员信息集合信息
+     * @param roleId   角色ID
+     * @return 系统用户选择列表
      */
-    List<SysUser> listAllocated(SysUserQueryReq queryReq, Long roleId);
+    List<SelectVO> listAllocated(SysUserQueryReq queryReq, Long roleId);
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
      * @param queryReq 筛选条件
-     * @param roleId   管理员信息
-     * @return 管理员信息集合信息
+     * @param roleId   角色ID
+     * @return 系统用户选择列表
      */
-    List<SysUser> listUnallocated(SysUserQueryReq queryReq, Long roleId);
+    List<SelectVO> listUnallocated(SysUserQueryReq queryReq, Long roleId);
 
     /**
      * 新增管理员信息
