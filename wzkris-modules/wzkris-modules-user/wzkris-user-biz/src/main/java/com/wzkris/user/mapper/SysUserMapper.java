@@ -72,12 +72,12 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     String selectPhoneNumberById(Long userId);
 
     /**
-     * 硬删除用户
+     * 根据租户ID删除用户
      *
      * @param tenantIds 租户ID
      * @return 结果
      */
-    int deleteByTenantIds(@Param("tenantIds") List<Long> tenantIds);
+    int deleteByTenantIds(List<Long> tenantIds);
 
     /**
      * 检验权限
@@ -90,13 +90,13 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN 1 ELSE 0 END
                     FROM biz_sys.sys_user WHERE user_id IN
-                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                    <foreach collection="collection" item="userId" open="(" separator="," close=")">
                         <if test="userId != null and userId != ''">
                             #{userId}
                         </if>
                     </foreach>
             </script>
             """)
-    boolean checkDataScopes(@Param("userIds") Collection<Long> userIds);
+    boolean checkDataScopes(Collection<Long> userIds);
 
 }

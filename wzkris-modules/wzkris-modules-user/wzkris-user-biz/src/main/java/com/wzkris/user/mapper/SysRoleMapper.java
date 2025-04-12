@@ -41,12 +41,12 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN 1 ELSE 0 END
                         FROM biz_sys.sys_role r LEFT JOIN biz_sys.sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
-                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    <foreach collection="collection" item="roleId" open="(" separator="," close=")">
                         <if test="roleId != null and roleId != ''">
                             #{roleId}
                         </if>
                     </foreach>
             </script>
             """)
-    boolean checkDataScopes(@Param("roleIds") Collection<Long> roleIds);
+    boolean checkDataScopes(Collection<Long> roleIds);
 }

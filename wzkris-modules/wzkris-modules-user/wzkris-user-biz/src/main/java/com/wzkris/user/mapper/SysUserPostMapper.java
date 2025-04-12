@@ -3,7 +3,6 @@ package com.wzkris.user.mapper;
 import com.wzkris.user.domain.SysUserPost;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -45,13 +44,13 @@ public interface SysUserPostMapper {
             <script>
                 SELECT EXISTS( 
                     SELECT post_id FROM biz_sys.sys_user_post WHERE post_id IN
-                        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+                        <foreach collection="list" item="postId" open="(" separator="," close=")">
                             #{postId}
                         </foreach>
                     )
             </script>
             """)
-    boolean checkExistByPostIds(@Param("postIds") List<Long> postIds);
+    boolean checkExistByPostIds(List<Long> postIds);
 
     /**
      * 批量删除用户和岗位关联
@@ -62,12 +61,12 @@ public interface SysUserPostMapper {
     @Delete("""
             <script>
                 DELETE FROM biz_sys.sys_user_post WHERE user_id IN
-                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                    <foreach collection="list" item="userId" open="(" separator="," close=")">
                         #{userId}
                     </foreach>
             </script>
             """)
-    int deleteByUserIds(@Param("userIds") List<Long> userIds);
+    int deleteByUserIds(List<Long> userIds);
 
     /**
      * 批量删除用户和岗位关联
@@ -78,17 +77,17 @@ public interface SysUserPostMapper {
     @Delete("""
             <script>
                 DELETE FROM biz_sys.sys_user_post WHERE post_id IN
-                    <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+                    <foreach collection="list" item="postId" open="(" separator="," close=")">
                         #{postId}
                     </foreach>
             </script>
             """)
-    int deleteByPostIds(@Param("postIds") List<Long> postIds);
+    int deleteByPostIds(List<Long> postIds);
 
     /**
      * 批量新增用户岗位信息
      *
-     * @param sysUserPostList 用户角色列表
+     * @param userPosts 用户角色列表
      * @return 结果
      */
     @Insert("""
@@ -99,6 +98,6 @@ public interface SysUserPostMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(@Param("list") List<SysUserPost> sysUserPostList);
+    int insertBatch(List<SysUserPost> userPosts);
 
 }

@@ -11,6 +11,7 @@ import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
 import com.wzkris.user.domain.req.SysUserQueryReq;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
@@ -50,25 +51,25 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public List<SysUser> listAllocated(SysUserQueryReq queryReq, Long roleId) {
+    public List<SelectVO> listAllocated(SysUserQueryReq queryReq, Long roleId) {
         List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
         if (CollectionUtils.isEmpty(userIds)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
         lqw.in(SysUser::getUserId, userIds);
-        return userMapper.selectLists(lqw);
+        return userMapper.selectLists(lqw).stream().map(SelectVO::new).toList();
     }
 
     @Override
-    public List<SysUser> listUnallocated(SysUserQueryReq queryReq, Long roleId) {
+    public List<SelectVO> listUnallocated(SysUserQueryReq queryReq, Long roleId) {
         List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
 
         LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
         if (!CollectionUtils.isEmpty(userIds)) {
             lqw.notIn(SysUser::getUserId, userIds);
         }
-        return userMapper.selectLists(lqw);
+        return userMapper.selectLists(lqw).stream().map(SelectVO::new).toList();
     }
 
     @Override

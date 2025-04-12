@@ -1,9 +1,6 @@
 package com.wzkris.user.domain.vo;
 
-import com.wzkris.user.domain.SysPost;
-import com.wzkris.user.domain.SysRole;
-import com.wzkris.user.domain.SysTenant;
-import com.wzkris.user.domain.SysTenantPackage;
+import com.wzkris.user.domain.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +26,11 @@ public class SelectVO implements Serializable {
     @Schema(description = "节点名称")
     private String label;
 
+    public SelectVO(SysUser user) {
+        this.id = user.getUserId();
+        this.label = user.getUsername();
+    }
+
     public SelectVO(SysRole role) {
         this.id = role.getRoleId();
         this.label = role.getRoleName();
@@ -48,4 +50,5 @@ public class SelectVO implements Serializable {
         this.id = tenant.getTenantId();
         this.label = tenant.getTenantName();
     }
+
 }

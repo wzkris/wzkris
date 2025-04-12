@@ -13,10 +13,9 @@ import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysRole;
-import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.SysUserRole;
 import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -158,42 +157,30 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "查询已授权的用户列表")
     @GetMapping("/authorize/allocated_list")
-    @CheckSystemPerms("sys_role:list")
-    public Result<Page<SysUser>> allocatedList(SysUserQueryReq queryReq, Long roleId) {
+    @CheckSystemPerms("sys_role:grant_user")
+    public Result<Page<SelectVO>> allocatedList(SysUserQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleService.checkDataScopes(roleId);
         startPage();
-        List<SysUser> list = userService.listAllocated(queryReq, roleId);
+        List<SelectVO> list = userService.listAllocated(queryReq, roleId);
         return getDataTable(list);
     }
 
     @Operation(summary = "查询未授权的用户列表")
     @GetMapping("/authorize/unallocated_list")
-    @CheckSystemPerms("sys_role:list")
-    public Result<Page<SysUser>> unallocatedList(SysUserQueryReq queryReq, Long roleId) {
+    @CheckSystemPerms("sys_role:grant_user")
+    public Result<Page<SelectVO>> unallocatedList(SysUserQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleService.checkDataScopes(roleId);
         startPage();
-        List<SysUser> list = userService.listUnallocated(queryReq, roleId);
+        List<SelectVO> list = userService.listUnallocated(queryReq, roleId);
         return getDataTable(list);
     }
 
     @Operation(summary = "取消授权")
     @OperateLog(title = "角色管理", subTitle = "取消授权", operateType = OperateType.GRANT)
-    @PostMapping("/authorize/cancel")
-    @CheckSystemPerms("sys_role:auth")
-    public Result<Void> cancelAuth(@RequestBody @Valid SysUserRole userRole) {
-        // 校验角色权限
-        roleService.checkDataScopes(userRole.getRoleId());
-        // 校验用户权限
-        userService.checkDataScopes(userRole.getUserId());
-        return toRes(userRoleMapper.delete(userRole.getUserId(), userRole.getRoleId()));
-    }
-
-    @Operation(summary = "批量取消授权")
-    @OperateLog(title = "角色管理", subTitle = "批量取消授权", operateType = OperateType.GRANT)
-    @PostMapping("/authorize/cancel_batch")
-    @CheckSystemPerms("sys_role:auth")
+    @PostMapping("/authorize_cancel")
+    @CheckSystemPerms("sys_role:grant_user")
     public Result<Void> cancelAuth(@RequestBody @Valid SysRole2UsersReq req) {
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());
@@ -202,10 +189,10 @@ public class SysRoleController extends BaseController {
         return toRes(userRoleMapper.deleteBatch(req.getRoleId(), req.getUserIds()));
     }
 
-    @Operation(summary = "批量用户授权")
-    @OperateLog(title = "角色管理", subTitle = "批量用户授权", operateType = OperateType.GRANT)
+    @Operation(summary = "角色授权")
+    @OperateLog(title = "角色管理", subTitle = "授权用户", operateType = OperateType.GRANT)
     @PostMapping("/authorize_user")
-    @CheckSystemPerms("sys_role:auth")
+    @CheckSystemPerms("sys_role:grant_user")
     public Result<Void> batchAuth(@RequestBody @Valid SysRole2UsersReq req) {
         // 权限校验
         roleService.checkDataScopes(req.getRoleId());

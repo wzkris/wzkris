@@ -53,12 +53,12 @@ public interface SysUserRoleMapper {
     @Delete("""
             <script>
                 DELETE FROM biz_sys.sys_user_role WHERE user_id IN
-                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                    <foreach collection="list" item="userId" open="(" separator="," close=")">
                         #{userId}
                     </foreach>
             </script>
             """)
-    int deleteByUserIds(@Param("userIds") List<Long> userIds);
+    int deleteByUserIds(List<Long> userIds);
 
     /**
      * 批量删除用户和角色关联
@@ -69,12 +69,12 @@ public interface SysUserRoleMapper {
     @Delete("""
             <script>
                 DELETE FROM biz_sys.sys_user_role WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    <foreach collection="list" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
+    int deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 通过角色ID查询角色使用数量
@@ -86,18 +86,18 @@ public interface SysUserRoleMapper {
             <script>
                 SELECT EXISTS(
                     SELECT role_id FROM biz_sys.sys_user_role WHERE role_id IN
-                        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                        <foreach collection="list" item="roleId" open="(" separator="," close=")">
                             #{roleId}
                         </foreach>
                     )
             </script>
             """)
-    boolean checkExistByRoleIds(@Param("roleIds") List<Long> roleIds);
+    boolean checkExistByRoleIds(List<Long> roleIds);
 
     /**
      * 批量新增用户角色信息
      *
-     * @param list 用户角色列表
+     * @param userRoles 用户角色列表
      * @return 结果
      */
     @Insert("""
@@ -108,7 +108,7 @@ public interface SysUserRoleMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(@Param("list") List<SysUserRole> list);
+    int insertBatch(List<SysUserRole> userRoles);
 
     /**
      * 删除

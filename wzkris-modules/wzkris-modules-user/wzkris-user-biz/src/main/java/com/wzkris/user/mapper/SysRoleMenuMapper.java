@@ -3,7 +3,6 @@ package com.wzkris.user.mapper;
 import com.wzkris.user.domain.SysRoleMenu;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -26,12 +25,12 @@ public interface SysRoleMenuMapper {
     @Select("""
             <script>
                 SELECT menu_id FROM biz_sys.sys_role_menu WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+                    <foreach collection="list" item="roleId" separator="," open="(" close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    List<Long> listMenuIdByRoleIds(@Param("roleIds") List<Long> roleIds);
+    List<Long> listMenuIdByRoleIds(List<Long> roleIds);
 
     /**
      * 查询菜单是否使用
@@ -60,12 +59,12 @@ public interface SysRoleMenuMapper {
     @Delete("""
             <script>
                 DELETE FROM biz_sys.sys_role_menu WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    <foreach collection="list" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
+    int deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 通过菜单ID删除角色和菜单关联
@@ -79,7 +78,7 @@ public interface SysRoleMenuMapper {
     /**
      * 批量新增角色菜单信息
      *
-     * @param sysRoleMenuList 角色菜单列表
+     * @param roleMenus 角色菜单列表
      * @return 结果
      */
     @Insert("""
@@ -90,6 +89,6 @@ public interface SysRoleMenuMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(List<SysRoleMenu> sysRoleMenuList);
+    int insertBatch(List<SysRoleMenu> roleMenus);
 
 }

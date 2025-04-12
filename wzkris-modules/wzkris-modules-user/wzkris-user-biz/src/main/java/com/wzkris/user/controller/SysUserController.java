@@ -218,7 +218,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "用户授权角色")
     @OperateLog(title = "系统用户", subTitle = "授权用户角色", operateType = OperateType.GRANT)
     @PostMapping("/authorize_role")
-    @CheckSystemPerms("sys_user:edit")
+    @CheckSystemPerms("sys_user:grant_role")
     public Result<Void> authRole(@RequestBody @Valid SysUser2RolesReq req) {
         // 校验用户可操作权限
         userService.checkDataScopes(req.getUserId());
