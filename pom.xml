@@ -8,6 +8,8 @@
     <artifactId>wzkris</artifactId>
     <version>${revision}</version>
 
+    <packaging>pom</packaging>
+
     <name>wzkris</name>
     <description>wzkris系统</description>
 
@@ -15,21 +17,15 @@
         <revision>4.1.0</revision>
         <project.encoding>UTF-8</project.encoding>
         <java.version>17</java.version>
-        <spring-boot.version>3.3.7</spring-boot.version>
-        <spring-cloud.version>2023.0.5</spring-cloud.version>
+        <spring-boot.version>3.4.4</spring-boot.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
         <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
-        <spring-statemachine.version>4.0.0</spring-statemachine.version>
         <lombok.version>1.18.28</lombok.version>
-        <mysql.version>8.3.0</mysql.version>
         <netty.version>4.1.110.Final</netty.version>
-        <hutool.version>5.8.35</hutool.version>
+        <hutool.version>5.8.37</hutool.version>
         <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
-        <caffeine.version>3.1.8</caffeine.version>
-        <minio.version>8.2.2</minio.version>
         <knife4j.version>4.5.0</knife4j.version>
-        <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
-
         <!-- 插件版本 -->
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
@@ -75,12 +71,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.springframework.statemachine</groupId>
-                <artifactId>spring-statemachine-starter</artifactId>
-                <version>${spring-statemachine.version}</version>
-            </dependency>
-
             <!-- 微服务文档聚合-->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -93,13 +83,6 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
-            </dependency>
-
-            <!--本地缓存-->
-            <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
             </dependency>
 
             <!-- hutool工具 -->
@@ -129,19 +112,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-            </dependency>
-
-            <!-- 线程传递值 -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>transmittable-thread-local</artifactId>
-                <version>${transmittable-thread-local.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.mysql</groupId>
-                <artifactId>mysql-connector-j</artifactId>
-                <version>${mysql.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
@@ -189,7 +159,6 @@
         <module>wzkris-modules</module>
         <module>wzkris-common</module>
     </modules>
-    <packaging>pom</packaging>
 
     <profiles>
         <profile>
