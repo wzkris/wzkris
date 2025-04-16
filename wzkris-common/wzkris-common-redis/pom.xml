@@ -35,5 +35,11 @@
             <version>${redisson.version}</version>
         </dependency>
 
+        <!-- 分布式session-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
