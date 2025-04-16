@@ -13,12 +13,17 @@
     <artifactId>wzkris-common-statemachine</artifactId>
     <description>状态机</description>
 
+    <properties>
+        <spring-statemachine.version>4.0.0</spring-statemachine.version>
+    </properties>
+
     <dependencies>
 
         <!-- spring状态机-->
         <dependency>
             <groupId>org.springframework.statemachine</groupId>
             <artifactId>spring-statemachine-starter</artifactId>
+            <version>${spring-statemachine.version}</version>
         </dependency>
 
     </dependencies>
