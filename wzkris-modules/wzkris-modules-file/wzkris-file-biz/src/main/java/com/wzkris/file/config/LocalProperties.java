@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @RefreshScope
 @Configuration
 @ConfigurationProperties(prefix = "local")
-public class LocalConfig {
+public class LocalProperties {
 
     /**
      * 域名前缀

@@ -15,7 +15,7 @@
  */
 package com.wzkris.auth.oauth2.redis.service;
 
-import com.wzkris.auth.config.TokenConfig;
+import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.oauth2.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.oauth2.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -50,7 +50,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
     @DubboReference
     private final RemoteOAuth2ClientApi remoteOAuth2ClientApi;
 
-    private final TokenConfig tokenConfig;
+    private final TokenProperties tokenProperties;
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -115,12 +115,12 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
                 });
 
         builder.tokenSettings(TokenSettings.builder()
-                        .authorizationCodeTimeToLive(Duration.ofSeconds(tokenConfig.getAuthorizationCodeTimeOut()))
+                        .authorizationCodeTimeToLive(Duration.ofSeconds(tokenProperties.getAuthorizationCodeTimeOut()))
                         .accessTokenFormat(OAuth2TokenFormat.REFERENCE) // 使用匿名token
-                        .accessTokenTimeToLive(Duration.ofSeconds(tokenConfig.getAccessTokenTimeOut()))
-                        .refreshTokenTimeToLive(Duration.ofSeconds(tokenConfig.getRefreshTokenTimeOut()))
+                        .accessTokenTimeToLive(Duration.ofSeconds(tokenProperties.getAccessTokenTimeOut()))
+                        .refreshTokenTimeToLive(Duration.ofSeconds(tokenProperties.getRefreshTokenTimeOut()))
                         .reuseRefreshTokens(true)// 复用refresh_token
-                        .deviceCodeTimeToLive(Duration.ofSeconds(tokenConfig.getDeviceCodeTimeOut()))
+                        .deviceCodeTimeToLive(Duration.ofSeconds(tokenProperties.getDeviceCodeTimeOut()))
                         .build())
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(!oauth2Client.getAutoApprove())
