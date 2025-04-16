@@ -12,7 +12,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
-import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.LoginUtil;

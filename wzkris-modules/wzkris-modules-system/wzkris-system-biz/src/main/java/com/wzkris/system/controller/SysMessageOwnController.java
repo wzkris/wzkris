@@ -3,7 +3,7 @@ package com.wzkris.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.constant.MessageConstants;

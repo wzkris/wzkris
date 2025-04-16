@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.parser.JsqlParserGlobal;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
-import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.utils.PageUtil;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
@@ -43,7 +43,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
      */
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-        Page<?> page = PageUtil.getPage(false);
+        Page<?> page = PageUtil.getPage();
         if (page == null) {
             return true;
         }
@@ -79,7 +79,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
      */
     @Override
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-        Page<?> page = PageUtil.getPage(false);
+        Page<?> page = PageUtil.getPage();
         if (page == null) {
             return;
         }

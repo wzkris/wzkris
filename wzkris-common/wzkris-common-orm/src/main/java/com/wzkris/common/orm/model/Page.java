@@ -1,9 +1,9 @@
-package com.wzkris.common.orm.page;
+package com.wzkris.common.orm.model;
 
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wzkris.common.orm.utils.PageUtil;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -17,8 +17,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-@NoArgsConstructor
-public class Page<T> {
+public class Page<T> implements AutoCloseable {
 
     /**
      * 列表数据
@@ -28,12 +27,12 @@ public class Page<T> {
     /**
      * 当前记录起始索引
      */
-    private long pageNum = 1;
+    private long pageNum;
 
     /**
      * 每页显示记录数
      */
-    private long pageSize = 10;
+    private long pageSize;
 
     /**
      * 总数
@@ -61,5 +60,10 @@ public class Page<T> {
             return 0;
         }
         return Math.max((this.pageNum - 1) * this.pageSize, 0);
+    }
+
+    @Override
+    public void close() {
+        PageUtil.clear();
     }
 }
