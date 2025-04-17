@@ -8,14 +8,14 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : token配置
+ * @description : token配置参数
  * @date : 2023/8/8 16:36
  */
 @Data
 @Configuration
 @RefreshScope
 @ConfigurationProperties(prefix = "token-config")
-public class TokenConfig {
+public class TokenProperties {
 
     /**
      * access_token 有效期（单位：秒）

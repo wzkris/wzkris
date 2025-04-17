@@ -7,7 +7,7 @@ import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.system.domain.SysNotice;
 import com.wzkris.system.domain.SysNoticeUser;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
-import com.wzkris.system.listener.event.SystemPushEvent;
+import com.wzkris.system.listener.event.PublishMessageEvent;
 import com.wzkris.system.mapper.SysNoticeMapper;
 import com.wzkris.system.mapper.SysNoticeUserMapper;
 import com.wzkris.system.service.SysNoticeService;
@@ -41,7 +41,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
                     .map(uid -> new SysNoticeUser(notice.getNoticeId(), uid)).toList();
             return noticeUserMapper.insert(list) > 0;
         });
-        SpringUtil.getContext().publishEvent(new SystemPushEvent(toUsers, messageDTO));
+        SpringUtil.getContext().publishEvent(new PublishMessageEvent(toUsers, messageDTO));
         return Boolean.TRUE.equals(execute);
     }
 }

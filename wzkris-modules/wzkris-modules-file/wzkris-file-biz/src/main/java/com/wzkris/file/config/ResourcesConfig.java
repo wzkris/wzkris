@@ -17,13 +17,13 @@ import java.io.File;
 public class ResourcesConfig implements WebMvcConfigurer {
 
     @Autowired
-    private LocalConfig localConfig;
+    private LocalProperties localProperties;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        /** 映射访问路径 */
-        registry.addResourceHandler(localConfig.getPrefix() + "/**")
-                .addResourceLocations("file:" + localConfig.getPath() + File.separator);
+        // 映射访问路径
+        registry.addResourceHandler(localProperties.getPrefix() + File.separator + "**")
+                .addResourceLocations("file:" + localProperties.getPath() + File.separator);
     }
 
     /**
@@ -32,7 +32,7 @@ public class ResourcesConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // 设置允许跨域的路由
-        registry.addMapping(localConfig.getPrefix() + "/**")
+        registry.addMapping(localProperties.getPrefix() + File.separator + "**")
                 // 设置允许跨域请求的域名
                 .allowedOrigins("*")
                 // 设置允许的方法

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @RefreshScope
 @Configuration
 @ConfigurationProperties(prefix = "minio")
-public class MinioConfig {
+public class MinioProperties {
 
     /**
      * 服务地址

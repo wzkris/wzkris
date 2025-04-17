@@ -106,13 +106,10 @@ public class SseUtil {
      * 断开
      */
     public static void disconnect(Object id) {
-        SseEmitter sseEmitter = EMITTERS.get(id);
-        if (sseEmitter == null) {
-            return;
+        SseEmitter sseEmitter = EMITTERS.remove(id);
+        if (sseEmitter != null) {
+            sseEmitter.complete();
         }
-
-        EMITTERS.remove(id);
-        sseEmitter.complete();
     }
 
 }

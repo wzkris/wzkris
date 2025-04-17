@@ -1,6 +1,6 @@
 package com.wzkris.file.service.impl;
 
-import com.wzkris.file.config.MinioConfig;
+import com.wzkris.file.config.MinioProperties;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;
 import com.wzkris.file.utils.FileUtil;
@@ -24,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
 public class MinioSysFileServiceImpl implements SysFileService {
 
     @Autowired
-    private MinioConfig minioConfig;
+    private MinioProperties minioProperties;
 
     @Autowired
     private MinioClient client;
@@ -40,7 +40,7 @@ public class MinioSysFileServiceImpl implements SysFileService {
         String fileName = FileUtil.extractFilename(file);
         try {
             PutObjectArgs args = PutObjectArgs.builder()
-                    .bucket(minioConfig.getBucketName())
+                    .bucket(minioProperties.getBucketName())
                     .object(fileName)
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
@@ -51,7 +51,7 @@ public class MinioSysFileServiceImpl implements SysFileService {
                  XmlParserException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return minioConfig.getBucketName() + "/" + fileName;
+        return minioProperties.getBucketName() + "/" + fileName;
     }
 
     @Override

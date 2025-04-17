@@ -15,6 +15,11 @@ public class CustomBearerTokenResolver implements BearerTokenResolver {
 
     static final DefaultBearerTokenResolver defaultBearerTokenResolver = new DefaultBearerTokenResolver();
 
+    static {
+        defaultBearerTokenResolver.setAllowFormEncodedBodyParameter(true);
+        defaultBearerTokenResolver.setAllowUriQueryParameter(true);
+    }
+
     @Override
     public String resolve(HttpServletRequest request) {
         String token = StringUtil.blankToDefault(defaultBearerTokenResolver.resolve(request), request.getHeader(HttpHeaders.AUTHORIZATION));

@@ -76,7 +76,9 @@ public class AuthorizationConsentController {
         }
         for (String requestedScope : StringUtils.delimitedListToStringArray(scope, " ")) {
             if (OidcScopes.OPENID.equals(requestedScope)) {
-                continue;
+                model.addAttribute("errorTitle", "Invalid scope");
+                model.addAttribute("errorMessage", "Invalid openid");
+                return "device-error";
             }
             if (authorizedScopes.contains(requestedScope)) {
                 previouslyApprovedScopes.add(requestedScope);

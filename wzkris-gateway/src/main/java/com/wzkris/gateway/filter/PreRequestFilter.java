@@ -6,7 +6,6 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
-import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -39,15 +34,7 @@ import java.util.stream.Collectors;
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
 
-    private static final ExecutorService executor = new ThreadPoolExecutor(
-            Runtime.getRuntime().availableProcessors() * 3,
-            Runtime.getRuntime().availableProcessors() * 3 * 2,
-            10L,
-            TimeUnit.SECONDS,
-            new SynchronousQueue<>(),
-            new DefaultThreadFactory("pre-requestfilter-pool", true, Thread.NORM_PRIORITY, new ThreadGroup("gateway-http-group")),
-            new ThreadPoolExecutor.CallerRunsPolicy()
-    );
+    private static final String ACCESS_TOKEN_PARAMETER_NAME = "access_token";
 
     @Autowired
     private PermitAllProperties permitAllProperties;
@@ -70,7 +57,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         final ServerHttpRequest.Builder mutate = request.mutate();
 
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if ((StringUtil.isBlank(bearerToken) && request.getQueryParams().get(HttpHeaders.AUTHORIZATION) == null)
+        if ((StringUtil.isBlank(bearerToken) && request.getQueryParams().get(ACCESS_TOKEN_PARAMETER_NAME) == null)
                 && !StringUtil.matches(request.getURI().getPath(), permitAllProperties.getIgnores())) {
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
         }

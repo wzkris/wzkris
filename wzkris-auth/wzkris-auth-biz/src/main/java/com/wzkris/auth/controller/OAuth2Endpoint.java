@@ -86,7 +86,7 @@ public class OAuth2Endpoint extends BaseController {
         }
     }
 
-    @GetMapping("/authorization_code_callback")
+    @GetMapping("/oauth2/authorization_code_callback")
     public ResponseEntity<?> callback(String code) {
         log.info("code: {} ", code);
         return new ResponseEntity<>(code, HttpStatus.OK);

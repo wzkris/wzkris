@@ -1,7 +1,7 @@
 package com.wzkris.file.service.impl;
 
 import com.wzkris.common.core.exception.service.GenericException;
-import com.wzkris.file.config.LocalConfig;
+import com.wzkris.file.config.LocalProperties;
 import com.wzkris.file.domain.FileChunk;
 import com.wzkris.file.service.SysFileService;
 import com.wzkris.file.utils.FileUtil;
@@ -24,18 +24,18 @@ import java.io.IOException;
 public class LocalSysFileServiceImpl implements SysFileService {
 
     @Autowired
-    private LocalConfig localConfig;
+    private LocalProperties localProperties;
 
     @Override
     public String uploadFile(MultipartFile file) {
-        String name = FileUtil.upload(localConfig.getPath(), file);
-        return localConfig.getPrefix() + name;
+        String name = FileUtil.upload(localProperties.getPath(), file);
+        return localProperties.getPrefix() + name;
     }
 
     @Override
     public void sliceUpload(FileChunk fileChunk) {
         // 拿到存储地址
-        String absPath = FileUtil.uploadChunk(localConfig.getPath(), fileChunk.getChunk(), fileChunk.getMd5(), fileChunk.getMd5() + "_" + fileChunk.getOffset());
+        String absPath = FileUtil.uploadChunk(localProperties.getPath(), fileChunk.getChunk(), fileChunk.getMd5(), fileChunk.getMd5() + "_" + fileChunk.getOffset());
         // 相等则全部上传完毕，开始逐步合并
         if (fileChunk.getOffset() == fileChunk.getTotal()) {
             // 获取存储路径、父路径
