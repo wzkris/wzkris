@@ -30,7 +30,7 @@ public interface SysNoticeMapper extends BaseMapperPlus<SysNotice> {
     List<SysNoticeVO> listNotice(@Param("userId") Long userId, @Nullable @Param("noticeType") String noticeType, @Nullable @Param("readState") String readState);
 
     /**
-     * 已读通知
+     * 标记已读
      */
     @Update("UPDATE biz_sys.sys_notice_user SET read_state = '1' WHERE notice_id = #{noticeId} AND user_id = #{userId}")
     int markRead(@Param("noticeId") Long noticeId, @Param("userId") Long userId);
@@ -49,6 +49,6 @@ public interface SysNoticeMapper extends BaseMapperPlus<SysNotice> {
                 LIMIT 100) tmp
             </script>
             """)
-    int countUnread(@Param("userId") Long userId, @Nullable @Param("noticeType") String noticeType);
+    int selectUnreadSize(@Param("userId") Long userId, @Nullable @Param("noticeType") String noticeType);
 
 }
