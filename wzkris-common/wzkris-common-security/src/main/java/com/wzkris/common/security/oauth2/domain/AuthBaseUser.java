@@ -40,12 +40,16 @@ public abstract class AuthBaseUser implements OAuth2User, Serializable {
     @Serial
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
+    private final String id;
+
     private final LoginType loginType;
 
     private final Set<String> grantedAuthority;
 
-    protected AuthBaseUser(LoginType loginType, Set<String> grantedAuthority) {
+    protected AuthBaseUser(String id, LoginType loginType, Set<String> grantedAuthority) {
+        Assert.notNull(id, "id cannot be null");
         Assert.notNull(loginType, "loginType cannot be null");
+        this.id = id;
         this.loginType = loginType;
         this.grantedAuthority = grantedAuthority;
     }

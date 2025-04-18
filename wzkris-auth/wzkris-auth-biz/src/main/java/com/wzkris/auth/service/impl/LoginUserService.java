@@ -18,7 +18,6 @@ import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
 import com.wzkris.user.api.domain.response.SysUserResp;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +31,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -91,8 +91,7 @@ public class LoginUserService extends UserInfoTemplate {
     /**
      * 构建登录用户
      */
-    @Nonnull
-    private LoginUser buildLoginUser(@Nonnull SysUserResp userResp) {
+    private LoginUser buildLoginUser(SysUserResp userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 
@@ -100,7 +99,7 @@ public class LoginUserService extends UserInfoTemplate {
         SysPermissionResp permissions = remoteSysUserApi
                 .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
 
-        LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));
+        LoginUser loginUser = new LoginUser(UUID.randomUUID().toString(), new HashSet<>(permissions.getGrantedAuthority()));
         loginUser.setAdmin(permissions.getAdmin());
         loginUser.setUserId(userResp.getUserId());
         loginUser.setUsername(userResp.getUsername());
@@ -130,7 +129,7 @@ public class LoginUserService extends UserInfoTemplate {
      */
     private void recordFailedLog(SysUserResp userResp, String grantType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginUser loginUser = new LoginUser();
+        LoginUser loginUser = new LoginUser("");
         loginUser.setUserId(userResp.getUserId());
         loginUser.setUsername(userResp.getUsername());
         loginUser.setTenantId(userResp.getTenantId());

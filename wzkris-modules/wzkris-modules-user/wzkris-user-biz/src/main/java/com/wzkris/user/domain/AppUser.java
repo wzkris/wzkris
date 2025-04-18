@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.core.annotation.Xss;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.user.api.domain.response.AppUserResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -21,7 +20,6 @@ import java.util.Date;
  */
 @Data
 @AutoMappers({
-        @AutoMapper(target = ClientUser.class),
         @AutoMapper(target = AppUserResp.class)
 })
 @NoArgsConstructor

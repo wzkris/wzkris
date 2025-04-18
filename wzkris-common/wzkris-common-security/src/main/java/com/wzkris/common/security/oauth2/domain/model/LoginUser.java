@@ -1,5 +1,7 @@
 package com.wzkris.common.security.oauth2.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.Getter;
@@ -45,12 +47,13 @@ public class LoginUser extends AuthBaseUser {
      */
     private List<Long> deptScopes;
 
-    public LoginUser() {
-        this(Collections.emptySet());
+    public LoginUser(String id) {
+        this(id, Collections.emptySet());
     }
 
-    public LoginUser(Set<String> grantedAuthority) {
-        super(LoginType.SYSTEM_USER, grantedAuthority);
+    @JsonCreator
+    public LoginUser(@JsonProperty("id") String id, @JsonProperty("grantedAuthority") Set<String> grantedAuthority) {
+        super(id, LoginType.SYSTEM_USER, grantedAuthority);
     }
 
     @Override

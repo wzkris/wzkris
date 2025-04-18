@@ -62,6 +62,15 @@ public class SecurityUtil {
     }
 
     /**
+     * 获取当前登录ID,未登录抛出异常
+     *
+     * @return 登录类型
+     */
+    public static String getId() {
+        return getPrincipal().getId();
+    }
+
+    /**
      * 获取当前登录类型,未登录抛出异常
      *
      * @return 登录类型
