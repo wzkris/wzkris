@@ -1,8 +1,16 @@
 package com.wzkris.auth.oauth2.core;
 
+import cn.hutool.http.useragent.UserAgentUtil;
+import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,9 +27,12 @@ import org.springframework.security.oauth2.server.authorization.authentication.O
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.context.AuthorizationServerContextHolder;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.token.DefaultOAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -36,13 +47,14 @@ import java.util.Set;
  */
 public abstract class CommonAuthenticationProvider<T extends CommonAuthenticationToken> implements AuthenticationProvider {
 
-    private final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
     private final OAuth2AuthorizationService authorizationService;
 
-    protected CommonAuthenticationProvider(OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                           OAuth2AuthorizationService authorizationService) {
-        this.tokenGenerator = tokenGenerator;
+    private final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
+
+    protected CommonAuthenticationProvider(OAuth2AuthorizationService authorizationService,
+                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
         this.authorizationService = authorizationService;
+        this.tokenGenerator = tokenGenerator;
     }
 
     protected final OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
@@ -52,7 +64,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         }
 
         if (clientPrincipal == null || !clientPrincipal.isAuthenticated()) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_CLIENT, "oauth2.client.invalid");
         }
 
         return clientPrincipal;
@@ -64,11 +76,11 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     @Nonnull
     protected final Set<String> checkClient(CommonAuthenticationToken authenticationToken, RegisteredClient registeredClient) {
         if (registeredClient == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.client.invalid");
         }
 
         if (!registeredClient.getAuthorizationGrantTypes().contains(authenticationToken.getGrantType())) {
-            OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.unsupport.granttype");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, "oauth2.unsupport.granttype");
         }
 
         Set<String> authorizedScopes = new LinkedHashSet<>();
@@ -76,7 +88,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (!authenticationToken.getScopes().isEmpty()) {
             for (String requestedScope : authenticationToken.getScopes()) {
                 if (!registeredClient.getScopes().contains(requestedScope)) {
-                    OAuth2ExceptionUtil.throwErrorI18n(OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
+                    OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_SCOPE, "oauth2.scope.invalid");
                 }
             }
             authorizedScopes.addAll(registeredClient.getScopes());
@@ -124,7 +136,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
         OAuth2Token generatedAccessToken = this.tokenGenerator.generate(tokenContext);
         if (generatedAccessToken == null) {
-            OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the access_token.");
+            OAuth2ExceptionUtil.throwError(BizCode.INTERNAL_ERROR.value(), OAuth2ErrorCodes.SERVER_ERROR,
+                    "The token generator failed to generate the access_token.");
         }
 
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
@@ -133,8 +146,9 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (generatedAccessToken instanceof ClaimAccessor) {
             authorizationBuilder.token(accessToken, (metadata) ->
                     metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, ((ClaimAccessor) generatedAccessToken).getClaims()));
-        }
-        else {
+            authorizationBuilder.token(accessToken, (metadata) ->
+                    metadata.put(OAuth2TokenFormat.class.getName(), OAuth2TokenFormat.REFERENCE.getValue()));
+        } else {
             authorizationBuilder.accessToken(accessToken);
         }
 
@@ -147,7 +161,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.REFRESH_TOKEN).build();
             OAuth2Token generatedRefreshToken = this.tokenGenerator.generate(tokenContext);
             if (!(generatedRefreshToken instanceof OAuth2RefreshToken)) {
-                OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the refresh_token.");
+                OAuth2ExceptionUtil.throwError(BizCode.INTERNAL_ERROR.value(), OAuth2ErrorCodes.SERVER_ERROR,
+                        "The token generator failed to generate the refresh_token.");
             }
 
             refreshToken = (OAuth2RefreshToken) generatedRefreshToken;
@@ -165,14 +180,14 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
                 // @formatter:on
             OAuth2Token generatedIdToken = this.tokenGenerator.generate(tokenContext);
             if (!(generatedIdToken instanceof Jwt)) {
-                OAuth2ExceptionUtil.throwError(OAuth2ErrorCodes.SERVER_ERROR, "The token generator failed to generate the id_token.");
+                OAuth2ExceptionUtil.throwError(BizCode.INTERNAL_ERROR.value(), OAuth2ErrorCodes.SERVER_ERROR,
+                        "The token generator failed to generate the id_token.");
             }
 
             idToken = new OidcIdToken(generatedIdToken.getTokenValue(), generatedIdToken.getIssuedAt(),
                     generatedIdToken.getExpiresAt(), ((Jwt) generatedIdToken).getClaims());
             authorizationBuilder.token(idToken, (metadata) -> metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, idToken.getClaims()));
-        }
-        else {
+        } else {
             idToken = null;
         }
 
@@ -184,11 +199,21 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             additionalParameters.put(OidcParameterNames.ID_TOKEN, idToken.getTokenValue());
         }
 
-        // 传递用户信息供OAuth2后续流程使用
-        additionalParameters.put(AuthBaseUser.class.getName(), authenticationToken.getPrincipal());
+        // 发布登录成功事件
+        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+
+        SpringUtil.getContext().publishEvent(new LoginEvent(
+                        authorization.getId(),
+                        (AuthBaseUser) authenticationToken.getPrincipal(),
+                        commonAuthenticationToken.getGrantType().getValue(),
+                        CommonConstants.STATUS_ENABLE, "",
+                        ServletUtil.getClientIP(request),
+                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))
+                )
+        );
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
-                new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);
+                new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticationToken, accessToken, refreshToken, additionalParameters);
         oAuth2AccessTokenAuthenticationToken.setAuthenticated(true);
         return oAuth2AccessTokenAuthenticationToken;
     }

@@ -7,16 +7,20 @@ package com.wzkris.common.security.oauth2.enums;
  * @date : 2024/10/18 15:52
  */
 public enum LoginType {
+
     /**
      * 系统用户
      */
     SYSTEM_USER,
+
     /**
      * 客户端用户
      */
     CLIENT_USER,
+
     /**
-     * 授权客户端
+     * 授权APP
      */
-    AUTH_CLIENT
+    AUTH_APP
+
 }

@@ -30,8 +30,10 @@ public class JobGroupController {
 
     @Resource
     public XxlJobInfoDao xxlJobInfoDao;
+
     @Resource
     public XxlJobGroupDao xxlJobGroupDao;
+
     @Resource
     private XxlJobRegistryDao xxlJobRegistryDao;
 
@@ -132,8 +134,7 @@ public class JobGroupController {
                 addressListStr = addressListStr.substring(0, addressListStr.length() - 1);
             }
             xxlJobGroup.setAddressList(addressListStr);
-        }
-        else {
+        } else {
             // 1=手动录入
             if (xxlJobGroup.getAddressList() == null || xxlJobGroup.getAddressList().trim().length() == 0) {
                 return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_addressType_limit"));

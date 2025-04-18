@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author wzkris
  */
 public interface SysFileService {
+
     /**
      * 文件上传接口
      *

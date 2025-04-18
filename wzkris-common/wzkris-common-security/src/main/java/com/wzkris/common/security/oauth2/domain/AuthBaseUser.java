@@ -1,20 +1,21 @@
 package com.wzkris.common.security.oauth2.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.wzkris.common.security.oauth2.domain.model.AuthClient;
+import com.wzkris.common.security.oauth2.domain.model.AuthApp;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.Assert;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -32,17 +33,19 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LoginUser.class),
         @JsonSubTypes.Type(value = ClientUser.class),
-        @JsonSubTypes.Type(value = AuthClient.class)
+        @JsonSubTypes.Type(value = AuthApp.class)
 })
-public abstract class AuthBaseUser implements OAuth2User {
+public abstract class AuthBaseUser implements OAuth2User, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     private final LoginType loginType;
 
-    @Setter
-    private Set<String> grantedAuthority;
+    private final Set<String> grantedAuthority;
 
     protected AuthBaseUser(LoginType loginType, Set<String> grantedAuthority) {
-        Assert.notNull(loginType, "登录类型不能为空");
+        Assert.notNull(loginType, "loginType cannot be null");
         this.loginType = loginType;
         this.grantedAuthority = grantedAuthority;
     }
@@ -60,11 +63,4 @@ public abstract class AuthBaseUser implements OAuth2User {
         return AuthorityUtils.createAuthorityList(this.grantedAuthority);
     }
 
-    /**
-     * 用作反序列化
-     */
-    @JsonProperty(value = "@class", access = JsonProperty.Access.READ_ONLY)
-    public String getClazz() {
-        return this.getClass().getName();
-    }
 }

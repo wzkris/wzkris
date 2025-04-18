@@ -2,7 +2,7 @@ package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * OAuth2 客户端传输层
@@ -10,19 +10,26 @@ import java.util.List;
  * @author wzkris
  */
 @Data
-public class OAuth2ClientResp {
+public class OAuth2ClientResp implements Serializable {
+
     // 客户端id 等价于app_id
     private String clientId;
+
     // 客户端密钥 等价于app_secret
     private String clientSecret;
+
     // 权限域
-    private List<String> scopes;
+    private String[] scopes;
+
     // 授权类型
-    private List<String> authorizationGrantTypes;
+    private String[] authorizationGrantTypes;
+
     // 回调地址
-    private List<String> redirectUris;
+    private String[] redirectUris;
+
     // 客户端状态
     private String status;
+
     // 是否自动放行
     private Boolean autoApprove;
 }

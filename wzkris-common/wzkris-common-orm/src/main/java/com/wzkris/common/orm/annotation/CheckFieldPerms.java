@@ -21,7 +21,7 @@ public @interface CheckFieldPerms {
     /**
      * 控制字段写入与读取
      */
-    CheckFieldPerms.Perms rw();
+    CheckFieldPerms.Perms rw() default Perms.ALL;
 
     /**
      * 校验组

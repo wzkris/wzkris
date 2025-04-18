@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.parser.JsqlParserGlobal;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
-import com.wzkris.common.orm.page.Page;
+import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.utils.PageUtil;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
@@ -43,7 +43,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
      */
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-        Page<?> page = PageUtil.getPage(false);
+        Page<?> page = PageUtil.getPage();
         if (page == null) {
             return true;
         }
@@ -68,8 +68,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
         page.setTotal(total);
         if (total % page.getPageSize() == 0) {
             page.setPages(total / page.getPageSize());
-        }
-        else {
+        } else {
             page.setPages(total / page.getPageSize() + 1);
         }
         return this.continuePage(page);
@@ -80,7 +79,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
      */
     @Override
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-        Page<?> page = PageUtil.getPage(false);
+        Page<?> page = PageUtil.getPage();
         if (page == null) {
             return;
         }
@@ -173,8 +172,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
                         String str = "";
                         if (rightItem instanceof Table table) {
                             str = Optional.ofNullable(table.getAlias()).map(Alias::getName).orElse(table.getName()) + StringPool.DOT;
-                        }
-                        else if (rightItem instanceof ParenthesedSelect subSelect) {
+                        } else if (rightItem instanceof ParenthesedSelect subSelect) {
                             /* 如果 left join 是子查询，并且子查询里包含 ?(代表有入参) 或者 where 条件里包含使用 join 的表的字段作条件,就不移除 join */
                             if (subSelect.toString().contains(StringPool.QUESTION_MARK)) {
                                 canRemoveJoin = false;
@@ -209,12 +207,10 @@ public class PageInterceptor extends PaginationInnerInterceptor {
             // 优化 SQL
             plainSelect.setSelectItems(COUNT_SELECT_ITEM);
             return select.toString();
-        }
-        catch (JSQLParserException e) {
+        } catch (JSQLParserException e) {
             // 无法优化使用原 SQL
             logger.warn("optimize this sql to a count sql has exception, sql:\"" + sql + "\", exception:\n" + e.getCause());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.warn("optimize this sql to a count sql has error, sql:\"" + sql + "\", exception:\n" + e);
         }
         return lowLevelCountSql(sql);
@@ -235,8 +231,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
             if (overflow) {
                 //溢出总页数处理
                 page.setPageNum(1);
-            }
-            else {
+            } else {
                 // 超过最大范围，未设置溢出逻辑中断 list 执行
                 return false;
             }

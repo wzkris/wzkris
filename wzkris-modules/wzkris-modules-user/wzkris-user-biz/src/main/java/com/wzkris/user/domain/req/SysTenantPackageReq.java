@@ -1,7 +1,5 @@
 package com.wzkris.user.domain.req;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.wzkris.common.core.annotation.EnumsCheck;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.user.domain.SysTenantPackage;
@@ -32,9 +30,6 @@ public class SysTenantPackageReq {
 
     @Schema(description = "套餐绑定的菜单")
     private List<Long> menuIds;
-
-    @Schema(description = "菜单树选择项是否关联显示")
-    private Boolean isMenuDisplay;
 
     @Schema(description = "备注")
     private String remark;

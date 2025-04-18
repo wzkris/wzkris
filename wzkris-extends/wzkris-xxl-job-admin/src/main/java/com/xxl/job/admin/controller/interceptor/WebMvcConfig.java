@@ -16,6 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Resource
     private PermissionInterceptor permissionInterceptor;
+
     @Resource
     private CookieInterceptor cookieInterceptor;
 

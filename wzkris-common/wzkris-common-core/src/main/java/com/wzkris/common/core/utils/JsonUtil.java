@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.exception.UtilException;
+import com.wzkris.common.core.exception.util.UtilException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,8 +54,7 @@ public class JsonUtil {
     public static String toJsonString(Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -70,8 +69,7 @@ public class JsonUtil {
     public static byte[] toBytes(Object obj) {
         try {
             return objectMapper.writeValueAsBytes(obj);
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -83,8 +81,7 @@ public class JsonUtil {
     public static void writeValue(Writer writer, Object obj) {
         try {
             objectMapper.writeValue(writer, obj);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -97,11 +94,10 @@ public class JsonUtil {
      * @param clazz 对象类型
      * @return bean
      */
-    public static <T> T parseObject(Object obj, Class<T> clazz) {
+    public static <T> T parseObject(String obj, Class<T> clazz) {
         try {
-            return objectMapper.convertValue(obj, clazz);
-        }
-        catch (Exception e) {
+            return objectMapper.readValue(obj, clazz);
+        } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -114,8 +110,7 @@ public class JsonUtil {
                               Class<?> keyClass, Class<?> valueClass) {
         try {
             return objectMapper.readValue(content, TypeFactory.defaultInstance().constructMapType(mapClass, keyClass, valueClass));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -127,8 +122,7 @@ public class JsonUtil {
     public static <T> T toColl(String content, Class<? extends Collection> collectionClass, Class<?> elementClass) {
         try {
             return objectMapper.readValue(content, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -137,8 +131,7 @@ public class JsonUtil {
     public static <T> T toColl(JsonParser parser, Class<? extends Collection> collectionClass, Class<?> elementClass) {
         try {
             return objectMapper.readValue(parser, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -150,8 +143,7 @@ public class JsonUtil {
     public static <T> T parseObject(Reader reader, Class<T> clazz) {
         try {
             return objectMapper.readValue(reader, clazz);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -163,8 +155,7 @@ public class JsonUtil {
     public static <T> T parseObject(byte[] bytes, Class<T> clazz) {
         try {
             return objectMapper.readValue(bytes, clazz);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -173,8 +164,7 @@ public class JsonUtil {
     public static <T> T parseObject(JsonParser jsonParser, Class<T> clazz) {
         try {
             return objectMapper.readValue(jsonParser, clazz);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -187,8 +177,7 @@ public class JsonUtil {
     public static ObjectNode parseNode(String text) {
         try {
             return objectMapper.readValue(text, ObjectNode.class);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }
@@ -197,8 +186,7 @@ public class JsonUtil {
     public static ObjectNode parseNode(JsonParser jsonParser) {
         try {
             return objectMapper.readTree(jsonParser);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("util.json.error");
         }

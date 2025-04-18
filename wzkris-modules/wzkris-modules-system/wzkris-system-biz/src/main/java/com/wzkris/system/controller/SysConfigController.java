@@ -7,15 +7,14 @@ import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.domain.SysConfig;
 import com.wzkris.system.domain.req.SysConfigQueryReq;
 import com.wzkris.system.domain.req.SysConfigReq;
 import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
-import com.wzkris.system.utils.ConfigCacheUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,18 +29,20 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "系统配置")
+@Tag(name = "参数管理")
 @RestController
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
-@RequestMapping("/config")
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
+@RequestMapping("/sys_config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
+
     private final SysConfigMapper configMapper;
+
     private final SysConfigService configService;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckPerms("config:list")
+    @CheckSystemPerms("sys_config:list")
     public Result<Page<SysConfig>> list(SysConfigQueryReq queryReq) {
         startPage();
         List<SysConfig> list = configMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -58,27 +59,18 @@ public class SysConfigController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{configId}")
+    @CheckSystemPerms("sys_config:query")
     public Result<SysConfig> getInfo(@PathVariable Long configId) {
         return ok(configMapper.selectById(configId));
-    }
-
-    @Operation(summary = "键名查询参数值")
-    @GetMapping("/configKey/{configKey}")
-    public Result<String> getConfigKey(@PathVariable String configKey) {
-        String configValue = ConfigCacheUtil.getConfigValueByKey(configKey);
-        if (StringUtil.isNotEmpty(configValue)) {
-            return ok(configValue);
-        }
-        return ok(configMapper.selectValueByKey(configKey));
     }
 
     @Operation(summary = "添加参数")
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("config:add")
+    @CheckSystemPerms("sys_config:add")
     public Result<Void> add(@Validated @RequestBody SysConfigReq req) {
         if (configService.checkUsedByConfigKey(null, req.getConfigKey())) {
-            return fail("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
+            return err412("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
         return toRes(configService.insertConfig(BeanUtil.convert(req, SysConfig.class)));
     }
@@ -86,10 +78,10 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "修改参数")
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("config:edit")
+    @CheckSystemPerms("sys_config:edit")
     public Result<Void> edit(@Validated @RequestBody SysConfigReq req) {
         if (configService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
-            return fail("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
+            return err412("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
         return toRes(configService.updateConfig(BeanUtil.convert(req, SysConfig.class)));
     }
@@ -97,24 +89,19 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "删除参数")
     @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("config:remove")
-    public Result<Void> remove(@RequestBody List<Long> configIds) {
-        List<SysConfig> configs = configMapper.selectByIds(configIds);
-
-        for (SysConfig config : configs) {
-            if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
-                return fail(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
-            }
+    @CheckSystemPerms("sys_config:remove")
+    public Result<Void> remove(@RequestBody Long configId) {
+        SysConfig config = configMapper.selectById(configId);
+        if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
+            return err412(StringUtil.format("内置参数'{}'不能删除", config.getConfigKey()));
         }
-        configService.deleteByIds(configIds);
-        return ok();
+        return toRes(configService.deleteById(configId));
     }
 
     @Operation(summary = "刷新参数缓存")
     @PostMapping("/refresh_cache")
-    @CheckPerms("config:remove")
+    @CheckSystemPerms("sys_config:remove")
     public Result<Void> refreshCache() {
-        ConfigCacheUtil.clearAll();
         configService.loadingConfigCache();
         return ok();
     }

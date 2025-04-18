@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SysOperLogServiceImpl implements SysOperLogService {
+
     private final SysOperLogMapper operLogMapper;
 
 }

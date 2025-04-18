@@ -1,9 +1,11 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysUser;
-import jakarta.annotation.Nonnull;
+import com.wzkris.user.domain.req.SysUserQueryReq;
+import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,28 +15,31 @@ import java.util.List;
  * @author wzkris
  */
 public interface SysUserService {
+
     /**
      * 列表查询
      *
-     * @param user 筛选条件
+     * @param queryReq 筛选条件
      */
-    List<SysUser> list(SysUser user);
+    List<SysUser> list(SysUserQueryReq queryReq);
 
     /**
      * 根据条件分页查询已分配用户角色列表
      *
-     * @param roleId 管理员信息
-     * @return 管理员信息集合信息
+     * @param queryReq 筛选条件
+     * @param roleId   角色ID
+     * @return 系统用户选择列表
      */
-    List<SysUser> listAllocated(SysUser user, Long roleId);
+    List<SelectVO> listAllocated(SysUserQueryReq queryReq, Long roleId);
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
-     * @param roleId 管理员信息
-     * @return 管理员信息集合信息
+     * @param queryReq 筛选条件
+     * @param roleId   角色ID
+     * @return 系统用户选择列表
      */
-    List<SysUser> listUnallocated(SysUser user, Long roleId);
+    List<SelectVO> listUnallocated(SysUserQueryReq queryReq, Long roleId);
 
     /**
      * 新增管理员信息
@@ -59,7 +64,7 @@ public interface SysUserService {
      *
      * @param userIds 用户ID
      */
-    void deleteByIds(List<Long> userIds);
+    boolean deleteByIds(List<Long> userIds);
 
     /**
      * 批量授权角色
@@ -67,7 +72,7 @@ public interface SysUserService {
      * @param userId  管理员ID
      * @param roleIds 角色组
      */
-    void allocateRoles(Long userId, List<Long> roleIds);
+    boolean allocateRoles(Long userId, List<Long> roleIds);
 
     /**
      * 校验用户名是否被使用
@@ -75,7 +80,7 @@ public interface SysUserService {
      * @param userId   用户ID
      * @param username 用户名
      */
-    boolean checkUsedByUsername(@Nullable Long userId, @Nonnull String username);
+    boolean checkExistByUsername(@Nullable Long userId, String username);
 
     /**
      * 校验手机号是否被使用
@@ -83,14 +88,14 @@ public interface SysUserService {
      * @param userId      用户ID
      * @param phonenumber 手机号
      */
-    boolean checkUsedByPhoneNumber(@Nullable Long userId, @Nonnull String phonenumber);
+    boolean checkExistByPhoneNumber(@Nullable Long userId, String phonenumber);
 
     /**
      * 校验是否有数据权限
      *
      * @param userIds 被操作的对象id
      */
-    void checkDataScopes(List<Long> userIds);
+    void checkDataScopes(Collection<Long> userIds);
 
     /**
      * 校验是否有数据权限
@@ -98,7 +103,9 @@ public interface SysUserService {
      * @param userId 被操作的对象id
      */
     default void checkDataScopes(Long userId) {
-        this.checkDataScopes(Collections.singletonList(userId));
+        if (userId != null) {
+            this.checkDataScopes(Collections.singleton(userId));
+        }
     }
 
 }

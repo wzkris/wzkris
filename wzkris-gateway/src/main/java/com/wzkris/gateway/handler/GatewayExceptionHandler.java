@@ -1,7 +1,7 @@
 package com.wzkris.gateway.handler;
 
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.base.BaseException;
+import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -48,14 +48,13 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
                 case 503 -> WebFluxUtil.writeResponse(response, BizCode.SERVICE_UNAVAILABLE);
                 default -> WebFluxUtil.writeResponse(response, respEx.getStatusCode().value(), respEx.getMessage());
             };
-        }
-        else if (e instanceof BaseException bizEx) {
+        } else if (e instanceof BaseException bizEx) {
             // 若状态码为远程调用异常，则返回前端数据需要覆盖
             String errorMsg = bizEx.getMessage();
-            if (bizEx.getCode() == BizCode.RPC_INVOCATION.value()) {
-                errorMsg = BizCode.RPC_INVOCATION.desc();
+            if (bizEx.getBiz() == BizCode.RPC_ERROR.value()) {
+                errorMsg = BizCode.RPC_ERROR.desc();
             }
-            return WebFluxUtil.writeResponse(response, bizEx.getCode(), errorMsg);
+            return WebFluxUtil.writeResponse(response, bizEx.getBiz(), errorMsg);
         }
 
         // 返回500内部异常

@@ -1,7 +1,11 @@
 package com.wzkris.auth.config;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.wzkris.common.core.exception.BusinessException;
+import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.exception.service.GenericException;
+import com.wzkris.common.security.thread.TracingIdRunnable;
+import jakarta.annotation.Nonnull;
+import org.slf4j.MDC;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +16,7 @@ import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecu
 
 import java.util.Arrays;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -37,7 +42,7 @@ public class AsyncConfig implements AsyncConfigurer {
             if (ArrayUtil.isNotEmpty(objects)) {
                 sb.append(", Parameter value - ").append(Arrays.toString(objects));
             }
-            throw new BusinessException(sb.toString());
+            throw new GenericException(sb.toString());
         };
     }
 
@@ -53,6 +58,12 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setKeepAliveSeconds(120); // 2min
         // 线程池对拒绝任务的处理策略
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.setThreadFactory(new ThreadFactory() {
+            @Override
+            public Thread newThread(@Nonnull Runnable r) {
+                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.X_TRACING_ID)));
+            }
+        });
         executor.setDaemon(true);
         executor.initialize();
         // 使用SpringSecurity的线程池，否则异步线程无法传递用户信息

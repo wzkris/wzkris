@@ -1,6 +1,7 @@
 package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
@@ -14,7 +15,6 @@ import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
 import com.wzkris.user.service.SysRoleService;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,32 +31,41 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysPermissionServiceImpl implements SysPermissionService {
+
     /**
      * 全部数据权限
      */
     public static final String DATA_SCOPE_ALL = "1";
+
     /**
      * 自定数据权限
      */
     public static final String DATA_SCOPE_CUSTOM = "2";
+
     /**
      * 部门数据权限
      */
     public static final String DATA_SCOPE_DEPT = "3";
+
     /**
      * 部门及以下数据权限
      */
     public static final String DATA_SCOPE_DEPT_AND_CHILD = "4";
 
     private final SysRoleService roleService;
+
     private final SysMenuService menuService;
+
     private final SysDeptMapper deptMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
+
     private final SysTenantMapper tenantMapper;
+
     private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override
-    public SysPermissionResp getPermission(@Nonnull Long userId, @Nonnull Long tenantId, @Nullable Long deptId) {
+    public SysPermissionResp getPermission(Long userId, Long tenantId, @Nullable Long deptId) {
         return DynamicTenantUtil.switcht(tenantId, () -> {
             List<SysRole> roles;
             List<String> grantedAuthority;
@@ -65,9 +74,8 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             if (SysUser.isSuperAdmin(userId)) {
                 // 超级管理员查出所有角色
                 administrator = true;
-                grantedAuthority = Collections.singletonList("*");
-            }
-            else {
+                grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
+            } else {
                 // 租户最高管理员特殊处理
                 Long tenantPackageId = tenantMapper.selectPackageIdByUserId(userId);
                 if (tenantPackageId != null) {
@@ -76,8 +84,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                     // 查出套餐绑定的所有权限
                     List<Long> menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
                     grantedAuthority = menuService.listPermsByMenuIds(menuIds);
-                }
-                else {
+                } else {
                     // 否则为普通用户
                     administrator = false;
                     roles = roleService.listByUserId(userId);
@@ -117,20 +124,16 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                         .map(SysDept::getDeptId)
                         .collect(Collectors.toSet());
                 break;
-            }
-            else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
+            } else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
                 deptIds.addAll(roleDeptMapper.listDeptIdByRoleIds(entry.getValue()));
-            }
-            else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
+            } else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
                 // 部门自身数据权限
                 deptIds.add(deptId);
-            }
-            else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
+            } else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
                 // 部门及以下数据权限
                 deptIds.addAll(deptMapper.listChildrenIdById(deptId));
-            }
-            else {
+            } else {
                 // 本人数据权限
                 deptIds.add(-999L);
             }

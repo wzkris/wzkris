@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @ConfigurationProperties(prefix = "springdoc")
 public class SwaggerProperties {
+
     /**
      * 是否开启swagger
      */
@@ -79,14 +80,17 @@ public class SwaggerProperties {
 
     @Data
     public static class Contact {
+
         /**
          * 联系人
          **/
         private String name = "";
+
         /**
          * 联系人url
          **/
         private String url = "";
+
         /**
          * 联系人email
          **/
@@ -95,6 +99,7 @@ public class SwaggerProperties {
 
     @Data
     public static class Authorization {
+
         /**
          * 鉴权策略ID，需要和SecurityReferences ID保持一致
          */
@@ -116,6 +121,7 @@ public class SwaggerProperties {
 
     @Data
     public static class AuthorizationScope {
+
         /**
          * 作用域名称
          */

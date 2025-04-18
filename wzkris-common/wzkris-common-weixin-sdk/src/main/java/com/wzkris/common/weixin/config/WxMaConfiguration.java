@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @ConditionalOnProperty(value = "weixin.miniapp.enable")
 public class WxMaConfiguration {
+
     private final WxMaProperties properties;
 
     public WxMaConfiguration(WxMaProperties properties) {
@@ -39,8 +40,7 @@ public class WxMaConfiguration {
                             WxMaDefaultConfigImpl config;
                             if (this.properties.isUseRedis()) {
                                 config = new WxMaRedissonConfigImpl(RedisUtil.getClient(), a.getAppid());
-                            }
-                            else {
+                            } else {
                                 config = new WxMaDefaultConfigImpl();
                             }
 

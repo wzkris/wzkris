@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class SysRoleQueryReq {
+
     @Schema(description = "角色名称")
     private String roleName;
 

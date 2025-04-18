@@ -1,6 +1,9 @@
 package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.core.annotation.group.ValidationGroups;
+import com.wzkris.common.orm.annotation.FieldPerms;
 import com.wzkris.system.api.domain.request.OperLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,6 +11,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 操作日志记录表 sys_oper_log
@@ -16,6 +20,7 @@ import java.io.Serializable;
  */
 @Data
 @AutoMapper(target = OperLogReq.class)
+@TableName(schema = "biz_sys")
 public class SysOperLog implements Serializable {
 
     @Serial
@@ -36,24 +41,32 @@ public class SysOperLog implements Serializable {
     @Schema(description = "操作类型（0其它 1新增 2修改 3删除）")
     private String operType;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求方法")
     private String method;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求方式")
     private String requestMethod;
+
+    @Schema(description = "操作人员ID")
+    private Long userId;
 
     @Schema(description = "操作人员")
     private String operName;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求url")
     private String operUrl;
 
     @Schema(description = "操作地址")
     private String operIp;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "请求参数")
     private String operParam;
 
+    @FieldPerms(groups = ValidationGroups.Select.class)
     @Schema(description = "返回参数")
     private String jsonResult;
 
@@ -67,6 +80,6 @@ public class SysOperLog implements Serializable {
     private String errorMsg;
 
     @Schema(description = "操作时间")
-    private Long operTime;
+    private Date operTime;
 
 }

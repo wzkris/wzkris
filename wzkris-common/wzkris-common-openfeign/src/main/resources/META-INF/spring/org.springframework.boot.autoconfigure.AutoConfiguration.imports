@@ -1,4 +1,0 @@
-com.wzkris.common.openfeign.annotation.aspect.InnerAuthAspect
-com.wzkris.common.openfeign.config.IdentityProperties
-com.wzkris.common.openfeign.config.RestTemplateConfig
-com.wzkris.common.openfeign.interceptor.OpenFeignInterceptor

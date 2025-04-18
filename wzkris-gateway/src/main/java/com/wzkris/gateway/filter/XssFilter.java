@@ -1,6 +1,5 @@
 package com.wzkris.gateway.filter;
 
-import cn.hutool.http.HtmlUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.XssProperties;
 import io.netty.buffer.ByteBufAllocator;
@@ -29,7 +28,9 @@ import java.nio.charset.StandardCharsets;
 @Component
 @ConditionalOnProperty(value = "xss.enabled", havingValue = "true")
 public class XssFilter implements GlobalFilter, Ordered {
-    // 跨站脚本的 xss 配置，nacos自行添加
+
+    public static final String RE_HTML_MARK = "(<[^<]*?>)|(<[\\s]*?/[^<]*?>)|(<[^<]*?/[\\s]*?>)";
+
     private final XssProperties xss;
 
     public XssFilter(XssProperties xss) {
@@ -74,7 +75,7 @@ public class XssFilter implements GlobalFilter, Ordered {
                     DataBufferUtils.release(join);
                     String bodyStr = new String(content, StandardCharsets.UTF_8);
                     // 防xss攻击过滤
-                    bodyStr = HtmlUtil.cleanHtmlTag(bodyStr);
+                    bodyStr = bodyStr.replaceAll(RE_HTML_MARK, "");
                     // 转成字节
                     byte[] bytes = bodyStr.getBytes();
                     NettyDataBufferFactory nettyDataBufferFactory = new NettyDataBufferFactory(ByteBufAllocator.DEFAULT);

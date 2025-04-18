@@ -1,6 +1,8 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.core.constant.CommonConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ import java.math.BigDecimal;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_app")
 public class AppUserWallet {
 
     @TableId
@@ -27,5 +30,7 @@ public class AppUserWallet {
 
     public AppUserWallet(Long userId) {
         this.userId = userId;
+        this.balance = BigDecimal.ZERO;
+        this.status = CommonConstants.STATUS_ENABLE;
     }
 }

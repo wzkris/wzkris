@@ -1,11 +1,13 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 租户钱包记录表 sys_tenant_wallet_record
@@ -14,6 +16,7 @@ import java.math.BigDecimal;
  */
 @Data
 @NoArgsConstructor
+@TableName(schema = "biz_sys")
 public class SysTenantWalletRecord {
 
     @TableId
@@ -26,10 +29,10 @@ public class SysTenantWalletRecord {
     private BigDecimal amount;
 
     @Schema(description = "记录类型 0-收入 1-支出")
-    private String type;
+    private String recordType;
 
-    @Schema(description = "时间")
-    private Long createAt;
+    @Schema(description = "创建时间")
+    private Date createAt;
 
     @Schema(description = "备注")
     private String remark;

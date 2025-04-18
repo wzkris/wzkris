@@ -3,7 +3,7 @@ package com.wzkris.common.orm.plus;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wzkris.common.core.exception.BusinessException;
+import com.wzkris.common.core.exception.service.GenericException;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
@@ -61,9 +61,9 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             C c = voClass.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(obj, c);
             return c;
-        }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new BusinessException(e.getMessage());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new GenericException(e.getMessage());
         }
     }
 
@@ -79,9 +79,9 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             C c = voClass.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(obj, c);
             return c;
-        }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new BusinessException(e.getMessage());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new GenericException(e.getMessage());
         }
     }
 
@@ -99,10 +99,9 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
                 C c = voClass.getDeclaredConstructor().newInstance();
                 BeanUtils.copyProperties(obj, c);
                 return c;
-            }
-            catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                   NoSuchMethodException e) {
-                throw new BusinessException(e.getMessage());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                throw new GenericException(e.getMessage());
             }
         }).collect(Collectors.toList());
     }

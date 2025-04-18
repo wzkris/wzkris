@@ -7,8 +7,8 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.page.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.export.AppUserExport;
@@ -38,11 +38,12 @@ import java.util.List;
 public class AppUserController extends BaseController {
 
     private final AppUserMapper appUserMapper;
+
     private final AppUserService appUserService;
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
-    @CheckPerms("app_user:list")
+    @CheckSystemPerms("app_user:list")
     public Result<Page<AppUser>> listPage(AppUserQueryReq req) {
         startPage();
         List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
@@ -61,15 +62,15 @@ public class AppUserController extends BaseController {
 
     @Operation(summary = "用户详细信息")
     @GetMapping("/{userId}")
-    @CheckPerms("app_user:query")
+    @CheckSystemPerms("app_user:query")
     public Result<AppUser> query(@PathVariable Long userId) {
         return ok(appUserMapper.selectById(userId));
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "后台管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
-    @CheckPerms("app_user:edit")
+    @CheckSystemPerms("app_user:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         AppUser update = new AppUser(statusReq.getId());
@@ -79,10 +80,10 @@ public class AppUserController extends BaseController {
 
     @Operation(summary = "导出")
     @OperateLog(title = "用户管理", operateType = OperateType.EXPORT)
-    @PostMapping("/export")
-    @CheckPerms("app_user:export")
-    public void export(HttpServletResponse response, AppUserQueryReq req) {
-        List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(req));
+    @GetMapping("/export")
+    @CheckSystemPerms("app_user:export")
+    public void export(HttpServletResponse response, AppUserQueryReq queryReq) {
+        List<AppUser> list = appUserMapper.selectList(this.buildQueryWrapper(queryReq));
         List<AppUserExport> convert = BeanUtil.convert(list, AppUserExport.class);
         ExcelUtil.exportExcel(convert, "用户数据", AppUserExport.class, response);
     }

@@ -2,49 +2,43 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris-common</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-common</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-common-security</artifactId>
+    <artifactId>wzkris-common-security</artifactId>
 
-	<description>
-		wzkris-common-security安全模块
-	</description>
+    <description>
+        wzkris-common-security安全模块
+    </description>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-auth-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-auth-api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-openfeign</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-dubbo</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-cas</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
 
-		<!-- Spring Oauth2资源服务器 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency>
+        <!-- Spring OAuth2授权服务器-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-	</dependencies>
+    </dependencies>
 
 </project>

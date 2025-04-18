@@ -17,7 +17,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 
 public class XxlJobScheduler {
+
     private static final Logger logger = LoggerFactory.getLogger(XxlJobScheduler.class);
+
     // ---------------------- executor-client ----------------------
     private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
 

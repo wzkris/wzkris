@@ -1,52 +1,52 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris-common</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-common</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-common-weixin-sdk</artifactId>
+    <artifactId>wzkris-common-weixin-sdk</artifactId>
 
-	<properties>
-		<weixin-java.version>4.6.7.B</weixin-java.version>
-	</properties>
+    <properties>
+        <weixin-java.version>4.6.7.B</weixin-java.version>
+    </properties>
 
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-core</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-core</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
 
-		<!--微信小程序-->
-		<dependency>
-			<groupId>com.github.binarywang</groupId>
-			<artifactId>weixin-java-miniapp</artifactId>
-			<version>${weixin-java.version}</version>
-		</dependency>
+        <!--微信小程序-->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+            <version>${weixin-java.version}</version>
+        </dependency>
 
-		<!--微信公众号-->
-		<dependency>
-			<groupId>com.github.binarywang</groupId>
-			<artifactId>weixin-java-mp</artifactId>
-			<version>${weixin-java.version}</version>
-		</dependency>
+        <!--微信公众号-->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>${weixin-java.version}</version>
+        </dependency>
 
-		<!-- Redisson所需依赖 -->
-		<dependency>
-			<groupId>com.wzkris</groupId>
-			<artifactId>wzkris-common-redis</artifactId>
-			<optional>true</optional>
-		</dependency>
+        <!-- Redisson所需依赖 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-redis</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 </project>

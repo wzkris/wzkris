@@ -13,13 +13,18 @@ import org.springframework.security.oauth2.server.resource.web.DefaultBearerToke
  */
 public class CustomBearerTokenResolver implements BearerTokenResolver {
 
-    final DefaultBearerTokenResolver defaultBearerTokenResolver = new DefaultBearerTokenResolver();
+    static final DefaultBearerTokenResolver defaultBearerTokenResolver = new DefaultBearerTokenResolver();
+
+    static {
+        defaultBearerTokenResolver.setAllowFormEncodedBodyParameter(true);
+        defaultBearerTokenResolver.setAllowUriQueryParameter(true);
+    }
 
     @Override
     public String resolve(HttpServletRequest request) {
-        String token = defaultBearerTokenResolver.resolve(request);
-        if (StringUtil.isBlank(token)) {
-            token = request.getParameter(HttpHeaders.AUTHORIZATION);
+        String token = StringUtil.blankToDefault(defaultBearerTokenResolver.resolve(request), request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (StringUtil.isNotBlank(token) && token.startsWith("Bearer ")) {
+            token = token.replaceFirst("Bearer ", "");
         }
         return token;
     }

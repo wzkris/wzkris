@@ -5,16 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenReq {
+public class TokenReq implements Serializable {
 
-    // token
-    @NotBlank(message = "[token] {validate.notnull}")
+    @NotBlank(message = "token {validate.notnull}")
     private String token;
 
-    // 请求ID
-    @NotBlank(message = "[reqId] {validate.notnull}")
-    private String reqId;
 }

@@ -45,7 +45,6 @@ public class ExcelUtil {
         return EasyExcel.read(is).head(clazz).autoCloseStream(false).sheet().doReadSync();
     }
 
-
     /**
      * 使用校验监听器 异步导入 同步返回
      *
@@ -86,8 +85,7 @@ public class ExcelUtil {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
             exportExcel(list, sheetName, clazz, false, os, null);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("导出Excel异常");
         }
     }
@@ -106,8 +104,7 @@ public class ExcelUtil {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
             exportExcel(list, sheetName, clazz, false, os, options);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("导出Excel异常");
         }
     }
@@ -126,8 +123,7 @@ public class ExcelUtil {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
             exportExcel(list, sheetName, clazz, merge, os, null);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("导出Excel异常");
         }
     }
@@ -147,8 +143,7 @@ public class ExcelUtil {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
             exportExcel(list, sheetName, clazz, merge, os, options);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("导出Excel异常");
         }
     }
@@ -220,8 +215,7 @@ public class ExcelUtil {
             resetResponse(filename, response);
             ServletOutputStream os = response.getOutputStream();
             exportTemplate(data, templatePath, os);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("导出Excel异常");
         }
     }
@@ -269,8 +263,7 @@ public class ExcelUtil {
             resetResponse(filename, response);
             ServletOutputStream os = response.getOutputStream();
             exportTemplateMultiList(data, templatePath, os);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("导出Excel异常");
         }
     }
@@ -290,8 +283,7 @@ public class ExcelUtil {
             resetResponse(filename, response);
             ServletOutputStream os = response.getOutputStream();
             exportTemplateMultiSheet(data, templatePath, os);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("导出Excel异常");
         }
     }
@@ -323,8 +315,7 @@ public class ExcelUtil {
             if (map.getValue() instanceof Collection) {
                 // 多表导出必须使用 FillWrapper
                 excelWriter.fill(new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
-            }
-            else {
+            } else {
                 excelWriter.fill(map.getValue(), writeSheet);
             }
         }
@@ -359,8 +350,7 @@ public class ExcelUtil {
                 if (map.getValue() instanceof Collection) {
                     // 多表导出必须使用 FillWrapper
                     excelWriter.fill(new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
-                }
-                else {
+                } else {
                     excelWriter.fill(map.getValue(), writeSheet);
                 }
             }
@@ -399,8 +389,7 @@ public class ExcelUtil {
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 if (itemArray[0].equals(propertyValue)) {
                     return itemArray[1];
                 }
@@ -429,8 +418,7 @@ public class ExcelUtil {
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 if (itemArray[1].equals(propertyValue)) {
                     return itemArray[0];
                 }

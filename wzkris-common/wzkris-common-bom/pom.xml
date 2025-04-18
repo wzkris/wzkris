@@ -2,141 +2,148 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.wzkris</groupId>
-	<artifactId>wzkris-common-bom</artifactId>
-	<version>${revision}</version>
-	<packaging>pom</packaging>
+    <groupId>com.wzkris</groupId>
+    <artifactId>wzkris-common-bom</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
 
-	<name>wzkris-common-bom</name>
+    <name>wzkris-common-bom</name>
 
-	<description>
-		thingslink依赖清单
-	</description>
+    <description>
+        thingslink依赖清单
+    </description>
 
-	<properties>
-		<revision>4.1.0</revision>
-	</properties>
+    <properties>
+        <revision>4.1.0</revision>
+    </properties>
 
-	<dependencyManagement>
+    <dependencyManagement>
 
-		<dependencies>
-			<!-- 核心模块 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-core</artifactId>
-				<version>${revision}</version>
-			</dependency>
+        <dependencies>
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-captcha</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 权限范围 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-orm</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 多数据源 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-datasource</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 权限范围 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-orm</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- excel导入导出-->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-excel</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 多数据源 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-datasource</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 日志记录 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-log</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- excel导入导出-->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-excel</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 日志记录 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-loadbalancer</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 日志记录 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-log</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!--mq服务 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-stream</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 日志记录 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-loadbalancer</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!--rpc服务 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-openfeign</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!--mq服务 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-stream</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 缓存服务 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-redis</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!--rpc服务 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-dubbo</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 分布式事务 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-seata</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 缓存服务 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-redis</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 安全模块 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-security</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 分布式事务 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-seata</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 限流模块-->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-sentinel</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 安全模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-security</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 状态机-->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-statemachine</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 限流模块-->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-sentinel</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- 接口模块 -->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-swagger</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 状态机-->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-statemachine</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- web容器-->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-web</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- 接口模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-swagger</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-			<!-- weixin sdk-->
-			<dependency>
-				<groupId>com.wzkris</groupId>
-				<artifactId>wzkris-common-weixin-sdk</artifactId>
-				<version>${revision}</version>
-			</dependency>
+            <!-- web容器-->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-web</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- weixin sdk-->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-weixin-sdk</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
 
-		</dependencies>
+        </dependencies>
 
-	</dependencyManagement>
+    </dependencyManagement>
 
 </project>

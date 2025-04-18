@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,17 +27,17 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      */
     @Select("""
             SELECT u.*, d.dept_name, d.status AS deptStatus
-            		FROM sys_user u LEFT JOIN sys_dept d ON u.dept_id = d.dept_id
+            		FROM biz_sys.sys_user u LEFT JOIN biz_sys.sys_dept d ON u.dept_id = d.dept_id
             ${ew.customSqlSegment}
             """)
     @DeptScope(tableAlias = "d")
-    List<SysUserVO> selectVOInScope(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+    List<SysUserVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
     /**
      * 带权限查询列表
      */
     @DeptScope
-    default List<SysUser> selectListInScope(Wrapper<SysUser> queryWrapper) {
+    default List<SysUser> selectLists(Wrapper<SysUser> queryWrapper) {
         return this.selectList(queryWrapper);
     }
 
@@ -46,7 +47,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      * @param phoneNumber 手机号
      * @return 用户对象信息
      */
-    @Select("SELECT * FROM sys_user WHERE phone_number = #{phoneNumber}")
+    @Select("SELECT * FROM biz_sys.sys_user WHERE phone_number = #{phoneNumber}")
     SysUser selectByPhoneNumber(String phoneNumber);
 
     /**
@@ -55,44 +56,47 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      * @param username 用户名
      * @return 用户对象信息
      */
-    @Select("SELECT * FROM sys_user WHERE username = #{username}")
+    @Select("SELECT * FROM biz_sys.sys_user WHERE username = #{username}")
     SysUser selectByUsername(String username);
 
     /**
-     * 根据用户名获取密码
+     * 根据ID获取密码
      */
-    @Select("select password from sys_user where username = #{username}")
-    String selectPwdByUserName(String username);
+    @Select("select password from biz_sys.sys_user where user_id = #{userId}")
+    String selectPwdById(Long userId);
 
     /**
      * 根据用户id获取手机号
      */
-    @Select("select phone_number from sys_user where user_id = #{userId}")
+    @Select("select phone_number from biz_sys.sys_user where user_id = #{userId}")
     String selectPhoneNumberById(Long userId);
 
     /**
-     * 硬删除用户
+     * 根据租户ID删除用户
      *
      * @param tenantIds 租户ID
      * @return 结果
      */
-    int deleteByTenantIds(@Param("tenantIds") List<Long> tenantIds);
+    int deleteByTenantIds(List<Long> tenantIds);
 
     /**
      * 检验权限
      *
      * @param userIds 待操作管理员id
-     * @return 返回可操作数量
+     * @return 返回是否
      */
     @DeptScope
     @Select("""
             <script>
-                SELECT COUNT(*) FROM sys_user WHERE user_id IN
-                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
-                        #{userId}
+                SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN 1 ELSE 0 END
+                    FROM biz_sys.sys_user WHERE user_id IN
+                    <foreach collection="collection" item="userId" open="(" separator="," close=")">
+                        <if test="userId != null and userId != ''">
+                            #{userId}
+                        </if>
                     </foreach>
             </script>
             """)
-    int checkDataScopes(@Param("userIds") List<Long> userIds);
+    boolean checkDataScopes(Collection<Long> userIds);
 
 }

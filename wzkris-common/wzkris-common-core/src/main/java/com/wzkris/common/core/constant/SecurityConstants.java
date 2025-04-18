@@ -9,29 +9,24 @@ package com.wzkris.common.core.constant;
 public interface SecurityConstants {
 
     /**
-     * token前缀
+     * 默认用户ID
      */
-    String TOKEN_PREFIX = "Bearer ";
-
-    /**
-     * token请求ID
-     */
-    String TOKEN_REQ_ID_HEADER = "token_req_id";
-
-    /**
-     * 内部请求路径
-     */
-    String INNER_REQUEST_PATH = "/inner";
-
-    /**
-     * 内部免鉴权请求路径
-     */
-    String INNER_NOAUTH_REQUEST_PATH = "/inner/noauth";
+    Long DEFAULT_USER_ID = 0L;
 
     /**
      * 超级管理员ID
      */
     Long SUPER_ADMIN_ID = 1L;
+
+    /**
+     * 超级管理员名称
+     */
+    String SUPER_ADMIN_NAME = "超级管理员";
+
+    /**
+     * 超级权限
+     */
+    String SUPER_PERMISSION = "*";
 
     /**
      * 超级租户ID

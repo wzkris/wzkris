@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author wzkris
  **/
 public class ThreadPoolConfigDemo {
+
     /**
      * 核心线程数量
      */

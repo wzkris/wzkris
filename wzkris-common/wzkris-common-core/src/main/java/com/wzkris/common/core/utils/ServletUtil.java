@@ -18,7 +18,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import com.wzkris.common.core.exception.UtilException;
+import com.wzkris.common.core.exception.util.UtilException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
@@ -41,11 +41,17 @@ import java.util.*;
 public class ServletUtil {
 
     public static final String METHOD_DELETE = "DELETE";
+
     public static final String METHOD_HEAD = "HEAD";
+
     public static final String METHOD_GET = "GET";
+
     public static final String METHOD_OPTIONS = "OPTIONS";
+
     public static final String METHOD_POST = "POST";
+
     public static final String METHOD_PUT = "PUT";
+
     public static final String METHOD_TRACE = "TRACE";
 
     // --------------------------------------------------------- getParam start
@@ -86,8 +92,7 @@ public class ServletUtil {
     public static String getBody(ServletRequest request) {
         try (final BufferedReader reader = request.getReader()) {
             return IoUtil.read(reader);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -103,8 +108,7 @@ public class ServletUtil {
     public static byte[] getBodyBytes(ServletRequest request) {
         try {
             return IoUtil.readBytes(request.getInputStream());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -138,8 +142,7 @@ public class ServletUtil {
                 if (1 == values.length) {
                     // 单值表单直接返回这个值
                     return values[0];
-                }
-                else {
+                } else {
                     // 多值表单返回数组
                     return values;
                 }
@@ -264,8 +267,7 @@ public class ServletUtil {
         final MultipartFormData formData = new MultipartFormData(uploadSetting);
         try {
             formData.parseRequestStream(request.getInputStream(), CharsetUtil.charset(request.getCharacterEncoding()));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IORuntimeException(e);
         }
 
@@ -547,8 +549,7 @@ public class ServletUtil {
     public static PrintWriter getWriter(HttpServletResponse response) throws IORuntimeException {
         try {
             return response.getWriter();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -567,11 +568,9 @@ public class ServletUtil {
             writer = response.getWriter();
             writer.write(text);
             writer.flush();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UtilException(e.getMessage());
-        }
-        finally {
+        } finally {
             IoUtil.close(writer);
         }
     }
@@ -590,8 +589,7 @@ public class ServletUtil {
         try {
             in = FileUtil.getInputStream(file);
             write(response, in, contentType, fileName);
-        }
-        finally {
+        } finally {
             IoUtil.close(in);
         }
     }
@@ -662,11 +660,9 @@ public class ServletUtil {
         try {
             out = response.getOutputStream();
             IoUtil.copy(in, out, bufferSize);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UtilException(e.getMessage());
-        }
-        finally {
+        } finally {
             IoUtil.close(out);
             IoUtil.close(in);
         }
@@ -682,14 +678,11 @@ public class ServletUtil {
     public static void setHeader(HttpServletResponse response, String name, Object value) {
         if (value instanceof String) {
             response.setHeader(name, (String) value);
-        }
-        else if (Date.class.isAssignableFrom(value.getClass())) {
+        } else if (Date.class.isAssignableFrom(value.getClass())) {
             response.setDateHeader(name, ((Date) value).getTime());
-        }
-        else if (value instanceof Integer || "int".equalsIgnoreCase(value.getClass().getSimpleName())) {
+        } else if (value instanceof Integer || "int".equalsIgnoreCase(value.getClass().getSimpleName())) {
             response.setIntHeader(name, (int) value);
-        }
-        else {
+        } else {
             response.setHeader(name, value.toString());
         }
     }

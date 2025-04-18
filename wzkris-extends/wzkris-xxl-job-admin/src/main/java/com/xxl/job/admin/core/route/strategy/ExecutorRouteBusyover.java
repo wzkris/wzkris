@@ -24,8 +24,7 @@ public class ExecutorRouteBusyover extends ExecutorRouter {
             try {
                 ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
                 idleBeatResult = executorBiz.idleBeat(new IdleBeatParam(triggerParam.getJobId()));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 idleBeatResult = new ReturnT<String>(ReturnT.FAIL_CODE, "" + e);
             }

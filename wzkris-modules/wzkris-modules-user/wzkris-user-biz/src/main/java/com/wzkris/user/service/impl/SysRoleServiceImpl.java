@@ -4,12 +4,15 @@ import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.exception.BusinessExceptionI18n;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.exception.service.BusinessException;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
 import com.wzkris.user.domain.SysUserRole;
+import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -34,15 +38,22 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysRoleServiceImpl implements SysRoleService {
+
     private final SysRoleMapper roleMapper;
+
     private final SysRoleMenuMapper roleMenuMapper;
+
     private final SysUserRoleMapper userRoleMapper;
+
     private final SysRoleDeptMapper roleDeptMapper;
 
     @Override
-    public List<SysRole> listCanGranted() {
-        return roleMapper.selectListInScope(Wrappers.lambdaQuery(SysRole.class).
-                eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE));
+    public List<SelectVO> listSelect(String roleName) {
+        return roleMapper.selectLists(Wrappers.lambdaQuery(SysRole.class)
+                .select(SysRole::getRoleId, SysRole::getRoleName)
+                .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(roleName), SysRole::getRoleName, roleName)
+        ).stream().map(SelectVO::new).collect(Collectors.toList());
     }
 
     @Override
@@ -74,10 +85,10 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public String getRoleGroup() {
-        if (LoginUserUtil.isAdmin()) {
-            return "超级管理员";
+        if (LoginUtil.isAdmin()) {
+            return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<SysRole> roles = this.listByUserId(LoginUserUtil.getUserId());
+        List<SysRole> roles = this.listByUserId(LoginUtil.getUserId());
         return roles.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }
 
@@ -114,14 +125,15 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public void allocateUsers(Long roleId, List<Long> userIds) {
+    public boolean allocateUsers(Long roleId, List<Long> userIds) {
         if (ObjUtil.isNotEmpty(userIds)) {
             // 新增用户与角色管理
             List<SysUserRole> list = userIds.stream()
                     .map(userId -> new SysUserRole(userId, roleId))
                     .toList();
-            userRoleMapper.insertBatch(list);
+            return userRoleMapper.insertBatch(list) > 0;
         }
+        return false;
     }
 
     /**
@@ -157,22 +169,25 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByIds(List<Long> roleIds) {
-        // 删除角色与菜单关联
-        roleMenuMapper.deleteByRoleIds(roleIds);
-        // 删除角色与部门关联
-        roleDeptMapper.deleteByRoleIds(roleIds);
-        // 删除角色与用户关联
-        userRoleMapper.deleteByRoleIds(roleIds);
-        roleMapper.deleteByIds(roleIds);
+    public boolean deleteByIds(List<Long> roleIds) {
+        boolean success = roleMapper.deleteByIds(roleIds) > 0;
+        if (success) {
+            // 删除角色与菜单关联
+            roleMenuMapper.deleteByRoleIds(roleIds);
+            // 删除角色与部门关联
+            roleDeptMapper.deleteByRoleIds(roleIds);
+            // 删除角色与用户关联
+            userRoleMapper.deleteByRoleIds(roleIds);
+        }
+        return success;
     }
 
     @Override
-    public void checkRoleUse(List<Long> roleIds) {
+    public void checkRoleUsed(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (userRoleMapper.countByRoleIds(roleIds) > 0) {
-            throw new BusinessExceptionI18n("business.allocated");
+        if (userRoleMapper.checkExistByRoleIds(roleIds)) {
+            throw new BusinessException("business.allocated");
         }
     }
 
@@ -181,11 +196,10 @@ public class SysRoleServiceImpl implements SysRoleService {
      *
      * @param roleIds 待操作的角色id数组
      */
-    public void checkDataScopes(List<Long> roleIds) {
-        roleIds = roleIds.stream().filter(Objects::nonNull).toList();
+    public void checkDataScopes(Collection<Long> roleIds) {
         if (ObjUtil.isNotEmpty(roleIds)) {
-            if (roleMapper.checkDataScopes(roleIds) != roleIds.size()) {
-                throw new AccessDeniedException("没有角色数据访问权限");
+            if (!roleMapper.checkDataScopes(roleIds)) {
+                throw new AccessDeniedException("无此角色数据访问权限");
             }
         }
     }

@@ -3,7 +3,6 @@ package com.wzkris.user.mapper;
 import com.wzkris.user.domain.SysRoleMenu;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -25,13 +24,13 @@ public interface SysRoleMenuMapper {
      */
     @Select("""
             <script>
-                SELECT menu_id FROM sys_role_menu WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+                SELECT menu_id FROM biz_sys.sys_role_menu WHERE role_id IN
+                    <foreach collection="list" item="roleId" separator="," open="(" close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    List<Long> listMenuIdByRoleIds(@Param("roleIds") List<Long> roleIds);
+    List<Long> listMenuIdByRoleIds(List<Long> roleIds);
 
     /**
      * 查询菜单是否使用
@@ -39,8 +38,8 @@ public interface SysRoleMenuMapper {
      * @param menuId 菜单ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT * FROM sys_role_menu WHERE menu_id = #{menuId})")
-    int checkMenuExistRole(Long menuId);
+    @Select("SELECT EXISTS(SELECT * FROM biz_sys.sys_role_menu WHERE menu_id = #{menuId})")
+    boolean checkMenuExistRole(Long menuId);
 
     /**
      * 通过角色ID删除角色和菜单关联
@@ -48,7 +47,7 @@ public interface SysRoleMenuMapper {
      * @param roleId 角色ID
      * @return 结果
      */
-    @Delete("DELETE FROM sys_role_menu WHERE role_id = #{roleId}")
+    @Delete("DELETE FROM biz_sys.sys_role_menu WHERE role_id = #{roleId}")
     int deleteByRoleId(Long roleId);
 
     /**
@@ -59,13 +58,13 @@ public interface SysRoleMenuMapper {
      */
     @Delete("""
             <script>
-                DELETE FROM sys_role_menu WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                DELETE FROM biz_sys.sys_role_menu WHERE role_id IN
+                    <foreach collection="list" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
+    int deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 通过菜单ID删除角色和菜单关联
@@ -73,23 +72,23 @@ public interface SysRoleMenuMapper {
      * @param menuId 菜单ID
      * @return 结果
      */
-    @Delete("DELETE FROM sys_role_menu WHERE menu_id = #{menuId}")
+    @Delete("DELETE FROM biz_sys.sys_role_menu WHERE menu_id = #{menuId}")
     int deleteByMenuId(Long menuId);
 
     /**
      * 批量新增角色菜单信息
      *
-     * @param sysRoleMenuList 角色菜单列表
+     * @param roleMenus 角色菜单列表
      * @return 结果
      */
     @Insert("""
             <script>
-                INSERT INTO sys_role_menu(role_id, menu_id) VALUES
+                INSERT INTO biz_sys.sys_role_menu(role_id, menu_id) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.roleId}, #{item.menuId})
                     </foreach>
             </script>
             """)
-    int insertBatch(List<SysRoleMenu> sysRoleMenuList);
+    int insertBatch(List<SysRoleMenu> roleMenus);
 
 }

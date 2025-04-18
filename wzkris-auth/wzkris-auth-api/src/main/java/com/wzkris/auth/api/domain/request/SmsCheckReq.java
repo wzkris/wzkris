@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -15,7 +17,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SmsCheckReq {
+public class SmsCheckReq implements Serializable {
 
     @PhoneNumber
     private String phoneNumber;

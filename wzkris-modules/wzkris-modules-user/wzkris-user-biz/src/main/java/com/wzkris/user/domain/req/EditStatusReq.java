@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 @Schema(description = "修改状态请求体")
 public class EditStatusReq {
+
     @NotNull(message = "id {validate.notnull}")
     @Schema(description = "主键")
     private Long id;

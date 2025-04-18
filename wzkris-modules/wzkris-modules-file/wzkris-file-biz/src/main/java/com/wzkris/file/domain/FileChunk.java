@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Data
 public class FileChunk {
+
     @Schema(description = "文件名")
     private String fileName;
 

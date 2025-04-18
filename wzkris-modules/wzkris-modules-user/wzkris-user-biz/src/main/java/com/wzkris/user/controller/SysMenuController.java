@@ -6,9 +6,10 @@ import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
+import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
+import com.wzkris.user.constant.MenuConstants;
 import com.wzkris.user.domain.SysMenu;
 import com.wzkris.user.domain.req.SysMenuQueryReq;
 import com.wzkris.user.domain.req.SysMenuReq;
@@ -16,9 +17,9 @@ import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,15 +33,17 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/sys_menu")
-@PreAuthorize("@LoginUserUtil.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
+
     private final SysMenuMapper menuMapper;
+
     private final SysMenuService menuService;
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
-    @CheckPerms("menu:list")
+    @CheckSystemPerms("sys_menu:list")
     public Result<List<SysMenu>> list(SysMenuQueryReq queryReq) {
         List<SysMenu> menus = menuMapper.selectList(this.buildQueryWrapper(queryReq));
         return ok(menus);
@@ -48,8 +51,8 @@ public class SysMenuController extends BaseController {
 
     private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!LoginUserUtil.isAdmin()) {
-            menuIds = menuService.listMenuIdByUserId(LoginUserUtil.getUserId());
+        if (!LoginUtil.isAdmin()) {
+            menuIds = menuService.listMenuIdByUserId(LoginUtil.getUserId());
         }
         return new LambdaQueryWrapper<SysMenu>()
                 .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
@@ -60,7 +63,7 @@ public class SysMenuController extends BaseController {
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @CheckPerms("menu:query")
+    @CheckSystemPerms("sys_menu:query")
     public Result<SysMenu> getInfo(@PathVariable Long menuId) {
         return ok(menuMapper.selectById(menuId));
     }
@@ -68,10 +71,11 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckPerms("menu:add")
-    public Result<Void> add(@Valid @RequestBody SysMenuReq req) {
-        if (req.getIsFrame() && !StringUtil.ishttp(req.getPath())) {
-            return fail("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
+    @CheckSystemPerms("sys_menu:add")
+    public Result<Void> add(@Validated @RequestBody SysMenuReq req) {
+        if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
+                && !StringUtil.ishttp(req.getPath())) {
+            return err412("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         return toRes(menuMapper.insert(BeanUtil.convert(req, SysMenu.class)));
     }
@@ -79,13 +83,13 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckPerms("menu:edit")
-    public Result<Void> edit(@Valid @RequestBody SysMenuReq req) {
-        if (req.getIsFrame() && !StringUtil.ishttp(req.getPath())) {
-            return fail("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
-        }
-        else if (req.getMenuId().equals(req.getParentId())) {
-            return fail("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
+    @CheckSystemPerms("sys_menu:edit")
+    public Result<Void> edit(@Validated @RequestBody SysMenuReq req) {
+        if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
+                && !StringUtil.ishttp(req.getPath())) {
+            return err412("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
+        } else if (req.getMenuId().equals(req.getParentId())) {
+            return err412("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
         }
         return toRes(menuMapper.updateById(BeanUtil.convert(req, SysMenu.class)));
     }
@@ -93,15 +97,14 @@ public class SysMenuController extends BaseController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckPerms("menu:remove")
+    @CheckSystemPerms("sys_menu:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
-        if (menuService.hasChildByMenuId(menuId)) {
-            return fail("存在子菜单,不允许删除");
+        if (menuService.checkMenuExistChild(menuId)) {
+            return err412("存在子菜单,不允许删除");
         }
         if (menuService.checkMenuExistRole(menuId)) {
-            return fail("菜单已分配,不允许删除");
+            return err412("菜单已分配,不允许删除");
         }
-        menuService.deleteById(menuId);
-        return ok();
+        return toRes(menuService.deleteById(menuId));
     }
 }

@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueryPermsReq {
+public class QueryPermsReq implements Serializable {
 
     @NonNull
     private Long userId;

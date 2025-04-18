@@ -1,7 +1,7 @@
 package com.wzkris.common.excel.core;
 
 import cn.hutool.core.util.StrUtil;
-import com.wzkris.common.core.exception.BusinessException;
+import com.wzkris.common.core.exception.service.GenericException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,22 +24,27 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @SuppressWarnings("unused")
 public class DropDownOptions {
+
     /**
      * 分隔符
      */
     private static final String DELIMITER = "_";
+
     /**
      * 一级下拉所在列index，从0开始算
      */
     private int index = 0;
+
     /**
      * 二级下拉所在的index，从0开始算，不能与一级相同
      */
     private int nextIndex = 0;
+
     /**
      * 一级下拉所包含的数据
      */
     private List<String> options = new ArrayList<>();
+
     /**
      * 二级下拉所包含的数据Map
      * <p>以每一个一级选项值为Key，每个一级选项对应的二级数据为Value</p>
@@ -67,7 +72,7 @@ public class DropDownOptions {
         for (int i = 0; i < vars.length; i++) {
             String var = StrUtil.trimToEmpty(String.valueOf(vars[i]));
             if (!var.matches(regex)) {
-                throw new BusinessException("选项数据不符合规则，仅允许使用中英文字符以及数字");
+                throw new GenericException("选项数据不符合规则，仅允许使用中英文字符以及数字");
             }
             stringBuffer.append(var);
             if (i < vars.length - 1) {
@@ -76,7 +81,7 @@ public class DropDownOptions {
             }
         }
         if (stringBuffer.toString().matches("^\\d_*$")) {
-            throw new BusinessException("禁止以数字开头");
+            throw new GenericException("禁止以数字开头");
         }
         return stringBuffer.toString();
     }
@@ -134,8 +139,7 @@ public class DropDownOptions {
                 List<String> thisParentSonOptionList;
                 if (sonOptions.containsKey(key)) {
                     thisParentSonOptionList = sonOptions.get(key);
-                }
-                else {
+                } else {
                     thisParentSonOptionList = new ArrayList<>();
                     sonOptions.put(key, thisParentSonOptionList);
                 }

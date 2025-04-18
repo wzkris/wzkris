@@ -51,3 +51,4 @@ logs/*
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+/wzkris-extends/wzkris-xxl-job-admin/*

@@ -1,6 +1,5 @@
 package com.wzkris.system.domain.req;
 
-
 import com.wzkris.common.core.annotation.EnumsCheck;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.system.domain.SysConfig;

@@ -1,7 +1,7 @@
 package com.wzkris.file.utils;
 
 import cn.hutool.core.date.DateUtil;
-import com.wzkris.common.core.exception.UtilException;
+import com.wzkris.common.core.exception.util.UtilException;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -18,6 +18,7 @@ import java.util.Arrays;
  */
 @Slf4j
 public class FileUtil extends cn.hutool.core.io.FileUtil {
+
     public static final String IMAGE_PNG = "image/png";
 
     public static final String IMAGE_JPG = "image/jpg";
@@ -73,8 +74,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
             writeBytes(file.getBytes(), baseDir + fileName);
             return fileName;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("捕获异常，异常信息：{}", e.getMessage(), e);
             throw new UtilException(e.getMessage());
         }
@@ -96,8 +96,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
             writeBytes(file.getBytes(), absPath);
             return absPath;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("捕获异常，异常信息：{}", e.getMessage(), e);
             throw new UtilException(e.getMessage());
         }

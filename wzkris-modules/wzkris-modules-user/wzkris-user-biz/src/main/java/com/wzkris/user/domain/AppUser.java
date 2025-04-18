@@ -1,6 +1,7 @@
 package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.core.annotation.Xss;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
@@ -10,6 +11,8 @@ import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * 顾客 app_user
@@ -22,6 +25,7 @@ import lombok.NoArgsConstructor;
         @AutoMapper(target = AppUserResp.class)
 })
 @NoArgsConstructor
+@TableName(schema = "biz_app")
 public class AppUser extends BaseEntity {
 
     @TableId
@@ -47,7 +51,7 @@ public class AppUser extends BaseEntity {
     private String loginIp;
 
     @Schema(description = "最近登录日期")
-    private Long loginDate;
+    private Date loginDate;
 
     public AppUser(Long userId) {
         this.userId = userId;

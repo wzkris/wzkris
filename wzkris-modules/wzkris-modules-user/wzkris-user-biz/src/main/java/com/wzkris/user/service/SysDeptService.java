@@ -3,6 +3,7 @@ package com.wzkris.user.service;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,14 +21,6 @@ public interface SysDeptService {
      * @return 部门树信息集合
      */
     List<SelectTreeVO> listSelectTree(String deptName);
-
-    /**
-     * 是否存在部门子节点
-     *
-     * @param deptId 部门ID
-     * @return 结果
-     */
-    boolean hasChildByDeptId(Long deptId);
 
     /**
      * 新增保存部门信息
@@ -48,25 +41,19 @@ public interface SysDeptService {
      *
      * @param deptId 部门ID
      */
-    void deleteById(Long deptId);
-
-    /**
-     * 查询部门是否存在用户
-     *
-     * @param deptId 部门ID
-     * @return 结果 true 存在 false 不存在
-     */
-    boolean checkDeptExistUser(Long deptId);
+    boolean deleteById(Long deptId);
 
     /**
      * 校验部门是否有数据权限
      *
      * @param deptIds 部门id
      */
-    void checkDataScopes(List<Long> deptIds);
+    void checkDataScopes(Collection<Long> deptIds);
 
     default void checkDataScopes(Long deptId) {
-        this.checkDataScopes(Collections.singletonList(deptId));
+        if (deptId != null) {
+            this.checkDataScopes(Collections.singleton(deptId));
+        }
     }
 
 }

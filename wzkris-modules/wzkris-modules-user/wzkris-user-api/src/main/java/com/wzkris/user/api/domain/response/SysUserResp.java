@@ -2,13 +2,16 @@ package com.wzkris.user.api.domain.response;
 
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * sys用户信息
  *
  * @author wzkris
  */
 @Data
-public class SysUserResp {
+public class SysUserResp implements Serializable {
 
     private Long userId;
 
@@ -30,7 +33,7 @@ public class SysUserResp {
 
     private String tenantStatus;
 
-    private Long tenantExpired;
+    private Date tenantExpired;
 
     private String packageStatus;
 

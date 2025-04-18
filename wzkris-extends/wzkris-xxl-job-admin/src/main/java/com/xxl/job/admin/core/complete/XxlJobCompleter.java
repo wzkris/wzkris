@@ -17,6 +17,7 @@ import java.text.MessageFormat;
  * @author xuxueli 2020-10-30 20:43:10
  */
 public class XxlJobCompleter {
+
     private static Logger logger = LoggerFactory.getLogger(XxlJobCompleter.class);
 
     /**
@@ -38,7 +39,6 @@ public class XxlJobCompleter {
         // fresh handle
         return XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().updateHandleInfo(xxlJobLog);
     }
-
 
     /**
      * do somethind to finish job
@@ -67,8 +67,7 @@ public class XxlJobCompleter {
                                 childJobIds[i],
                                 (triggerChildResult.getCode() == ReturnT.SUCCESS_CODE ? I18nUtil.getString("system_success") : I18nUtil.getString("system_fail")),
                                 triggerChildResult.getMsg());
-                    }
-                    else {
+                    } else {
                         triggerChildMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg2"),
                                 (i + 1),
                                 childJobIds.length,
@@ -92,8 +91,7 @@ public class XxlJobCompleter {
         try {
             int result = Integer.valueOf(str);
             return true;
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }

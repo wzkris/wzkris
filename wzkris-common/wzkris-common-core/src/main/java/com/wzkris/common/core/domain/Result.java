@@ -1,12 +1,10 @@
 package com.wzkris.common.core.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.BusinessException;
-import lombok.Data;
+import com.wzkris.common.core.exception.service.GenericException;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,20 +14,31 @@ import java.io.Serializable;
  *
  * @author wzkris
  */
-@Data
-@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class) // 驼峰转下划线
+@Getter
+@ToString
 public class Result<T> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -683617940437008912L;
 
-    // 业务状态码
+    /**
+     * 业务状态码
+     */
     private int code;
-    // 数据
+
+    /**
+     * 数据
+     */
     private T data;
-    // 错误信息
+
+    /**
+     * 错误信息
+     */
     private String message;
-    // 当前时间戳
+
+    /**
+     * 当前时间戳
+     */
     private long timestamp;
 
     public Result() {
@@ -50,12 +59,20 @@ public class Result<T> implements Serializable {
         return resp(BizCode.OK.value(), data, BizCode.OK.desc());
     }
 
-    public static <T> Result<T> fail() {
-        return fail(BizCode.FAIL.desc());
+    public static <T> Result<T> err400(String message) {
+        return resp(BizCode.BAD_REQUEST, message);
     }
 
-    public static <T> Result<T> fail(String message) {
-        return resp(BizCode.FAIL, message);
+    public static <T> Result<T> err412(String message) {
+        return resp(BizCode.PRECONDITION_FAILED, message);
+    }
+
+    public static <T> Result<T> err500(String message) {
+        return resp(BizCode.INTERNAL_ERROR, message);
+    }
+
+    public static <T> Result<T> err1000() {
+        return resp(BizCode.INVOKE_FAIL);
     }
 
     public static <T> Result<T> resp(BizCode bizCode) {
@@ -70,14 +87,6 @@ public class Result<T> implements Serializable {
         return new Result<>(code, data, message);
     }
 
-    public static <T> Result<T> toRes(int affectRows) {
-        return affectRows > 0 ? ok() : fail();
-    }
-
-    public static <T> Result<T> toRes(boolean b) {
-        return b ? ok() : fail();
-    }
-
     /**
      * 是否成功
      */
@@ -90,10 +99,10 @@ public class Result<T> implements Serializable {
      * 校验返回结果是否正常，若不是则抛出业务异常
      */
     @JsonIgnore
-    public T checkData() throws BusinessException {
+    public T checkData() throws GenericException {
         if (this.isSuccess()) {
             return this.data;
         }
-        throw new BusinessException(this.code, this.message);
+        throw new GenericException(this.code, this.message);
     }
 }

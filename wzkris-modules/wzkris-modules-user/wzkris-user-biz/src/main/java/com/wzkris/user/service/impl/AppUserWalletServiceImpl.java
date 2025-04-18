@@ -1,5 +1,6 @@
 package com.wzkris.user.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.AppUserWalletRecord;
 import com.wzkris.user.mapper.AppUserWalletMapper;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 public class AppUserWalletServiceImpl implements AppUserWalletService {
 
     private final AppUserWalletMapper appUserWalletMapper;
+
     private final AppUserWalletRecordMapper appUserWalletRecordMapper;
 
     @Override
@@ -27,14 +29,15 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             AppUserWalletRecord record = new AppUserWalletRecord();
             record.setUserId(userId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_INCOME);
-            record.setPayTime(System.currentTimeMillis());
+            record.setRecordType(UserConstants.WALLET_INCOME);
+            record.setCreateAt(DateUtil.date());
             appUserWalletRecordMapper.insert(record);
         }
         return suc;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean decryBalance(Long userId, BigDecimal amount) {
         amount = amount.abs();
         boolean suc = appUserWalletMapper.decryBalance(userId, amount) > 0;
@@ -42,8 +45,8 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             AppUserWalletRecord record = new AppUserWalletRecord();
             record.setUserId(userId);
             record.setAmount(amount);
-            record.setType(UserConstants.WALLET_OUTCOME);
-            record.setPayTime(System.currentTimeMillis());
+            record.setRecordType(UserConstants.WALLET_OUTCOME);
+            record.setCreateAt(DateUtil.date());
             appUserWalletRecordMapper.insert(record);
         }
         return suc;

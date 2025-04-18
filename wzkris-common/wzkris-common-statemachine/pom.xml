@@ -2,24 +2,29 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris-common</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-common</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<artifactId>wzkris-common-statemachine</artifactId>
-	<description>状态机</description>
+    <artifactId>wzkris-common-statemachine</artifactId>
+    <description>状态机</description>
 
-	<dependencies>
+    <properties>
+        <spring-statemachine.version>4.0.0</spring-statemachine.version>
+    </properties>
 
-		<!-- spring状态机-->
-		<dependency>
-			<groupId>org.springframework.statemachine</groupId>
-			<artifactId>spring-statemachine-starter</artifactId>
-		</dependency>
+    <dependencies>
 
-	</dependencies>
+        <!-- spring状态机-->
+        <dependency>
+            <groupId>org.springframework.statemachine</groupId>
+            <artifactId>spring-statemachine-starter</artifactId>
+            <version>${spring-statemachine.version}</version>
+        </dependency>
+
+    </dependencies>
 </project>

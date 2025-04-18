@@ -23,6 +23,7 @@ import java.util.Date;
  * Created by xuxueli on 17/7/13.
  */
 public class XxlJobTrigger {
+
     private static Logger logger = LoggerFactory.getLogger(XxlJobTrigger.class);
 
     /**
@@ -79,8 +80,7 @@ public class XxlJobTrigger {
             for (int i = 0; i < group.getRegistryList().size(); i++) {
                 processTrigger(group, jobInfo, finalFailRetryCount, triggerType, i, group.getRegistryList().size());
             }
-        }
-        else {
+        } else {
             if (shardingParam == null) {
                 shardingParam = new int[]{0, 1};
             }
@@ -93,8 +93,7 @@ public class XxlJobTrigger {
         try {
             int result = Integer.valueOf(str);
             return true;
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -144,19 +143,16 @@ public class XxlJobTrigger {
             if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST == executorRouteStrategyEnum) {
                 if (index < group.getRegistryList().size()) {
                     address = group.getRegistryList().get(index);
-                }
-                else {
+                } else {
                     address = group.getRegistryList().get(0);
                 }
-            }
-            else {
+            } else {
                 routeAddressResult = executorRouteStrategyEnum.getRouter().route(triggerParam, group.getRegistryList());
                 if (routeAddressResult.getCode() == ReturnT.SUCCESS_CODE) {
                     address = routeAddressResult.getContent();
                 }
             }
-        }
-        else {
+        } else {
             routeAddressResult = new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
         }
 
@@ -164,8 +160,7 @@ public class XxlJobTrigger {
         ReturnT<String> triggerResult = null;
         if (address != null) {
             triggerResult = runExecutor(triggerParam, address);
-        }
-        else {
+        } else {
             triggerResult = new ReturnT<String>(ReturnT.FAIL_CODE, null);
         }
 
@@ -213,8 +208,7 @@ public class XxlJobTrigger {
         try {
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
             runResult = executorBiz.run(triggerParam);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(">>>>>>>>>>> xxl-job trigger error, please check if the executor[{}] is running.", address, e);
             runResult = new ReturnT<String>(ReturnT.FAIL_CODE, ThrowableUtil.toString(e));
         }

@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * @author wzkris
  * @date 2024/3/11
@@ -21,8 +20,11 @@ import java.util.Set;
 @Getter
 @Transient
 public final class SmsAuthenticationToken extends CommonAuthenticationToken {
+
     private final LoginType loginType;
+
     private final String phoneNumber;
+
     private final String smsCode;
 
     public SmsAuthenticationToken(LoginType loginType,
@@ -32,7 +34,7 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
                                   Set<String> scopes,
                                   Map<String, Object> additionalParameters) {
         super(new AuthorizationGrantType(OAuth2GrantTypeConstant.SMS), clientPrincipal, scopes, additionalParameters);
-        Assert.notNull(loginType, "userType cannot be null");
+        Assert.notNull(loginType, "loginType cannot be null");
         Assert.notNull(phoneNumber, "phoneNumber cannot be null");
         Assert.notNull(smsCode, "smsCode cannot be null");
         this.loginType = loginType;

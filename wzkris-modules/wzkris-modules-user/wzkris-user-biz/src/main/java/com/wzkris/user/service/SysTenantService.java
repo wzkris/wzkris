@@ -1,7 +1,8 @@
 package com.wzkris.user.service;
 
-
-import com.wzkris.user.domain.dto.SysTenantDTO;
+import com.wzkris.user.domain.SysTenant;
+import com.wzkris.user.domain.vo.SelectVO;
+import org.springframework.lang.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,11 +15,20 @@ import java.util.List;
 public interface SysTenantService {
 
     /**
+     * 租户选择列表
+     *
+     * @param tenantName 租户名称
+     */
+    List<SelectVO> listSelect(@Nullable String tenantName);
+
+    /**
      * 添加租户, 会创建租户管理员账号
      *
-     * @param tenantDTO 参数
+     * @param tenant   参数
+     * @param username 登录账户
+     * @param password 登录密码
      */
-    void insertTenant(SysTenantDTO tenantDTO);
+    boolean insertTenant(SysTenant tenant, String username, String password);
 
     /**
      * 删除租户及相关信息(hard delete)
@@ -70,4 +80,5 @@ public interface SysTenantService {
     default boolean checkAdministrator(Long userId) {
         return this.checkAdministrator(Collections.singletonList(userId));
     }
+
 }

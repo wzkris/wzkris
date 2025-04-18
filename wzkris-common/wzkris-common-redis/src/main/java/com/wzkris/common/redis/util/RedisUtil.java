@@ -3,12 +3,11 @@ package com.wzkris.common.redis.util;
 import com.wzkris.common.core.utils.SpringUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.redisson.api.RLock;
-import org.redisson.api.RMap;
-import org.redisson.api.RMapCache;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
+import org.redisson.api.options.KeysScanOptions;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +30,7 @@ public class RedisUtil {
      * @param key 缓存键值
      * @return 缓存键值对应的数据
      */
+    @SuppressWarnings("unchecked")
     public static <T> T getObj(final String key) {
         return (T) redissonclient.getBucket(key).get();
     }
@@ -71,8 +71,17 @@ public class RedisUtil {
      *
      * @return 删除个数
      */
-    public static long delObj(final List<String> keys) {
+    public static long delObjs(final List<String> keys) {
         return redissonclient.getKeys().delete(keys.toArray(new String[0]));
+    }
+
+    /**
+     * 获取桶
+     *
+     * @param key 缓存的键值
+     */
+    public static <T> RBucket<T> getBucket(final String key) {
+        return redissonclient.getBucket(key);
     }
 
     /**
@@ -158,7 +167,11 @@ public class RedisUtil {
      * 模糊匹配key
      */
     public static List<String> keysByPattern(final String keyPattern, final int count) {
-        return redissonclient.getKeys().getKeysStreamByPattern(keyPattern, count).toList();
+        List<String> keys = new ArrayList<>();
+        redissonclient.getKeys().getKeys(KeysScanOptions.defaults().pattern(keyPattern)
+                        .limit(count))
+                .forEach(keys::add);
+        return keys;
     }
 
     /**

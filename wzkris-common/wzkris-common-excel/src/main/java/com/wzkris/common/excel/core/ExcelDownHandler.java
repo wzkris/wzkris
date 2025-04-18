@@ -40,22 +40,27 @@ public class ExcelDownHandler implements SheetWriteHandler {
      * 仅为了解析列英文，禁止修改
      */
     private static final String EXCEL_COLUMN_NAME = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     /**
      * 单选数据Sheet名
      */
     private static final String OPTIONS_SHEET_NAME = "options";
+
     /**
      * 联动选择数据Sheet名的头
      */
     private static final String LINKED_OPTIONS_SHEET_NAME = "linkedOptions";
+
     /**
      * 下拉可选项
      */
     private final List<DropDownOptions> dropDownOptions;
+
     /**
      * 当前单选进度
      */
     private int currentOptionsColumnIndex;
+
     /**
      * 当前联动选择进度
      */
@@ -99,8 +104,7 @@ public class ExcelDownHandler implements SheetWriteHandler {
                     List<String> strList = StringUtil.split(converterExp, format.separator());
                     options = strList.stream().map(String::valueOf).collect(Collectors.toList());
                 }
-            }
-            else if (field.isAnnotationPresent(ExcelEnumFormat.class)) {
+            } else if (field.isAnnotationPresent(ExcelEnumFormat.class)) {
                 // 否则如果指定了@ExcelEnumFormat，则使用枚举的逻辑
                 ExcelEnumFormat format = field.getDeclaredAnnotation(ExcelEnumFormat.class);
                 List<Object> values = EnumUtil.getFieldValues(format.enumClass(), format.textField());
@@ -111,8 +115,7 @@ public class ExcelDownHandler implements SheetWriteHandler {
                 if (options.size() > 20) {
                     // 这里限制如果可选项大于20，则使用额外表形式
                     dropDownWithSheet(helper, workbook, sheet, index, options);
-                }
-                else {
+                } else {
                     // 否则使用固定值形式
                     dropDownWithSimple(helper, sheet, index, options);
                 }
@@ -126,12 +129,10 @@ public class ExcelDownHandler implements SheetWriteHandler {
             if (!everyOptions.getNextOptions().isEmpty()) {
                 // 当二级选项不为空时，使用额外关联表的形式
                 dropDownLinkedOptions(helper, workbook, sheet, everyOptions);
-            }
-            else if (everyOptions.getOptions().size() > 10) {
+            } else if (everyOptions.getOptions().size() > 10) {
                 // 当一级选项参数个数大于10，使用额外表的形式
                 dropDownWithSheet(helper, workbook, sheet, everyOptions.getIndex(), everyOptions.getOptions());
-            }
-            else if (!everyOptions.getOptions().isEmpty()) {
+            } else if (!everyOptions.getOptions().isEmpty()) {
                 // 当一级选项个数不为空，使用默认形式
                 dropDownWithSimple(helper, sheet, everyOptions.getIndex(), everyOptions.getOptions());
             }
@@ -332,8 +333,7 @@ public class ExcelDownHandler implements SheetWriteHandler {
             dataValidation.createPromptBox("填写说明：", "填写内容只能为下拉中数据，其他数据将导致导入失败");
             dataValidation.setShowPromptBox(true);
             sheet.addValidationData(dataValidation);
-        }
-        else {
+        } else {
             dataValidation.setSuppressDropDownArrow(false);
         }
         sheet.addValidationData(dataValidation);

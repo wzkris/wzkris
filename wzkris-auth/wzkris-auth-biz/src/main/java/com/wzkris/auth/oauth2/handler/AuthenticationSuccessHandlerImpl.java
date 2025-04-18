@@ -16,14 +16,8 @@
 
 package com.wzkris.auth.oauth2.handler;
 
-import cn.hutool.core.util.ObjUtil;
-import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +41,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -72,16 +67,8 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                                         Authentication authentication) throws IOException {
         // 拿到返回的token
         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
-        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
-
-        // 判断是否携带当前用户信息
-        if (ObjUtil.isNotEmpty(additionalParameters) && additionalParameters.containsKey(AuthBaseUser.class.getName())) {
-            AuthBaseUser baseUser = (AuthBaseUser) additionalParameters.get(AuthBaseUser.class.getName());
-            // 发布登录成功事件
-            SpringUtil.getContext().publishEvent(new LoginEvent(baseUser, ServletUtil.getClientIP(request),
-                    UserAgentUtil.parse(request.getHeader("User-Agent"))));
-            additionalParameters.remove(AuthBaseUser.class.getName());
-        }
+        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters().isEmpty()
+                ? new HashMap<>(2) : accessTokenAuthentication.getAdditionalParameters();
 
         // 构造响应体
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
@@ -89,11 +76,17 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 
         OAuth2AccessTokenResponse.Builder builder = OAuth2AccessTokenResponse.withToken(accessToken.getTokenValue())
                 .tokenType(accessToken.getTokenType());
+
         if (accessToken.getIssuedAt() != null && accessToken.getExpiresAt() != null) {
             builder.expiresIn(ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()));
         }
+
         if (refreshToken != null) {
             builder.refreshToken(refreshToken.getTokenValue());
+
+            if (refreshToken.getIssuedAt() != null && refreshToken.getExpiresAt() != null) {
+                additionalParameters.put("refresh_expires_in", ChronoUnit.SECONDS.between(refreshToken.getIssuedAt(), refreshToken.getExpiresAt()));
+            }
         }
 
         // 追加输出参数
@@ -126,8 +119,7 @@ class ResponseHttpMessageConverter extends OAuth2AccessTokenResponseHttpMessageC
             // 获得token
             Map<String, Object> tokenData = this.accessTokenResponseParametersConverter.convert(tokenResponse);
             jsonMessageConverter.write(Result.ok(tokenData), STRING_OBJECT_MAP.getType(), MediaType.APPLICATION_JSON, outputMessage);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new HttpMessageNotWritableException("An error occurred writing the OAuth 2.0 Access Token Response: " + ex.getMessage(), ex);
         }
     }

@@ -1,7 +1,10 @@
 package com.wzkris.user.api.domain.request;
 
-import jakarta.annotation.Nonnull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 登录信息
@@ -9,12 +12,16 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
-public class LoginInfoReq {
+@NoArgsConstructor
+public class LoginInfoReq implements Serializable {
 
-    @Nonnull
     private Long userId;
 
     private String loginIp;
 
-    private Long loginDate;
+    private Date loginDate;
+
+    public LoginInfoReq(Long userId) {
+        this.userId = userId;
+    }
 }

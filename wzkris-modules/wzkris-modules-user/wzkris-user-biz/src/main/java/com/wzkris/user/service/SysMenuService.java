@@ -1,6 +1,5 @@
 package com.wzkris.user.service;
 
-
 import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 import org.springframework.lang.Nullable;
@@ -36,7 +35,7 @@ public interface SysMenuService {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SelectTreeVO> listMenuSelectTree(Long userId);
+    List<SelectTreeVO> listSelectTree(Long userId);
 
     /**
      * 根据用户ID查询前端路由
@@ -44,7 +43,7 @@ public interface SysMenuService {
      * @param userId 用户ID
      * @return 前端路由
      */
-    List<RouterVO> listRouterTree(Long userId);
+    List<RouterVO> listRouter(Long userId);
 
     /**
      * 查询用户对应菜单id
@@ -60,7 +59,7 @@ public interface SysMenuService {
      * @param menuId 菜单ID
      * @return 结果 true 存在 false 不存在
      */
-    boolean hasChildByMenuId(Long menuId);
+    boolean checkMenuExistChild(Long menuId);
 
     /**
      * 查询菜单是否存在角色
@@ -75,5 +74,5 @@ public interface SysMenuService {
      *
      * @param menuId 菜单ID
      */
-    void deleteById(Long menuId);
+    boolean deleteById(Long menuId);
 }

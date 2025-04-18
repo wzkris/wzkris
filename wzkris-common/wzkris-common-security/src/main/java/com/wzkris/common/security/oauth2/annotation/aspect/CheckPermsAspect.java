@@ -10,9 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -32,19 +33,23 @@ public class CheckPermsAspect {
     @Autowired
     private PermissionService permissionService;
 
+    @Pointcut("@annotation(com.wzkris.common.security.oauth2.annotation.CheckPerms)" +
+            "|| @annotation(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)")
+    public void pointcut() {
+    }
+
     /**
      * 方法执行前执行
      */
-    @Before("@annotation(checkPerms)")
-    public void before(JoinPoint point, CheckPerms checkPerms) {
-        if (checkPerms == null) {
-            checkPerms = AnnotationUtils.findAnnotation(((MethodSignature) point.getSignature()).getMethod(), CheckPerms.class);
-        }
+    @Before("pointcut()")
+    public void before(JoinPoint point) {
+        MethodSignature signature = (MethodSignature) point.getSignature();
+        CheckPerms checkPerms = AnnotatedElementUtils.findMergedAnnotation(signature.getMethod(), CheckPerms.class);
 
         AuthBaseUser baseUser = SecurityUtil.getPrincipal();
 
-        if (ObjUtil.notEqual(baseUser.getLoginType(), checkPerms.loginType())) {
-            throw new AccessDeniedException("AuthUser needs LoginType :" + checkPerms.loginType() + " , but have " + baseUser.getLoginType());
+        if (ObjUtil.notEqual(baseUser.getLoginType(), checkPerms.checkType())) {
+            throw new AccessDeniedException("AuthUser needs checkType :" + checkPerms.checkType() + " , but have " + baseUser.getLoginType());
         }
         String[] perms = checkPerms.value();
 

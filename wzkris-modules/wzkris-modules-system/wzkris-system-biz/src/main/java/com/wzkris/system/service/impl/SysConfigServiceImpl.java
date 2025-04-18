@@ -1,19 +1,21 @@
 package com.wzkris.system.service.impl;
 
+import cn.hutool.core.stream.StreamUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.system.domain.SysConfig;
-import com.wzkris.system.listener.event.RefreshConfigEvent;
 import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
-import com.wzkris.system.utils.ConfigCacheUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RMap;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 参数配置 服务层实现
@@ -24,21 +26,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysConfigServiceImpl implements SysConfigService {
 
+    private static final String DICT_KEY = "sys_config";
+
     private final SysConfigMapper configMapper;
 
+    private RMap<String, String> cache() {
+        return RedisUtil.getRMap(DICT_KEY);
+    }
+
+    @PostConstruct
     @Override
     public void loadingConfigCache() {
-        List<SysConfig> configsList = configMapper.selectList(null);
-        for (SysConfig config : configsList) {
-            ConfigCacheUtil.setKey(config.getConfigKey(), config.getConfigValue());
-        }
+        RMap<String, String> rMap = cache();
+        Map<String, String> map = StreamUtil.of(configMapper.selectList(null))
+                .collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue));
+        rMap.clear();
+        rMap.putAll(map);
     }
 
     @Override
     public boolean insertConfig(SysConfig config) {
         boolean success = configMapper.insert(config) > 0;
         if (success) {
-            SpringUtil.getContext().publishEvent(new RefreshConfigEvent(config.getConfigKey(), config.getConfigValue()));
+            cache().put(config.getConfigKey(), config.getConfigValue());
         }
         return success;
     }
@@ -47,17 +57,19 @@ public class SysConfigServiceImpl implements SysConfigService {
     public boolean updateConfig(SysConfig config) {
         boolean success = configMapper.updateById(config) > 0;
         if (success) {
-            SpringUtil.getContext().publishEvent(new RefreshConfigEvent(config.getConfigKey(), config.getConfigValue()));
+            cache().put(config.getConfigKey(), config.getConfigValue());
         }
         return success;
     }
 
     @Override
-    public void deleteByIds(List<Long> configIds) {
-        if (configMapper.deleteByIds(configIds) > 0) {
-            ConfigCacheUtil.clearAll();
-            loadingConfigCache();
+    public boolean deleteById(Long configId) {
+        SysConfig config = configMapper.selectById(configId);
+        boolean success = configMapper.deleteById(configId) > 0;
+        if (success) {
+            cache().remove(config.getConfigKey());
         }
+        return success;
     }
 
     @Override

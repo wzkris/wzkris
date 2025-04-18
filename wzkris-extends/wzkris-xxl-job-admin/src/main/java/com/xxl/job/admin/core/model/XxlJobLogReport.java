@@ -9,7 +9,9 @@ public class XxlJobLogReport {
     private Date triggerDay;
 
     private int runningCount;
+
     private int sucCount;
+
     private int failCount;
 
     public int getId() {

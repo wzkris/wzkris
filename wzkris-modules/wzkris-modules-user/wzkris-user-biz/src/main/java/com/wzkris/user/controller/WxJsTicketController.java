@@ -44,14 +44,12 @@ public class WxJsTicketController extends BaseController {
         try {
             Map<String, String> jsapiKey = Map.of("js_ticket", wxMpService.getJsapiTicket());
             return ok(jsapiKey);
-        }
-        catch (WxErrorException e) {
+        } catch (WxErrorException e) {
             log.error("获取js_ticket发生异常，errmsg：{}", e.getError());
             return resp(e.getError().getErrorCode(), e.getError().getErrorMsg());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
-            return fail("暂时无法使用微信jsticket");
+            return err412("暂时无法使用微信jsticket");
         }
     }
 
@@ -59,7 +57,7 @@ public class WxJsTicketController extends BaseController {
     @GetMapping("/js_ticket_sign")
     public Result<?> JsapiSignature(String url) {
         if (!StringUtil.ishttp(url)) {
-            return fail("url格式不正确");
+            return err412("url格式不正确");
         }
         try {
             long timestamp = System.currentTimeMillis() / 1000;
@@ -74,14 +72,12 @@ public class WxJsTicketController extends BaseController {
             jsapiSignature.setUrl(url);
             jsapiSignature.setSignature(signature);
             return ok(jsapiSignature);
-        }
-        catch (WxErrorException e) {
+        } catch (WxErrorException e) {
             log.error("获取js_ticket发生异常，errmsg：{}", e.getError());
             return resp(e.getError().getErrorCode(), e.getError().getErrorMsg());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
-            return fail("暂时无法使用微信js签名");
+            return err412("暂时无法使用微信js签名");
         }
     }
 

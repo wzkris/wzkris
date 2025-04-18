@@ -28,6 +28,7 @@ public class NacosTestController {
 
     @Value("${spring.application.name}")
     private String serviceName;
+
     @Value("${spring.cloud.nacos.discovery.group}")
     private String group;
 

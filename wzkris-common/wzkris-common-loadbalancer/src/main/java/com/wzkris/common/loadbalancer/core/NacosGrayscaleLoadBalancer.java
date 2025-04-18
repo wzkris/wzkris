@@ -35,15 +35,22 @@ import java.util.stream.Collectors;
 public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
     private static final Logger log = LoggerFactory.getLogger(NacosGrayscaleLoadBalancer.class);
+
     private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
+
     private static final String IPV6_KEY = "IPv6";
+
     /**
      * Storage local valid IPv6 address, it's a flag whether local machine support IPv6 address stack.
      */
     public static String ipv6;
+
     private final String serviceId;
+
     private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
+
     private final NacosDiscoveryProperties nacosDiscoveryProperties;
+
     @Autowired
     private InetIPv6Utils inetIPv6Utils;
 
@@ -60,8 +67,7 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
         String ip = nacosDiscoveryProperties.getIp();
         if (StringUtils.isNotEmpty(ip)) {
             ipv6 = Pattern.matches(IPV4_REGEX, ip) ? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
-        }
-        else {
+        } else {
             ipv6 = inetIPv6Utils.findIPv6Address();
         }
     }
@@ -74,8 +80,7 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
                     if (StringUtils.isNotEmpty(instance.getMetadata().get(IPV6_KEY))) {
                         ipv6InstanceList.add(instance);
                     }
-                }
-                else {
+                } else {
                     ipv6InstanceList.add(instance);
                 }
             }
@@ -84,8 +89,7 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
                 return instances.stream()
                         .filter(instance -> Pattern.matches(IPV4_REGEX, instance.getHost()))
                         .collect(Collectors.toList());
-            }
-            else {
+            } else {
                 return ipv6InstanceList;
             }
         }
@@ -137,8 +141,7 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
                 if (!CollectionUtils.isEmpty(sameClusterInstances)) {
                     instancesToChoose = sameClusterInstances;
                 }
-            }
-            else {
+            } else {
                 log.warn(
                         "A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
                         serviceId, clusterName, serviceInstances);
@@ -151,8 +154,7 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
                     .getHostByRandomWeight3(instancesToChoose);
 
             return new DefaultResponse(instance);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.warn("NacosLoadBalancer error", e);
             return null;
         }

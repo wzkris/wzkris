@@ -2,27 +2,26 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wzkris</groupId>
-		<artifactId>wzkris</artifactId>
-		<version>${revision}</version>
-	</parent>
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-	<artifactId>wzkris-modules</artifactId>
+    <artifactId>wzkris-modules</artifactId>
 
-	<description>
-		wzkris-modules业务模块
-	</description>
+    <description>
+        wzkris-modules业务模块
+    </description>
 
-	<modules>
-		<module>wzkris-modules-equipment</module>
-		<module>wzkris-modules-file</module>
-		<module>wzkris-modules-system</module>
-		<module>wzkris-modules-user</module>
-	</modules>
+    <modules>
+        <module>wzkris-modules-file</module>
+        <module>wzkris-modules-system</module>
+        <module>wzkris-modules-user</module>
+    </modules>
 
 </project>

@@ -1,14 +1,12 @@
 package com.wzkris.system.domain.req;
 
+import com.wzkris.common.web.model.QueryReq;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Data
 @Schema(description = "筛选条件")
-public class SysOperLogQueryReq {
+public class SysOperLogQueryReq extends QueryReq {
 
     @Schema(description = "操作模块")
     private String title;
@@ -25,12 +23,4 @@ public class SysOperLogQueryReq {
     @Schema(description = "操作状态（0正常 1异常）")
     private String status;
 
-    private Map<String, Object> params;
-
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(2);
-        }
-        return params;
-    }
 }

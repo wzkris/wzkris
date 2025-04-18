@@ -50,11 +50,9 @@ public class CryptoTest {
                     list.add(List.of(nums[n], nums[l], nums[r]));
                     l++;
                     r--;
-                }
-                else if (nums[n] + nums[l] + nums[r] > 0) {
+                } else if (nums[n] + nums[l] + nums[r] > 0) {
                     r--;
-                }
-                else if (nums[n] + nums[l] + nums[r] < 0) {
+                } else if (nums[n] + nums[l] + nums[r] < 0) {
                     l++;
                 }
             }
@@ -71,8 +69,7 @@ public class CryptoTest {
                     max = tmp;
                 }
                 i++;
-            }
-            else {
+            } else {
                 int tmp = Math.abs(i - j) * height[j];
                 if (tmp > max) {
                     max = tmp;

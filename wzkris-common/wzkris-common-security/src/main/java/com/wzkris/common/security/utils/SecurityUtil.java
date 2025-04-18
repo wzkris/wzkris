@@ -1,6 +1,5 @@
 package com.wzkris.common.security.utils;
 
-
 import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
@@ -45,7 +44,8 @@ public class SecurityUtil {
         Authentication authentication = getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken);
+                && !(authentication instanceof AnonymousAuthenticationToken)
+                && authentication.getPrincipal() instanceof AuthBaseUser;
     }
 
     /**
@@ -56,8 +56,7 @@ public class SecurityUtil {
     public static AuthBaseUser getPrincipal() {
         try {
             return (AuthBaseUser) getAuthentication().getPrincipal();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }
     }
