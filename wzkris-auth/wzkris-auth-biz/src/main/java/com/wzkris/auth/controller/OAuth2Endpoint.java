@@ -1,6 +1,8 @@
 package com.wzkris.auth.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.wzkris.auth.OnlineUserUtil;
+import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.domain.resp.AppUserinfo;
 import com.wzkris.auth.domain.resp.SysUserinfo;
 import com.wzkris.auth.oauth2.redis.entity.OAuth2AuthorizationGrantAuthorization;
@@ -19,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RMapCache;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -73,6 +76,8 @@ public class OAuth2Endpoint extends BaseController {
         OAuth2AuthorizationGrantAuthorization grantAuthorization = auth2AuthorizationGrantAuthorizationRepository
                 .findByAccessToken_TokenValue(resolvedToken);
         if (grantAuthorization != null) {
+            RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(LoginUtil.getUserId());
+            onlineCache.remove(grantAuthorization.getId());
             auth2AuthorizationGrantAuthorizationRepository.delete(grantAuthorization);
         }
 

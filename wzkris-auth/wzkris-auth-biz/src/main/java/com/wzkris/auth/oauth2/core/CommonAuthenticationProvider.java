@@ -202,9 +202,15 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         // 发布登录成功事件
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
 
-        SpringUtil.getContext().publishEvent(new LoginEvent((AuthBaseUser) authenticationToken.getPrincipal(), commonAuthenticationToken.getGrantType().getValue(),
-                CommonConstants.STATUS_ENABLE, "", ServletUtil.getClientIP(request),
-                UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+        SpringUtil.getContext().publishEvent(new LoginEvent(
+                        authorization.getId(),
+                        (AuthBaseUser) authenticationToken.getPrincipal(),
+                        commonAuthenticationToken.getGrantType().getValue(),
+                        CommonConstants.STATUS_ENABLE, "",
+                        ServletUtil.getClientIP(request),
+                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))
+                )
+        );
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticationToken, accessToken, refreshToken, additionalParameters);
