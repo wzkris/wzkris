@@ -64,7 +64,7 @@ public class LoginEventListener {
             case CLIENT_USER -> {
                 handleClientUser(event, (ClientUser) baseUser);
             }
-            default -> log.warn("{} 发生登录事件", baseUser);
+            default -> log.warn("{} 发生登录事件, 忽略处理", baseUser);
         }
     }
 
@@ -86,7 +86,7 @@ public class LoginEventListener {
 
         if (loginSuccess) {// 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setTokenId(event.getTokenId());
+            onlineUser.setTokenId(loginUser.getId());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
             onlineUser.setLoginIp(ipAddr);
             onlineUser.setLoginLocation(loginLocation);

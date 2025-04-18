@@ -133,7 +133,7 @@ public class LoginUserService extends UserInfoTemplate {
         loginUser.setUserId(userResp.getUserId());
         loginUser.setUsername(userResp.getUsername());
         loginUser.setTenantId(userResp.getTenantId());
-        SpringUtil.getContext().publishEvent(new LoginEvent(null, loginUser, grantType,
+        SpringUtil.getContext().publishEvent(new LoginEvent(loginUser, grantType,
                 CommonConstants.STATUS_DISABLE, errorMsg, ServletUtil.getClientIP(request),
                 UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
     }

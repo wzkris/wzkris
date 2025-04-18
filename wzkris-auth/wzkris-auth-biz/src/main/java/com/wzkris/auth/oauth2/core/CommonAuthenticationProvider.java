@@ -1,16 +1,9 @@
 package com.wzkris.auth.oauth2.core;
 
-import cn.hutool.http.useragent.UserAgentUtil;
-import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,8 +24,6 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.token.DefaultOAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -127,6 +118,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
+                .id(((AuthBaseUser) authenticationToken.getPrincipal()).getId())
                 .principalName(authenticationToken.getName())
                 .authorizationGrantType(commonAuthenticationToken.getGrantType())
                 .authorizedScopes(authorizedScopes)
@@ -198,19 +190,6 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (idToken != null) {
             additionalParameters.put(OidcParameterNames.ID_TOKEN, idToken.getTokenValue());
         }
-
-        // 发布登录成功事件
-        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
-
-        SpringUtil.getContext().publishEvent(new LoginEvent(
-                        authorization.getId(),
-                        (AuthBaseUser) authenticationToken.getPrincipal(),
-                        commonAuthenticationToken.getGrantType().getValue(),
-                        CommonConstants.STATUS_ENABLE, "",
-                        ServletUtil.getClientIP(request),
-                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))
-                )
-        );
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticationToken, accessToken, refreshToken, additionalParameters);
