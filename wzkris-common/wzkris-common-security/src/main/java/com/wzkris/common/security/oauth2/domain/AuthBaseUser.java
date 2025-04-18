@@ -3,7 +3,7 @@ package com.wzkris.common.security.oauth2.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.wzkris.common.security.oauth2.domain.model.AuthThings;
+import com.wzkris.common.security.oauth2.domain.model.AuthApp;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
@@ -33,7 +33,7 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LoginUser.class),
         @JsonSubTypes.Type(value = ClientUser.class),
-        @JsonSubTypes.Type(value = AuthThings.class)
+        @JsonSubTypes.Type(value = AuthApp.class)
 })
 public abstract class AuthBaseUser implements OAuth2User, Serializable {
 

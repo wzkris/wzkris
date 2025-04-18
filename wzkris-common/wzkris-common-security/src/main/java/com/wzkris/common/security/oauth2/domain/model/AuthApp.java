@@ -11,28 +11,28 @@ import java.util.Set;
 /**
  * @author : wzkris
  * @version : V1.0.1
- * @description : 授权事物
+ * @description : 授权APP
  * @date : 2024/5/16 15:36
  */
 @Setter
 @Getter
-public class AuthThings extends AuthBaseUser {
+public class AuthApp extends AuthBaseUser {
 
     /**
-     * 名称
+     * app名称
      */
     private final String principalName;
 
-    public AuthThings() {
+    public AuthApp() {
         this(null);
     }
 
-    public AuthThings(String principalName) {
+    public AuthApp(String principalName) {
         this(principalName, Collections.emptySet());
     }
 
-    public AuthThings(String principalName, Set<String> grantedAuthority) {
-        super(LoginType.AUTH_THINGS, grantedAuthority);
+    public AuthApp(String principalName, Set<String> grantedAuthority) {
+        super(LoginType.AUTH_APP, grantedAuthority);
         this.principalName = principalName;
     }
 
