@@ -2,6 +2,7 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -12,6 +13,7 @@ import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.req.EditPwdReq;
+import com.wzkris.user.domain.req.SysTenantProfileReq;
 import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
 import com.wzkris.user.domain.req.WithdrawalReq;
 import com.wzkris.user.domain.vo.SysTenantProfileVO;
@@ -64,6 +66,14 @@ public class SysTenantProfileController extends BaseController {
         Long tenantId = LoginUtil.getTenantId();
         SysTenantProfileVO profileVO = tenantMapper.selectVOById(tenantId);
         return ok(profileVO);
+    }
+
+    @Operation(summary = "修改信息")
+    @PostMapping
+    @CheckSystemPerms("tenant:info")
+    public Result<SysTenantProfileVO> editProfile(@RequestBody SysTenantProfileReq req) {
+        SysTenant sysTenant = BeanUtil.convert(req, new SysTenant(LoginUtil.getTenantId()));
+        return toRes(tenantMapper.updateById(sysTenant));
     }
 
     @Operation(summary = "获取已使用配额")
