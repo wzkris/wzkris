@@ -54,4 +54,9 @@ public class OnlineUser implements Serializable {
      */
     private Date loginTime;
 
+    /**
+     * 是否当前会话
+     */
+    private Boolean current = false;
+
 }
