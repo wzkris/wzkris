@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-04-11 14:10:05
+-- Started on 2025-04-20 14:06:19
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1924,7 +1924,7 @@ COPY biz_app.app_user_wallet_record (record_id, user_id, amount, record_type, cr
 --
 
 COPY biz_sys.oauth2_client (id, client_name, client_id, client_secret, scopes, authorization_grant_types, redirect_uris, status, auto_approve, create_at, creator_id, update_at, updater_id) FROM stdin;
-1	系统	server	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{openid}	{password,sms,refresh_token}	{http://localhost:9001/oauth2/authorization_code_callback}	0	f	2024-04-17 14:08:54+08	1	2025-03-30 16:07:17.752+08	1
+1	系统	server	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{openid}	{password,urn:ietf:params:oauth:grant-type:device_code,refresh_token}	{http://localhost:9000/oauth2/authorization_code_callback}	0	f	2024-04-17 14:08:54+08	1	2025-03-30 16:07:17.752+08	1
 \.
 
 
@@ -1947,7 +1947,6 @@ COPY biz_sys.sys_dept (dept_id, tenant_id, parent_id, ancestors, dept_name, stat
 COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, is_cache, is_visible, create_at, creator_id, update_at, updater_id) FROM stdin;
 1906263415450000001	系统管理	0	100	system	\N	\N	D	0	\N	carbon:tool-kit	f	t	2024-05-26 12:30:16+08	1	2025-03-28 10:52:58+08	1
 1906272685360099330	钱包记录	1906272182215585793	0	#	\N	\N	B	0	tenant:wallet_record:list	#	f	t	2025-03-30 17:09:59.695+08	1	2025-03-30 17:10:43.013+08	1
-1906263415450000203	系统用户	1906263415450000002	100	sysuser	user/sysuser/index		M	0	sys_user:list	carbon:user-admin	t	t	2024-05-26 12:30:16+08	1	2025-03-31 12:42:29.349+08	1
 1906263415450000101	控制台入口	1906263415450000001	0	controller	\N	\N	D	0	\N	carbon:dashboard	f	t	2024-05-26 12:30:16+08	1	2025-03-28 10:41:57+08	1
 1906263415450001049	字典删除	1906263415450000102	4	#	\N	\N	B	0	sys_dict:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:13:19+08	1
 1906263415450000700	终端管理	1906263415450000003	3	client	platform/client/index	\N	M	0	oauth2_client:list	carbon:application	f	t	2024-05-26 12:30:16+08	1	2025-03-30 16:35:42.841+08	1
@@ -1989,7 +1988,7 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450000104	日志管理	1906263415450000001	1	syslog	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:33:36.928+08	1
 1906263415450000150	操作日志	1906263415450000104	1	oper	system/syslog/oper/index	\N	M	0	operlog:list	carbon:touch-interaction	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:35:38.829+08	1
 1906263415450000151	登录日志	1906263415450000104	2	login	system/syslog/login/index	\N	M	0	loginlog:list	carbon:login	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:35:23.263+08	1
-1906272182215585793	商户信息	0	100	tenant	\N	\N	M	0	tenant:info	carbon:information-filled	f	f	2025-03-30 17:07:59.723+08	1	2025-04-07 09:09:08.254+08	1
+1906272182215585793	商户信息	0	100	merchant/info	merchant/index	\N	M	0	tenant:info	carbon:information-filled	f	t	2025-03-30 17:07:59.723+08	1	2025-04-20 13:51:43.482+08	1
 1906263415450000003	平台管理	0	80	platform	\N	\N	D	0	\N	carbon:platforms	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:24.342+08	1
 1906263415450000002	用户管理	0	50	user	\N	\N	D	0	\N	carbon:user	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:20.926+08	1
 1906263415450001214	终端导出	1906263415450000700	4	#	\N	\N	B	0	oauth2_client:export	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:11.674+08	1
@@ -1997,6 +1996,7 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450001213	终端删除	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:25.507+08	1
 1906263415450001211	终端修改	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:31.062+08	1
 1906263415450001210	终端详情	1906263415450000700	1	#	\N	\N	B	0	oauth2_client:query	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:38.251+08	1
+1906263415450000203	员工管理	1906263415450000002	100	sysuser	user/sysuser/index		M	0	sys_user:list	carbon:user-admin	t	t	2024-05-26 12:30:16+08	1	2025-04-20 13:39:49.053+08	1
 1906263415450002014	菜单新增	1906263415450000207	2	#	\N	\N	B	0	sys_menu:add	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:17+08	1
 1906263415450002015	菜单修改	1906263415450000207	3	#	\N	\N	B	0	sys_menu:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:10+08	1
 1906263415450002016	菜单删除	1906263415450000207	4	#	\N	\N	B	0	sys_menu:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:05+08	1
@@ -2129,8 +2129,8 @@ COPY biz_sys.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type
 --
 
 COPY biz_sys.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-11 14:08:46.335+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-11 14:04:07.486+08	\N	1	1910557183820165120	2025-04-11 12:55:03.816+08	2025-04-11 14:08:30.064+08
+1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-20 13:41:03.743+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -2431,7 +2431,7 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz_sys.sys_user USING btree (p
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz_sys.sys_user USING btree (username);
 
 
--- Completed on 2025-04-11 14:10:05
+-- Completed on 2025-04-20 14:06:20
 
 --
 -- PostgreSQL database dump complete
