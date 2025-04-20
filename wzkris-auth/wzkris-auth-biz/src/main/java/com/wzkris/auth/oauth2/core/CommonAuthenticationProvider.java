@@ -1,7 +1,7 @@
 package com.wzkris.auth.oauth2.core;
 
+import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -118,7 +118,6 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .id(((AuthBaseUser) authenticationToken.getPrincipal()).getId())
                 .principalName(authenticationToken.getName())
                 .authorizationGrantType(commonAuthenticationToken.getGrantType())
                 .authorizedScopes(authorizedScopes)
@@ -190,6 +189,8 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         if (idToken != null) {
             additionalParameters.put(OidcParameterNames.ID_TOKEN, idToken.getTokenValue());
         }
+
+        additionalParameters.put(OnlineUser.class.getName(), authorization.getId());// 透传给下面用
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticationToken, accessToken, refreshToken, additionalParameters);

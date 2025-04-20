@@ -19,7 +19,7 @@ import java.util.Collections;
 public class DynamicTenantUtilTest {
 
     static {
-        LoginUser loginUser = new LoginUser("", Collections.singleton("*"));
+        LoginUser loginUser = new LoginUser(Collections.singleton("*"));
         loginUser.setTenantId(0L);
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
                 "xxxxxx", Instant.MIN, Instant.MAX, Collections.emptySet());

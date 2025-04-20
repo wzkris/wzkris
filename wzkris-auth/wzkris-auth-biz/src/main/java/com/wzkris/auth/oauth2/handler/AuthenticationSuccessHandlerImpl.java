@@ -18,6 +18,7 @@ package com.wzkris.auth.oauth2.handler;
 
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
@@ -92,7 +93,10 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
             return;
         }
 
+        Map<String, Object> parameters = accessTokenAuthentication.getAdditionalParameters();
+
         SpringUtil.getContext().publishEvent(new LoginEvent(
+                        parameters.get(OnlineUser.class.getName()).toString(),
                         (AuthBaseUser) authenticationToken.getPrincipal(),
                         request.getParameter(OAuth2ParameterNames.GRANT_TYPE),
                         CommonConstants.STATUS_ENABLE, "",
@@ -100,6 +104,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                         UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))
                 )
         );
+        accessTokenAuthentication.getAdditionalParameters().remove(OnlineUser.class.getName());
     }
 
     private void sendAccessTokenResponse(HttpServletResponse response,

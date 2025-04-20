@@ -41,7 +41,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
 
         AuthBaseUser baseUser;
         if (authenticationToken == null) {
-            baseUser = new AuthApp(oAuth2Authorization.getId(), oAuth2Authorization.getPrincipalName(), oAuth2Authorization.getAuthorizedScopes());
+            baseUser = new AuthApp(oAuth2Authorization.getPrincipalName(), oAuth2Authorization.getAuthorizedScopes());
         } else {
             baseUser = (AuthBaseUser) authenticationToken.getPrincipal();
         }

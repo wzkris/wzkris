@@ -15,6 +15,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginEvent {
 
+    private String tokenId;
+
     private AuthBaseUser user;
 
     private String grantType;

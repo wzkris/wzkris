@@ -86,7 +86,7 @@ public class LoginEventListener {
 
         if (loginSuccess) {// 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setTokenId(loginUser.getId());
+            onlineUser.setTokenId(event.getTokenId());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
             onlineUser.setLoginIp(ipAddr);
             onlineUser.setLoginLocation(loginLocation);

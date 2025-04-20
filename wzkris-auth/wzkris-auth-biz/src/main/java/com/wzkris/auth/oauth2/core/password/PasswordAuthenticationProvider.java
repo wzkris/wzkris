@@ -48,30 +48,32 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     @Override
     public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
-        PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
+        PasswordAuthenticationToken passwordAuthenticationToken = (PasswordAuthenticationToken) authentication;
 
         try {
             // 校验是否被冻结
-            captchaService.validateLock(authenticationToken.getUsername());
+            captchaService.validateLock(passwordAuthenticationToken.getUsername());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
         }
 
-        boolean valid = application.secondaryVerification(authenticationToken.getCaptchaId());
+        boolean valid = application.secondaryVerification(passwordAuthenticationToken.getCaptchaId());
         if (!valid) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
         }
 
-        AuthBaseUser baseUser = userInfoTemplate.loadByUsernameAndPassword(authenticationToken.getUsername(), authenticationToken.getPassword());
+        AuthBaseUser baseUser = userInfoTemplate.loadByUsernameAndPassword(passwordAuthenticationToken.getUsername(), passwordAuthenticationToken.getPassword());
 
         if (baseUser == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);
-        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return usernamePasswordAuthenticationToken;
+        Authentication clientPrincipal = (Authentication) authentication.getPrincipal();
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, clientPrincipal.getAuthorities());
+        authenticationToken.setDetails(passwordAuthenticationToken.getDetails());
+        return authenticationToken;
     }
 
     @Override

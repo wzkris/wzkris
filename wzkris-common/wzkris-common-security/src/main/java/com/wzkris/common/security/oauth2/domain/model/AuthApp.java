@@ -1,7 +1,5 @@
 package com.wzkris.common.security.oauth2.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import lombok.Getter;
@@ -23,14 +21,12 @@ public class AuthApp extends AuthBaseUser {
      */
     private final String principalName;
 
-    public AuthApp(String id, String principalName) {
-        this(id, principalName, Collections.emptySet());
+    public AuthApp(String principalName) {
+        this(principalName, Collections.emptySet());
     }
 
-    @JsonCreator
-    public AuthApp(@JsonProperty("id") String id, @JsonProperty("principalName") String principalName,
-                   @JsonProperty("grantedAuthority") Set<String> grantedAuthority) {
-        super(id, LoginType.AUTH_APP, grantedAuthority);
+    public AuthApp(String principalName, Set<String> grantedAuthority) {
+        super(LoginType.AUTH_APP, grantedAuthority);
         this.principalName = principalName;
     }
 

@@ -16,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -63,7 +61,7 @@ public class ClientUserService extends UserInfoTemplate {
         // 校验用户状态
         this.checkAccount(userResp);
 
-        ClientUser clientUser = new ClientUser(UUID.randomUUID().toString());
+        ClientUser clientUser = new ClientUser();
         clientUser.setUserId(userResp.getUserId());
         clientUser.setPhoneNumber(userResp.getPhoneNumber());
 

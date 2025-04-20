@@ -31,7 +31,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashSet;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -99,7 +98,7 @@ public class LoginUserService extends UserInfoTemplate {
         SysPermissionResp permissions = remoteSysUserApi
                 .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
 
-        LoginUser loginUser = new LoginUser(UUID.randomUUID().toString(), new HashSet<>(permissions.getGrantedAuthority()));
+        LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));
         loginUser.setAdmin(permissions.getAdmin());
         loginUser.setUserId(userResp.getUserId());
         loginUser.setUsername(userResp.getUsername());
@@ -129,12 +128,16 @@ public class LoginUserService extends UserInfoTemplate {
      */
     private void recordFailedLog(SysUserResp userResp, String grantType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginUser loginUser = new LoginUser("");
+        LoginUser loginUser = new LoginUser();
         loginUser.setUserId(userResp.getUserId());
         loginUser.setUsername(userResp.getUsername());
         loginUser.setTenantId(userResp.getTenantId());
-        SpringUtil.getContext().publishEvent(new LoginEvent(loginUser, grantType,
-                CommonConstants.STATUS_DISABLE, errorMsg, ServletUtil.getClientIP(request),
-                UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+        SpringUtil.getContext().publishEvent(
+                new LoginEvent("", loginUser, grantType,
+                        CommonConstants.STATUS_DISABLE, errorMsg,
+                        ServletUtil.getClientIP(request),
+                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))
+                )
+        );
     }
 }
