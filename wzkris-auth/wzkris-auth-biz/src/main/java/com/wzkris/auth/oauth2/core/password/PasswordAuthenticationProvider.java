@@ -9,10 +9,10 @@ import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
+    public OAuth2User doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken passwordAuthenticationToken = (PasswordAuthenticationToken) authentication;
 
         try {
@@ -69,11 +69,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        Authentication clientPrincipal = (Authentication) authentication.getPrincipal();
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, clientPrincipal.getAuthorities());
-        authenticationToken.setDetails(passwordAuthenticationToken.getDetails());
-        return authenticationToken;
+        return baseUser;
     }
 
     @Override

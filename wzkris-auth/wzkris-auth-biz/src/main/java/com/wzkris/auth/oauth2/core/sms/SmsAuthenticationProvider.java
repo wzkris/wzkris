@@ -9,10 +9,10 @@ import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
+    public OAuth2User doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken smsAuthenticationToken = (SmsAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
@@ -69,11 +69,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        Authentication clientPrincipal = (Authentication) authentication.getPrincipal();
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, clientPrincipal.getAuthorities());
-        authenticationToken.setDetails(smsAuthenticationToken.getDetails());
-        return authenticationToken;
+        return baseUser;
     }
 
     @Override

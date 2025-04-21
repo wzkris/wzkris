@@ -6,10 +6,10 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
+    public OAuth2User doAuthenticate(Authentication authentication) {
         WechatAuthenticationToken wechatAuthenticationToken = (WechatAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
@@ -54,11 +54,7 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        Authentication clientPrincipal = (Authentication) authentication.getPrincipal();
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, clientPrincipal.getAuthorities());
-        authenticationToken.setDetails(wechatAuthenticationToken.getDetails());
-        return authenticationToken;
+        return baseUser;
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -90,7 +91,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     /**
      * 认证核心方法
      */
-    protected abstract UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication);
+    protected abstract OAuth2User doAuthenticate(Authentication authentication);
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -104,7 +105,10 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         Set<String> authorizedScopes = this.checkClient(commonAuthenticationToken, registeredClient);
 
         // 验证并拿到用户信息
-        UsernamePasswordAuthenticationToken authenticationToken = this.doAuthenticate(commonAuthenticationToken);
+        OAuth2User oAuth2User = this.doAuthenticate(commonAuthenticationToken);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, null);
+        authenticationToken.setDetails(commonAuthenticationToken.getDetails());
 
         // @formatter:off
         DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
@@ -118,7 +122,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         // @formatter:on
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                 .withRegisteredClient(registeredClient)
-                .principalName(authenticationToken.getName())
+                .principalName(oAuth2User.getName())
                 .authorizationGrantType(commonAuthenticationToken.getGrantType())
                 .authorizedScopes(authorizedScopes)
                 .attribute(Principal.class.getName(), authenticationToken);
