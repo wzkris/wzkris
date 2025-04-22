@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "app用户账户信息")
-public class AppUserAccountVO {
+@Schema(description = "app用户信息")
+public class AppUserProfileVO {
 
     @Schema(description = "用户信息")
     private UserInfo user;

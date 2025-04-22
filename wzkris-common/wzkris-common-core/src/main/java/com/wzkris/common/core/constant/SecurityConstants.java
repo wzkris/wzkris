@@ -31,5 +31,5 @@ public interface SecurityConstants {
     /**
      * 超级租户ID
      */
-    Long SUPER_TENANT_ID = 0L;
+    Long SUPER_TENANT_ID = 1L;
 }

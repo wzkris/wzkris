@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-04-20 14:06:19
+-- Started on 2025-04-22 16:58:44
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1063,7 +1063,7 @@ CREATE TABLE biz_sys.sys_tenant (
     status character(1) NOT NULL,
     domain character varying(100),
     remark character varying(200),
-    package_id bigint NOT NULL,
+    package_id bigint,
     expire_time timestamp(6) with time zone NOT NULL,
     account_limit smallint NOT NULL,
     role_limit smallint NOT NULL,
@@ -2086,7 +2086,8 @@ COPY biz_sys.sys_role_menu (role_id, menu_id) FROM stdin;
 --
 
 COPY biz_sys.sys_tenant (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, account_limit, role_limit, post_limit, dept_limit, creator_id, create_at, updater_id, update_at) FROM stdin;
-1910557183820165122	1910557183820165120	0	\N	test	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-04-20 00:00:00+08	5	5	5	5	1	2025-04-11 12:55:03.715+08	1	2025-04-11 12:55:03.715+08
+1910557183820165122	1910557183820165120	0	\N	test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-04-30 00:00:00+08	5	5	5	5	1	2025-04-11 12:55:03.715+08	1	2025-04-22 14:09:45.218+08
+1	1	1	13665656561	supertenant	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	\N	2099-12-31 00:00:00+08	-1	-1	-1	-1	1	2025-04-22 13:47:13+08	1	2025-04-22 15:57:03.086+08
 \.
 
 
@@ -2109,6 +2110,7 @@ COPY biz_sys.sys_tenant_package (package_id, package_name, status, menu_ids, rem
 
 COPY biz_sys.sys_tenant_wallet (tenant_id, balance, status) FROM stdin;
 1910557183820165122	0.00	0
+1	0.00	0
 \.
 
 
@@ -2129,8 +2131,8 @@ COPY biz_sys.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type
 --
 
 COPY biz_sys.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-11 14:04:07.486+08	\N	1	1910557183820165120	2025-04-11 12:55:03.816+08	2025-04-11 14:08:30.064+08
-1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-20 13:41:03.743+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-22 09:50:32.733+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
+1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-22 13:48:22.584+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -2431,7 +2433,7 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz_sys.sys_user USING btree (p
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz_sys.sys_user USING btree (username);
 
 
--- Completed on 2025-04-20 14:06:20
+-- Completed on 2025-04-22 16:58:44
 
 --
 -- PostgreSQL database dump complete
