@@ -16,7 +16,7 @@ public interface SysPostService {
     /**
      * 查询可以选择的岗位
      */
-    List<SelectVO> listSelect(String postName);
+    List<SelectVO> listSelect(@Nullable String postName);
 
     /**
      * 根据用户id查询关联岗位(正常状态)

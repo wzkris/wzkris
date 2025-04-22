@@ -29,7 +29,8 @@ public class SysTenantPackageServiceImpl implements SysTenantPackageService {
         LambdaQueryWrapper<SysTenantPackage> lqw = new LambdaQueryWrapper<SysTenantPackage>()
                 .select(SysTenantPackage::getPackageId, SysTenantPackage::getPackageName)
                 .eq(SysTenantPackage::getStatus, CommonConstants.STATUS_ENABLE)
-                .like(StringUtil.isNotBlank(packageName), SysTenantPackage::getPackageName, packageName);
+                .like(StringUtil.isNotBlank(packageName), SysTenantPackage::getPackageName, packageName)
+                .orderByAsc(SysTenantPackage::getPackageId);
         return tenantPackageMapper.selectList(lqw).stream().map(SelectVO::new).toList();
     }
 
