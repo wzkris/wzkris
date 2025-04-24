@@ -20,7 +20,7 @@ public interface SysRoleService {
      *
      * @return 角色列表
      */
-    List<SelectVO> listSelect(String roleName);
+    List<SelectVO> listSelect(@Nullable String roleName);
 
     /**
      * 根据用户ID查询关联角色(正常状态)

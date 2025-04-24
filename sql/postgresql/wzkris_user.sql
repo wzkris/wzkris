@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-04-11 14:10:05
+-- Started on 2025-04-23 15:01:07
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1063,7 +1063,7 @@ CREATE TABLE biz_sys.sys_tenant (
     status character(1) NOT NULL,
     domain character varying(100),
     remark character varying(200),
-    package_id bigint NOT NULL,
+    package_id bigint,
     expire_time timestamp(6) with time zone NOT NULL,
     account_limit smallint NOT NULL,
     role_limit smallint NOT NULL,
@@ -1924,7 +1924,7 @@ COPY biz_app.app_user_wallet_record (record_id, user_id, amount, record_type, cr
 --
 
 COPY biz_sys.oauth2_client (id, client_name, client_id, client_secret, scopes, authorization_grant_types, redirect_uris, status, auto_approve, create_at, creator_id, update_at, updater_id) FROM stdin;
-1	系统	server	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{openid}	{password,sms,refresh_token}	{http://localhost:9001/oauth2/authorization_code_callback}	0	f	2024-04-17 14:08:54+08	1	2025-03-30 16:07:17.752+08	1
+1	系统	server	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{openid}	{password,urn:ietf:params:oauth:grant-type:device_code,refresh_token}	{http://localhost:9000/oauth2/authorization_code_callback}	0	f	2024-04-17 14:08:54+08	1	2025-03-30 16:07:17.752+08	1
 \.
 
 
@@ -1946,8 +1946,6 @@ COPY biz_sys.sys_dept (dept_id, tenant_id, parent_id, ancestors, dept_name, stat
 
 COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, is_cache, is_visible, create_at, creator_id, update_at, updater_id) FROM stdin;
 1906263415450000001	系统管理	0	100	system	\N	\N	D	0	\N	carbon:tool-kit	f	t	2024-05-26 12:30:16+08	1	2025-03-28 10:52:58+08	1
-1906272685360099330	钱包记录	1906272182215585793	0	#	\N	\N	B	0	tenant:wallet_record:list	#	f	t	2025-03-30 17:09:59.695+08	1	2025-03-30 17:10:43.013+08	1
-1906263415450000203	系统用户	1906263415450000002	100	sysuser	user/sysuser/index		M	0	sys_user:list	carbon:user-admin	t	t	2024-05-26 12:30:16+08	1	2025-03-31 12:42:29.349+08	1
 1906263415450000101	控制台入口	1906263415450000001	0	controller	\N	\N	D	0	\N	carbon:dashboard	f	t	2024-05-26 12:30:16+08	1	2025-03-28 10:41:57+08	1
 1906263415450001049	字典删除	1906263415450000102	4	#	\N	\N	B	0	sys_dict:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:13:19+08	1
 1906263415450000700	终端管理	1906263415450000003	3	client	platform/client/index	\N	M	0	oauth2_client:list	carbon:application	f	t	2024-05-26 12:30:16+08	1	2025-03-30 16:35:42.841+08	1
@@ -1989,7 +1987,7 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450000104	日志管理	1906263415450000001	1	syslog	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:33:36.928+08	1
 1906263415450000150	操作日志	1906263415450000104	1	oper	system/syslog/oper/index	\N	M	0	operlog:list	carbon:touch-interaction	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:35:38.829+08	1
 1906263415450000151	登录日志	1906263415450000104	2	login	system/syslog/login/index	\N	M	0	loginlog:list	carbon:login	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:35:23.263+08	1
-1906272182215585793	商户信息	0	100	tenant	\N	\N	M	0	tenant:info	carbon:information-filled	f	f	2025-03-30 17:07:59.723+08	1	2025-04-07 09:09:08.254+08	1
+1906272182215585793	商户信息	0	100	merchant/info	merchant/index	\N	M	0	tenant:info	carbon:information-filled	f	t	2025-03-30 17:07:59.723+08	1	2025-04-20 13:51:43.482+08	1
 1906263415450000003	平台管理	0	80	platform	\N	\N	D	0	\N	carbon:platforms	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:24.342+08	1
 1906263415450000002	用户管理	0	50	user	\N	\N	D	0	\N	carbon:user	f	t	2024-05-26 12:30:16+08	1	2025-04-03 15:03:20.926+08	1
 1906263415450001214	终端导出	1906263415450000700	4	#	\N	\N	B	0	oauth2_client:export	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:11.674+08	1
@@ -1997,6 +1995,7 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450001213	终端删除	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:25.507+08	1
 1906263415450001211	终端修改	1906263415450000700	2	#	\N	\N	B	0	oauth2_client:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:31.062+08	1
 1906263415450001210	终端详情	1906263415450000700	1	#	\N	\N	B	0	oauth2_client:query	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 14:02:38.251+08	1
+1906263415450000203	员工管理	1906263415450000002	100	sysuser	user/sysuser/index		M	0	sys_user:list	carbon:user-admin	t	t	2024-05-26 12:30:16+08	1	2025-04-20 13:39:49.053+08	1
 1906263415450002014	菜单新增	1906263415450000207	2	#	\N	\N	B	0	sys_menu:add	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:17+08	1
 1906263415450002015	菜单修改	1906263415450000207	3	#	\N	\N	B	0	sys_menu:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:10+08	1
 1906263415450002016	菜单删除	1906263415450000207	4	#	\N	\N	B	0	sys_menu:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:30:05+08	1
@@ -2017,9 +2016,6 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450001132	租户新增	1906263415450000601	4	#	\N	\N	B	0	sys_tenant:add	#	f	t	2024-05-26 12:30:16+08	1	2025-03-30 17:02:33.503+08	1
 1906263415450001134	租户删除	1906263415450000601	2	#	\N	\N	B	0	sys_tenant:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-30 17:02:42.95+08	1
 1906263415450001133	租户修改	1906263415450000601	2	#	\N	\N	B	0	sys_tenant:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-03-30 17:02:51.756+08	1
-1906263415450001125	余额记录	1906263415450000601	3	#	\N	\N	B	0	sys_tenant:wallet_record:list	#	f	t	2024-05-26 12:30:16+08	1	2025-03-30 17:05:07.775+08	1
-1906263415450001126	商户提现	1906272182215585793	1	#	\N	\N	B	0	tenant:withdrawal	#	f	t	2024-05-26 12:30:16+08	1	2025-03-30 17:08:30.431+08	1
-1906263415450001127	商户钱包	1906272182215585793	0	#	\N	\N	B	0	tenant:wallet_info	#	f	t	2024-05-26 12:30:16+08	1	2025-03-30 17:09:33.83+08	1
 1906263415450000302	Sentinel控制台	1906263415450000101	3	http://localhost:8718	\N	\N	O	0	monitor:sentinel:list	carbon:link	f	t	2024-05-26 12:30:16+08	1	2025-03-28 10:58:59+08	1
 1906263415450000304	服务监控	1906263415450000101	5	http://localhost:9100/	\N	\N	O	0	monitor:server:list	carbon:link	f	t	2024-05-26 12:30:16+08	1	2025-03-30 10:08:19+08	1
 1906263415450002143	岗位修改	1906263415450000208	3	#	\N	\N	B	0	sys_post:edit	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:32:42+08	1
@@ -2034,6 +2030,9 @@ COPY biz_sys.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component
 1906263415450000102	字典管理	1906263415450000001	6	sysdict	system/sysdict/index	\N	M	0	sys_dict:list	carbon:text-vertical-alignment	f	t	2024-05-26 12:30:16+08	1	2025-04-01 14:20:22.958+08	1
 1910569625749024770	授权角色	1906263415450000203	0	#	\N	\N	B	0	sys_user:grant_role	#	f	t	2025-04-11 13:44:30.104+08	1	2025-04-11 13:44:30.104+08	1
 1906263415450002207	权限授予	1906263415450000206	6	#	\N	\N	B	0	sys_role:grant_user	#	f	t	2024-05-26 12:30:16+08	1	2025-04-11 13:55:09.036+08	1
+1906263415450001126	商户提现	1906263415450001127	1	#	\N	\N	B	0	tenant:withdrawal	#	f	t	2024-05-26 12:30:16+08	1	2025-04-23 14:57:09.336+08	1
+1906263415450001127	商户钱包	1906272182215585793	0	#	\N	\N	M	0	tenant:wallet_info	carbon:wallet	f	t	2024-05-26 12:30:16+08	1	2025-04-23 14:57:42.33+08	1
+1906263415450001125	钱包记录	1906263415450000601	3	#	\N	\N	B	0	sys_tenant:wallet_record	#	f	t	2024-05-26 12:30:16+08	1	2025-04-23 15:00:44.739+08	1
 \.
 
 
@@ -2086,7 +2085,8 @@ COPY biz_sys.sys_role_menu (role_id, menu_id) FROM stdin;
 --
 
 COPY biz_sys.sys_tenant (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, account_limit, role_limit, post_limit, dept_limit, creator_id, create_at, updater_id, update_at) FROM stdin;
-1910557183820165122	1910557183820165120	0	\N	test	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-04-20 00:00:00+08	5	5	5	5	1	2025-04-11 12:55:03.715+08	1	2025-04-11 12:55:03.715+08
+1910557183820165122	1910557183820165120	0	\N	test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-04-30 00:00:00+08	5	5	5	5	1	2025-04-11 12:55:03.715+08	1	2025-04-22 14:09:45.218+08
+1	1	1	13665656563	supertenant	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	\N	2099-12-31 00:00:00+08	-1	-1	-1	-1	1	2025-04-22 13:47:13+08	1	2025-04-23 10:13:43.273+08
 \.
 
 
@@ -2109,6 +2109,7 @@ COPY biz_sys.sys_tenant_package (package_id, package_name, status, menu_ids, rem
 
 COPY biz_sys.sys_tenant_wallet (tenant_id, balance, status) FROM stdin;
 1910557183820165122	0.00	0
+1	0.00	0
 \.
 
 
@@ -2129,8 +2130,8 @@ COPY biz_sys.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type
 --
 
 COPY biz_sys.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	0	\N	admin	xxxxx@163.com	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-11 14:08:46.335+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
-1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-11 14:04:07.486+08	\N	1	1910557183820165120	2025-04-11 12:55:03.816+08	2025-04-11 14:08:30.064+08
+1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-23 10:13:11.368+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
+1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-23 11:18:48.195+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -2431,7 +2432,7 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz_sys.sys_user USING btree (p
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz_sys.sys_user USING btree (username);
 
 
--- Completed on 2025-04-11 14:10:05
+-- Completed on 2025-04-23 15:01:07
 
 --
 -- PostgreSQL database dump complete

@@ -3,7 +3,7 @@ package com.wzkris.auth.api;
 import com.wzkris.auth.api.domain.request.TokenReq;
 import com.wzkris.auth.api.domain.response.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
-import com.wzkris.common.security.oauth2.domain.model.AuthThings;
+import com.wzkris.common.security.oauth2.domain.model.AuthApp;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +41,7 @@ public class RemoteTokenApiImpl implements RemoteTokenApi {
 
         AuthBaseUser baseUser;
         if (authenticationToken == null) {
-            baseUser = new AuthThings(oAuth2Authorization.getPrincipalName(), oAuth2Authorization.getAuthorizedScopes());
+            baseUser = new AuthApp(oAuth2Authorization.getPrincipalName(), oAuth2Authorization.getAuthorizedScopes());
         } else {
             baseUser = (AuthBaseUser) authenticationToken.getPrincipal();
         }

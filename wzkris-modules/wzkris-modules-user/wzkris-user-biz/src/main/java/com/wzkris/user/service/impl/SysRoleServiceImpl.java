@@ -53,6 +53,7 @@ public class SysRoleServiceImpl implements SysRoleService {
                 .select(SysRole::getRoleId, SysRole::getRoleName)
                 .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE)
                 .like(StringUtil.isNotBlank(roleName), SysRole::getRoleName, roleName)
+                .orderByAsc(SysRole::getRoleId)
         ).stream().map(SelectVO::new).collect(Collectors.toList());
     }
 

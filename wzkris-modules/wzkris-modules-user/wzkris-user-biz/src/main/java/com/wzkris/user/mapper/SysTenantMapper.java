@@ -40,7 +40,8 @@ public interface SysTenantMapper extends BaseMapperPlus<SysTenant> {
     Long selectPackageIdByUserId(Long userId);
 
     @Select("""
-             SELECT t.*, t.tenant_type AS "type", t.tenant_name AS "name" FROM biz_sys.sys_tenant t WHERE t.tenant_id = #{tenantId}
+             SELECT t.*, p.package_name FROM biz_sys.sys_tenant t LEFT JOIN biz_sys.sys_tenant_package p ON t.package_id = p.package_id
+                        WHERE t.tenant_id = #{tenantId}
             """)
     SysTenantProfileVO selectVOById(Long tenantId);
 

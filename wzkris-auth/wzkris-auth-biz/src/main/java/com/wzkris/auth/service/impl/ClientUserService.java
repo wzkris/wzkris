@@ -10,7 +10,6 @@ import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.api.RemoteAppUserApi;
 import com.wzkris.user.api.domain.response.AppUserResp;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,8 +57,7 @@ public class ClientUserService extends UserInfoTemplate {
     /**
      * 构建登录用户
      */
-    @Nonnull
-    private ClientUser checkAndBuild(@Nonnull AppUserResp userResp) {
+    private ClientUser checkAndBuild(AppUserResp userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 

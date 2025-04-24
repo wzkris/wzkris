@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 菜单信息
+ * 菜单管理
  *
  * @author wzkris
  */

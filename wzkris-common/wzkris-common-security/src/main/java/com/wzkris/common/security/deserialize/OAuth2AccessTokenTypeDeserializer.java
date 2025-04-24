@@ -1,6 +1,5 @@
 package com.wzkris.common.security.deserialize;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -20,7 +19,7 @@ import java.io.IOException;
 public class OAuth2AccessTokenTypeDeserializer extends JsonDeserializer<OAuth2AccessToken.TokenType> {
 
     @Override
-    public OAuth2AccessToken.TokenType deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public OAuth2AccessToken.TokenType deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
         if (!OAuth2AccessToken.TokenType.BEARER.getValue().equals(node.get("value").asText())) {
             log.warn("Invalid token type: {}, but will ignore it", node.get("value").asText());

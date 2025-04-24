@@ -18,7 +18,6 @@ import com.wzkris.user.api.RemoteSysUserApi;
 import com.wzkris.user.api.domain.request.QueryPermsReq;
 import com.wzkris.user.api.domain.response.SysPermissionResp;
 import com.wzkris.user.api.domain.response.SysUserResp;
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -91,8 +90,7 @@ public class LoginUserService extends UserInfoTemplate {
     /**
      * 构建登录用户
      */
-    @Nonnull
-    private LoginUser buildLoginUser(@Nonnull SysUserResp userResp) {
+    private LoginUser buildLoginUser(SysUserResp userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 
@@ -134,8 +132,12 @@ public class LoginUserService extends UserInfoTemplate {
         loginUser.setUserId(userResp.getUserId());
         loginUser.setUsername(userResp.getUsername());
         loginUser.setTenantId(userResp.getTenantId());
-        SpringUtil.getContext().publishEvent(new LoginEvent(loginUser, grantType,
-                CommonConstants.STATUS_DISABLE, errorMsg, ServletUtil.getClientIP(request),
-                UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+        SpringUtil.getContext().publishEvent(
+                new LoginEvent("", loginUser, grantType,
+                        CommonConstants.STATUS_DISABLE, errorMsg,
+                        ServletUtil.getClientIP(request),
+                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))
+                )
+        );
     }
 }

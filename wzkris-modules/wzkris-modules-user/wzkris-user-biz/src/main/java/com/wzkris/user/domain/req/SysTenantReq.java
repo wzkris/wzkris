@@ -45,7 +45,6 @@ public class SysTenantReq {
     @Schema(description = "备注")
     private String remark;
 
-    @NotNull(message = "{desc.tenant}{desc.package}{validate.notnull}")
     @Schema(description = "租户套餐编号")
     private Long packageId;
 

@@ -16,13 +16,21 @@
 
 package com.wzkris.auth.oauth2.handler;
 
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wzkris.auth.domain.OnlineUser;
+import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.GenericHttpMessageConverter;
@@ -30,18 +38,19 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
+import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessTokenResponseMapConverter;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -65,14 +74,45 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        // 拿到返回的token
-        OAuth2AccessTokenAuthenticationToken accessTokenAuthentication = (OAuth2AccessTokenAuthenticationToken) authentication;
-        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters().isEmpty()
-                ? new HashMap<>(2) : accessTokenAuthentication.getAdditionalParameters();
 
+        if (!(authentication instanceof OAuth2AccessTokenAuthenticationToken accessTokenAuthentication)) {
+            log.error("{} must be of type {} but was {}", Authentication.class.getSimpleName(),
+                    OAuth2AccessTokenAuthenticationToken.class.getName(), authentication.getClass().getName());
+            OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR,
+                    "Unable to process the access token response.", null);
+            throw new OAuth2AuthenticationException(error);
+        }
+
+        this.recordSuccessLog(request, accessTokenAuthentication);
+
+        this.sendAccessTokenResponse(response, accessTokenAuthentication);
+    }
+
+    private void recordSuccessLog(HttpServletRequest request, OAuth2AccessTokenAuthenticationToken accessTokenAuthentication) {
+        if (!(accessTokenAuthentication.getPrincipal() instanceof UsernamePasswordAuthenticationToken authenticationToken)) {
+            return;
+        }
+
+        Map<String, Object> parameters = accessTokenAuthentication.getAdditionalParameters();
+
+        SpringUtil.getContext().publishEvent(new LoginEvent(
+                        parameters.get(OnlineUser.class.getName()).toString(),
+                        (AuthBaseUser) authenticationToken.getPrincipal(),
+                        request.getParameter(OAuth2ParameterNames.GRANT_TYPE),
+                        CommonConstants.STATUS_ENABLE, "",
+                        ServletUtil.getClientIP(request),
+                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))
+                )
+        );
+        accessTokenAuthentication.getAdditionalParameters().remove(OnlineUser.class.getName());
+    }
+
+    private void sendAccessTokenResponse(HttpServletResponse response,
+                                         OAuth2AccessTokenAuthenticationToken accessTokenAuthentication) throws IOException {
         // 构造响应体
         OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
         OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
+        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
 
         OAuth2AccessTokenResponse.Builder builder = OAuth2AccessTokenResponse.withToken(accessToken.getTokenValue())
                 .tokenType(accessToken.getTokenType());
@@ -83,10 +123,10 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 
         if (refreshToken != null) {
             builder.refreshToken(refreshToken.getTokenValue());
+        }
 
-            if (refreshToken.getIssuedAt() != null && refreshToken.getExpiresAt() != null) {
-                additionalParameters.put("refresh_expires_in", ChronoUnit.SECONDS.between(refreshToken.getIssuedAt(), refreshToken.getExpiresAt()));
-            }
+        if (!CollectionUtils.isEmpty(additionalParameters)) {
+            builder.additionalParameters(additionalParameters);
         }
 
         // 追加输出参数

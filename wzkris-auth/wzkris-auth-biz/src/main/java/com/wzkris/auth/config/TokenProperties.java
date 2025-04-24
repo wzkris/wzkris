@@ -28,6 +28,11 @@ public class TokenProperties {
     private int refreshTokenTimeOut;
 
     /**
+     * 是否重复使用刷新令牌 false则每次签发新的刷新令牌
+     */
+    private Boolean reuseRefreshTokens = false;
+
+    /**
      * authorization_code 有效期 （单位：秒）
      */
     private int authorizationCodeTimeOut;

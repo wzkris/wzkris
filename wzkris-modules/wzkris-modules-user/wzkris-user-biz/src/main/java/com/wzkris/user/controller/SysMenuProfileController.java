@@ -19,11 +19,11 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "路由信息")
+@Tag(name = "菜单信息")
 @RestController
 @RequestMapping("/menu")
 @RequiredArgsConstructor
-public class SysMenuRouterController extends BaseController {
+public class SysMenuProfileController extends BaseController {
 
     private final SysMenuService menuService;
 

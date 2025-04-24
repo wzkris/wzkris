@@ -33,9 +33,9 @@ public interface SysTenantService {
     /**
      * 删除租户及相关信息(hard delete)
      *
-     * @param tenantIds 租户ID集合
+     * @param tenantId 租户ID
      */
-    void deleteByIds(List<Long> tenantIds);
+    boolean deleteById(Long tenantId);
 
     /**
      * 校验租户账号数量
@@ -81,4 +81,10 @@ public interface SysTenantService {
         return this.checkAdministrator(Collections.singletonList(userId));
     }
 
+    /**
+     * 校验是否有租户的数据权限
+     *
+     * @param tenantId 租户ID
+     */
+    void checkDataScope(Long tenantId);
 }

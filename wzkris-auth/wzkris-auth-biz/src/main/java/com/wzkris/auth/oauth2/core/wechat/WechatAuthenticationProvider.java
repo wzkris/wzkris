@@ -6,10 +6,10 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
@@ -35,11 +35,11 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
-        WechatAuthenticationToken authenticationToken = (WechatAuthenticationToken) authentication;
+    public OAuth2User doAuthenticate(Authentication authentication) {
+        WechatAuthenticationToken wechatAuthenticationToken = (WechatAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
-                .filter(t -> t.checkLoginType(authenticationToken.getLoginType()))
+                .filter(t -> t.checkLoginType(wechatAuthenticationToken.getLoginType()))
                 .findFirst();
 
         if (templateOptional.isEmpty()) {
@@ -48,15 +48,13 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
             return null;// never run this line
         }
 
-        AuthBaseUser baseUser = templateOptional.get().loadUserByWechat(authenticationToken.getIdentifierType(), authenticationToken.getWxCode());
+        AuthBaseUser baseUser = templateOptional.get().loadUserByWechat(wechatAuthenticationToken.getIdentifierType(), wechatAuthenticationToken.getWxCode());
 
         if (baseUser == null) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);
-        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return usernamePasswordAuthenticationToken;
+        return baseUser;
     }
 
     @Override
