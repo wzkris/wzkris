@@ -34,7 +34,9 @@ public class CheckPermsAspect {
     private PermissionService permissionService;
 
     @Pointcut("@annotation(com.wzkris.common.security.oauth2.annotation.CheckPerms)" +
-            "|| @annotation(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)")
+            "|| @annotation(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)" +
+            "|| @within(com.wzkris.common.security.oauth2.annotation.CheckPerms)" +
+            "|| @within(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)")
     public void pointcut() {
     }
 
@@ -45,6 +47,12 @@ public class CheckPermsAspect {
     public void before(JoinPoint point) {
         MethodSignature signature = (MethodSignature) point.getSignature();
         CheckPerms checkPerms = AnnotatedElementUtils.findMergedAnnotation(signature.getMethod(), CheckPerms.class);
+
+        // 如果方法上没有注解，尝试从类上查找
+        if (checkPerms == null) {
+            Class<?> targetClass = point.getTarget().getClass();
+            checkPerms = AnnotatedElementUtils.findMergedAnnotation(targetClass, CheckPerms.class);
+        }
 
         AuthBaseUser baseUser = SecurityUtil.getPrincipal();
 
