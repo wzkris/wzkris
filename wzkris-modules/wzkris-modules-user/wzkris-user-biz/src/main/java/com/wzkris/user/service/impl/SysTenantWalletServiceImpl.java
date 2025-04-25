@@ -22,7 +22,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean incryBalance(Long tenantId, BigDecimal amount) {
+    public boolean incryBalance(Long tenantId, BigDecimal amount, String bizNo, String bizType, String remark) {
         amount = amount.abs();
         boolean suc = tenantWalletMapper.incryBalance(tenantId, amount) > 0;
         if (suc) {
@@ -30,7 +30,10 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             record.setTenantId(tenantId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_INCOME);
+            record.setBizNo(bizNo);
+            record.setBizType(bizType);
             record.setCreateAt(DateUtil.date());
+            record.setRemark(remark);
             tenantWalletRecordMapper.insert(record);
         }
         return suc;
@@ -38,7 +41,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean decryBalance(Long tenantId, BigDecimal amount) {
+    public boolean decryBalance(Long tenantId, BigDecimal amount, String bizNo, String bizType, String remark) {
         amount = amount.abs();
         boolean suc = tenantWalletMapper.decryBalance(tenantId, amount) > 0;
         if (suc) {
@@ -46,7 +49,10 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             record.setTenantId(tenantId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_OUTCOME);
+            record.setBizNo(bizNo);
+            record.setBizType(bizType);
             record.setCreateAt(DateUtil.date());
+            record.setRemark(remark);
             tenantWalletRecordMapper.insert(record);
         }
         return suc;
