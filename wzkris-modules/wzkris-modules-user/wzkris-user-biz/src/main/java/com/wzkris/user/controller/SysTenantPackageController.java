@@ -60,6 +60,7 @@ public class SysTenantPackageController extends BaseController {
 
     private LambdaQueryWrapper<SysTenantPackage> buildQueryWrapper(SysTenantPackageQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantPackage>()
+                .select(SysTenantPackage.class, q -> !q.getColumn().equals("menu_ids"))
                 .like(StringUtil.isNotNull(queryReq.getPackageName()), SysTenantPackage::getPackageName, queryReq.getPackageName())
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), SysTenantPackage::getStatus, queryReq.getStatus())
                 .orderByDesc(SysTenantPackage::getPackageId);
