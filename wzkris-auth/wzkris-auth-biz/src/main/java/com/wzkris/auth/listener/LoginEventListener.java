@@ -2,10 +2,10 @@ package com.wzkris.auth.listener;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.OnlineUserUtil;
 import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
@@ -49,9 +49,6 @@ public class LoginEventListener {
     @DubboReference
     private final RemoteAppUserApi remoteAppUserApi;
 
-    /**
-     * 登录事件
-     **/
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
@@ -62,7 +59,7 @@ public class LoginEventListener {
                 this.handleSystemUser(event, (LoginUser) baseUser);
             }
             case CLIENT_USER -> {
-                handleClientUser(event, (ClientUser) baseUser);
+                this.handleClientUser(event, (ClientUser) baseUser);
             }
             default -> log.warn("{} 发生登录事件, 忽略处理", baseUser);
         }

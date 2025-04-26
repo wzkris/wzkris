@@ -20,6 +20,7 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
@@ -83,9 +84,21 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
             throw new OAuth2AuthenticationException(error);
         }
 
+        this.synchrOnlineSessionCache(request, accessTokenAuthentication);
+
         this.recordSuccessLog(request, accessTokenAuthentication);
 
         this.sendAccessTokenResponse(response, accessTokenAuthentication);
+    }
+
+    private void synchrOnlineSessionCache(HttpServletRequest request, OAuth2AccessTokenAuthenticationToken accessTokenAuthentication) {
+        String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
+
+        if (!OAuth2ParameterNames.REFRESH_TOKEN.equals(grantType)) {
+            return;
+        }
+
+        SpringUtil.getContext().publishEvent(new RefreshTokenEvent(accessTokenAuthentication.getRefreshToken().getTokenValue()));
     }
 
     private void recordSuccessLog(HttpServletRequest request, OAuth2AccessTokenAuthenticationToken accessTokenAuthentication) {

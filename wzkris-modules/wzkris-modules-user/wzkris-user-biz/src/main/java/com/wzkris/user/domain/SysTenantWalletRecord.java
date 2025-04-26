@@ -31,6 +31,12 @@ public class SysTenantWalletRecord {
     @Schema(description = "记录类型 0-收入 1-支出")
     private String recordType;
 
+    @Schema(description = "业务类型")
+    private String bizType;
+
+    @Schema(description = "业务编号")
+    private String bizNo;
+
     @Schema(description = "创建时间")
     private Date createAt;
 

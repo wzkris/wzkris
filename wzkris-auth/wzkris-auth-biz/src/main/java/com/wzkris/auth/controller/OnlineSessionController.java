@@ -1,9 +1,9 @@
 package com.wzkris.auth.controller;
 
-import com.wzkris.auth.OnlineUserUtil;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.oauth2.redis.entity.OAuth2AuthorizationGrantAuthorization;
 import com.wzkris.auth.oauth2.redis.repository.OAuth2AuthorizationGrantAuthorizationRepository;
+import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.LoginUtil;

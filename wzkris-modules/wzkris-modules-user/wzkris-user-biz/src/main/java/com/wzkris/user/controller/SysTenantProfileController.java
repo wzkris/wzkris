@@ -56,6 +56,7 @@ public class SysTenantProfileController extends BaseController {
 
     @Operation(summary = "修改信息")
     @PostMapping
+    @CheckSystemPerms("tenant:edit_info")
     public Result<SysTenantProfileVO> tenantInfo(@RequestBody SysTenantProfileReq req) {
         SysTenant sysTenant = BeanUtil.convert(req, new SysTenant(LoginUtil.getTenantId()));
         return toRes(tenantMapper.updateById(sysTenant));
