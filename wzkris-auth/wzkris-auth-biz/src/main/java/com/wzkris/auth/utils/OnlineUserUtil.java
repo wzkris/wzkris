@@ -1,4 +1,4 @@
-package com.wzkris.auth;
+package com.wzkris.auth.utils;
 
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.common.redis.util.RedisUtil;
