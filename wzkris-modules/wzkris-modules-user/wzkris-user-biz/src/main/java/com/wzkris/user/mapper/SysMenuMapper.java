@@ -3,7 +3,6 @@ package com.wzkris.user.mapper;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysMenu;
 import jakarta.annotation.Nullable;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +21,7 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
      *
      * @return 菜单列表
      */
-    List<SysMenu> listRouter(@Nullable @Param("menuIds") List<Long> menuIds);
+    List<SysMenu> listRouter(@Nullable List<Long> menuIds);
 
     /**
      * 根据ID集合查询权限
@@ -38,6 +37,6 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
                     </foreach>
             </script>
             """)
-    List<String> listPermsByMenuIds(@Param("menuIds") List<Long> menuIds);
+    List<String> listPermsByMenuIds(List<Long> menuIds);
 
 }

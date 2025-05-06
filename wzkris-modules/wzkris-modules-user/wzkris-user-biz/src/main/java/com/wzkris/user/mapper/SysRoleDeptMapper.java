@@ -4,7 +4,6 @@ import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.user.domain.SysRoleDept;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -43,7 +42,7 @@ public interface SysRoleDeptMapper {
                     </foreach>
             </script>
             """)
-    List<Long> listDeptIdByRoleIds(@Param("roleIds") List<Long> roleIds);
+    List<Long> listDeptIdByRoleIds(List<Long> roleIds);
 
     /**
      * 通过角色ID删除角色和部门关联
@@ -68,7 +67,7 @@ public interface SysRoleDeptMapper {
                     </foreach>
             </script>
             """)
-    int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
+    int deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 通过部门ID删除角色和部门关联
@@ -93,6 +92,6 @@ public interface SysRoleDeptMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(@Param("list") List<SysRoleDept> list);
+    int insertBatch(List<SysRoleDept> list);
 
 }
