@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
@@ -44,6 +45,7 @@ public class SysTenantWalletMapperTest {
     }
 
     @Test
+    @Transactional(rollbackFor = Exception.class)
     public void test() {
         Long tenantId = this.insert();
         BigDecimal amount = new BigDecimal("100.35");
@@ -54,15 +56,14 @@ public class SysTenantWalletMapperTest {
     }
 
     Long insert() {
-        SysTenantWallet wallet = new SysTenantWallet();
-        wallet.setTenantId(IdUtil.getSnowflakeNextId());
+        SysTenantWallet wallet = new SysTenantWallet(IdUtil.getSnowflakeNextId());
         int rows = tenantWalletMapper.insert(wallet);
         Assert.state(rows > 0, "插入失败");
         return wallet.getTenantId();
     }
 
     void incryBalance(Long tenantId, BigDecimal amount) {
-        boolean rows = sysTenantWalletService.incryBalance(tenantId, amount);
+        boolean rows = sysTenantWalletService.incryBalance(tenantId, amount, IdUtil.fastSimpleUUID(), "1", "");
         Assert.state(rows, "增加余额失败");
         SysTenantWalletRecord record = tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .eq(SysTenantWalletRecord::getTenantId, tenantId)
@@ -71,7 +72,7 @@ public class SysTenantWalletMapperTest {
     }
 
     void decryBalance(Long tenantId, BigDecimal amount) {
-        boolean rows = sysTenantWalletService.decryBalance(tenantId, amount);
+        boolean rows = sysTenantWalletService.decryBalance(tenantId, amount, IdUtil.fastSimpleUUID(), "0", "");
         Assert.state(rows, "扣减余额失败");
         SysTenantWalletRecord record = tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
                 .eq(SysTenantWalletRecord::getTenantId, tenantId)
