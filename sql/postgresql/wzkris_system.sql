@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-04-24 09:01:40
+-- Started on 2025-05-13 17:26:03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -819,152 +819,6 @@ COPY biz_sys.sys_dict (dict_id, dict_key, dict_name, dict_value, remark, creator
 --
 
 COPY biz_sys.sys_login_log (log_id, tenant_id, user_id, username, grant_type, status, error_msg, login_ip, login_location, browser, os, login_time) FROM stdin;
-1905419785788334082	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-28 08:40:52.521+08
-1906137247701991425	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 08:11:48.76+08
-1906139358355456002	0	1	admin	password	0		::1	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 08:20:12.045+08
-1906268889586270209	1904406772188934146	1904406772188934144	dsadasd	password	1	商户已过期，请联系管理员	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 16:54:54.646+08
-1906504701292830722	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:31:56.529+08
-1906505000006967298	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:33:07.808+08
-1906505350080356353	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:34:31.255+08
-1906505513377193985	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:35:10.187+08
-1906506336547102721	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:38:26.464+08
-1906524887773339650	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:52:09.422+08
-1906903940460171266	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-01 10:58:22.575+08
-1907269772399026177	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-02 11:12:03.505+08
-1907656288048447490	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-03 12:47:55.319+08
-1909040075093245954	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 08:26:36.731+08
-1909118848824180738	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:39:37.932+08
-1909126434940190721	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 14:09:46.585+08
-1909149819464253441	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 15:42:41.918+08
-1909151512872550402	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 15:49:25.646+08
-1909153597231923201	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 15:57:42.579+08
-1909464816253870082	0	1909109150746140674	111111	password	1	登录失败，用户名或密码错误	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-08 12:34:22.608+08
-1909464934751346689	0	1909109150746140674	111111	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-08 12:34:51.241+08
-1909465068532867073	1907662334942928897	1907662334930345984	222222	password	1	商户已过期，请联系管理员	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-08 12:35:23.14+08
-1909466494550089729	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-08 12:41:03.129+08
-1909841145260380162	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-09 13:29:45.28+08
-1909841860405989377	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-09 13:32:37.306+08
-1910208393242132481	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-10 13:49:05.529+08
-1910531116979941378	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-11 11:11:28.663+08
-1910531593675173889	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-11 11:12:14.692+08
-1912061290825318402	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-15 16:31:50.299+08
-1912418014170140674	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-16 16:09:19.953+08
-1912786657575948289	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-17 16:34:08.819+08
-1912787891833786370	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-17 16:39:05.949+08
-1913033608204623874	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 08:55:29.146+08
-1913037775887376385	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 09:12:02.949+08
-1913038397235765250	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 09:14:31.092+08
-1913071767533625346	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 11:27:07.176+08
-1913104602978033666	0	1	admin	password	1	登录失败，用户名或密码错误	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 13:37:35.743+08
-1913104977936228354	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 13:39:05.17+08
-1913122004818157570	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:46:44.611+08
-1913122454908919809	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:48:32+08
-1913122510269538306	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:48:45.211+08
-1913123549735510017	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:52:53.021+08
-1913123678764883969	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:53:23.788+08
-1913124606410711042	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:57:04.967+08
-1913124667567857665	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:57:19.538+08
-1913124775512465409	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:57:45.289+08
-1913124927820226562	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:58:21.585+08
-1913125324869820417	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:59:56.254+08
-1913125550569512962	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 15:00:50.072+08
-1913125903490834434	0	1	admin	password	1	登录失败，用户名或密码错误	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 15:02:14.208+08
-1913753367632093186	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 08:35:33.259+08
-1913789865244975106	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 11:00:34.913+08
-1914112158634573826	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-21 08:21:15.709+08
-1914112368655958017	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-21 08:22:05.838+08
-1914114988992856066	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-21 08:32:30.572+08
-1914486705435119618	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-22 09:09:34.524+08
-1906233858620850177	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 14:35:42.665+08
-1906269425115004930	1904406772188934146	1904406772188934144	dsadasd	password	1	商户已过期，请联系管理员	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 16:57:02.377+08
-1906269566404329474	1904406772188934146	1904406772188934144	dsadasd	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 16:57:36.067+08
-1906270400479428610	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 17:00:54.924+08
-1906510724325957634	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:55:52.592+08
-1906511033576185857	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:57:06.306+08
-1906511631633604610	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 08:59:28.896+08
-1906538592372252673	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 10:46:36.849+08
-1907661878871130113	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-03 13:10:09.218+08
-1907662601239330817	1907662334942928897	1907662334930345984	222222	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-03 13:13:01.449+08
-1907664370119933953	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-03 13:20:03.183+08
-1909080937533734914	1907662334942928897	1907662334930345984	222222	password	1	登录失败，用户名或密码错误	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 11:08:59.173+08
-1909081111664459777	1907662334942928897	1907662334930345984	222222	password	1	商户已过期，请联系管理员	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 11:09:40.689+08
-1909081201070243842	1907662334942928897	1907662334930345984	222222	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 11:10:02.005+08
-1909119155725598722	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:40:51.098+08
-1909128462152171522	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 14:17:49.93+08
-1909128882102665218	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 14:19:30.049+08
-1909471144326172673	1907662334942928897	1907662334930345984	222222	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-08 12:59:31.697+08
-1909472030054125570	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-08 13:03:02.898+08
-1910555514755543041	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-11 12:48:25.528+08
-1912426812221857793	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-16 16:44:17.528+08
-1912792059579453442	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-17 16:55:39.6+08
-1913062553155248130	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 10:50:30.3+08
-1913063160448524289	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 10:52:55.107+08
-1913089590062456834	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 12:37:56.382+08
-1913091972368408577	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 12:47:24.383+08
-1913113199556423682	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:11:45.266+08
-1913113555271151617	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:13:10.159+08
-1913147843270139905	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 16:29:24.936+08
-1913148475905400834	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 16:31:55.883+08
-1913148891401543682	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 16:33:34.941+08
-1913765691122196482	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 09:24:31.454+08
-1913767518962130946	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 09:31:47.246+08
-1913830216185896962	1910557183820165122	1910557183820165120	testadmin	password	1	商户已过期，请联系管理员	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 13:40:55.432+08
-1913830251007008770	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 13:41:03.751+08
-1913830636140584962	0	1913830395769225217	aaaaaa	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 13:42:35.567+08
-1914125771470503938	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-21 09:15:21.28+08
-1914497015332147202	1910557183820165122	1910557183820165120	testadmin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-22 09:50:32.743+08
-1906264141852246017	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 16:36:02.742+08
-1906515398923902978	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:14:27.102+08
-1906515553609834497	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:15:03.968+08
-1906516597614043137	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:19:12.876+08
-1906517898842333186	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:24:23.131+08
-1906518730128220161	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:27:41.324+08
-1906518861896474625	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:28:12.74+08
-1906520235350679553	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:33:40.206+08
-1906521526529417218	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:38:48.032+08
-1906521699938721794	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:39:29.38+08
-1909109316551114753	0	1909109150746140674	111111	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:01:45.259+08
-1909119735793647618	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:43:09.391+08
-1909123633837178881	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:58:38.759+08
-1909136724083802114	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 14:50:39.568+08
-1909138584945491969	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 14:58:03.387+08
-1910557547508199426	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-11 12:56:30.409+08
-1913065485187653634	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 11:02:09.335+08
-1913067084689678337	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 11:08:30.72+08
-1913068417597546498	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 11:13:48.513+08
-1913092757055578114	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 12:50:31.473+08
-1913092982881099778	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 12:51:25.317+08
-1913115744634839041	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:21:51.896+08
-1913151086670893057	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 16:42:18.228+08
-1913155207381635074	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 16:58:40.79+08
-1913770255355412481	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-20 09:42:39.607+08
-1914196510215208962	1910557183820165122	1910557183820165120	testadmin	password	1	商户已过期，请联系管理员	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-21 13:56:26.651+08
-1914196545715798018	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-21 13:56:35.12+08
-1914512699030179842	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-22 10:52:52.018+08
-1914855036776288257	1910557183820165122	1910557183820165120	testadmin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-23 09:33:11.479+08
-1914865101692407810	1910557183820165122	1910557183820165120	testadmin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-23 10:13:11.374+08
-1906268824285151233	1904406772188934146	1904406772188934144	dsadasd	password	1	商户已过期，请联系管理员	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-30 16:54:39.127+08
-1906521965702406145	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-03-31 09:40:32.748+08
-1909113381196595202	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:17:54.345+08
-1909113615360393217	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:18:50.174+08
-1909113764987994114	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:19:25.847+08
-1909114256099049473	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:21:22.942+08
-1909115051909513217	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:24:32.678+08
-1909117115272200194	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:32:44.624+08
-1909117784112693249	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:35:24.079+08
-1909118199873077250	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:37:03.212+08
-1909123816788525058	1907662334942928897	1907662334930345984	222222	password	1	登录失败，用户名或密码错误	192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:59:22.388+08
-1909123862690988034	0	1909109150746140674	111111	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 13:59:33.325+08
-1909124013316833282	0	1909109150746140674	111111	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 14:00:09.24+08
-1909124702407426049	0	1909109150746140674	111111	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-07 14:02:53.538+08
-1910574564126683138	1910557183820165122	1910557183820165120	testadmin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-11 14:04:07.486+08
-1910575733649633282	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-11 14:08:46.348+08
-1913070720404660225	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 11:22:57.536+08
-1913095348002988033	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 13:00:49.221+08
-1913116441761738753	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:24:38.24+08
-1913116960718778369	0	1	admin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-18 14:26:42.05+08
-1914196623658549249	1910557183820165122	1910557183820165120	testadmin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-21 13:56:53.795+08
-1914857638721163266	1910557183820165122	1910557183820165120	testadmin	password	0		192.168.0.112	内网IP	MSEdge	Windows 10 or Windows Server 2016	2025-04-23 09:43:32.06+08
 \.
 
 
@@ -975,9 +829,6 @@ COPY biz_sys.sys_login_log (log_id, tenant_id, user_id, username, grant_type, st
 --
 
 COPY biz_sys.sys_message (msg_id, title, content, status, creator_id, updater_id, create_at, update_at) FROM stdin;
-1867761637258874881	测试标题	测试内容xxxx	2	1	1	2024-12-14 10:40:50.316+08	2024-12-14 10:40:50.316+08
-1867761817215488002	测试标题5	内容aauuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuqqqq	2	1	1	2024-12-14 10:41:33.219+08	2024-12-14 10:41:33.219+08
-1867761817215488005	测试通知7	测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测	1	1	1	2024-12-14 10:41:34.219+08	2025-04-17 11:29:01.583+08
 \.
 
 
@@ -988,14 +839,6 @@ COPY biz_sys.sys_message (msg_id, title, content, status, creator_id, updater_id
 --
 
 COPY biz_sys.sys_notice (notice_id, notice_type, title, content, create_at, creator_id) FROM stdin;
-1910557184449245186	0	租户创建成功	租户：test创建成功，超级管理员账号：testadmin，临时登录密码：74181699，临时操作密码：431865	2025-04-11 12:55:03.849+08	1
-1912709858875645953	1	123	222	2025-04-17 11:29:01.413+08	1
-1913830396264144897	0	系统用户创建成功	用户账号：aaaaaa创建成功，临时登录密码：23511869	2025-04-20 13:41:38.373+08	1
-1914559110362918914	0	租户创建成功	租户：111创建成功，超级管理员账号：1111111，临时登录密码：83962298，临时操作密码：684494	2025-04-22 13:57:17.349+08	1
-1914858366458073090	0	系统用户创建成功	用户账号：111111创建成功，临时登录密码：57711040	2025-04-23 09:46:25.569+08	1910557183820165120
-1914858380232167426	0	系统用户创建成功	用户账号：number创建成功，临时登录密码：64434071	2025-04-23 09:46:28.854+08	1910557183820165120
-1914858429020311555	0	系统用户创建成功	用户账号：111112创建成功，临时登录密码：35049840	2025-04-23 09:46:40.496+08	1910557183820165120
-1914858453770899458	0	系统用户创建成功	用户账号：222223创建成功，临时登录密码：88840157	2025-04-23 09:46:46.386+08	1910557183820165120
 \.
 
 
@@ -1006,14 +849,6 @@ COPY biz_sys.sys_notice (notice_id, notice_type, title, content, create_at, crea
 --
 
 COPY biz_sys.sys_notice_user (notice_id, user_id, read_state) FROM stdin;
-1910557184449245186	1	0
-1912709858875645953	1	0
-1913830396264144897	1	0
-1914559110362918914	1	0
-1914858366458073090	1910557183820165120	0
-1914858380232167426	1910557183820165120	0
-1914858429020311555	1910557183820165120	0
-1914858453770899458	1910557183820165120	0
 \.
 
 
@@ -1024,105 +859,6 @@ COPY biz_sys.sys_notice_user (notice_id, user_id, read_state) FROM stdin;
 --
 
 COPY biz_sys.sys_oper_log (oper_id, tenant_id, title, sub_title, oper_type, method, request_method, user_id, oper_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time) FROM stdin;
-1910575665987121153	1910557183820165122	个人信息	修改密码	2	com.wzkris.user.controller.SysUserProfileController.editPwd()	POST	1910557183820165120	testadmin	/user_profile/edit_password	192.168.0.112	内网IP	{"oldPassword":"**","newPassword":"**"}	{"code":0,"message":"Success","timestamp":1744351710074}	0	\N	2025-04-11 14:08:30.075+08
-1910580207516577794	0	角色管理	新增角色	1	com.wzkris.user.controller.SysRoleController.add()	POST	1	admin	/sys_role/add	192.168.0.112	内网IP	{"roleName":"11","deptIds":[],"dataScope":"1","menuIds":[],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1744352792877}	0	\N	2025-04-11 14:26:32.878+08
-1910580248696254465	0	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1	admin	/sys_role/remove	192.168.0.112	内网IP	[1910580206962982914]	{"code":0,"message":"Success","timestamp":1744352802808}	0	\N	2025-04-11 14:26:42.808+08
-1910580305751371778	0	角色管理	新增角色	1	com.wzkris.user.controller.SysRoleController.add()	POST	1	admin	/sys_role/add	192.168.0.112	内网IP	{"roleName":"11","deptIds":[],"dataScope":"1","menuIds":[],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1744352816411}	0	\N	2025-04-11 14:26:56.411+08
-1910580371761328129	0	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1	admin	/sys_role/remove	192.168.0.112	内网IP	[1910580305667538945]	{"code":0,"message":"Success","timestamp":1744352832145}	0	\N	2025-04-11 14:27:12.145+08
-1912709861983625217	0	系统消息	修改草稿	2	com.wzkris.system.controller.SysMessageController.edit()	POST	1	admin	/sys_message/edit	192.168.0.112	内网IP	{"msgId":1867761817215488005,"title":"测试通知7","content":"测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测","status":"1"}	{"code":0,"message":"Success","timestamp":1744860541618}	0	\N	2025-04-17 11:29:01.624+08
-1913050596842905601	0	角色管理	新增角色	1	com.wzkris.user.controller.SysRoleController.add()	POST	1	admin	/sys_role/add	192.168.0.112	内网IP	{"roleName":"11","deptIds":[],"dataScope":"1","menuIds":[],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1744941779389}	0	\N	2025-04-18 10:02:59.389+08
-1913050622855979009	0	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1	admin	/sys_role/remove	192.168.0.112	内网IP	[1913050595379056641]	{"code":0,"message":"Success","timestamp":1744941785904}	0	\N	2025-04-18 10:03:05.904+08
-1913050643898802177	0	部门管理	新增部门	1	com.wzkris.user.controller.SysDeptController.add()	POST	1	admin	/sys_dept/add	192.168.0.112	内网IP	{"deptSort":0,"deptName":"11","status":"0"}	{"code":0,"message":"Success","timestamp":1744941790918}	0	\N	2025-04-18 10:03:10.918+08
-1913050659006685186	0	部门管理	删除部门	3	com.wzkris.user.controller.SysDeptController.remove()	POST	1	admin	/sys_dept/remove	192.168.0.112	内网IP	1913050643827462146	{"code":0,"message":"Success","timestamp":1744941794527}	0	\N	2025-04-18 10:03:14.527+08
-1913819073308483586	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"tenant","isCache":false,"icon":"carbon:information-filled","menuId":1906272182215585793,"menuName":"商户信息","menuType":"M","perms":"tenant:info","isVisible":true,"parentId":0,"menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1745124998555}	0	\N	2025-04-20 12:56:38.555+08
-1914196580541104129	0	租户管理	修改租户	2	com.wzkris.user.controller.SysTenantController.edit()	POST	1	admin	/sys_tenant/edit	192.168.0.112	内网IP	{"tenantType":"0","expireTime":1745942400000,"accountLimit":5,"roleLimit":5,"tenantName":"test","tenantId":1910557183820165122,"packageId":1773625804122202113,"deptLimit":5,"postLimit":5,"status":"0","username":""}	{"code":0,"message":"Success","timestamp":1745215003044}	0	\N	2025-04-21 13:56:43.046+08
-1914519320422715394	0	租户管理	修改租户	2	com.wzkris.user.controller.SysTenantController.edit()	POST	1	admin	/sys_tenant/edit	192.168.0.112	内网IP	{"tenantType":"0","expireTime":1745942400000,"accountLimit":5,"roleLimit":5,"tenantName":"test1","tenantId":1910557183820165122,"packageId":1773625804122202113,"deptLimit":5,"postLimit":5,"status":"0","username":""}	{"code":0,"message":"Success","timestamp":1745291950494}	0	\N	2025-04-22 11:19:10.494+08
-1914858366676176897	1910557183820165122	系统用户	新增用户	1	com.wzkris.user.controller.SysUserController.add()	POST	1910557183820165120	testadmin	/sys_user/add	192.168.0.112	内网IP	{"roleIds":[],"gender":"2","postIds":[],"username":"111111","status":"0"}	{"code":0,"message":"Success","timestamp":1745372785513}	0	\N	2025-04-23 09:46:25.514+08
-1914858495781048322	1910557183820165122	系统用户	新增用户	1	com.wzkris.user.controller.SysUserController.add()	POST	1910557183820165120	testadmin	/sys_user/add	192.168.0.112	内网IP	{"roleIds":[],"gender":"2","postIds":[],"username":"444444","status":"0"}	{"code":412,"message":"账号数量已达上限，请联系管理员","timestamp":1745372816404}	1	账号数量已达上限，请联系管理员	2025-04-23 09:46:56.404+08
-1914858517662732290	1910557183820165122	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1910557183820165120	testadmin	/sys_user/remove	192.168.0.112	内网IP	[1910557183820165120]	\N	1	userId：‘1910557183820165120'禁止访问自身数据	2025-04-23 09:47:01.623+08
-1914858527657758721	1910557183820165122	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1910557183820165120	testadmin	/sys_user/remove	192.168.0.112	内网IP	[1914858453699616769]	{"code":0,"message":"Success","timestamp":1745372824009}	0	\N	2025-04-23 09:47:04.009+08
-1914858533810802689	1910557183820165122	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1910557183820165120	testadmin	/sys_user/remove	192.168.0.112	内网IP	[1914858429020332033]	{"code":0,"message":"Success","timestamp":1745372825468}	0	\N	2025-04-23 09:47:05.468+08
-1914858539850600450	1910557183820165122	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1910557183820165120	testadmin	/sys_user/remove	192.168.0.112	内网IP	[1914858380232187905]	{"code":0,"message":"Success","timestamp":1745372826908}	0	\N	2025-04-23 09:47:06.908+08
-1914858544636301314	1910557183820165122	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1910557183820165120	testadmin	/sys_user/remove	192.168.0.112	内网IP	[1914858366072217601]	{"code":0,"message":"Success","timestamp":1745372828054}	0	\N	2025-04-23 09:47:08.055+08
-1914858553394008066	1910557183820165122	系统用户	状态修改	2	com.wzkris.user.controller.SysUserController.editStatus()	POST	1910557183820165120	testadmin	/sys_user/edit_status	192.168.0.112	内网IP	{"id":1910557183820165120,"status":"1"}	\N	1	userId：‘1910557183820165120'禁止访问自身数据	2025-04-23 09:47:10.137+08
-1914858605738921985	1910557183820165122	角色管理	新增角色	1	com.wzkris.user.controller.SysRoleController.add()	POST	1910557183820165120	testadmin	/sys_role/add	192.168.0.112	内网IP	{"roleName":"222","deptIds":[],"dataScope":"1","menuIds":[],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1745372842624}	0	\N	2025-04-23 09:47:22.624+08
-1914858632020430849	1910557183820165122	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1910557183820165120	testadmin	/sys_user/remove	192.168.0.112	内网IP	[1910557183820165120]	\N	1	userId：‘1910557183820165120'禁止访问自身数据	2025-04-23 09:47:28.884+08
-1914858645513506818	1910557183820165122	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1910557183820165120	testadmin	/sys_role/remove	192.168.0.112	内网IP	[1914858605738942465]	{"code":0,"message":"Success","timestamp":1745372852094}	0	\N	2025-04-23 09:47:32.1+08
-1913820156583960577	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"tenant","isCache":false,"component":"merchant/index","icon":"carbon:information-filled","menuId":1906272182215585793,"menuName":"商户信息","menuType":"M","perms":"tenant:info","isVisible":true,"parentId":0,"menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1745125257045}	0	\N	2025-04-20 13:00:57.045+08
-1914858380232167427	1910557183820165122	系统用户	新增用户	1	com.wzkris.user.controller.SysUserController.add()	POST	1910557183820165120	testadmin	/sys_user/add	192.168.0.112	内网IP	{"roleIds":[],"gender":"2","postIds":[],"username":"number","status":"0"}	{"code":0,"message":"Success","timestamp":1745372788854}	0	\N	2025-04-23 09:46:28.854+08
-1914858429020311554	1910557183820165122	系统用户	新增用户	1	com.wzkris.user.controller.SysUserController.add()	POST	1910557183820165120	testadmin	/sys_user/add	192.168.0.112	内网IP	{"roleIds":[],"gender":"2","postIds":[],"username":"111112","status":"0"}	{"code":0,"message":"Success","timestamp":1745372800496}	0	\N	2025-04-23 09:46:40.496+08
-1914858453770899459	1910557183820165122	系统用户	新增用户	1	com.wzkris.user.controller.SysUserController.add()	POST	1910557183820165120	testadmin	/sys_user/add	192.168.0.112	内网IP	{"roleIds":[],"gender":"2","postIds":[],"username":"222223","status":"0"}	{"code":0,"message":"Success","timestamp":1745372806374}	0	\N	2025-04-23 09:46:46.374+08
-1913828336869269506	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"tenant","isCache":false,"component":"merchant/index","icon":"carbon:information-filled","menuId":1906272182215585793,"menuName":"商户信息","menuType":"M","perms":"tenant:info","isVisible":false,"parentId":0,"menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1745127207378}	0	\N	2025-04-20 13:33:27.378+08
-1913829592476114945	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"tenant_profile","isCache":false,"component":"_core/profile/tenant/index","icon":"carbon:information-filled","menuId":1906272182215585793,"menuName":"商户信息","menuType":"M","perms":"tenant:info","isVisible":false,"parentId":0,"menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1745127506728}	0	\N	2025-04-20 13:38:26.728+08
-1913829937696694274	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"query":"","icon":"carbon:user-admin","menuName":"员工管理","isVisible":true,"parentId":1906263415450000002,"path":"sysuser","isCache":true,"component":"user/sysuser/index","menuId":1906263415450000203,"menuType":"M","perms":"sys_user:list","menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1745127589055}	0	\N	2025-04-20 13:39:49.055+08
-1913830351729025025	0	角色管理	新增角色	1	com.wzkris.user.controller.SysRoleController.add()	POST	1	admin	/sys_role/add	192.168.0.112	内网IP	{"roleName":"sadasd","deptIds":[],"dataScope":"1","menuIds":[1906263415450000001,1906263415450000100,1906263415450001059,1906263415450001058,1906263415450001057,1906263415450001056,1906263415450000103,1906263415450001055,1906263415450001054,1906263415450001053,1906263415450001052,1906263415450001051,1906263415450000102,1906263415450001049,1906263415450001048,1906263415450001047,1906263415450001046,1906263415450000104,1906263415450000151,1906263415450001064,1906263415450000150,1906263415450001062,1906263415450001061,1906263415450000101,1906263415450000300,1906263415450000304,1906263415450000303,1906263415450000302,1906263415450000301],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1745127687743}	0	\N	2025-04-20 13:41:27.743+08
-1913830395857297410	0	系统用户	新增用户	1	com.wzkris.user.controller.SysUserController.add()	POST	1	admin	/sys_user/add	192.168.0.112	内网IP	{"roleIds":[1913830351531900930],"gender":"2","postIds":[],"username":"aaaaaa","status":"0"}	{"code":0,"message":"Success","timestamp":1745127698275}	0	\N	2025-04-20 13:41:38.275+08
-1913832658491367426	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"tenant_profile","isCache":false,"component":"_core/profile/tenant/index","icon":"carbon:information-filled","menuId":1906272182215585793,"menuName":"商户信息","menuType":"M","perms":"tenant:info","isVisible":true,"parentId":0,"menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1745128237731}	0	\N	2025-04-20 13:50:37.731+08
-1913832934279438338	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"merchant/info","isCache":false,"component":"merchant/index","icon":"carbon:information-filled","menuId":1906272182215585793,"menuName":"商户信息","menuType":"M","perms":"tenant:info","isVisible":true,"parentId":0,"menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1745128303484}	0	\N	2025-04-20 13:51:43.484+08
-1913835344259407873	0	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1	admin	/sys_role/remove	192.168.0.112	内网IP	[1913830351531900930]	\N	1	操作失败，该数据已分配	2025-04-20 14:01:18.063+08
-1913835364534673409	0	系统用户	删除用户	3	com.wzkris.user.controller.SysUserController.remove()	POST	1	admin	/sys_user/remove	192.168.0.112	内网IP	[1913830395769225217]	{"code":0,"message":"Success","timestamp":1745128882907}	0	\N	2025-04-20 14:01:22.907+08
-1913835376337444865	0	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1	admin	/sys_role/remove	192.168.0.112	内网IP	[1913830351531900930]	{"code":0,"message":"Success","timestamp":1745128885718}	0	\N	2025-04-20 14:01:25.719+08
-1905449595973541889	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:parameter","menuName":"参数管理","isVisible":true,"parentId":1,"path":"config","isCache":false,"component":"system/config/index","isFrame":false,"menuId":103,"menuType":"M","perms":"sys_config:list","menuSort":7,"status":"0"}	{"code":0,"message":"Success","timestamp":1743129559875}	0	\N	2025-03-28 10:39:19.876+08
-1905449974975045634	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"log","isCache":false,"isFrame":false,"icon":"carbon:ibm-knowledge-catalog-premium","menuId":104,"menuName":"日志管理","menuType":"D","isVisible":true,"parentId":1,"menuSort":1,"status":"0"}	\N	1	\r\n### Error updating database.  Cause: org.postgresql.util.PSQLException: 错误: 对于可变字符类型来说，值太长了(30)\r\n### The error may exist in com/wzkris/user/mapper/SysMenuMapper.java (best guess)\r\n### The error may involve com.wzkris.user.mapper.SysMenuMapper.updateById-Inline\r\n### The error occurred while setting parameters\r\n### SQL: UPDATE biz_sys.sys_menu SET menu_name = ?, parent_id = ?, menu_sort = ?, path = ?, is_frame = ?, is_cache = ?, is_visible = ?, menu_type = ?, status = ?, icon = ?, update_at = ?, updater_id = ? WHERE menu_id = ?\r\n### Cause: org.postgresql.util.PSQLException: 错误: 对于可变字符类型来说，值太长了(30)\n; 错误: 对于可变字符类型来说，值太长了(30)	2025-03-28 10:40:50.237+08
-1905450163286712321	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"log","isCache":false,"isFrame":false,"icon":"carbon:ibm-knowledge-catalog-premium","menuId":104,"menuName":"日志管理","menuType":"D","isVisible":true,"parentId":1,"menuSort":1,"status":"0"}	{"code":0,"message":"Success","timestamp":1743129695139}	0	\N	2025-03-28 10:41:35.139+08
-1905450256605782017	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"controller","isCache":false,"isFrame":false,"icon":"carbon:dashboard","menuId":101,"menuName":"控制台入口","menuType":"D","isVisible":true,"parentId":1,"menuSort":0,"status":"0"}	{"code":0,"message":"Success","timestamp":1743129717385}	0	\N	2025-03-28 10:41:57.385+08
-1905453027543359489	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"system","isCache":false,"isFrame":false,"icon":"carbon:tool-kit","menuId":1,"menuName":"系统管理","menuType":"D","isVisible":true,"parentId":0,"menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130378029}	0	\N	2025-03-28 10:52:58.029+08
-1905453300517052417	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:text-vertical-alignment","menuName":"字典管理","isVisible":true,"parentId":1,"path":"dict","isCache":false,"component":"system/dict/index","isFrame":false,"menuId":102,"menuType":"M","perms":"sys_dict:list","menuSort":6,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130443111}	0	\N	2025-03-28 10:54:03.111+08
-1905453455630802945	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:login","menuName":"登录日志","isVisible":true,"parentId":104,"path":"loginlog","isCache":false,"component":"system/loginlog/index","isFrame":false,"menuId":151,"menuType":"M","perms":"loginlog:list","menuSort":2,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130480092}	0	\N	2025-03-28 10:54:40.092+08
-1905453651915841537	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:touch-interaction","menuName":"操作日志","isVisible":true,"parentId":104,"path":"operlog","isCache":false,"component":"system/operlog/index","isFrame":false,"menuId":150,"menuType":"M","perms":"operlog:list","menuSort":1,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130526891}	0	\N	2025-03-28 10:55:26.891+08
-1905453775782027266	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"http://localhost:9200/xxl-job-admin","isCache":false,"isFrame":true,"icon":"carbon:job-run","menuId":300,"menuName":"定时任务","menuType":"M","perms":"job:list","isVisible":true,"parentId":101,"menuSort":20,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130556423}	0	\N	2025-03-28 10:55:56.423+08
-1906172064653049858	0	部门管理	删除部门	3	com.wzkris.user.controller.SysDeptController.remove()	POST	1	admin	/sys_dept/remove	192.168.0.112	内网IP	1904075235413127170	{"code":0,"message":"Success","timestamp":1743301809834}	0	\N	2025-03-30 10:30:09.834+08
-1906172079328919554	0	部门管理	删除部门	3	com.wzkris.user.controller.SysDeptController.remove()	POST	1	admin	/sys_dept/remove	192.168.0.112	内网IP	1904075222259789826	{"code":0,"message":"Success","timestamp":1743301813336}	0	\N	2025-03-30 10:30:13.336+08
-1906172086274686978	0	部门管理	删除部门	3	com.wzkris.user.controller.SysDeptController.remove()	POST	1	admin	/sys_dept/remove	192.168.0.112	内网IP	1904075204320751617	{"code":0,"message":"Success","timestamp":1743301814989}	0	\N	2025-03-30 10:30:14.989+08
-1906269641788555266	1904406772188934146	角色管理	新增角色	1	com.wzkris.user.controller.SysRoleController.add()	POST	1904406772188934144	dsadasd	/sys_role/add	192.168.0.112	内网IP	{"roleName":"asdasd ","deptIds":[],"dataScope":"1","menuIds":[1906263415450000203,1906263415450002078,1906263415450002062,1906263415450002064,1906263415450002077,1906263415450002072,1906263415450002071],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1743325074042}	0	\N	2025-03-30 16:57:54.042+08
-1906269690861912065	1904406772188934146	部门管理	新增部门	1	com.wzkris.user.controller.SysDeptController.add()	POST	1904406772188934144	dsadasd	/sys_dept/add	192.168.0.112	内网IP	{"deptSort":0,"deptName":"asdad","status":"0"}	{"code":0,"message":"Success","timestamp":1743325085742}	0	\N	2025-03-30 16:58:05.742+08
-1906269712705847298	1904406772188934146	角色管理	修改角色	2	com.wzkris.user.controller.SysRoleController.edit()	POST	1904406772188934144	dsadasd	/sys_role/edit	192.168.0.112	内网IP	{"isMenuDisplay":false,"roleId":1906269641721450498,"roleName":"asdasd ","isDeptDisplay":false,"deptIds":[1906269690861916162],"dataScope":"2","menuIds":[1906263415450000203,1906263415450002078,1906263415450002062,1906263415450002064,1906263415450002077,1906263415450002072,1906263415450002071],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1743325090950}	0	\N	2025-03-30 16:58:10.95+08
-1906269723090944002	1904406772188934146	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1904406772188934144	dsadasd	/sys_role/remove	192.168.0.112	内网IP	[1906269641721450498]	{"code":0,"message":"Success","timestamp":1743325093430}	0	\N	2025-03-30 16:58:13.43+08
-1905453828353433601	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"http://localhost:9100/","isCache":false,"isFrame":true,"icon":"carbon:cloud-monitoring","menuId":304,"menuName":"服务监控","menuType":"M","perms":"monitor:server:list","isVisible":true,"parentId":101,"menuSort":5,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130568956}	0	\N	2025-03-28 10:56:08.956+08
-1905454507109261314	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"http://127.0.0.1:8848/nacos","isCache":false,"isFrame":true,"icon":"carbon:link","menuId":303,"menuName":"Nacos控制台","menuType":"M","perms":"monitor:nacos:list","isVisible":true,"parentId":101,"menuSort":4,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130730767}	0	\N	2025-03-28 10:58:50.767+08
-1905454540957294594	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"http://localhost:8718","isCache":false,"isFrame":true,"icon":"carbon:link","menuId":302,"menuName":"Sentinel控制台","menuType":"M","perms":"monitor:sentinel:list","isVisible":true,"parentId":101,"menuSort":3,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130738854}	0	\N	2025-03-28 10:58:58.854+08
-1905454570875265026	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"http://localhost:8080/doc.html","isCache":false,"isFrame":false,"icon":"carbon:link","menuId":301,"menuName":"系统接口","menuType":"M","perms":"tool:swagger:list","isVisible":true,"parentId":101,"menuSort":2,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130745987}	0	\N	2025-03-28 10:59:05.987+08
-1905454888493129730	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"user","isCache":false,"isFrame":false,"icon":"carbon:user","menuId":2,"menuName":"用户权限管理","menuType":"D","isVisible":true,"parentId":0,"menuSort":99,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130821714}	0	\N	2025-03-28 11:00:21.714+08
-1905454953798443010	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:user-admin","menuName":"系统用户","isVisible":true,"parentId":2,"path":"sysuser","isCache":true,"component":"user/sysuser/index","isFrame":false,"menuId":203,"menuType":"M","perms":"sys_user:list","menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130837283}	0	\N	2025-03-28 11:00:37.283+08
-1905454987965243393	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:user-role","menuName":"角色管理","isVisible":true,"parentId":2,"path":"sysrole","isCache":false,"component":"user/sysrole/index","isFrame":false,"menuId":206,"menuType":"M","perms":"sys_role:list","menuSort":99,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130845429}	0	\N	2025-03-28 11:00:45.429+08
-1905455056122683393	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:customer","menuName":"顾客管理","isVisible":true,"parentId":2,"path":"appuser","isCache":false,"component":"user/appuser/index","isFrame":false,"menuId":201,"menuType":"M","perms":"app_user:list","menuSort":1,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130861679}	0	\N	2025-03-28 11:01:01.679+08
-1905455465054740481	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:menu","menuName":"菜单管理","isVisible":true,"parentId":2,"path":"sysmenu","isCache":false,"component":"user/sysmenu/index","isFrame":false,"menuId":207,"menuType":"M","perms":"sys_menu:list","menuSort":50,"status":"0"}	{"code":0,"message":"Success","timestamp":1743130959176}	0	\N	2025-03-28 11:02:39.176+08
-1905455738095542274	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:departure","menuName":"部门管理","isVisible":true,"parentId":2,"path":"sysdept","isCache":false,"component":"user/sysdept/index","isFrame":false,"menuId":205,"menuType":"M","perms":"sys_dept:list","menuSort":70,"status":"0"}	{"code":0,"message":"Success","timestamp":1743131024275}	0	\N	2025-03-28 11:03:44.275+08
-1905456097320902657	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:user-service-desk","menuName":"岗位管理","isVisible":true,"parentId":2,"path":"syspost","isCache":false,"component":"user/syspost/index","isFrame":false,"menuId":208,"menuType":"M","perms":"sys_post:list","menuSort":8,"status":"0"}	{"code":0,"message":"Success","timestamp":1743131109921}	0	\N	2025-03-28 11:05:09.921+08
-1905456184717615105	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:application","menuName":"客户端管理","isVisible":true,"parentId":2,"path":"client","isCache":false,"component":"user/client/index","isFrame":false,"menuId":700,"menuType":"M","perms":"oauth2_client:list","menuSort":3,"status":"0"}	{"code":0,"message":"Success","timestamp":1743131130757}	0	\N	2025-03-28 11:05:30.757+08
-1905456475915558914	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"tenant","isCache":false,"isFrame":false,"icon":"carbon:business-processes","menuId":3,"menuName":"商户管理","menuType":"D","isVisible":true,"parentId":0,"menuSort":50,"status":"0"}	{"code":0,"message":"Success","timestamp":1743131200184}	0	\N	2025-03-28 11:06:40.184+08
-1905456561210925057	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:information","menuName":"商户信息","isVisible":true,"parentId":3,"path":"info","isCache":false,"component":"user/tenant/index","isFrame":false,"menuId":601,"menuType":"M","perms":"tenant:information","menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1743131220520}	0	\N	2025-03-28 11:07:00.52+08
-1906215140847190017	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"tenant","isCache":false,"isFrame":false,"icon":"carbon:platforms","menuId":3,"menuName":"平台管理","menuType":"D","isVisible":true,"parentId":0,"menuSort":50,"status":"0"}	{"code":0,"message":"Success","timestamp":1743312079994}	0	\N	2025-03-30 13:21:19.994+08
-1906215718755172354	0	菜单管理	新增菜单	1	com.wzkris.user.controller.SysMenuController.add()	POST	1	admin	/sys_menu/add	192.168.0.112	内网IP	{"isCache":false,"isFrame":false,"menuName":"asd","menuType":"D","isVisible":true,"parentId":0,"menuSort":0,"status":"0"}	{"code":0,"message":"Success","timestamp":1743312217782}	0	\N	2025-03-30 13:23:37.782+08
-1906215728615981058	0	菜单管理	删除菜单	3	com.wzkris.user.controller.SysMenuController.remove()	POST	1	admin	/sys_menu/remove	192.168.0.112	内网IP	1906215718688059393	{"code":0,"message":"Success","timestamp":1743312220134}	0	\N	2025-03-30 13:23:40.134+08
-1905456614252093441	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:package","menuName":"租户套餐管理","isVisible":true,"parentId":3,"path":"package","isCache":false,"component":"user/tenant/package/index","isFrame":false,"menuId":602,"menuType":"M","perms":"tenant_package:list","menuSort":50,"status":"0"}	{"code":0,"message":"Success","timestamp":1743131233166}	0	\N	2025-03-28 11:07:13.166+08
-1906233540080238594	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:id-management","menuName":"商户管理","isVisible":true,"parentId":3,"path":"info","isCache":false,"component":"user/tenant/index","isFrame":false,"menuId":601,"menuType":"M","perms":"tenant:information","menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1743316466703}	0	\N	2025-03-30 14:34:26.703+08
-1906237700129357826	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:menu","menuName":"菜单管理","isVisible":true,"parentId":3,"path":"sysmenu","isCache":false,"component":"user/sysmenu/index","isFrame":false,"menuId":207,"menuType":"M","perms":"sys_menu:list","menuSort":50,"status":"0"}	{"code":0,"message":"Success","timestamp":1743317458551}	0	\N	2025-03-30 14:50:58.551+08
-1906237879498768385	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"platform","isCache":false,"isFrame":false,"icon":"carbon:platforms","menuId":3,"menuName":"平台管理","menuType":"D","isVisible":true,"parentId":0,"menuSort":50,"status":"0"}	{"code":0,"message":"Success","timestamp":1743317501316}	0	\N	2025-03-30 14:51:41.316+08
-1906238163415400449	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"icon":"carbon:id-management","menuName":"租户管理","isVisible":true,"parentId":3,"path":"info","isCache":false,"component":"user/tenant/index","isFrame":false,"menuId":601,"menuType":"M","perms":"tenant:information","menuSort":100,"status":"0"}	{"code":0,"message":"Success","timestamp":1743317569013}	0	\N	2025-03-30 14:52:49.013+08
-1906269736009400322	1904406772188934146	部门管理	删除部门	3	com.wzkris.user.controller.SysDeptController.remove()	POST	1904406772188934144	dsadasd	/sys_dept/remove	192.168.0.112	内网IP	1906269690861916162	{"code":0,"message":"Success","timestamp":1743325096503}	0	\N	2025-03-30 16:58:16.504+08
-1910232749636763649	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:25:52.575+08
-1910237582682931202	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:45:04.878+08
-1910237725117300738	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:45:38.835+08
-1910237906135072769	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:46:21.983+08
-1910237927026900993	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:46:26.962+08
-1910238041019695105	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:46:54.149+08
-1910238109680451586	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:47:10.518+08
-1910238154781802498	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:47:21.263+08
-1910238279650426881	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:47:51.036+08
-1910238542515847170	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:48:53.706+08
-1910238762918133761	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:49:46.259+08
-1910238878928388097	0	系统用户	导出用户数据	5	com.wzkris.user.controller.SysUserController.export()	GET	1	admin	/sys_user/export	192.168.0.112	内网IP		\N	0	\N	2025-04-10 15:50:13.923+08
-1910557184793178114	0	租户管理	新增租户	1	com.wzkris.user.controller.SysTenantController.add()	POST	1	admin	/sys_tenant/add	192.168.0.112	内网IP	{"tenantType":"0","expireTime":1745078400000,"accountLimit":5,"roleLimit":5,"tenantName":"test","packageId":1773625804122202113,"deptLimit":5,"postLimit":5,"status":"0","username":"testadmin"}	{"code":0,"message":"Success","timestamp":1744347303816}	0	\N	2025-04-11 12:55:03.816+08
-1910566622220447746	0	角色管理	新增角色	1	com.wzkris.user.controller.SysRoleController.add()	POST	1	admin	/sys_role/add	192.168.0.112	内网IP	{"roleName":"aa","deptIds":[],"dataScope":"1","menuIds":[],"status":"0","roleSort":0}	{"code":0,"message":"Success","timestamp":1744349554005}	0	\N	2025-04-11 13:32:34.005+08
-1910566638980886530	0	角色管理	删除角色	3	com.wzkris.user.controller.SysRoleController.remove()	POST	1	admin	/sys_role/remove	192.168.0.112	内网IP	[1910566622220513282]	{"code":0,"message":"Success","timestamp":1744349558002}	0	\N	2025-04-11 13:32:38.002+08
-1910569625748959233	0	菜单管理	新增菜单	1	com.wzkris.user.controller.SysMenuController.add()	POST	1	admin	/sys_menu/add	192.168.0.112	内网IP	{"isCache":false,"menuName":"授权角色","menuType":"B","perms":"sys_user:grant_role","isVisible":true,"parentId":1906263415450000203,"menuSort":0,"status":"0"}	{"code":0,"message":"Success","timestamp":1744350270111}	0	\N	2025-04-11 13:44:30.111+08
-1910572305682722817	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"#","isCache":false,"icon":"#","menuId":1906263415450002207,"menuName":"权限授予","menuType":"B","perms":"sys_role:grant_user","isVisible":true,"parentId":1906263415450000206,"menuSort":6,"status":"0"}	{"code":0,"message":"Success","timestamp":1744350909045}	0	\N	2025-04-11 13:55:09.045+08
-1910574078870876161	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"#","isCache":false,"icon":"#","menuId":1906263415450001214,"menuName":"终端导出","menuType":"B","perms":"oauth2_client:export","isVisible":true,"parentId":1906263415450000700,"menuSort":4,"status":"0"}	{"code":0,"message":"Success","timestamp":1744351331688}	0	\N	2025-04-11 14:02:11.69+08
-1910574106159017986	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"#","isCache":false,"icon":"#","menuId":1906263415450001212,"menuName":"终端添加","menuType":"B","perms":"oauth2_client:add","isVisible":true,"parentId":1906263415450000700,"menuSort":3,"status":"0"}	{"code":0,"message":"Success","timestamp":1744351338318}	0	\N	2025-04-11 14:02:18.318+08
-1910574136362201090	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"#","isCache":false,"icon":"#","menuId":1906263415450001213,"menuName":"终端删除","menuType":"B","perms":"oauth2_client:remove","isVisible":true,"parentId":1906263415450000700,"menuSort":2,"status":"0"}	{"code":0,"message":"Success","timestamp":1744351345514}	0	\N	2025-04-11 14:02:25.514+08
-1910574159628005378	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"#","isCache":false,"icon":"#","menuId":1906263415450001211,"menuName":"终端修改","menuType":"B","perms":"oauth2_client:edit","isVisible":true,"parentId":1906263415450000700,"menuSort":2,"status":"0"}	{"code":0,"message":"Success","timestamp":1744351351068}	0	\N	2025-04-11 14:02:31.068+08
-1910574189759885314	0	菜单管理	修改菜单	2	com.wzkris.user.controller.SysMenuController.edit()	POST	1	admin	/sys_menu/edit	192.168.0.112	内网IP	{"path":"#","isCache":false,"icon":"#","menuId":1906263415450001210,"menuName":"终端详情","menuType":"B","perms":"oauth2_client:query","isVisible":true,"parentId":1906263415450000700,"menuSort":1,"status":"0"}	{"code":0,"message":"Success","timestamp":1744351358258}	0	\N	2025-04-11 14:02:38.258+08
 \.
 
 
@@ -1221,7 +957,7 @@ CREATE UNIQUE INDEX u_i_config_key ON biz_sys.sys_config USING btree (config_key
 CREATE UNIQUE INDEX u_i_dict_key ON biz_sys.sys_dict USING btree (dict_key);
 
 
--- Completed on 2025-04-24 09:01:40
+-- Completed on 2025-05-13 17:26:03
 
 --
 -- PostgreSQL database dump complete
