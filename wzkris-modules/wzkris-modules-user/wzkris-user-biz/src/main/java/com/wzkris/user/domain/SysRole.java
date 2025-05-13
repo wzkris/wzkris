@@ -35,12 +35,6 @@ public class SysRole extends BaseEntity {
     @Schema(description = "角色排序")
     private Integer roleSort;
 
-    @Schema(description = "菜单树选择项是否关联显示")
-    private Boolean isMenuDisplay;
-
-    @Schema(description = "部门树选择项是否关联显示")
-    private Boolean isDeptDisplay;
-
     public SysRole(Long roleId) {
         this.roleId = roleId;
     }
