@@ -43,6 +43,14 @@
                 <version>${revision}</version>
             </dependency>
 
+            <!-- 权限范围 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-oss</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+
             <!-- 多数据源 -->
             <dependency>
                 <groupId>com.wzkris</groupId>

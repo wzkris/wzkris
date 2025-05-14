@@ -1,6 +1,6 @@
 package com.wzkris.file.api;
 
-import com.wzkris.file.service.SysFileService;
+import com.wzkris.common.oss.service.FileServiceContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RemoteFileApiImpl implements RemoteFileApi {
 
-    private final SysFileService fileService;
+    private final FileServiceContext fileServiceContext;
 
 }
