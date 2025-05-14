@@ -2,6 +2,8 @@ package com.wzkris.common.orm.utils;
 
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
+import com.wzkris.common.security.utils.LoginUtil;
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +30,16 @@ public final class DynamicTenantUtil {
     private static final ThreadLocal<AtomicInteger> LOCAL_IGNORE = new ThreadLocal<>();
 
     /**
-     * 获取动态租户
+     * 获取动态租户, 不存在则返回自身租户ID, 未登录返回空
      */
+    @Nullable
     public static Long get() {
-        Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
-        return stack == null || stack.isEmpty() ? null : stack.peek();
+        try {
+            Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
+            return stack == null ? LoginUtil.getTenantId() : stack.peek();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

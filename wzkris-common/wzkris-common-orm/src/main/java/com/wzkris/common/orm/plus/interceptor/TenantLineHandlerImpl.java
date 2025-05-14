@@ -3,7 +3,6 @@ package com.wzkris.common.orm.plus.interceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.LoginUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -21,25 +20,15 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        // 若设置了动态租户则走动态租户
-        Long tenantId = DynamicTenantUtil.get();
-        if (tenantId != null) {
-            return new LongValue(tenantId);
-        }
-        // 没设置动态租户走自身的租户
-        tenantId = LoginUtil.getTenantId();
-        return new LongValue(tenantId);
+        return new LongValue(DynamicTenantUtil.get());// 忽略此警告，走到此必不为空
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        // 若设置了动态租户或已登录则必须走拦截
-        if (DynamicTenantUtil.get() != null
-                || LoginUtil.isLogin()) {
-            return this.isIgnoreTable(tableName);
+        if (DynamicTenantUtil.get() == null) {
+            return true;
         }
-        // 未登录则忽略
-        return true;
+        return !tenantProperties.getIncludes().contains(tableName);
     }
 
     // 是否忽略表名
