@@ -39,7 +39,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
     @DeptScope(tableAlias = "rd")
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN 1 ELSE 0 END
+                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END
                         FROM biz_sys.sys_role r LEFT JOIN biz_sys.sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
                     <foreach collection="collection" item="roleId" open="(" separator="," close=")">
                         <if test="roleId != null and roleId != ''">

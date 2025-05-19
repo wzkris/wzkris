@@ -88,7 +88,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     @DeptScope
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN 1 ELSE 0 END
+                SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN true ELSE false END
                     FROM biz_sys.sys_user WHERE user_id IN
                     <foreach collection="collection" item="userId" open="(" separator="," close=")">
                         <if test="userId != null and userId != ''">

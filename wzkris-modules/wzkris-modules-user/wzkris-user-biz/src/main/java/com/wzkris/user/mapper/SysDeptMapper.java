@@ -87,7 +87,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
     @DeptScope
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN 1 ELSE 0 END
+                SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END
                     FROM biz_sys.sys_dept WHERE dept_id IN
                     <foreach collection="collection" item="deptId" open="(" separator="," close=")">
                         <if test="deptId != null and deptId != ''">
