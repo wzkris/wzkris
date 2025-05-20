@@ -16,7 +16,7 @@ public final class ThirdServiceException extends BaseException {
     }
 
     public ThirdServiceException(String message) {
-        this(BizCode.THIRD_SERVICE.value(), message);
+        this(BizCode.THIRD_SERVICE_ERROR.value(), message);
     }
 
     /**
