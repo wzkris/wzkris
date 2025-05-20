@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysRole extends BaseEntity {
 
     @TableId

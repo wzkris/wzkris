@@ -14,7 +14,7 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
-@TableName(schema = "biz_sys", autoResultMap = true)
+@TableName(schema = "biz", autoResultMap = true)
 public class SysDict extends BaseEntity {
 
     @TableId

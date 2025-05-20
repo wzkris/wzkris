@@ -20,7 +20,7 @@ import java.util.Date;
  */
 @Data
 @AutoMapper(target = OperLogReq.class)
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysOperLog implements Serializable {
 
     @Serial

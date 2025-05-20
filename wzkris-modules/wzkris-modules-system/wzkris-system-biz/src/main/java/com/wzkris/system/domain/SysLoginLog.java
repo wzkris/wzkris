@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @AutoMapper(target = LoginLogReq.class)
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysLoginLog implements Serializable {
 
     @Serial

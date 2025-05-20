@@ -39,7 +39,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
     /**
      * 根据部门ID查询名称
      */
-    @Select("SELECT dept_name FROM biz_sys.sys_dept WHERE dept_id = #{deptId}")
+    @Select("SELECT dept_name FROM biz.sys_dept WHERE dept_id = #{deptId}")
     String selectDeptNameById(Long deptId);
 
     /**
@@ -48,7 +48,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * @param deptId 部门ID
      * @return 部门列表
      */
-    @Select("SELECT dept_id FROM biz_sys.sys_dept WHERE #{deptId} = ANY(ancestors) OR dept_id = #{deptId}")
+    @Select("SELECT dept_id FROM biz.sys_dept WHERE #{deptId} = ANY(ancestors) OR dept_id = #{deptId}")
     List<Long> listChildrenIdById(Long deptId);
 
     /**
@@ -57,7 +57,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * @param deptId 部门ID
      * @return 子部门数
      */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz_sys.sys_dept WHERE #{deptId} = ANY(ancestors) AND status = '0')")
+    @Select("SELECT EXISTS(SELECT dept_id FROM biz.sys_dept WHERE #{deptId} = ANY(ancestors) AND status = '0')")
     boolean checkExistNormalChildren(Long deptId);
 
     /**
@@ -66,7 +66,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz_sys.sys_dept WHERE parent_id = #{deptId})")
+    @Select("SELECT EXISTS(SELECT dept_id FROM biz.sys_dept WHERE parent_id = #{deptId})")
     boolean checkExistChildren(Long deptId);
 
     /**
@@ -75,7 +75,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz_sys.sys_user WHERE dept_id = #{deptId})")
+    @Select("SELECT EXISTS(SELECT dept_id FROM biz.sys_user WHERE dept_id = #{deptId})")
     boolean checkExistUser(Long deptId);
 
     /**
@@ -88,7 +88,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END
-                    FROM biz_sys.sys_dept WHERE dept_id IN
+                    FROM biz.sys_dept WHERE dept_id IN
                     <foreach collection="collection" item="deptId" open="(" separator="," close=")">
                         <if test="deptId != null and deptId != ''">
                             #{deptId}

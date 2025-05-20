@@ -24,7 +24,7 @@ public interface SysRoleMenuMapper {
      */
     @Select("""
             <script>
-                SELECT menu_id FROM biz_sys.sys_role_menu WHERE role_id IN
+                SELECT menu_id FROM biz.sys_role_menu WHERE role_id IN
                     <foreach collection="list" item="roleId" separator="," open="(" close=")">
                         #{roleId}
                     </foreach>
@@ -38,7 +38,7 @@ public interface SysRoleMenuMapper {
      * @param menuId 菜单ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT * FROM biz_sys.sys_role_menu WHERE menu_id = #{menuId})")
+    @Select("SELECT EXISTS(SELECT * FROM biz.sys_role_menu WHERE menu_id = #{menuId})")
     boolean checkMenuExistRole(Long menuId);
 
     /**
@@ -47,7 +47,7 @@ public interface SysRoleMenuMapper {
      * @param roleId 角色ID
      * @return 结果
      */
-    @Delete("DELETE FROM biz_sys.sys_role_menu WHERE role_id = #{roleId}")
+    @Delete("DELETE FROM biz.sys_role_menu WHERE role_id = #{roleId}")
     int deleteByRoleId(Long roleId);
 
     /**
@@ -58,7 +58,7 @@ public interface SysRoleMenuMapper {
      */
     @Delete("""
             <script>
-                DELETE FROM biz_sys.sys_role_menu WHERE role_id IN
+                DELETE FROM biz.sys_role_menu WHERE role_id IN
                     <foreach collection="list" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
@@ -72,7 +72,7 @@ public interface SysRoleMenuMapper {
      * @param menuId 菜单ID
      * @return 结果
      */
-    @Delete("DELETE FROM biz_sys.sys_role_menu WHERE menu_id = #{menuId}")
+    @Delete("DELETE FROM biz.sys_role_menu WHERE menu_id = #{menuId}")
     int deleteByMenuId(Long menuId);
 
     /**
@@ -83,7 +83,7 @@ public interface SysRoleMenuMapper {
      */
     @Insert("""
             <script>
-                INSERT INTO biz_sys.sys_role_menu(role_id, menu_id) VALUES
+                INSERT INTO biz.sys_role_menu(role_id, menu_id) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.roleId}, #{item.menuId})
                     </foreach>

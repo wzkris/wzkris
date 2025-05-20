@@ -24,7 +24,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
      * 带权限查询列表
      */
     @Select("""
-            SELECT DISTINCT r.* FROM biz_sys.sys_role r LEFT JOIN biz_sys.sys_role_dept rd ON r.role_id = rd.role_id
+            SELECT DISTINCT r.* FROM biz.sys_role r LEFT JOIN biz.sys_role_dept rd ON r.role_id = rd.role_id
             ${ew.customSqlSegment}
             """)
     @DeptScope(tableAlias = "rd")
@@ -40,7 +40,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END
-                        FROM biz_sys.sys_role r LEFT JOIN biz_sys.sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
+                        FROM biz.sys_role r LEFT JOIN biz.sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
                     <foreach collection="collection" item="roleId" open="(" separator="," close=")">
                         <if test="roleId != null and roleId != ''">
                             #{roleId}

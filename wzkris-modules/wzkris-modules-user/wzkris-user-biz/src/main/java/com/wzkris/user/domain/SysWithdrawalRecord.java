@@ -11,14 +11,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 系统提现记录 biz_sys.sys_user_role
+ * 系统提现记录 biz.sys_user_role
  *
  * @author wzkris
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysWithdrawalRecord {
 
     @TableId

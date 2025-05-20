@@ -21,7 +21,7 @@ import org.apache.ibatis.type.ArrayTypeHandler;
 @AutoMappers({
         @AutoMapper(target = OAuth2ClientResp.class),
 })
-@TableName(schema = "biz_sys", autoResultMap = true, value = "oauth2_client")
+@TableName(schema = "biz", autoResultMap = true, value = "oauth2_client")
 public class OAuth2Client extends BaseEntity {
 
     @TableId

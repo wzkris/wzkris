@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysMenu extends BaseEntity {
 
     @TableId

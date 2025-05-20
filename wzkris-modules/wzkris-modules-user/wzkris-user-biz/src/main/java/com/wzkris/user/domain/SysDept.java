@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys", autoResultMap = true)
+@TableName(schema = "biz", autoResultMap = true)
 public class SysDept extends BaseEntity {
 
     @TableId

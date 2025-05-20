@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysTenantWalletRecord {
 
     @TableId

@@ -22,7 +22,7 @@ public interface AppUserWalletMapper extends BaseMapperPlus<AppUserWallet> {
      * @param amount 元 > 0
      * @return
      */
-    @Update("UPDATE biz_app.app_user_wallet SET balance = balance + #{amount} WHERE user_id = #{userId} AND #{amount} > 0")
+    @Update("UPDATE biz.app_user_wallet SET balance = balance + #{amount} WHERE user_id = #{userId} AND #{amount} > 0")
     int incryBalance(Long userId, BigDecimal amount);
 
     /**
@@ -32,6 +32,6 @@ public interface AppUserWalletMapper extends BaseMapperPlus<AppUserWallet> {
      * @param amount 元 > 0
      * @return
      */
-    @Update("UPDATE biz_app.app_user_wallet SET balance = balance - #{amount} WHERE user_id = #{userId} AND #{amount} > 0 AND balance >= #{amount}")
+    @Update("UPDATE biz.app_user_wallet SET balance = balance - #{amount} WHERE user_id = #{userId} AND #{amount} > 0 AND balance >= #{amount}")
     int decryBalance(Long userId, BigDecimal amount);
 }

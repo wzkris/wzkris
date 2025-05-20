@@ -10,7 +10,7 @@
                 FROM_UNIXTIME(create_at / 1000, #{dateType}) AS date_str,
                 COUNT(user_id) AS quantity
             FROM
-                biz_app.app_user
+                biz.app_user
                     <where>
                         <if test="beginTime != null and endTime != null">
                             create_at between #{beginTime} AND #{endTime}

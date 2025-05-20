@@ -23,7 +23,7 @@ import java.util.Date;
         @AutoMapper(target = AppUserResp.class)
 })
 @NoArgsConstructor
-@TableName(schema = "biz_app")
+@TableName(schema = "biz")
 public class AppUser extends BaseEntity {
 
     @TableId

@@ -13,7 +13,7 @@ import lombok.Getter;
  * @author wzkris
  */
 @Data
-@TableName(schema = "biz_app")
+@TableName(schema = "biz")
 public class AppUserThirdinfo {
 
     @TableId

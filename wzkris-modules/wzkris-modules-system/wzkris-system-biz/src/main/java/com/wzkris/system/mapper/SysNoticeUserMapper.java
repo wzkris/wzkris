@@ -17,7 +17,7 @@ public interface SysNoticeUserMapper {
 
     @Insert("""
             <script>
-                INSERT INTO biz_sys.sys_notice_user(notice_id, user_id, read_state) VALUES
+                INSERT INTO biz.sys_notice_user(notice_id, user_id, read_state) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.noticeId},  #{item.userId},  #{item.readState})
                     </foreach>

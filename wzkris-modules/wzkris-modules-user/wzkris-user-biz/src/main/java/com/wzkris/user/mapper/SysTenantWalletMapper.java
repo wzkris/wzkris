@@ -22,7 +22,7 @@ public interface SysTenantWalletMapper extends BaseMapperPlus<SysTenantWallet> {
      * @param amount   元 > 0
      * @return
      */
-    @Update("UPDATE biz_sys.sys_tenant_wallet SET balance = balance + #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0")
+    @Update("UPDATE biz.sys_tenant_wallet SET balance = balance + #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0")
     int incryBalance(Long tenantId, BigDecimal amount);
 
     /**
@@ -32,6 +32,6 @@ public interface SysTenantWalletMapper extends BaseMapperPlus<SysTenantWallet> {
      * @param amount   元 > 0
      * @return
      */
-    @Update("UPDATE biz_sys.sys_tenant_wallet SET balance = balance - #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0 AND balance >= #{amount}")
+    @Update("UPDATE biz.sys_tenant_wallet SET balance = balance - #{amount} WHERE tenant_id = #{tenantId} AND #{amount} > 0 AND balance >= #{amount}")
     int decryBalance(Long tenantId, BigDecimal amount);
 }

@@ -16,7 +16,7 @@ public interface SysNoticeMapper extends BaseMapperPlus<SysNotice> {
 
     @Select("""
             <script>
-                SELECT * FROM biz_sys.sys_notice_user s LEFT JOIN biz_sys.sys_notice n ON s.notice_id = n.notice_id
+                SELECT * FROM biz.sys_notice_user s LEFT JOIN biz.sys_notice n ON s.notice_id = n.notice_id
                 WHERE user_id = #{userId}
             	    <if test="noticeType != null and noticeType != ''">
             	        AND notice_type = #{noticeType}
@@ -32,7 +32,7 @@ public interface SysNoticeMapper extends BaseMapperPlus<SysNotice> {
     /**
      * 标记已读
      */
-    @Update("UPDATE biz_sys.sys_notice_user SET read_state = '1' WHERE notice_id = #{noticeId} AND user_id = #{userId}")
+    @Update("UPDATE biz.sys_notice_user SET read_state = '1' WHERE notice_id = #{noticeId} AND user_id = #{userId}")
     int markRead(@Param("noticeId") Long noticeId, @Param("userId") Long userId);
 
     /**
@@ -41,7 +41,7 @@ public interface SysNoticeMapper extends BaseMapperPlus<SysNotice> {
     @Select("""
             <script>
                 SELECT COUNT(*) FROM 
-                (SELECT 1 FROM biz_sys.sys_notice_user u LEFT JOIN biz_sys.sys_notice n ON u.notice_id = n.notice_id
+                (SELECT 1 FROM biz.sys_notice_user u LEFT JOIN biz.sys_notice n ON u.notice_id = n.notice_id
                 WHERE user_id = #{userId} AND read_state = '0'
                     <if test="noticeType != null and noticeType != ''">
             	        AND notice_type = #{noticeType}

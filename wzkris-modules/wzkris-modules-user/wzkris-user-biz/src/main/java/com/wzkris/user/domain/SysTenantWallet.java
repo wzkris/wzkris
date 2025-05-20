@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysTenantWallet {
 
     @TableId

@@ -25,7 +25,7 @@ import java.util.Date;
         @AutoMapper(target = SysUserResp.class)
 })
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysUser extends BaseEntity {
 
     @TableId

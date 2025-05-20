@@ -14,7 +14,7 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysNotice {
 
     @TableId
