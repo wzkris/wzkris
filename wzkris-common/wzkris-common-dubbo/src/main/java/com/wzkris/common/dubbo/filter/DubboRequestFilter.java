@@ -24,13 +24,13 @@ public class DubboRequestFilter implements Filter {
             }
         }
 
-        Result result = invoker.invoke(invocation);
-
-        if (RpcContext.getServiceContext().isProviderSide()) {
-            MDC.clear();
+        try {
+            return invoker.invoke(invocation);
+        } finally {
+            if (RpcContext.getServiceContext().isProviderSide()) {
+                MDC.clear();
+            }
         }
-
-        return result;
     }
 
 }
