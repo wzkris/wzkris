@@ -13,8 +13,8 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
 import com.wzkris.common.security.utils.LoginUtil;
-import com.wzkris.system.api.RemoteLogApi;
-import com.wzkris.system.api.domain.request.OperLogReq;
+import com.wzkris.system.rmi.RmiLogService;
+import com.wzkris.system.rmi.domain.req.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -51,10 +51,10 @@ public class OperateLogAspect {
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
     @DubboReference
-    private final RemoteLogApi remoteLogApi;
+    private final RmiLogService rmiLogService;
 
-    public OperateLogAspect(RemoteLogApi remoteLogApi) {
-        this.remoteLogApi = remoteLogApi;
+    public OperateLogAspect(RmiLogService rmiLogService) {
+        this.rmiLogService = rmiLogService;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);// 配置null不序列化, 避免大量无用参数存入DB
     }
 
@@ -112,7 +112,7 @@ public class OperateLogAspect {
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, operateLog, operLogReq, jsonResult);
             // 保存数据库
-            remoteLogApi.insertOperlog(operLogReq);
+            rmiLogService.saveOperlog(operLogReq);
         } catch (Exception exp) {
             // 记录本地异常日志
             log.error("日志切面发生异常，异常信息:{}", exp.getMessage(), exp);

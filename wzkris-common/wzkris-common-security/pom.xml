@@ -20,7 +20,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-api</artifactId>
+            <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
         <dependency>

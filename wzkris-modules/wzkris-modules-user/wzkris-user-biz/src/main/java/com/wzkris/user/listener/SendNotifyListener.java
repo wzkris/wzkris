@@ -1,8 +1,8 @@
 package com.wzkris.user.listener;
 
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.system.api.RemoteNoticeApi;
-import com.wzkris.system.api.domain.request.SendNoticeReq;
+import com.wzkris.system.rmi.RmiNoticeService;
+import com.wzkris.system.rmi.domain.req.SendNoticeReq;
 import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.listener.event.CreateUserEvent;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Collections;
 public class SendNotifyListener {
 
     @DubboReference
-    private final RemoteNoticeApi remoteNoticeApi;
+    private final RmiNoticeService rmiNoticeService;
 
     @Async
     @EventListener
@@ -30,7 +30,7 @@ public class SendNotifyListener {
                 StringUtil.format("租户：{}创建成功，超级管理员账号：{}，临时登录密码：{}，临时操作密码：{}"
                         , event.getTenantName(), event.getUsername(), event.getLoginPwd(), event.getOperPwd()));
 
-        remoteNoticeApi.sendNotice(req);
+        rmiNoticeService.sendNotice(req);
     }
 
     @Async
@@ -40,6 +40,6 @@ public class SendNotifyListener {
                 Collections.singletonList(event.getToUserId()), "系统用户创建成功",
                 StringUtil.format("用户账号：{}创建成功，临时登录密码：{}", event.getUsername(), event.getPassword()));
 
-        remoteNoticeApi.sendNotice(req);
+        rmiNoticeService.sendNotice(req);
     }
 }

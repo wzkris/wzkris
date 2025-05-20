@@ -11,11 +11,11 @@ import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
-import com.wzkris.system.api.RemoteLogApi;
-import com.wzkris.system.api.domain.request.LoginLogReq;
-import com.wzkris.user.api.RemoteAppUserApi;
-import com.wzkris.user.api.RemoteSysUserApi;
-import com.wzkris.user.api.domain.request.LoginInfoReq;
+import com.wzkris.system.rmi.RmiLogService;
+import com.wzkris.system.rmi.domain.req.LoginLogReq;
+import com.wzkris.user.rmi.RmiAppUserService;
+import com.wzkris.user.rmi.RmiSysUserService;
+import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -41,13 +41,13 @@ public class LoginEventListener {
     private final TokenProperties tokenProperties;
 
     @DubboReference
-    private final RemoteLogApi remoteLogApi;
+    private final RmiLogService rmiLogService;
 
     @DubboReference
-    private final RemoteSysUserApi remoteSysUserApi;
+    private final RmiSysUserService rmiSysUserService;
 
     @DubboReference
-    private final RemoteAppUserApi remoteAppUserApi;
+    private final RmiAppUserService rmiAppUserService;
 
     @Async
     @EventListener
@@ -97,7 +97,7 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(DateUtil.date());
-            remoteSysUserApi.updateLoginInfo(loginInfoReq);
+            rmiSysUserService.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
         final LoginLogReq loginLogReq = new LoginLogReq();
@@ -112,7 +112,7 @@ public class LoginEventListener {
         loginLogReq.setLoginLocation(loginLocation);
         loginLogReq.setOs(userAgent.getOs().getName());
         loginLogReq.setBrowser(browser);
-        remoteLogApi.insertLoginlog(loginLogReq);
+        rmiLogService.saveLoginlog(loginLogReq);
     }
 
     private void handleClientUser(LoginEvent event, ClientUser clientUser) {
@@ -123,7 +123,7 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(DateUtil.date());
-            remoteAppUserApi.updateLoginInfo(loginInfoReq);
+            rmiAppUserService.updateLoginInfo(loginInfoReq);
         }
     }
 

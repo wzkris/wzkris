@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-file-api</artifactId>
+            <artifactId>wzkris-file-rmi</artifactId>
         </dependency>
 
         <dependency>

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.orm.annotation.FieldPerms;
-import com.wzkris.system.api.domain.request.OperLogReq;
+import com.wzkris.system.rmi.domain.req.OperLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

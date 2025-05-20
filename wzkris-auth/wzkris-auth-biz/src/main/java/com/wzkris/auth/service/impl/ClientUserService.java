@@ -8,8 +8,8 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.api.RemoteAppUserApi;
-import com.wzkris.user.api.domain.response.AppUserResp;
+import com.wzkris.user.rmi.RmiAppUserService;
+import com.wzkris.user.rmi.domain.resp.AppUserResp;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,12 @@ public class ClientUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final RemoteAppUserApi remoteAppUserApi;
+    private final RmiAppUserService rmiAppUserService;
 
     @Nullable
     @Override
     public ClientUser loadUserByPhoneNumber(String phoneNumber) {
-        AppUserResp userResp = remoteAppUserApi.getByPhoneNumber(phoneNumber);
+        AppUserResp userResp = rmiAppUserService.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber, 600);
@@ -41,7 +41,7 @@ public class ClientUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public ClientUser loadUserByWechat(String identifierType, String wxCode) {
-        AppUserResp userResp = remoteAppUserApi.getOrRegisterByIdentifier(identifierType, wxCode);
+        AppUserResp userResp = rmiAppUserService.getOrRegisterByIdentifier(identifierType, wxCode);
 
         if (userResp == null) {
             return null;

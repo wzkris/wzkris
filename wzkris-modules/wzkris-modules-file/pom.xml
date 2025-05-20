@@ -18,7 +18,7 @@
     </description>
 
     <modules>
-        <module>wzkris-file-api</module>
+        <module>wzkris-file-rmi</module>
         <module>wzkris-file-biz</module>
     </modules>
 </project>

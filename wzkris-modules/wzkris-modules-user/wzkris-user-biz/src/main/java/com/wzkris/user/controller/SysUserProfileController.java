@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
-import com.wzkris.auth.api.RemoteCaptchaApi;
-import com.wzkris.auth.api.domain.request.SmsCheckReq;
+import com.wzkris.auth.rmi.RmiCaptchaService;
+import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -54,7 +54,7 @@ public class SysUserProfileController extends BaseController {
     private final SysDeptMapper deptMapper;
 
     @DubboReference
-    private final RemoteCaptchaApi remoteCaptchaApi;
+    private final RmiCaptchaService rmiCaptchaService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -104,7 +104,7 @@ public class SysUserProfileController extends BaseController {
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        if (!remoteCaptchaApi.validateSms(smsCheckReq)) {
+        if (!rmiCaptchaService.validateSms(smsCheckReq)) {
             return err412("验证码错误");
         }
 

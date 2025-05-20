@@ -14,10 +14,10 @@ import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.api.RemoteSysUserApi;
-import com.wzkris.user.api.domain.request.QueryPermsReq;
-import com.wzkris.user.api.domain.response.SysPermissionResp;
-import com.wzkris.user.api.domain.response.SysUserResp;
+import com.wzkris.user.rmi.RmiSysUserService;
+import com.wzkris.user.rmi.domain.req.QueryPermsReq;
+import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
+import com.wzkris.user.rmi.domain.resp.SysUserResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +38,14 @@ public class LoginUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final RemoteSysUserApi remoteSysUserApi;
+    private final RmiSysUserService rmiSysUserService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public LoginUser loadUserByPhoneNumber(String phoneNumber) {
-        SysUserResp userResp = remoteSysUserApi.getByPhoneNumber(phoneNumber);
+        SysUserResp userResp = rmiSysUserService.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber, 600);
@@ -63,7 +63,7 @@ public class LoginUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginUser loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        SysUserResp userResp = remoteSysUserApi.getByUsername(username);
+        SysUserResp userResp = rmiSysUserService.getByUsername(username);
 
         if (userResp == null) {
             captchaService.lockAccount(username, 600);
@@ -95,7 +95,7 @@ public class LoginUserService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        SysPermissionResp permissions = remoteSysUserApi
+        SysPermissionResp permissions = rmiSysUserService
                 .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
 
         LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));

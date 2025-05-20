@@ -1,8 +1,8 @@
 package com.wzkris.common.security.oauth2.handler;
 
-import com.wzkris.auth.api.RemoteTokenApi;
-import com.wzkris.auth.api.domain.request.TokenReq;
-import com.wzkris.auth.api.domain.response.TokenResponse;
+import com.wzkris.auth.rmi.RmiTokenService;
+import com.wzkris.auth.rmi.domain.req.TokenReq;
+import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -20,15 +20,15 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 @Slf4j
 public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private final RemoteTokenApi remoteTokenApi;
+    private final RmiTokenService rmiTokenService;
 
-    public CustomOpaqueTokenIntrospector(RemoteTokenApi remoteTokenApi) {
-        this.remoteTokenApi = remoteTokenApi;
+    public CustomOpaqueTokenIntrospector(RmiTokenService rmiTokenService) {
+        this.rmiTokenService = rmiTokenService;
     }
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
-        TokenResponse response = remoteTokenApi.checkToken(new TokenReq(token));
+        TokenResponse response = rmiTokenService.checkToken(new TokenReq(token));
 
         if (!response.isSuccess()) {
             throw new OAuth2AuthenticationException(new OAuth2Error(response.getErrorCode()));

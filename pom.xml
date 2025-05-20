@@ -124,28 +124,28 @@
             <!--认证rpc服务-->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-auth-api</artifactId>
+                <artifactId>wzkris-auth-rmi</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!--认证rpc服务-->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-user-api</artifactId>
+                <artifactId>wzkris-user-rmi</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!--系统rpc服务-->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-system-api</artifactId>
+                <artifactId>wzkris-system-rmi</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!--文件rpc服务-->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-file-api</artifactId>
+                <artifactId>wzkris-file-rmi</artifactId>
                 <version>${revision}</version>
             </dependency>
 
