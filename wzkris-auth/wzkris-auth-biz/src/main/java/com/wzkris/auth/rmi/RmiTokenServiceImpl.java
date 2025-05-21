@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @DubboService
@@ -41,10 +43,14 @@ public class RmiTokenServiceImpl implements RmiTokenService {
 
         AuthBaseUser baseUser;
         if (authenticationToken == null) {
-            baseUser = new AuthApp(oAuth2Authorization.getPrincipalName(), oAuth2Authorization.getAuthorizedScopes());
+            baseUser = new AuthApp(oAuth2Authorization.getPrincipalName(), this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
         } else {
             baseUser = (AuthBaseUser) authenticationToken.getPrincipal();
         }
         return TokenResponse.ok(baseUser);
+    }
+
+    private Set<String> buildScopes(Set<String> authorizedScopes) {
+        return authorizedScopes.stream().map(sc -> "SCOPE_" + sc).collect(Collectors.toSet());
     }
 }
