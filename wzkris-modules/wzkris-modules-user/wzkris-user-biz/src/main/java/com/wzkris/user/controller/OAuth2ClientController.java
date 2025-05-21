@@ -88,7 +88,7 @@ public class OAuth2ClientController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit_status")
     @CheckSystemPerms("app_user:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -103,10 +103,13 @@ public class OAuth2ClientController extends BaseController {
     @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckSystemPerms("oauth2_client:add")
-    public Result<Void> add(@RequestBody @Valid OAuth2ClientReq clientReq) {
-        clientReq.setClientSecret(passwordEncoder.encode(RandomUtil.randomString(16)));
+    public Result<String> add(@RequestBody @Valid OAuth2ClientReq clientReq) {
+        OAuth2Client client = BeanUtil.convert(clientReq, OAuth2Client.class);
 
-        return toRes(oauth2ClientMapper.insert(BeanUtil.convert(clientReq, OAuth2Client.class)));
+        String secret = RandomUtil.randomString(16);
+        client.setClientSecret(passwordEncoder.encode(secret));
+        oauth2ClientMapper.insert(client);
+        return ok(secret);
     }
 
     @Operation(summary = "删除客户端")

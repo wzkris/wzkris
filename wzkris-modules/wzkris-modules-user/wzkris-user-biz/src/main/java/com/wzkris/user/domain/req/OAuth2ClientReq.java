@@ -27,9 +27,6 @@ public class OAuth2ClientReq {
     @Schema(description = "客户端id 等价于app_id")
     private String clientId;
 
-    @Schema(description = "客户端密钥 等价于app_secret")
-    private String clientSecret;
-
     @TableField(typeHandler = ArrayTypeHandler.class)
     @Schema(description = "权限域")
     private String[] scopes;
