@@ -1,4 +1,4 @@
 com.wzkris.common.security.oauth2.enums.LoginType
 com.wzkris.common.security.oauth2.domain.model.LoginUser
 com.wzkris.common.security.oauth2.domain.model.ClientUser
-com.wzkris.common.security.oauth2.domain.model.AuthThings
+com.wzkris.common.security.oauth2.domain.model.AuthApp
