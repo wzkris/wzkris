@@ -50,6 +50,7 @@ public final class ResourceServerConfig {
                             // 配置url白名单
                             authorize.requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new)).permitAll()
                                     .requestMatchers("/assets/**", "/login", "/activate").permitAll()
+                                    .requestMatchers("/actuator/**").hasAuthority("SCOPE_monitor")
                                     .anyRequest().authenticated();
                         }
                 )

@@ -3,8 +3,10 @@ package com.wzkris.monitor.config;
 import com.wzkris.monitor.filter.CustomCsrfFilter;
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 import jakarta.servlet.DispatcherType;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,6 +15,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import static io.netty.handler.codec.http.HttpMethod.DELETE;
 import static io.netty.handler.codec.http.HttpMethod.POST;
@@ -25,11 +29,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
  */
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfigurer {
+public class AdminServerClientConfig {
 
     private final AdminServerProperties properties;
 
-    public WebSecurityConfigurer(AdminServerProperties adminServerProperties) {
+    public AdminServerClientConfig(AdminServerProperties adminServerProperties) {
         this.properties = adminServerProperties;
     }
 
@@ -72,4 +76,23 @@ public class WebSecurityConfigurer {
 
         return httpSecurity.build();
     }
+
+    @Bean
+    @RefreshScope
+    public TokenProvider tokenProvider(OAuth2ClientProperties properties) {
+        return new TokenProvider(properties);
+    }
+
+    @Bean
+    public WebClient.Builder adminWebClientBuilder(TokenProvider tokenProvider) {
+        return WebClient.builder()
+                .filter((request, next) -> {
+                    String token = tokenProvider.getAccessToken();
+                    return next.exchange(ClientRequest.from(request)
+                            .header(HttpHeaders.AUTHORIZATION,
+                                    "Bearer " + token)
+                            .build());
+                });
+    }
+
 }
