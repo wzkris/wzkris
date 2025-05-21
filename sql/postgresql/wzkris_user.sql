@@ -5,7 +5,7 @@
 -- Dumped from database version 15.5
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-05-20 10:56:07
+-- Started on 2025-05-22 08:33:52
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1915,6 +1915,7 @@ COPY biz.app_user_wallet_record (record_id, user_id, amount, record_type, create
 
 COPY biz.oauth2_client (id, client_name, client_id, client_secret, scopes, authorization_grant_types, redirect_uris, status, auto_approve, create_at, creator_id, update_at, updater_id) FROM stdin;
 1	系统	server	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{openid}	{password,urn:ietf:params:oauth:grant-type:device_code,refresh_token}	{http://localhost:9000/oauth2/authorization_code_callback}	0	f	2024-04-17 14:08:54+08	1	2025-03-30 16:07:17.752+08	1
+2	服务监控	server_monitor	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{monitor}	{client_credentials}	{}	0	t	2025-05-21 14:13:48.523+08	1	2025-05-21 14:28:03.214+08	1
 \.
 
 
@@ -2121,9 +2122,8 @@ COPY biz.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type, bi
 --
 
 COPY biz.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1924338255326253056	1	\N	111111	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$EVLKVMt1g3c4mLIkED0XU.P2/T9WhR6fUWsHjPQgACeVINhS5PudK	\N	\N	\N	1	1	2025-05-19 13:36:07.255+08	2025-05-19 13:36:07.255+08
 1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-04-26 09:01:16.082+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
-1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	127.0.0.1	2025-05-11 08:04:16.96+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.112	2025-05-21 14:25:19.334+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -2424,7 +2424,7 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz.sys_user USING btree (phone
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz.sys_user USING btree (username);
 
 
--- Completed on 2025-05-20 10:56:08
+-- Completed on 2025-05-22 08:33:52
 
 --
 -- PostgreSQL database dump complete
