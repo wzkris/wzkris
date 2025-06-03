@@ -18,17 +18,16 @@ import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysRoleService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 角色 业务层处理
@@ -49,12 +48,15 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public List<SelectVO> listSelect(String roleName) {
-        return roleMapper.selectLists(Wrappers.lambdaQuery(SysRole.class)
-                .select(SysRole::getRoleId, SysRole::getRoleName)
-                .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE)
-                .like(StringUtil.isNotBlank(roleName), SysRole::getRoleName, roleName)
-                .orderByAsc(SysRole::getRoleId)
-        ).stream().map(SelectVO::new).collect(Collectors.toList());
+        return roleMapper
+                .selectLists(Wrappers.lambdaQuery(SysRole.class)
+                        .select(SysRole::getRoleId, SysRole::getRoleName)
+                        .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE)
+                        .like(StringUtil.isNotBlank(roleName), SysRole::getRoleName, roleName)
+                        .orderByAsc(SysRole::getRoleId))
+                .stream()
+                .map(SelectVO::new)
+                .collect(Collectors.toList());
     }
 
     @Override

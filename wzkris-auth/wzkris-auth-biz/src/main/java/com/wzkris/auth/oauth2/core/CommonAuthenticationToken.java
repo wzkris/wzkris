@@ -1,14 +1,13 @@
 package com.wzkris.auth.oauth2.core;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.SpringSecurityCoreVersion;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationGrantAuthenticationToken;
-
 import java.io.Serial;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationGrantAuthenticationToken;
 
 /**
  * @author wzkris
@@ -22,8 +21,11 @@ public abstract class CommonAuthenticationToken extends OAuth2AuthorizationGrant
 
     private final Set<String> scopes;
 
-    protected CommonAuthenticationToken(AuthorizationGrantType authorizationGrantType, Authentication clientPrincipal,
-                                        Set<String> scopes, Map<String, Object> additionalParameters) {
+    protected CommonAuthenticationToken(
+            AuthorizationGrantType authorizationGrantType,
+            Authentication clientPrincipal,
+            Set<String> scopes,
+            Map<String, Object> additionalParameters) {
         super(authorizationGrantType, clientPrincipal, additionalParameters);
         this.scopes = (scopes == null ? Collections.emptySet() : scopes);
     }

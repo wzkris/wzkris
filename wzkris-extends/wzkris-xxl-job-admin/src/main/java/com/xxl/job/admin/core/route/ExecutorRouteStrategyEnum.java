@@ -7,7 +7,6 @@ import com.xxl.job.admin.core.util.I18nUtil;
  * Created by xuxueli on 17/3/10.
  */
 public enum ExecutorRouteStrategyEnum {
-
     FIRST(I18nUtil.getString("jobconf_route_first"), new ExecutorRouteFirst()),
     LAST(I18nUtil.getString("jobconf_route_last"), new ExecutorRouteLast()),
     ROUND(I18nUtil.getString("jobconf_route_round"), new ExecutorRouteRound()),
@@ -46,5 +45,4 @@ public enum ExecutorRouteStrategyEnum {
     public ExecutorRouter getRouter() {
         return router;
     }
-
 }

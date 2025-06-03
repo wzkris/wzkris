@@ -25,5 +25,4 @@ public interface OAuth2UserConsentRepository extends CrudRepository<OAuth2UserCo
     OAuth2UserConsent findByRegisteredClientIdAndPrincipalName(String registeredClientId, String principalName);
 
     void deleteByRegisteredClientIdAndPrincipalName(String registeredClientId, String principalName);
-
 }

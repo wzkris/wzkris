@@ -20,7 +20,7 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        return new LongValue(DynamicTenantUtil.get());// 忽略此警告，走到此必不为空
+        return new LongValue(DynamicTenantUtil.get()); // 忽略此警告，走到此必不为空
     }
 
     @Override

@@ -1,10 +1,9 @@
 package com.wzkris.user.rmi.domain.req;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 登录信息

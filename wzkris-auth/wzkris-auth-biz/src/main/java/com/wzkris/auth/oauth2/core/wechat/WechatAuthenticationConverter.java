@@ -8,13 +8,12 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import java.util.Map;
+import java.util.Set;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author wzkris
@@ -32,28 +31,41 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
     public void checkParams(MultiValueMap<String, String> parameters) {
         // phonenumber (REQUIRED)
         String channel = parameters.getFirst(OAuth2ParameterConstant.CHANNEL);
-        if (!StringUtils.hasText(channel) || parameters.get(OAuth2ParameterConstant.CHANNEL).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST,
-                    "oauth2.wxlogin.fail", OAuth2ParameterConstant.CHANNEL);
+        if (!StringUtils.hasText(channel)
+                || parameters.get(OAuth2ParameterConstant.CHANNEL).size() != 1) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(),
+                    OAuth2ErrorCodes.INVALID_REQUEST,
+                    "oauth2.wxlogin.fail",
+                    OAuth2ParameterConstant.CHANNEL);
         }
 
         // wxcode (REQUIRED)
         String wxCode = parameters.getFirst(OAuth2ParameterConstant.WX_CODE);
-        if (!StringUtils.hasText(wxCode) || parameters.get(OAuth2ParameterConstant.WX_CODE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST,
-                    "oauth2.wxlogin.fail", OAuth2ParameterConstant.WX_CODE);
+        if (!StringUtils.hasText(wxCode)
+                || parameters.get(OAuth2ParameterConstant.WX_CODE).size() != 1) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(),
+                    OAuth2ErrorCodes.INVALID_REQUEST,
+                    "oauth2.wxlogin.fail",
+                    OAuth2ParameterConstant.WX_CODE);
         }
 
         // userType (REQUIRED)
         String userType = parameters.getFirst(OAuth2ParameterConstant.USER_TYPE);
-        if (!StringUtils.hasText(userType) || parameters.get(OAuth2ParameterConstant.USER_TYPE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST,
-                    "oauth2.wxlogin.fail", OAuth2ParameterConstant.USER_TYPE);
+        if (!StringUtils.hasText(userType)
+                || parameters.get(OAuth2ParameterConstant.USER_TYPE).size() != 1) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(),
+                    OAuth2ErrorCodes.INVALID_REQUEST,
+                    "oauth2.wxlogin.fail",
+                    OAuth2ParameterConstant.USER_TYPE);
         }
     }
 
     @Override
-    public CommonAuthenticationToken buildToken(Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
+    public CommonAuthenticationToken buildToken(
+            Authentication clientPrincipal, Set<String> requestedScopes, Map<String, Object> additionalParameters) {
         String channel = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.CHANNEL));
         String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WX_CODE));
         String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.USER_TYPE));
@@ -61,12 +73,13 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         try {
             loginTypeEm = LoginType.valueOf(userType);
         } catch (Exception e) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST,
-                    "request.param.error", OAuth2ParameterConstant.USER_TYPE);
-            return null;// never run this line
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(),
+                    OAuth2ErrorCodes.INVALID_REQUEST,
+                    "request.param.error",
+                    OAuth2ParameterConstant.USER_TYPE);
+            return null; // never run this line
         }
-        return new WechatAuthenticationToken(loginTypeEm, channel, wxCode,
-                clientPrincipal, requestedScopes, null);
+        return new WechatAuthenticationToken(loginTypeEm, channel, wxCode, clientPrincipal, requestedScopes, null);
     }
-
 }

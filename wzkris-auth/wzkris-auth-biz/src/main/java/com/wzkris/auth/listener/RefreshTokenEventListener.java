@@ -6,6 +6,8 @@ import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
+import java.security.Principal;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RMapCache;
@@ -16,9 +18,6 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
-
-import java.security.Principal;
-import java.time.Duration;
 
 /**
  * @author : wzkris
@@ -38,18 +37,23 @@ public class RefreshTokenEventListener {
     @Async
     @EventListener
     public void refreshTokenEvent(RefreshTokenEvent event) {
-        OAuth2Authorization authorization = oAuth2AuthorizationService.findByToken(event.getRefreshToken(), OAuth2TokenType.REFRESH_TOKEN);
+        OAuth2Authorization authorization =
+                oAuth2AuthorizationService.findByToken(event.getRefreshToken(), OAuth2TokenType.REFRESH_TOKEN);
 
-        final AuthBaseUser baseUser = (AuthBaseUser) ((UsernamePasswordAuthenticationToken) authorization.getAttribute(Principal.class.getName())).getPrincipal();
+        final AuthBaseUser baseUser = (AuthBaseUser)
+                ((UsernamePasswordAuthenticationToken) authorization.getAttribute(Principal.class.getName()))
+                        .getPrincipal();
 
         switch (baseUser.getLoginType()) {
             case SYSTEM_USER -> {
                 LoginUser loginUser = (LoginUser) baseUser;
                 RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(loginUser.getUserId());
-                onlineCache.expireEntry(authorization.getId(), Duration.ofSeconds(tokenProperties.getRefreshTokenTimeOut()), Duration.ofSeconds(0));
+                onlineCache.expireEntry(
+                        authorization.getId(),
+                        Duration.ofSeconds(tokenProperties.getRefreshTokenTimeOut()),
+                        Duration.ofSeconds(0));
             }
-            case CLIENT_USER -> {
-            }
+            case CLIENT_USER -> {}
             default -> log.warn("{} 发生刷新TOKEN事件, 忽略处理", baseUser);
         }
     }

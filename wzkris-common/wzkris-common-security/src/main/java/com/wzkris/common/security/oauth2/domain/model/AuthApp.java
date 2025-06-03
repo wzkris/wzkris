@@ -2,10 +2,9 @@ package com.wzkris.common.security.oauth2.domain.model;
 
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
-import lombok.Getter;
-
 import java.util.Collections;
 import java.util.Set;
+import lombok.Getter;
 
 /**
  * @author : wzkris
@@ -34,5 +33,4 @@ public class AuthApp extends AuthBaseUser {
     public String getName() {
         return this.getPrincipalName();
     }
-
 }

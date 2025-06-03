@@ -47,13 +47,17 @@ public final class ResourceServerConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
-                            // 配置url白名单
-                            authorize.requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new)).permitAll()
-                                    .requestMatchers("/assets/**", "/login", "/activate").permitAll()
-                                    .requestMatchers("/actuator/**").hasAuthority("SCOPE_monitor")
-                                    .anyRequest().authenticated();
-                        }
-                )
+                    // 配置url白名单
+                    authorize
+                            .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
+                            .permitAll()
+                            .requestMatchers("/assets/**", "/login", "/activate")
+                            .permitAll()
+                            .requestMatchers("/actuator/**")
+                            .hasAuthority("SCOPE_monitor")
+                            .anyRequest()
+                            .authenticated();
+                })
                 .formLogin(Customizer.withDefaults())
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
@@ -62,10 +66,8 @@ public final class ResourceServerConfig {
                             })
                             .bearerTokenResolver(new CustomBearerTokenResolver())
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
-                            .accessDeniedHandler(new AccessDeniedHandlerImpl())
-                    ;
-                })
-        ;
+                            .accessDeniedHandler(new AccessDeniedHandlerImpl());
+                });
 
         return http.build();
     }
@@ -86,4 +88,3 @@ public final class ResourceServerConfig {
         return new PasswordEncoderDelegate();
     }
 }
-

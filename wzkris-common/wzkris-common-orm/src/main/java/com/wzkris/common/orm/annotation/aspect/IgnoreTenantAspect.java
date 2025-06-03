@@ -23,14 +23,15 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 @Aspect
 public class IgnoreTenantAspect {
 
-    private volatile static StandardEvaluationContext context;
+    private static volatile StandardEvaluationContext context;
 
     private final ExpressionParser spel = new SpelExpressionParser();
 
     @Around("@annotation(ignoreTenant) || @within(ignoreTenant)")
     public Object around(ProceedingJoinPoint point, IgnoreTenant ignoreTenant) throws Throwable {
         if (ignoreTenant == null) {
-            ignoreTenant = AnnotationUtils.findAnnotation(((MethodSignature) point.getSignature()).getMethod(), IgnoreTenant.class);
+            ignoreTenant = AnnotationUtils.findAnnotation(
+                    ((MethodSignature) point.getSignature()).getMethod(), IgnoreTenant.class);
         }
 
         if (ignoreTenant.value()) {
@@ -52,5 +53,4 @@ public class IgnoreTenantAspect {
         }
         return context;
     }
-
 }

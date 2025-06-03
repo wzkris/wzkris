@@ -5,6 +5,4 @@ package com.wzkris.user.service;
  *
  * @author wzkris
  */
-public interface OAuth2ClientService {
-
-}
+public interface OAuth2ClientService {}

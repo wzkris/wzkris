@@ -3,10 +3,9 @@ package com.wzkris.user.mapper;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysMenu;
 import jakarta.annotation.Nullable;
+import java.util.List;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * 菜单表 数据层
@@ -29,7 +28,8 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
      * @param menuIds 角色ID集合
      * @return 权限列表
      */
-    @Select("""
+    @Select(
+            """
             <script>
                 SELECT perms FROM biz.sys_menu WHERE status = '0' AND menu_id IN
                     <foreach collection="menuIds" item="menuId" separator="," open="(" close=")">
@@ -38,5 +38,4 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
             </script>
             """)
     List<String> listPermsByMenuIds(List<Long> menuIds);
-
 }

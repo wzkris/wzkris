@@ -2,12 +2,11 @@ package com.wzkris.common.security.oauth2.domain.model;
 
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author : wzkris
@@ -61,5 +60,4 @@ public class LoginUser extends AuthBaseUser {
     public boolean getAdmin() {
         return admin;
     }
-
 }

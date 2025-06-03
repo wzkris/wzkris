@@ -6,11 +6,10 @@ import com.wzkris.common.oss.config.OssConfig;
 import com.wzkris.common.oss.domain.FileVO;
 import com.wzkris.common.oss.service.FileService;
 import com.wzkris.common.oss.utils.FileUtil;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.io.InputStream;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Service;
 
 /**
  * 本地文件存储
@@ -49,7 +48,10 @@ public class LocalServiceImpl implements FileService {
     public String formatPathName(String pathName) {
         // 以日期作为子目录
         return DateUtil.format(DateUtil.date(), "/yyyy/MM/dd/")
-                + StringUtil.format("{}_{}.{}", FileUtil.getPrefix(pathName), System.currentTimeMillis(), FileUtil.getSuffix(pathName));
+                + StringUtil.format(
+                        "{}_{}.{}",
+                        FileUtil.getPrefix(pathName),
+                        System.currentTimeMillis(),
+                        FileUtil.getSuffix(pathName));
     }
-
 }

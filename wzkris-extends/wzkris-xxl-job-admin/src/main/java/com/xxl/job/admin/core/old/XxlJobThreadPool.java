@@ -1,14 +1,14 @@
-package com.xxl.job.admin.core.old;//package com.xxl.job.admin.core.quartz;
+package com.xxl.job.admin.core.old; // package com.xxl.job.admin.core.quartz;
 //
-//import org.quartz.SchedulerConfigException;
-//import org.quartz.spi.ThreadPool;
+// import org.quartz.SchedulerConfigException;
+// import org.quartz.spi.ThreadPool;
 //
-///**
+/// **
 // * single thread pool, for async trigger
 // *
 // * @author xuxueli 2019-03-06
 // */
-//public class XxlJobThreadPool implements ThreadPool {
+// public class XxlJobThreadPool implements ThreadPool {
 //
 //    @Override
 //    public boolean runInThread(Runnable runnable) {
@@ -55,4 +55,4 @@ package com.xxl.job.admin.core.old;//package com.xxl.job.admin.core.quartz;
 //        //
 //    }
 //
-//}
+// }

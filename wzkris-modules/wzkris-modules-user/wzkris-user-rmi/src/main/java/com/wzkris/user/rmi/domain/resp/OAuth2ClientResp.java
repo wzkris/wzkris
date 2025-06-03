@@ -1,8 +1,7 @@
 package com.wzkris.user.rmi.domain.resp;
 
-import lombok.Data;
-
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * OAuth2 客户端传输层

@@ -22,5 +22,4 @@ public class SysTenantUsedQuotaVO {
 
     @Schema(description = "已有部门数量")
     private Integer deptHas;
-
 }

@@ -1,9 +1,8 @@
 package com.wzkris.user.rmi.domain.resp;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * sys用户信息
@@ -36,5 +35,4 @@ public class SysUserResp implements Serializable {
     private Date tenantExpired;
 
     private String packageStatus;
-
 }

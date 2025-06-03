@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.wzkris.common.core.annotation.Sensitive;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
-
 import java.io.IOException;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
 
 /**
  * 数据脱敏json序列化工具
@@ -34,9 +33,11 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
     }
 
     @Override
-    public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
+    public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property)
+            throws JsonMappingException {
         Sensitive annotation = property.getAnnotation(Sensitive.class);
-        if (Objects.nonNull(annotation) && Objects.equals(String.class, property.getType().getRawClass())) {
+        if (Objects.nonNull(annotation)
+                && Objects.equals(String.class, property.getType().getRawClass())) {
             this.strategy = annotation.strategy();
             return this;
         }

@@ -10,14 +10,13 @@ import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RMapCache;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Tag(name = "在线会话")
 @Slf4j
@@ -36,8 +35,8 @@ public class OnlineSessionController extends BaseController {
 
         ArrayList<OnlineUser> list = new ArrayList<>(onlineUsers);
         OAuth2AccessToken accessToken = LoginUtil.getAuthentication().getToken();
-        OAuth2AuthorizationGrantAuthorization grantAuthorization = authorizationRepository
-                .findByAccessToken_TokenValue(accessToken.getTokenValue());
+        OAuth2AuthorizationGrantAuthorization grantAuthorization =
+                authorizationRepository.findByAccessToken_TokenValue(accessToken.getTokenValue());
         list.forEach(onlineUser -> {
             if (StringUtil.equals(onlineUser.getTokenId(), grantAuthorization.getId())) {
                 onlineUser.setCurrent(true);
@@ -58,5 +57,4 @@ public class OnlineSessionController extends BaseController {
 
         return toRes(success);
     }
-
 }

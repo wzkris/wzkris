@@ -38,7 +38,14 @@ public class CookieUtil {
      * @param value
      * @param maxAge
      */
-    private static void set(HttpServletResponse response, String key, String value, String domain, String path, int maxAge, boolean isHttpOnly) {
+    private static void set(
+            HttpServletResponse response,
+            String key,
+            String value,
+            String domain,
+            String path,
+            int maxAge,
+            boolean isHttpOnly) {
         Cookie cookie = new Cookie(key, value);
         if (domain != null) {
             cookie.setDomain(domain);
@@ -95,5 +102,4 @@ public class CookieUtil {
             set(response, key, "", null, COOKIE_PATH, 0, true);
         }
     }
-
 }

@@ -17,5 +17,4 @@ import org.springframework.stereotype.Service;
 public class RmiFileServiceImpl implements RmiFileService {
 
     private final FileServiceContext fileServiceContext;
-
 }

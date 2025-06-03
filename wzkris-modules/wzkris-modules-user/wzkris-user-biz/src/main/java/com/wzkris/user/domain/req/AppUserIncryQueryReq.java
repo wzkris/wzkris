@@ -3,9 +3,8 @@ package com.wzkris.user.domain.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 @Data
 @Schema(description = "用户增长请求")

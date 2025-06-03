@@ -2,11 +2,10 @@ package com.wzkris.common.security.oauth2.domain;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
+import java.io.Serial;
 import lombok.Getter;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.oauth2.core.OAuth2Error;
-
-import java.io.Serial;
 
 @Getter
 public class CustomOAuth2Error extends OAuth2Error {

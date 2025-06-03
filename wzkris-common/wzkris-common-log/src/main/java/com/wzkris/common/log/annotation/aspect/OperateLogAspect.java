@@ -17,6 +17,9 @@ import com.wzkris.system.rmi.RmiLogService;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.JoinPoint;
@@ -28,10 +31,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 日志切面
@@ -45,8 +44,9 @@ public class OperateLogAspect {
     /**
      * 敏感属性字段
      */
-    public static final String[] EXCLUDE_PROPERTIES =
-            {"pwd", "passwd", "password", "oldPassword", "newPassword", "confirmPassword"};
+    public static final String[] EXCLUDE_PROPERTIES = {
+        "pwd", "passwd", "password", "oldPassword", "newPassword", "confirmPassword"
+    };
 
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
@@ -55,7 +55,7 @@ public class OperateLogAspect {
 
     public OperateLogAspect(RmiLogService rmiLogService) {
         this.rmiLogService = rmiLogService;
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);// 配置null不序列化, 避免大量无用参数存入DB
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // 配置null不序列化, 避免大量无用参数存入DB
     }
 
     /**
@@ -89,7 +89,8 @@ public class OperateLogAspect {
             operLogReq.setStatus(OperateStatus.SUCCESS.value());
             operLogReq.setOperTime(DateUtil.date());
             // 请求的地址
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpServletRequest request =
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String ip = ServletUtil.getClientIP(request);
             operLogReq.setOperIp(ip);
             operLogReq.setOperLocation(AddressUtil.getRealAddressByIp(ip));
@@ -125,8 +126,9 @@ public class OperateLogAspect {
      * @param log        日志
      * @param operLogReq 操作日志
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, OperateLog log, OperLogReq operLogReq,
-                                               Object jsonResult) throws JsonProcessingException {
+    public void getControllerMethodDescription(
+            JoinPoint joinPoint, OperateLog log, OperLogReq operLogReq, Object jsonResult)
+            throws JsonProcessingException {
         // 设置action动作
         operLogReq.setOperType(log.operateType().getValue());
         // 设置标题
@@ -150,23 +152,28 @@ public class OperateLogAspect {
      *
      * @param operLogReq 操作日志
      */
-    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperLogReq operLogReq) throws JsonProcessingException {
+    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperLogReq operLogReq)
+            throws JsonProcessingException {
         Map<String, String> paramsMap = new HashMap<>();
         String operParams = "";
         final String requestMethod = operLogReq.getRequestMethod();
-        if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
+        if (HttpMethod.PUT.name().equals(requestMethod)
+                || HttpMethod.POST.name().equals(requestMethod)) {
             String params = this.argsArrayToString(joinPoint.getArgs());
             if (StringUtil.isNotBlank(params) && params.startsWith("{")) {
-                paramsMap = objectMapper.readValue(params, TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, Object.class));
+                paramsMap = objectMapper.readValue(
+                        params,
+                        TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, Object.class));
             } else {
                 operParams = params;
             }
         } else {
-            paramsMap = ServletUtil.getParamMap(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+            paramsMap = ServletUtil.getParamMap(
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         }
 
         if (!paramsMap.isEmpty()) {
-            this.fuzzyParams(paramsMap, excludeRequestParam);// 移除敏感字段
+            this.fuzzyParams(paramsMap, excludeRequestParam); // 移除敏感字段
             operParams = StringUtil.sub(objectMapper.writeValueAsString(paramsMap), 0, 2000);
         }
         operLogReq.setOperParam(operParams);
@@ -232,7 +239,9 @@ public class OperateLogAspect {
                 return entry.getValue() instanceof MultipartFile;
             }
         }
-        return o instanceof MultipartFile || o instanceof HttpServletRequest || o instanceof HttpServletResponse
+        return o instanceof MultipartFile
+                || o instanceof HttpServletRequest
+                || o instanceof HttpServletResponse
                 || o instanceof BindingResult;
     }
 }

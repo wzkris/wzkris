@@ -1,9 +1,8 @@
 package com.wzkris.common.core.annotation.impl;
 
 import cn.hutool.core.util.DesensitizedUtil;
-import lombok.AllArgsConstructor;
-
 import java.util.function.Function;
+import lombok.AllArgsConstructor;
 
 /**
  * 脱敏策略
@@ -44,7 +43,7 @@ public enum SensitiveStrategy {
      */
     BANK_CARD(DesensitizedUtil::bankCard);
 
-    //可自行添加其他脱敏策略
+    // 可自行添加其他脱敏策略
 
     private final Function<String, String> desensitizer;
 

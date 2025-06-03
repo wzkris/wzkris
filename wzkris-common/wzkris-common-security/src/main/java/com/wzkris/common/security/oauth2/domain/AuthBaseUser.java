@@ -7,19 +7,18 @@ import com.wzkris.common.security.oauth2.domain.model.AuthApp;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
-import lombok.Getter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.SpringSecurityCoreVersion;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.util.Assert;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.util.Assert;
 
 /**
  * @author : wzkris
@@ -31,9 +30,9 @@ import java.util.Set;
 @Getter
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = LoginUser.class),
-        @JsonSubTypes.Type(value = ClientUser.class),
-        @JsonSubTypes.Type(value = AuthApp.class)
+    @JsonSubTypes.Type(value = LoginUser.class),
+    @JsonSubTypes.Type(value = ClientUser.class),
+    @JsonSubTypes.Type(value = AuthApp.class)
 })
 public abstract class AuthBaseUser implements OAuth2User, Serializable {
 
@@ -62,5 +61,4 @@ public abstract class AuthBaseUser implements OAuth2User, Serializable {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(this.grantedAuthority);
     }
-
 }

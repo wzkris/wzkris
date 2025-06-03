@@ -35,5 +35,4 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
         return (AuthBaseUser) response.getPrincipal();
     }
-
 }

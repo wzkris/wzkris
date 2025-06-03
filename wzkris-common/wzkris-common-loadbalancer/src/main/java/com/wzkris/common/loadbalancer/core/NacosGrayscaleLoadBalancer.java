@@ -6,6 +6,10 @@ import com.alibaba.cloud.nacos.balancer.NacosBalancer;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -20,11 +24,6 @@ import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBal
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -36,7 +35,8 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
 
     private static final Logger log = LoggerFactory.getLogger(NacosGrayscaleLoadBalancer.class);
 
-    private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
+    private static final String IPV4_REGEX =
+            "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
 
     private static final String IPV6_KEY = "IPv6";
 
@@ -56,7 +56,8 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
 
     public NacosGrayscaleLoadBalancer(
             ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
-            String serviceId, NacosDiscoveryProperties nacosDiscoveryProperties) {
+            String serviceId,
+            NacosDiscoveryProperties nacosDiscoveryProperties) {
         this.serviceId = serviceId;
         this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
         this.nacosDiscoveryProperties = nacosDiscoveryProperties;
@@ -66,7 +67,9 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
     public void init() {
         String ip = nacosDiscoveryProperties.getIp();
         if (StringUtils.isNotEmpty(ip)) {
-            ipv6 = Pattern.matches(IPV4_REGEX, ip) ? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
+            ipv6 = Pattern.matches(IPV4_REGEX, ip)
+                    ? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY)
+                    : ip;
         } else {
             ipv6 = inetIPv6Utils.findIPv6Address();
         }
@@ -100,12 +103,12 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
 
     private List<ServiceInstance> filterInstanceByGrayVersion(List<ServiceInstance> instancesToChoose) {
         if (StringUtils.isNotBlank(VersionContext.getVersion())) {
-            List<ServiceInstance> grayVersionInst = instancesToChoose.stream().filter(serviceInstance ->
-            {
-                String version = serviceInstance.getMetadata()
-                        .get("version");
-                return StringUtils.equals(version, VersionContext.getVersion());
-            }).collect(Collectors.toList());
+            List<ServiceInstance> grayVersionInst = instancesToChoose.stream()
+                    .filter(serviceInstance -> {
+                        String version = serviceInstance.getMetadata().get("version");
+                        return StringUtils.equals(version, VersionContext.getVersion());
+                    })
+                    .collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(grayVersionInst)) {
                 instancesToChoose = grayVersionInst;
             }
@@ -115,8 +118,8 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
 
     @Override
     public Mono<Response<ServiceInstance>> choose(Request request) {
-        ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
-                .getIfAvailable(NoopServiceInstanceListSupplier::new);
+        ServiceInstanceListSupplier supplier =
+                serviceInstanceListSupplierProvider.getIfAvailable(NoopServiceInstanceListSupplier::new);
         return supplier.get(request).next().map(this::getInstanceResponse);
     }
 
@@ -134,24 +137,25 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
             if (StringUtils.isNotBlank(clusterName)) {
                 List<ServiceInstance> sameClusterInstances = serviceInstances.stream()
                         .filter(serviceInstance -> {
-                            String cluster = serviceInstance.getMetadata()
-                                    .get("nacos.cluster");
+                            String cluster = serviceInstance.getMetadata().get("nacos.cluster");
                             return StringUtils.equals(cluster, clusterName);
-                        }).collect(Collectors.toList());
+                        })
+                        .collect(Collectors.toList());
                 if (!CollectionUtils.isEmpty(sameClusterInstances)) {
                     instancesToChoose = sameClusterInstances;
                 }
             } else {
                 log.warn(
                         "A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
-                        serviceId, clusterName, serviceInstances);
+                        serviceId,
+                        clusterName,
+                        serviceInstances);
             }
             instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
 
             instancesToChoose = this.filterInstanceByGrayVersion(instancesToChoose);
 
-            ServiceInstance instance = NacosBalancer
-                    .getHostByRandomWeight3(instancesToChoose);
+            ServiceInstance instance = NacosBalancer.getHostByRandomWeight3(instancesToChoose);
 
             return new DefaultResponse(instance);
         } catch (Exception e) {

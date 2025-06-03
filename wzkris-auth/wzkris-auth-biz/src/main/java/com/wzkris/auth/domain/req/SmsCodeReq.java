@@ -19,5 +19,4 @@ public class SmsCodeReq {
     @NotBlank(message = "{desc.phonenumber}{validate.notnull}")
     @Length(min = 11, max = 11, message = "{desc.phonenumber}{desc.error}")
     private String phone;
-
 }

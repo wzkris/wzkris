@@ -11,6 +11,4 @@ import org.springframework.stereotype.Repository;
  * @since 2023-08-26 14:40:28
  */
 @Repository
-public interface SysLoginLogMapper extends BaseMapperPlus<SysLoginLog> {
-
-}
+public interface SysLoginLogMapper extends BaseMapperPlus<SysLoginLog> {}

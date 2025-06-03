@@ -11,10 +11,9 @@ import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysTenantPackageService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +36,9 @@ public class SysTenantPackageServiceImpl implements SysTenantPackageService {
     @Override
     public boolean checkPackageUsed(List<Long> packageIds) {
         return DynamicTenantUtil.ignore(() -> {
-            LambdaQueryWrapper<SysTenant> lqw = Wrappers.lambdaQuery(SysTenant.class)
-                    .in(SysTenant::getPackageId, packageIds);
+            LambdaQueryWrapper<SysTenant> lqw =
+                    Wrappers.lambdaQuery(SysTenant.class).in(SysTenant::getPackageId, packageIds);
             return tenantMapper.exists(lqw);
         });
     }
-
 }

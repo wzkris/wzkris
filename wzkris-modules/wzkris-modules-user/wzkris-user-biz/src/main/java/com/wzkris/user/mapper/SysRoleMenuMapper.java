@@ -1,12 +1,11 @@
 package com.wzkris.user.mapper;
 
 import com.wzkris.user.domain.SysRoleMenu;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * 角色与菜单关联表 数据层
@@ -22,7 +21,8 @@ public interface SysRoleMenuMapper {
      * @param roleIds 角色id集合
      * @return 菜单id集合
      */
-    @Select("""
+    @Select(
+            """
             <script>
                 SELECT menu_id FROM biz.sys_role_menu WHERE role_id IN
                     <foreach collection="list" item="roleId" separator="," open="(" close=")">
@@ -56,7 +56,8 @@ public interface SysRoleMenuMapper {
      * @param roleIds 角色id集合
      * @return 结果
      */
-    @Delete("""
+    @Delete(
+            """
             <script>
                 DELETE FROM biz.sys_role_menu WHERE role_id IN
                     <foreach collection="list" item="roleId" open="(" separator="," close=")">
@@ -81,7 +82,8 @@ public interface SysRoleMenuMapper {
      * @param roleMenus 角色菜单列表
      * @return 结果
      */
-    @Insert("""
+    @Insert(
+            """
             <script>
                 INSERT INTO biz.sys_role_menu(role_id, menu_id) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
@@ -90,5 +92,4 @@ public interface SysRoleMenuMapper {
             </script>
             """)
     int insertBatch(List<SysRoleMenu> roleMenus);
-
 }

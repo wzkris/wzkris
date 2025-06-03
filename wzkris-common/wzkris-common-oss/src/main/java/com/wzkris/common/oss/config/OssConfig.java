@@ -1,12 +1,11 @@
 package com.wzkris.common.oss.config;
 
+import java.util.List;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 /**
  * 对象配置信息

@@ -48,31 +48,33 @@ public final class DeviceClientAuthenticationProvider implements AuthenticationP
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        DeviceClientAuthenticationToken deviceClientAuthentication =
-                (DeviceClientAuthenticationToken) authentication;
+        DeviceClientAuthenticationToken deviceClientAuthentication = (DeviceClientAuthenticationToken) authentication;
 
         if (!ClientAuthenticationMethod.NONE.equals(deviceClientAuthentication.getClientAuthenticationMethod())) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
         String clientId = deviceClientAuthentication.getPrincipal().toString();
         RegisteredClient registeredClient = this.registeredClientRepository.findByClientId(clientId);
         if (registeredClient == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
-        if (!registeredClient.getClientAuthenticationMethods().contains(
-                deviceClientAuthentication.getClientAuthenticationMethod())) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+        if (!registeredClient
+                .getClientAuthenticationMethods()
+                .contains(deviceClientAuthentication.getClientAuthenticationMethod())) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
-        return new DeviceClientAuthenticationToken(registeredClient,
-                deviceClientAuthentication.getClientAuthenticationMethod(), null);
+        return new DeviceClientAuthenticationToken(
+                registeredClient, deviceClientAuthentication.getClientAuthenticationMethod(), null);
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
         return DeviceClientAuthenticationToken.class.isAssignableFrom(authentication);
     }
-
 }

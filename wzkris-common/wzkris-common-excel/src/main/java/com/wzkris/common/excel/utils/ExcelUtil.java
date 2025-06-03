@@ -16,9 +16,6 @@ import com.wzkris.common.excel.convert.ExcelBigNumberConvert;
 import com.wzkris.common.excel.core.*;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Excel相关处理
@@ -99,7 +98,12 @@ public class ExcelUtil {
      * @param response  响应体
      * @param options   级联下拉选
      */
-    public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, HttpServletResponse response, List<DropDownOptions> options) {
+    public static <T> void exportExcel(
+            List<T> list,
+            String sheetName,
+            Class<T> clazz,
+            HttpServletResponse response,
+            List<DropDownOptions> options) {
         try {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
@@ -118,7 +122,8 @@ public class ExcelUtil {
      * @param merge     是否合并单元格
      * @param response  响应体
      */
-    public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, boolean merge, HttpServletResponse response) {
+    public static <T> void exportExcel(
+            List<T> list, String sheetName, Class<T> clazz, boolean merge, HttpServletResponse response) {
         try {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
@@ -138,7 +143,13 @@ public class ExcelUtil {
      * @param response  响应体
      * @param options   级联下拉选
      */
-    public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, boolean merge, HttpServletResponse response, List<DropDownOptions> options) {
+    public static <T> void exportExcel(
+            List<T> list,
+            String sheetName,
+            Class<T> clazz,
+            boolean merge,
+            HttpServletResponse response,
+            List<DropDownOptions> options) {
         try {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
@@ -169,7 +180,8 @@ public class ExcelUtil {
      * @param os        输出流
      * @param options   级联下拉选内容
      */
-    public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, OutputStream os, List<DropDownOptions> options) {
+    public static <T> void exportExcel(
+            List<T> list, String sheetName, Class<T> clazz, OutputStream os, List<DropDownOptions> options) {
         exportExcel(list, sheetName, clazz, false, os, options);
     }
 
@@ -182,8 +194,13 @@ public class ExcelUtil {
      * @param merge     是否合并单元格
      * @param os        输出流
      */
-    public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, boolean merge,
-                                       OutputStream os, List<DropDownOptions> options) {
+    public static <T> void exportExcel(
+            List<T> list,
+            String sheetName,
+            Class<T> clazz,
+            boolean merge,
+            OutputStream os,
+            List<DropDownOptions> options) {
         ExcelWriterSheetBuilder builder = EasyExcel.write(os, clazz)
                 .autoCloseStream(false)
                 // 自动适配
@@ -210,7 +227,8 @@ public class ExcelUtil {
      * @param data         模板需要的数据
      * @param response     响应体
      */
-    public static void exportTemplate(List<Object> data, String filename, String templatePath, HttpServletResponse response) {
+    public static void exportTemplate(
+            List<Object> data, String filename, String templatePath, HttpServletResponse response) {
         try {
             resetResponse(filename, response);
             ServletOutputStream os = response.getOutputStream();
@@ -258,7 +276,8 @@ public class ExcelUtil {
      * @param data         模板需要的数据
      * @param response     响应体
      */
-    public static void exportTemplateMultiList(Map<String, Object> data, String filename, String templatePath, HttpServletResponse response) {
+    public static void exportTemplateMultiList(
+            Map<String, Object> data, String filename, String templatePath, HttpServletResponse response) {
         try {
             resetResponse(filename, response);
             ServletOutputStream os = response.getOutputStream();
@@ -278,7 +297,8 @@ public class ExcelUtil {
      * @param data         模板需要的数据
      * @param response     响应体
      */
-    public static void exportTemplateMultiSheet(List<Map<String, Object>> data, String filename, String templatePath, HttpServletResponse response) {
+    public static void exportTemplateMultiSheet(
+            List<Map<String, Object>> data, String filename, String templatePath, HttpServletResponse response) {
         try {
             resetResponse(filename, response);
             ServletOutputStream os = response.getOutputStream();
@@ -311,7 +331,8 @@ public class ExcelUtil {
         }
         for (Map.Entry<String, Object> map : data.entrySet()) {
             // 设置列表后续还有数据
-            FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+            FillConfig fillConfig =
+                    FillConfig.builder().forceNewRow(Boolean.TRUE).build();
             if (map.getValue() instanceof Collection) {
                 // 多表导出必须使用 FillWrapper
                 excelWriter.fill(new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
@@ -346,10 +367,12 @@ public class ExcelUtil {
             WriteSheet writeSheet = EasyExcel.writerSheet(i).build();
             for (Map.Entry<String, Object> map : data.get(i).entrySet()) {
                 // 设置列表后续还有数据
-                FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+                FillConfig fillConfig =
+                        FillConfig.builder().forceNewRow(Boolean.TRUE).build();
                 if (map.getValue() instanceof Collection) {
                     // 多表导出必须使用 FillWrapper
-                    excelWriter.fill(new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
+                    excelWriter.fill(
+                            new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
                 } else {
                     excelWriter.fill(map.getValue(), writeSheet);
                 }
@@ -361,7 +384,8 @@ public class ExcelUtil {
     /**
      * 重置响应体
      */
-    private static void resetResponse(String sheetName, HttpServletResponse response) throws UnsupportedEncodingException {
+    private static void resetResponse(String sheetName, HttpServletResponse response)
+            throws UnsupportedEncodingException {
         String filename = encodingFilename(sheetName);
         String encode = URLEncodeUtil.encode(filename);
         response.setCharacterEncoding("utf-8");
@@ -433,5 +457,4 @@ public class ExcelUtil {
     public static String encodingFilename(String filename) {
         return IdUtil.fastSimpleUUID() + "_" + filename + ".xlsx";
     }
-
 }

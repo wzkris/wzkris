@@ -2,9 +2,8 @@ package com.wzkris.common.captcha.model;
 
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 校验验证码参数

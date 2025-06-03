@@ -32,5 +32,4 @@ public interface RmiSysUserService {
      * 更新用户登录信息
      */
     void updateLoginInfo(LoginInfoReq loginInfoReq);
-
 }

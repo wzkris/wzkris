@@ -16,6 +16,9 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
+import java.util.*;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,10 +26,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 /**
  * index controller
@@ -45,7 +44,8 @@ public class JobInfoController {
     @Resource
     private XxlJobService xxlJobService;
 
-    public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupList_all) {
+    public static List<XxlJobGroup> filterJobGroupByRole(
+            HttpServletRequest request, List<XxlJobGroup> jobGroupList_all) {
         List<XxlJobGroup> jobGroupList = new ArrayList<>();
         if (jobGroupList_all != null && jobGroupList_all.size() > 0) {
             XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
@@ -53,7 +53,8 @@ public class JobInfoController {
                 jobGroupList = jobGroupList_all;
             } else {
                 List<String> groupIdStrs = new ArrayList<>();
-                if (loginUser.getPermission() != null && loginUser.getPermission().trim().length() > 0) {
+                if (loginUser.getPermission() != null
+                        && loginUser.getPermission().trim().length() > 0) {
                     groupIdStrs = Arrays.asList(loginUser.getPermission().trim().split(","));
                 }
                 for (XxlJobGroup groupItem : jobGroupList_all) {
@@ -69,19 +70,23 @@ public class JobInfoController {
     public static void validPermission(HttpServletRequest request, int jobGroup) {
         XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
         if (!loginUser.validPermission(jobGroup)) {
-            throw new RuntimeException(I18nUtil.getString("system_permission_limit") + "[username=" + loginUser.getUsername() + "]");
+            throw new RuntimeException(
+                    I18nUtil.getString("system_permission_limit") + "[username=" + loginUser.getUsername() + "]");
         }
     }
 
     @RequestMapping
-    public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
+    public String index(
+            HttpServletRequest request,
+            Model model,
+            @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
 
         // 枚举-字典
-        model.addAttribute("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());        // 路由策略-列表
-        model.addAttribute("GlueTypeEnum", GlueTypeEnum.values());                                // Glue类型-字典
-        model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());        // 阻塞处理策略-字典
-        model.addAttribute("ScheduleTypeEnum", ScheduleTypeEnum.values());                        // 调度类型
-        model.addAttribute("MisfireStrategyEnum", MisfireStrategyEnum.values());                    // 调度过期策略
+        model.addAttribute("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values()); // 路由策略-列表
+        model.addAttribute("GlueTypeEnum", GlueTypeEnum.values()); // Glue类型-字典
+        model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values()); // 阻塞处理策略-字典
+        model.addAttribute("ScheduleTypeEnum", ScheduleTypeEnum.values()); // 调度类型
+        model.addAttribute("MisfireStrategyEnum", MisfireStrategyEnum.values()); // 调度过期策略
 
         // 执行器列表
         List<XxlJobGroup> jobGroupList_all = xxlJobGroupDao.findAll();
@@ -100,9 +105,14 @@ public class JobInfoController {
 
     @RequestMapping("/pageList")
     @ResponseBody
-    public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,
-                                        @RequestParam(required = false, defaultValue = "10") int length,
-                                        int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
+    public Map<String, Object> pageList(
+            @RequestParam(required = false, defaultValue = "0") int start,
+            @RequestParam(required = false, defaultValue = "10") int length,
+            int jobGroup,
+            int triggerStatus,
+            String jobDesc,
+            String executorHandler,
+            String author) {
 
         return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
     }
@@ -167,10 +177,10 @@ public class JobInfoController {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new ReturnT<List<String>>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")) + e.getMessage());
+            return new ReturnT<List<String>>(
+                    ReturnT.FAIL_CODE,
+                    (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")) + e.getMessage());
         }
         return new ReturnT<List<String>>(result);
-
     }
-
 }

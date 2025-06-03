@@ -16,6 +16,8 @@ import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import com.wzkris.user.rmi.RmiAppUserService;
 import com.wzkris.user.rmi.RmiSysUserService;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -23,9 +25,6 @@ import org.redisson.api.RMapCache;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wzkris
@@ -73,15 +72,14 @@ public class LoginEventListener {
         final UserAgent userAgent = event.getUserAgent();
 
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
-        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", loginUser.getName(),
-                loginSuccess ? "成功" : "失败", ipAddr);
+        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", loginUser.getName(), loginSuccess ? "成功" : "失败", ipAddr);
 
         // 获取客户端浏览器
         String browser = userAgent.getBrowser().getName();
         // 获取登录地址
         String loginLocation = AddressUtil.getRealAddressByIp(ipAddr);
 
-        if (loginSuccess) {// 更新用户登录信息、在线会话信息
+        if (loginSuccess) { // 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
             onlineUser.setTokenId(event.getTokenId());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
@@ -92,7 +90,8 @@ public class LoginEventListener {
             onlineUser.setLoginTime(new Date());
 
             RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(loginUser.getUserId());
-            onlineCache.put(onlineUser.getTokenId(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
+            onlineCache.put(
+                    onlineUser.getTokenId(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
@@ -119,12 +118,11 @@ public class LoginEventListener {
         final String status = event.getStatus();
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
 
-        if (loginSuccess) {// 更新用户登录信息
+        if (loginSuccess) { // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(DateUtil.date());
             rmiAppUserService.updateLoginInfo(loginInfoReq);
         }
     }
-
 }

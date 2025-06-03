@@ -14,5 +14,4 @@ public interface RmiNoticeService {
      * 发送通知
      */
     void sendNotice(SendNoticeReq sendNoticeReq);
-
 }

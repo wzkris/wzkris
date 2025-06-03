@@ -60,10 +60,16 @@ public class RmiAppUserServiceImpl implements RmiAppUserService {
         try {
             switch (type) {
                 case WX_XCX -> {
-                    identifier = wxMaService.getUserService().getSessionInfo(authCode).getOpenid();
+                    identifier = wxMaService
+                            .getUserService()
+                            .getSessionInfo(authCode)
+                            .getOpenid();
                 }
                 case WX_GZH -> {
-                    identifier = wxMpService.getOAuth2Service().getAccessToken(authCode).getOpenId();
+                    identifier = wxMpService
+                            .getOAuth2Service()
+                            .getAccessToken(authCode)
+                            .getOpenId();
                 }
                 default -> identifier = null;
             }

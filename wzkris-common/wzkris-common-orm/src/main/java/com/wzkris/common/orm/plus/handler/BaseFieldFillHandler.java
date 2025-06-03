@@ -24,7 +24,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
+        if (ObjectUtil.isNotNull(metaObject)
+                && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
             if (ObjUtil.equals(SecurityUtil.getLoginType(), LoginType.SYSTEM_USER)) {
                 fillInsert(LoginUtil.getUserId(), metaObject);
@@ -44,7 +45,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity
+        if (ObjectUtil.isNotNull(metaObject)
+                && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
             if (ObjUtil.equals(SecurityUtil.getLoginType(), LoginType.SYSTEM_USER)) {
                 fillUpdate(LoginUtil.getUserId(), metaObject);
@@ -59,5 +61,4 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
     }
-
 }

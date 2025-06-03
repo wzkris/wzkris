@@ -1,7 +1,6 @@
 package com.wzkris.system.service;
 
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
-
 import java.util.List;
 
 public interface SysNoticeService {

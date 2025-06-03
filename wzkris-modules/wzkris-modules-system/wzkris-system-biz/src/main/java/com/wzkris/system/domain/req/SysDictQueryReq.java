@@ -12,5 +12,4 @@ public class SysDictQueryReq {
 
     @Schema(description = "字典名称")
     private String dictName;
-
 }

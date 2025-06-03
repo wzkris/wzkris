@@ -4,13 +4,12 @@ import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.service.LoginService;
-import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.AsyncHandlerInterceptor;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 /**
  * 权限拦截
@@ -24,10 +23,11 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
     private LoginService loginService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
 
         if (!(handler instanceof HandlerMethod)) {
-            return true;    // proceed with the next interceptor
+            return true; // proceed with the next interceptor
         }
 
         // if need login
@@ -53,7 +53,6 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
             request.setAttribute(LoginService.LOGIN_IDENTITY_KEY, loginUser);
         }
 
-        return true;    // proceed with the next interceptor
+        return true; // proceed with the next interceptor
     }
-
 }

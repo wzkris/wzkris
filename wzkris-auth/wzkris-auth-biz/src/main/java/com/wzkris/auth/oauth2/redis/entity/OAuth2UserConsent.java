@@ -15,13 +15,12 @@
  */
 package com.wzkris.auth.oauth2.redis.entity;
 
+import java.util.Set;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Set;
 
 @Getter
 @RedisHash("oauth2_authorization_consent")
@@ -39,8 +38,8 @@ public class OAuth2UserConsent {
     private final Set<GrantedAuthority> authorities;
 
     // @fold:on
-    public OAuth2UserConsent(String id, String registeredClientId, String principalName,
-                             Set<GrantedAuthority> authorities) {
+    public OAuth2UserConsent(
+            String id, String registeredClientId, String principalName, Set<GrantedAuthority> authorities) {
         this.id = id;
         this.registeredClientId = registeredClientId;
         this.principalName = principalName;

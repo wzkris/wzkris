@@ -16,11 +16,10 @@ import com.wzkris.system.mapper.SysOperLogMapper;
 import com.wzkris.system.service.SysOperLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 操作日志记录
@@ -54,8 +53,11 @@ public class SysOperlogController extends BaseController {
                 .like(StringUtil.isNotBlank(queryReq.getSubTitle()), SysOperLog::getSubTitle, queryReq.getSubTitle())
                 .eq(StringUtil.isNotNull(queryReq.getOperType()), SysOperLog::getOperType, queryReq.getOperType())
                 .like(StringUtil.isNotBlank(queryReq.getOperName()), SysOperLog::getOperName, queryReq.getOperName())
-                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        SysOperLog::getOperTime, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
+                .between(
+                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysOperLog::getOperTime,
+                        queryReq.getParam("beginTime"),
+                        queryReq.getParam("endTime"))
                 .orderByDesc(SysOperLog::getOperId);
     }
 

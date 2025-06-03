@@ -36,5 +36,4 @@ public class OAuth2AuthorizationRequestToBytesConverter implements Converter<OAu
     public byte[] convert(OAuth2AuthorizationRequest value) {
         return this.serializer.serialize(value);
     }
-
 }

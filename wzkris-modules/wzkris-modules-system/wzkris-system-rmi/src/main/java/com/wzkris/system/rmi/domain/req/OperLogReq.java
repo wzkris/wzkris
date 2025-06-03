@@ -1,12 +1,11 @@
 package com.wzkris.system.rmi.domain.req;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Data;
 
 /**
  * 操作日志记录表 oper_log

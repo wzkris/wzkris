@@ -14,5 +14,4 @@ import lombok.Getter;
 public class RefreshTokenEvent {
 
     private String refreshToken;
-
 }

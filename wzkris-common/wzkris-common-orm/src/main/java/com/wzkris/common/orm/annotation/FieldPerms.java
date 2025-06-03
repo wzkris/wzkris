@@ -19,4 +19,3 @@ public @interface FieldPerms {
      */
     Class<?>[] groups() default {};
 }
-

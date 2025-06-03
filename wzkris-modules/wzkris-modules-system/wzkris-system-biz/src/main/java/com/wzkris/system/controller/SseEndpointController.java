@@ -31,10 +31,8 @@ public class SseEndpointController {
         GlobalSseUtil.disconnect(LoginUtil.getUserId());
     }
 
-    @Scheduled(cron = "*/3 * * * * *")// 模拟
+    @Scheduled(cron = "*/3 * * * * *") // 模拟
     public void cron() {
-        GlobalSseUtil.publish(
-                new PublishMessageEvent(null, new SimpleMessageDTO("重要通知", "1", "项目难度很大，考虑清楚技术选型"))
-        );
+        GlobalSseUtil.publish(new PublishMessageEvent(null, new SimpleMessageDTO("重要通知", "1", "项目难度很大，考虑清楚技术选型")));
     }
 }

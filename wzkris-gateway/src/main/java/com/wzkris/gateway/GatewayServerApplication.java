@@ -18,7 +18,8 @@ public class GatewayServerApplication {
         springApplication.addListeners(new ApplicationPidFileWriter());
         springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
         springApplication.run(args);
-        System.out.println("""
+        System.out.println(
+                """
                 (♥◠‿◠)ﾉﾞ  网关启动成功   ლ(´ڡ`ლ)ﾞ
                  ________  ________  _________  _______   ___       __   ________      ___    ___\s
                 |\\   ____\\|\\   __  \\|\\___   ___\\\\  ___ \\ |\\  \\     |\\  \\|\\   __  \\    |\\  \\  /  /|

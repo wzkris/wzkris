@@ -6,13 +6,12 @@ import com.wzkris.common.oss.service.FileService;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Service;
 
 /**
  * Minio 文件存储
@@ -29,8 +28,10 @@ public class MinioServiceImpl implements FileService {
 
     public MinioServiceImpl(OssConfig ossConfig) {
         this.properties = ossConfig.getMinio();
-        this.client = MinioClient.builder().endpoint(properties.getUrl())
-                .credentials(properties.getAccessKey(), properties.getSecretKey()).build();
+        this.client = MinioClient.builder()
+                .endpoint(properties.getUrl())
+                .credentials(properties.getAccessKey(), properties.getSecretKey())
+                .build();
     }
 
     @Override
@@ -41,19 +42,22 @@ public class MinioServiceImpl implements FileService {
     @Override
     public FileVO upload(InputStream is, String relativePath, String fileName, String contentType) {
         try {
-            PutObjectArgs args = PutObjectArgs.builder()
-                    .bucket(relativePath)
-                    .object(fileName)
-                    .stream(is, -1, 10 * 1024 * 1024)
+            PutObjectArgs args = PutObjectArgs.builder().bucket(relativePath).object(fileName).stream(
+                            is, -1, 10 * 1024 * 1024)
                     .contentType(contentType)
                     .build();
             client.putObject(args);
             return new FileVO(fileName, properties.getUrl(), "/" + relativePath + "/" + fileName);
-        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
-                 InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
-                 XmlParserException e) {
+        } catch (ErrorResponseException
+                | InsufficientDataException
+                | InternalException
+                | InvalidKeyException
+                | InvalidResponseException
+                | IOException
+                | NoSuchAlgorithmException
+                | ServerException
+                | XmlParserException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
-
 }

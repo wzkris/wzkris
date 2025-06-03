@@ -6,12 +6,11 @@ import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.vo.SysUserVO;
+import java.util.Collection;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * 用户表 数据层
@@ -25,7 +24,8 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     /**
      * 带权限查询分页数据
      */
-    @Select("""
+    @Select(
+            """
             SELECT u.*, d.dept_name, d.status AS deptStatus
             		FROM biz.sys_user u LEFT JOIN biz.sys_dept d ON u.dept_id = d.dept_id
             ${ew.customSqlSegment}
@@ -86,7 +86,8 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      * @return 返回是否
      */
     @DeptScope
-    @Select("""
+    @Select(
+            """
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN true ELSE false END
                     FROM biz.sys_user WHERE user_id IN
@@ -98,5 +99,4 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
             </script>
             """)
     boolean checkDataScopes(Collection<Long> userIds);
-
 }

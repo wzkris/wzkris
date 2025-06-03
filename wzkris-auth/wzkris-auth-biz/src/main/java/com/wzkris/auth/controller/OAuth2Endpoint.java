@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RMapCache;
@@ -30,8 +31,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 
 @Tag(name = "OAuth自定义端点")
 @Slf4j
@@ -73,8 +72,8 @@ public class OAuth2Endpoint extends BaseController {
             return;
         }
 
-        OAuth2AuthorizationGrantAuthorization grantAuthorization = auth2AuthorizationGrantAuthorizationRepository
-                .findByAccessToken_TokenValue(resolvedToken);
+        OAuth2AuthorizationGrantAuthorization grantAuthorization =
+                auth2AuthorizationGrantAuthorizationRepository.findByAccessToken_TokenValue(resolvedToken);
         if (grantAuthorization != null) {
             RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(LoginUtil.getUserId());
             onlineCache.remove(grantAuthorization.getId());

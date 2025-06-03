@@ -58,15 +58,15 @@ public class CommonConstants {
     /**
      * 不过期时间
      */
-    public final static Date NOT_EXPIRED_TIME = Date.from(Instant.parse("2099-12-31T23:59:59.999Z"));
+    public static final Date NOT_EXPIRED_TIME = Date.from(Instant.parse("2099-12-31T23:59:59.999Z"));
 
     /**
      * 状态 启用
      */
-    public final static String STATUS_ENABLE = "0";
+    public static final String STATUS_ENABLE = "0";
 
     /**
      * 状态 禁用
      */
-    public final static String STATUS_DISABLE = "1";
+    public static final String STATUS_DISABLE = "1";
 }

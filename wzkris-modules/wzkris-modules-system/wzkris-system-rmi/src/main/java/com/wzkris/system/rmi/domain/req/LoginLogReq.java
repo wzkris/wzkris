@@ -1,9 +1,8 @@
 package com.wzkris.system.rmi.domain.req;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * @author : wzkris

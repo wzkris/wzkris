@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.wzkris.common.security.utils.LoginUtil;
 import jakarta.annotation.Nullable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 动态租户工具类
@@ -79,7 +78,8 @@ public final class DynamicTenantUtil {
             LOCAL_IGNORE.set(counter);
         }
         if (counter.getAndIncrement() == 0) {
-            InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
+            InterceptorIgnoreHelper.handle(
+                    IgnoreStrategy.builder().tenantLine(true).build());
         }
     }
 
@@ -153,7 +153,8 @@ public final class DynamicTenantUtil {
     /**
      * 条件忽略租户执行(可抛异常)
      */
-    public static <T> T ignoreIfWithThrowable(boolean ignore, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+    public static <T> T ignoreIfWithThrowable(boolean ignore, ThrowingSupplier<T, Throwable> supplier)
+            throws Throwable {
         if (supplier == null) return null;
 
         if (ignore) {
@@ -226,7 +227,8 @@ public final class DynamicTenantUtil {
     /**
      * 条件切换租户执行(可抛异常)
      */
-    public static <T> T switchtIfWithThrowable(boolean swch, Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+    public static <T> T switchtIfWithThrowable(boolean swch, Long tenantId, ThrowingSupplier<T, Throwable> supplier)
+            throws Throwable {
         if (supplier == null) return null;
 
         if (swch && tenantId != null) {

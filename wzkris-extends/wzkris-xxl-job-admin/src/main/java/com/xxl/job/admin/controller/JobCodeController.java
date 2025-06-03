@@ -7,15 +7,14 @@ import com.xxl.job.admin.dao.XxlJobInfoDao;
 import com.xxl.job.admin.dao.XxlJobLogGlueDao;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.glue.GlueTypeEnum;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
 
 /**
  * job code controller
@@ -60,7 +59,8 @@ public class JobCodeController {
     public ReturnT<String> save(Model model, int id, String glueSource, String glueRemark) {
         // valid
         if (glueRemark == null) {
-            return new ReturnT<String>(500, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_glue_remark")));
+            return new ReturnT<String>(
+                    500, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_glue_remark")));
         }
         if (glueRemark.length() < 4 || glueRemark.length() > 100) {
             return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_remark_limit"));
@@ -94,5 +94,4 @@ public class JobCodeController {
 
         return ReturnT.SUCCESS;
     }
-
 }

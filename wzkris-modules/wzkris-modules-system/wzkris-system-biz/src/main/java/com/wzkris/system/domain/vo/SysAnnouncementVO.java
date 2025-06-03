@@ -1,9 +1,8 @@
 package com.wzkris.system.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 @Data
 @Schema(description = "公告信息")

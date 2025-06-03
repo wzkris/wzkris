@@ -9,12 +9,11 @@ import com.wzkris.system.domain.SysDict;
 import com.wzkris.system.mapper.SysDictMapper;
 import com.wzkris.system.service.SysDictService;
 import jakarta.annotation.PostConstruct;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +31,8 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     public void loadingDictCache() {
         RMap<String, SysDict.DictData[]> rMap = cache();
-        Map<String, SysDict.DictData[]> map =
-                StreamUtil.of(dictMapper.selectList(null))
-                        .collect(
-                                Collectors.toMap(SysDict::getDictKey, SysDict::getDictValue));
+        Map<String, SysDict.DictData[]> map = StreamUtil.of(dictMapper.selectList(null))
+                .collect(Collectors.toMap(SysDict::getDictKey, SysDict::getDictValue));
         rMap.clear();
         rMap.putAll(map);
     }
@@ -48,7 +45,7 @@ public class SysDictServiceImpl implements SysDictService {
         }
         SysDict dict = dictMapper.selectOne(Wrappers.lambdaQuery(SysDict.class).eq(SysDict::getDictKey, dictKey));
         if (dict == null) {
-            return new SysDict.DictData[]{};
+            return new SysDict.DictData[] {};
         }
         cache().put(dictKey, dict.getDictValue());
         return dict.getDictValue();

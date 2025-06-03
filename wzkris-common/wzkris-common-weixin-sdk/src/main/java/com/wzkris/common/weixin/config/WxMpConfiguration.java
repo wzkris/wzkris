@@ -2,6 +2,8 @@ package com.wzkris.common.weixin.config;
 
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.weixin.properties.WxMpProperties;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxRuntimeException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -10,9 +12,6 @@ import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedissonConfigImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * wechat mp configuration
@@ -38,8 +37,8 @@ public class WxMpConfiguration {
         }
 
         WxMpService service = new WxMpServiceImpl();
-        service.setMultiConfigStorages(configs
-                .stream().map(a -> {
+        service.setMultiConfigStorages(configs.stream()
+                .map(a -> {
                     WxMpDefaultConfigImpl configStorage;
                     if (this.properties.isUseRedis()) {
                         configStorage = new WxMpRedissonConfigImpl(RedisUtil.getClient(), a.getAppId());
@@ -52,7 +51,8 @@ public class WxMpConfiguration {
                     configStorage.setToken(a.getToken());
                     configStorage.setAesKey(a.getAesKey());
                     return configStorage;
-                }).collect(Collectors.toMap(WxMpDefaultConfigImpl::getAppId, a -> a, (o, n) -> o)));
+                })
+                .collect(Collectors.toMap(WxMpDefaultConfigImpl::getAppId, a -> a, (o, n) -> o)));
         return service;
     }
 
@@ -102,5 +102,4 @@ public class WxMpConfiguration {
      *         return newRouter;
      *     }
      */
-
 }

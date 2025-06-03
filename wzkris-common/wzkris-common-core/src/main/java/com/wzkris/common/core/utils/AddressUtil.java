@@ -2,13 +2,12 @@ package com.wzkris.common.core.utils;
 
 import cn.hutool.core.net.NetUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.extern.slf4j.Slf4j;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 获取地址类

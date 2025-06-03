@@ -16,15 +16,14 @@
 package com.wzkris.auth.oauth2.redis.entity.model;
 
 import com.wzkris.auth.oauth2.redis.entity.OAuth2AuthorizationGrantAuthorization;
-import lombok.Getter;
-import org.springframework.data.redis.core.TimeToLive;
-import org.springframework.data.redis.core.index.Indexed;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-
 import java.security.Principal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
+import lombok.Getter;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 @Getter
 public class OAuth2AuthorizationCodeGrantAuthorization extends OAuth2AuthorizationGrantAuthorization {
@@ -40,9 +39,17 @@ public class OAuth2AuthorizationCodeGrantAuthorization extends OAuth2Authorizati
     // consent flow
 
     // @fold:on
-    public OAuth2AuthorizationCodeGrantAuthorization(String id, String registeredClientId, String principalName,
-                                                     Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken, Principal principal,
-                                                     OAuth2AuthorizationRequest authorizationRequest, AuthorizationCode authorizationCode, String state) {
+    public OAuth2AuthorizationCodeGrantAuthorization(
+            String id,
+            String registeredClientId,
+            String principalName,
+            Set<String> authorizedScopes,
+            AccessToken accessToken,
+            RefreshToken refreshToken,
+            Principal principal,
+            OAuth2AuthorizationRequest authorizationRequest,
+            AuthorizationCode authorizationCode,
+            String state) {
         super(id, registeredClientId, principalName, authorizedScopes, accessToken, refreshToken);
         this.principal = principal;
         this.authorizationRequest = authorizationRequest;
@@ -53,8 +60,11 @@ public class OAuth2AuthorizationCodeGrantAuthorization extends OAuth2Authorizati
     @TimeToLive
     protected Long getTimeToLive() {
         long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
-                authorizationCode != null ? ChronoUnit.SECONDS.between(authorizationCode.getIssuedAt(), authorizationCode.getExpiresAt()) : -1);
+        maxLiveTime = Math.max(
+                maxLiveTime,
+                authorizationCode != null
+                        ? ChronoUnit.SECONDS.between(authorizationCode.getIssuedAt(), authorizationCode.getExpiresAt())
+                        : -1);
 
         return maxLiveTime;
     }

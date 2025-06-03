@@ -24,8 +24,7 @@ public class InjectionSystem {
 
     public static PrintStream err = System.err;
 
-    private InjectionSystem() {
-    }
+    private InjectionSystem() {}
 
     /**
      * 对System进行注入，即修改in out err三个参数的行为

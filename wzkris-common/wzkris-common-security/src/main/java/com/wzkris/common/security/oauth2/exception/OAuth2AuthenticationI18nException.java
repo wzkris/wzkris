@@ -19,5 +19,4 @@ public class OAuth2AuthenticationI18nException extends OAuth2AuthenticationExcep
     public OAuth2AuthenticationI18nException(int code, String errorCode, String uri, String i18code, Object... args) {
         super(new CustomOAuth2Error(code, errorCode, I18nUtil.message(i18code, args), uri));
     }
-
 }

@@ -2,12 +2,11 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.user.domain.SysRoleDept;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * 角色与部门关联表 数据层
@@ -34,7 +33,8 @@ public interface SysRoleDeptMapper {
      * @return 部门id集合
      */
     @DeptScope
-    @Select("""
+    @Select(
+            """
             <script>
                 SELECT dept_id FROM biz.sys_role_dept WHERE role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
@@ -59,7 +59,8 @@ public interface SysRoleDeptMapper {
      * @param roleIds 角色id集合
      * @return 结果
      */
-    @Delete("""
+    @Delete(
+            """
             <script>
                 DELETE FROM biz.sys_role_dept WHERE role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
@@ -84,7 +85,8 @@ public interface SysRoleDeptMapper {
      * @param list 角色部门列表
      * @return 结果
      */
-    @Insert("""
+    @Insert(
+            """
             <script>
                 INSERT INTO biz.sys_role_dept(role_id, dept_id) VALUES
                     <foreach item="item" index="index" collection="list" separator=",">
@@ -93,5 +95,4 @@ public interface SysRoleDeptMapper {
             </script>
             """)
     int insertBatch(List<SysRoleDept> list);
-
 }

@@ -11,11 +11,10 @@ import com.wzkris.system.listener.event.PublishMessageEvent;
 import com.wzkris.system.mapper.SysNoticeMapper;
 import com.wzkris.system.mapper.SysNoticeUserMapper;
 import com.wzkris.system.service.SysNoticeService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +33,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             notice.setTitle(messageDTO.getTitle());
             notice.setNoticeType(messageDTO.getType());
             notice.setContent(messageDTO.getContent());
-            notice.setCreatorId(LoginUtil.isAuthenticated() ? LoginUtil.getUserId() : SecurityConstants.DEFAULT_USER_ID);
+            notice.setCreatorId(
+                    LoginUtil.isAuthenticated() ? LoginUtil.getUserId() : SecurityConstants.DEFAULT_USER_ID);
             notice.setCreateAt(DateUtil.date());
             noticeMapper.insert(notice);
             List<SysNoticeUser> list = toUsers.stream()
-                    .map(uid -> new SysNoticeUser(notice.getNoticeId(), uid)).toList();
+                    .map(uid -> new SysNoticeUser(notice.getNoticeId(), uid))
+                    .toList();
             return noticeUserMapper.insert(list) > 0;
         });
         SpringUtil.getContext().publishEvent(new PublishMessageEvent(toUsers, messageDTO));

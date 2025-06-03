@@ -17,15 +17,14 @@ import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
 import jakarta.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 管理员 业务层处理
@@ -147,7 +146,10 @@ public class SysUserServiceImpl implements SysUserService {
                 .eq(StringUtil.isNotNull(queryReq.getTenantId()), SysUser::getTenantId, queryReq.getTenantId())
                 .like(StringUtil.isNotNull(queryReq.getUsername()), SysUser::getUsername, queryReq.getUsername())
                 .like(StringUtil.isNotNull(queryReq.getNickname()), SysUser::getNickname, queryReq.getNickname())
-                .like(StringUtil.isNotNull(queryReq.getPhoneNumber()), SysUser::getPhoneNumber, queryReq.getPhoneNumber())
+                .like(
+                        StringUtil.isNotNull(queryReq.getPhoneNumber()),
+                        SysUser::getPhoneNumber,
+                        queryReq.getPhoneNumber())
                 .like(StringUtil.isNotNull(queryReq.getEmail()), SysUser::getEmail, queryReq.getEmail())
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
@@ -189,5 +191,4 @@ public class SysUserServiceImpl implements SysUserService {
             }
         }
     }
-
 }

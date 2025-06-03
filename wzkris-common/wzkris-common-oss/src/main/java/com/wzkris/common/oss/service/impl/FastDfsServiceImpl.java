@@ -6,10 +6,9 @@ import com.wzkris.common.oss.config.OssConfig;
 import com.wzkris.common.oss.domain.FileVO;
 import com.wzkris.common.oss.service.FileService;
 import com.wzkris.common.oss.utils.FileUtil;
+import java.io.InputStream;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
-
-import java.io.InputStream;
 
 /**
  * FastDFS 文件存储
@@ -36,9 +35,7 @@ public class FastDfsServiceImpl implements FileService {
 
     @Override
     public FileVO upload(InputStream is, String relativePath, String fileName, String contentType) {
-        StorePath storePath = storageClient.uploadFile(is, -1,
-                FileUtil.getSuffix(fileName), null);
+        StorePath storePath = storageClient.uploadFile(is, -1, FileUtil.getSuffix(fileName), null);
         return new FileVO(FileUtil.getName(fileName), properties.getDomain(), storePath.getFullPath());
     }
-
 }

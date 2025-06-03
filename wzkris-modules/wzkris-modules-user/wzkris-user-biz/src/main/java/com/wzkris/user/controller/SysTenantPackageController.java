@@ -23,12 +23,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 租户套餐管理
@@ -38,7 +37,7 @@ import java.util.List;
 @Tag(name = "租户套餐管理")
 @Validated
 @RequiredArgsConstructor
-@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
 @RestController
 @RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {
@@ -61,7 +60,10 @@ public class SysTenantPackageController extends BaseController {
     private LambdaQueryWrapper<SysTenantPackage> buildQueryWrapper(SysTenantPackageQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantPackage>()
                 .select(SysTenantPackage.class, q -> !q.getColumn().equals("menu_ids"))
-                .like(StringUtil.isNotNull(queryReq.getPackageName()), SysTenantPackage::getPackageName, queryReq.getPackageName())
+                .like(
+                        StringUtil.isNotNull(queryReq.getPackageName()),
+                        SysTenantPackage::getPackageName,
+                        queryReq.getPackageName())
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), SysTenantPackage::getStatus, queryReq.getStatus())
                 .orderByDesc(SysTenantPackage::getPackageId);
     }
@@ -79,8 +81,8 @@ public class SysTenantPackageController extends BaseController {
     @Operation(summary = "套餐详细信息")
     @GetMapping("/{packageId}")
     @CheckSystemPerms("tenant_package:query")
-    public Result<SysTenantPackage> getInfo(@NotNull(message = "{desc.package}{desc.id}{validate.notnull}")
-                                            @PathVariable Long packageId) {
+    public Result<SysTenantPackage> getInfo(
+            @NotNull(message = "{desc.package}{desc.id}{validate.notnull}") @PathVariable Long packageId) {
         return ok(tenantPackageMapper.selectById(packageId));
     }
 
@@ -114,11 +116,11 @@ public class SysTenantPackageController extends BaseController {
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckSystemPerms("tenant_package:remove")
-    public Result<Void> remove(@NotEmpty(message = "{desc.package}{desc.id}{validate.notnull}") @RequestBody List<Long> packageIds) {
+    public Result<Void> remove(
+            @NotEmpty(message = "{desc.package}{desc.id}{validate.notnull}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
             return err412("删除失败, 套餐正在使用");
         }
         return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }
-
 }

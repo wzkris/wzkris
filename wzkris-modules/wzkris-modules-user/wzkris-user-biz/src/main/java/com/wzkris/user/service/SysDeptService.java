@@ -2,7 +2,6 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.vo.SelectTreeVO;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -55,5 +54,4 @@ public interface SysDeptService {
             this.checkDataScopes(Collections.singleton(deptId));
         }
     }
-
 }

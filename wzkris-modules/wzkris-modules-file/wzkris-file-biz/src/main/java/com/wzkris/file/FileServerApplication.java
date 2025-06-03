@@ -22,7 +22,8 @@ public class FileServerApplication {
         springApplication.addListeners(new ApplicationPidFileWriter());
         springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
         springApplication.run(args);
-        System.out.println("""
+        System.out.println(
+                """
                 (♥◠‿◠)ﾉﾞ  文件服务模块启动成功   ლ(´ڡ`ლ)ﾞ \s
                  ________ ___  ___       _______     \s
                 |\\  _____\\\\  \\|\\  \\     |\\  ___ \\    \s

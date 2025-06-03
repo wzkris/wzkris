@@ -25,12 +25,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 角色信息
@@ -89,24 +88,32 @@ public class SysRoleController extends BaseController {
 
     @Operation(summary = "角色菜单选择树")
     @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{roleId}"})
-    @CheckSystemPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(
+            value = {"sys_role:edit", "sys_role:add"},
+            mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
-        checkedSelectTreeVO.setCheckedKeys(roleId == null ? Collections.emptyList() : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
+        checkedSelectTreeVO.setCheckedKeys(
+                roleId == null
+                        ? Collections.emptyList()
+                        : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
         checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUtil.getUserId()));
         return ok(checkedSelectTreeVO);
     }
 
     @Operation(summary = "角色部门选择树")
     @GetMapping({"/dept_checked_select_tree/", "/dept_checked_select_tree/{roleId}"})
-    @CheckSystemPerms(value = {"sys_role:edit", "sys_role:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(
+            value = {"sys_role:edit", "sys_role:add"},
+            mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
-        checkedSelectTreeVO.setCheckedKeys(roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
+        checkedSelectTreeVO.setCheckedKeys(
+                roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
         checkedSelectTreeVO.setSelectTrees(deptService.listSelectTree(null));
         return ok(checkedSelectTreeVO);
     }
@@ -119,7 +126,8 @@ public class SysRoleController extends BaseController {
         if (!tenantService.checkRoleLimit(LoginUtil.getTenantId())) {
             return err412("角色数量已达上限，请联系管理员");
         }
-        return toRes(roleService.insertRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
+        return toRes(roleService.insertRole(
+                BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
 
     @Operation(summary = "修改角色")
@@ -129,7 +137,8 @@ public class SysRoleController extends BaseController {
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysRoleReq roleReq) {
         // 权限校验
         roleService.checkDataScopes(roleReq.getRoleId());
-        return toRes(roleService.updateRole(BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
+        return toRes(roleService.updateRole(
+                BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
 
     @Operation(summary = "状态修改")
@@ -148,7 +157,8 @@ public class SysRoleController extends BaseController {
     @OperateLog(title = "角色管理", subTitle = "删除角色", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckSystemPerms("sys_role:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
+    public Result<Void> remove(
+            @RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
         // 权限校验
         roleService.checkDataScopes(roleIds);
         roleService.checkRoleUsed(roleIds);
@@ -200,5 +210,4 @@ public class SysRoleController extends BaseController {
         userService.checkDataScopes(req.getUserIds());
         return toRes(roleService.allocateUsers(req.getRoleId(), req.getUserIds()));
     }
-
 }

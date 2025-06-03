@@ -4,18 +4,17 @@ import cn.hutool.core.net.NetUtil;
 import com.wzkris.system.mqtt.MqttProperties;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author : wzkris
@@ -55,14 +54,16 @@ public class MqttUtil {
 
         for (Map.Entry<String, MqttProperties.GeneralSetting> setting : settings.entrySet()) {
             MqttProperties.GeneralSetting generalSetting = setting.getValue();
-            String clientidPref = generalSetting.getClientId() + "_" + setting.getKey() + "_" + NetUtil.getLocalMacAddress();// 解决集群部署clientid冲突
+            String clientidPref = generalSetting.getClientId() + "_" + setting.getKey() + "_"
+                    + NetUtil.getLocalMacAddress(); // 解决集群部署clientid冲突
             final MqttClientPool pool = new MqttClientPool();
             for (int i = 0; i < generalSetting.getClientNum(); i++) {
-                MqttClient mqttClient = new MqttClient(generalSetting.getHost(), clientidPref + "_" + i, new MemoryPersistence());
+                MqttClient mqttClient =
+                        new MqttClient(generalSetting.getHost(), clientidPref + "_" + i, new MemoryPersistence());
                 // 创建链接参数
                 MqttConnectOptions connectOptions = new MqttConnectOptions();
-                connectOptions.setAutomaticReconnect(generalSetting.getAutomaticReconnect());// 自动重连
-                connectOptions.setMaxReconnectDelay(generalSetting.getMaxReconnectDelay());//重连最大间隔
+                connectOptions.setAutomaticReconnect(generalSetting.getAutomaticReconnect()); // 自动重连
+                connectOptions.setMaxReconnectDelay(generalSetting.getMaxReconnectDelay()); // 重连最大间隔
                 // 在重新启动和重新连接时记住状态
                 connectOptions.setCleanSession(generalSetting.getCleanSession());
                 // 设置连接的用户名
@@ -135,8 +136,8 @@ public class MqttUtil {
                 message.setQos(qos);
                 message.setPayload(msg.getBytes(StandardCharsets.UTF_8));
                 MqttDeliveryToken deliveryToken = mqttTopic.publish(message);
-                deliveryToken.waitForCompletion(sendTimeout);// 等待操作完成
-                return deliveryToken.getException() == null;// 为空代表发送成功
+                deliveryToken.waitForCompletion(sendTimeout); // 等待操作完成
+                return deliveryToken.getException() == null; // 为空代表发送成功
             } catch (MqttException e) {
                 log.error("发布消息时发生异常，errmsg：{}", e.getMessage());
                 return false;
@@ -155,7 +156,5 @@ public class MqttUtil {
                 log.error("订阅主题时发生异常，errmsg：{}", e.getMessage());
             }
         }
-
     }
-
 }

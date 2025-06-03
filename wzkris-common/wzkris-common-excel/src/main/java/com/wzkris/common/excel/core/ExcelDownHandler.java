@@ -14,15 +14,14 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
 import com.wzkris.common.excel.annotation.ExcelEnumFormat;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
-
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <h1>Excel表格下拉选操作</h1>
@@ -88,7 +87,8 @@ public class ExcelDownHandler implements SheetWriteHandler {
         DataValidationHelper helper = sheet.getDataValidationHelper();
         Workbook workbook = writeWorkbookHolder.getWorkbook();
         FieldCache fieldCache = ClassUtils.declaredFields(writeWorkbookHolder.getClazz(), writeWorkbookHolder);
-        for (Map.Entry<Integer, FieldWrapper> entry : fieldCache.getSortedFieldMap().entrySet()) {
+        for (Map.Entry<Integer, FieldWrapper> entry :
+                fieldCache.getSortedFieldMap().entrySet()) {
             Integer index = entry.getKey();
             FieldWrapper wrapper = entry.getValue();
             Field field = wrapper.getField();
@@ -150,7 +150,8 @@ public class ExcelDownHandler implements SheetWriteHandler {
         if (ObjectUtil.isEmpty(value)) {
             return;
         }
-        this.markOptionsToSheet(helper, sheet, celIndex, helper.createExplicitListConstraint(ArrayUtil.toArray(value, String.class)));
+        this.markOptionsToSheet(
+                helper, sheet, celIndex, helper.createExplicitListConstraint(ArrayUtil.toArray(value, String.class)));
     }
 
     /**
@@ -158,8 +159,10 @@ public class ExcelDownHandler implements SheetWriteHandler {
      *
      * @param options 额外表格形式存储的下拉可选项
      */
-    private void dropDownLinkedOptions(DataValidationHelper helper, Workbook workbook, Sheet sheet, DropDownOptions options) {
-        String linkedOptionsSheetName = String.format("%s_%d", LINKED_OPTIONS_SHEET_NAME, currentLinkedOptionsSheetIndex);
+    private void dropDownLinkedOptions(
+            DataValidationHelper helper, Workbook workbook, Sheet sheet, DropDownOptions options) {
+        String linkedOptionsSheetName =
+                String.format("%s_%d", LINKED_OPTIONS_SHEET_NAME, currentLinkedOptionsSheetIndex);
         // 创建联动下拉数据表
         Sheet linkedOptionsDataSheet = workbook.createSheet(WorkbookUtil.createSafeSheetName(linkedOptionsSheetName));
         // 将下拉表隐藏
@@ -173,15 +176,14 @@ public class ExcelDownHandler implements SheetWriteHandler {
         // 设置名称管理器的别名
         name.setNameName(linkedOptionsSheetName);
         // 以横向第一行创建一级下拉拼接引用位置
-        String firstOptionsFunction = String.format("%s!$%s$1:$%s$1",
-                linkedOptionsSheetName,
-                getExcelColumnName(0),
-                getExcelColumnName(firstOptions.size())
-        );
+        String firstOptionsFunction = String.format(
+                "%s!$%s$1:$%s$1",
+                linkedOptionsSheetName, getExcelColumnName(0), getExcelColumnName(firstOptions.size()));
         // 设置名称管理器的引用位置
         name.setRefersToFormula(firstOptionsFunction);
         // 设置数据校验为序列模式，引用的是名称管理器中的别名
-        this.markOptionsToSheet(helper, sheet, options.getIndex(), helper.createFormulaListConstraint(linkedOptionsSheetName));
+        this.markOptionsToSheet(
+                helper, sheet, options.getIndex(), helper.createFormulaListConstraint(linkedOptionsSheetName));
 
         for (int columIndex = 0; columIndex < firstOptions.size(); columIndex++) {
             // 先提取主表中一级下拉的列名
@@ -211,12 +213,9 @@ public class ExcelDownHandler implements SheetWriteHandler {
             // 设置名称管理器的别名
             sonName.setNameName(thisFirstOptionsValue);
             // 以第二行该列数据拼接引用位置
-            String sonFunction = String.format("%s!$%s$2:$%s$%d",
-                    linkedOptionsSheetName,
-                    firstOptionsColumnName,
-                    firstOptionsColumnName,
-                    secondOptions.size() + 1
-            );
+            String sonFunction = String.format(
+                    "%s!$%s$2:$%s$%d",
+                    linkedOptionsSheetName, firstOptionsColumnName, firstOptionsColumnName, secondOptions.size() + 1);
             // 设置名称管理器的引用位置
             sonName.setRefersToFormula(sonFunction);
             // 数据验证为序列模式，引用到每一个主表中的二级选项位置
@@ -226,7 +225,12 @@ public class ExcelDownHandler implements SheetWriteHandler {
                 // 以一级选项对应的主体所在位置创建二级下拉
                 String secondOptionsFunction = String.format("=INDIRECT(%s%d)", mainSheetFirstOptionsColumnName, i + 1);
                 // 二级只能主表每一行的每一列添加二级校验
-                markLinkedOptionsToSheet(helper, sheet, i, options.getNextIndex(), helper.createFormulaListConstraint(secondOptionsFunction));
+                markLinkedOptionsToSheet(
+                        helper,
+                        sheet,
+                        i,
+                        options.getNextIndex(),
+                        helper.createFormulaListConstraint(secondOptionsFunction));
             }
 
             for (int rowIndex = 0; rowIndex < secondOptions.size(); rowIndex++) {
@@ -257,9 +261,11 @@ public class ExcelDownHandler implements SheetWriteHandler {
      * @param celIndex 下拉选
      * @param value    下拉选可选值
      */
-    private void dropDownWithSheet(DataValidationHelper helper, Workbook workbook, Sheet sheet, Integer celIndex, List<String> value) {
+    private void dropDownWithSheet(
+            DataValidationHelper helper, Workbook workbook, Sheet sheet, Integer celIndex, List<String> value) {
         // 创建下拉数据表
-        Sheet simpleDataSheet = Optional.ofNullable(workbook.getSheet(WorkbookUtil.createSafeSheetName(OPTIONS_SHEET_NAME)))
+        Sheet simpleDataSheet = Optional.ofNullable(
+                        workbook.getSheet(WorkbookUtil.createSafeSheetName(OPTIONS_SHEET_NAME)))
                 .orElseGet(() -> workbook.createSheet(WorkbookUtil.createSafeSheetName(OPTIONS_SHEET_NAME)));
         // 将下拉表隐藏
         workbook.setSheetHidden(workbook.getSheetIndex(simpleDataSheet), true);
@@ -267,8 +273,7 @@ public class ExcelDownHandler implements SheetWriteHandler {
         for (int i = 0; i < value.size(); i++) {
             int finalI = i;
             // 获取每一选项行，如果没有则创建
-            Row row = Optional.ofNullable(simpleDataSheet.getRow(i))
-                    .orElseGet(() -> simpleDataSheet.createRow(finalI));
+            Row row = Optional.ofNullable(simpleDataSheet.getRow(i)).orElseGet(() -> simpleDataSheet.createRow(finalI));
             // 获取本级选项对应的选项列，如果没有则创建
             Cell cell = Optional.ofNullable(row.getCell(currentOptionsColumnIndex))
                     .orElseGet(() -> row.createCell(currentOptionsColumnIndex));
@@ -282,7 +287,8 @@ public class ExcelDownHandler implements SheetWriteHandler {
         String nameName = String.format("%s_%d", OPTIONS_SHEET_NAME, celIndex);
         name.setNameName(nameName);
         // 以纵向第一列创建一级下拉拼接引用位置
-        String function = String.format("%s!$%s$1:$%s$%d",
+        String function = String.format(
+                "%s!$%s$1:$%s$%d",
                 OPTIONS_SHEET_NAME,
                 getExcelColumnName(currentOptionsColumnIndex),
                 getExcelColumnName(currentOptionsColumnIndex),
@@ -297,8 +303,8 @@ public class ExcelDownHandler implements SheetWriteHandler {
     /**
      * 挂载下拉的列，仅限一级选项
      */
-    private void markOptionsToSheet(DataValidationHelper helper, Sheet sheet, Integer celIndex,
-                                    DataValidationConstraint constraint) {
+    private void markOptionsToSheet(
+            DataValidationHelper helper, Sheet sheet, Integer celIndex, DataValidationConstraint constraint) {
         // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
         CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, celIndex, celIndex);
         markDataValidationToSheet(helper, sheet, constraint, addressList);
@@ -307,8 +313,12 @@ public class ExcelDownHandler implements SheetWriteHandler {
     /**
      * 挂载下拉的列，仅限二级选项
      */
-    private void markLinkedOptionsToSheet(DataValidationHelper helper, Sheet sheet, Integer rowIndex,
-                                          Integer celIndex, DataValidationConstraint constraint) {
+    private void markLinkedOptionsToSheet(
+            DataValidationHelper helper,
+            Sheet sheet,
+            Integer rowIndex,
+            Integer celIndex,
+            DataValidationConstraint constraint) {
         // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
         CellRangeAddressList addressList = new CellRangeAddressList(rowIndex, rowIndex, celIndex, celIndex);
         markDataValidationToSheet(helper, sheet, constraint, addressList);
@@ -317,19 +327,22 @@ public class ExcelDownHandler implements SheetWriteHandler {
     /**
      * 应用数据校验
      */
-    private void markDataValidationToSheet(DataValidationHelper helper, Sheet sheet,
-                                           DataValidationConstraint constraint, CellRangeAddressList addressList) {
+    private void markDataValidationToSheet(
+            DataValidationHelper helper,
+            Sheet sheet,
+            DataValidationConstraint constraint,
+            CellRangeAddressList addressList) {
         // 数据有效性对象
         DataValidation dataValidation = helper.createValidation(constraint, addressList);
         // 处理Excel兼容性问题
         if (dataValidation instanceof XSSFDataValidation) {
-            //数据校验
+            // 数据校验
             dataValidation.setSuppressDropDownArrow(true);
-            //错误提示
+            // 错误提示
             dataValidation.setErrorStyle(DataValidation.ErrorStyle.STOP);
             dataValidation.createErrorBox("提示", "此值与单元格定义数据不一致");
             dataValidation.setShowErrorBox(true);
-            //选定提示
+            // 选定提示
             dataValidation.createPromptBox("填写说明：", "填写内容只能为下拉中数据，其他数据将导致导入失败");
             dataValidation.setShowPromptBox(true);
             sheet.addValidationData(dataValidation);

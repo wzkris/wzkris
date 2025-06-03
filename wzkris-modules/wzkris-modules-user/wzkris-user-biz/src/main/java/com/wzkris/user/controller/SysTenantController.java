@@ -32,13 +32,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 租户管理
@@ -49,8 +48,8 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
-@IgnoreTenant// 忽略租户隔离
+@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@IgnoreTenant // 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
 
@@ -90,7 +89,9 @@ public class SysTenantController extends BaseController {
 
     @Operation(summary = "套餐选择列表")
     @GetMapping("/package_select")
-    @CheckSystemPerms(value = {"sys_tenant:add", "sys_tenant:edit"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(
+            value = {"sys_tenant:add", "sys_tenant:edit"},
+            mode = CheckPerms.Mode.OR)
     public Result<List<SelectVO>> packageSelect(String packageName) {
         List<SelectVO> selectVOS = tenantPackageService.listSelect(packageName);
         return ok(selectVOS);
@@ -99,8 +100,8 @@ public class SysTenantController extends BaseController {
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/{tenantId}")
     @CheckSystemPerms("sys_tenant:query")
-    public Result<SysTenant> queryByid(@NotNull(message = "{desc.tenant}{desc.id}{validate.notnull}")
-                                       @PathVariable Long tenantId) {
+    public Result<SysTenant> queryByid(
+            @NotNull(message = "{desc.tenant}{desc.id}{validate.notnull}") @PathVariable Long tenantId) {
         return ok(tenantMapper.selectById(tenantId));
     }
 
@@ -120,9 +121,13 @@ public class SysTenantController extends BaseController {
         String password = RandomUtil.randomNumbers(8);
         boolean success = tenantService.insertTenant(tenant, tenantReq.getUsername(), password);
         if (success) {
-            SpringUtil.getContext().publishEvent(
-                    new CreateTenantEvent(LoginUtil.getUserId(), tenantReq.getUsername(), tenantReq.getTenantName(), password, operPwd)
-            );
+            SpringUtil.getContext()
+                    .publishEvent(new CreateTenantEvent(
+                            LoginUtil.getUserId(),
+                            tenantReq.getUsername(),
+                            tenantReq.getTenantName(),
+                            password,
+                            operPwd));
         }
         return toRes(success);
     }
@@ -171,10 +176,10 @@ public class SysTenantController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckSystemPerms("sys_tenant:remove")
-    public Result<Void> remove(@RequestBody @NotNull(message = "{desc.tenant}{desc.id}{validate.notnull}") Long tenantId) {
+    public Result<Void> remove(
+            @RequestBody @NotNull(message = "{desc.tenant}{desc.id}{validate.notnull}") Long tenantId) {
         tenantService.checkDataScope(tenantId);
 
         return toRes(tenantService.deleteById(tenantId));
     }
-
 }

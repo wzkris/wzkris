@@ -1,11 +1,10 @@
 package com.wzkris.common.oss.service;
 
 import com.wzkris.common.oss.config.OssConfig;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

@@ -35,5 +35,4 @@ public enum MisfireStrategyEnum {
     public String getTitle() {
         return title;
     }
-
 }

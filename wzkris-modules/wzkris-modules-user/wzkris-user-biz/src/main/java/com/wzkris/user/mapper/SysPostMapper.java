@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
  * @author wzkris
  */
 @Repository
-public interface SysPostMapper extends BaseMapperPlus<SysPost> {
-
-}
+public interface SysPostMapper extends BaseMapperPlus<SysPost> {}

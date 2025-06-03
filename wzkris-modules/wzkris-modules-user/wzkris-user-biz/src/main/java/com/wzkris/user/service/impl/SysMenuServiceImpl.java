@@ -18,15 +18,14 @@ import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysRoleService;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 菜单 业务层处理
@@ -61,9 +60,9 @@ public class SysMenuServiceImpl implements SysMenuService {
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
-        return menuMapper.listPermsByMenuIds(menuIds)
-                .stream()
-                .filter(StringUtil::isNotBlank).toList();
+        return menuMapper.listPermsByMenuIds(menuIds).stream()
+                .filter(StringUtil::isNotBlank)
+                .toList();
     }
 
     @Override
@@ -146,16 +145,21 @@ public class SysMenuServiceImpl implements SysMenuService {
             router.setComponent(this.getComponent(menu));
 
             // 构建meta信息
-            MetaVO meta = new MetaVO(menu.getMenuName(),
+            MetaVO meta = new MetaVO(
+                    menu.getMenuName(),
                     menu.getIcon(),
                     !menu.getIsVisible(),
                     menu.getIsCache(),
-                    Convert.toMap(String.class, String.class, UrlQuery.of(menu.getQuery(), StandardCharsets.UTF_8).getQueryMap()));
+                    Convert.toMap(
+                            String.class,
+                            String.class,
+                            UrlQuery.of(menu.getQuery(), StandardCharsets.UTF_8).getQueryMap()));
 
             // 处理菜单类型
             if (StringUtil.equals(MenuConstants.TYPE_DIR, menu.getMenuType())) {
                 router.setChildren(this.buildRouter(menu.getChildren()));
-            } else if (StringUtil.equalsAny(menu.getMenuType(), MenuConstants.TYPE_OUTLINK, MenuConstants.TYPE_INNERLINK)) {
+            } else if (StringUtil.equalsAny(
+                    menu.getMenuType(), MenuConstants.TYPE_OUTLINK, MenuConstants.TYPE_INNERLINK)) {
                 meta.setLink(menu.getPath());
                 router.setPath(menu.getMenuName());
             }
@@ -196,8 +200,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public boolean checkMenuExistChild(Long menuId) {
-        LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class)
-                .eq(SysMenu::getParentId, menuId);
+        LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class).eq(SysMenu::getParentId, menuId);
         return menuMapper.exists(lqw);
     }
 
@@ -224,8 +227,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      */
     public String getComponent(SysMenu menu) {
         String component = menu.getComponent();
-        if (StringUtil.isEmpty(component) &&
-                StringUtil.equals(MenuConstants.TYPE_INNERLINK, menu.getMenuType())) {
+        if (StringUtil.isEmpty(component) && StringUtil.equals(MenuConstants.TYPE_INNERLINK, menu.getMenuType())) {
             component = MenuConstants.IFRAME_VIEW;
         } else if (StringUtil.isEmpty(component) && StringUtil.equals(MenuConstants.TYPE_OUTLINK, menu.getMenuType())) {
             component = MenuConstants.LINK;

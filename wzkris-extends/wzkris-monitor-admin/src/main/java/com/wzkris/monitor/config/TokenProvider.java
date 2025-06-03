@@ -4,13 +4,12 @@ import cn.hutool.core.text.StrPool;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
+import java.time.Instant;
 import lombok.Data;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.time.Instant;
 
 public class TokenProvider {
 
@@ -28,7 +27,8 @@ public class TokenProvider {
         if (accessToken == null || Instant.now().isAfter(expiryTime)) {
             WebClient webClient = WebClient.create();
 
-            Result<TokenResponse> result = webClient.post()
+            Result<TokenResponse> result = webClient
+                    .post()
                     .uri(properties.getUrl())
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .accept(MediaType.APPLICATION_JSON)
@@ -37,8 +37,7 @@ public class TokenProvider {
                             .with("client_secret", properties.getClientSecret())
                             .with("scope", StringUtil.join(StrPool.COMMA, properties.getScopes())))
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Result<TokenResponse>>() {
-                    })
+                    .bodyToMono(new ParameterizedTypeReference<Result<TokenResponse>>() {})
                     .block();
 
             if (!result.isSuccess()) {
@@ -65,6 +64,5 @@ public class TokenProvider {
         private String token_type;
 
         private long expires_in;
-
     }
 }

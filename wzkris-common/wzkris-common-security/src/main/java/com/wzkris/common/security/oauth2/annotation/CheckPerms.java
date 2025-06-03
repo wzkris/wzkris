@@ -1,7 +1,6 @@
 package com.wzkris.common.security.oauth2.annotation;
 
 import com.wzkris.common.security.oauth2.enums.LoginType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

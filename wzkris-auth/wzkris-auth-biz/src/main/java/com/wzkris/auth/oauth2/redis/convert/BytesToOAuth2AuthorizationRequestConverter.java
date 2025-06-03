@@ -36,5 +36,4 @@ public class BytesToOAuth2AuthorizationRequestConverter implements Converter<byt
     public OAuth2AuthorizationRequest convert(byte[] value) {
         return this.serializer.deserialize(value);
     }
-
 }

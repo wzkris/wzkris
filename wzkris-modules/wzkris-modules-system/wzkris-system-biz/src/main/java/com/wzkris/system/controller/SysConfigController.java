@@ -17,12 +17,11 @@ import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 参数配置 信息操作处理
@@ -31,7 +30,7 @@ import java.util.List;
  */
 @Tag(name = "参数管理")
 @RestController
-@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
 @RequestMapping("/sys_config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
@@ -52,8 +51,14 @@ public class SysConfigController extends BaseController {
     private LambdaQueryWrapper<SysConfig> buildQueryWrapper(SysConfigQueryReq queryReq) {
         return new LambdaQueryWrapper<SysConfig>()
                 .like(StringUtil.isNotNull(queryReq.getConfigKey()), SysConfig::getConfigKey, queryReq.getConfigKey())
-                .like(StringUtil.isNotNull(queryReq.getConfigName()), SysConfig::getConfigName, queryReq.getConfigName())
-                .like(StringUtil.isNotNull(queryReq.getConfigType()), SysConfig::getConfigType, queryReq.getConfigType())
+                .like(
+                        StringUtil.isNotNull(queryReq.getConfigName()),
+                        SysConfig::getConfigName,
+                        queryReq.getConfigName())
+                .like(
+                        StringUtil.isNotNull(queryReq.getConfigType()),
+                        SysConfig::getConfigType,
+                        queryReq.getConfigType())
                 .orderByDesc(SysConfig::getConfigId);
     }
 

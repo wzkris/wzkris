@@ -4,10 +4,6 @@ import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
 import cloud.tianai.captcha.resource.ResourceStore;
 import cloud.tianai.captcha.resource.common.model.dto.Resource;
 import jakarta.annotation.PostConstruct;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
@@ -22,6 +18,9 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * 验证码配置
@@ -46,7 +45,8 @@ public class CaptchaConfig {
                 resourceStore.addResource(CaptchaTypeConstant.SLIDER, new Resource("classpath", filePath, "default"));
                 resourceStore.addResource(CaptchaTypeConstant.ROTATE, new Resource("classpath", filePath, "default"));
                 resourceStore.addResource(CaptchaTypeConstant.CONCAT, new Resource("classpath", filePath, "default"));
-                resourceStore.addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, new Resource("classpath", filePath, "default"));
+                resourceStore.addResource(
+                        CaptchaTypeConstant.WORD_IMAGE_CLICK, new Resource("classpath", filePath, "default"));
             }
         }
     }
@@ -112,11 +112,11 @@ public class CaptchaConfig {
                     // 处理文件系统中的资源
                     Path resourcePath = Paths.get(resourceUrl.toURI());
                     try (Stream<Path> paths = Files.walk(resourcePath)) {
-                        paths.filter(Files::isRegularFile)
-                                .forEach(path -> {
-                                    String filePath = resourceDir + "/" + path.getFileName().toString();
-                                    filePaths.add(filePath);
-                                });
+                        paths.filter(Files::isRegularFile).forEach(path -> {
+                            String filePath =
+                                    resourceDir + "/" + path.getFileName().toString();
+                            filePaths.add(filePath);
+                        });
                     }
                 }
             }
@@ -124,5 +124,4 @@ public class CaptchaConfig {
 
         return filePaths;
     }
-
 }

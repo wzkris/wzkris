@@ -29,15 +29,17 @@ public class DeprecatedAPIAspect {
     @Around(value = "@annotation(deprecatedAPI)")
     public Object doBeforeAPI(ProceedingJoinPoint joinPoint, DeprecatedAPI deprecatedAPI) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        RequestMapping requestMapping = AnnotationUtils.findAnnotation(signature.getMethod(),
-                RequestMapping.class);
+        RequestMapping requestMapping = AnnotationUtils.findAnnotation(signature.getMethod(), RequestMapping.class);
 
         if (requestMapping != null) {
             return Result.resp(BizCode.DEPRECATED_API);
         }
 
-        log.warn("废弃方法被调用：{}", signature.getDeclaringTypeName() + StrPool.AT + signature.getMethod().getName());
+        log.warn(
+                "废弃方法被调用：{}",
+                signature.getDeclaringTypeName()
+                        + StrPool.AT
+                        + signature.getMethod().getName());
         return joinPoint.proceed();
     }
-
 }

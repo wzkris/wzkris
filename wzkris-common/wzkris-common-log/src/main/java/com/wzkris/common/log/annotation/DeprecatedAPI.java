@@ -12,4 +12,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface DeprecatedAPI {
 
+    String currentVersion() default "";
+
+    String requiredVersion() default "";
 }

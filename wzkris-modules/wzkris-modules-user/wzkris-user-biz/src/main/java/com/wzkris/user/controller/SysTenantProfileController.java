@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CheckSystemPerms("tenant:info")
 @RequestMapping("/tenant_profile")
-@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")// 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysTenantProfileController extends BaseController {
 
@@ -76,7 +76,7 @@ public class SysTenantProfileController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
-    @PreAuthorize("@lg.isAdmin()")// 只允许租户的超级管理员修改
+    @PreAuthorize("@lg.isAdmin()") // 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
         Long tenantId = LoginUtil.getTenantId();
 
@@ -94,5 +94,4 @@ public class SysTenantProfileController extends BaseController {
         update.setOperPwd(passwordEncoder.encode(req.getNewPassword()));
         return toRes(tenantMapper.updateById(update));
     }
-
 }

@@ -1,10 +1,9 @@
 package com.wzkris.user.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.List;
+import lombok.Data;
 
 /**
  * 路由配置信息

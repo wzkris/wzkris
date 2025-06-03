@@ -23,9 +23,12 @@ public class CustomBearerTokenResolver implements BearerTokenResolver {
 
     @Override
     public String resolve(HttpServletRequest request) {
-        String token = StringUtil.blankToDefault(defaultBearerTokenResolver.resolve(request), request.getHeader(HttpHeaders.AUTHORIZATION));
-        if (StringUtil.isNotBlank(token) && token.startsWith(OAuth2AccessToken.TokenType.BEARER.getValue() + StringUtil.SPACE)) {
-            token = token.replaceFirst(OAuth2AccessToken.TokenType.BEARER.getValue() + StringUtil.SPACE, StringUtil.EMPTY);
+        String token = StringUtil.blankToDefault(
+                defaultBearerTokenResolver.resolve(request), request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (StringUtil.isNotBlank(token)
+                && token.startsWith(OAuth2AccessToken.TokenType.BEARER.getValue() + StringUtil.SPACE)) {
+            token = token.replaceFirst(
+                    OAuth2AccessToken.TokenType.BEARER.getValue() + StringUtil.SPACE, StringUtil.EMPTY);
         }
         return token;
     }

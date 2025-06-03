@@ -73,8 +73,8 @@ public class RmiSysUserServiceImpl implements RmiSysUserService {
 
     @Override
     public SysPermissionResp getPermission(QueryPermsReq queryPermsReq) {
-        SysPermissionResp permission = sysPermissionService
-                .getPermission(queryPermsReq.getUserId(), queryPermsReq.getTenantId(), queryPermsReq.getDeptId());
+        SysPermissionResp permission = sysPermissionService.getPermission(
+                queryPermsReq.getUserId(), queryPermsReq.getTenantId(), queryPermsReq.getDeptId());
         return permission;
     }
 
@@ -86,5 +86,4 @@ public class RmiSysUserServiceImpl implements RmiSysUserService {
 
         userMapper.updateById(sysUser);
     }
-
 }

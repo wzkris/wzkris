@@ -3,11 +3,10 @@ package com.wzkris.common.core.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.service.GenericException;
-import lombok.Getter;
-import lombok.ToString;
-
 import java.io.Serial;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 响应信息
@@ -41,8 +40,7 @@ public class Result<T> implements Serializable {
      */
     private long timestamp;
 
-    public Result() {
-    }
+    public Result() {}
 
     public Result(int code, T data, String message) {
         this.code = code;

@@ -4,6 +4,10 @@ import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.AuthApp;
+import java.security.Principal;
+import java.time.Instant;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,11 +18,6 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
-import java.time.Instant;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
 @DubboService
 @RequiredArgsConstructor
@@ -28,7 +27,8 @@ public class RmiTokenServiceImpl implements RmiTokenService {
 
     @Override
     public TokenResponse checkToken(TokenReq tokenReq) {
-        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(tokenReq.getToken(), OAuth2TokenType.ACCESS_TOKEN);
+        OAuth2Authorization oAuth2Authorization =
+                oAuth2AuthorizationService.findByToken(tokenReq.getToken(), OAuth2TokenType.ACCESS_TOKEN);
         if (oAuth2Authorization == null) {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check failed");
         }
@@ -39,11 +39,14 @@ public class RmiTokenServiceImpl implements RmiTokenService {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check expired");
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = oAuth2Authorization.getAttribute(Principal.class.getName());
+        UsernamePasswordAuthenticationToken authenticationToken =
+                oAuth2Authorization.getAttribute(Principal.class.getName());
 
         AuthBaseUser baseUser;
         if (authenticationToken == null) {
-            baseUser = new AuthApp(oAuth2Authorization.getPrincipalName(), this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
+            baseUser = new AuthApp(
+                    oAuth2Authorization.getPrincipalName(),
+                    this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
         } else {
             baseUser = (AuthBaseUser) authenticationToken.getPrincipal();
         }

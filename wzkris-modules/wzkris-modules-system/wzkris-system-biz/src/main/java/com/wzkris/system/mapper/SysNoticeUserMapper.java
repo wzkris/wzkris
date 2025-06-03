@@ -1,11 +1,10 @@
 package com.wzkris.system.mapper;
 
 import com.wzkris.system.domain.SysNoticeUser;
-import org.apache.ibatis.annotations.Insert;
-import org.springframework.stereotype.Repository;
-
 import java.util.Collections;
 import java.util.List;
+import org.apache.ibatis.annotations.Insert;
+import org.springframework.stereotype.Repository;
 
 /**
  * 通知发送表 数据层
@@ -15,7 +14,8 @@ import java.util.List;
 @Repository
 public interface SysNoticeUserMapper {
 
-    @Insert("""
+    @Insert(
+            """
             <script>
                 INSERT INTO biz.sys_notice_user(notice_id, user_id, read_state) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">

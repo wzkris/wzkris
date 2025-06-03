@@ -23,7 +23,8 @@ public class RmiNoticeServiceImpl implements RmiNoticeService {
 
     @Override
     public void sendNotice(SendNoticeReq req) {
-        noticeService.sendUsers(req.getUserIds(), new SimpleMessageDTO(req.getTitle(), MessageConstants.NOTICE_TYPE_SYSTEM, req.getContent()));
+        noticeService.sendUsers(
+                req.getUserIds(),
+                new SimpleMessageDTO(req.getTitle(), MessageConstants.NOTICE_TYPE_SYSTEM, req.getContent()));
     }
-
 }

@@ -1,9 +1,8 @@
 package com.wzkris.system.domain.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")

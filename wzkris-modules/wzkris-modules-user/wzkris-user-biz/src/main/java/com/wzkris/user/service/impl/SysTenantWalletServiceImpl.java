@@ -6,11 +6,10 @@ import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.mapper.SysTenantWalletMapper;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import com.wzkris.user.service.SysTenantWalletService;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor

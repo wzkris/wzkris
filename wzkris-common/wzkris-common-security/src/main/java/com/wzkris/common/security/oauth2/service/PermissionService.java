@@ -2,9 +2,8 @@ package com.wzkris.common.security.oauth2.service;
 
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import org.springframework.lang.NonNull;
-
 import java.util.Collection;
+import org.springframework.lang.NonNull;
 
 /**
  * SPEL权限处理

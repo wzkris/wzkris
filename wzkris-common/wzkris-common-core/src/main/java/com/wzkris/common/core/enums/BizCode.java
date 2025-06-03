@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum BizCode {
-
     OK(0, "Success"),
 
     BAD_REQUEST(400, "Bad Request"),
@@ -54,5 +53,4 @@ public enum BizCode {
     public final String desc() {
         return this.desc;
     }
-
 }

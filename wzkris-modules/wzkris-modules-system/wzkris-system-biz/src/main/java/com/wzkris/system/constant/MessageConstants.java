@@ -51,5 +51,4 @@ public class MessageConstants {
      * 通知类型 设备告警
      */
     public static final String NOTICE_TYPE_DEVICE = "1";
-
 }

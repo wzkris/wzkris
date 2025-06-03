@@ -19,7 +19,7 @@ public class SysDictReq {
 
     @NotBlank(message = "{desc.dict}" + "{validate.notnull}")
     @Size(min = 2, max = 50, message = "{desc.dict}{desc.key}" + "{validate.size.illegal}")
-    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{desc.dict}{validate.illegal}")// 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
+    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{desc.dict}{validate.illegal}") // 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
     @Schema(description = "字典键")
     private String dictKey;
 
@@ -35,5 +35,4 @@ public class SysDictReq {
 
     @Schema(description = "备注")
     private String remark;
-
 }

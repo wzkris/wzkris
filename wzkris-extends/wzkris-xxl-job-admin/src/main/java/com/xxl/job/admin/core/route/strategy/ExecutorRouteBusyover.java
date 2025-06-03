@@ -7,7 +7,6 @@ import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.model.IdleBeatParam;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.biz.model.TriggerParam;
-
 import java.util.List;
 
 /**
@@ -28,11 +27,15 @@ public class ExecutorRouteBusyover extends ExecutorRouter {
                 logger.error(e.getMessage(), e);
                 idleBeatResult = new ReturnT<String>(ReturnT.FAIL_CODE, "" + e);
             }
-            idleBeatResultSB.append((idleBeatResultSB.length() > 0) ? "<br><br>" : "")
+            idleBeatResultSB
+                    .append((idleBeatResultSB.length() > 0) ? "<br><br>" : "")
                     .append(I18nUtil.getString("jobconf_idleBeat") + "：")
-                    .append("<br>address：").append(address)
-                    .append("<br>code：").append(idleBeatResult.getCode())
-                    .append("<br>msg：").append(idleBeatResult.getMsg());
+                    .append("<br>address：")
+                    .append(address)
+                    .append("<br>code：")
+                    .append(idleBeatResult.getCode())
+                    .append("<br>msg：")
+                    .append(idleBeatResult.getMsg());
 
             // beat success
             if (idleBeatResult.getCode() == ReturnT.SUCCESS_CODE) {
@@ -44,5 +47,4 @@ public class ExecutorRouteBusyover extends ExecutorRouter {
 
         return new ReturnT<String>(ReturnT.FAIL_CODE, idleBeatResultSB.toString());
     }
-
 }

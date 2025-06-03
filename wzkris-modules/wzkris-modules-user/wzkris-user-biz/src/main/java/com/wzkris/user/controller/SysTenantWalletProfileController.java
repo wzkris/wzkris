@@ -21,12 +21,11 @@ import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 租户钱包信息
@@ -38,7 +37,7 @@ import java.util.List;
 @RestController
 @CheckSystemPerms("tenant:wallet_info")
 @RequestMapping("/tenant_wallet")
-@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")// 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysTenantWalletProfileController extends BaseController {
 
@@ -60,15 +59,22 @@ public class SysTenantWalletProfileController extends BaseController {
     @GetMapping("/record")
     public Result<Page<SysTenantWalletRecord>> listWalletPage(SysTenantWalletRecordQueryReq queryReq) {
         startPage();
-        List<SysTenantWalletRecord> recordList = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
+        List<SysTenantWalletRecord> recordList =
+                tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
         return getDataTable(recordList);
     }
 
     private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantWalletRecord>()
-                .like(StringUtil.isNotBlank(queryReq.getRecordType()), SysTenantWalletRecord::getRecordType, queryReq.getRecordType())
-                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        SysTenantWalletRecord::getCreateAt, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
+                .like(
+                        StringUtil.isNotBlank(queryReq.getRecordType()),
+                        SysTenantWalletRecord::getRecordType,
+                        queryReq.getRecordType())
+                .between(
+                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysTenantWalletRecord::getCreateAt,
+                        queryReq.getParam("beginTime"),
+                        queryReq.getParam("endTime"))
                 .orderByDesc(SysTenantWalletRecord::getRecordId);
     }
 

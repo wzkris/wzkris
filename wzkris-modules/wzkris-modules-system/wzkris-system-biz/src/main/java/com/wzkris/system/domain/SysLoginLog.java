@@ -5,11 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * @author : wzkris
@@ -60,5 +59,4 @@ public class SysLoginLog implements Serializable {
 
     @Schema(description = "登录时间")
     private Date loginTime;
-
 }

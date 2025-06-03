@@ -1,10 +1,9 @@
 package com.wzkris.user.domain.vo;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.Map;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 路由元数据

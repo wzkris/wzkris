@@ -1,12 +1,11 @@
 package com.wzkris.user.mapper;
 
 import com.wzkris.user.domain.SysUserPost;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * 用户与岗位关联表 数据层
@@ -40,9 +39,10 @@ public interface SysUserPostMapper {
      * @param postIds 岗位ID
      * @return 结果
      */
-    @Select("""
+    @Select(
+            """
             <script>
-                SELECT EXISTS( 
+                SELECT EXISTS(
                     SELECT post_id FROM biz.sys_user_post WHERE post_id IN
                         <foreach collection="list" item="postId" open="(" separator="," close=")">
                             #{postId}
@@ -58,7 +58,8 @@ public interface SysUserPostMapper {
      * @param userIds 用户id集合
      * @return 结果
      */
-    @Delete("""
+    @Delete(
+            """
             <script>
                 DELETE FROM biz.sys_user_post WHERE user_id IN
                     <foreach collection="list" item="userId" open="(" separator="," close=")">
@@ -74,7 +75,8 @@ public interface SysUserPostMapper {
      * @param postIds 岗位id集合
      * @return 结果
      */
-    @Delete("""
+    @Delete(
+            """
             <script>
                 DELETE FROM biz.sys_user_post WHERE post_id IN
                     <foreach collection="list" item="postId" open="(" separator="," close=")">
@@ -90,7 +92,8 @@ public interface SysUserPostMapper {
      * @param userPosts 用户角色列表
      * @return 结果
      */
-    @Insert("""
+    @Insert(
+            """
             <script>
                 INSERT INTO biz.sys_user_post(user_id, post_id) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
@@ -99,5 +102,4 @@ public interface SysUserPostMapper {
             </script>
             """)
     int insertBatch(List<SysUserPost> userPosts);
-
 }

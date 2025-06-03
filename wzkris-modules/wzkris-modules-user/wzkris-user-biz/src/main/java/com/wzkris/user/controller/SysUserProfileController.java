@@ -37,11 +37,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "个人信息")
 @RestController
 @RequestMapping("/user_profile")
-@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")// 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysUserProfileController extends BaseController {
 
-    private final static String PROFILE_KEY = "user:profile";
+    private static final String PROFILE_KEY = "user:profile";
 
     private final SysUserMapper userMapper;
 

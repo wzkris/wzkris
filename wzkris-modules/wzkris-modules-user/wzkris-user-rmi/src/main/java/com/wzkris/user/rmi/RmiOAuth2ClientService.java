@@ -17,5 +17,4 @@ public interface RmiOAuth2ClientService {
      * @return oauth2客户端
      */
     OAuth2ClientResp getByClientId(String clientid);
-
 }

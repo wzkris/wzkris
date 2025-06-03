@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AppUserProfileController extends BaseController {
 
-    private final static String ACCOUNT_PREFIX = "app:account";
+    private static final String ACCOUNT_PREFIX = "app:account";
 
     private final AppUserMapper appUserMapper;
 
@@ -71,5 +71,4 @@ public class AppUserProfileController extends BaseController {
         appUser.setAvatar(url);
         return toRes(appUserMapper.updateById(appUser));
     }
-
 }

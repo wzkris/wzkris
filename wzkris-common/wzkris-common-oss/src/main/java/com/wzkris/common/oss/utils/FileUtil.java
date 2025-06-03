@@ -8,6 +8,4 @@ import lombok.extern.slf4j.Slf4j;
  * @author wzkris
  */
 @Slf4j
-public class FileUtil extends cn.hutool.core.io.FileUtil {
-
-}
+public class FileUtil extends cn.hutool.core.io.FileUtil {}
