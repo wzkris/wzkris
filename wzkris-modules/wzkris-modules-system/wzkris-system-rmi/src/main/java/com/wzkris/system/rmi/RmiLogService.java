@@ -3,6 +3,8 @@ package com.wzkris.system.rmi;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
 
+import java.util.List;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -14,7 +16,7 @@ public interface RmiLogService {
     /**
      * 新增操作日志
      */
-    void saveOperlog(OperLogReq operLogReq);
+    void saveOperlogs(List<OperLogReq> operLogReqs);
 
     /**
      * 新增登录日志

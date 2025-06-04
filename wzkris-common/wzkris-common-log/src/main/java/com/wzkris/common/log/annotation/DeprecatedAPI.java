@@ -12,7 +12,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface DeprecatedAPI {
 
-    String currentVersion() default "";
-
+    /**
+     * 需要的版本
+     */
     String requiredVersion() default "";
 }

@@ -12,6 +12,8 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -28,9 +30,9 @@ public class RmiLogServiceImpl implements RmiLogService {
     private final SysLoginLogMapper loginLogMapper;
 
     @Override
-    public void saveOperlog(@RequestBody OperLogReq operLogReq) {
-        SysOperLog sysOperLog = BeanUtil.convert(operLogReq, SysOperLog.class);
-        operLogMapper.insert(sysOperLog);
+    public void saveOperlogs(@RequestBody List<OperLogReq> operLogReqs) {
+        List<SysOperLog> operLogs = BeanUtil.convert(operLogReqs, SysOperLog.class);
+        operLogMapper.insert(operLogs, 1000);
     }
 
     @Override

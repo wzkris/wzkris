@@ -1,16 +1,21 @@
 package com.wzkris.common.log.annotation.aspect;
 
 import cn.hutool.core.text.StrPool;
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.exception.service.GenericException;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.DeprecatedAPI;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * 废弃API切面
@@ -21,25 +26,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Aspect
 public class DeprecatedAPIAspect {
 
+    private static final String VERSION = "version";
+
     /**
      * 若是API则在调用前返回，方法则执行
      *
      * @param joinPoint 切点
      */
-    @Around(value = "@annotation(deprecatedAPI)")
-    public Object doBeforeAPI(ProceedingJoinPoint joinPoint, DeprecatedAPI deprecatedAPI) throws Throwable {
+    @Before(value = "@annotation(deprecatedAPI)")
+    public void doBefore(JoinPoint joinPoint, DeprecatedAPI deprecatedAPI) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         RequestMapping requestMapping = AnnotationUtils.findAnnotation(signature.getMethod(), RequestMapping.class);
 
-        if (requestMapping != null) {
-            return Result.resp(BizCode.DEPRECATED_API);
+        if (requestMapping == null) {
+            log.error(
+                    "废弃方法被调用：{}",
+                    signature.getDeclaringTypeName()
+                            + StrPool.AT
+                            + signature.getMethod().getName());
+            return;
         }
 
-        log.warn(
-                "废弃方法被调用：{}",
-                signature.getDeclaringTypeName()
-                        + StrPool.AT
-                        + signature.getMethod().getName());
-        return joinPoint.proceed();
+        if (StringUtil.isBlank(deprecatedAPI.requiredVersion())) {
+            throw new GenericException(BizCode.DEPRECATED_API.value(), "不支持此API版本");
+        } else {
+            if (StringUtil.equals(deprecatedAPI.requiredVersion(), getRequestVersion())) {// 版本号一致则执行
+                return;
+            }
+            throw new GenericException(BizCode.DEPRECATED_API.value(), "不支持此API版本");
+        }
+    }
+
+    @Nullable
+    private String getRequestVersion() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String version = request.getHeader(VERSION);
+        return version == null ? request.getParameter(VERSION) : version;
     }
 }
