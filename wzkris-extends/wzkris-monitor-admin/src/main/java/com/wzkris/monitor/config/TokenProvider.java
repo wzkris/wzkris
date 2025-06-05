@@ -4,12 +4,15 @@ import cn.hutool.core.text.StrPool;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
-import java.time.Instant;
 import lombok.Data;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Optional;
 
 public class TokenProvider {
 
@@ -27,7 +30,7 @@ public class TokenProvider {
         if (accessToken == null || Instant.now().isAfter(expiryTime)) {
             WebClient webClient = WebClient.create();
 
-            Result<TokenResponse> result = webClient
+            Optional<Result<TokenResponse>> optional = webClient
                     .post()
                     .uri(properties.getUrl())
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -37,15 +40,20 @@ public class TokenProvider {
                             .with("client_secret", properties.getClientSecret())
                             .with("scope", StringUtil.join(StrPool.COMMA, properties.getScopes())))
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Result<TokenResponse>>() {})
-                    .block();
+                    .bodyToMono(new ParameterizedTypeReference<Result<TokenResponse>>() {
+                    })
+                    .blockOptional(Duration.ofSeconds(5));
 
-            if (!result.isSuccess()) {
-                throw new GenericException(result.getMessage());
+            if (optional.isEmpty()) {
+                throw new GenericException("oauth2 token request failed! Cause result is null.");
             }
 
-            this.accessToken = result.getData().getAccess_token();
-            this.expiryTime = Instant.now().plusSeconds(result.getData().getExpires_in());
+            if (!optional.get().isSuccess()) {
+                throw new GenericException(optional.get().getMessage());
+            }
+
+            this.accessToken = optional.get().getData().getAccess_token();
+            this.expiryTime = Instant.now().plusSeconds(optional.get().getData().getExpires_in());
         }
     }
 
