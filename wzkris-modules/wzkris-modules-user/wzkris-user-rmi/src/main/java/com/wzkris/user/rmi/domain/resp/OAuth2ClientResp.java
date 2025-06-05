@@ -17,6 +17,9 @@ public class OAuth2ClientResp implements Serializable {
     // 客户端密钥 等价于app_secret
     private String clientSecret;
 
+    // access_token格式
+    private String tokenFormat;
+
     // 权限域
     private String[] scopes;
 

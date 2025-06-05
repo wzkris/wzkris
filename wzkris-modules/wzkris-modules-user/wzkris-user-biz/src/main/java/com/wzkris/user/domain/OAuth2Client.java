@@ -40,6 +40,9 @@ public class OAuth2Client extends BaseEntity {
     @Schema(description = "客户端密钥 等价于app_secret")
     private String clientSecret;
 
+    @Schema(description = "access_token格式")
+    private String tokenFormat;
+
     @TableField(typeHandler = ArrayTypeHandler.class)
     @Schema(description = "权限域")
     private String[] scopes;

@@ -162,7 +162,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             authorizationBuilder.token(
                     accessToken,
                     (metadata) ->
-                            metadata.put(OAuth2TokenFormat.class.getName(), OAuth2TokenFormat.REFERENCE.getValue()));
+                            metadata.put(OAuth2TokenFormat.class.getName(), registeredClient.getTokenSettings().getAccessTokenFormat().getValue()));
         } else {
             authorizationBuilder.accessToken(accessToken);
         }

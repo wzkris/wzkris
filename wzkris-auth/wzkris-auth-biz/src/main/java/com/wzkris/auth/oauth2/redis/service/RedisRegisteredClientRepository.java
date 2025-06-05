@@ -119,7 +119,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
 
         builder.tokenSettings(TokenSettings.builder()
                         .authorizationCodeTimeToLive(Duration.ofSeconds(tokenProperties.getAuthorizationCodeTimeOut()))
-                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE) // 使用匿名token
+                        .accessTokenFormat(new OAuth2TokenFormat(oauth2Client.getTokenFormat()))
                         .accessTokenTimeToLive(Duration.ofSeconds(tokenProperties.getAccessTokenTimeOut()))
                         .refreshTokenTimeToLive(Duration.ofSeconds(tokenProperties.getRefreshTokenTimeOut()))
                         .reuseRefreshTokens(tokenProperties.getReuseRefreshTokens())
