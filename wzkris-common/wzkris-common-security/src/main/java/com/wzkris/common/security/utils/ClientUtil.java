@@ -48,4 +48,13 @@ public class ClientUtil extends SecurityUtil {
     public static Long getUserId() {
         return getClientUser().getUserId();
     }
+
+    /**
+     * 获取当前手机号,未登录抛出异常
+     *
+     * @return 手机号
+     */
+    public static String getPhoneNumber() {
+        return getClientUser().getPhoneNumber();
+    }
 }

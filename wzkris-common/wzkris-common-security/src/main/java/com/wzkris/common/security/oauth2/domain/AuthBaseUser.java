@@ -46,7 +46,7 @@ public abstract class AuthBaseUser implements OAuth2User, Serializable {
     protected AuthBaseUser(LoginType loginType, Set<String> grantedAuthority) {
         Assert.notNull(loginType, "loginType cannot be null");
         this.loginType = loginType;
-        this.grantedAuthority = grantedAuthority;
+        this.grantedAuthority = Collections.unmodifiableSet(grantedAuthority);
     }
 
     @JsonIgnore

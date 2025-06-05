@@ -8,9 +8,7 @@ import com.wzkris.auth.oauth2.redis.entity.OAuth2AuthorizationGrantAuthorization
 import com.wzkris.auth.oauth2.redis.repository.OAuth2AuthorizationGrantAuthorizationRepository;
 import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.resolver.CustomBearerTokenResolver;
 import com.wzkris.common.security.utils.ClientUtil;
 import com.wzkris.common.security.utils.LoginUtil;
@@ -19,7 +17,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RMapCache;
@@ -31,6 +28,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @Tag(name = "OAuth自定义端点")
 @Slf4j
@@ -59,8 +58,8 @@ public class OAuth2Endpoint extends BaseController {
     @Operation(summary = "用户信息")
     @GetMapping("/appuserinfo")
     public Result<AppUserinfo> clientUser() {
-        ClientUser clientUser = ClientUtil.getClientUser();
-        AppUserinfo userinfo = BeanUtil.convert(clientUser, AppUserinfo.class);
+        AppUserinfo userinfo = new AppUserinfo();
+        userinfo.setPhoneNumber(ClientUtil.getPhoneNumber());
         return ok(userinfo);
     }
 
