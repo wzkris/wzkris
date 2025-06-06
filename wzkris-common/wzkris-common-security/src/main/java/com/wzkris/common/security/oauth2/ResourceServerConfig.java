@@ -1,7 +1,5 @@
 package com.wzkris.common.security.oauth2;
 
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
 import com.wzkris.auth.rmi.RmiTokenService;
 import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
@@ -26,7 +24,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
@@ -56,9 +53,9 @@ public final class ResourceServerConfig {
 
     @Bean
     @RefreshScope
-    public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
         // 初始化认证管理器
-        initAuthenticationProviders();
+        initAuthenticationProviders(jwtDecoder);
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
@@ -85,13 +82,14 @@ public final class ResourceServerConfig {
         return http.build();
     }
 
-    private void initAuthenticationProviders() {
+    private void initAuthenticationProviders(JwtDecoder jwtDecoder) {
         // 初始化不透明令牌认证提供者
         opaqueProviderManager = new ProviderManager(
                 new OpaqueTokenAuthenticationProvider(
                         new CustomOpaqueTokenIntrospector(rmiTokenService)
                 )
         );
+        jwtProviderManager = new ProviderManager(new JwtAuthenticationProvider(jwtDecoder));
     }
 
     private AuthenticationManager getAuthenticationManager(HttpServletRequest request) {
@@ -108,13 +106,6 @@ public final class ResourceServerConfig {
         }
         String[] parts = token.split("\\.");
         return parts.length == 3;
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        JwtDecoder jwtDecoder = OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-        jwtProviderManager = new ProviderManager(new JwtAuthenticationProvider(jwtDecoder));
-        return jwtDecoder;
     }
 
     @Bean("ps")

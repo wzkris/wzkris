@@ -28,5 +28,12 @@
 
         <module name="EqualsHashCode"/>
 
+        <!-- 启用方法间空行检查 -->
+        <module name="EmptyLineSeparator">
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
+            <property name="allowMultipleEmptyLines" value="false"/>
+        </module>
+
     </module>
+
 </module>

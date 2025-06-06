@@ -1,7 +1,10 @@
 package com.wzkris.auth.oauth2;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.wzkris.auth.config.JwtProperties;
 import com.wzkris.auth.oauth2.core.device.DeviceClientAuthenticationConverter;
 import com.wzkris.auth.oauth2.core.device.DeviceClientAuthenticationProvider;
 import com.wzkris.auth.oauth2.core.password.PasswordAuthenticationConverter;
@@ -13,6 +16,8 @@ import com.wzkris.auth.oauth2.core.wechat.WechatAuthenticationProvider;
 import com.wzkris.auth.oauth2.dao.CustomDaoAuthenticationProvider;
 import com.wzkris.auth.oauth2.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.oauth2.handler.AuthenticationSuccessHandlerImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -22,7 +27,10 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.*;
@@ -30,12 +38,21 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
  * @description : 认证服务器配置
  * @date : 2024/2/23 11:12
  */
+@Slf4j
 @Configuration
 public class AuthorizationServerConfig {
 
@@ -119,6 +136,77 @@ public class AuthorizationServerConfig {
         return new ProviderManager(daoAuthenticationProvider);
     }
 
+    @Bean
+    public JWKSource<SecurityContext> jwkSource(JwtProperties jwtProperties) {
+        List<JWK> jwkList = new ArrayList<>();
+
+        // 2. 处理新版多密钥配置
+        for (Map.Entry<String, JwtProperties.KeyConfig> entry : jwtProperties.getKeys().entrySet()) {
+            String keyId = entry.getKey();
+            JwtProperties.KeyConfig config = entry.getValue();
+
+            JWK jwk = createJWK(
+                    keyId,
+                    config.getAlgorithm(),
+                    config.getJwtAlgorithm(),
+                    config.getPublicKey(),
+                    config.getPrivateKey()
+            );
+            if (jwk != null) {
+                jwkList.add(jwk);
+            }
+        }
+
+        // 3. 构建JWKSet
+        JWKSet jwkSet = new JWKSet(jwkList);
+        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+    }
+
+    private JWK createJWK(String keyId, String algorithm, String jwtAlgorithm, PublicKey publicKey, PrivateKey privateKey) {
+        if (algorithm.equals("RSA")) {
+            return new RSAKey.Builder((RSAPublicKey) publicKey)
+                    .privateKey(privateKey)
+                    .keyID(keyId)
+                    .algorithm(new JWSAlgorithm(jwtAlgorithm))
+                    .build();
+        } else if (algorithm.equals("EC")) {
+            Curve curve = getCurveForJwtAlgorithm(jwtAlgorithm);
+            return new ECKey.Builder(curve, (ECPublicKey) publicKey)
+                    .privateKey(privateKey)
+                    .keyID(keyId)
+                    .algorithm(new JWSAlgorithm(jwtAlgorithm))
+                    .build();
+        } else {
+            log.warn("Unsupported algorithm: {}", algorithm);
+            return null;
+        }
+    }
+
+    private Curve getCurveForJwtAlgorithm(String algorithm) {
+        if (algorithm == null) {
+            throw new IllegalArgumentException("Algorithm cannot be null");
+        }
+
+        return switch (algorithm) {
+            case "ES256"->Curve.P_256;  // secp256r1 (NIST P-256)
+            case "ES384"->Curve.P_384;  // secp384r1 (NIST P-384)
+            case "ES512"->Curve.P_521;  // secp521r1 (NIST P-521)
+            default-> throw new IllegalArgumentException("Unsupported EC algorithm: " + algorithm +
+                        ". Only ES256, ES384, ES512 are supported for EC keys.");
+        };
+    }
+
+    @Bean
+    @RefreshScope
+    public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+        return new NimbusJwtEncoder(jwkSource);
+    }
+
+    @Bean
+    @RefreshScope
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
     /**
      * 令牌生成规则实现 </br>
      *
