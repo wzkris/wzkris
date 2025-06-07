@@ -9,22 +9,21 @@ import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author wzkris
  * @date 2024/3/11
  * @description 密码模式核心处理
  */
-@Component //注册成bean方便引用
+@Component // 注册成bean方便引用
 public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider<PasswordAuthenticationToken> {
 
     private final UserInfoTemplate userInfoTemplate;
@@ -33,45 +32,47 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     private final SecondaryVerificationApplication application;
 
-    public PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,
-                                          OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
-                                          List<UserInfoTemplate> userInfoTemplates,
-                                          CaptchaService captchaService,
-                                          SecondaryVerificationApplication application) {
+    public PasswordAuthenticationProvider(
+            OAuth2AuthorizationService authorizationService,
+            OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
+            List<UserInfoTemplate> userInfoTemplates,
+            CaptchaService captchaService,
+            SecondaryVerificationApplication application) {
         super(authorizationService, tokenGenerator);
         this.userInfoTemplate = userInfoTemplates.stream()
                 .filter(t -> t.checkLoginType(LoginType.SYSTEM_USER))
-                .findFirst().get();
+                .findFirst()
+                .get();
         this.captchaService = captchaService;
         this.application = application;
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
-        PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
+    public OAuth2User doAuthenticate(Authentication authentication) {
+        PasswordAuthenticationToken passwordAuthenticationToken = (PasswordAuthenticationToken) authentication;
 
         try {
             // 校验是否被冻结
-            captchaService.validateLock(authenticationToken.getUsername());
+            captchaService.validateLock(passwordAuthenticationToken.getUsername());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
         }
 
-        boolean valid = application.secondaryVerification(authenticationToken.getCaptchaId());
+        boolean valid = application.secondaryVerification(passwordAuthenticationToken.getCaptchaId());
         if (!valid) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
         }
 
-        AuthBaseUser baseUser = userInfoTemplate.loadByUsernameAndPassword(authenticationToken.getUsername(), authenticationToken.getPassword());
+        AuthBaseUser baseUser = userInfoTemplate.loadByUsernameAndPassword(
+                passwordAuthenticationToken.getUsername(), passwordAuthenticationToken.getPassword());
 
         if (baseUser == null) {
             // 抛出异常
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(baseUser, null, null);
-        usernamePasswordAuthenticationToken.setDetails(authenticationToken.getDetails());
-        return usernamePasswordAuthenticationToken;
+        return baseUser;
     }
 
     @Override

@@ -11,11 +11,10 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
 import com.wzkris.common.excel.utils.ExcelUtil;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 字典格式化转换处理, 配合@ExcelDictFormat使用
@@ -36,7 +35,8 @@ public class ExcelDictConvert implements Converter<Object> {
     }
 
     @Override
-    public Object convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public Object convertToJavaData(
+            ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         ExcelDictFormat anno = getAnnotation(contentProperty.getField());
         String label = cellData.getStringValue();
         String value = ExcelUtil.reverseByExp(label, anno.readConverterExp(), anno.separator());
@@ -45,7 +45,8 @@ public class ExcelDictConvert implements Converter<Object> {
 
     // 扩展支持list字典翻译
     @Override
-    public WriteCellData<String> convertToExcelData(Object object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public WriteCellData<String> convertToExcelData(
+            Object object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         if (ObjectUtil.isNull(object)) {
             return new WriteCellData<>("");
         }

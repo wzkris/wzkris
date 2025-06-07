@@ -31,13 +31,14 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI().info(
-                new Info().title(swaggerProperties.getTitle())
-                        .description(swaggerProperties.getDescription())
-                        .license(new License().url(swaggerProperties.getLicense()))
-                        .version(swaggerProperties.getVersion())
-                        .termsOfService("gg bom") //API服务条款
-        );
+        return new OpenAPI()
+                .info(
+                        new Info()
+                                .title(swaggerProperties.getTitle())
+                                .description(swaggerProperties.getDescription())
+                                .license(new License().url(swaggerProperties.getLicense()))
+                                .version(swaggerProperties.getVersion())
+                                .termsOfService("gg bom") // API服务条款
+                        );
     }
-
 }

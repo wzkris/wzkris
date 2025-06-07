@@ -8,9 +8,8 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.api.RemoteAppUserApi;
-import com.wzkris.user.api.domain.response.AppUserResp;
-import jakarta.annotation.Nonnull;
+import com.wzkris.user.rmi.RmiAppUserService;
+import com.wzkris.user.rmi.domain.resp.AppUserResp;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +23,12 @@ public class ClientUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final RemoteAppUserApi remoteAppUserApi;
+    private final RmiAppUserService rmiAppUserService;
 
     @Nullable
     @Override
     public ClientUser loadUserByPhoneNumber(String phoneNumber) {
-        AppUserResp userResp = remoteAppUserApi.getByPhoneNumber(phoneNumber);
+        AppUserResp userResp = rmiAppUserService.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber, 600);
@@ -42,7 +41,7 @@ public class ClientUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public ClientUser loadUserByWechat(String identifierType, String wxCode) {
-        AppUserResp userResp = remoteAppUserApi.getOrRegisterByIdentifier(identifierType, wxCode);
+        AppUserResp userResp = rmiAppUserService.getOrRegisterByIdentifier(identifierType, wxCode);
 
         if (userResp == null) {
             return null;
@@ -58,8 +57,7 @@ public class ClientUserService extends UserInfoTemplate {
     /**
      * 构建登录用户
      */
-    @Nonnull
-    private ClientUser checkAndBuild(@Nonnull AppUserResp userResp) {
+    private ClientUser checkAndBuild(AppUserResp userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 
@@ -75,8 +73,8 @@ public class ClientUserService extends UserInfoTemplate {
      */
     private void checkAccount(AppUserResp appUserResp) {
         if (ObjUtil.equals(appUserResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
-
 }

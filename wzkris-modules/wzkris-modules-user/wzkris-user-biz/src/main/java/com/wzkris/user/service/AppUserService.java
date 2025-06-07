@@ -8,5 +8,4 @@ public interface AppUserService {
      * 添加用户
      */
     void insertUser(AppUser user);
-
 }

@@ -2,20 +2,22 @@ package com.wzkris.auth.listener;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.OnlineUserUtil;
 import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
-import com.wzkris.system.api.RemoteLogApi;
-import com.wzkris.system.api.domain.request.LoginLogReq;
-import com.wzkris.user.api.RemoteAppUserApi;
-import com.wzkris.user.api.RemoteSysUserApi;
-import com.wzkris.user.api.domain.request.LoginInfoReq;
+import com.wzkris.system.rmi.RmiLogService;
+import com.wzkris.system.rmi.domain.req.LoginLogReq;
+import com.wzkris.user.rmi.RmiAppUserService;
+import com.wzkris.user.rmi.RmiSysUserService;
+import com.wzkris.user.rmi.domain.req.LoginInfoReq;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -23,9 +25,6 @@ import org.redisson.api.RMapCache;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wzkris
@@ -41,17 +40,14 @@ public class LoginEventListener {
     private final TokenProperties tokenProperties;
 
     @DubboReference
-    private final RemoteLogApi remoteLogApi;
+    private final RmiLogService rmiLogService;
 
     @DubboReference
-    private final RemoteSysUserApi remoteSysUserApi;
+    private final RmiSysUserService rmiSysUserService;
 
     @DubboReference
-    private final RemoteAppUserApi remoteAppUserApi;
+    private final RmiAppUserService rmiAppUserService;
 
-    /**
-     * 登录事件
-     **/
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
@@ -62,9 +58,9 @@ public class LoginEventListener {
                 this.handleSystemUser(event, (LoginUser) baseUser);
             }
             case CLIENT_USER -> {
-                handleClientUser(event, (ClientUser) baseUser);
+                this.handleClientUser(event, (ClientUser) baseUser);
             }
-            default -> log.warn("{} 发生登录事件", baseUser);
+            default -> log.warn("{} 发生登录事件, 忽略处理", baseUser);
         }
     }
 
@@ -76,15 +72,14 @@ public class LoginEventListener {
         final UserAgent userAgent = event.getUserAgent();
 
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
-        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", loginUser.getName(),
-                loginSuccess ? "成功" : "失败", ipAddr);
+        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", loginUser.getName(), loginSuccess ? "成功" : "失败", ipAddr);
 
         // 获取客户端浏览器
         String browser = userAgent.getBrowser().getName();
         // 获取登录地址
         String loginLocation = AddressUtil.getRealAddressByIp(ipAddr);
 
-        if (loginSuccess) {// 更新用户登录信息、在线会话信息
+        if (loginSuccess) { // 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
             onlineUser.setTokenId(event.getTokenId());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
@@ -95,12 +90,13 @@ public class LoginEventListener {
             onlineUser.setLoginTime(new Date());
 
             RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(loginUser.getUserId());
-            onlineCache.put(onlineUser.getTokenId(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
+            onlineCache.put(
+                    onlineUser.getTokenId(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(DateUtil.date());
-            remoteSysUserApi.updateLoginInfo(loginInfoReq);
+            rmiSysUserService.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
         final LoginLogReq loginLogReq = new LoginLogReq();
@@ -115,19 +111,18 @@ public class LoginEventListener {
         loginLogReq.setLoginLocation(loginLocation);
         loginLogReq.setOs(userAgent.getOs().getName());
         loginLogReq.setBrowser(browser);
-        remoteLogApi.insertLoginlog(loginLogReq);
+        rmiLogService.saveLoginlog(loginLogReq);
     }
 
     private void handleClientUser(LoginEvent event, ClientUser clientUser) {
         final String status = event.getStatus();
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
 
-        if (loginSuccess) {// 更新用户登录信息
+        if (loginSuccess) { // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(DateUtil.date());
-            remoteAppUserApi.updateLoginInfo(loginInfoReq);
+            rmiAppUserService.updateLoginInfo(loginInfoReq);
         }
     }
-
 }

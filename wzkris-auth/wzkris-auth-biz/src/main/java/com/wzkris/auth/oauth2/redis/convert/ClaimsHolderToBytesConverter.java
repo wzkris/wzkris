@@ -31,13 +31,12 @@ public class ClaimsHolderToBytesConverter
     public ClaimsHolderToBytesConverter() {
         ObjectMapper objectMapper = OAuth2JsonUtil.getObjectMapper();
         objectMapper.addMixIn(OAuth2AuthorizationGrantAuthorization.ClaimsHolder.class, ClaimsHolderMixin.class);
-        this.serializer = new Jackson2JsonRedisSerializer<>(objectMapper,
-                OAuth2AuthorizationGrantAuthorization.ClaimsHolder.class);
+        this.serializer = new Jackson2JsonRedisSerializer<>(
+                objectMapper, OAuth2AuthorizationGrantAuthorization.ClaimsHolder.class);
     }
 
     @Override
     public byte[] convert(OAuth2AuthorizationGrantAuthorization.ClaimsHolder value) {
         return this.serializer.serialize(value);
     }
-
 }

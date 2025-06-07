@@ -9,6 +9,8 @@ import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.merge.AbstractMergeStrategy;
 import com.wzkris.common.excel.annotation.CellMerge;
+import java.lang.reflect.Field;
+import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -16,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
-
-import java.lang.reflect.Field;
-import java.util.*;
 
 /**
  * 列值重复合并策略
@@ -43,7 +42,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
 
     @Override
     protected void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex) {
-        //单元格写入了,遍历合并区域,如果该Cell在区域内,但非首行,则清空
+        // 单元格写入了,遍历合并区域,如果该Cell在区域内,但非首行,则清空
         final int rowIndex = cell.getRowIndex();
         if (CollUtil.isNotEmpty(cellList)) {
             for (CellRangeAddress cellAddresses : cellList) {
@@ -57,7 +56,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
 
     @Override
     public void afterWorkbookDispose(final WorkbookWriteHandlerContext context) {
-        //当前表格写完后，统一写入
+        // 当前表格写完后，统一写入
         if (CollUtil.isNotEmpty(cellList)) {
             for (CellRangeAddress item : cellList) {
                 context.getWriteContext().writeSheetHolder().getSheet().addMergedRegion(item);
@@ -71,7 +70,8 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         if (CollUtil.isEmpty(list)) {
             return cellList;
         }
-        Field[] fields = ReflectUtil.getFields(list.get(0).getClass(), field -> !"serialVersionUID".equals(field.getName()));
+        Field[] fields =
+                ReflectUtil.getFields(list.get(0).getClass(), field -> !"serialVersionUID".equals(field.getName()));
 
         // 有注解的字段
         List<Field> mergeFields = new ArrayList<>();
@@ -109,16 +109,19 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
 
                     if (!cellValue.equals(val)) {
                         if ((i - repeatCell.getCurrent() > 1)) {
-                            cellList.add(new CellRangeAddress(repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
+                            cellList.add(new CellRangeAddress(
+                                    repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
                         }
                         map.put(field, new RepeatCell(val, i));
                     } else if (i == list.size() - 1) {
                         if (i > repeatCell.getCurrent() && isMerge(list, i, field)) {
-                            cellList.add(new CellRangeAddress(repeatCell.getCurrent() + rowIndex, i + rowIndex, colNum, colNum));
+                            cellList.add(new CellRangeAddress(
+                                    repeatCell.getCurrent() + rowIndex, i + rowIndex, colNum, colNum));
                         }
                     } else if (!isMerge(list, i, field)) {
                         if ((i - repeatCell.getCurrent() > 1)) {
-                            cellList.add(new CellRangeAddress(repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
+                            cellList.add(new CellRangeAddress(
+                                    repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
                         }
                         map.put(field, new RepeatCell(val, i));
                     }
@@ -133,12 +136,12 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         CellMerge cm = field.getAnnotation(CellMerge.class);
         final String[] mergeBy = cm.mergeBy();
         if (StrUtil.isAllNotBlank(mergeBy)) {
-            //比对当前list(i)和list(i - 1)的各个属性值一一比对 如果全为真 则为真
+            // 比对当前list(i)和list(i - 1)的各个属性值一一比对 如果全为真 则为真
             for (String fieldName : mergeBy) {
                 final Object valCurrent = ReflectUtil.getFieldValue(list.get(i), fieldName);
                 final Object valPre = ReflectUtil.getFieldValue(list.get(i - 1), fieldName);
                 if (!Objects.equals(valPre, valCurrent)) {
-                    //依赖字段如有任一不等值,则标记为不可合并
+                    // 依赖字段如有任一不等值,则标记为不可合并
                     isMerge = false;
                 }
             }
@@ -153,6 +156,5 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         private Object value;
 
         private int current;
-
     }
 }

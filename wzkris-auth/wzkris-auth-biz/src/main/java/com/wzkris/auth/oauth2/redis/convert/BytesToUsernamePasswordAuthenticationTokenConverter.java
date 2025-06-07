@@ -37,5 +37,4 @@ public class BytesToUsernamePasswordAuthenticationTokenConverter
     public UsernamePasswordAuthenticationToken convert(byte[] value) {
         return this.serializer.deserialize(value);
     }
-
 }

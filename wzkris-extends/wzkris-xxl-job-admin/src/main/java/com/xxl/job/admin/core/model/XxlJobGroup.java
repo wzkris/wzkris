@@ -16,14 +16,14 @@ public class XxlJobGroup {
 
     private String title;
 
-    private int addressType;        // 执行器地址类型：0=自动注册、1=手动录入
+    private int addressType; // 执行器地址类型：0=自动注册、1=手动录入
 
-    private String addressList;     // 执行器地址列表，多地址逗号分隔(手动录入)
+    private String addressList; // 执行器地址列表，多地址逗号分隔(手动录入)
 
     private Date updateTime;
 
     // registry list
-    private List<String> registryList;  // 执行器地址列表(系统注册)
+    private List<String> registryList; // 执行器地址列表(系统注册)
 
     public List<String> getRegistryList() {
         if (addressList != null && addressList.trim().length() > 0) {
@@ -79,5 +79,4 @@ public class XxlJobGroup {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
-
 }

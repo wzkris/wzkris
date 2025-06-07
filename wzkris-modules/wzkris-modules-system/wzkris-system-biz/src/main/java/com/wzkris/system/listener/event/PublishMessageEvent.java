@@ -2,12 +2,11 @@ package com.wzkris.system.listener.event;
 
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor

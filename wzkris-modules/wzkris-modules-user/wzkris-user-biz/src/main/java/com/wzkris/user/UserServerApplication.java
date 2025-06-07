@@ -20,7 +20,8 @@ public class UserServerApplication {
         springApplication.addListeners(new ApplicationPidFileWriter());
         springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
         springApplication.run(args);
-        System.out.println("""
+        System.out.println(
+                """
                 (♥◠‿◠)ﾉﾞ  用户中心启动成功   ლ(´ڡ`ლ)ﾞ
                  ___  ___  ________  _______   ________    \s
                 |\\  \\|\\  \\|\\   ____\\|\\  ___ \\ |\\   __  \\   \s

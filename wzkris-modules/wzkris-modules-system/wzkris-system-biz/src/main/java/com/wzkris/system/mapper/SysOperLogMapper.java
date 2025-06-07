@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
  * @author wzkris
  */
 @Repository
-public interface SysOperLogMapper extends BaseMapperPlus<SysOperLog> {
-
-}
+public interface SysOperLogMapper extends BaseMapperPlus<SysOperLog> {}

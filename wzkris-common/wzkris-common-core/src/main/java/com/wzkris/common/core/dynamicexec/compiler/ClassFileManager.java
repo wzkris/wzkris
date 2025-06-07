@@ -1,10 +1,10 @@
 package com.wzkris.common.core.dynamicexec.compiler;
 
+import java.io.IOException;
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
-import java.io.IOException;
 
 /**
  * 类文件管理器 * 用于JavaCompiler将编译好后的class,保存到jclassObject中
@@ -30,7 +30,8 @@ public class ClassFileManager extends ForwardingJavaFileManager<StandardJavaFile
      * JavaCompiler在编译java文件的时候，生成的class二进制内容会放到这个JavaFileObject中
      */
     @Override
-    public JavaFileObject getJavaFileForOutput(Location location, String className, JavaFileObject.Kind kind, FileObject sibling) throws IOException {
+    public JavaFileObject getJavaFileForOutput(
+            Location location, String className, JavaFileObject.Kind kind, FileObject sibling) throws IOException {
         if (jclassObject == null) {
             jclassObject = new ClassJavaFileObject(className, kind);
         }

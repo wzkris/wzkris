@@ -11,36 +11,39 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum BizCode {
     OK(0, "Success"),
-    BAD_REQUEST(400, "Bad Request"),
-    // 401未认证
-    UNAUTHORIZED(401, "Unauthorized"),
-    // 403禁止访问
-    FORBID(403, "Forbidden"),
-    NOT_FOUND(404, "Not Found"),
-    BAD_METHOD(405, "Method Not Allowed"),
-    // 412前置条件不满足
-    PRECONDITION_FAILED(412, "Precondition Failed"),
-    // 超出频次限制
-    TOO_MANY_REQUESTS(429, "Too Many Requests"),
-    INTERNAL_ERROR(500, "Internal Server Error"),
-    BAD_GATEWAY(502, "Bad Gateway"),
-    // 服务不可用
-    SERVICE_UNAVAILABLE(503, "Service Unavailable"),
-    // 调用失败
-    INVOKE_FAIL(1000, "Invoke Fail"),
-    // 远程调用异常
-    RPC_ERROR(1100, "Rpc Error"),
-    // 三方服务异常
-    THIRD_SERVICE(3000, "Invoke Third Service Error");
 
-    /**
-     * 状态码
-     */
+    BAD_REQUEST(400, "Bad Request"),
+
+    UNAUTHORIZED(401, "Unauthorized"),
+
+    FORBID(403, "Forbidden"),
+
+    NOT_FOUND(404, "Not Found"),
+
+    BAD_METHOD(405, "Method Not Allowed"),
+
+    PRECONDITION_FAILED(412, "Precondition Failed"),
+
+    TOO_MANY_REQUESTS(429, "Too Many Requests"),
+
+    INTERNAL_ERROR(500, "Internal Server Error"),
+
+    BAD_GATEWAY(502, "Bad Gateway"),
+
+    SERVICE_UNAVAILABLE(503, "Service Unavailable"),
+
+    INVOKE_FAIL(1000, "Invoke Fail"),
+
+    RPC_ERROR(1100, "Rpc Error"),
+
+    DEPRECATED_API(1200, "Deprecated API"),
+
+    VERSION_HIGH_API(1201, "API version too high"),
+
+    THIRD_SERVICE_ERROR(3000, "Invoke Third Service Error");
+
     private final int code;
 
-    /**
-     * 描述
-     */
     private final String desc;
 
     public final int value() {
@@ -50,5 +53,4 @@ public enum BizCode {
     public final String desc() {
         return this.desc;
     }
-
 }

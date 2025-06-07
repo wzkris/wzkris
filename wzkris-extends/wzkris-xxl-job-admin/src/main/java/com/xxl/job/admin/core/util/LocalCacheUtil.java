@@ -10,7 +10,8 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class LocalCacheUtil {
 
-    private static ConcurrentMap<String, LocalCacheData> cacheRepository = new ConcurrentHashMap<String, LocalCacheData>();   // 类型建议用抽象父类，兼容性更好；
+    private static ConcurrentMap<String, LocalCacheData> cacheRepository =
+            new ConcurrentHashMap<String, LocalCacheData>(); // 类型建议用抽象父类，兼容性更好；
 
     /**
      * set cache
@@ -99,8 +100,7 @@ public class LocalCacheUtil {
 
         private long timeoutTime;
 
-        public LocalCacheData() {
-        }
+        public LocalCacheData() {}
 
         public LocalCacheData(String key, Object val, long timeoutTime) {
             this.key = key;
@@ -132,5 +132,4 @@ public class LocalCacheUtil {
             this.timeoutTime = timeoutTime;
         }
     }
-
 }

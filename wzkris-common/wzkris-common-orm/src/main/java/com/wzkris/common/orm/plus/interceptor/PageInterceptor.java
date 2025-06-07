@@ -10,6 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.utils.PageUtil;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
@@ -25,11 +29,6 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -42,7 +41,14 @@ public class PageInterceptor extends PaginationInnerInterceptor {
      * 这里进行count,如果count为0这返回false(就是不再执行sql了)
      */
     @Override
-    public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+    public boolean willDoQuery(
+            Executor executor,
+            MappedStatement ms,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql)
+            throws SQLException {
         Page<?> page = PageUtil.getPage();
         if (page == null) {
             return true;
@@ -78,7 +84,13 @@ public class PageInterceptor extends PaginationInnerInterceptor {
      * 改改SQL啥的
      */
     @Override
-    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    public void beforeQuery(
+            Executor executor,
+            MappedStatement ms,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
         Page<?> page = PageUtil.getPage();
         if (page == null) {
             return;
@@ -148,7 +160,8 @@ public class PageInterceptor extends PaginationInnerInterceptor {
                 }
             }
 
-            //#95 Github, selectItems contains #{} ${}, which will be translated to ?, and it may be in a function: power(#{myInt},2)
+            // #95 Github, selectItems contains #{} ${}, which will be translated to ?, and it may be in a function:
+            // power(#{myInt},2)
             for (SelectItem item : plainSelect.getSelectItems()) {
                 if (item.toString().contains(StringPool.QUESTION_MARK)) {
                     return lowLevelCountSql(select.toString());
@@ -160,7 +173,9 @@ public class PageInterceptor extends PaginationInnerInterceptor {
                 List<Join> joins = plainSelect.getJoins();
                 if (CollectionUtils.isNotEmpty(joins)) {
                     boolean canRemoveJoin = true;
-                    String whereS = Optional.ofNullable(plainSelect.getWhere()).map(Expression::toString).orElse(StringPool.EMPTY);
+                    String whereS = Optional.ofNullable(plainSelect.getWhere())
+                            .map(Expression::toString)
+                            .orElse(StringPool.EMPTY);
                     // 不区分大小写
                     whereS = whereS.toLowerCase();
                     for (Join join : joins) {
@@ -171,7 +186,10 @@ public class PageInterceptor extends PaginationInnerInterceptor {
                         FromItem rightItem = join.getRightItem();
                         String str = "";
                         if (rightItem instanceof Table table) {
-                            str = Optional.ofNullable(table.getAlias()).map(Alias::getName).orElse(table.getName()) + StringPool.DOT;
+                            str = Optional.ofNullable(table.getAlias())
+                                            .map(Alias::getName)
+                                            .orElse(table.getName())
+                                    + StringPool.DOT;
                         } else if (rightItem instanceof ParenthesedSelect subSelect) {
                             /* 如果 left join 是子查询，并且子查询里包含 ?(代表有入参) 或者 where 条件里包含使用 join 的表的字段作条件,就不移除 join */
                             if (subSelect.toString().contains(StringPool.QUESTION_MARK)) {
@@ -209,7 +227,8 @@ public class PageInterceptor extends PaginationInnerInterceptor {
             return select.toString();
         } catch (JSQLParserException e) {
             // 无法优化使用原 SQL
-            logger.warn("optimize this sql to a count sql has exception, sql:\"" + sql + "\", exception:\n" + e.getCause());
+            logger.warn(
+                    "optimize this sql to a count sql has exception, sql:\"" + sql + "\", exception:\n" + e.getCause());
         } catch (Exception e) {
             logger.warn("optimize this sql to a count sql has error, sql:\"" + sql + "\", exception:\n" + e);
         }
@@ -229,7 +248,7 @@ public class PageInterceptor extends PaginationInnerInterceptor {
         }
         if (page.getPageNum() > page.getPages()) {
             if (overflow) {
-                //溢出总页数处理
+                // 溢出总页数处理
                 page.setPageNum(1);
             } else {
                 // 超过最大范围，未设置溢出逻辑中断 list 执行
@@ -238,5 +257,4 @@ public class PageInterceptor extends PaginationInnerInterceptor {
         }
         return true;
     }
-
 }

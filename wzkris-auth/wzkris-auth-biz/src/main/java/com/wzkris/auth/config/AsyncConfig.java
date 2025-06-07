@@ -5,6 +5,10 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.security.thread.TracingIdRunnable;
 import jakarta.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import org.slf4j.MDC;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +17,6 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
-
-import java.util.Arrays;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author : wzkris
@@ -37,8 +36,10 @@ public class AsyncConfig implements AsyncConfigurer {
         return (throwable, method, objects) -> {
             throwable.printStackTrace();
             StringBuilder sb = new StringBuilder();
-            sb.append("Exception message - ").append(throwable.getMessage())
-                    .append(", Method name - ").append(method.getName());
+            sb.append("Exception message - ")
+                    .append(throwable.getMessage())
+                    .append(", Method name - ")
+                    .append(method.getName());
             if (ArrayUtil.isNotEmpty(objects)) {
                 sb.append(", Parameter value - ").append(Arrays.toString(objects));
             }

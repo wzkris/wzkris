@@ -3,13 +3,13 @@ package com.wzkris.common.security.utils;
 import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import java.util.Collection;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Collection;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 
 /**
  * @author : wzkris
@@ -25,8 +25,13 @@ public class SecurityUtil {
      *
      * @return 认证信息
      */
-    public static Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
+    @Nullable
+    public static BearerTokenAuthentication getAuthentication() {
+        if (!(SecurityContextHolder.getContext().getAuthentication()
+                instanceof BearerTokenAuthentication bearerTokenAuthentication)) {
+            return null;
+        }
+        return bearerTokenAuthentication;
     }
 
     /**
@@ -44,7 +49,6 @@ public class SecurityUtil {
         Authentication authentication = getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken)
                 && authentication.getPrincipal() instanceof AuthBaseUser;
     }
 

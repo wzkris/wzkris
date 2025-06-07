@@ -20,7 +20,8 @@ public class AuthServerApplication {
         springApplication.addListeners(new ApplicationPidFileWriter());
         springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
         springApplication.run(args);
-        System.out.println("""
+        System.out.println(
+                """
                 (♥◠‿◠)ﾉﾞ  认证授权中心启动成功   ლ(´ڡ`ლ)ﾞ
                  ________  ___  ___  _________  ___  ___    \s
                 |\\   __  \\|\\  \\|\\  \\|\\___   ___\\\\  \\|\\  \\   \s

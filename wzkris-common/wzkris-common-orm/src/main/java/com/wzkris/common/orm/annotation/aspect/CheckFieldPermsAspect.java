@@ -5,6 +5,10 @@ import com.wzkris.common.core.utils.ReflectUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.orm.annotation.CheckFieldPerms;
 import com.wzkris.common.orm.annotation.FieldPerms;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -18,11 +22,6 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.security.access.expression.ExpressionUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Map;
-
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -34,22 +33,29 @@ import java.util.Map;
 @Order(1)
 public class CheckFieldPermsAspect {
 
-    private volatile static StandardEvaluationContext context;
+    private static volatile StandardEvaluationContext context;
 
     private final ExpressionParser spel = new SpelExpressionParser();
 
     // 判断是否是基本类型或包装类（如 int, Integer, boolean, Boolean 等）
     public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
-        return clazz.isPrimitive() ||
-                clazz == Integer.class || clazz == Long.class || clazz == Short.class ||
-                clazz == Double.class || clazz == Float.class || clazz == Boolean.class ||
-                clazz == Character.class || clazz == Byte.class || clazz == String.class;
+        return clazz.isPrimitive()
+                || clazz == Integer.class
+                || clazz == Long.class
+                || clazz == Short.class
+                || clazz == Double.class
+                || clazz == Float.class
+                || clazz == Boolean.class
+                || clazz == Character.class
+                || clazz == Byte.class
+                || clazz == String.class;
     }
 
     @Around("@annotation(checkFieldPerms) || @within(checkFieldPerms)")
     public Object around(ProceedingJoinPoint point, CheckFieldPerms checkFieldPerms) throws Throwable {
         if (checkFieldPerms == null) {
-            checkFieldPerms = AnnotationUtils.findAnnotation(((MethodSignature) point.getSignature()).getMethod(), CheckFieldPerms.class);
+            checkFieldPerms = AnnotationUtils.findAnnotation(
+                    ((MethodSignature) point.getSignature()).getMethod(), CheckFieldPerms.class);
         }
 
         CheckFieldPerms.Perms rw = checkFieldPerms.rw();
@@ -137,7 +143,7 @@ public class CheckFieldPermsAspect {
             }
         } else if (obj instanceof Map<?, ?>) {
             log.warn("不支持返回值为Map类型的字段权限");
-        } else {// 获取对象的类信息
+        } else { // 获取对象的类信息
             Class<?> clazz = obj.getClass();
 
             for (Field field : clazz.getDeclaredFields()) {

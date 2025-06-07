@@ -6,6 +6,4 @@ package com.wzkris.system.service;
  * @description : 登录日志
  * @date : 2024/1/10 13:55
  */
-public interface SysLoginLogService {
-
-}
+public interface SysLoginLogService {}

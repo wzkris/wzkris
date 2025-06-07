@@ -10,14 +10,13 @@ import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.service.SysDeptService;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 部门管理 服务实现
@@ -123,15 +122,17 @@ public class SysDeptServiceImpl implements SysDeptService {
         SysDeptQueryReq queryReq = new SysDeptQueryReq();
         queryReq.setParentId(deptId);
         List<SysDept> children = deptMapper.listChildren(queryReq);
-        List<SysDept> updateList = children.stream().map(child -> {
-            // 替换旧的祖先路径为新的祖先路径
-            Long[] updatedAncestors = replaceAncestors(child.getAncestors(), oldAncestors, newAncestors);
+        List<SysDept> updateList = children.stream()
+                .map(child -> {
+                    // 替换旧的祖先路径为新的祖先路径
+                    Long[] updatedAncestors = replaceAncestors(child.getAncestors(), oldAncestors, newAncestors);
 
-            // 创建新的部门对象，设置更新后的祖先路径
-            SysDept sysDept = new SysDept(child.getDeptId());
-            sysDept.setAncestors(updatedAncestors);
-            return sysDept;
-        }).toList();
+                    // 创建新的部门对象，设置更新后的祖先路径
+                    SysDept sysDept = new SysDept(child.getDeptId());
+                    sysDept.setAncestors(updatedAncestors);
+                    return sysDept;
+                })
+                .toList();
         if (!CollectionUtils.isEmpty(updateList)) {
             // 批量更新
             deptMapper.updateById(updateList);
@@ -149,7 +150,9 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         // 如果找到旧祖先路径，则替换为新祖先路径
         if (startIndex != -1) {
-            childAncestorsList.subList(startIndex, startIndex + oldAncestorsList.size()).clear();
+            childAncestorsList
+                    .subList(startIndex, startIndex + oldAncestorsList.size())
+                    .clear();
             childAncestorsList.addAll(startIndex, newAncestorsList);
         }
 
@@ -177,7 +180,8 @@ public class SysDeptServiceImpl implements SysDeptService {
     private List<SysDept> getChildList(List<SysDept> list, SysDept t) {
         List<SysDept> tlist = new ArrayList<>();
         for (SysDept n : list) {
-            if (StringUtil.isNotNull(n.getParentId()) && n.getParentId().longValue() == t.getDeptId().longValue()) {
+            if (StringUtil.isNotNull(n.getParentId())
+                    && n.getParentId().longValue() == t.getDeptId().longValue()) {
                 tlist.add(n);
             }
         }

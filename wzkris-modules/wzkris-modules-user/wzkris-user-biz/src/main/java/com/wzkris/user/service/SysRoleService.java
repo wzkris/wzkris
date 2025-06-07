@@ -3,7 +3,6 @@ package com.wzkris.user.service;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +19,7 @@ public interface SysRoleService {
      *
      * @return 角色列表
      */
-    List<SelectVO> listSelect(String roleName);
+    List<SelectVO> listSelect(@Nullable String roleName);
 
     /**
      * 根据用户ID查询关联角色(正常状态)
@@ -95,5 +94,4 @@ public interface SysRoleService {
             this.checkDataScopes(Collections.singleton(roleId));
         }
     }
-
 }

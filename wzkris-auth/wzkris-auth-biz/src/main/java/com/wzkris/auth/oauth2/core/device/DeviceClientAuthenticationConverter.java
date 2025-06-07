@@ -19,6 +19,7 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -30,8 +31,6 @@ import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
-
-import java.util.Collections;
 
 /**
  * @author Joe Grandja
@@ -45,34 +44,34 @@ public final class DeviceClientAuthenticationConverter implements Authentication
     private final RequestMatcher deviceAccessTokenRequestMatcher;
 
     public DeviceClientAuthenticationConverter(String deviceAuthorizationEndpointUri) {
-        RequestMatcher clientIdParameterMatcher = request ->
-                request.getParameter(OAuth2ParameterNames.CLIENT_ID) != null;
+        RequestMatcher clientIdParameterMatcher =
+                request -> request.getParameter(OAuth2ParameterNames.CLIENT_ID) != null;
         this.deviceAuthorizationRequestMatcher = new AndRequestMatcher(
-                new AntPathRequestMatcher(
-                        deviceAuthorizationEndpointUri, HttpMethod.POST.name()),
+                new AntPathRequestMatcher(deviceAuthorizationEndpointUri, HttpMethod.POST.name()),
                 clientIdParameterMatcher);
-        this.deviceAccessTokenRequestMatcher = request ->
-                AuthorizationGrantType.DEVICE_CODE.getValue().equals(request.getParameter(OAuth2ParameterNames.GRANT_TYPE)) &&
-                        request.getParameter(OAuth2ParameterNames.DEVICE_CODE) != null &&
-                        request.getParameter(OAuth2ParameterNames.CLIENT_ID) != null;
+        this.deviceAccessTokenRequestMatcher = request -> AuthorizationGrantType.DEVICE_CODE
+                        .getValue()
+                        .equals(request.getParameter(OAuth2ParameterNames.GRANT_TYPE))
+                && request.getParameter(OAuth2ParameterNames.DEVICE_CODE) != null
+                && request.getParameter(OAuth2ParameterNames.CLIENT_ID) != null;
     }
 
     @Nullable
     @Override
     public Authentication convert(HttpServletRequest request) {
-        if (!this.deviceAuthorizationRequestMatcher.matches(request) &&
-                !this.deviceAccessTokenRequestMatcher.matches(request)) {
+        if (!this.deviceAuthorizationRequestMatcher.matches(request)
+                && !this.deviceAccessTokenRequestMatcher.matches(request)) {
             return null;
         }
 
         // client_id (REQUIRED)
         String clientId = request.getParameter(OAuth2ParameterNames.CLIENT_ID);
-        if (!StringUtils.hasText(clientId) ||
-                request.getParameterValues(OAuth2ParameterNames.CLIENT_ID).length != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+        if (!StringUtils.hasText(clientId) || request.getParameterValues(OAuth2ParameterNames.CLIENT_ID).length != 1) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
-        return new DeviceClientAuthenticationToken(clientId, ClientAuthenticationMethod.NONE, null, Collections.emptyMap());
+        return new DeviceClientAuthenticationToken(
+                clientId, ClientAuthenticationMethod.NONE, null, Collections.emptyMap());
     }
-
 }

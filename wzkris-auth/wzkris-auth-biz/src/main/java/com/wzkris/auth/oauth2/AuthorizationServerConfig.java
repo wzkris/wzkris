@@ -41,61 +41,66 @@ public class AuthorizationServerConfig {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationFilterChain(HttpSecurity http,
-                                                        AuthorizationServerSettings serverSettings,
-                                                        DeviceClientAuthenticationProvider deviceClientAuthenticationProvider,
-                                                        PasswordAuthenticationProvider passwordAuthenticationProvider,
-                                                        WechatAuthenticationProvider wechatAuthenticationProvider,
-                                                        SmsAuthenticationProvider smsAuthenticationProvider) throws Exception {
+    public SecurityFilterChain authorizationFilterChain(
+            HttpSecurity http,
+            AuthorizationServerSettings serverSettings,
+            DeviceClientAuthenticationProvider deviceClientAuthenticationProvider,
+            PasswordAuthenticationProvider passwordAuthenticationProvider,
+            WechatAuthenticationProvider wechatAuthenticationProvider,
+            SmsAuthenticationProvider smsAuthenticationProvider)
+            throws Exception {
         // @formatter:off
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 OAuth2AuthorizationServerConfigurer.authorizationServer();
         http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .with(authorizationServerConfigurer, Customizer.withDefaults())
-                .authorizeHttpRequests((authorize) ->
-                        authorize.anyRequest().authenticated()
-                );
+                .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated());
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .tokenEndpoint(tokenEndpoint -> { // 自定义认证授权端点
-                    tokenEndpoint
-                            .accessTokenRequestConverters(authenticationConverters -> { // 从请求拿到对应参数组装成authentication
-                                authenticationConverters.add(new PasswordAuthenticationConverter());
-                                authenticationConverters.add(new SmsAuthenticationConverter());
-                                authenticationConverters.add(new WechatAuthenticationConverter());
-                            })
-                            .authenticationProviders(authenticationProviders -> { // 校验authentication是否合法
-                                authenticationProviders.add(passwordAuthenticationProvider);
-                                authenticationProviders.add(smsAuthenticationProvider);
-                                authenticationProviders.add(wechatAuthenticationProvider);
-                            })
-                            .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
-                            .errorResponseHandler(new AuthenticationFailureHandlerImpl()) // 登录失败处理器
-                    ;
-                })
-                .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> // 自定义设备码验证页面
+                .tokenEndpoint(
+                        tokenEndpoint -> { // 自定义认证授权端点
+                            tokenEndpoint
+                                    .accessTokenRequestConverters(
+                                            authenticationConverters -> { // 从请求拿到对应参数组装成authentication
+                                                authenticationConverters.add(new PasswordAuthenticationConverter());
+                                                authenticationConverters.add(new SmsAuthenticationConverter());
+                                                authenticationConverters.add(new WechatAuthenticationConverter());
+                                            })
+                                    .authenticationProviders(
+                                            authenticationProviders -> { // 校验authentication是否合法
+                                                authenticationProviders.add(passwordAuthenticationProvider);
+                                                authenticationProviders.add(smsAuthenticationProvider);
+                                                authenticationProviders.add(wechatAuthenticationProvider);
+                                            })
+                                    .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
+                                    .errorResponseHandler(new AuthenticationFailureHandlerImpl()) // 登录失败处理器
+                            ;
+                        })
+                .deviceAuthorizationEndpoint(
+                        deviceAuthorizationEndpoint -> // 自定义设备码验证页面
                         deviceAuthorizationEndpoint
                                 .verificationUri("/activate")
                                 .errorResponseHandler(new AuthenticationFailureHandlerImpl()))
-                .deviceVerificationEndpoint(deviceVerificationEndpoint -> // 自定义设备授权页面
+                .deviceVerificationEndpoint(
+                        deviceVerificationEndpoint -> // 自定义设备授权页面
                         deviceVerificationEndpoint
                                 .consentPage("/oauth2/consent")
                                 .errorResponseHandler(new AuthenticationFailureHandlerImpl()))
-                .clientAuthentication(clientAuthentication -> { // 客户端认证
-                    clientAuthentication
-                            .authenticationConverter(new DeviceClientAuthenticationConverter(serverSettings.getDeviceAuthorizationEndpoint()))
-                            .authenticationProvider(deviceClientAuthenticationProvider)
-                            .errorResponseHandler(new AuthenticationFailureHandlerImpl());
-                })
-                .authorizationEndpoint(authorizationEndpoint ->
-                        authorizationEndpoint.consentPage("/oauth2/consent"))
+                .clientAuthentication(
+                        clientAuthentication -> { // 客户端认证
+                            clientAuthentication
+                                    .authenticationConverter(new DeviceClientAuthenticationConverter(
+                                            serverSettings.getDeviceAuthorizationEndpoint()))
+                                    .authenticationProvider(deviceClientAuthenticationProvider)
+                                    .errorResponseHandler(new AuthenticationFailureHandlerImpl());
+                        })
+                .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.consentPage("/oauth2/consent"))
                 .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 
         http.exceptionHandling(exceptionHandler -> {
             exceptionHandler.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/login"),// 401了跳转到登录页
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-            );
+                    new LoginUrlAuthenticationEntryPoint("/login"), // 401了跳转到登录页
+                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML));
         });
 
         return http.build();
@@ -126,5 +131,4 @@ public class AuthorizationServerConfig {
                 new OAuth2RefreshTokenGenerator(),
                 new JwtGenerator(new NimbusJwtEncoder(jwkSource)));
     }
-
 }

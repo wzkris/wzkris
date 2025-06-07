@@ -45,9 +45,9 @@ public class MybatisPlusConfig {
         interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandlerImpl(tenantProperties)));
         // 自定义分页插件
         PageInterceptor pageInterceptor = new PageInterceptor();
-        pageInterceptor.setMaxLimit(500L);//单页限制条数
-        pageInterceptor.setOverflow(true);//分页溢出
-        pageInterceptor.setOptimizeJoin(false);// 不优化join
+        pageInterceptor.setMaxLimit(500L); // 单页限制条数
+        pageInterceptor.setOverflow(true); // 分页溢出
+        pageInterceptor.setOptimizeJoin(false); // 不优化join
         interceptor.addInnerInterceptor(pageInterceptor);
         return interceptor;
     }

@@ -22,5 +22,4 @@ public enum LoginType {
      * 授权APP
      */
     AUTH_APP
-
 }

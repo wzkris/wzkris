@@ -15,6 +15,10 @@
  */
 package com.wzkris.auth.oauth2.redis.entity;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -22,11 +26,6 @@ import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Map;
-import java.util.Set;
 
 @Getter
 @RedisHash("oauth2_authorization")
@@ -46,8 +45,13 @@ public abstract class OAuth2AuthorizationGrantAuthorization {
     private final RefreshToken refreshToken;
 
     // @fold:on
-    protected OAuth2AuthorizationGrantAuthorization(String id, String registeredClientId, String principalName,
-                                                    Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken) {
+    protected OAuth2AuthorizationGrantAuthorization(
+            String id,
+            String registeredClientId,
+            String principalName,
+            Set<String> authorizedScopes,
+            AccessToken accessToken,
+            RefreshToken refreshToken) {
         this.id = id;
         this.registeredClientId = registeredClientId;
         this.principalName = principalName;
@@ -59,10 +63,16 @@ public abstract class OAuth2AuthorizationGrantAuthorization {
     @TimeToLive
     protected Long getTimeToLive() {
         long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
-                accessToken != null ? ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()) : -1);
-        maxLiveTime = Math.max(maxLiveTime,
-                refreshToken != null ? ChronoUnit.SECONDS.between(refreshToken.getIssuedAt(), refreshToken.getExpiresAt()) : -1);
+        maxLiveTime = Math.max(
+                maxLiveTime,
+                accessToken != null
+                        ? ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt())
+                        : -1);
+        maxLiveTime = Math.max(
+                maxLiveTime,
+                refreshToken != null
+                        ? ChronoUnit.SECONDS.between(refreshToken.getIssuedAt(), refreshToken.getExpiresAt())
+                        : -1);
 
         return maxLiveTime;
     }
@@ -108,9 +118,15 @@ public abstract class OAuth2AuthorizationGrantAuthorization {
 
         private final ClaimsHolder claims;
 
-        public AccessToken(String tokenValue, Instant issuedAt, Instant expiresAt, boolean invalidated,
-                           OAuth2AccessToken.TokenType tokenType, Set<String> scopes, OAuth2TokenFormat tokenFormat,
-                           ClaimsHolder claims) {
+        public AccessToken(
+                String tokenValue,
+                Instant issuedAt,
+                Instant expiresAt,
+                boolean invalidated,
+                OAuth2AccessToken.TokenType tokenType,
+                Set<String> scopes,
+                OAuth2TokenFormat tokenFormat,
+                ClaimsHolder claims) {
             super(tokenValue, issuedAt, expiresAt, invalidated);
             this.tokenType = tokenType;
             this.scopes = scopes;
@@ -124,7 +140,6 @@ public abstract class OAuth2AuthorizationGrantAuthorization {
         public RefreshToken(String tokenValue, Instant issuedAt, Instant expiresAt, boolean invalidated) {
             super(tokenValue, issuedAt, expiresAt, invalidated);
         }
-
     }
     // @fold:off
 

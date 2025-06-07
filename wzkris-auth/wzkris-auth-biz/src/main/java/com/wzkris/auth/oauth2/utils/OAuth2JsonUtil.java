@@ -2,11 +2,10 @@ package com.wzkris.auth.oauth2.utils;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import lombok.Getter;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
-
-import java.util.List;
 
 /**
  * @author : wzkris
@@ -25,5 +24,4 @@ public final class OAuth2JsonUtil {
         objectMapper.registerModules(securityModules);
         objectMapper.registerModules(new OAuth2AuthorizationServerJackson2Module());
     }
-
 }

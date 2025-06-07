@@ -7,13 +7,12 @@ import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
+import java.time.Duration;
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RScript;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.Collections;
 
 /**
  * 验证码服务
@@ -37,7 +36,9 @@ public class CaptchaService {
      * @param key 前缀
      */
     public void setCaptcha(String key, String code) {
-        RedisUtil.setObj(captchaProperties.getPrefix() + ":" + key, code,
+        RedisUtil.setObj(
+                captchaProperties.getPrefix() + ":" + key,
+                code,
                 Duration.ofMillis(captchaProperties.getExpire().getOrDefault("default", 120_000L)));
     }
 
@@ -68,19 +69,24 @@ public class CaptchaService {
         String counterKey = MAXTRY_PREFIX + key;
 
         // 定义 Lua 脚本
-        String luaScript =
-                "local currentTry = redis.call('get', KEYS[1]) or 0 " +
-                        "if tonumber(currentTry) >= tonumber(ARGV[1]) then " +
-                        "    return 0 " +
-                        "else " +
-                        "    redis.call('incr', KEYS[1]) " +
-                        "    redis.call('expire', KEYS[1], ARGV[2]) " +
-                        "    return 1 " +
-                        "end";
+        String luaScript = "local currentTry = redis.call('get', KEYS[1]) or 0 "
+                + "if tonumber(currentTry) >= tonumber(ARGV[1]) then "
+                + "    return 0 "
+                + "else "
+                + "    redis.call('incr', KEYS[1]) "
+                + "    redis.call('expire', KEYS[1], ARGV[2]) "
+                + "    return 1 "
+                + "end";
 
         // 执行 Lua 脚本
         RScript script = RedisUtil.getClient().getScript();
-        Long result = script.eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, Collections.singletonList(counterKey), maxTry, timeout);
+        Long result = script.eval(
+                RScript.Mode.READ_WRITE,
+                luaScript,
+                RScript.ReturnType.INTEGER,
+                Collections.singletonList(counterKey),
+                maxTry,
+                timeout);
 
         // 检查结果
         if (result.intValue() == 0) {

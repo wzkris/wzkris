@@ -1,14 +1,13 @@
 package com.wzkris.common.core.utils;
 
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 获取i18n资源文件
@@ -44,5 +43,4 @@ public class I18nUtil {
         }
         return msg.toString();
     }
-
 }

@@ -18,7 +18,7 @@ import org.apache.ibatis.type.ArrayTypeHandler;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName(schema = "biz_sys", autoResultMap = true)
+@TableName(schema = "biz", autoResultMap = true)
 public class SysTenantPackage extends BaseEntity {
 
     @TableId

@@ -6,8 +6,12 @@ import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
 import org.jboss.logging.MDC;
 
-@Activate(group = {org.apache.dubbo.common.constants.CommonConstants.PROVIDER,
-        org.apache.dubbo.common.constants.CommonConstants.CONSUMER}, order = Integer.MAX_VALUE)
+@Activate(
+        group = {
+            org.apache.dubbo.common.constants.CommonConstants.PROVIDER,
+            org.apache.dubbo.common.constants.CommonConstants.CONSUMER
+        },
+        order = Integer.MAX_VALUE)
 public class DubboRequestFilter implements Filter {
 
     @Override
@@ -24,13 +28,12 @@ public class DubboRequestFilter implements Filter {
             }
         }
 
-        Result result = invoker.invoke(invocation);
-
-        if (RpcContext.getServiceContext().isProviderSide()) {
-            MDC.clear();
+        try {
+            return invoker.invoke(invocation);
+        } finally {
+            if (RpcContext.getServiceContext().isProviderSide()) {
+                MDC.clear();
+            }
         }
-
-        return result;
     }
-
 }

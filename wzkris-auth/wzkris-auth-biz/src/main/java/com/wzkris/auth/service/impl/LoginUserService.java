@@ -14,13 +14,13 @@ import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.api.RemoteSysUserApi;
-import com.wzkris.user.api.domain.request.QueryPermsReq;
-import com.wzkris.user.api.domain.response.SysPermissionResp;
-import com.wzkris.user.api.domain.response.SysUserResp;
-import jakarta.annotation.Nonnull;
+import com.wzkris.user.rmi.RmiSysUserService;
+import com.wzkris.user.rmi.domain.req.QueryPermsReq;
+import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
+import com.wzkris.user.rmi.domain.resp.SysUserResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,22 +31,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.HashSet;
-
 @Service
 @RequiredArgsConstructor
 public class LoginUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final RemoteSysUserApi remoteSysUserApi;
+    private final RmiSysUserService rmiSysUserService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public LoginUser loadUserByPhoneNumber(String phoneNumber) {
-        SysUserResp userResp = remoteSysUserApi.getByPhoneNumber(phoneNumber);
+        SysUserResp userResp = rmiSysUserService.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber, 600);
@@ -64,7 +62,7 @@ public class LoginUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginUser loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        SysUserResp userResp = remoteSysUserApi.getByUsername(username);
+        SysUserResp userResp = rmiSysUserService.getByUsername(username);
 
         if (userResp == null) {
             captchaService.lockAccount(username, 600);
@@ -73,7 +71,8 @@ public class LoginUserService extends UserInfoTemplate {
 
         try {
             if (!passwordEncoder.matches(password, userResp.getPassword())) {
-                OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
+                OAuth2ExceptionUtil.throwErrorI18n(
+                        BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
             return this.buildLoginUser(userResp);
@@ -91,14 +90,13 @@ public class LoginUserService extends UserInfoTemplate {
     /**
      * 构建登录用户
      */
-    @Nonnull
-    private LoginUser buildLoginUser(@Nonnull SysUserResp userResp) {
+    private LoginUser buildLoginUser(SysUserResp userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 
         // 获取权限信息
-        SysPermissionResp permissions = remoteSysUserApi
-                .getPermission(new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
+        SysPermissionResp permissions = rmiSysUserService.getPermission(
+                new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
 
         LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));
         loginUser.setAdmin(permissions.getAdmin());
@@ -115,13 +113,17 @@ public class LoginUserService extends UserInfoTemplate {
      */
     private void checkAccount(SysUserResp userResp) {
         if (ObjUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         } else if (ObjUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
         } else if (userResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
         } else if (ObjUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }
 
@@ -129,13 +131,20 @@ public class LoginUserService extends UserInfoTemplate {
      * 记录失败日志
      */
     private void recordFailedLog(SysUserResp userResp, String grantType, String errorMsg) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         LoginUser loginUser = new LoginUser();
         loginUser.setUserId(userResp.getUserId());
         loginUser.setUsername(userResp.getUsername());
         loginUser.setTenantId(userResp.getTenantId());
-        SpringUtil.getContext().publishEvent(new LoginEvent(null, loginUser, grantType,
-                CommonConstants.STATUS_DISABLE, errorMsg, ServletUtil.getClientIP(request),
-                UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+        SpringUtil.getContext()
+                .publishEvent(new LoginEvent(
+                        "",
+                        loginUser,
+                        grantType,
+                        CommonConstants.STATUS_DISABLE,
+                        errorMsg,
+                        ServletUtil.getClientIP(request),
+                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
     }
 }

@@ -18,11 +18,10 @@ import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 岗位信息操作处理
@@ -92,5 +91,4 @@ public class SysPostController extends BaseController {
         postService.checkPostUsed(postIds);
         return toRes(postService.deleteByPostIds(postIds));
     }
-
 }

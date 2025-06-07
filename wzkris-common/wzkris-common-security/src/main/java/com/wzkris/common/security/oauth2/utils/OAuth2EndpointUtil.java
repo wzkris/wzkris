@@ -1,10 +1,9 @@
 package com.wzkris.common.security.oauth2.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.util.Map;
 
 public final class OAuth2EndpointUtil {
 
@@ -18,5 +17,4 @@ public final class OAuth2EndpointUtil {
         });
         return parameters;
     }
-
 }

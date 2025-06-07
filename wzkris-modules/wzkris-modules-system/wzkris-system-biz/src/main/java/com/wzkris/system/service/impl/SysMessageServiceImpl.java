@@ -15,5 +15,4 @@ import org.springframework.stereotype.Service;
 public class SysMessageServiceImpl implements SysMessageService {
 
     private final SysMessageMapper messageMapper;
-
 }

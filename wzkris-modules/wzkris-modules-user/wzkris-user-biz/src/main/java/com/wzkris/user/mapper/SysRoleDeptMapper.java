@@ -2,13 +2,11 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.user.domain.SysRoleDept;
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * 角色与部门关联表 数据层
@@ -25,7 +23,7 @@ public interface SysRoleDeptMapper {
      * @return 部门id集合
      */
     @DeptScope
-    @Select("SELECT dept_id FROM biz_sys.sys_role_dept WHERE role_id = #{roleId}")
+    @Select("SELECT dept_id FROM biz.sys_role_dept WHERE role_id = #{roleId}")
     List<Long> listDeptIdByRoleId(Long roleId);
 
     /**
@@ -35,15 +33,16 @@ public interface SysRoleDeptMapper {
      * @return 部门id集合
      */
     @DeptScope
-    @Select("""
+    @Select(
+            """
             <script>
-                SELECT dept_id FROM biz_sys.sys_role_dept WHERE role_id IN
+                SELECT dept_id FROM biz.sys_role_dept WHERE role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    List<Long> listDeptIdByRoleIds(@Param("roleIds") List<Long> roleIds);
+    List<Long> listDeptIdByRoleIds(List<Long> roleIds);
 
     /**
      * 通过角色ID删除角色和部门关联
@@ -51,7 +50,7 @@ public interface SysRoleDeptMapper {
      * @param roleId 角色ID
      * @return 结果
      */
-    @Delete("DELETE FROM biz_sys.sys_role_dept WHERE role_id = #{roleId}")
+    @Delete("DELETE FROM biz.sys_role_dept WHERE role_id = #{roleId}")
     int deleteByRoleId(Long roleId);
 
     /**
@@ -60,15 +59,16 @@ public interface SysRoleDeptMapper {
      * @param roleIds 角色id集合
      * @return 结果
      */
-    @Delete("""
+    @Delete(
+            """
             <script>
-                DELETE FROM biz_sys.sys_role_dept WHERE role_id IN
+                DELETE FROM biz.sys_role_dept WHERE role_id IN
                     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
                         #{roleId}
                     </foreach>
             </script>
             """)
-    int deleteByRoleIds(@Param("roleIds") List<Long> roleIds);
+    int deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 通过部门ID删除角色和部门关联
@@ -76,7 +76,7 @@ public interface SysRoleDeptMapper {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Delete("DELETE FROM biz_sys.sys_role_dept WHERE dept_id = #{deptId}")
+    @Delete("DELETE FROM biz.sys_role_dept WHERE dept_id = #{deptId}")
     int deleteByDeptId(Long deptId);
 
     /**
@@ -85,14 +85,14 @@ public interface SysRoleDeptMapper {
      * @param list 角色部门列表
      * @return 结果
      */
-    @Insert("""
+    @Insert(
+            """
             <script>
-                INSERT INTO biz_sys.sys_role_dept(role_id, dept_id) VALUES
+                INSERT INTO biz.sys_role_dept(role_id, dept_id) VALUES
                     <foreach item="item" index="index" collection="list" separator=",">
                         (#{item.roleId}, #{item.deptId})
                     </foreach>
             </script>
             """)
-    int insertBatch(@Param("list") List<SysRoleDept> list);
-
+    int insertBatch(List<SysRoleDept> list);
 }

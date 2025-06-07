@@ -10,12 +10,11 @@ import com.wzkris.system.service.SysConfigService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 参数配置 服务层实现
@@ -79,5 +78,4 @@ public class SysConfigServiceImpl implements SysConfigService {
                 .ne(ObjUtil.isNotNull(configId), SysConfig::getConfigId, configId);
         return configMapper.exists(lqw);
     }
-
 }

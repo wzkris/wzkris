@@ -8,7 +8,6 @@ import com.xxl.job.admin.core.util.I18nUtil;
  * @author xuxueli 2018-09-16 04:56:41
  */
 public enum TriggerTypeEnum {
-
     MANUAL(I18nUtil.getString("jobconf_trigger_type_manual")),
     CRON(I18nUtil.getString("jobconf_trigger_type_cron")),
     RETRY(I18nUtil.getString("jobconf_trigger_type_retry")),
@@ -25,5 +24,4 @@ public enum TriggerTypeEnum {
     public String getTitle() {
         return title;
     }
-
 }

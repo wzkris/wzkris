@@ -2,16 +2,15 @@ package com.wzkris.common.excel.core;
 
 import cn.hutool.core.util.StrUtil;
 import com.wzkris.common.core.exception.service.GenericException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * <h1>Excel下拉可选项</h1>
@@ -108,21 +107,19 @@ public class DropDownOptions {
      * @param howToBuildEveryOption       如何生成下拉选内容
      * @return 级联下拉选项
      */
-    public static <T> DropDownOptions buildLinkedOptions(List<T> parentList,
-                                                         int parentIndex,
-                                                         List<T> sonList,
-                                                         int sonIndex,
-                                                         Function<T, Number> parentHowToGetIdFunction,
-                                                         Function<T, Number> sonHowToGetParentIdFunction,
-                                                         Function<T, String> howToBuildEveryOption) {
+    public static <T> DropDownOptions buildLinkedOptions(
+            List<T> parentList,
+            int parentIndex,
+            List<T> sonList,
+            int sonIndex,
+            Function<T, Number> parentHowToGetIdFunction,
+            Function<T, Number> sonHowToGetParentIdFunction,
+            Function<T, String> howToBuildEveryOption) {
         DropDownOptions parentLinkSonOptions = new DropDownOptions();
         // 先创建父类的下拉
         parentLinkSonOptions.setIndex(parentIndex);
         parentLinkSonOptions.setOptions(
-                parentList.stream()
-                        .map(howToBuildEveryOption)
-                        .collect(Collectors.toList())
-        );
+                parentList.stream().map(howToBuildEveryOption).collect(Collectors.toList()));
         // 提取父-子级联下拉
         Map<String, List<String>> sonOptions = new HashMap<>();
         // 父级依据自己的ID分组
@@ -132,7 +129,9 @@ public class DropDownOptions {
         sonList.forEach(everySon -> {
             if (parentGroupByIdMap.containsKey(sonHowToGetParentIdFunction.apply(everySon))) {
                 // 找到对应的上级
-                T parentObj = parentGroupByIdMap.get(sonHowToGetParentIdFunction.apply(everySon)).get(0);
+                T parentObj = parentGroupByIdMap
+                        .get(sonHowToGetParentIdFunction.apply(everySon))
+                        .get(0);
                 // 提取名称和ID作为Key
                 String key = howToBuildEveryOption.apply(parentObj);
                 // Key对应的Value

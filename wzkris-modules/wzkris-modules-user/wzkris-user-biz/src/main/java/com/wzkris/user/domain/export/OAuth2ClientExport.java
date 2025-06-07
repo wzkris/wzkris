@@ -7,9 +7,8 @@ import com.wzkris.common.excel.convert.ExcelListConverter;
 import com.wzkris.user.domain.OAuth2Client;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 @AutoMappers({@AutoMapper(target = OAuth2Client.class)})
@@ -25,7 +24,9 @@ public class OAuth2ClientExport {
     private List<String> scopes;
 
     @ExcelProperty(value = "授权类型", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(readConverterExp = "password=密码模式,sms=短信模式,refresh_token=刷新模式,authorization_code=授权码模式,client_credentials=客户端模式")
+    @ExcelDictFormat(
+            readConverterExp =
+                    "password=密码模式,sms=短信模式,refresh_token=刷新模式,authorization_code=授权码模式,client_credentials=客户端模式")
     private List<String> authorizationGrantTypes;
 
     @ExcelProperty(value = "回调地址", converter = ExcelListConverter.class)
@@ -38,5 +39,4 @@ public class OAuth2ClientExport {
     @ExcelProperty(value = "放行配置", converter = ExcelDictConvert.class)
     @ExcelDictFormat(readConverterExp = "false=自动,true=手动")
     private Boolean autoApprove;
-
 }

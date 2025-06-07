@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.SysMenu;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * SelectTree树结构实体类
@@ -45,5 +44,4 @@ public class SelectTreeVO implements Serializable {
         this.label = menu.getMenuName();
         this.children = menu.getChildren().stream().map(SelectTreeVO::new).collect(Collectors.toList());
     }
-
 }

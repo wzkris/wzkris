@@ -19,11 +19,10 @@ import com.wzkris.user.service.SysDeptService;
 import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 部门信息
@@ -109,5 +108,4 @@ public class SysDeptController extends BaseController {
         }
         return toRes(deptService.deleteById(deptId));
     }
-
 }

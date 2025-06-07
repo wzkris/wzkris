@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
  * @author wzkris
  */
 @Repository
-public interface SysTenantWalletRecordMapper extends BaseMapperPlus<SysTenantWalletRecord> {
-
-}
+public interface SysTenantWalletRecordMapper extends BaseMapperPlus<SysTenantWalletRecord> {}

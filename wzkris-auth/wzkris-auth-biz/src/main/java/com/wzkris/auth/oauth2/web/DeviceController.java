@@ -43,5 +43,4 @@ public class DeviceController {
     public String success() {
         return "device-activated";
     }
-
 }

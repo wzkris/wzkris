@@ -15,6 +15,9 @@
  */
 package com.wzkris.auth.oauth2.redis.entity;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Set;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -24,10 +27,6 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Set;
 
 @Getter
 @RedisHash("oauth2_registered_client")
@@ -62,12 +61,20 @@ public class OAuth2RegisteredClient {
     private final TokenSettings tokenSettings;
 
     // @fold:on
-    public OAuth2RegisteredClient(String id, String clientId, Instant clientIdIssuedAt, String clientSecret,
-                                  Instant clientSecretExpiresAt, String clientName,
-                                  Set<ClientAuthenticationMethod> clientAuthenticationMethods,
-                                  Set<AuthorizationGrantType> authorizationGrantTypes, Set<String> redirectUris,
-                                  Set<String> postLogoutRedirectUris, Set<String> scopes, ClientSettings clientSettings,
-                                  TokenSettings tokenSettings) {
+    public OAuth2RegisteredClient(
+            String id,
+            String clientId,
+            Instant clientIdIssuedAt,
+            String clientSecret,
+            Instant clientSecretExpiresAt,
+            String clientName,
+            Set<ClientAuthenticationMethod> clientAuthenticationMethods,
+            Set<AuthorizationGrantType> authorizationGrantTypes,
+            Set<String> redirectUris,
+            Set<String> postLogoutRedirectUris,
+            Set<String> scopes,
+            ClientSettings clientSettings,
+            TokenSettings tokenSettings) {
         this.id = id;
         this.clientId = clientId;
         this.clientIdIssuedAt = clientIdIssuedAt;
@@ -96,8 +103,12 @@ public class OAuth2RegisteredClient {
 
         private final String x509CertificateSubjectDN;
 
-        public ClientSettings(boolean requireProofKey, boolean requireAuthorizationConsent, String jwkSetUrl,
-                              JwsAlgorithm tokenEndpointAuthenticationSigningAlgorithm, String x509CertificateSubjectDN) {
+        public ClientSettings(
+                boolean requireProofKey,
+                boolean requireAuthorizationConsent,
+                String jwkSetUrl,
+                JwsAlgorithm tokenEndpointAuthenticationSigningAlgorithm,
+                String x509CertificateSubjectDN) {
             this.requireProofKey = requireProofKey;
             this.requireAuthorizationConsent = requireAuthorizationConsent;
             this.jwkSetUrl = jwkSetUrl;
@@ -125,10 +136,15 @@ public class OAuth2RegisteredClient {
 
         private final boolean x509CertificateBoundAccessTokens;
 
-        public TokenSettings(Duration authorizationCodeTimeToLive, Duration accessTokenTimeToLive,
-                             OAuth2TokenFormat accessTokenFormat, Duration deviceCodeTimeToLive, boolean reuseRefreshTokens,
-                             Duration refreshTokenTimeToLive, SignatureAlgorithm idTokenSignatureAlgorithm,
-                             boolean x509CertificateBoundAccessTokens) {
+        public TokenSettings(
+                Duration authorizationCodeTimeToLive,
+                Duration accessTokenTimeToLive,
+                OAuth2TokenFormat accessTokenFormat,
+                Duration deviceCodeTimeToLive,
+                boolean reuseRefreshTokens,
+                Duration refreshTokenTimeToLive,
+                SignatureAlgorithm idTokenSignatureAlgorithm,
+                boolean x509CertificateBoundAccessTokens) {
             this.authorizationCodeTimeToLive = authorizationCodeTimeToLive;
             this.accessTokenTimeToLive = accessTokenTimeToLive;
             this.accessTokenFormat = accessTokenFormat;

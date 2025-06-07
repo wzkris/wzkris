@@ -6,15 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.common.security.oauth2.domain.model.LoginUser;
-import com.wzkris.user.api.domain.response.SysUserResp;
+import com.wzkris.user.rmi.domain.resp.SysUserResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Date;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * 用户对象 sys_user
@@ -22,12 +20,9 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-@AutoMappers({
-        @AutoMapper(target = LoginUser.class),
-        @AutoMapper(target = SysUserResp.class)
-})
+@AutoMappers({@AutoMapper(target = SysUserResp.class)})
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysUser extends BaseEntity {
 
     @TableId
@@ -85,5 +80,4 @@ public class SysUser extends BaseEntity {
     public boolean isSuperAdmin() {
         return isSuperAdmin(this.userId);
     }
-
 }

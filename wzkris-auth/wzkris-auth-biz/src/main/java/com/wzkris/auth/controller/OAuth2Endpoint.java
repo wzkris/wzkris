@@ -1,16 +1,14 @@
 package com.wzkris.auth.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.wzkris.auth.OnlineUserUtil;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.domain.resp.AppUserinfo;
 import com.wzkris.auth.domain.resp.SysUserinfo;
 import com.wzkris.auth.oauth2.redis.entity.OAuth2AuthorizationGrantAuthorization;
 import com.wzkris.auth.oauth2.redis.repository.OAuth2AuthorizationGrantAuthorizationRepository;
+import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.resolver.CustomBearerTokenResolver;
 import com.wzkris.common.security.utils.ClientUtil;
 import com.wzkris.common.security.utils.LoginUtil;
@@ -60,8 +58,8 @@ public class OAuth2Endpoint extends BaseController {
     @Operation(summary = "用户信息")
     @GetMapping("/appuserinfo")
     public Result<AppUserinfo> clientUser() {
-        ClientUser clientUser = ClientUtil.getClientUser();
-        AppUserinfo userinfo = BeanUtil.convert(clientUser, AppUserinfo.class);
+        AppUserinfo userinfo = new AppUserinfo();
+        userinfo.setPhoneNumber(ClientUtil.getPhoneNumber());
         return ok(userinfo);
     }
 
@@ -73,8 +71,8 @@ public class OAuth2Endpoint extends BaseController {
             return;
         }
 
-        OAuth2AuthorizationGrantAuthorization grantAuthorization = auth2AuthorizationGrantAuthorizationRepository
-                .findByAccessToken_TokenValue(resolvedToken);
+        OAuth2AuthorizationGrantAuthorization grantAuthorization =
+                auth2AuthorizationGrantAuthorizationRepository.findByAccessToken_TokenValue(resolvedToken);
         if (grantAuthorization != null) {
             RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(LoginUtil.getUserId());
             onlineCache.remove(grantAuthorization.getId());

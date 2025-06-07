@@ -13,12 +13,12 @@ import com.wzkris.user.mapper.*;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 租户层
@@ -53,7 +53,8 @@ public class SysTenantServiceImpl implements SysTenantService {
     public List<SelectVO> listSelect(String tenantName) {
         LambdaQueryWrapper<SysTenant> lqw = new LambdaQueryWrapper<SysTenant>()
                 .select(SysTenant::getTenantId, SysTenant::getTenantName)
-                .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName);
+                .like(StringUtil.isNotBlank(tenantName), SysTenant::getTenantName, tenantName)
+                .orderByAsc(SysTenant::getTenantId);
         return tenantMapper.selectList(lqw).stream().map(SelectVO::new).collect(Collectors.toList());
     }
 
@@ -80,102 +81,113 @@ public class SysTenantServiceImpl implements SysTenantService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByIds(List<Long> tenantIds) {
-        tenantMapper.deleteByIds(tenantIds);
-        tenantWalletMapper.deleteByIds(tenantIds);
-        LambdaQueryWrapper<SysTenantWalletRecord> recordw = Wrappers.lambdaQuery(SysTenantWalletRecord.class)
-                .in(SysTenantWalletRecord::getTenantId, tenantIds);
-        tenantWalletRecordMapper.delete(recordw);
+    public boolean deleteById(Long tenantId) {
+        return DynamicTenantUtil.ignore(() -> {
+            boolean success = tenantMapper.deleteById(tenantId) > 0;
+            if (success) {
+                tenantWalletMapper.deleteById(tenantId);
+                LambdaQueryWrapper<SysTenantWalletRecord> recordw = Wrappers.lambdaQuery(SysTenantWalletRecord.class)
+                        .eq(SysTenantWalletRecord::getTenantId, tenantId);
+                tenantWalletRecordMapper.delete(recordw);
 
-        LambdaQueryWrapper<SysUser> userw = Wrappers.lambdaQuery(SysUser.class)
-                .select(SysUser::getUserId)
-                .in(SysUser::getTenantId, tenantIds);
-        List<Long> userIds = userMapper.selectList(userw).stream().map(SysUser::getUserId).toList();
-        if (CollUtil.isNotEmpty(userIds)) {
-            userService.deleteByIds(userIds);
-        }
-        LambdaQueryWrapper<SysRole> rolew = Wrappers.lambdaQuery(SysRole.class)
-                .select(SysRole::getRoleId)
-                .in(SysRole::getTenantId, tenantIds);
-        List<Long> roleIds = roleMapper.selectList(rolew).stream().map(SysRole::getRoleId).toList();
-        if (CollUtil.isNotEmpty(roleIds)) {
-            roleService.deleteByIds(roleIds);
-        }
-        LambdaQueryWrapper<SysDept> deptw = Wrappers.lambdaQuery(SysDept.class)
-                .in(SysDept::getTenantId, tenantIds);
-        deptMapper.delete(deptw);
-        LambdaQueryWrapper<SysPost> postw = Wrappers.lambdaQuery(SysPost.class)
-                .in(SysPost::getTenantId, tenantIds);
-        postMapper.delete(postw);
+                LambdaQueryWrapper<SysUser> userw = Wrappers.lambdaQuery(SysUser.class)
+                        .select(SysUser::getUserId)
+                        .eq(SysUser::getTenantId, tenantId);
+                List<Long> userIds = userMapper.selectList(userw).stream()
+                        .map(SysUser::getUserId)
+                        .toList();
+                if (CollUtil.isNotEmpty(userIds)) {
+                    userService.deleteByIds(userIds);
+                }
+                LambdaQueryWrapper<SysRole> rolew = Wrappers.lambdaQuery(SysRole.class)
+                        .select(SysRole::getRoleId)
+                        .eq(SysRole::getTenantId, tenantId);
+                List<Long> roleIds = roleMapper.selectList(rolew).stream()
+                        .map(SysRole::getRoleId)
+                        .toList();
+                if (CollUtil.isNotEmpty(roleIds)) {
+                    roleService.deleteByIds(roleIds);
+                }
+                LambdaQueryWrapper<SysDept> deptw =
+                        Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getTenantId, tenantId);
+                deptMapper.delete(deptw);
+                LambdaQueryWrapper<SysPost> postw =
+                        Wrappers.lambdaQuery(SysPost.class).eq(SysPost::getTenantId, tenantId);
+                postMapper.delete(postw);
+            }
+            return success;
+        });
     }
 
     @Override
     public boolean checkAccountLimit(Long tenantId) {
-        if (SysTenant.isSuperTenant(tenantId)) {
-            return true;
-        }
-        return DynamicTenantUtil.ignore(() -> {
-            SysTenant tenant = tenantMapper.selectById(tenantId);
-            if (tenant.getAccountLimit() == -1) {
-                return true;
-            }
-            Long count = userMapper.selectCount(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getTenantId, tenantId));
-            return tenant.getAccountLimit() - count > 0;
-        });
+        return SysTenant.isSuperTenant(tenantId)
+                || DynamicTenantUtil.ignore(() -> {
+                    SysTenant tenant = tenantMapper.selectById(tenantId);
+                    if (tenant.getAccountLimit() == -1) {
+                        return true;
+                    }
+                    Long count = userMapper.selectCount(
+                            Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getTenantId, tenantId));
+                    return tenant.getAccountLimit() - count > 0;
+                });
     }
 
     @Override
     public boolean checkRoleLimit(Long tenantId) {
-        if (SysTenant.isSuperTenant(tenantId)) {
-            return true;
-        }
-        return DynamicTenantUtil.ignore(() -> {
-            SysTenant tenant = tenantMapper.selectById(tenantId);
-            if (tenant.getRoleLimit() == -1) {
-                return true;
-            }
-            Long count = roleMapper.selectCount(Wrappers.lambdaQuery(SysRole.class).eq(SysRole::getTenantId, tenantId));
-            return tenant.getRoleLimit() - count > 0;
-        });
+        return SysTenant.isSuperTenant(tenantId)
+                || DynamicTenantUtil.ignore(() -> {
+                    SysTenant tenant = tenantMapper.selectById(tenantId);
+                    if (tenant.getRoleLimit() == -1) {
+                        return true;
+                    }
+                    Long count = roleMapper.selectCount(
+                            Wrappers.lambdaQuery(SysRole.class).eq(SysRole::getTenantId, tenantId));
+                    return tenant.getRoleLimit() - count > 0;
+                });
     }
 
     @Override
     public boolean checkPostLimit(Long tenantId) {
-        if (SysTenant.isSuperTenant(tenantId)) {
-            return true;
-        }
-        return DynamicTenantUtil.ignore(() -> {
-            SysTenant tenant = tenantMapper.selectById(tenantId);
-            if (tenant.getPostLimit() == -1) {
-                return true;
-            }
-            Long count = postMapper.selectCount(Wrappers.lambdaQuery(SysPost.class).eq(SysPost::getTenantId, tenantId));
-            return tenant.getPostLimit() - count > 0;
-        });
+        return SysTenant.isSuperTenant(tenantId)
+                || DynamicTenantUtil.ignore(() -> {
+                    SysTenant tenant = tenantMapper.selectById(tenantId);
+                    if (tenant.getPostLimit() == -1) {
+                        return true;
+                    }
+                    Long count = postMapper.selectCount(
+                            Wrappers.lambdaQuery(SysPost.class).eq(SysPost::getTenantId, tenantId));
+                    return tenant.getPostLimit() - count > 0;
+                });
     }
 
     @Override
     public boolean checkDeptLimit(Long tenantId) {
-        if (SysTenant.isSuperTenant(tenantId)) {
-            return true;
-        }
-        return DynamicTenantUtil.ignore(() -> {
-            SysTenant tenant = tenantMapper.selectById(tenantId);
-            if (tenant.getDeptLimit() == -1) {
-                return true;
-            }
-            Long count = deptMapper.selectCount(Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getTenantId, tenantId));
-            return tenant.getDeptLimit() - count > 0;
-        });
+        return SysTenant.isSuperTenant(tenantId)
+                || DynamicTenantUtil.ignore(() -> {
+                    SysTenant tenant = tenantMapper.selectById(tenantId);
+                    if (tenant.getDeptLimit() == -1) {
+                        return true;
+                    }
+                    Long count = deptMapper.selectCount(
+                            Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getTenantId, tenantId));
+                    return tenant.getDeptLimit() - count > 0;
+                });
     }
 
     @Override
     public boolean checkAdministrator(List<Long> userIds) {
         return DynamicTenantUtil.ignore(() -> {
-            LambdaQueryWrapper<SysTenant> lqw = Wrappers.lambdaQuery(SysTenant.class)
-                    .in(SysTenant::getAdministrator, userIds);
+            LambdaQueryWrapper<SysTenant> lqw =
+                    Wrappers.lambdaQuery(SysTenant.class).in(SysTenant::getAdministrator, userIds);
             return tenantMapper.exists(lqw);
         });
     }
 
+    @Override
+    public void checkDataScope(Long tenantId) {
+        if (SysTenant.isSuperTenant(tenantId)) {
+            throw new AccessDeniedException("不允许访问超级租户数据");
+        }
+    }
 }

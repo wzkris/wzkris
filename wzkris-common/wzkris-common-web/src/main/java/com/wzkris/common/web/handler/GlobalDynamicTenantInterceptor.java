@@ -23,7 +23,8 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     private static final String IGNORE_TYPE = "all";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         // handle login request
         if (!LoginUtil.isLogin()) {
             return true;
@@ -42,7 +43,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
             DynamicTenantUtil.enableIgnore();
         } else if (dynamicTenant != null) {
             response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
-            return false;// 不是合法请求头数据则直接返回
+            return false; // 不是合法请求头数据则直接返回
         }
 
         request.setAttribute(CommonConstants.X_TENANT_ID, dynamicTenant);
@@ -51,7 +52,9 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
     // 请求完成后的回调
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
+            throws Exception {
         Object dynamicTenant = request.getAttribute(CommonConstants.X_TENANT_ID);
         if (dynamicTenant != null) {
             if (NumberUtil.isNumber(dynamicTenant.toString())) {
@@ -64,6 +67,6 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
     // 渲染视图后的回调
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-    }
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {}
 }

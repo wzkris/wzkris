@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.core.constant.CommonConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.math.BigDecimal;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 /**
  * 用户钱包表 app_user_wallet
@@ -16,7 +15,7 @@ import java.math.BigDecimal;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_app")
+@TableName(schema = "biz")
 public class AppUserWallet {
 
     @TableId

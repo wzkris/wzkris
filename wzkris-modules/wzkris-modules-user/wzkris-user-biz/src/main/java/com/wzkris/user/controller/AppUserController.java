@@ -19,11 +19,10 @@ import com.wzkris.user.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 用户管理
@@ -55,8 +54,12 @@ public class AppUserController extends BaseController {
                 .eq(StringUtil.isNotBlank(req.getStatus()), AppUser::getStatus, req.getStatus())
                 .like(StringUtil.isNotBlank(req.getNickname()), AppUser::getNickname, req.getNickname())
                 .like(StringUtil.isNotBlank(req.getPhoneNumber()), AppUser::getPhoneNumber, req.getPhoneNumber())
-                .between(req.getParams().get("beginTime") != null && req.getParams().get("endTime") != null,
-                        AppUser::getCreateAt, req.getParams().get("beginTime"), req.getParams().get("endTime"))
+                .between(
+                        req.getParams().get("beginTime") != null
+                                && req.getParams().get("endTime") != null,
+                        AppUser::getCreateAt,
+                        req.getParams().get("beginTime"),
+                        req.getParams().get("endTime"))
                 .orderByDesc(AppUser::getUserId);
     }
 

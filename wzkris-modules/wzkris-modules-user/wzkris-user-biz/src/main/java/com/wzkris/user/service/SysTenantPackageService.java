@@ -1,7 +1,7 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.vo.SelectVO;
-
+import jakarta.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ public interface SysTenantPackageService {
      *
      * @return 套餐列表
      */
-    List<SelectVO> listSelect(String packageName);
+    List<SelectVO> listSelect(@Nullable String packageName);
 
     /**
      * 校验套餐是否被使用

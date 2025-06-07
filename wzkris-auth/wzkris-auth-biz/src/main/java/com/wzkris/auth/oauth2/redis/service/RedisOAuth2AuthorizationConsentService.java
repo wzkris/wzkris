@@ -49,9 +49,8 @@ public class RedisOAuth2AuthorizationConsentService implements OAuth2Authorizati
     public OAuth2AuthorizationConsent findById(String registeredClientId, String principalName) {
         Assert.hasText(registeredClientId, "registeredClientId cannot be empty");
         Assert.hasText(principalName, "principalName cannot be empty");
-        OAuth2UserConsent oauth2UserConsent = this.userConsentRepository
-                .findByRegisteredClientIdAndPrincipalName(registeredClientId, principalName);
+        OAuth2UserConsent oauth2UserConsent =
+                this.userConsentRepository.findByRegisteredClientIdAndPrincipalName(registeredClientId, principalName);
         return oauth2UserConsent != null ? ModelMapper.convertOAuth2AuthorizationConsent(oauth2UserConsent) : null;
     }
-
 }

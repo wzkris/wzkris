@@ -28,13 +28,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 系统用户管理
@@ -80,21 +79,28 @@ public class SysUserController extends BaseController {
                 .like(StringUtil.isNotNull(queryReq.getEmail()), "email", queryReq.getEmail())
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), "u.status", queryReq.getStatus())
                 .eq(StringUtil.isNotNull(queryReq.getDeptId()), "u.dept_id", queryReq.getDeptId())
-                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        "u.create_at", queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
+                .between(
+                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        "u.create_at",
+                        queryReq.getParam("beginTime"),
+                        queryReq.getParam("endTime"))
                 .orderByDesc("u.user_id");
     }
 
     @Operation(summary = "用户-部门选择树")
     @GetMapping("/dept_select_tree")
-    @CheckSystemPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(
+            value = {"sys_user:edit", "sys_user:add"},
+            mode = CheckPerms.Mode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
         return ok(deptService.listSelectTree(deptName));
     }
 
     @Operation(summary = "用户-角色选择列表")
     @GetMapping({"/role_checked_select/", "/role_checked_select/{userId}"})
-    @CheckSystemPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(
+            value = {"sys_user:edit", "sys_user:add"},
+            mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
         userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
@@ -105,7 +111,9 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "用户-岗位选择列表")
     @GetMapping({"/post_checked_select/", "/post_checked_select/{userId}"})
-    @CheckSystemPerms(value = {"sys_user:edit", "sys_user:add"}, mode = CheckPerms.Mode.OR)
+    @CheckSystemPerms(
+            value = {"sys_user:edit", "sys_user:add"},
+            mode = CheckPerms.Mode.OR)
     public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
         userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
@@ -142,9 +150,8 @@ public class SysUserController extends BaseController {
 
         boolean success = userService.insertUser(user, userReq.getRoleIds(), userReq.getPostIds());
         if (success) {
-            SpringUtil.getContext().publishEvent(
-                    new CreateUserEvent(LoginUtil.getUserId(), userReq.getUsername(), password)
-            );
+            SpringUtil.getContext()
+                    .publishEvent(new CreateUserEvent(LoginUtil.getUserId(), userReq.getUsername(), password));
         }
         return toRes(success);
     }
@@ -226,5 +233,4 @@ public class SysUserController extends BaseController {
         roleService.checkDataScopes(req.getRoleIds());
         return toRes(userService.allocateRoles(req.getUserId(), req.getRoleIds()));
     }
-
 }

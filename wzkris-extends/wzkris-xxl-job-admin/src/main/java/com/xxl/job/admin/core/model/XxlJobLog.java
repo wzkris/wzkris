@@ -163,5 +163,4 @@ public class XxlJobLog {
     public void setAlarmStatus(int alarmStatus) {
         this.alarmStatus = alarmStatus;
     }
-
 }

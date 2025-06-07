@@ -1,9 +1,8 @@
 package com.wzkris.user.domain.req;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 /**
  * 用户对角色 一对多

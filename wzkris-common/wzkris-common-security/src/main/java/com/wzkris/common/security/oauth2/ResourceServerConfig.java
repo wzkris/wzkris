@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.auth.api.RemoteTokenApi;
+import com.wzkris.auth.rmi.RmiTokenService;
 import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
@@ -37,7 +37,7 @@ public final class ResourceServerConfig {
     private final PermitAllProperties permitAllProperties;
 
     @DubboReference
-    private final RemoteTokenApi remoteTokenApi;
+    private final RmiTokenService rmiTokenService;
 
     @Bean
     @RefreshScope // 动态更新白名单
@@ -47,24 +47,27 @@ public final class ResourceServerConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .authorizeHttpRequests(authorize -> {
-                            // 配置url白名单
-                            authorize.requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new)).permitAll()
-                                    .requestMatchers("/assets/**", "/login", "/activate").permitAll()
-                                    .anyRequest().authenticated();
-                        }
-                )
+                    // 配置url白名单
+                    authorize
+                            .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
+                            .permitAll()
+                            .requestMatchers("/assets/**", "/login", "/activate")
+                            .permitAll()
+                            .requestMatchers("/actuator/**")
+                            .hasAuthority("SCOPE_monitor")
+                            .anyRequest()
+                            .authenticated();
+                })
                 .formLogin(Customizer.withDefaults())
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
                             .opaqueToken(token -> {
-                                token.introspector(new CustomOpaqueTokenIntrospector(remoteTokenApi));
+                                token.introspector(new CustomOpaqueTokenIntrospector(rmiTokenService));
                             })
                             .bearerTokenResolver(new CustomBearerTokenResolver())
                             .authenticationEntryPoint(new AuthenticationEntryPointImpl())
-                            .accessDeniedHandler(new AccessDeniedHandlerImpl())
-                    ;
-                })
-        ;
+                            .accessDeniedHandler(new AccessDeniedHandlerImpl());
+                });
 
         return http.build();
     }
@@ -85,4 +88,3 @@ public final class ResourceServerConfig {
         return new PasswordEncoderDelegate();
     }
 }
-

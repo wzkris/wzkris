@@ -3,6 +3,7 @@ package com.wzkris.gateway.filter;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.XssProperties;
 import io.netty.buffer.ByteBufAllocator;
+import java.nio.charset.StandardCharsets;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -17,8 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * 跨站脚本过滤器
@@ -78,7 +77,8 @@ public class XssFilter implements GlobalFilter, Ordered {
                     bodyStr = bodyStr.replaceAll(RE_HTML_MARK, "");
                     // 转成字节
                     byte[] bytes = bodyStr.getBytes();
-                    NettyDataBufferFactory nettyDataBufferFactory = new NettyDataBufferFactory(ByteBufAllocator.DEFAULT);
+                    NettyDataBufferFactory nettyDataBufferFactory =
+                            new NettyDataBufferFactory(ByteBufAllocator.DEFAULT);
                     DataBuffer buffer = nettyDataBufferFactory.allocateBuffer(bytes.length);
                     buffer.write(bytes);
                     return buffer;

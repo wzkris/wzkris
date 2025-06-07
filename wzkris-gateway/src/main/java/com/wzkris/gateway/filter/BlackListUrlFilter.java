@@ -1,14 +1,13 @@
 package com.wzkris.gateway.filter;
 
 import com.wzkris.gateway.utils.WebFluxUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * 黑名单过滤器
@@ -39,15 +38,16 @@ public class BlackListUrlFilter extends AbstractGatewayFilterFactory<BlackListUr
         private final List<Pattern> blacklistUrlPattern = new ArrayList<>();
 
         public boolean matchBlacklist(String url) {
-            return !blacklistUrlPattern.isEmpty() && blacklistUrlPattern.stream().anyMatch(p -> p.matcher(url).find());
+            return !blacklistUrlPattern.isEmpty()
+                    && blacklistUrlPattern.stream().anyMatch(p -> p.matcher(url).find());
         }
 
         public void setBlacklistUrl(List<String> blacklistUrl) {
             this.blacklistUrlPattern.clear();
             blacklistUrl.forEach(url -> {
-                this.blacklistUrlPattern.add(Pattern.compile(url.replaceAll("\\*\\*", "(.*?)"), Pattern.CASE_INSENSITIVE));
+                this.blacklistUrlPattern.add(
+                        Pattern.compile(url.replaceAll("\\*\\*", "(.*?)"), Pattern.CASE_INSENSITIVE));
             });
         }
     }
-
 }

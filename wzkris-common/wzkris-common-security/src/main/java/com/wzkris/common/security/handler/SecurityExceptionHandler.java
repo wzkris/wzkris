@@ -35,5 +35,4 @@ public class SecurityExceptionHandler {
         log.error("RPC异常: {}", e.getMessage());
         return Result.resp(BizCode.RPC_ERROR, e.getMessage());
     }
-
 }

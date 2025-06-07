@@ -20,8 +20,10 @@ import com.wzkris.auth.oauth2.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.oauth2.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.I18nUtil;
-import com.wzkris.user.api.RemoteOAuth2ClientApi;
-import com.wzkris.user.api.domain.response.OAuth2ClientResp;
+import com.wzkris.user.rmi.RmiOAuth2ClientService;
+import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
+import java.time.Duration;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.lang.Nullable;
@@ -38,9 +40,6 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.time.Duration;
-import java.util.Arrays;
-
 @Service
 @RequiredArgsConstructor
 public class RedisRegisteredClientRepository implements RegisteredClientRepository {
@@ -48,7 +47,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 
     @DubboReference
-    private final RemoteOAuth2ClientApi remoteOAuth2ClientApi;
+    private final RmiOAuth2ClientService rmiOAuth2ClientService;
 
     private final TokenProperties tokenProperties;
 
@@ -77,12 +76,13 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oauth2RegisteredClient);
         }
 
-        OAuth2ClientResp oauth2Client = remoteOAuth2ClientApi.getByClientId(clientId);
+        OAuth2ClientResp oauth2Client = rmiOAuth2ClientService.getByClientId(clientId);
 
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(
-                    new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, I18nUtil.message("oauth2.client.invalid"), null), null);
+                    new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, I18nUtil.message("oauth2.client.invalid"), null),
+                    null);
         }
 
         RegisteredClient registeredClient = this.buildRegisteredClient(oauth2Client);
@@ -102,24 +102,27 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
                     clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
                     clientAuthenticationMethods.add(ClientAuthenticationMethod.NONE);
                 })
-                .authorizationGrantTypes(authorizationGrantTypes -> {// 授权方式
-                    for (String authorizedGrantType : oauth2Client.getAuthorizationGrantTypes()) {
-                        authorizationGrantTypes.add(new AuthorizationGrantType(authorizedGrantType));
-                    }
-                })
-                .redirectUris(redirectUris -> {// 回调地址
-                    redirectUris.addAll(Arrays.asList(oauth2Client.getRedirectUris()));
-                })
-                .scopes(scopes -> {// scope
-                    scopes.addAll(Arrays.asList(oauth2Client.getScopes()));
-                });
+                .authorizationGrantTypes(
+                        authorizationGrantTypes -> { // 授权方式
+                            for (String authorizedGrantType : oauth2Client.getAuthorizationGrantTypes()) {
+                                authorizationGrantTypes.add(new AuthorizationGrantType(authorizedGrantType));
+                            }
+                        })
+                .redirectUris(
+                        redirectUris -> { // 回调地址
+                            redirectUris.addAll(Arrays.asList(oauth2Client.getRedirectUris()));
+                        })
+                .scopes(
+                        scopes -> { // scope
+                            scopes.addAll(Arrays.asList(oauth2Client.getScopes()));
+                        });
 
         builder.tokenSettings(TokenSettings.builder()
                         .authorizationCodeTimeToLive(Duration.ofSeconds(tokenProperties.getAuthorizationCodeTimeOut()))
                         .accessTokenFormat(OAuth2TokenFormat.REFERENCE) // 使用匿名token
                         .accessTokenTimeToLive(Duration.ofSeconds(tokenProperties.getAccessTokenTimeOut()))
                         .refreshTokenTimeToLive(Duration.ofSeconds(tokenProperties.getRefreshTokenTimeOut()))
-                        .reuseRefreshTokens(true)// 复用refresh_token
+                        .reuseRefreshTokens(tokenProperties.getReuseRefreshTokens())
                         .deviceCodeTimeToLive(Duration.ofSeconds(tokenProperties.getDeviceCodeTimeOut()))
                         .build())
                 .clientSettings(ClientSettings.builder()
@@ -127,5 +130,4 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
                         .build());
         return builder.build();
     }
-
 }

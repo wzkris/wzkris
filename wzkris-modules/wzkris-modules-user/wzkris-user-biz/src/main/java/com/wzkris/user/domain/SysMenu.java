@@ -5,11 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 菜单权限表 sys_menu
@@ -18,7 +17,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysMenu extends BaseEntity {
 
     @TableId
@@ -51,7 +50,7 @@ public class SysMenu extends BaseEntity {
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
 
-    @Schema(description = "菜单状态（0正常 1停用）")// 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
+    @Schema(description = "菜单状态（0正常 1停用）") // 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
     private String status;
 
     @Schema(description = "权限字符串")

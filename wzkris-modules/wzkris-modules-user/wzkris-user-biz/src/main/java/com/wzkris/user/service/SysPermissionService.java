@@ -1,6 +1,6 @@
 package com.wzkris.user.service;
 
-import com.wzkris.user.api.domain.response.SysPermissionResp;
+import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import jakarta.annotation.Nullable;
 
 /**
@@ -19,5 +19,4 @@ public interface SysPermissionService {
      * @return 权限
      */
     SysPermissionResp getPermission(Long userId, Long tenantId, @Nullable Long deptId);
-
 }

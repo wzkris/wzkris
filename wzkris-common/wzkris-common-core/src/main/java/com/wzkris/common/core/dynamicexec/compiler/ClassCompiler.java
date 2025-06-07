@@ -1,9 +1,9 @@
 package com.wzkris.common.core.dynamicexec.compiler;
 
-import javax.tools.*;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.tools.*;
 
 /**
  * 类编译器
@@ -39,17 +39,18 @@ public class ClassCompiler {
         }
 
         try {
-            //获取系统编译器 
+            // 获取系统编译器
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
             // 建立DiagnosticCollector对象, 用于搜集编辑期间的错误信息
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
-            // 建立用于保存被编译文件名的对象 
-            // 每个文件被保存在一个从JavaFileObject继承的类中 
-            ClassFileManager fileManager = new ClassFileManager(compiler.getStandardFileManager(diagnostics, null, null));
+            // 建立用于保存被编译文件名的对象
+            // 每个文件被保存在一个从JavaFileObject继承的类中
+            ClassFileManager fileManager =
+                    new ClassFileManager(compiler.getStandardFileManager(diagnostics, null, null));
 
-            //設置需要被編譯的源碼
+            // 設置需要被編譯的源碼
             List<JavaFileObject> jfiles = new ArrayList<>();
             jfiles.add(new SourceJavaFileObject(fullClassName, code));
 
@@ -58,7 +59,7 @@ public class ClassCompiler {
             // 编译源程序
             boolean success = task.call();
             if (success) {
-                //如果编译成功,用类加载器加载该类 
+                // 如果编译成功,用类加载器加载该类
                 ClassJavaFileObject classJavaFileObject = fileManager.getClassJavaFileObject();
                 if (null == classJavaFileObject) {
                     out.println("Failed to compile class.");
@@ -101,11 +102,11 @@ public class ClassCompiler {
      * </br> 获取不到，返回null
      */
     private String getClassName(String code) {
-        //get package
+        // get package
         String packageName = code.substring(code.indexOf("package") + 7, code.indexOf(";"));
         packageName = trim(packageName);
 
-        //get class simple name
+        // get class simple name
         String simpleName = code.substring(code.indexOf(" class ") + 7, code.indexOf("{"));
         simpleName = trim(simpleName);
 

@@ -17,23 +17,22 @@ import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * 菜单信息
+ * 菜单管理
  *
  * @author wzkris
  */
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/sys_menu")
-@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
 

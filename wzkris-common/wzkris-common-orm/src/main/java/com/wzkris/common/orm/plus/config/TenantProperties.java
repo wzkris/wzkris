@@ -1,11 +1,10 @@
 package com.wzkris.common.orm.plus.config;
 
+import java.util.Collections;
+import java.util.Set;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * 租户 配置属性

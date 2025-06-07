@@ -14,7 +14,7 @@
     <description>系统服务</description>
 
     <modules>
-        <module>wzkris-system-api</module>
+        <module>wzkris-system-rmi</module>
         <module>wzkris-system-biz</module>
     </modules>
 

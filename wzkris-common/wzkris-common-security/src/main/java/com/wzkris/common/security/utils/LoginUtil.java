@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("lg")// 加入Spring容器以用于SPEL
+@Component("lg") // 加入Spring容器以用于SPEL
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginUtil extends SecurityUtil {
 

@@ -1,14 +1,13 @@
 package com.wzkris.common.redis.util;
 
 import com.wzkris.common.core.utils.SpringUtil;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * spring redis 工具类
@@ -168,8 +167,9 @@ public class RedisUtil {
      */
     public static List<String> keysByPattern(final String keyPattern, final int count) {
         List<String> keys = new ArrayList<>();
-        redissonclient.getKeys().getKeys(KeysScanOptions.defaults().pattern(keyPattern)
-                        .limit(count))
+        redissonclient
+                .getKeys()
+                .getKeys(KeysScanOptions.defaults().pattern(keyPattern).limit(count))
                 .forEach(keys::add);
         return keys;
     }
@@ -180,5 +180,4 @@ public class RedisUtil {
     public static RLock getLock(final String key) {
         return redissonclient.getLock(key);
     }
-
 }

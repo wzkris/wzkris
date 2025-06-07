@@ -16,5 +16,4 @@ public interface JobAlarm {
      * @return
      */
     public boolean doAlarm(XxlJobInfo info, XxlJobLog jobLog);
-
 }

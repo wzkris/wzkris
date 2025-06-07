@@ -7,12 +7,11 @@ import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.model.HandleCallbackParam;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.util.DateUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * job lose-monitor instance
@@ -55,7 +54,8 @@ public class JobCompleteHelper {
                     @Override
                     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                         r.run();
-                        logger.warn(">>>>>>>>>>> xxl-job, callback too fast, match threadpool rejected handler(run now).");
+                        logger.warn(
+                                ">>>>>>>>>>> xxl-job, callback too fast, match threadpool rejected handler(run now).");
                     }
                 });
 
@@ -79,7 +79,9 @@ public class JobCompleteHelper {
                     try {
                         // 任务结果丢失处理：调度记录停留在 "运行中" 状态超过10min，且对应执行器心跳注册失败不在线，则将本地调度主动标记失败；
                         Date losedTime = DateUtil.addMinutes(new Date(), -10);
-                        List<Long> losedJobIds = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findLostJobIds(losedTime);
+                        List<Long> losedJobIds = XxlJobAdminConfig.getAdminConfig()
+                                .getXxlJobLogDao()
+                                .findLostJobIds(losedTime);
 
                         if (losedJobIds != null && losedJobIds.size() > 0) {
                             for (Long logId : losedJobIds) {
@@ -93,7 +95,6 @@ public class JobCompleteHelper {
 
                                 XxlJobCompleter.updateHandleInfoAndFinish(jobLog);
                             }
-
                         }
                     } catch (Exception e) {
                         if (!toStop) {
@@ -108,11 +109,9 @@ public class JobCompleteHelper {
                             logger.error(e.getMessage(), e);
                         }
                     }
-
                 }
 
                 logger.info(">>>>>>>>>>> xxl-job, JobLosedMonitorHelper stop");
-
             }
         });
         monitorThread.setDaemon(true);
@@ -144,8 +143,11 @@ public class JobCompleteHelper {
             public void run() {
                 for (HandleCallbackParam handleCallbackParam : callbackParamList) {
                     ReturnT<String> callbackResult = callback(handleCallbackParam);
-                    logger.debug(">>>>>>>>> JobApiController.callback {}, handleCallbackParam={}, callbackResult={}",
-                            (callbackResult.getCode() == ReturnT.SUCCESS_CODE ? "success" : "fail"), handleCallbackParam, callbackResult);
+                    logger.debug(
+                            ">>>>>>>>> JobApiController.callback {}, handleCallbackParam={}, callbackResult={}",
+                            (callbackResult.getCode() == ReturnT.SUCCESS_CODE ? "success" : "fail"),
+                            handleCallbackParam,
+                            callbackResult);
                 }
             }
         });
@@ -160,7 +162,8 @@ public class JobCompleteHelper {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "log item not found.");
         }
         if (log.getHandleCode() > 0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "log repeate callback.");     // avoid repeat callback, trigger child job etc
+            return new ReturnT<String>(
+                    ReturnT.FAIL_CODE, "log repeate callback."); // avoid repeat callback, trigger child job etc
         }
 
         // handle msg
@@ -180,5 +183,4 @@ public class JobCompleteHelper {
 
         return ReturnT.SUCCESS;
     }
-
 }

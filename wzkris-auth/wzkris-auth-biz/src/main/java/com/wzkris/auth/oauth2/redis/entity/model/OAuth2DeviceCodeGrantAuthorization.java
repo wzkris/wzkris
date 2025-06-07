@@ -16,13 +16,12 @@
 package com.wzkris.auth.oauth2.redis.entity.model;
 
 import com.wzkris.auth.oauth2.redis.entity.OAuth2AuthorizationGrantAuthorization;
-import lombok.Getter;
-import org.springframework.data.redis.core.index.Indexed;
-
 import java.security.Principal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
+import lombok.Getter;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 public class OAuth2DeviceCodeGrantAuthorization extends OAuth2AuthorizationGrantAuthorization {
@@ -40,10 +39,18 @@ public class OAuth2DeviceCodeGrantAuthorization extends OAuth2AuthorizationGrant
     // authorization consent flow
 
     // @fold:on
-    public OAuth2DeviceCodeGrantAuthorization(String id, String registeredClientId, String principalName,
-                                              Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken,
-                                              Principal principal, DeviceCode deviceCode, UserCode userCode,
-                                              Set<String> requestedScopes, String deviceState) {
+    public OAuth2DeviceCodeGrantAuthorization(
+            String id,
+            String registeredClientId,
+            String principalName,
+            Set<String> authorizedScopes,
+            AccessToken accessToken,
+            RefreshToken refreshToken,
+            Principal principal,
+            DeviceCode deviceCode,
+            UserCode userCode,
+            Set<String> requestedScopes,
+            String deviceState) {
         super(id, registeredClientId, principalName, authorizedScopes, accessToken, refreshToken);
         this.principal = principal;
         this.deviceCode = deviceCode;
@@ -55,9 +62,13 @@ public class OAuth2DeviceCodeGrantAuthorization extends OAuth2AuthorizationGrant
     @Override
     public Long getTimeToLive() {
         long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
-                deviceCode != null ? ChronoUnit.SECONDS.between(deviceCode.getIssuedAt(), deviceCode.getExpiresAt()) : -1);
-        maxLiveTime = Math.max(maxLiveTime,
+        maxLiveTime = Math.max(
+                maxLiveTime,
+                deviceCode != null
+                        ? ChronoUnit.SECONDS.between(deviceCode.getIssuedAt(), deviceCode.getExpiresAt())
+                        : -1);
+        maxLiveTime = Math.max(
+                maxLiveTime,
                 userCode != null ? ChronoUnit.SECONDS.between(userCode.getIssuedAt(), userCode.getExpiresAt()) : -1);
 
         return maxLiveTime;

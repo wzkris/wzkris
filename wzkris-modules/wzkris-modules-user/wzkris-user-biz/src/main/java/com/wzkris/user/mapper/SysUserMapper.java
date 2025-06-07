@@ -6,12 +6,11 @@ import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.vo.SysUserVO;
+import java.util.Collection;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * 用户表 数据层
@@ -25,9 +24,10 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     /**
      * 带权限查询分页数据
      */
-    @Select("""
+    @Select(
+            """
             SELECT u.*, d.dept_name, d.status AS deptStatus
-            		FROM biz_sys.sys_user u LEFT JOIN biz_sys.sys_dept d ON u.dept_id = d.dept_id
+            		FROM biz.sys_user u LEFT JOIN biz.sys_dept d ON u.dept_id = d.dept_id
             ${ew.customSqlSegment}
             """)
     @DeptScope(tableAlias = "d")
@@ -47,7 +47,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      * @param phoneNumber 手机号
      * @return 用户对象信息
      */
-    @Select("SELECT * FROM biz_sys.sys_user WHERE phone_number = #{phoneNumber}")
+    @Select("SELECT * FROM biz.sys_user WHERE phone_number = #{phoneNumber}")
     SysUser selectByPhoneNumber(String phoneNumber);
 
     /**
@@ -56,19 +56,19 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      * @param username 用户名
      * @return 用户对象信息
      */
-    @Select("SELECT * FROM biz_sys.sys_user WHERE username = #{username}")
+    @Select("SELECT * FROM biz.sys_user WHERE username = #{username}")
     SysUser selectByUsername(String username);
 
     /**
      * 根据ID获取密码
      */
-    @Select("select password from biz_sys.sys_user where user_id = #{userId}")
+    @Select("select password from biz.sys_user where user_id = #{userId}")
     String selectPwdById(Long userId);
 
     /**
      * 根据用户id获取手机号
      */
-    @Select("select phone_number from biz_sys.sys_user where user_id = #{userId}")
+    @Select("select phone_number from biz.sys_user where user_id = #{userId}")
     String selectPhoneNumberById(Long userId);
 
     /**
@@ -86,10 +86,11 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      * @return 返回是否
      */
     @DeptScope
-    @Select("""
+    @Select(
+            """
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN 1 ELSE 0 END
-                    FROM biz_sys.sys_user WHERE user_id IN
+                SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN true ELSE false END
+                    FROM biz.sys_user WHERE user_id IN
                     <foreach collection="collection" item="userId" open="(" separator="," close=")">
                         <if test="userId != null and userId != ''">
                             #{userId}
@@ -98,5 +99,4 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
             </script>
             """)
     boolean checkDataScopes(Collection<Long> userIds);
-
 }

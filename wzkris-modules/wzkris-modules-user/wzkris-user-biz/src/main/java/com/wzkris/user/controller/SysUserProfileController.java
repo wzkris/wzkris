@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
-import com.wzkris.auth.api.RemoteCaptchaApi;
-import com.wzkris.auth.api.domain.request.SmsCheckReq;
+import com.wzkris.auth.rmi.RmiCaptchaService;
+import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -37,11 +37,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "个人信息")
 @RestController
 @RequestMapping("/user_profile")
-@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")
+@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysUserProfileController extends BaseController {
 
-    private final static String PROFILE_KEY = "user:profile";
+    private static final String PROFILE_KEY = "user:profile";
 
     private final SysUserMapper userMapper;
 
@@ -54,7 +54,7 @@ public class SysUserProfileController extends BaseController {
     private final SysDeptMapper deptMapper;
 
     @DubboReference
-    private final RemoteCaptchaApi remoteCaptchaApi;
+    private final RmiCaptchaService rmiCaptchaService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -104,7 +104,7 @@ public class SysUserProfileController extends BaseController {
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        if (!remoteCaptchaApi.validateSms(smsCheckReq)) {
+        if (!rmiCaptchaService.validateSms(smsCheckReq)) {
             return err412("验证码错误");
         }
 

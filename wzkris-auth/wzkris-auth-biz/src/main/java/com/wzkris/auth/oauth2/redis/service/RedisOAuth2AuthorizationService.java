@@ -40,8 +40,8 @@ public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationServi
     @Override
     public void save(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
-        OAuth2AuthorizationGrantAuthorization authorizationGrantAuthorization = ModelMapper
-                .convertOAuth2AuthorizationGrantAuthorization(authorization);
+        OAuth2AuthorizationGrantAuthorization authorizationGrantAuthorization =
+                ModelMapper.convertOAuth2AuthorizationGrantAuthorization(authorization);
         this.authorizationGrantAuthorizationRepository.save(authorizationGrantAuthorization);
     }
 
@@ -55,7 +55,8 @@ public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationServi
     @Override
     public OAuth2Authorization findById(String id) {
         Assert.hasText(id, "id cannot be empty");
-        return this.authorizationGrantAuthorizationRepository.findById(id)
+        return this.authorizationGrantAuthorizationRepository
+                .findById(id)
                 .map(this::toOAuth2Authorization)
                 .orElse(null);
     }
@@ -66,15 +67,17 @@ public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationServi
         Assert.hasText(token, "token cannot be empty");
         OAuth2AuthorizationGrantAuthorization authorizationGrantAuthorization = null;
         if (tokenType == null) {
-            authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                    .findByStateOrAuthorizationCode_TokenValue(token, token);
+            authorizationGrantAuthorization =
+                    this.authorizationGrantAuthorizationRepository.findByStateOrAuthorizationCode_TokenValue(
+                            token, token);
             if (authorizationGrantAuthorization == null) {
-                authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                        .findByAccessToken_TokenValueOrRefreshToken_TokenValue(token, token);
+                authorizationGrantAuthorization =
+                        this.authorizationGrantAuthorizationRepository
+                                .findByAccessToken_TokenValueOrRefreshToken_TokenValue(token, token);
             }
             if (authorizationGrantAuthorization == null) {
-                authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                        .findByIdToken_TokenValue(token);
+                authorizationGrantAuthorization =
+                        this.authorizationGrantAuthorizationRepository.findByIdToken_TokenValue(token);
             }
             if (authorizationGrantAuthorization == null) {
                 authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
@@ -83,38 +86,37 @@ public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationServi
         } else if (OAuth2ParameterNames.STATE.equals(tokenType.getValue())) {
             authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository.findByState(token);
             if (authorizationGrantAuthorization == null) {
-                authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                        .findByDeviceState(token);
+                authorizationGrantAuthorization =
+                        this.authorizationGrantAuthorizationRepository.findByDeviceState(token);
             }
         } else if (OAuth2ParameterNames.CODE.equals(tokenType.getValue())) {
-            authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                    .findByAuthorizationCode_TokenValue(token);
+            authorizationGrantAuthorization =
+                    this.authorizationGrantAuthorizationRepository.findByAuthorizationCode_TokenValue(token);
         } else if (OAuth2TokenType.ACCESS_TOKEN.equals(tokenType)) {
-            authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                    .findByAccessToken_TokenValue(token);
+            authorizationGrantAuthorization =
+                    this.authorizationGrantAuthorizationRepository.findByAccessToken_TokenValue(token);
         } else if (OidcParameterNames.ID_TOKEN.equals(tokenType.getValue())) {
-            authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                    .findByIdToken_TokenValue(token);
+            authorizationGrantAuthorization =
+                    this.authorizationGrantAuthorizationRepository.findByIdToken_TokenValue(token);
         } else if (OAuth2TokenType.REFRESH_TOKEN.equals(tokenType)) {
-            authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                    .findByRefreshToken_TokenValue(token);
+            authorizationGrantAuthorization =
+                    this.authorizationGrantAuthorizationRepository.findByRefreshToken_TokenValue(token);
         } else if (OAuth2ParameterNames.USER_CODE.equals(tokenType.getValue())) {
-            authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                    .findByUserCode_TokenValue(token);
+            authorizationGrantAuthorization =
+                    this.authorizationGrantAuthorizationRepository.findByUserCode_TokenValue(token);
         } else if (OAuth2ParameterNames.DEVICE_CODE.equals(tokenType.getValue())) {
-            authorizationGrantAuthorization = this.authorizationGrantAuthorizationRepository
-                    .findByDeviceCode_TokenValue(token);
+            authorizationGrantAuthorization =
+                    this.authorizationGrantAuthorizationRepository.findByDeviceCode_TokenValue(token);
         }
         return authorizationGrantAuthorization != null ? toOAuth2Authorization(authorizationGrantAuthorization) : null;
     }
 
     private OAuth2Authorization toOAuth2Authorization(
             OAuth2AuthorizationGrantAuthorization authorizationGrantAuthorization) {
-        RegisteredClient registeredClient = this.registeredClientRepository
-                .findById(authorizationGrantAuthorization.getRegisteredClientId());
+        RegisteredClient registeredClient =
+                this.registeredClientRepository.findById(authorizationGrantAuthorization.getRegisteredClientId());
         OAuth2Authorization.Builder builder = OAuth2Authorization.withRegisteredClient(registeredClient);
         ModelMapper.mapOAuth2AuthorizationGrantAuthorization(authorizationGrantAuthorization, builder);
         return builder.build();
     }
-
 }

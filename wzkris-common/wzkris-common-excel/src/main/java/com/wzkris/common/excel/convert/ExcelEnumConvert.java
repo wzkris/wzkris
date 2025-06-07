@@ -11,11 +11,10 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.wzkris.common.core.utils.ReflectUtil;
 import com.wzkris.common.excel.annotation.ExcelEnumFormat;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 枚举格式化转换处理
@@ -36,15 +35,17 @@ public class ExcelEnumConvert implements Converter<Object> {
     }
 
     @Override
-    public Object convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public Object convertToJavaData(
+            ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         cellData.checkEmpty();
         // Excel中填入的是枚举中指定的描述
-        Object textValue = switch (cellData.getType()) {
-            case STRING, DIRECT_STRING, RICH_TEXT_STRING -> cellData.getStringValue();
-            case NUMBER -> cellData.getNumberValue();
-            case BOOLEAN -> cellData.getBooleanValue();
-            default -> throw new IllegalArgumentException("单元格类型异常!");
-        };
+        Object textValue =
+                switch (cellData.getType()) {
+                    case STRING, DIRECT_STRING, RICH_TEXT_STRING -> cellData.getStringValue();
+                    case NUMBER -> cellData.getNumberValue();
+                    case BOOLEAN -> cellData.getBooleanValue();
+                    default -> throw new IllegalArgumentException("单元格类型异常!");
+                };
         // 如果是空值
         if (ObjectUtil.isNull(textValue)) {
             return null;
@@ -60,7 +61,8 @@ public class ExcelEnumConvert implements Converter<Object> {
     }
 
     @Override
-    public WriteCellData<String> convertToExcelData(Object object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public WriteCellData<String> convertToExcelData(
+            Object object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         if (ObjectUtil.isNull(object)) {
             return new WriteCellData<>("");
         }

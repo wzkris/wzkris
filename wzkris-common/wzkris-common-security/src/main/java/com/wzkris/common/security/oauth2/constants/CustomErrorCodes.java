@@ -15,5 +15,4 @@ public class CustomErrorCodes {
 
     // 校验失败
     public static final String VALIDATE_ERROR = "validate_error";
-
 }

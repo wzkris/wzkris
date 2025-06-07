@@ -1,6 +1,7 @@
 package com.wzkris.user.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -12,10 +13,13 @@ import lombok.Data;
 public class SysTenantProfileVO {
 
     @Schema(description = "租户名称")
-    private String name;
+    private String tenantName;
 
     @Schema(description = "租户类型 0-个人 1-企业")
-    private String type;
+    private String tenantType;
+
+    @Schema(description = "套餐名称")
+    private String packageName;
 
     @Schema(description = "联系电话")
     private String contactPhone;
@@ -26,8 +30,8 @@ public class SysTenantProfileVO {
     @Schema(description = "域名")
     private String domain;
 
-    @Schema(description = "过期时间（-1不限制）")
-    private Long expireTime;
+    @Schema(description = "过期时间")
+    private Date expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
     private Integer accountLimit;
@@ -40,5 +44,4 @@ public class SysTenantProfileVO {
 
     @Schema(description = "部门数量（-1不限制）")
     private Integer deptLimit;
-
 }

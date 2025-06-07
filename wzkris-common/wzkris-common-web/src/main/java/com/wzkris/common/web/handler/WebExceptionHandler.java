@@ -1,5 +1,7 @@
 package com.wzkris.common.web.handler;
 
+import static com.wzkris.common.core.domain.Result.*;
+
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BaseException;
@@ -23,8 +25,6 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import static com.wzkris.common.core.domain.Result.*;
-
 /**
  * Web异常处理器
  *
@@ -38,7 +38,8 @@ public class WebExceptionHandler {
      * 不支持媒体类型
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public Result<?> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
+    public Result<?> handleHttpMediaTypeNotSupportedException(
+            HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',不支持媒体类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return err400(I18nUtil.message("request.media.error"));
     }
@@ -47,7 +48,8 @@ public class WebExceptionHandler {
      * http请求数据格式异常
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Result<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
+    public Result<?> handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',请求数据格式异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return err400(I18nUtil.message("request.param.error"));
     }
@@ -56,7 +58,8 @@ public class WebExceptionHandler {
      * 方法参数类型不匹配
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public Result<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+    public Result<?> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到方法入参异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return err400(e.getMessage());
     }
@@ -92,7 +95,8 @@ public class WebExceptionHandler {
      * 请求方式不支持
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public Result<?> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+    public Result<?> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         log.error("请求地址'{}',不支持'{}'请求，异常信息：{}", request.getRequestURI(), e.getMethod(), e.getMessage());
         return resp(BizCode.BAD_METHOD, e.getMessage());
     }
@@ -102,8 +106,13 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler(BaseException.class)
     public Result<?> handleBaseException(BaseException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',异常模块：{}, 状态码：{}, 异常信息：{}",
-                request.getMethod(), request.getRequestURI(), e.getModules(), e.getBiz(), e.getMessage());
+        log.error(
+                "请求地址'{} {}',异常模块：{}, 状态码：{}, 异常信息：{}",
+                request.getMethod(),
+                request.getRequestURI(),
+                e.getModules(),
+                e.getBiz(),
+                e.getMessage());
         return resp(e.getBiz(), null, e.getMessage());
     }
 
@@ -120,7 +129,8 @@ public class WebExceptionHandler {
      * 参数验证异常
      */
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
-    public Result<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public Result<?> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e, HttpServletRequest request) {
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
         log.error("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), message);
         return err412(message);
@@ -132,7 +142,8 @@ public class WebExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public Result<?> handleValidationException(ConstraintViolationException e, HttpServletRequest request) {
         ConstraintViolation violation = e.getConstraintViolations().toArray(new ConstraintViolation[0])[0];
-        log.error("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), violation.getMessage());
+        log.error(
+                "请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), violation.getMessage());
         String err = violation.getMessage();
         try {
             err = I18nUtil.messageRegex(err);
@@ -155,7 +166,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public Result<?> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到运行时异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        if (e.getClass().getName().startsWith("java.lang")) { //JAVA异常则捕获，否则原样往外抛
+        if (e.getClass().getName().startsWith("java.lang")) { // JAVA异常则捕获，否则原样往外抛
             return err500(e.getMessage());
         }
         throw e;

@@ -15,14 +15,13 @@
  */
 package com.wzkris.auth.oauth2.redis.entity.model;
 
-import lombok.Getter;
-import org.springframework.data.redis.core.TimeToLive;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-
 import java.security.Principal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
+import lombok.Getter;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 @Getter
 public class OidcAuthorizationCodeGrantAuthorization extends OAuth2AuthorizationCodeGrantAuthorization {
@@ -30,19 +29,37 @@ public class OidcAuthorizationCodeGrantAuthorization extends OAuth2Authorization
     private final IdToken idToken;
 
     // @fold:on
-    public OidcAuthorizationCodeGrantAuthorization(String id, String registeredClientId, String principalName,
-                                                   Set<String> authorizedScopes, AccessToken accessToken, RefreshToken refreshToken, Principal principal,
-                                                   OAuth2AuthorizationRequest authorizationRequest, AuthorizationCode authorizationCode, String state,
-                                                   IdToken idToken) {
-        super(id, registeredClientId, principalName, authorizedScopes, accessToken, refreshToken, principal,
-                authorizationRequest, authorizationCode, state);
+    public OidcAuthorizationCodeGrantAuthorization(
+            String id,
+            String registeredClientId,
+            String principalName,
+            Set<String> authorizedScopes,
+            AccessToken accessToken,
+            RefreshToken refreshToken,
+            Principal principal,
+            OAuth2AuthorizationRequest authorizationRequest,
+            AuthorizationCode authorizationCode,
+            String state,
+            IdToken idToken) {
+        super(
+                id,
+                registeredClientId,
+                principalName,
+                authorizedScopes,
+                accessToken,
+                refreshToken,
+                principal,
+                authorizationRequest,
+                authorizationCode,
+                state);
         this.idToken = idToken;
     }
 
     @TimeToLive
     protected Long getTimeToLive() {
         long maxLiveTime = -1;
-        maxLiveTime = Math.max(maxLiveTime,
+        maxLiveTime = Math.max(
+                maxLiveTime,
                 idToken != null ? ChronoUnit.SECONDS.between(idToken.getIssuedAt(), idToken.getExpiresAt()) : -1);
 
         return maxLiveTime;
@@ -53,8 +70,8 @@ public class OidcAuthorizationCodeGrantAuthorization extends OAuth2Authorization
 
         private final ClaimsHolder claims;
 
-        public IdToken(String tokenValue, Instant issuedAt, Instant expiresAt, boolean invalidated,
-                       ClaimsHolder claims) {
+        public IdToken(
+                String tokenValue, Instant issuedAt, Instant expiresAt, boolean invalidated, ClaimsHolder claims) {
             super(tokenValue, issuedAt, expiresAt, invalidated);
             this.claims = claims;
         }

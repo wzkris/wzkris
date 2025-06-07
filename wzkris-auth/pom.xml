@@ -19,6 +19,6 @@
 
     <modules>
         <module>wzkris-auth-biz</module>
-        <module>wzkris-auth-api</module>
+        <module>wzkris-auth-rmi</module>
     </modules>
 </project>

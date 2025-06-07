@@ -4,13 +4,12 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wzkris.common.core.exception.service.GenericException;
-import org.springframework.beans.BeanUtils;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.BeanUtils;
 
 /**
  * @author : wzkris
@@ -61,8 +60,10 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             C c = voClass.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(obj, c);
             return c;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException e) {
             throw new GenericException(e.getMessage());
         }
     }
@@ -79,8 +80,10 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             C c = voClass.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(obj, c);
             return c;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException e) {
             throw new GenericException(e.getMessage());
         }
     }
@@ -94,15 +97,19 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             return new ArrayList<>();
         }
 
-        return list.stream().map(obj -> {
-            try {
-                C c = voClass.getDeclaredConstructor().newInstance();
-                BeanUtils.copyProperties(obj, c);
-                return c;
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new GenericException(e.getMessage());
-            }
-        }).collect(Collectors.toList());
+        return list.stream()
+                .map(obj -> {
+                    try {
+                        C c = voClass.getDeclaredConstructor().newInstance();
+                        BeanUtils.copyProperties(obj, c);
+                        return c;
+                    } catch (InstantiationException
+                            | IllegalAccessException
+                            | InvocationTargetException
+                            | NoSuchMethodException e) {
+                        throw new GenericException(e.getMessage());
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }

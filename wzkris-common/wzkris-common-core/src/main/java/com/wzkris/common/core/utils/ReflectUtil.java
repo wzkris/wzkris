@@ -9,6 +9,4 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @SuppressWarnings("rawtypes")
-public class ReflectUtil extends cn.hutool.core.util.ReflectUtil {
-
-}
+public class ReflectUtil extends cn.hutool.core.util.ReflectUtil {}

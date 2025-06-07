@@ -9,9 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 /**
  * @author : wzkris
@@ -45,7 +44,6 @@ public class SysTenantReq {
     @Schema(description = "备注")
     private String remark;
 
-    @NotNull(message = "{desc.tenant}{desc.package}{validate.notnull}")
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
@@ -70,7 +68,10 @@ public class SysTenantReq {
     private Integer deptLimit;
 
     // 用户名只能为小写英文、数字和下划线
-    @Pattern(regexp = "^[a-z0-9_]+$", message = "{desc.username}{validate.illegal}", groups = ValidationGroups.Insert.class)
+    @Pattern(
+            regexp = "^[a-z0-9_]+$",
+            message = "{desc.username}{validate.illegal}",
+            groups = ValidationGroups.Insert.class)
     @Xss(message = "{desc.user}{desc.name}" + "{validate.xss.forbid}", groups = ValidationGroups.Insert.class)
     @NotBlank(message = "{desc.login}{desc.username}{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "登录用户名")

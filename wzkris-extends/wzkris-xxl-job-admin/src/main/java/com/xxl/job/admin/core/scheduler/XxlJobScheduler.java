@@ -6,22 +6,21 @@ import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.client.ExecutorBizClient;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author xuxueli 2018-10-28 00:18:17
  */
-
 public class XxlJobScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(XxlJobScheduler.class);
 
     // ---------------------- executor-client ----------------------
-    private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
+    private static ConcurrentMap<String, ExecutorBiz> executorBizRepository =
+            new ConcurrentHashMap<String, ExecutorBiz>();
 
     public static ExecutorBiz getExecutorBiz(String address) throws Exception {
         // valid
@@ -37,7 +36,8 @@ public class XxlJobScheduler {
         }
 
         // set-cache
-        executorBiz = new ExecutorBizClient(address, XxlJobAdminConfig.getAdminConfig().getAccessToken());
+        executorBiz = new ExecutorBizClient(
+                address, XxlJobAdminConfig.getAdminConfig().getAccessToken());
 
         executorBizRepository.put(address, executorBiz);
         return executorBiz;
@@ -89,7 +89,6 @@ public class XxlJobScheduler {
 
         // admin trigger pool stop
         JobTriggerPoolHelper.toStop();
-
     }
 
     private void initI18n() {
@@ -97,5 +96,4 @@ public class XxlJobScheduler {
             item.setTitle(I18nUtil.getString("jobconf_block_".concat(item.name())));
         }
     }
-
 }
