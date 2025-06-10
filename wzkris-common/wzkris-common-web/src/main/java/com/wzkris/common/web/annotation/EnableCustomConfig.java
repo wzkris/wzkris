@@ -1,10 +1,11 @@
 package com.wzkris.common.web.annotation;
 
-import java.lang.annotation.*;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -18,6 +19,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(basePackages = "com.wzkris.*")
 // 启动dubbo
 @EnableDubbo
-// 自动加载类
-// @Import
-public @interface EnableCustomConfig {}
+public @interface EnableCustomConfig {
+
+}

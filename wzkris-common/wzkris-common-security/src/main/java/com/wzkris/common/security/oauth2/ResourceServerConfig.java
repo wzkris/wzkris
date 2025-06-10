@@ -1,6 +1,8 @@
 package com.wzkris.common.security.oauth2;
 
+import cn.hutool.core.convert.Convert;
 import com.wzkris.auth.rmi.RmiTokenService;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
@@ -11,7 +13,6 @@ import com.wzkris.common.security.oauth2.service.PermissionService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * @author : wzkris
@@ -44,7 +46,6 @@ public final class ResourceServerConfig {
 
     private final CustomBearerTokenResolver resolver = new CustomBearerTokenResolver();
 
-    @DubboReference
     private final RmiTokenService rmiTokenService;
 
     private ProviderManager opaqueProviderManager;
@@ -66,6 +67,8 @@ public final class ResourceServerConfig {
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
                         .requestMatchers("/assets/**", "/login", "/activate")
+                        .permitAll()
+                        .requestMatchers(request -> Convert.toBool(request.getHeader(CommonConstants.X_INNER_REQUEST), false))
                         .permitAll()
                         .requestMatchers("/actuator/**")
                         .hasAuthority("SCOPE_monitor")
@@ -117,4 +120,5 @@ public final class ResourceServerConfig {
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoderDelegate();
     }
+
 }

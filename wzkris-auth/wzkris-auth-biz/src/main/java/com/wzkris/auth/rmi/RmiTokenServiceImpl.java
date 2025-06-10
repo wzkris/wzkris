@@ -4,22 +4,21 @@ import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.AuthApp;
-import java.security.Principal;
-import java.time.Instant;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
-@Service
-@DubboService
+import java.security.Principal;
+import java.time.Instant;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@RestController
 @RequiredArgsConstructor
 public class RmiTokenServiceImpl implements RmiTokenService {
 
@@ -56,4 +55,5 @@ public class RmiTokenServiceImpl implements RmiTokenService {
     private Set<String> buildScopes(Set<String> authorizedScopes) {
         return authorizedScopes.stream().map(sc -> "SCOPE_" + sc).collect(Collectors.toSet());
     }
+
 }

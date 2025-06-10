@@ -36,6 +36,11 @@ public class CommonConstants {
     public static final String X_TRACING_ID = "X-Tracing-Id";
 
     /**
+     * 内部请求
+     */
+    public static final String X_INNER_REQUEST = "X-Inner-Request";
+
+    /**
      * http请求
      */
     public static final String HTTP = "http://";

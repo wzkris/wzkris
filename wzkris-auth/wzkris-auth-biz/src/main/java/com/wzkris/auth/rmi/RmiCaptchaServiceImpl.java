@@ -4,11 +4,9 @@ import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
-@Service
-@DubboService
+@RestController
 @RequiredArgsConstructor
 public class RmiCaptchaServiceImpl implements RmiCaptchaService {
 
@@ -23,4 +21,5 @@ public class RmiCaptchaServiceImpl implements RmiCaptchaService {
         }
         return true;
     }
+
 }

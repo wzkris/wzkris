@@ -1,8 +1,10 @@
 package com.wzkris.auth.rmi.domain.resp;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.io.Serializable;
 
 /**
  * @author : wzkris
@@ -24,9 +26,11 @@ public class TokenResponse implements Serializable {
 
     private String description;
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
     private Object principal;
 
-    public TokenResponse() {}
+    public TokenResponse() {
+    }
 
     public TokenResponse(String errorCode, String description, Object principal) {
         this.errorCode = errorCode;
@@ -50,4 +54,5 @@ public class TokenResponse implements Serializable {
     public static TokenResponse error503(String description) {
         return error(TEMPORARILY_UNAVAILABLE, description);
     }
+
 }
