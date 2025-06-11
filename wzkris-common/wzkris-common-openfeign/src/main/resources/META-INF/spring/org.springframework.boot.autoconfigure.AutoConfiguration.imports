@@ -1,2 +1,2 @@
 com.wzkris.common.openfeign.config.OpenFeignConfig
-com.wzkris.common.openfeign.interceptor.OpenFeignInterceptor
+com.wzkris.common.openfeign.handler.FeignExceptionHandler

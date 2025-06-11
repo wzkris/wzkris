@@ -13,11 +13,10 @@ import com.wzkris.user.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : wzkris
@@ -25,10 +24,9 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @description : 内部app用户接口
  * @date : 2024/4/15 16:20
  */
-@Service
-@DubboService
+@RestController
 @RequiredArgsConstructor
-public class RmiAppUserServiceImpl implements RmiAppUserService {
+public class RmiAppUserFeignImpl implements RmiAppUserFeign {
 
     private final AppUserMapper appUserMapper;
 
@@ -103,4 +101,5 @@ public class RmiAppUserServiceImpl implements RmiAppUserService {
 
         appUserMapper.updateById(appUser);
     }
+
 }

@@ -11,20 +11,20 @@ import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
-import com.wzkris.system.rmi.RmiLogService;
+import com.wzkris.system.rmi.RmiLogFeign;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
-import com.wzkris.user.rmi.RmiAppUserService;
-import com.wzkris.user.rmi.RmiSysUserService;
+import com.wzkris.user.rmi.RmiAppUserFeign;
+import com.wzkris.user.rmi.RmiSysUserFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.redisson.api.RMapCache;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wzkris
@@ -39,14 +39,11 @@ public class LoginEventListener {
 
     private final TokenProperties tokenProperties;
 
-    @DubboReference
-    private final RmiLogService rmiLogService;
+    private final RmiLogFeign rmiLogFeign;
 
-    @DubboReference
-    private final RmiSysUserService rmiSysUserService;
+    private final RmiSysUserFeign rmiSysUserFeign;
 
-    @DubboReference
-    private final RmiAppUserService rmiAppUserService;
+    private final RmiAppUserFeign rmiAppUserFeign;
 
     @Async
     @EventListener
@@ -96,7 +93,7 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(DateUtil.date());
-            rmiSysUserService.updateLoginInfo(loginInfoReq);
+            rmiSysUserFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
         final LoginLogReq loginLogReq = new LoginLogReq();
@@ -111,7 +108,7 @@ public class LoginEventListener {
         loginLogReq.setLoginLocation(loginLocation);
         loginLogReq.setOs(userAgent.getOs().getName());
         loginLogReq.setBrowser(browser);
-        rmiLogService.saveLoginlog(loginLogReq);
+        rmiLogFeign.saveLoginlog(loginLogReq);
     }
 
     private void handleClientUser(LoginEvent event, ClientUser clientUser) {
@@ -122,7 +119,8 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(DateUtil.date());
-            rmiAppUserService.updateLoginInfo(loginInfoReq);
+            rmiAppUserFeign.updateLoginInfo(loginInfoReq);
         }
     }
+
 }

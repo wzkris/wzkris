@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.handler;
 
-import com.wzkris.auth.rmi.RmiTokenService;
+import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
@@ -20,19 +20,24 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 @Slf4j
 public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private final RmiTokenService rmiTokenService;
+    private final RmiTokenFeign rmiTokenFeign;
 
-    public CustomOpaqueTokenIntrospector(RmiTokenService rmiTokenService) {
-        this.rmiTokenService = rmiTokenService;
+    public CustomOpaqueTokenIntrospector(RmiTokenFeign rmiTokenFeign) {
+        this.rmiTokenFeign = rmiTokenFeign;
     }
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
-        TokenResponse response = rmiTokenService.checkToken(new TokenReq(token));
+        TokenResponse response = rmiTokenFeign.checkToken(new TokenReq(token));
 
         if (!response.isSuccess()) {
             throw new OAuth2AuthenticationException(new OAuth2Error(response.getErrorCode()));
         }
+
+        if (response.getPrincipal() == null) {
+            return null;//TODO 降级策略, 这里需要允许访问
+        }
         return (AuthBaseUser) response.getPrincipal();
     }
+
 }

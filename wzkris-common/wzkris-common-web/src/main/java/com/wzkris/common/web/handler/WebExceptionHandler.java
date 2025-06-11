@@ -1,17 +1,17 @@
 package com.wzkris.common.web.handler;
 
-import static com.wzkris.common.core.domain.Result.*;
-
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.core.exception.mode.DemoModeException;
 import com.wzkris.common.core.utils.I18nUtil;
+import com.wzkris.common.openfeign.exception.RpcException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -25,12 +25,15 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import static com.wzkris.common.core.domain.Result.*;
+
 /**
  * Web异常处理器
  *
  * @author wzkris
  */
 @Slf4j
+@Order(100)
 @RestControllerAdvice
 public class WebExceptionHandler {
 
@@ -161,6 +164,15 @@ public class WebExceptionHandler {
     }
 
     /**
+     * RPC异常
+     */
+    @ExceptionHandler(RpcException.class)
+    public Result<?> handleRpcException(RpcException e, HttpServletRequest request) {
+        log.error("请求地址'{} {}',发生远程调用异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        return Result.resp(e.getCode(), null, e.getMessage());
+    }
+
+    /**
      * 运行时异常
      */
     @ExceptionHandler(RuntimeException.class)
@@ -171,4 +183,5 @@ public class WebExceptionHandler {
         }
         throw e;
     }
+
 }

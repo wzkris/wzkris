@@ -2,6 +2,7 @@ package com.wzkris.auth.config;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.security.thread.TracingIdRunnable;
 import jakarta.annotation.Nonnull;
@@ -62,7 +63,7 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setThreadFactory(new ThreadFactory() {
             @Override
             public Thread newThread(@Nonnull Runnable r) {
-                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.X_TRACING_ID)));
+                return executor.newThread(new TracingIdRunnable(r, MDC.get(HeaderConstants.X_TRACING_ID)));
             }
         });
         executor.setDaemon(true);

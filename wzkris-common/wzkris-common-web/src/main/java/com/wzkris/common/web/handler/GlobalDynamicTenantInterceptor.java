@@ -1,7 +1,7 @@
 package com.wzkris.common.web.handler;
 
 import cn.hutool.core.util.NumberUtil;
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.utils.LoginUtil;
@@ -35,7 +35,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
             return true;
         }
 
-        String dynamicTenant = request.getHeader(CommonConstants.X_TENANT_ID);
+        String dynamicTenant = request.getHeader(HeaderConstants.X_TENANT_ID);
 
         if (NumberUtil.isNumber(dynamicTenant)) {
             DynamicTenantUtil.set(Long.valueOf(dynamicTenant));
@@ -46,7 +46,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
             return false; // 不是合法请求头数据则直接返回
         }
 
-        request.setAttribute(CommonConstants.X_TENANT_ID, dynamicTenant);
+        request.setAttribute(HeaderConstants.X_TENANT_ID, dynamicTenant);
         return true;
     }
 
@@ -55,7 +55,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     public void postHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
             throws Exception {
-        Object dynamicTenant = request.getAttribute(CommonConstants.X_TENANT_ID);
+        Object dynamicTenant = request.getAttribute(HeaderConstants.X_TENANT_ID);
         if (dynamicTenant != null) {
             if (NumberUtil.isNumber(dynamicTenant.toString())) {
                 DynamicTenantUtil.remove();
@@ -68,5 +68,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     // 渲染视图后的回调
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-            throws Exception {}
+            throws Exception {
+    }
+
 }

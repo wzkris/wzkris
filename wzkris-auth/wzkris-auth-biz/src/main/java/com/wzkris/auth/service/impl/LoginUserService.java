@@ -14,7 +14,7 @@ import com.wzkris.common.security.oauth2.constants.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.rmi.RmiSysUserService;
+import com.wzkris.user.rmi.RmiSysUserFeign;
 import com.wzkris.user.rmi.domain.req.QueryPermsReq;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.rmi.domain.resp.SysUserResp;
@@ -37,14 +37,14 @@ public class LoginUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final RmiSysUserService rmiSysUserService;
+    private final RmiSysUserFeign rmiSysUserFeign;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public LoginUser loadUserByPhoneNumber(String phoneNumber) {
-        SysUserResp userResp = rmiSysUserService.getByPhoneNumber(phoneNumber);
+        SysUserResp userResp = rmiSysUserFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber, 600);
@@ -62,7 +62,7 @@ public class LoginUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginUser loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        SysUserResp userResp = rmiSysUserService.getByUsername(username);
+        SysUserResp userResp = rmiSysUserFeign.getByUsername(username);
 
         if (userResp == null) {
             captchaService.lockAccount(username, 600);
@@ -95,7 +95,7 @@ public class LoginUserService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        SysPermissionResp permissions = rmiSysUserService.getPermission(
+        SysPermissionResp permissions = rmiSysUserFeign.getPermission(
                 new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
 
         LoginUser loginUser = new LoginUser(new HashSet<>(permissions.getGrantedAuthority()));

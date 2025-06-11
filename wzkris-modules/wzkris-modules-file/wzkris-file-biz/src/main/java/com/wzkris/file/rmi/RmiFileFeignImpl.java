@@ -2,8 +2,7 @@ package com.wzkris.file.rmi;
 
 import com.wzkris.common.oss.service.FileServiceContext;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : wzkris
@@ -11,10 +10,10 @@ import org.springframework.stereotype.Service;
  * @description : rpc - 文件rpc调用
  * @date : 2023/3/13 16:26
  */
-@Service
-@DubboService
+@RestController
 @RequiredArgsConstructor
-public class RmiFileServiceImpl implements RmiFileService {
+public class RmiFileFeignImpl implements RmiFileFeign {
 
     private final FileServiceContext fileServiceContext;
+
 }

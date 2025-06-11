@@ -15,8 +15,7 @@ import com.wzkris.user.rmi.domain.resp.SysUserResp;
 import com.wzkris.user.service.SysPermissionService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : wzkris
@@ -24,10 +23,9 @@ import org.springframework.stereotype.Service;
  * @description : 内部系统用户接口
  * @date : 2024/4/15 16:20
  */
-@Service
-@DubboService
+@RestController
 @RequiredArgsConstructor
-public class RmiSysUserServiceImpl implements RmiSysUserService {
+public class RmiSysUserFeignImpl implements RmiSysUserFeign {
 
     private final SysUserMapper userMapper;
 
@@ -86,4 +84,5 @@ public class RmiSysUserServiceImpl implements RmiSysUserService {
 
         userMapper.updateById(sysUser);
     }
+
 }

@@ -16,9 +16,9 @@ import java.io.Serializable;
 @ToString
 public class TokenResponse implements Serializable {
 
-    public static final String SUCCESS = "success";
+    static final String SUCCESS = "success";
 
-    public static final String TEMPORARILY_UNAVAILABLE = "temporarily_unavailable";
+    static final String TEMPORARILY_UNAVAILABLE = "temporarily_unavailable";
 
     private boolean success = false;
 
@@ -39,12 +39,16 @@ public class TokenResponse implements Serializable {
         this.success = SUCCESS.equals(errorCode);
     }
 
-    public static TokenResponse resp(String errorCode, String description, Object principal) {
+    static TokenResponse resp(String errorCode, String description, Object principal) {
         return new TokenResponse(errorCode, description, principal);
     }
 
     public static TokenResponse ok(Object principal) {
         return resp(SUCCESS, null, principal);
+    }
+
+    public static TokenResponse okAnonymous() {
+        return resp(SUCCESS, null, null);
     }
 
     public static TokenResponse error(String errorCode, String description) {

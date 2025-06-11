@@ -1,7 +1,5 @@
 package com.wzkris.common.orm.handler;
 
-import static com.wzkris.common.core.domain.Result.err500;
-
 import com.wzkris.common.core.domain.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +8,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static com.wzkris.common.core.domain.Result.err500;
 
 /**
  * Mybatis异常处理器
@@ -46,4 +46,5 @@ public class MybatisExceptionHandler {
         log.error("请求地址'{} {}',捕获到sql异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
         return err500("sql异常，请联系管理员");
     }
+
 }

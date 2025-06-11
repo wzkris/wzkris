@@ -29,6 +29,9 @@ public class FeignClientProperties {
 
     private ConnectionPool connectionPool = new ConnectionPool();
 
+    /**
+     * okhttp连接池配置
+     */
     @Data
     public static class ConnectionPool {
 

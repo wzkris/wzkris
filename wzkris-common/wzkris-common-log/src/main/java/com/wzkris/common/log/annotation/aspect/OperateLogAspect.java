@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.core.utils.JsonUtil;
@@ -16,12 +16,11 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
 import com.wzkris.common.security.thread.TracingIdRunnable;
 import com.wzkris.common.security.utils.LoginUtil;
-import com.wzkris.system.rmi.RmiLogService;
+import com.wzkris.system.rmi.RmiLogFeign;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -60,13 +59,12 @@ public class OperateLogAspect implements ApplicationRunner {
 
     private final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
-    @DubboReference
-    private final RmiLogService rmiLogService;
+    private final RmiLogFeign rmiLogFeign;
 
     private boolean shutdown = false;
 
-    public OperateLogAspect(RmiLogService rmiLogService) {
-        this.rmiLogService = rmiLogService;
+    public OperateLogAspect(RmiLogFeign rmiLogFeign) {
+        this.rmiLogFeign = rmiLogFeign;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // 配置null不序列化, 避免大量无用参数存入DB
         executor.setThreadNamePrefix("OperateLogAspectTask-");
         executor.setCorePoolSize(2);
@@ -78,7 +76,7 @@ public class OperateLogAspect implements ApplicationRunner {
         executor.setThreadFactory(new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
-                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.X_TRACING_ID)));
+                return executor.newThread(new TracingIdRunnable(r, MDC.get(HeaderConstants.X_TRACING_ID)));
             }
         });
         executor.setDaemon(true);
@@ -111,7 +109,7 @@ public class OperateLogAspect implements ApplicationRunner {
                 }
             } catch (InterruptedException e) {
                 if (!batchQ.isEmpty()) {
-                    rmiLogService.saveOperlogs(batchQ);
+                    rmiLogFeign.saveOperlogs(batchQ);
                 }
                 if (shutdown) {
                     break;
@@ -129,7 +127,7 @@ public class OperateLogAspect implements ApplicationRunner {
         if (!batchQ.isEmpty()) {
             ArrayList<OperLogReq> operLogReqs = new ArrayList<>(batchQ);
             executor.execute(() -> {
-                rmiLogService.saveOperlogs(operLogReqs);
+                rmiLogFeign.saveOperlogs(operLogReqs);
             });
             batchQ.clear();
         }

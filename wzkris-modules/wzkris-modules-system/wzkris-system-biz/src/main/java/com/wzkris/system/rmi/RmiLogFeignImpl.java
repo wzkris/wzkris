@@ -8,9 +8,8 @@ import com.wzkris.system.mapper.SysOperLogMapper;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -20,10 +19,9 @@ import java.util.List;
  * @description : 操作日志RPC
  * @date : 2023/3/13 16:13
  */
-@Service
-@DubboService
+@RestController
 @RequiredArgsConstructor
-public class RmiLogServiceImpl implements RmiLogService {
+public class RmiLogFeignImpl implements RmiLogFeign {
 
     private final SysOperLogMapper operLogMapper;
 
@@ -40,4 +38,5 @@ public class RmiLogServiceImpl implements RmiLogService {
         SysLoginLog sysLoginLog = BeanUtil.convert(loginLogReq, SysLoginLog.class);
         loginLogMapper.insert(sysLoginLog);
     }
+
 }

@@ -1,25 +1,24 @@
 package com.wzkris.user.listener;
 
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.system.rmi.RmiNoticeService;
+import com.wzkris.system.rmi.RmiNoticeFeign;
 import com.wzkris.system.rmi.domain.req.SendNoticeReq;
 import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.listener.event.CreateUserEvent;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendNotifyListener {
 
-    @DubboReference
-    private final RmiNoticeService rmiNoticeService;
+    private final RmiNoticeFeign rmiNoticeFeign;
 
     @Async
     @EventListener
@@ -34,7 +33,7 @@ public class SendNotifyListener {
                         event.getLoginPwd(),
                         event.getOperPwd()));
 
-        rmiNoticeService.sendNotice(req);
+        rmiNoticeFeign.sendNotice(req);
     }
 
     @Async
@@ -45,6 +44,7 @@ public class SendNotifyListener {
                 "系统用户创建成功",
                 StringUtil.format("用户账号：{}创建成功，临时登录密码：{}", event.getUsername(), event.getPassword()));
 
-        rmiNoticeService.sendNotice(req);
+        rmiNoticeFeign.sendNotice(req);
     }
+
 }

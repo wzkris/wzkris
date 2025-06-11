@@ -14,4 +14,5 @@ public class TenantInterceptorConfig implements WebMvcConfigurer {
         // 全局动态租户拦截器
         registry.addInterceptor(new GlobalDynamicTenantInterceptor());
     }
+
 }

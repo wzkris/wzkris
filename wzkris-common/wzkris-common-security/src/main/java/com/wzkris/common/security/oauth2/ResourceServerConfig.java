@@ -1,8 +1,8 @@
 package com.wzkris.common.security.oauth2;
 
 import cn.hutool.core.convert.Convert;
-import com.wzkris.auth.rmi.RmiTokenService;
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.auth.rmi.RmiTokenFeign;
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
@@ -28,7 +28,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * @author : wzkris
@@ -46,7 +45,7 @@ public final class ResourceServerConfig {
 
     private final CustomBearerTokenResolver resolver = new CustomBearerTokenResolver();
 
-    private final RmiTokenService rmiTokenService;
+    private final RmiTokenFeign rmiTokenFeign;
 
     private ProviderManager opaqueProviderManager;
 
@@ -68,7 +67,7 @@ public final class ResourceServerConfig {
                         .permitAll()
                         .requestMatchers("/assets/**", "/login", "/activate")
                         .permitAll()
-                        .requestMatchers(request -> Convert.toBool(request.getHeader(CommonConstants.X_INNER_REQUEST), false))
+                        .requestMatchers(request -> Convert.toBool(request.getHeader(HeaderConstants.X_INNER_REQUEST), false))
                         .permitAll()
                         .requestMatchers("/actuator/**")
                         .hasAuthority("SCOPE_monitor")
@@ -89,7 +88,7 @@ public final class ResourceServerConfig {
         // 初始化不透明令牌认证提供者
         opaqueProviderManager = new ProviderManager(
                 new OpaqueTokenAuthenticationProvider(
-                        new CustomOpaqueTokenIntrospector(rmiTokenService)
+                        new CustomOpaqueTokenIntrospector(rmiTokenFeign)
                 )
         );
         jwtProviderManager = new ProviderManager(new JwtAuthenticationProvider(jwtDecoder));

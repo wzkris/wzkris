@@ -1,12 +1,11 @@
 package com.wzkris.gateway.filter;
 
 import cn.hutool.core.util.IdUtil;
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,8 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.stream.Collectors;
 
 /**
  * @author : wzkris
@@ -62,7 +63,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         }
 
         // 分布式日志追踪ID
-        mutate.header(CommonConstants.X_TRACING_ID, IdUtil.fastUUID());
+        mutate.header(HeaderConstants.X_TRACING_ID, IdUtil.fastUUID());
 
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }
@@ -71,4 +72,5 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
     public int getOrder() {
         return HIGHEST_PRECEDENCE;
     }
+
 }

@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class RmiCaptchaServiceImpl implements RmiCaptchaService {
+public class RmiCaptchaFeignImpl implements RmiCaptchaFeign {
 
     private final CaptchaService captchaService;
 
     @Override
-    public boolean validateSms(SmsCheckReq smsCheckReq) throws CaptchaException {
+    public boolean validateSms(SmsCheckReq smsCheckReq) {
         try {
             captchaService.validateCaptcha(smsCheckReq.getPhoneNumber(), smsCheckReq.getSmsCode());
-        } catch (Exception e) {
-            return false;
+            return true;
+        } catch (CaptchaException ignored) {
         }
-        return true;
+        return false;
     }
 
 }

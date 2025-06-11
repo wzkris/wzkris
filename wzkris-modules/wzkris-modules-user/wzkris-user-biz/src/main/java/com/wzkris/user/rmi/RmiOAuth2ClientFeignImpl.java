@@ -5,8 +5,7 @@ import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
 import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : wzkris
@@ -14,10 +13,9 @@ import org.springframework.stereotype.Service;
  * @description : OAuth2客户端接口
  * @date : 2024/7/3 14:37
  */
-@Service
-@DubboService
+@RestController
 @RequiredArgsConstructor
-public class RmiOAuth2ClientServiceImpl implements RmiOAuth2ClientService {
+public class RmiOAuth2ClientFeignImpl implements RmiOAuth2ClientFeign {
 
     private final OAuth2ClientMapper oAuth2ClientMapper;
 
@@ -26,4 +24,5 @@ public class RmiOAuth2ClientServiceImpl implements RmiOAuth2ClientService {
         OAuth2Client oAuth2Client = oAuth2ClientMapper.selectByClientId(clientid);
         return BeanUtil.convert(oAuth2Client, OAuth2ClientResp.class);
     }
+
 }

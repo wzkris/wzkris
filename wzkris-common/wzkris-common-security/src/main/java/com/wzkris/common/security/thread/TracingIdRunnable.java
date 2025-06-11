@@ -1,6 +1,6 @@
 package com.wzkris.common.security.thread;
 
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.HeaderConstants;
 import org.slf4j.MDC;
 
 /**
@@ -19,11 +19,12 @@ public class TracingIdRunnable implements Runnable {
 
     @Override
     public void run() {
-        MDC.put(CommonConstants.X_TRACING_ID, traceId);
+        MDC.put(HeaderConstants.X_TRACING_ID, traceId);
         try {
             delegate.run();
         } finally {
             MDC.clear();
         }
     }
+
 }

@@ -1,6 +1,6 @@
 package com.wzkris.user.controller;
 
-import com.wzkris.auth.rmi.RmiCaptchaService;
+import com.wzkris.auth.rmi.RmiCaptchaFeign;
 import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,8 +52,7 @@ public class SysUserProfileController extends BaseController {
 
     private final SysDeptMapper deptMapper;
 
-    @DubboReference
-    private final RmiCaptchaService rmiCaptchaService;
+    private final RmiCaptchaFeign rmiCaptchaFeign;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -104,7 +102,7 @@ public class SysUserProfileController extends BaseController {
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        if (!rmiCaptchaService.validateSms(smsCheckReq)) {
+        if (!rmiCaptchaFeign.validateSms(smsCheckReq)) {
             return err412("验证码错误");
         }
 
@@ -143,4 +141,5 @@ public class SysUserProfileController extends BaseController {
         sysUser.setAvatar(url);
         return toRes(userMapper.updateById(sysUser));
     }
+
 }

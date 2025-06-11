@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-public class RmiTokenServiceImpl implements RmiTokenService {
+public class RmiTokenFeignImpl implements RmiTokenFeign {
 
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
 

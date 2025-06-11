@@ -1,14 +1,10 @@
 package com.wzkris.user.config;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.security.thread.TracingIdRunnable;
 import jakarta.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 import org.slf4j.MDC;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +13,11 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
+
+import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author : wzkris
@@ -62,7 +63,7 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setThreadFactory(new ThreadFactory() {
             @Override
             public Thread newThread(@Nonnull Runnable r) {
-                return executor.newThread(new TracingIdRunnable(r, MDC.get(CommonConstants.X_TRACING_ID)));
+                return executor.newThread(new TracingIdRunnable(r, MDC.get(HeaderConstants.X_TRACING_ID)));
             }
         });
         executor.setDaemon(true);
@@ -70,4 +71,5 @@ public class AsyncConfig implements AsyncConfigurer {
         // 使用SpringSecurity的线程池，否则异步线程无法传递用户信息
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);
     }
+
 }
