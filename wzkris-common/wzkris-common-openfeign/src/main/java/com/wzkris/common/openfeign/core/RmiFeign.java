@@ -1,5 +1,7 @@
 package com.wzkris.common.openfeign.core;
 
+import com.wzkris.common.core.utils.StringUtil;
+
 /**
  * 空接口
  *
@@ -7,5 +9,10 @@ package com.wzkris.common.openfeign.core;
  * @date 2025/06/12
  */
 public interface RmiFeign {
+
+    default void logPrintError(Throwable throwable) {
+        String error = StringUtil.toString(throwable);
+        FeignLogAggregator.INSTANCE.count(this.getClass().getName() + StringUtil.HASH + error);
+    }
 
 }

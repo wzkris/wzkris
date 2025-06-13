@@ -3,9 +3,11 @@ package com.wzkris.auth.rmi.fallback;
 import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class RmiTokenFeignFallback implements FallbackFactory<RmiTokenFeign> {
 
@@ -14,6 +16,7 @@ public class RmiTokenFeignFallback implements FallbackFactory<RmiTokenFeign> {
         return new RmiTokenFeign() {
             @Override
             public TokenResponse checkToken(TokenReq tokenReq) {
+                logPrintError(cause);
                 return TokenResponse.okAnonymous();
             }
         };

@@ -4,6 +4,7 @@ import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
+import com.wzkris.common.security.oauth2.domain.model.LoginUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -35,7 +36,7 @@ public final class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospec
         }
 
         if (response.getPrincipal() == null) {
-            return null;//TODO 降级策略, 这里需要允许访问
+            return LoginUser.defaultUser();//TODO 降级策略, 这里需要允许访问
         }
         return (AuthBaseUser) response.getPrincipal();
     }

@@ -1,12 +1,14 @@
 package com.wzkris.common.security.oauth2.domain.model;
 
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.enums.LoginType;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author : wzkris
@@ -60,4 +62,14 @@ public class LoginUser extends AuthBaseUser {
     public boolean getAdmin() {
         return admin;
     }
+
+    public static LoginUser defaultUser() {
+        LoginUser user = new LoginUser();
+        user.setAdmin(false);
+        user.setUserId(SecurityConstants.DEFAULT_USER_ID);
+        user.setUsername(SecurityConstants.DEFAULT_USER_NAME);
+        user.setTenantId(SecurityConstants.DEFAULT_TENANT_ID);
+        return user;
+    }
+
 }

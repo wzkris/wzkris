@@ -62,6 +62,9 @@ public class SysUserProfileController extends BaseController {
     public Result<SysUserProfileVO> profile() {
         SysUser user = userMapper.selectById(LoginUtil.getUserId());
 
+        if (user == null) {// 降级会走到这
+            user = new SysUser();
+        }
         SysUserProfileVO.UserInfo userInfo = new SysUserProfileVO.UserInfo();
         userInfo.setUsername(user.getUsername());
         userInfo.setAvatar(user.getAvatar());

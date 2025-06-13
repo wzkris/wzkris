@@ -3,10 +3,11 @@ package com.wzkris.common.core.utils;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 import com.wzkris.common.core.constant.CommonConstants;
+import org.springframework.util.AntPathMatcher;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.springframework.util.AntPathMatcher;
 
 /**
  * 字符串工具类
@@ -24,6 +25,11 @@ public class StringUtil extends StrUtil {
      * 下划线
      */
     private static final char SEPARATOR = '_';
+
+    /**
+     * 井号
+     */
+    public static final String HASH = "#";
 
     /**
      * * 判断一个Collection是否为空， 包含List，Set，Queue
@@ -293,4 +299,5 @@ public class StringUtil extends StrUtil {
     public static <T> T cast(Object obj) {
         return (T) obj;
     }
+
 }
