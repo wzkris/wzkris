@@ -30,7 +30,7 @@ public class TokenProvider {
         if (accessToken == null || Instant.now().isAfter(expiryTime)) {
             WebClient webClient = WebClient.create();
 
-            Optional<Result<TokenResponse>> optional = webClient
+            Optional<Result<OAuth2Response>> optional = webClient
                     .post()
                     .uri(properties.getUrl())
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -40,7 +40,7 @@ public class TokenProvider {
                             .with("client_secret", properties.getClientSecret())
                             .with("scope", StringUtil.join(StrPool.COMMA, properties.getScopes())))
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Result<TokenResponse>>() {
+                    .bodyToMono(new ParameterizedTypeReference<Result<OAuth2Response>>() {
                     })
                     .blockOptional(Duration.ofSeconds(5));
 
@@ -65,12 +65,14 @@ public class TokenProvider {
     }
 
     @Data
-    private static class TokenResponse {
+    private static class OAuth2Response {
 
         private String access_token;
 
         private String token_type;
 
         private long expires_in;
+
     }
+
 }
