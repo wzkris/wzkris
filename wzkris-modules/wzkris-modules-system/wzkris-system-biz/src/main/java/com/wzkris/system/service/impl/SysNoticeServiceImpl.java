@@ -11,10 +11,11 @@ import com.wzkris.system.listener.event.PublishMessageEvent;
 import com.wzkris.system.mapper.SysNoticeMapper;
 import com.wzkris.system.mapper.SysNoticeUserMapper;
 import com.wzkris.system.service.SysNoticeService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +28,8 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     private final TransactionTemplate transactionTemplate;
 
     @Override
-    public boolean sendUsers(List<Long> toUsers, SimpleMessageDTO messageDTO) {
-        Boolean execute = transactionTemplate.execute(status -> {
+    public void saveBatch2Users(List<Long> toUsers, SimpleMessageDTO messageDTO) {
+        transactionTemplate.executeWithoutResult(status -> {
             SysNotice notice = new SysNotice();
             notice.setTitle(messageDTO.getTitle());
             notice.setNoticeType(messageDTO.getType());
@@ -40,9 +41,9 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             List<SysNoticeUser> list = toUsers.stream()
                     .map(uid -> new SysNoticeUser(notice.getNoticeId(), uid))
                     .toList();
-            return noticeUserMapper.insert(list) > 0;
+            noticeUserMapper.insert(list);
         });
         SpringUtil.getContext().publishEvent(new PublishMessageEvent(toUsers, messageDTO));
-        return Boolean.TRUE.equals(execute);
     }
+
 }

@@ -30,4 +30,5 @@ public class SysNoticeUser {
         this.userId = userId;
         this.readState = MessageConstants.NOTICE_UNREAD;
     }
+
 }

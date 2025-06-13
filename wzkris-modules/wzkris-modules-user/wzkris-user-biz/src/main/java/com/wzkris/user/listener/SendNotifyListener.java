@@ -1,7 +1,7 @@
 package com.wzkris.user.listener;
 
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.system.rmi.RmiNoticeFeign;
+import com.wzkris.system.rmi.RmiSysNoticeFeign;
 import com.wzkris.system.rmi.domain.req.SendNoticeReq;
 import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.listener.event.CreateUserEvent;
@@ -18,7 +18,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SendNotifyListener {
 
-    private final RmiNoticeFeign rmiNoticeFeign;
+    private final RmiSysNoticeFeign rmiSysNoticeFeign;
 
     @Async
     @EventListener
@@ -33,7 +33,7 @@ public class SendNotifyListener {
                         event.getLoginPwd(),
                         event.getOperPwd()));
 
-        rmiNoticeFeign.sendNotice(req);
+        rmiSysNoticeFeign.send2Users(req);
     }
 
     @Async
@@ -44,7 +44,7 @@ public class SendNotifyListener {
                 "系统用户创建成功",
                 StringUtil.format("用户账号：{}创建成功，临时登录密码：{}", event.getUsername(), event.getPassword()));
 
-        rmiNoticeFeign.sendNotice(req);
+        rmiSysNoticeFeign.send2Users(req);
     }
 
 }

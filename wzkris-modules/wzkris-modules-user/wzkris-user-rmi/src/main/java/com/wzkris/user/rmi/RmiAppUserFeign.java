@@ -4,6 +4,7 @@ import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import com.wzkris.user.rmi.domain.resp.AppUserResp;
+import com.wzkris.user.rmi.fallback.RmiAppUserFeignFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @description : rpc - APP用户
  * @date : 2024/4/15 16:20
  */
-@FeignClient(name = ServiceIdConstant.USER, contextId = "RmiAppUserFeign")
+@FeignClient(name = ServiceIdConstant.USER, contextId = "RmiAppUserFeign", fallbackFactory = RmiAppUserFeignFallback.class)
 public interface RmiAppUserFeign extends RmiFeign {
 
     String prefix = "/rmi_app_user";

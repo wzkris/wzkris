@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-public class RmiLogFeignImpl implements RmiLogFeign {
+public class RmiSysLogFeignImpl implements RmiSysLogFeign {
 
     private final SysOperLogMapper operLogMapper;
 

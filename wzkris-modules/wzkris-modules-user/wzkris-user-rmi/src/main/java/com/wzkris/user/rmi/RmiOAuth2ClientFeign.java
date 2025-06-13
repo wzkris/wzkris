@@ -3,6 +3,7 @@ package com.wzkris.user.rmi;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
+import com.wzkris.user.rmi.fallback.RmiOAuth2ClientFeignFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : rpc - OAuth2客户端
  * @date : 2024/7/3 14:37
  */
-@FeignClient(name = ServiceIdConstant.USER, contextId = "RmiOAuth2ClientFeign")
+@FeignClient(name = ServiceIdConstant.USER, contextId = "RmiOAuth2ClientFeign", fallbackFactory = RmiOAuth2ClientFeignFallback.class)
 public interface RmiOAuth2ClientFeign extends RmiFeign {
 
     String prefix = "/rmi_oauth2_client";

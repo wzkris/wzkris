@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-public class RmiNoticeFeignImpl implements RmiNoticeFeign {
+public class RmiSysNoticeFeignImpl implements RmiSysNoticeFeign {
 
     private final SysNoticeService noticeService;
 
     @Override
-    public void sendNotice(SendNoticeReq req) {
-        noticeService.sendUsers(
+    public void send2Users(SendNoticeReq req) {
+        noticeService.saveBatch2Users(
                 req.getUserIds(),
                 new SimpleMessageDTO(req.getTitle(), MessageConstants.NOTICE_TYPE_SYSTEM, req.getContent()));
     }

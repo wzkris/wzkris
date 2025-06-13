@@ -80,7 +80,7 @@ public class SysMessageController extends BaseController {
     @PostMapping("/edit")
     @CheckSystemPerms("sys_message:edit")
     public Result<Void> edit(@RequestBody SysMessageReq req) {
-        noticeService.sendUsers(Collections.singletonList(1L), new SimpleMessageDTO("123", "1", "222"));
+        noticeService.saveBatch2Users(Collections.singletonList(1L), new SimpleMessageDTO("123", "1", "222"));
         return toRes(messageMapper.updateById(BeanUtil.convert(req, SysMessage.class)));
     }
 

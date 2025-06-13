@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-public class RmiFileFeignImpl implements RmiFileFeign {
+public class RmiSysFileFeignImpl implements RmiSysFileFeign {
 
     private final FileServiceContext fileServiceContext;
 

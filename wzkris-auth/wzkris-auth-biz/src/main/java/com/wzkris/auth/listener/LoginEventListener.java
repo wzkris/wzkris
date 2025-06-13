@@ -11,7 +11,7 @@ import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.domain.model.ClientUser;
 import com.wzkris.common.security.oauth2.domain.model.LoginUser;
-import com.wzkris.system.rmi.RmiLogFeign;
+import com.wzkris.system.rmi.RmiSysLogFeign;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import com.wzkris.user.rmi.RmiAppUserFeign;
 import com.wzkris.user.rmi.RmiSysUserFeign;
@@ -39,7 +39,7 @@ public class LoginEventListener {
 
     private final TokenProperties tokenProperties;
 
-    private final RmiLogFeign rmiLogFeign;
+    private final RmiSysLogFeign rmiSysLogFeign;
 
     private final RmiSysUserFeign rmiSysUserFeign;
 
@@ -108,7 +108,7 @@ public class LoginEventListener {
         loginLogReq.setLoginLocation(loginLocation);
         loginLogReq.setOs(userAgent.getOs().getName());
         loginLogReq.setBrowser(browser);
-        rmiLogFeign.saveLoginlog(loginLogReq);
+        rmiSysLogFeign.saveLoginlog(loginLogReq);
     }
 
     private void handleClientUser(LoginEvent event, ClientUser clientUser) {

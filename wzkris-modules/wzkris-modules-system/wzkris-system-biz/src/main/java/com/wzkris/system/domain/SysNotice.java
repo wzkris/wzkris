@@ -4,11 +4,12 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
- * 系统消息发送表
+ * 系统通知
  *
  * @author wzkris
  */
@@ -37,4 +38,5 @@ public class SysNotice {
     public SysNotice() {
         this.createAt = DateUtil.date();
     }
+
 }
