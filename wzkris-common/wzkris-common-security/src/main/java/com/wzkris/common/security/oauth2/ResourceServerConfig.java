@@ -25,6 +25,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,7 +56,7 @@ public final class ResourceServerConfig {
     @RefreshScope
     public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
         // 初始化认证管理器
-        initAuthenticationProviders(jwtDecoder);
+        initAuthenticationProviders();
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
@@ -84,7 +85,10 @@ public final class ResourceServerConfig {
         return http.build();
     }
 
-    private void initAuthenticationProviders(JwtDecoder jwtDecoder) {
+    private void initAuthenticationProviders() {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(
+                        "http://localhost:9000/oauth2/jwks")
+                .build();
         // 初始化不透明令牌认证提供者
         opaqueProviderManager = new ProviderManager(
                 new OpaqueTokenAuthenticationProvider(

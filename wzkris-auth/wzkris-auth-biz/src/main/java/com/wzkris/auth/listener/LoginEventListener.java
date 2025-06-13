@@ -2,7 +2,7 @@ package com.wzkris.auth.listener;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.oauth2.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.utils.OnlineUserUtil;

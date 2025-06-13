@@ -1,6 +1,6 @@
 package com.wzkris.auth.listener;
 
-import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.oauth2.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.utils.OnlineUserUtil;

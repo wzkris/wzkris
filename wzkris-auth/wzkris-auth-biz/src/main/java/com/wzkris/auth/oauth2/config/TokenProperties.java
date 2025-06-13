@@ -1,4 +1,4 @@
-package com.wzkris.auth.config;
+package com.wzkris.auth.oauth2.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
