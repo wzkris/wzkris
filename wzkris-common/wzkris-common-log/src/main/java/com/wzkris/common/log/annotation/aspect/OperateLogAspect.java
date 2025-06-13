@@ -6,15 +6,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
-import com.wzkris.common.security.thread.TracingIdRunnable;
 import com.wzkris.common.security.utils.LoginUtil;
 import com.wzkris.system.rmi.RmiLogFeign;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
@@ -25,7 +24,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.MDC;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.http.HttpMethod;
@@ -76,7 +74,7 @@ public class OperateLogAspect implements ApplicationRunner {
         executor.setThreadFactory(new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
-                return executor.newThread(new TracingIdRunnable(r, MDC.get(HeaderConstants.X_TRACING_ID)));
+                return executor.newThread(new TracingIdRunnable(r));
             }
         });
         executor.setDaemon(true);
