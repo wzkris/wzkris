@@ -27,4 +27,9 @@ public class HeaderConstants {
      */
     public static final String X_FEIGN_EXCEPTION = "X-Feign-Exception";
 
+    /**
+     * 用户Token
+     */
+    public static final String X_USER_TOKEN = "X-User-Token";
+
 }

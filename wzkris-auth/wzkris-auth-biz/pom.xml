@@ -24,9 +24,20 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
+        <!-- Spring OAuth2授权服务器-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-security</artifactId>
         </dependency>
 
         <!--模板引擎-->
@@ -51,12 +62,6 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-captcha</artifactId>
-        </dependency>
-
-        <!-- 日志追踪-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-log</artifactId>
         </dependency>
 
         <!-- Sentinel -->
@@ -87,12 +92,6 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-system-rmi</artifactId>
-        </dependency>
-
-        <!-- wzkris Common Security-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-security</artifactId>
         </dependency>
 
         <!-- 接口文档 -->

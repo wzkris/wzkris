@@ -22,9 +22,15 @@ public interface RmiTokenFeign extends RmiFeign {
     String prefix = "/rmi_token";
 
     /**
-     * 校验token
+     * 校验oauth2_token
      */
-    @PostMapping(prefix + "/check_token")
-    TokenResponse checkToken(@Valid @RequestBody TokenReq tokenReq);
+    @PostMapping(prefix + "/check_oauth2")
+    TokenResponse checkOAuth2Token(@Valid @RequestBody TokenReq tokenReq);
+
+    /**
+     * 校验用户token
+     */
+    @PostMapping(prefix + "/check_user")
+    TokenResponse checkUserToken(@Valid @RequestBody TokenReq tokenReq);
 
 }

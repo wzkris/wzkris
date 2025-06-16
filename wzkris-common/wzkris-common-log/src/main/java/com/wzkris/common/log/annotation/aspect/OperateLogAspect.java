@@ -14,7 +14,7 @@ import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.system.rmi.RmiSysLogFeign;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
@@ -184,9 +184,9 @@ public class OperateLogAspect implements ApplicationRunner {
     private OperLogReq buildOperLog(JoinPoint joinPoint, OperateLog operateLog,
                                     HttpServletRequest request, Object jsonResult, Exception exception) throws JsonProcessingException {
         OperLogReq operLogReq = new OperLogReq();
-        operLogReq.setUserId(LoginUtil.getUserId());
-        operLogReq.setOperName(LoginUtil.getUsername());
-        operLogReq.setTenantId(LoginUtil.getTenantId());
+        operLogReq.setUserId(SystemUserUtil.getUserId());
+        operLogReq.setOperName(SystemUserUtil.getUsername());
+        operLogReq.setTenantId(SystemUserUtil.getTenantId());
         operLogReq.setOperType(operateLog.operateType().getValue());
         operLogReq.setStatus(OperateStatus.SUCCESS.value());
         operLogReq.setOperTime(DateUtil.date());

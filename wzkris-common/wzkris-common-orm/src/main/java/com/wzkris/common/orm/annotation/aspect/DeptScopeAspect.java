@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.utils.DeptScopeUtil;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -68,11 +68,11 @@ public class DeptScopeAspect {
      * 处理部门数据权限
      */
     private void handleDataScope(DeptScope deptScope) {
-        if (!LoginUtil.isLogin()) {
+        if (!SystemUserUtil.isLogin()) {
             return;
         }
         // 租户的最高管理员不查询部门数据权限
-        if (LoginUtil.isAdmin()) {
+        if (SystemUserUtil.isAdmin()) {
             return;
         }
 
@@ -80,7 +80,7 @@ public class DeptScopeAspect {
         String aliasColumn = StringUtil.isBlank(deptScope.tableAlias())
                 ? deptScope.columnAlias()
                 : StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
-        List<Long> deptScopes = LoginUtil.getLoginUser().getDeptScopes();
+        List<Long> deptScopes = SystemUserUtil.getUser().getDeptScopes();
 
         Expression expression;
         if (CollUtil.isEmpty(deptScopes)) {

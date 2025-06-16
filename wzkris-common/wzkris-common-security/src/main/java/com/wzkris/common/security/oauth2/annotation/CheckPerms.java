@@ -1,6 +1,7 @@
 package com.wzkris.common.security.oauth2.annotation;
 
-import com.wzkris.common.security.oauth2.enums.LoginType;
+import com.wzkris.auth.rmi.enums.AuthenticatedType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,7 +23,7 @@ public @interface CheckPerms {
      *
      * @return /
      */
-    LoginType checkType();
+    AuthenticatedType checkType();
 
     /**
      * 需要校验的权限码 [ 数组 ]
@@ -48,4 +49,5 @@ public @interface CheckPerms {
          */
         OR
     }
+
 }

@@ -13,7 +13,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.export.SysUserExport;
@@ -136,7 +136,7 @@ public class SysUserController extends BaseController {
     @PostMapping("/add")
     @CheckSystemPerms("sys_user:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
-        if (!tenantService.checkAccountLimit(LoginUtil.getTenantId())) {
+        if (!tenantService.checkAccountLimit(SystemUserUtil.getTenantId())) {
             return err412("账号数量已达上限，请联系管理员");
         } else if (userService.checkExistByUsername(userReq.getUserId(), userReq.getUsername())) {
             return err412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
@@ -151,7 +151,7 @@ public class SysUserController extends BaseController {
         boolean success = userService.insertUser(user, userReq.getRoleIds(), userReq.getPostIds());
         if (success) {
             SpringUtil.getContext()
-                    .publishEvent(new CreateUserEvent(LoginUtil.getUserId(), userReq.getUsername(), password));
+                    .publishEvent(new CreateUserEvent(SystemUserUtil.getUserId(), userReq.getUsername(), password));
         }
         return toRes(success);
     }

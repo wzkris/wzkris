@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "参数管理")
 @RestController
-@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @RequestMapping("/sys_config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {

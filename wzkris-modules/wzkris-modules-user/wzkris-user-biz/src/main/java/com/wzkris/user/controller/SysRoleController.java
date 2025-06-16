@@ -10,7 +10,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.req.*;
@@ -99,7 +99,7 @@ public class SysRoleController extends BaseController {
                 roleId == null
                         ? Collections.emptyList()
                         : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUtil.getUserId()));
+        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(SystemUserUtil.getUserId()));
         return ok(checkedSelectTreeVO);
     }
 
@@ -123,7 +123,7 @@ public class SysRoleController extends BaseController {
     @PostMapping("/add")
     @CheckSystemPerms("sys_role:add")
     public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
-        if (!tenantService.checkRoleLimit(LoginUtil.getTenantId())) {
+        if (!tenantService.checkRoleLimit(SystemUserUtil.getTenantId())) {
             return err412("角色数量已达上限，请联系管理员");
         }
         return toRes(roleService.insertRole(

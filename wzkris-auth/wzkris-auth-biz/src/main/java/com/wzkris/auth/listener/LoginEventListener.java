@@ -2,15 +2,17 @@ package com.wzkris.auth.listener;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
-import com.wzkris.auth.oauth2.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.AddressUtil;
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
-import com.wzkris.common.security.oauth2.domain.model.ClientUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginUser;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.domain.ClientUser;
+import com.wzkris.common.security.domain.SystemUser;
 import com.wzkris.system.rmi.RmiSysLogFeign;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import com.wzkris.user.rmi.RmiAppUserFeign;
@@ -48,20 +50,18 @@ public class LoginEventListener {
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final AuthBaseUser baseUser = event.getUser();
+        final CorePrincipal principal = event.getPrincipal();
 
-        switch (baseUser.getLoginType()) {
-            case SYSTEM_USER -> {
-                this.handleSystemUser(event, (LoginUser) baseUser);
-            }
-            case CLIENT_USER -> {
-                this.handleClientUser(event, (ClientUser) baseUser);
-            }
-            default -> log.warn("{} 发生登录事件, 忽略处理", baseUser);
+        if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
+            this.handleSystemUser(event, (SystemUser) principal);
+        } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CLIENT_USER.getValue())) {
+            this.handleClientUser(event, (ClientUser) principal);
+        } else {
+            log.warn("{} 发生登录事件, 忽略处理", principal);
         }
     }
 
-    private void handleSystemUser(LoginEvent event, LoginUser loginUser) {
+    private void handleSystemUser(LoginEvent event, SystemUser user) {
         final String grantType = event.getGrantType();
         final String status = event.getStatus();
         final String errorMsg = event.getErrorMsg();
@@ -69,7 +69,7 @@ public class LoginEventListener {
         final UserAgent userAgent = event.getUserAgent();
 
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
-        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", loginUser.getName(), loginSuccess ? "成功" : "失败", ipAddr);
+        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", user.getName(), loginSuccess ? "成功" : "失败", ipAddr);
 
         // 获取客户端浏览器
         String browser = userAgent.getBrowser().getName();
@@ -78,7 +78,7 @@ public class LoginEventListener {
 
         if (loginSuccess) { // 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setTokenId(event.getTokenId());
+            onlineUser.setId(user.getId());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
             onlineUser.setLoginIp(ipAddr);
             onlineUser.setLoginLocation(loginLocation);
@@ -86,20 +86,20 @@ public class LoginEventListener {
             onlineUser.setOs(userAgent.getOs().getName());
             onlineUser.setLoginTime(new Date());
 
-            RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(loginUser.getUserId());
+            RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(user.getUserId());
             onlineCache.put(
-                    onlineUser.getTokenId(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
+                    onlineUser.getId(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
 
-            LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUserId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(DateUtil.date());
             rmiSysUserFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
         final LoginLogReq loginLogReq = new LoginLogReq();
-        loginLogReq.setUserId(loginUser.getUserId());
-        loginLogReq.setUsername(loginUser.getUsername());
-        loginLogReq.setTenantId(loginUser.getTenantId());
+        loginLogReq.setUserId(user.getUserId());
+        loginLogReq.setUsername(user.getUsername());
+        loginLogReq.setTenantId(user.getTenantId());
         loginLogReq.setLoginTime(DateUtil.date());
         loginLogReq.setLoginIp(ipAddr);
         loginLogReq.setGrantType(grantType);
@@ -111,12 +111,12 @@ public class LoginEventListener {
         rmiSysLogFeign.saveLoginlog(loginLogReq);
     }
 
-    private void handleClientUser(LoginEvent event, ClientUser clientUser) {
+    private void handleClientUser(LoginEvent event, ClientUser user) {
         final String status = event.getStatus();
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
 
         if (loginSuccess) { // 更新用户登录信息
-            LoginInfoReq loginInfoReq = new LoginInfoReq(clientUser.getUserId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(DateUtil.date());
             rmiAppUserFeign.updateLoginInfo(loginInfoReq);

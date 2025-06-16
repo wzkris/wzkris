@@ -1,10 +1,11 @@
 package com.wzkris.auth.domain;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 在线会话
@@ -21,7 +22,7 @@ public class OnlineUser implements Serializable {
     /**
      * 会话编号
      */
-    private String tokenId;
+    private String id;
 
     /**
      * 设备类型
@@ -57,4 +58,5 @@ public class OnlineUser implements Serializable {
      * 是否当前会话
      */
     private Boolean current = false;
+
 }

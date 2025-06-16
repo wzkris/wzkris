@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.system.constant.MessageConstants;
 import com.wzkris.system.domain.SysMessage;
@@ -43,20 +43,20 @@ public class SysMessageProfileController extends BaseController {
     @GetMapping("/notice")
     public Result<Page<SysNoticeVO>> notice(String readState, String noticeType) {
         startPage();
-        List<SysNoticeVO> list = noticeMapper.listNotice(LoginUtil.getUserId(), noticeType, readState);
+        List<SysNoticeVO> list = noticeMapper.listNotice(SystemUserUtil.getUserId(), noticeType, readState);
         return getDataTable(list);
     }
 
     @Operation(summary = "标记已读")
     @PostMapping("/notice/mark_read")
     public Result<Void> markRead(@RequestBody Long noticeId) {
-        return toRes(noticeMapper.markRead(noticeId, LoginUtil.getUserId()));
+        return toRes(noticeMapper.markRead(noticeId, SystemUserUtil.getUserId()));
     }
 
     @Operation(summary = "未读数量")
     @GetMapping("/notice/unread_size")
     public Result<Integer> unreadSize(String noticeType) {
-        int count = noticeMapper.selectUnreadSize(LoginUtil.getUserId(), noticeType);
+        int count = noticeMapper.selectUnreadSize(SystemUserUtil.getUserId(), noticeType);
         return ok(count);
     }
 }

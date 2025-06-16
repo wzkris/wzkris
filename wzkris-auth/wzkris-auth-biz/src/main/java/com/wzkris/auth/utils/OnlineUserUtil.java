@@ -14,7 +14,8 @@ public class OnlineUserUtil {
 
     private static final String ONLINE_USER_KEY = "online:user:";
 
-    public static RMapCache<String, OnlineUser> getOnlineCache(Long userId) {
+    public static RMapCache<String, OnlineUser> getOnlineCache(Object userId) {
         return RedisUtil.getRMapCache(ONLINE_USER_KEY + userId);
     }
+
 }

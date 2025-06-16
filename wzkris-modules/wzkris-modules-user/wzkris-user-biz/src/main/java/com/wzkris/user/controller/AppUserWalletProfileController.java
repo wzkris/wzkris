@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.ClientUtil;
+import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUserWalletRecord;
 import com.wzkris.user.domain.req.AppUserWalletRecordQueryReq;
@@ -41,7 +41,7 @@ public class AppUserWalletProfileController extends BaseController {
     @Operation(summary = "余额信息")
     @GetMapping
     public Result<AppUserWalletVO> walletInfo() {
-        return ok(appUserWalletMapper.selectById2VO(ClientUtil.getUserId(), AppUserWalletVO.class));
+        return ok(appUserWalletMapper.selectById2VO(ClientUserUtil.getUserId(), AppUserWalletVO.class));
     }
 
     @Operation(summary = "钱包记录")

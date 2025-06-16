@@ -67,4 +67,5 @@ public class CaptchaController extends BaseController {
         captchaService.setCaptcha(req.getPhone(), code);
         return ok();
     }
+
 }

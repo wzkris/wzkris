@@ -90,7 +90,7 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
     public Result<?> handleNoHandlerFoundException(ServletException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.info("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return resp(BizCode.NOT_FOUND);
     }
 
@@ -100,7 +100,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Result<?> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-        log.error("请求地址'{}',不支持'{}'请求，异常信息：{}", request.getRequestURI(), e.getMethod(), e.getMessage());
+        log.info("请求地址'{}',不支持'{}'请求，异常信息：{}", request.getRequestURI(), e.getMethod(), e.getMessage());
         return resp(BizCode.BAD_METHOD, e.getMessage());
     }
 
@@ -109,7 +109,7 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler(BaseException.class)
     public Result<?> handleBaseException(BaseException e, HttpServletRequest request) {
-        log.error(
+        log.info(
                 "请求地址'{} {}',异常模块：{}, 状态码：{}, 异常信息：{}",
                 request.getMethod(),
                 request.getRequestURI(),
@@ -124,7 +124,7 @@ public class WebExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public Result<?> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.info("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         return err412(e.getMessage());
     }
 
@@ -135,7 +135,7 @@ public class WebExceptionHandler {
     public Result<?> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e, HttpServletRequest request) {
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
-        log.error("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), message);
+        log.info("请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), message);
         return err412(message);
     }
 
@@ -145,7 +145,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public Result<?> handleValidationException(ConstraintViolationException e, HttpServletRequest request) {
         ConstraintViolation violation = e.getConstraintViolations().toArray(new ConstraintViolation[0])[0];
-        log.error(
+        log.info(
                 "请求地址'{} {}',捕获到参数验证异常，异常信息：{}", request.getMethod(), request.getRequestURI(), violation.getMessage());
         String err = violation.getMessage();
         try {

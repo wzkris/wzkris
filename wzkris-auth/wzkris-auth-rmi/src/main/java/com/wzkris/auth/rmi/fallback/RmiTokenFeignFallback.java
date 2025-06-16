@@ -13,7 +13,13 @@ public class RmiTokenFeignFallback implements FallbackFactory<RmiTokenFeign> {
     public RmiTokenFeign create(Throwable cause) {
         return new RmiTokenFeign() {
             @Override
-            public TokenResponse checkToken(TokenReq tokenReq) {
+            public TokenResponse checkOAuth2Token(TokenReq tokenReq) {
+                logPrintError(cause);
+                return TokenResponse.okAnonymous();
+            }
+
+            @Override
+            public TokenResponse checkUserToken(TokenReq tokenReq) {
                 logPrintError(cause);
                 return TokenResponse.okAnonymous();
             }

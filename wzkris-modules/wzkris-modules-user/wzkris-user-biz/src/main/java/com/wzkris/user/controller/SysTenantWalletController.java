@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @IgnoreTenant // 忽略租户隔离
 @RequestMapping("/sys_tenant/wallet")
 public class SysTenantWalletController extends BaseController {

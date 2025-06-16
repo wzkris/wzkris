@@ -3,7 +3,7 @@ package com.wzkris.system.service.impl;
 import cn.hutool.core.date.DateUtil;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.system.domain.SysNotice;
 import com.wzkris.system.domain.SysNoticeUser;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
@@ -35,7 +35,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             notice.setNoticeType(messageDTO.getType());
             notice.setContent(messageDTO.getContent());
             notice.setCreatorId(
-                    LoginUtil.isAuthenticated() ? LoginUtil.getUserId() : SecurityConstants.DEFAULT_USER_ID);
+                    SystemUserUtil.isAuthenticated() ? SystemUserUtil.getUserId() : SecurityConstants.DEFAULT_USER_ID);
             notice.setCreateAt(DateUtil.date());
             noticeMapper.insert(notice);
             List<SysNoticeUser> list = toUsers.stream()

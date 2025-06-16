@@ -14,7 +14,7 @@ import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.req.EditStatusReq;
@@ -48,7 +48,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @IgnoreTenant // 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
@@ -123,7 +123,7 @@ public class SysTenantController extends BaseController {
         if (success) {
             SpringUtil.getContext()
                     .publishEvent(new CreateTenantEvent(
-                            LoginUtil.getUserId(),
+                            SystemUserUtil.getUserId(),
                             tenantReq.getUsername(),
                             tenantReq.getTenantName(),
                             password,

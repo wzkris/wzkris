@@ -6,7 +6,7 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
@@ -183,8 +183,8 @@ public class SysUserServiceImpl implements SysUserService {
             if (userIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
                 throw new AccessDeniedException("禁止访问超级管理员数据");
             }
-            if (userIds.contains(LoginUtil.getUserId())) {
-                throw new AccessDeniedException("userId：‘" + LoginUtil.getUserId() + "'禁止访问自身数据");
+            if (userIds.contains(SystemUserUtil.getUserId())) {
+                throw new AccessDeniedException("userId：‘" + SystemUserUtil.getUserId() + "'禁止访问自身数据");
             }
             if (!userMapper.checkDataScopes(userIds)) {
                 throw new AccessDeniedException("无此用户数据访问权限");

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
 
-    private static final String ACCESS_TOKEN_PARAMETER_NAME = "access_token";
+    private final String access_token = "access_token";
 
     @Autowired
     private PermitAllProperties permitAllProperties;
@@ -57,7 +57,8 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         final ServerHttpRequest.Builder mutate = request.mutate();
 
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if ((StringUtil.isBlank(bearerToken) && request.getQueryParams().get(ACCESS_TOKEN_PARAMETER_NAME) == null)
+        String userToken = request.getHeaders().getFirst(HeaderConstants.X_USER_TOKEN);
+        if (StringUtil.isBlank(bearerToken) && StringUtil.isBlank(userToken)
                 && !StringUtil.matches(request.getURI().getPath(), permitAllProperties.getIgnores())) {
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
         }

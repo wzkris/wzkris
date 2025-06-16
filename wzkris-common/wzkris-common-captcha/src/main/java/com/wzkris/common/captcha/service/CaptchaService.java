@@ -7,12 +7,13 @@ import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
-import java.time.Duration;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RScript;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.Collections;
 
 /**
  * 验证码服务
@@ -109,7 +110,8 @@ public class CaptchaService {
      */
     public void validateLock(String key) {
         if (RedisUtil.hasKey(LOCK_PREFIX + key)) {
-            throw new CaptchaException(BizCode.BAD_REQUEST.value(), "service.busy");
+            throw new CaptchaException(BizCode.TOO_MANY_REQUESTS.value(), "service.busy");
         }
     }
+
 }
