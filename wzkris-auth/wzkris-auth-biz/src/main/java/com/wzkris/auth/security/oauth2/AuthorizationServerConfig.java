@@ -20,6 +20,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -59,6 +60,7 @@ public class AuthorizationServerConfig {
                 .build();
 
         http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .with(authorizationServerConfigurer,
                         authorizationServer -> {
                     authorizationServer.tokenEndpoint(tokenEndpoint -> {
@@ -91,7 +93,7 @@ public class AuthorizationServerConfig {
                 )
         .exceptionHandling(exceptionHandler -> {
             exceptionHandler.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/login"), // 401了跳转到登录页
+                    new LoginUrlAuthenticationEntryPoint("/oauth2/login"), // oauth2校验不通过会跳转到这
                     new MediaTypeRequestMatcher(MediaType.TEXT_HTML));
         });
 

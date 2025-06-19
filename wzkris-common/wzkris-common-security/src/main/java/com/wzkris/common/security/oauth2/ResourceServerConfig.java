@@ -67,7 +67,7 @@ public final class ResourceServerConfig {
                 .cors(configurer -> configurer.configure(http))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
