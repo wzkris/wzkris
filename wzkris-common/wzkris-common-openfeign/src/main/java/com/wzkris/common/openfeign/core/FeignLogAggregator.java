@@ -49,7 +49,8 @@ public enum FeignLogAggregator {
     void flushLogs() {
         logCache.forEach((key, counter) -> {
             LoggerFactory.getLogger(key.split(StringUtil.HASH)[0])
-                    .error("[聚合日志] {} 首次触发时间: {} 触发次数: {}", key, counter.getFirstOccurrenceTime(), counter.getCount());
+                    .error("[聚合日志] 首次触发时间: {} 触发次数: {},\n " +
+                            "{}", counter.getFirstOccurrenceTime(), counter.getCount(), key);
         });
         logCache.clear();
     }

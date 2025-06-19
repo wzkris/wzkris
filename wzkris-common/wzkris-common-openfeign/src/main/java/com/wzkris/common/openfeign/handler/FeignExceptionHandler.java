@@ -1,8 +1,8 @@
 package com.wzkris.common.openfeign.handler;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.core.RmiFeign;
+import com.wzkris.common.openfeign.utils.RpcMsgUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class FeignExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
-        String err = StringUtil.toString(e);
+        String err = RpcMsgUtil.getDetailMsg(e);
         log.error("远程feign调用地址'{} {}',发生异常：{}", request.getMethod(), request.getRequestURI(), err);
         response.setHeader(HeaderConstants.X_FEIGN_EXCEPTION, URLEncoder.encode(err, StandardCharsets.UTF_8));
     }
