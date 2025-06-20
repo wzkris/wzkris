@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.filter;
+package com.wzkris.common.security.oauth2.introspector;
 
 import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
@@ -13,9 +13,8 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 自定义token自省
- * @date : 2024/3/8 14:34.
- * @UPDATE: 2024/5/14 10:11 custom from @org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector
+ * @description : 支持opaque_token和jwt_token
+ * @date : 2025/06/20 9:10.
  */
 @Slf4j
 public final class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {

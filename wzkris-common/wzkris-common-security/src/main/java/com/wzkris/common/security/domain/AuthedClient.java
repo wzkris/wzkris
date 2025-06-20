@@ -1,5 +1,6 @@
 package com.wzkris.common.security.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class AuthedClient extends CorePrincipal implements OAuth2AuthenticatedPr
         return Collections.unmodifiableMap(new HashMap<>(0));
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(getPermissions());

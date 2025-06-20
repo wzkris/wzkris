@@ -24,5 +24,6 @@ public final class OAuth2JsonUtil {
         List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
         objectMapper.registerModules(securityModules);
         objectMapper.registerModules(new OAuth2AuthorizationServerJackson2Module());
+        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator());// 允许反序列化不可变集合
     }
 }

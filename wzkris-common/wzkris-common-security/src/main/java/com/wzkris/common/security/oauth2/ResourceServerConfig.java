@@ -4,10 +4,10 @@ import cn.hutool.core.convert.Convert;
 import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.security.config.PermitAllProperties;
-import com.wzkris.common.security.oauth2.filter.OAuth2OpaqueTokenIntrospector;
-import com.wzkris.common.security.oauth2.filter.UserTokenCheckFilter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
+import com.wzkris.common.security.oauth2.introspector.OAuth2OpaqueTokenIntrospector;
+import com.wzkris.common.security.oauth2.repository.RmiSecurityContextRepository;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +28,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 /**
  * @author : wzkris
@@ -60,14 +59,15 @@ public final class ResourceServerConfig {
     @Bean
     @RefreshScope
     public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http) throws Exception {
-        // 初始化认证管理器
-        initAuthenticationProviders();
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .securityContext(securityContextConfigurer -> {
+                    securityContextConfigurer.securityContextRepository(new RmiSecurityContextRepository(rmiTokenFeign));
+                })
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
@@ -79,43 +79,39 @@ public final class ResourceServerConfig {
                         .authenticated()
                 )
                 .oauth2ResourceServer(resourceServer -> resourceServer
-                        .authenticationManagerResolver(this::getAuthenticationManager)
                         .bearerTokenResolver(bearerTokenResolver)
+                        .authenticationManagerResolver(this::getAuthenticationManager)
                         .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                         .accessDeniedHandler(new AccessDeniedHandlerImpl())
                 )
-                .addFilterAt(new UserTokenCheckFilter(rmiTokenFeign), AuthorizationFilter.class);
+                .exceptionHandling(exceptionHandler -> {
+                    exceptionHandler.authenticationEntryPoint(new AuthenticationEntryPointImpl())
+                            .accessDeniedHandler(new AccessDeniedHandlerImpl());
+                });
 
         return http.build();
     }
 
-    private void initAuthenticationProviders() {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(
-                        "http://localhost:9000/oauth2/jwks")
-                .build();
-        // 初始化不透明令牌认证提供者
-        opaqueProviderManager = new ProviderManager(
-                new OpaqueTokenAuthenticationProvider(
-                        new OAuth2OpaqueTokenIntrospector(rmiTokenFeign)
-                )
-        );
-        jwtProviderManager = new ProviderManager(new JwtAuthenticationProvider(jwtDecoder));
-    }
-
     private AuthenticationManager getAuthenticationManager(HttpServletRequest request) {
         String token = bearerTokenResolver.resolve(request);
-        if (isValidJwtToken(token)) {
+        if (token.split("\\.").length == 3) {
+            if (jwtProviderManager == null) {
+                NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(
+                                "http://localhost:9000/oauth2/jwks")
+                        .build();
+                jwtProviderManager = new ProviderManager(new JwtAuthenticationProvider(jwtDecoder));
+            }
             return jwtProviderManager;
+        } else {
+            if (opaqueProviderManager == null) {
+                opaqueProviderManager = new ProviderManager(
+                        new OpaqueTokenAuthenticationProvider(
+                                new OAuth2OpaqueTokenIntrospector(rmiTokenFeign)
+                        )
+                );
+            }
+            return opaqueProviderManager;
         }
-        return opaqueProviderManager;
-    }
-
-    private boolean isValidJwtToken(String token) {
-        if (token == null || token.isBlank()) {
-            return false;
-        }
-        String[] parts = token.split("\\.");
-        return parts.length == 3;
     }
 
     @Bean("ps")
