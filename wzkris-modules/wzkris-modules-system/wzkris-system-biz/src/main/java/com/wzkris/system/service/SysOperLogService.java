@@ -5,6 +5,4 @@ package com.wzkris.system.service;
  *
  * @author wzkris
  */
-public interface SysOperLogService {
-
-}
+public interface SysOperLogService {}

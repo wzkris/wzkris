@@ -20,7 +20,8 @@ public class MonitorServerApplication {
         springApplication.addListeners(new ApplicationPidFileWriter());
         springApplication.setApplicationStartup(new BufferingApplicationStartup(2048));
         springApplication.run(args);
-        System.out.println("""
+        System.out.println(
+                """
                 (♥◠‿◠)ﾉﾞ  监控中心启动成功   ლ(´ڡ`ლ)ﾞ \s
                  _____ ______   ________  ________   ___  _________  ________  ________    \s
                 |\\   _ \\  _   \\|\\   __  \\|\\   ___  \\|\\  \\|\\___   ___\\\\   __  \\|\\   __  \\   \s

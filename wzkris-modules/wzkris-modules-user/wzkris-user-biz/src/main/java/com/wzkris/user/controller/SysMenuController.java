@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.constant.MenuConstants;
 import com.wzkris.user.domain.SysMenu;
@@ -17,13 +17,12 @@ import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 菜单管理
@@ -33,7 +32,7 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/sys_menu")
-@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @RequiredArgsConstructor
 public class SysMenuController extends BaseController {
 
@@ -51,8 +50,8 @@ public class SysMenuController extends BaseController {
 
     private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!LoginUtil.isAdmin()) {
-            menuIds = menuService.listMenuIdByUserId(LoginUtil.getUserId());
+        if (!SystemUserUtil.isAdmin()) {
+            menuIds = menuService.listMenuIdByUserId(SystemUserUtil.getUserId());
         }
         return new LambdaQueryWrapper<SysMenu>()
                 .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)

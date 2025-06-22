@@ -4,7 +4,6 @@ import com.wzkris.common.core.dynamicexec.ClassInjector;
 import com.wzkris.common.core.dynamicexec.DynamicClassLoader;
 import com.wzkris.common.core.dynamicexec.DynamicLoaderEngine;
 import com.wzkris.common.core.dynamicexec.bytecode.InjectionSystem;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
@@ -42,10 +41,11 @@ public class DynamicExecuteService {
      * 5、类中的执行结果也通过字符串返回</BR>
      * 6、4和5的输出结果不会同时存在</BR>
      *
-     * @param code 源码
+     * @param code    源码
+     * @param inparam 入参
      * @return 返回错误或者类的执行输出
      */
-    public String executeDynamically(String code) {
+    public String executeDynamically(String code, String inparam) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         PrintWriter out = new PrintWriter(buffer, true);
 
@@ -65,7 +65,7 @@ public class DynamicExecuteService {
             InjectionSystem.inject(null, new PrintStream(buffer, true), null);
 
             DynamicClassLoader dynamicClassLoader = new DynamicClassLoader(pClassLoader);
-            DynamicLoaderEngine.executeMain(dynamicClassLoader, injectedClass, out, null);
+            DynamicLoaderEngine.executeMain(dynamicClassLoader, injectedClass, out, inparam);
 
             InjectionSystem.restore();
         } catch (Throwable t) {

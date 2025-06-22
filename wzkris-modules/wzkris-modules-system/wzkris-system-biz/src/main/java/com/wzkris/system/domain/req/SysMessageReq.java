@@ -31,7 +31,8 @@ public class SysMessageReq {
     @Schema(description = "内容")
     private String content;
 
-    @EnumsCheck(values = {MessageConstants.STATUS_CLOSED, MessageConstants.STATUS_DRAFT, MessageConstants.STATUS_PUBLISH})
+    @EnumsCheck(
+            values = {MessageConstants.STATUS_CLOSED, MessageConstants.STATUS_DRAFT, MessageConstants.STATUS_PUBLISH})
     @Schema(description = "状态（0草稿 1关闭 2已发送）")
     private String status;
 }

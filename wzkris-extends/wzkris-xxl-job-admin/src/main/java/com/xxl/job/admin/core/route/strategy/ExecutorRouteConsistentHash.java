@@ -3,7 +3,6 @@ package com.xxl.job.admin.core.route.strategy;
 import com.xxl.job.admin.core.route.ExecutorRouter;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.biz.model.TriggerParam;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -82,5 +81,4 @@ public class ExecutorRouteConsistentHash extends ExecutorRouter {
         String address = hashJob(triggerParam.getJobId(), addressList);
         return new ReturnT<String>(address);
     }
-
 }

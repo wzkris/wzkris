@@ -1,7 +1,6 @@
 package com.wzkris.system.service;
 
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
-
 import java.util.List;
 
 public interface SysNoticeService {
@@ -12,5 +11,5 @@ public interface SysNoticeService {
      * @param toUsers    接收方用户ID
      * @param messageDTO 消息
      */
-    boolean sendUsers(List<Long> toUsers, SimpleMessageDTO messageDTO);
+    void saveBatch2Users(List<Long> toUsers, SimpleMessageDTO messageDTO);
 }

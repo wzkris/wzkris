@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.user.api.domain.response.OAuth2ClientResp;
+import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +21,7 @@ import org.apache.ibatis.type.ArrayTypeHandler;
 @AutoMappers({
         @AutoMapper(target = OAuth2ClientResp.class),
 })
-@TableName(schema = "biz_sys", autoResultMap = true, value = "oauth2_client")
+@TableName(schema = "biz", autoResultMap = true, value = "oauth2_client")
 public class OAuth2Client extends BaseEntity {
 
     @TableId
@@ -54,4 +54,5 @@ public class OAuth2Client extends BaseEntity {
 
     @Schema(description = "放行配置")
     private Boolean autoApprove;
+
 }

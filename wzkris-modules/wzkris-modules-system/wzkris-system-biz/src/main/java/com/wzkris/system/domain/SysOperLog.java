@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.orm.annotation.FieldPerms;
-import com.wzkris.system.api.domain.request.OperLogReq;
+import com.wzkris.system.rmi.domain.req.OperLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 操作日志记录表 sys_oper_log
@@ -20,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @AutoMapper(target = OperLogReq.class)
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysOperLog implements Serializable {
 
     @Serial
@@ -81,5 +80,4 @@ public class SysOperLog implements Serializable {
 
     @Schema(description = "操作时间")
     private Date operTime;
-
 }

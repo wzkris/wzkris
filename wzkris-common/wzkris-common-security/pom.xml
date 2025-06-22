@@ -20,23 +20,18 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-api</artifactId>
+            <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-dubbo</artifactId>
+            <artifactId>wzkris-common-openfeign</artifactId>
         </dependency>
 
+        <!-- Spring OAuth2资源服务器-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-
-        <!-- Spring OAuth2授权服务器-->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-authorization-server</artifactId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
     </dependencies>

@@ -35,7 +35,11 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
         if (exchange.getResponse().isCommitted()) {
             return Mono.error(e);
         }
-        log.error("[网关异常处理]请求路径:'{} {}',异常信息:{}", exchange.getRequest().getMethod(), exchange.getRequest().getPath(), e.getMessage());
+        log.error(
+                "[网关异常处理]请求路径:'{} {}',异常信息:{}",
+                exchange.getRequest().getMethod(),
+                exchange.getRequest().getPath(),
+                e.getMessage());
         if (e instanceof ResponseStatusException respEx) {
             return switch (respEx.getStatusCode().value()) {
                 case 400 -> WebFluxUtil.writeResponse(response, BizCode.BAD_REQUEST);
@@ -46,7 +50,8 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
                 case 500 -> WebFluxUtil.writeResponse(response, BizCode.INTERNAL_ERROR);
                 case 502 -> WebFluxUtil.writeResponse(response, BizCode.BAD_GATEWAY);
                 case 503 -> WebFluxUtil.writeResponse(response, BizCode.SERVICE_UNAVAILABLE);
-                default -> WebFluxUtil.writeResponse(response, respEx.getStatusCode().value(), respEx.getMessage());
+                default -> WebFluxUtil.writeResponse(
+                        response, respEx.getStatusCode().value(), respEx.getMessage());
             };
         } else if (e instanceof BaseException bizEx) {
             // 若状态码为远程调用异常，则返回前端数据需要覆盖
@@ -60,5 +65,4 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
         // 返回500内部异常
         return WebFluxUtil.writeResponse(response, BizCode.INTERNAL_ERROR, e.getMessage());
     }
-
 }

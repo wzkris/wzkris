@@ -14,10 +14,9 @@ import com.wzkris.system.mapper.SysLoginLogMapper;
 import com.wzkris.system.service.SysLoginLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author : wzkris
@@ -48,9 +47,15 @@ public class SysLoginlogController extends BaseController {
         return new LambdaQueryWrapper<SysLoginLog>()
                 .eq(StringUtil.isNotNull(queryReq.getStatus()), SysLoginLog::getStatus, queryReq.getStatus())
                 .like(StringUtil.isNotNull(queryReq.getUsername()), SysLoginLog::getUsername, queryReq.getUsername())
-                .like(StringUtil.isNotNull(queryReq.getLoginLocation()), SysLoginLog::getLoginLocation, queryReq.getLoginLocation())
-                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        SysLoginLog::getLoginTime, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
+                .like(
+                        StringUtil.isNotNull(queryReq.getLoginLocation()),
+                        SysLoginLog::getLoginLocation,
+                        queryReq.getLoginLocation())
+                .between(
+                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysLoginLog::getLoginTime,
+                        queryReq.getParam("beginTime"),
+                        queryReq.getParam("endTime"))
                 .orderByDesc(SysLoginLog::getLogId);
     }
 
@@ -61,5 +66,4 @@ public class SysLoginlogController extends BaseController {
     public Result<?> remove(@RequestBody List<Long> logIds) {
         return toRes(loginLogMapper.deleteByIds(logIds));
     }
-
 }

@@ -1,9 +1,9 @@
 package com.wzkris.common.security.oauth2.annotation.aspect;
 
 import cn.hutool.core.util.ObjUtil;
+import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +33,10 @@ public class CheckPermsAspect {
     @Autowired
     private PermissionService permissionService;
 
-    @Pointcut("@annotation(com.wzkris.common.security.oauth2.annotation.CheckPerms)" +
-            "|| @annotation(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)" +
-            "|| @within(com.wzkris.common.security.oauth2.annotation.CheckPerms)" +
-            "|| @within(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)")
+    @Pointcut("@annotation(com.wzkris.common.security.oauth2.annotation.CheckPerms)"
+            + "|| @annotation(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)"
+            + "|| @within(com.wzkris.common.security.oauth2.annotation.CheckPerms)"
+            + "|| @within(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)")
     public void pointcut() {
     }
 
@@ -54,10 +54,11 @@ public class CheckPermsAspect {
             checkPerms = AnnotatedElementUtils.findMergedAnnotation(targetClass, CheckPerms.class);
         }
 
-        AuthBaseUser baseUser = SecurityUtil.getPrincipal();
+        CorePrincipal principal = SecurityUtil.getPrincipal();
 
-        if (ObjUtil.notEqual(baseUser.getLoginType(), checkPerms.checkType())) {
-            throw new AccessDeniedException("AuthUser needs checkType :" + checkPerms.checkType() + " , but have " + baseUser.getLoginType());
+        if (ObjUtil.notEqual(principal.getType(), checkPerms.checkType().getValue())) {
+            throw new AccessDeniedException(
+                    "Principal needs checkType :" + checkPerms.checkType() + " , but have " + principal.getType());
         }
         String[] perms = checkPerms.value();
 
@@ -66,19 +67,21 @@ public class CheckPermsAspect {
         }
 
         CheckPerms.Mode mode = checkPerms.mode();
-        Set<String> grantedAuthority = baseUser.getGrantedAuthority();
+        Set<String> grantedAuthority = principal.getPermissions();
 
         if (mode == CheckPerms.Mode.AND) {
             if (!permissionService.hasPerms(grantedAuthority, perms)) {
-                throw new AccessDeniedException("AuthUser: '" + baseUser.getName() + "' missing permission : " + Arrays.toString(perms) + " one of them");
+                throw new AccessDeniedException("AuthUser: '" + principal.getName() + "' missing permission : "
+                        + Arrays.toString(perms) + " one of them");
             }
         }
 
         if (mode == CheckPerms.Mode.OR) {
             if (!permissionService.hasPermsOr(grantedAuthority, perms)) {
-                throw new AccessDeniedException("AuthUser: '" + baseUser.getName() + "' missing all permission: " + Arrays.toString(perms));
+                throw new AccessDeniedException(
+                        "AuthUser: '" + principal.getName() + "' missing all permission: " + Arrays.toString(perms));
             }
         }
-
     }
+
 }

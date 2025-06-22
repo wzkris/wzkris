@@ -2,6 +2,7 @@ package com.wzkris.common.web.handler;
 
 import com.wzkris.common.core.domain.Result;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
@@ -10,8 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Map;
 
 /**
  * @author : wzkris
@@ -53,5 +52,4 @@ public class ErrorController extends BasicErrorController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
 }

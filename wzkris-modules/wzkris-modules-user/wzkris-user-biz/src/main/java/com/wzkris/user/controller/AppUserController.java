@@ -55,8 +55,12 @@ public class AppUserController extends BaseController {
                 .eq(StringUtil.isNotBlank(req.getStatus()), AppUser::getStatus, req.getStatus())
                 .like(StringUtil.isNotBlank(req.getNickname()), AppUser::getNickname, req.getNickname())
                 .like(StringUtil.isNotBlank(req.getPhoneNumber()), AppUser::getPhoneNumber, req.getPhoneNumber())
-                .between(req.getParams().get("beginTime") != null && req.getParams().get("endTime") != null,
-                        AppUser::getCreateAt, req.getParams().get("beginTime"), req.getParams().get("endTime"))
+                .between(
+                        req.getParams().get("beginTime") != null
+                                && req.getParams().get("endTime") != null,
+                        AppUser::getCreateAt,
+                        req.getParams().get("beginTime"),
+                        req.getParams().get("endTime"))
                 .orderByDesc(AppUser::getUserId);
     }
 
@@ -87,4 +91,5 @@ public class AppUserController extends BaseController {
         List<AppUserExport> convert = BeanUtil.convert(list, AppUserExport.class);
         ExcelUtil.exportExcel(convert, "用户数据", AppUserExport.class, response);
     }
+
 }

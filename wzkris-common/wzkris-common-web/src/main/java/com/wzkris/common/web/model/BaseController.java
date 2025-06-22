@@ -6,16 +6,15 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import java.beans.PropertyEditorSupport;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.beans.PropertyEditorSupport;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * web层通用数据处理
@@ -69,7 +68,6 @@ public class BaseController {
                 setValue(DateUtil.parse(text).toLocalDateTime().toLocalDate());
             }
         });
-
     }
 
     /**
@@ -128,5 +126,4 @@ public class BaseController {
     protected <T> Result<T> toRes(boolean result) {
         return result ? ok() : Result.err1000();
     }
-
 }

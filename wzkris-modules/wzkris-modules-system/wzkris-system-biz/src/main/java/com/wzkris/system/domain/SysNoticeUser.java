@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysNoticeUser {
 
     @Schema(description = "通知ID")
@@ -30,4 +30,5 @@ public class SysNoticeUser {
         this.userId = userId;
         this.readState = MessageConstants.NOTICE_UNREAD;
     }
+
 }

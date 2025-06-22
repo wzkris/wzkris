@@ -21,6 +21,11 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-core</artifactId>
+        </dependency>
+
         <!-- SpringBoot admin -->
         <dependency>
             <groupId>de.codecentric</groupId>
@@ -40,7 +45,7 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!--使用web-->
+        <!--使用web模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

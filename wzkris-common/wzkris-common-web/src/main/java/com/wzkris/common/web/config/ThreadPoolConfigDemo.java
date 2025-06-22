@@ -1,13 +1,12 @@
 package com.wzkris.common.web.config;
 
 import cn.hutool.core.thread.ThreadFactoryBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * 线程池配置模板
@@ -39,13 +38,17 @@ public class ThreadPoolConfigDemo {
      */
     @Bean(name = "scheduledExecutor")
     protected ScheduledExecutorService scheduledExecutorService() {
-        return new ScheduledThreadPoolExecutor(corePoolSize,
-                ThreadFactoryBuilder.create().setNamePrefix("schedule-pool-%d").setDaemon(true).build(),
+        return new ScheduledThreadPoolExecutor(
+                corePoolSize,
+                ThreadFactoryBuilder.create()
+                        .setNamePrefix("schedule-pool-%d")
+                        .setDaemon(true)
+                        .build(),
                 new ThreadPoolExecutor.CallerRunsPolicy()) {
             @Override
             protected void afterExecute(Runnable r, Throwable t) {
                 super.afterExecute(r, t);
-//                log.error("定时线程池发生异常，errmsg：{}", t.getMessage(), t);
+                //                log.error("定时线程池发生异常，errmsg：{}", t.getMessage(), t);
             }
         };
     }

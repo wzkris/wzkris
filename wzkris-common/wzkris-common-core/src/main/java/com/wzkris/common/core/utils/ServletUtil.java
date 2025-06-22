@@ -24,13 +24,12 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 客户端工具类
@@ -128,32 +127,36 @@ public class ServletUtil {
      */
     public static <T> T fillBean(final ServletRequest request, T bean, CopyOptions copyOptions) {
         final String beanName = StrUtil.lowerFirst(bean.getClass().getSimpleName());
-        return BeanUtil.fillBean(bean, new ValueProvider<String>() {
-            @Override
-            public Object value(String key, Type valueType) {
-                String[] values = request.getParameterValues(key);
-                if (ArrayUtil.isEmpty(values)) {
-                    values = request.getParameterValues(beanName + StrUtil.DOT + key);
-                    if (ArrayUtil.isEmpty(values)) {
-                        return null;
+        return BeanUtil.fillBean(
+                bean,
+                new ValueProvider<String>() {
+                    @Override
+                    public Object value(String key, Type valueType) {
+                        String[] values = request.getParameterValues(key);
+                        if (ArrayUtil.isEmpty(values)) {
+                            values = request.getParameterValues(beanName + StrUtil.DOT + key);
+                            if (ArrayUtil.isEmpty(values)) {
+                                return null;
+                            }
+                        }
+
+                        if (1 == values.length) {
+                            // 单值表单直接返回这个值
+                            return values[0];
+                        } else {
+                            // 多值表单返回数组
+                            return values;
+                        }
                     }
-                }
 
-                if (1 == values.length) {
-                    // 单值表单直接返回这个值
-                    return values[0];
-                } else {
-                    // 多值表单返回数组
-                    return values;
-                }
-            }
-
-            @Override
-            public boolean containsKey(String key) {
-                // 对于Servlet来说，返回值null意味着无此参数
-                return (null != request.getParameter(key)) || (null != request.getParameter(beanName + StrUtil.DOT + key));
-            }
-        }, copyOptions);
+                    @Override
+                    public boolean containsKey(String key) {
+                        // 对于Servlet来说，返回值null意味着无此参数
+                        return (null != request.getParameter(key))
+                                || (null != request.getParameter(beanName + StrUtil.DOT + key));
+                    }
+                },
+                copyOptions);
     }
 
     /**
@@ -206,7 +209,14 @@ public class ServletUtil {
      * @return IP地址
      */
     public static String getClientIP(HttpServletRequest request, String... otherHeaderNames) {
-        String[] headers = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
+        String[] headers = {
+            "X-Forwarded-For",
+            "X-Real-IP",
+            "Proxy-Client-IP",
+            "WL-Proxy-Client-IP",
+            "HTTP_CLIENT_IP",
+            "HTTP_X_FORWARDED_FOR"
+        };
         if (ArrayUtil.isNotEmpty(otherHeaderNames)) {
             headers = ArrayUtil.addAll(headers, otherHeaderNames);
         }
@@ -263,7 +273,8 @@ public class ServletUtil {
      * @throws IORuntimeException IO异常
      * @since 4.0.2
      */
-    public static MultipartFormData getMultipart(ServletRequest request, UploadSetting uploadSetting) throws IORuntimeException {
+    public static MultipartFormData getMultipart(ServletRequest request, UploadSetting uploadSetting)
+            throws IORuntimeException {
         final MultipartFormData formData = new MultipartFormData(uploadSetting);
         try {
             formData.parseRequestStream(request.getInputStream(), CharsetUtil.charset(request.getCharacterEncoding()));
@@ -476,9 +487,7 @@ public class ServletUtil {
         }
 
         return IterUtil.toMap(
-                new ArrayIter<>(httpServletRequest.getCookies()),
-                new CaseInsensitiveMap<>(),
-                Cookie::getName);
+                new ArrayIter<>(httpServletRequest.getCookies()), new CaseInsensitiveMap<>(), Cookie::getName);
     }
 
     /**
@@ -512,7 +521,8 @@ public class ServletUtil {
      * @param path            Cookie的有效路径
      * @param domain          the domain name within which this cookie is visible; form is according to RFC 2109
      */
-    public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeInSeconds, String path, String domain) {
+    public static void addCookie(
+            HttpServletResponse response, String name, String value, int maxAgeInSeconds, String path, String domain) {
         Cookie cookie = new Cookie(name, value);
         if (domain != null) {
             cookie.setDomain(domain);
@@ -584,7 +594,8 @@ public class ServletUtil {
      */
     public static void write(HttpServletResponse response, File file) {
         final String fileName = file.getName();
-        final String contentType = StringUtil.blankToDefault(FileUtil.getMimeType(fileName), "application/octet-stream");
+        final String contentType =
+                StringUtil.blankToDefault(FileUtil.getMimeType(fileName), "application/octet-stream");
         BufferedInputStream in = null;
         try {
             in = FileUtil.getInputStream(file);
@@ -620,7 +631,8 @@ public class ServletUtil {
     public static void write(HttpServletResponse response, InputStream in, String contentType, String fileName) {
         final String charset = StringUtil.blankToDefault(response.getCharacterEncoding(), CharsetUtil.UTF_8);
         final String encodeText = URLUtil.encodeAll(fileName, CharsetUtil.charset(charset));
-        response.setHeader("Content-Disposition",
+        response.setHeader(
+                "Content-Disposition",
                 StrUtil.format("attachment;filename=\"{}\";filename*={}''{}", encodeText, charset, encodeText));
         response.setContentType(contentType);
         write(response, in);
@@ -680,7 +692,8 @@ public class ServletUtil {
             response.setHeader(name, (String) value);
         } else if (Date.class.isAssignableFrom(value.getClass())) {
             response.setDateHeader(name, ((Date) value).getTime());
-        } else if (value instanceof Integer || "int".equalsIgnoreCase(value.getClass().getSimpleName())) {
+        } else if (value instanceof Integer
+                || "int".equalsIgnoreCase(value.getClass().getSimpleName())) {
             response.setIntHeader(name, (int) value);
         } else {
             response.setHeader(name, value.toString());

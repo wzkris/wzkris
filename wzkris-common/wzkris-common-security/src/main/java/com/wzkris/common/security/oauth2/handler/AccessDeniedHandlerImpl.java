@@ -21,9 +21,12 @@ import java.nio.charset.StandardCharsets;
 public final class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+    public void handle(
+            HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
+            throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.FORBID, I18nUtil.message("request.forbid")));
     }
+
 }

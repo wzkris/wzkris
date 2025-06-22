@@ -6,13 +6,12 @@ import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.binarywang.wx.miniapp.config.impl.WxMaRedissonConfigImpl;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.weixin.properties.WxMaProperties;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxRuntimeException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -34,23 +33,23 @@ public class WxMaConfiguration {
             throw new WxRuntimeException("大哥，拜托先看下项目首页的说明（readme文件），添加下相关配置，注意别配错了！");
         }
         WxMaService maService = new WxMaServiceImpl();
-        maService.setMultiConfigs(
-                configs.stream()
-                        .map(a -> {
-                            WxMaDefaultConfigImpl config;
-                            if (this.properties.isUseRedis()) {
-                                config = new WxMaRedissonConfigImpl(RedisUtil.getClient(), a.getAppid());
-                            } else {
-                                config = new WxMaDefaultConfigImpl();
-                            }
+        maService.setMultiConfigs(configs.stream()
+                .map(a -> {
+                    WxMaDefaultConfigImpl config;
+                    if (this.properties.isUseRedis()) {
+                        config = new WxMaRedissonConfigImpl(RedisUtil.getClient(), a.getAppid());
+                    } else {
+                        config = new WxMaDefaultConfigImpl();
+                    }
 
-                            config.setAppid(a.getAppid());
-                            config.setSecret(a.getSecret());
-                            config.setToken(a.getToken());
-                            config.setAesKey(a.getAesKey());
-                            config.setMsgDataFormat(a.getMsgDataFormat());
-                            return config;
-                        }).collect(Collectors.toMap(WxMaDefaultConfigImpl::getAppid, a -> a, (o, n) -> o)));
+                    config.setAppid(a.getAppid());
+                    config.setSecret(a.getSecret());
+                    config.setToken(a.getToken());
+                    config.setAesKey(a.getAesKey());
+                    config.setMsgDataFormat(a.getMsgDataFormat());
+                    return config;
+                })
+                .collect(Collectors.toMap(WxMaDefaultConfigImpl::getAppid, a -> a, (o, n) -> o)));
         return maService;
     }
 
@@ -123,5 +122,4 @@ public class WxMaConfiguration {
      *         return router;
      *     }
      */
-
 }

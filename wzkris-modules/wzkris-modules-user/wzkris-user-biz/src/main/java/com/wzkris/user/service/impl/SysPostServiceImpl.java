@@ -6,19 +6,18 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.service.SysPostService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 岗位信息 服务层处理
@@ -35,12 +34,15 @@ public class SysPostServiceImpl implements SysPostService {
 
     @Override
     public List<SelectVO> listSelect(String postName) {
-        return postMapper.selectList(Wrappers.lambdaQuery(SysPost.class)
-                .select(SysPost::getPostId, SysPost::getPostName)
-                .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE)
-                .like(StringUtil.isNotBlank(postName), SysPost::getPostName, postName)
-                .orderByAsc(SysPost::getPostId)
-        ).stream().map(SelectVO::new).collect(Collectors.toList());
+        return postMapper
+                .selectList(Wrappers.lambdaQuery(SysPost.class)
+                        .select(SysPost::getPostId, SysPost::getPostName)
+                        .eq(SysPost::getStatus, CommonConstants.STATUS_ENABLE)
+                        .like(StringUtil.isNotBlank(postName), SysPost::getPostName, postName)
+                        .orderByAsc(SysPost::getPostId))
+                .stream()
+                .map(SelectVO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -70,10 +72,10 @@ public class SysPostServiceImpl implements SysPostService {
 
     @Override
     public String getPostGroup() {
-        if (LoginUtil.isAdmin()) {
+        if (SystemUserUtil.isAdmin()) {
             return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<SysPost> sysPosts = this.listByUserId(LoginUtil.getUserId());
+        List<SysPost> sysPosts = this.listByUserId(SystemUserUtil.getUserId());
         return sysPosts.stream().map(SysPost::getPostName).collect(Collectors.joining(","));
     }
 
@@ -92,5 +94,4 @@ public class SysPostServiceImpl implements SysPostService {
             throw new BusinessException("business.allocated");
         }
     }
-
 }

@@ -46,4 +46,5 @@ public class MybatisExceptionHandler {
         log.error("请求地址'{} {}',捕获到sql异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
         return err500("sql异常，请联系管理员");
     }
+
 }

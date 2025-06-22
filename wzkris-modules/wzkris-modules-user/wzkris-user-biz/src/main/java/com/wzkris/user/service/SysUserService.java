@@ -4,7 +4,6 @@ import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.req.SysUserQueryReq;
 import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -107,5 +106,4 @@ public interface SysUserService {
             this.checkDataScopes(Collections.singleton(userId));
         }
     }
-
 }

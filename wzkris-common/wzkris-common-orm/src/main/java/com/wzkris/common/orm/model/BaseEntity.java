@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.experimental.FieldNameConstants;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 
 /**
  * Entity基类 审计字段

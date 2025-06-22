@@ -2,14 +2,15 @@ package com.wzkris.common.orm.utils;
 
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import com.wzkris.common.security.utils.SystemUserUtil;
+import jakarta.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 动态租户工具类
@@ -28,11 +29,16 @@ public final class DynamicTenantUtil {
     private static final ThreadLocal<AtomicInteger> LOCAL_IGNORE = new ThreadLocal<>();
 
     /**
-     * 获取动态租户
+     * 获取动态租户, 不存在则返回自身租户ID, 未登录返回空
      */
+    @Nullable
     public static Long get() {
-        Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
-        return stack == null || stack.isEmpty() ? null : stack.peek();
+        try {
+            Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
+            return stack == null ? SystemUserUtil.getTenantId() : stack.peek();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -72,7 +78,8 @@ public final class DynamicTenantUtil {
             LOCAL_IGNORE.set(counter);
         }
         if (counter.getAndIncrement() == 0) {
-            InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
+            InterceptorIgnoreHelper.handle(
+                    IgnoreStrategy.builder().tenantLine(true).build());
         }
     }
 
@@ -146,7 +153,8 @@ public final class DynamicTenantUtil {
     /**
      * 条件忽略租户执行(可抛异常)
      */
-    public static <T> T ignoreIfWithThrowable(boolean ignore, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+    public static <T> T ignoreIfWithThrowable(boolean ignore, ThrowingSupplier<T, Throwable> supplier)
+            throws Throwable {
         if (supplier == null) return null;
 
         if (ignore) {
@@ -219,7 +227,8 @@ public final class DynamicTenantUtil {
     /**
      * 条件切换租户执行(可抛异常)
      */
-    public static <T> T switchtIfWithThrowable(boolean swch, Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+    public static <T> T switchtIfWithThrowable(boolean swch, Long tenantId, ThrowingSupplier<T, Throwable> supplier)
+            throws Throwable {
         if (supplier == null) return null;
 
         if (swch && tenantId != null) {

@@ -14,7 +14,7 @@
     <description>用户服务</description>
 
     <modules>
-        <module>wzkris-user-api</module>
+        <module>wzkris-user-rmi</module>
         <module>wzkris-user-biz</module>
     </modules>
 

@@ -5,6 +5,4 @@ package com.wzkris.system.service;
  *
  * @author wzkris
  */
-public interface SysMessageService {
-
-}
+public interface SysMessageService {}

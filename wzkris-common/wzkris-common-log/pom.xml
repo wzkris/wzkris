@@ -32,7 +32,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-system-api</artifactId>
+            <artifactId>wzkris-system-rmi</artifactId>
         </dependency>
 
     </dependencies>

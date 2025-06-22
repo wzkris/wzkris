@@ -6,7 +6,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.req.EditPwdReq;
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CheckSystemPerms("tenant:info")
 @RequestMapping("/tenant_profile")
-@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")// 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@su.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysTenantProfileController extends BaseController {
 
@@ -51,14 +51,14 @@ public class SysTenantProfileController extends BaseController {
     @Operation(summary = "获取信息")
     @GetMapping
     public Result<SysTenantProfileVO> tenantInfo() {
-        return ok(tenantMapper.selectVOById(LoginUtil.getTenantId()));
+        return ok(tenantMapper.selectVOById(SystemUserUtil.getTenantId()));
     }
 
     @Operation(summary = "修改信息")
     @PostMapping
     @CheckSystemPerms("tenant:edit_info")
     public Result<SysTenantProfileVO> tenantInfo(@RequestBody SysTenantProfileReq req) {
-        SysTenant sysTenant = BeanUtil.convert(req, new SysTenant(LoginUtil.getTenantId()));
+        SysTenant sysTenant = BeanUtil.convert(req, new SysTenant(SystemUserUtil.getTenantId()));
         return toRes(tenantMapper.updateById(sysTenant));
     }
 
@@ -76,9 +76,9 @@ public class SysTenantProfileController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_operpwd")
-    @PreAuthorize("@lg.isAdmin()")// 只允许租户的超级管理员修改
+    @PreAuthorize("@su.isAdmin()") // 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
-        Long tenantId = LoginUtil.getTenantId();
+        Long tenantId = SystemUserUtil.getTenantId();
 
         String operPwd = tenantMapper.selectOperPwdById(tenantId);
 
@@ -94,5 +94,4 @@ public class SysTenantProfileController extends BaseController {
         update.setOperPwd(passwordEncoder.encode(req.getNewPassword()));
         return toRes(tenantMapper.updateById(update));
     }
-
 }

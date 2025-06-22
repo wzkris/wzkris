@@ -7,12 +7,11 @@ import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleChecker;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
-
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author : wzkris
@@ -35,8 +34,14 @@ public class FlowWarningProcessorSlot extends AbstractLinkedProcessorSlot<Defaul
     }
 
     @Override
-    public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node,
-                      int count, boolean prioritized, Object... args) throws Throwable {
+    public void entry(
+            Context context,
+            ResourceWrapper resourceWrapper,
+            DefaultNode node,
+            int count,
+            boolean prioritized,
+            Object... args)
+            throws Throwable {
         String resourceName = resourceWrapper.getName();
         List<FlowRule> rules = FlowRuleManager.getRules();
 
@@ -47,11 +52,16 @@ public class FlowWarningProcessorSlot extends AbstractLinkedProcessorSlot<Defaul
         fireEntry(context, resourceWrapper, node, count, prioritized, args);
     }
 
-    private void checkFlowRules(String resourceName, Context context, DefaultNode node,
-                                int count, boolean prioritized, List<FlowRule> rules) {
+    private void checkFlowRules(
+            String resourceName,
+            Context context,
+            DefaultNode node,
+            int count,
+            boolean prioritized,
+            List<FlowRule> rules) {
         for (FlowRule rule : rules) {
-            if (resourceName.equals(rule.getResource()) &&
-                    !checker.canPassCheck(rule, context, node, count, prioritized)) {
+            if (resourceName.equals(rule.getResource())
+                    && !checker.canPassCheck(rule, context, node, count, prioritized)) {
 
                 handleFlowLimit(resourceName, rule);
                 break;
@@ -61,14 +71,12 @@ public class FlowWarningProcessorSlot extends AbstractLinkedProcessorSlot<Defaul
 
     private void handleFlowLimit(String resourceName, FlowRule rule) {
         long currentTime = System.currentTimeMillis();
-        AtomicLong lastWarningTime = lastWarningTimeMap.computeIfAbsent(
-                resourceName, k -> new AtomicLong(currentTime));
+        AtomicLong lastWarningTime = lastWarningTimeMap.computeIfAbsent(resourceName, k -> new AtomicLong(currentTime));
 
         long lastTime = lastWarningTime.get();
 
         // 首次触发（lastTime == currentTime）或超过3分钟间隔
-        if (lastTime == currentTime ||
-                (currentTime - lastTime) > WARNING_INTERVAL_MS) {
+        if (lastTime == currentTime || (currentTime - lastTime) > WARNING_INTERVAL_MS) {
 
             // CAS更新成功才执行告警（防止并发重复告警）
             if (lastWarningTime.compareAndSet(lastTime, currentTime)) {
@@ -79,8 +87,9 @@ public class FlowWarningProcessorSlot extends AbstractLinkedProcessorSlot<Defaul
     }
 
     private void logFlowLimitWarning(String resourceName, FlowRule rule) {
-        log.warn("[Sentinel Flow Limit] Resource '{}' triggered flow control. " +
-                        "Threshold: {}, Strategy: {}, ControlBehavior: {}",
+        log.warn(
+                "[Sentinel Flow Limit] Resource '{}' triggered flow control. "
+                        + "Threshold: {}, Strategy: {}, ControlBehavior: {}",
                 resourceName,
                 rule.getCount(),
                 rule.getStrategy(),

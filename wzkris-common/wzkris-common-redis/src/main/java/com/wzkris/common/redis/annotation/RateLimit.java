@@ -1,8 +1,7 @@
 package com.wzkris.common.redis.annotation;
 
-import org.redisson.api.RateType;
-
 import java.lang.annotation.*;
+import org.redisson.api.RateType;
 
 /**
  * 限流注解

@@ -12,7 +12,10 @@ public class PasswordEncoderDelegate implements PasswordEncoder {
     }
 
     public boolean isEncode(CharSequence str) {
-        return str != null && !str.isEmpty() && str.toString().startsWith("{") && str.toString().contains("}");
+        return str != null
+                && !str.isEmpty()
+                && str.toString().startsWith("{")
+                && str.toString().contains("}");
     }
 
     @Override
@@ -29,4 +32,5 @@ public class PasswordEncoderDelegate implements PasswordEncoder {
     public boolean upgradeEncoding(String encodedPassword) {
         return passwordEncoder.upgradeEncoding(encodedPassword);
     }
+
 }

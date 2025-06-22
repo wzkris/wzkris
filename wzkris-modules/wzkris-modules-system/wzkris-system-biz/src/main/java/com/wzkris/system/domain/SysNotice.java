@@ -9,12 +9,12 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 系统消息发送表
+ * 系统通知
  *
  * @author wzkris
  */
 @Data
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysNotice {
 
     @TableId
@@ -38,4 +38,5 @@ public class SysNotice {
     public SysNotice() {
         this.createAt = DateUtil.date();
     }
+
 }

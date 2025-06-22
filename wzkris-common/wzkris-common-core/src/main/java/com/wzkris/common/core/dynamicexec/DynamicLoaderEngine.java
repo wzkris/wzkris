@@ -1,7 +1,6 @@
 package com.wzkris.common.core.dynamicexec;
 
 import com.wzkris.common.core.dynamicexec.compiler.ClassCompiler;
-
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -52,7 +51,8 @@ public class DynamicLoaderEngine {
      * @param options     编译过程中的参数
      * @return
      */
-    public static Class<?> loadClass(DynamicClassLoader classLoader, String javaCode, PrintWriter out, List<String> options) {
+    public static Class<?> loadClass(
+            DynamicClassLoader classLoader, String javaCode, PrintWriter out, List<String> options) {
         try {
             byte[] classBytes = compile(javaCode, out, options);
 
@@ -71,7 +71,8 @@ public class DynamicLoaderEngine {
     /**
      * 执行主类
      */
-    public static boolean executeMain(DynamicClassLoader classLoader, String javaCode, PrintWriter out, List<String> options) {
+    public static boolean executeMain(
+            DynamicClassLoader classLoader, String javaCode, PrintWriter out, List<String> options) {
         Class<?> loadedClass = loadClass(classLoader, javaCode, out, options);
         if (null == loadedClass) {
             return false;
@@ -80,7 +81,8 @@ public class DynamicLoaderEngine {
         return executeMain(loadedClass, out, null);
     }
 
-    public static boolean executeMain(DynamicClassLoader classLoader, byte[] classBytes, PrintWriter out, String inparam) {
+    public static boolean executeMain(
+            DynamicClassLoader classLoader, byte[] classBytes, PrintWriter out, String inparam) {
         Class<?> loadClass = loadClass(classLoader, classBytes, out);
         if (loadClass == null) {
             return false;

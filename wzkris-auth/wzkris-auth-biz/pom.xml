@@ -24,9 +24,20 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
+        <!-- Spring OAuth2授权服务器-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-security</artifactId>
         </dependency>
 
         <!--模板引擎-->
@@ -53,12 +64,6 @@
             <artifactId>wzkris-common-captcha</artifactId>
         </dependency>
 
-        <!-- 日志追踪-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-log</artifactId>
-        </dependency>
-
         <!-- Sentinel -->
         <dependency>
             <groupId>com.wzkris</groupId>
@@ -74,25 +79,19 @@
         <!--本地rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-api</artifactId>
+            <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
         <!--用户rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-user-api</artifactId>
+            <artifactId>wzkris-user-rmi</artifactId>
         </dependency>
 
         <!--系统rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-system-api</artifactId>
-        </dependency>
-
-        <!-- wzkris Common Security-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-security</artifactId>
+            <artifactId>wzkris-system-rmi</artifactId>
         </dependency>
 
         <!-- 接口文档 -->

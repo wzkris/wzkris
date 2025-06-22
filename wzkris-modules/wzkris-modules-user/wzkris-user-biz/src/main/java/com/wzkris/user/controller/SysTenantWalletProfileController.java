@@ -8,7 +8,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
@@ -21,12 +21,11 @@ import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 租户钱包信息
@@ -38,7 +37,7 @@ import java.util.List;
 @RestController
 @CheckSystemPerms("tenant:wallet_info")
 @RequestMapping("/tenant_wallet")
-@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()")// 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@su.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysTenantWalletProfileController extends BaseController {
 
@@ -53,22 +52,29 @@ public class SysTenantWalletProfileController extends BaseController {
     @Operation(summary = "余额信息")
     @GetMapping
     public Result<SysTenantWalletVO> walletInfo() {
-        return ok(tenantWalletMapper.selectById2VO(LoginUtil.getTenantId(), SysTenantWalletVO.class));
+        return ok(tenantWalletMapper.selectById2VO(SystemUserUtil.getTenantId(), SysTenantWalletVO.class));
     }
 
     @Operation(summary = "钱包记录")
     @GetMapping("/record")
     public Result<Page<SysTenantWalletRecord>> listWalletPage(SysTenantWalletRecordQueryReq queryReq) {
         startPage();
-        List<SysTenantWalletRecord> recordList = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
+        List<SysTenantWalletRecord> recordList =
+                tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
         return getDataTable(recordList);
     }
 
     private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantWalletRecord>()
-                .like(StringUtil.isNotBlank(queryReq.getRecordType()), SysTenantWalletRecord::getRecordType, queryReq.getRecordType())
-                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        SysTenantWalletRecord::getCreateAt, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
+                .like(
+                        StringUtil.isNotBlank(queryReq.getRecordType()),
+                        SysTenantWalletRecord::getRecordType,
+                        queryReq.getRecordType())
+                .between(
+                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysTenantWalletRecord::getCreateAt,
+                        queryReq.getParam("beginTime"),
+                        queryReq.getParam("endTime"))
                 .orderByDesc(SysTenantWalletRecord::getRecordId);
     }
 
@@ -77,7 +83,7 @@ public class SysTenantWalletProfileController extends BaseController {
     @PostMapping("/withdrawal")
     @CheckSystemPerms("tenant:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WithdrawalReq req) {
-        SysTenant sysTenant = tenantMapper.selectById(LoginUtil.getTenantId());
+        SysTenant sysTenant = tenantMapper.selectById(SystemUserUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
             return err412("密码错误");
         }

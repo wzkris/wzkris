@@ -3,13 +3,12 @@ package com.wzkris.user.controller.test;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import java.util.Properties;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Properties;
 
 /**
  * @author : wzkris
@@ -17,7 +16,6 @@ import java.util.Properties;
  * @description :
  * @date : 2023/12/13 10:47
  */
-
 @Configuration
 @Data
 @Slf4j
@@ -44,5 +42,4 @@ public class NacosNamingConfig {
         namingService = NamingFactory.createNamingService(properties);
         return namingService;
     }
-
 }

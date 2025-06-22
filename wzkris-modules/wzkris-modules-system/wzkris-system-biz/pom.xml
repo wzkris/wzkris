@@ -42,17 +42,17 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-system-api</artifactId>
+            <artifactId>wzkris-system-rmi</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-api</artifactId>
+            <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-file-api</artifactId>
+            <artifactId>wzkris-file-rmi</artifactId>
         </dependency>
 
         <!-- wzkris Common DataSource -->

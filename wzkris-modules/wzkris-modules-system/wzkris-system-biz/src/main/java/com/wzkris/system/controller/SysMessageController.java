@@ -20,12 +20,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 系统消息 操作处理
@@ -81,7 +80,7 @@ public class SysMessageController extends BaseController {
     @PostMapping("/edit")
     @CheckSystemPerms("sys_message:edit")
     public Result<Void> edit(@RequestBody SysMessageReq req) {
-        noticeService.sendUsers(Collections.singletonList(1L), new SimpleMessageDTO("123", "1", "222"));
+        noticeService.saveBatch2Users(Collections.singletonList(1L), new SimpleMessageDTO("123", "1", "222"));
         return toRes(messageMapper.updateById(BeanUtil.convert(req, SysMessage.class)));
     }
 
@@ -89,7 +88,8 @@ public class SysMessageController extends BaseController {
     @OperateLog(title = "系统消息", subTitle = "删除草稿", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckSystemPerms("sys_message:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "{desc.message}{desc.id}{validate.notnull}") List<Long> msgIds) {
+    public Result<Void> remove(
+            @RequestBody @NotEmpty(message = "{desc.message}{desc.id}{validate.notnull}") List<Long> msgIds) {
         return toRes(messageMapper.deleteByIds(msgIds));
     }
 }

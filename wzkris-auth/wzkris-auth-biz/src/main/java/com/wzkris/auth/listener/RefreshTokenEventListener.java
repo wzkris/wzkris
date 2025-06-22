@@ -1,24 +1,15 @@
 package com.wzkris.auth.listener;
 
-import com.wzkris.auth.config.TokenProperties;
-import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
-import com.wzkris.auth.utils.OnlineUserUtil;
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
-import com.wzkris.common.security.oauth2.domain.model.LoginUser;
+import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RMapCache;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
-
-import java.security.Principal;
-import java.time.Duration;
 
 /**
  * @author : wzkris
@@ -31,26 +22,20 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RefreshTokenEventListener {
 
-    private final TokenProperties tokenProperties;
-
-    private final OAuth2AuthorizationService oAuth2AuthorizationService;
+    private final TokenService tokenService;
 
     @Async
     @EventListener
     public void refreshTokenEvent(RefreshTokenEvent event) {
-        OAuth2Authorization authorization = oAuth2AuthorizationService.findByToken(event.getRefreshToken(), OAuth2TokenType.REFRESH_TOKEN);
+        CorePrincipal principal = event.getPrincipal();
 
-        final AuthBaseUser baseUser = (AuthBaseUser) ((UsernamePasswordAuthenticationToken) authorization.getAttribute(Principal.class.getName())).getPrincipal();
-
-        switch (baseUser.getLoginType()) {
-            case SYSTEM_USER -> {
-                LoginUser loginUser = (LoginUser) baseUser;
-                RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(loginUser.getUserId());
-                onlineCache.expireEntry(authorization.getId(), Duration.ofSeconds(tokenProperties.getRefreshTokenTimeOut()), Duration.ofSeconds(0));
-            }
-            case CLIENT_USER -> {
-            }
-            default -> log.warn("{} 发生刷新TOKEN事件, 忽略处理", baseUser);
+        if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
+            tokenService.expireOnlineSession(principal.getId(), event.getRefreshToken());
+        } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CLIENT_USER.getValue())) {
+            // empty
+        } else {
+            log.warn("{} 发生刷新TOKEN事件, 忽略处理", principal);
         }
     }
+
 }

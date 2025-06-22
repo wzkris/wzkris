@@ -9,7 +9,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
@@ -19,11 +19,10 @@ import com.wzkris.user.service.SysDeptService;
 import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 部门信息
@@ -66,7 +65,7 @@ public class SysDeptController extends BaseController {
     public Result<?> add(@Validated @RequestBody SysDeptReq req) {
         // 校验权限
         deptService.checkDataScopes(req.getParentId());
-        if (!tenantService.checkDeptLimit(LoginUtil.getTenantId())) {
+        if (!tenantService.checkDeptLimit(SystemUserUtil.getTenantId())) {
             return err412("部门数量已达上限，请联系管理员");
         }
         if (StringUtil.isNotNull(req.getParentId()) && req.getParentId() != 0) {
@@ -109,5 +108,4 @@ public class SysDeptController extends BaseController {
         }
         return toRes(deptService.deleteById(deptId));
     }
-
 }

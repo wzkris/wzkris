@@ -50,13 +50,19 @@ public class SysMenuReq {
     private Boolean isVisible;
 
     @NotBlank(message = "{desc.type}" + "{validate.notnull}")
-    @EnumsCheck(values = {MenuConstants.TYPE_DIR, MenuConstants.TYPE_MENU, MenuConstants.TYPE_BUTTON,
-            MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK})
+    @EnumsCheck(
+            values = {
+                MenuConstants.TYPE_DIR,
+                MenuConstants.TYPE_MENU,
+                MenuConstants.TYPE_BUTTON,
+                MenuConstants.TYPE_INNERLINK,
+                MenuConstants.TYPE_OUTLINK
+            })
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
 
     @EnumsCheck(values = {CommonConstants.STATUS_ENABLE, CommonConstants.STATUS_DISABLE})
-    @Schema(description = "菜单状态（0正常 1停用）")// 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
+    @Schema(description = "菜单状态（0正常 1停用）") // 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
     private String status;
 
     @Schema(description = "权限字符串")

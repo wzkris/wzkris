@@ -13,7 +13,7 @@ import lombok.Getter;
  * @author wzkris
  */
 @Data
-@TableName(schema = "biz_app")
+@TableName(schema = "biz")
 public class AppUserThirdinfo {
 
     @TableId
@@ -27,7 +27,6 @@ public class AppUserThirdinfo {
     @Getter
     @AllArgsConstructor
     public enum IdentifierType {
-
         WX_XCX("wx_xcx"),
 
         WX_GZH("wx_gzh");

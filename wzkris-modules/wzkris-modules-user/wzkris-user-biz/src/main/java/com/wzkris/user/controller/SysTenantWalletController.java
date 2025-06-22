@@ -12,14 +12,13 @@ import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 租户钱包管理
@@ -30,8 +29,8 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@lg.isSuperTenant()")// 只允许超级租户访问
-@IgnoreTenant// 忽略租户隔离
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
+@IgnoreTenant // 忽略租户隔离
 @RequestMapping("/sys_tenant/wallet")
 public class SysTenantWalletController extends BaseController {
 
@@ -42,16 +41,26 @@ public class SysTenantWalletController extends BaseController {
     @CheckSystemPerms("sys_tenant:wallet_record")
     public Result<Page<SysTenantWalletRecord>> listWalletPage(SysTenantWalletRecordQueryReq queryReq) {
         startPage();
-        List<SysTenantWalletRecord> recordList = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
+        List<SysTenantWalletRecord> recordList =
+                tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
         return getDataTable(recordList);
     }
 
     private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantWalletRecord>()
-                .eq(StringUtil.isNotNull(queryReq.getTenantId()), SysTenantWalletRecord::getTenantId, queryReq.getTenantId())
-                .like(StringUtil.isNotBlank(queryReq.getRecordType()), SysTenantWalletRecord::getRecordType, queryReq.getRecordType())
-                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        SysTenantWalletRecord::getCreateAt, queryReq.getParam("beginTime"), queryReq.getParam("endTime"))
+                .eq(
+                        StringUtil.isNotNull(queryReq.getTenantId()),
+                        SysTenantWalletRecord::getTenantId,
+                        queryReq.getTenantId())
+                .like(
+                        StringUtil.isNotBlank(queryReq.getRecordType()),
+                        SysTenantWalletRecord::getRecordType,
+                        queryReq.getRecordType())
+                .between(
+                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        SysTenantWalletRecord::getCreateAt,
+                        queryReq.getParam("beginTime"),
+                        queryReq.getParam("endTime"))
                 .orderByDesc(SysTenantWalletRecord::getRecordId);
     }
 }

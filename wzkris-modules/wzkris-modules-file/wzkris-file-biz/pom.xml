@@ -12,10 +12,6 @@
 
     <artifactId>wzkris-file-biz</artifactId>
 
-    <properties>
-        <fastdfs.version>1.27.2</fastdfs.version>
-        <minio.version>8.5.17</minio.version>
-    </properties>
 
     <dependencies>
         <!-- SpringCloud Alibaba Nacos -->
@@ -38,26 +34,18 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-file-api</artifactId>
-        </dependency>
-
-        <!-- FastDFS 分布式文件系统 -->
-        <dependency>
-            <groupId>com.github.tobato</groupId>
-            <artifactId>fastdfs-client</artifactId>
-            <version>${fastdfs.version}</version>
-        </dependency>
-
-        <!-- Minio -->
-        <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-            <version>${minio.version}</version>
+            <artifactId>wzkris-file-rmi</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-security</artifactId>
+        </dependency>
+
+        <!--对象存储-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-oss</artifactId>
         </dependency>
 
         <!-- wzkris Common Swagger -->

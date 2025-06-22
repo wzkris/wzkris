@@ -18,5 +18,4 @@ public final class BusinessException extends BaseException {
     public BusinessException(int biz, String code, Object... args) {
         super("业务异常", biz, code, args, null);
     }
-
 }

@@ -1,7 +1,6 @@
 package com.wzkris.common.log.annotation;
 
 import com.wzkris.common.log.enums.OperateType;
-
 import java.lang.annotation.*;
 
 /**

@@ -16,4 +16,5 @@ public class AppUserinfo {
     @Sensitive(strategy = SensitiveStrategy.PHONE)
     @Schema(description = "手机号密文")
     private String phoneNumber;
+
 }

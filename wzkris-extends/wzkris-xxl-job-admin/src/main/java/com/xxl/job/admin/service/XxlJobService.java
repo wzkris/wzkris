@@ -3,7 +3,6 @@ package com.xxl.job.admin.service;
 import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.core.biz.model.ReturnT;
-
 import java.util.Date;
 import java.util.Map;
 
@@ -25,7 +24,14 @@ public interface XxlJobService {
      * @param author
      * @return
      */
-    public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author);
+    public Map<String, Object> pageList(
+            int start,
+            int length,
+            int jobGroup,
+            int triggerStatus,
+            String jobDesc,
+            String executorHandler,
+            String author);
 
     /**
      * add job
@@ -94,5 +100,4 @@ public interface XxlJobService {
      * @return
      */
     public ReturnT<Map<String, Object>> chartInfo(Date startDate, Date endDate);
-
 }

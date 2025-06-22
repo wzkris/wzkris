@@ -5,6 +5,4 @@ import com.wzkris.user.domain.SysWithdrawalRecord;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SysWithdrawalRecordMapper extends BaseMapperPlus<SysWithdrawalRecord> {
-
-}
+public interface SysWithdrawalRecordMapper extends BaseMapperPlus<SysWithdrawalRecord> {}

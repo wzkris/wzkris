@@ -47,7 +47,12 @@ public class ClassModifier {
         byte[] newBytes = new byte[originalBytes.length + (replaceBytes.length - len)];
         System.arraycopy(originalBytes, 0, newBytes, 0, offset);
         System.arraycopy(replaceBytes, 0, newBytes, offset, replaceBytes.length);
-        System.arraycopy(originalBytes, offset + len, newBytes, offset + replaceBytes.length, originalBytes.length - offset - len);
+        System.arraycopy(
+                originalBytes,
+                offset + len,
+                newBytes,
+                offset + replaceBytes.length,
+                originalBytes.length - offset - len);
         return newBytes;
     }
 
@@ -77,7 +82,7 @@ public class ClassModifier {
                     byte[] strBytes = newReference.getBytes();
                     byte[] strLen = int2Bytes(newReference.length(), u2);
                     classByte = bytesReplace(classByte, offset - u2, u2, strLen);
-                    //这里不只是替换，应该是填充，把新的字节数据插入到原来的位置，然后存在后面字节的向前或者先后移动
+                    // 这里不只是替换，应该是填充，把新的字节数据插入到原来的位置，然后存在后面字节的向前或者先后移动
                     classByte = bytesReplace(classByte, offset, len, strBytes);
                     return classByte;
                 } else {
@@ -88,7 +93,7 @@ public class ClassModifier {
             }
         }
 
-        //没有找到需要注入的引用字符串，直接返回原始数据
+        // 没有找到需要注入的引用字符串，直接返回原始数据
         return classByte;
     }
 

@@ -16,7 +16,16 @@ public class SelectByIdForUpdate extends AbstractMethod {
 
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
-        SqlSource sqlSource = super.createSqlSource(this.configuration, String.format(sql, this.sqlSelectColumns(tableInfo, false), tableInfo.getTableName(), tableInfo.getKeyColumn(), tableInfo.getKeyProperty(), tableInfo.getLogicDeleteSql(true, true)), Object.class);
+        SqlSource sqlSource = super.createSqlSource(
+                this.configuration,
+                String.format(
+                        sql,
+                        this.sqlSelectColumns(tableInfo, false),
+                        tableInfo.getTableName(),
+                        tableInfo.getKeyColumn(),
+                        tableInfo.getKeyProperty(),
+                        tableInfo.getLogicDeleteSql(true, true)),
+                Object.class);
         return this.addSelectMappedStatementForTable(mapperClass, this.methodName, sqlSource, tableInfo);
     }
 }

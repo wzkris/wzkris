@@ -1,11 +1,10 @@
 package com.wzkris.common.web.config;
 
+import java.sql.Connection;
+import javax.sql.DataSource;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
 
 /**
  * @author : wzkris
@@ -22,8 +21,7 @@ public class HikariInitPool {
     @ConditionalOnBean(DataSource.class)
     public ApplicationRunner validateDataSource(DataSource dataSource) {
         return args -> {
-            try (Connection connection = dataSource.getConnection()) {
-            }
+            try (Connection connection = dataSource.getConnection()) {}
         };
     }
 }

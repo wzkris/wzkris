@@ -19,4 +19,5 @@ import java.util.List;
 public class PermitAllProperties {
 
     private List<String> ignores = new ArrayList<>();
+
 }

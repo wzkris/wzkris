@@ -12,7 +12,7 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
-@TableName(schema = "biz_sys")
+@TableName(schema = "biz")
 public class SysConfig extends BaseEntity {
 
     @TableId

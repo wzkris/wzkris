@@ -11,9 +11,9 @@ public class XxlJobLogGlue {
 
     private int id;
 
-    private int jobId;                // 任务主键ID
+    private int jobId; // 任务主键ID
 
-    private String glueType;        // GLUE类型	#com.xxl.job.core.glue.GlueTypeEnum
+    private String glueType; // GLUE类型	#com.xxl.job.core.glue.GlueTypeEnum
 
     private String glueSource;
 
@@ -78,5 +78,4 @@ public class XxlJobLogGlue {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
-
 }

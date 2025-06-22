@@ -27,6 +27,11 @@ public class StringUtil extends StrUtil {
     private static final char SEPARATOR = '_';
 
     /**
+     * 井号
+     */
+    public static final String HASH = "#";
+
+    /**
      * * 判断一个Collection是否为空， 包含List，Set，Queue
      *
      * @param coll 要判断的Collection
@@ -294,4 +299,5 @@ public class StringUtil extends StrUtil {
     public static <T> T cast(Object obj) {
         return (T) obj;
     }
+
 }

@@ -1,9 +1,8 @@
 package com.wzkris.common.weixin.properties;
 
+import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.List;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -55,5 +54,4 @@ public class WxMaProperties {
          */
         private String msgDataFormat;
     }
-
 }

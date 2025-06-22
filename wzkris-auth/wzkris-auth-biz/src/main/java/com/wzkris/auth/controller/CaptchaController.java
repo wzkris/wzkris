@@ -4,7 +4,6 @@ import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.application.vo.CaptchaResponse;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
-import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
 import cn.hutool.core.util.RandomUtil;
 import com.wzkris.auth.domain.req.SmsCodeReq;
 import com.wzkris.common.captcha.model.CheckCaptchaReq;
@@ -67,4 +66,5 @@ public class CaptchaController extends BaseController {
         captchaService.setCaptcha(req.getPhone(), code);
         return ok();
     }
+
 }

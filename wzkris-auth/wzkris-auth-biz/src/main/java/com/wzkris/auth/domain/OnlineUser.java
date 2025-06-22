@@ -22,7 +22,7 @@ public class OnlineUser implements Serializable {
     /**
      * 会话编号
      */
-    private String tokenId;
+    private String refreshToken;
 
     /**
      * 设备类型

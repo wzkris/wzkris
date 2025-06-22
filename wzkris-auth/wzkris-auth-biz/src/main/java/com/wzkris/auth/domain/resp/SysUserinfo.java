@@ -24,4 +24,5 @@ public class SysUserinfo {
 
     @Schema(description = "权限")
     private Collection<String> authorities;
+
 }

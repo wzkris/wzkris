@@ -5,6 +5,4 @@ import com.wzkris.system.domain.SysDict;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SysDictMapper extends BaseMapperPlus<SysDict> {
-
-}
+public interface SysDictMapper extends BaseMapperPlus<SysDict> {}

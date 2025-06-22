@@ -21,7 +21,7 @@
     </resultMap>
 
     <select id="listChildren" resultMap="SysDeptMap">
-        SELECT * FROM biz_sys.sys_dept
+        SELECT * FROM biz.sys_dept
         <where>
             <if test="parentId != null and parentId != 0">
                 AND #{parentId} = ANY(ancestors)

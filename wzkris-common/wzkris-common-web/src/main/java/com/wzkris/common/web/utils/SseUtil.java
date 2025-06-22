@@ -1,15 +1,14 @@
 package com.wzkris.common.web.utils;
 
 import com.wzkris.common.core.utils.StringUtil;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,23 +27,21 @@ public class SseUtil {
 
         // 设置超时时间，0表示不过期。默认30秒，超过时间未完成会抛出异常：AsyncRequestTimeoutException
         sseEmitter = new SseEmitter(0L);
-        //完成后回调
+        // 完成后回调
         sseEmitter.onCompletion(() -> {
             log.info("SSE连接:'{}'结束...................", id);
             EMITTERS.remove(id);
         });
-        //超时回调
+        // 超时回调
         sseEmitter.onTimeout(() -> {
             log.info("SSE连接:'{}'超时...................", id);
             EMITTERS.remove(id);
         });
-        //异常回调
-        sseEmitter.onError(
-                throwable -> {
-                    log.info("SSE连接:'{}'异常, 异常信息：{}", id, throwable.toString());
-                    EMITTERS.remove(id);
-                }
-        );
+        // 异常回调
+        sseEmitter.onError(throwable -> {
+            log.info("SSE连接:'{}'异常, 异常信息：{}", id, throwable.toString());
+            EMITTERS.remove(id);
+        });
         EMITTERS.put(id, sseEmitter);
         log.info("SSE连接:'{}'创建成功", id);
         return sseEmitter;
@@ -111,5 +108,4 @@ public class SseUtil {
             sseEmitter.complete();
         }
     }
-
 }

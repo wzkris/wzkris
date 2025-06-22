@@ -3,7 +3,6 @@ package com.wzkris.user.service;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
-
 import java.util.List;
 
 /**
@@ -50,5 +49,4 @@ public interface SysPostService {
      * 校验岗位是否被用户关联
      */
     void checkPostUsed(List<Long> postIds);
-
 }

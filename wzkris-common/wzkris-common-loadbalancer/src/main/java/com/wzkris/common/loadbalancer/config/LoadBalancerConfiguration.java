@@ -19,13 +19,14 @@ public class LoadBalancerConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ReactorLoadBalancer<ServiceInstance> nacosGrayscaleLoadBalancer(Environment environment,
-                                                                           LoadBalancerClientFactory loadBalancerClientFactory,
-                                                                           NacosDiscoveryProperties nacosDiscoveryProperties) {
+    public ReactorLoadBalancer<ServiceInstance> nacosGrayscaleLoadBalancer(
+            Environment environment,
+            LoadBalancerClientFactory loadBalancerClientFactory,
+            NacosDiscoveryProperties nacosDiscoveryProperties) {
         String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
         return new NacosGrayscaleLoadBalancer(
-                loadBalancerClientFactory.getLazyProvider(name,
-                        ServiceInstanceListSupplier.class),
-                name, nacosDiscoveryProperties);
+                loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class),
+                name,
+                nacosDiscoveryProperties);
     }
 }

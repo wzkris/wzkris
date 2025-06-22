@@ -1,9 +1,8 @@
 package com.wzkris.user.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import java.math.BigDecimal;
+import lombok.Data;
 
 @Data
 public class SysTenantWalletVO {

@@ -2,10 +2,9 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.vo.SelectVO;
-import org.springframework.lang.Nullable;
-
 import java.util.Collections;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 /**
  * 租户层

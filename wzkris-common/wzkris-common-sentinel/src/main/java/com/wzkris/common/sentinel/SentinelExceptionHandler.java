@@ -19,7 +19,8 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
     public static final String RETRY_AFTER = "Retry-After";
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, String s, BlockException e) throws Exception {
+    public void handle(HttpServletRequest request, HttpServletResponse response, String s, BlockException e)
+            throws Exception {
         log.warn("应用：‘{}’的接口‘{}’触发限流", e.getRule().getResource(), request.getRequestURI());
         response.setHeader(RETRY_AFTER, "10");
         response.sendError(BizCode.TOO_MANY_REQUESTS.value(), BizCode.TOO_MANY_REQUESTS.desc());

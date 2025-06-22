@@ -17,6 +17,11 @@ package com.wzkris.common.redis.manager;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import lombok.Setter;
 import org.redisson.api.RMapCache;
 import org.redisson.spring.cache.CacheConfig;
@@ -26,12 +31,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.transaction.TransactionAwareCacheDecorator;
 import org.springframework.util.StringUtils;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * A {@link CacheManager} implementation
@@ -83,8 +82,7 @@ public class PlusSpringCacheManager implements CacheManager {
     /**
      * Creates CacheManager supplied by Redisson instance
      */
-    public PlusSpringCacheManager() {
-    }
+    public PlusSpringCacheManager() {}
 
     /**
      * Set cache config mapped by cache name
@@ -179,5 +177,4 @@ public class PlusSpringCacheManager implements CacheManager {
             dynamic = true;
         }
     }
-
 }

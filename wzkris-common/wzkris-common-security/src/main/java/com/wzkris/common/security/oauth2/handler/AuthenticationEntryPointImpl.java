@@ -22,7 +22,8 @@ import java.nio.charset.StandardCharsets;
 public final class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
+            throws IOException {
         log.info("token校验失败，请求URI：{}，详细信息：{}", request.getRequestURI(), exception.getMessage());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -31,7 +32,14 @@ public final class AuthenticationEntryPointImpl implements AuthenticationEntryPo
             Result<?> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
             JsonUtil.writeValue(response.getWriter(), result);
         } else {
-            JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.UNAUTHORIZED, exception.getLocalizedMessage()));
+            int status = BizCode.UNAUTHORIZED.value();
+            if (response.getStatus() != HttpServletResponse.SC_OK) {
+                status = response.getStatus();
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            JsonUtil.writeValue(
+                    response.getWriter(), Result.resp(status, null, exception.getLocalizedMessage()));
         }
     }
+
 }

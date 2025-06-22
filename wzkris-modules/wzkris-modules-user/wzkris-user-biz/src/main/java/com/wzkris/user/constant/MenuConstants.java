@@ -35,16 +35,15 @@ public class MenuConstants {
     /**
      * 内嵌组件
      */
-    public final static String IFRAME_VIEW = "IFrameView";
+    public static final String IFRAME_VIEW = "IFrameView";
 
     /**
      * 外链组件
      */
-    public final static String LINK = "link";
+    public static final String LINK = "link";
 
     /**
      * 基础布局组件
      */
-    public final static String LAYOUT = "BasicLayout";
-
+    public static final String LAYOUT = "BasicLayout";
 }

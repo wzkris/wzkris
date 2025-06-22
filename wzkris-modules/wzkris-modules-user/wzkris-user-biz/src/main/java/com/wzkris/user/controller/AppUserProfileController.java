@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.security.utils.ClientUtil;
+import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.req.AppUserProfileReq;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AppUserProfileController extends BaseController {
 
-    private final static String ACCOUNT_PREFIX = "app:account";
+    private static final String ACCOUNT_PREFIX = "app:account";
 
     private final AppUserMapper appUserMapper;
 
@@ -38,9 +38,9 @@ public class AppUserProfileController extends BaseController {
 
     @Operation(summary = "获取信息")
     @GetMapping
-    @Cacheable(cacheNames = ACCOUNT_PREFIX + "#1800#600", key = "@cl.getUserId()")
+    @Cacheable(cacheNames = ACCOUNT_PREFIX + "#1800#600", key = "@cu.getUserId()")
     public Result<AppUserProfileVO> appuserInfo() {
-        AppUser user = appUserMapper.selectById(ClientUtil.getUserId());
+        AppUser user = appUserMapper.selectById(ClientUserUtil.getUserId());
 
         AppUserProfileVO profileVO = new AppUserProfileVO();
         AppUserProfileVO.UserInfo userInfo = new AppUserProfileVO.UserInfo();
@@ -55,9 +55,9 @@ public class AppUserProfileController extends BaseController {
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cl.getUserId()")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cu.getUserId()")
     public Result<?> appuserInfo(@RequestBody AppUserProfileReq profileReq) {
-        AppUser user = new AppUser(ClientUtil.getUserId());
+        AppUser user = new AppUser(ClientUserUtil.getUserId());
         user.setNickname(profileReq.getNickname());
         user.setGender(profileReq.getGender());
         return toRes(appUserMapper.updateById(user));
@@ -65,11 +65,10 @@ public class AppUserProfileController extends BaseController {
 
     @Operation(summary = "更新头像")
     @PostMapping("/edit_avatar")
-    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cl.getUserId()")
+    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cu.getUserId()")
     public Result<?> updateAvatar(@RequestBody String url) {
-        AppUser appUser = new AppUser(ClientUtil.getUserId());
+        AppUser appUser = new AppUser(ClientUserUtil.getUserId());
         appUser.setAvatar(url);
         return toRes(appUserMapper.updateById(appUser));
     }
-
 }

@@ -3,11 +3,10 @@ package com.xxl.job.admin.core.thread;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.xxl.job.admin.core.trigger.TriggerTypeEnum;
 import com.xxl.job.admin.core.trigger.XxlJobTrigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * job trigger thread pool helper
@@ -27,7 +26,7 @@ public class JobTriggerPoolHelper {
     private ThreadPoolExecutor slowTriggerPool = null;
 
     // job timeout count
-    private volatile long minTim = System.currentTimeMillis() / 60000;     // ms > min
+    private volatile long minTim = System.currentTimeMillis() / 60000; // ms > min
 
     private volatile ConcurrentMap<Integer, AtomicInteger> jobTimeoutCountMap = new ConcurrentHashMap<>();
 
@@ -50,7 +49,13 @@ public class JobTriggerPoolHelper {
      * @param executorParam         null: use job param
      *                              not null: cover job param
      */
-    public static void trigger(int jobId, TriggerTypeEnum triggerType, int failRetryCount, String executorShardingParam, String executorParam, String addressList) {
+    public static void trigger(
+            int jobId,
+            TriggerTypeEnum triggerType,
+            int failRetryCount,
+            String executorShardingParam,
+            String executorParam,
+            String addressList) {
         helper.addTrigger(jobId, triggerType, failRetryCount, executorShardingParam, executorParam, addressList);
     }
 
@@ -83,7 +88,7 @@ public class JobTriggerPoolHelper {
     }
 
     public void stop() {
-        //triggerPool.shutdown();
+        // triggerPool.shutdown();
         fastTriggerPool.shutdownNow();
         slowTriggerPool.shutdownNow();
         logger.info(">>>>>>>>> xxl-job trigger thread pool shutdown success.");
@@ -92,17 +97,18 @@ public class JobTriggerPoolHelper {
     /**
      * add trigger
      */
-    public void addTrigger(final int jobId,
-                           final TriggerTypeEnum triggerType,
-                           final int failRetryCount,
-                           final String executorShardingParam,
-                           final String executorParam,
-                           final String addressList) {
+    public void addTrigger(
+            final int jobId,
+            final TriggerTypeEnum triggerType,
+            final int failRetryCount,
+            final String executorShardingParam,
+            final String executorParam,
+            final String addressList) {
 
         // choose thread pool
         ThreadPoolExecutor triggerPool_ = fastTriggerPool;
         AtomicInteger jobTimeoutCount = jobTimeoutCountMap.get(jobId);
-        if (jobTimeoutCount != null && jobTimeoutCount.get() > 10) {      // job-timeout 10 times in 1 min
+        if (jobTimeoutCount != null && jobTimeoutCount.get() > 10) { // job-timeout 10 times in 1 min
             triggerPool_ = slowTriggerPool;
         }
 
@@ -115,7 +121,8 @@ public class JobTriggerPoolHelper {
 
                 try {
                     // do trigger
-                    XxlJobTrigger.trigger(jobId, triggerType, failRetryCount, executorShardingParam, executorParam, addressList);
+                    XxlJobTrigger.trigger(
+                            jobId, triggerType, failRetryCount, executorShardingParam, executorParam, addressList);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 } finally {
@@ -129,17 +136,14 @@ public class JobTriggerPoolHelper {
 
                     // incr timeout-count-map
                     long cost = System.currentTimeMillis() - start;
-                    if (cost > 500) {       // ob-timeout threshold 500ms
+                    if (cost > 500) { // ob-timeout threshold 500ms
                         AtomicInteger timeoutCount = jobTimeoutCountMap.putIfAbsent(jobId, new AtomicInteger(1));
                         if (timeoutCount != null) {
                             timeoutCount.incrementAndGet();
                         }
                     }
-
                 }
-
             }
         });
     }
-
 }

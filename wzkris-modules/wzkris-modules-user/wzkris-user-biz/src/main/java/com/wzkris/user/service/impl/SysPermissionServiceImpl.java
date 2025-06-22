@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.user.api.domain.response.SysPermissionResp;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
@@ -12,16 +11,16 @@ import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
+import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
 import com.wzkris.user.service.SysRoleService;
 import jakarta.annotation.Nullable;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 用户权限处理
@@ -113,13 +112,14 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         }
         Set<Long> deptIds = new HashSet<>();
         // 循环每一个角色，拼接所有可访问的部门id
-        Map<String, List<Long>> datascopeMap = roles
-                .stream()
+        Map<String, List<Long>> datascopeMap = roles.stream()
                 // 根据权限作用域分组
-                .collect(Collectors.groupingBy(SysRole::getDataScope, Collectors.mapping(SysRole::getRoleId, Collectors.toList())));
+                .collect(Collectors.groupingBy(
+                        SysRole::getDataScope, Collectors.mapping(SysRole::getRoleId, Collectors.toList())));
         for (Map.Entry<String, List<Long>> entry : datascopeMap.entrySet()) {
             if (StringUtil.equals(DATA_SCOPE_ALL, entry.getKey())) {
-                deptIds = deptMapper.selectList(Wrappers.lambdaQuery(SysDept.class).select(SysDept::getDeptId))
+                deptIds = deptMapper
+                        .selectList(Wrappers.lambdaQuery(SysDept.class).select(SysDept::getDeptId))
                         .stream()
                         .map(SysDept::getDeptId)
                         .collect(Collectors.toSet());
@@ -140,5 +140,4 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         }
         return deptIds.stream().toList();
     }
-
 }

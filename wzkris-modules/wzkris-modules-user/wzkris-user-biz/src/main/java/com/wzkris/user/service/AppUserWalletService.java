@@ -21,5 +21,4 @@ public interface AppUserWalletService {
      * @return 是否成功
      */
     boolean decryBalance(Long userId, BigDecimal amount);
-
 }

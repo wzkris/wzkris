@@ -6,7 +6,6 @@ import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.biz.model.TriggerParam;
-
 import java.util.List;
 
 /**
@@ -28,11 +27,15 @@ public class ExecutorRouteFailover extends ExecutorRouter {
                 logger.error(e.getMessage(), e);
                 beatResult = new ReturnT<String>(ReturnT.FAIL_CODE, "" + e);
             }
-            beatResultSB.append((beatResultSB.length() > 0) ? "<br><br>" : "")
+            beatResultSB
+                    .append((beatResultSB.length() > 0) ? "<br><br>" : "")
                     .append(I18nUtil.getString("jobconf_beat") + "：")
-                    .append("<br>address：").append(address)
-                    .append("<br>code：").append(beatResult.getCode())
-                    .append("<br>msg：").append(beatResult.getMsg());
+                    .append("<br>address：")
+                    .append(address)
+                    .append("<br>code：")
+                    .append(beatResult.getCode())
+                    .append("<br>msg：")
+                    .append(beatResult.getMsg());
 
             // beat success
             if (beatResult.getCode() == ReturnT.SUCCESS_CODE) {
@@ -43,6 +46,5 @@ public class ExecutorRouteFailover extends ExecutorRouter {
             }
         }
         return new ReturnT<String>(ReturnT.FAIL_CODE, beatResultSB.toString());
-
     }
 }

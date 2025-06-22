@@ -8,7 +8,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import com.wzkris.user.domain.SysPost;
 import com.wzkris.user.domain.req.SysPostQueryReq;
@@ -18,11 +18,10 @@ import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 岗位信息操作处理
@@ -70,7 +69,7 @@ public class SysPostController extends BaseController {
     @PostMapping("/add")
     @CheckSystemPerms("sys_post:add")
     public Result<Void> add(@Validated @RequestBody SysPostReq req) {
-        if (!tenantService.checkPostLimit(LoginUtil.getTenantId())) {
+        if (!tenantService.checkPostLimit(SystemUserUtil.getTenantId())) {
             return err412("岗位数量已达上限，请联系管理员");
         }
         return toRes(postMapper.insert(BeanUtil.convert(req, SysPost.class)));
@@ -92,5 +91,4 @@ public class SysPostController extends BaseController {
         postService.checkPostUsed(postIds);
         return toRes(postService.deleteByPostIds(postIds));
     }
-
 }

@@ -16,7 +16,8 @@ public class FtlUtil {
 
     private static Logger logger = LoggerFactory.getLogger(FtlUtil.class);
 
-    private static BeansWrapper wrapper = new BeansWrapperBuilder(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS).build();     //BeansWrapper.getDefaultInstance();
+    private static BeansWrapper wrapper = new BeansWrapperBuilder(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS)
+            .build(); // BeansWrapper.getDefaultInstance();
 
     public static TemplateHashModel generateStaticModel(String packageName) {
         try {
@@ -28,5 +29,4 @@ public class FtlUtil {
         }
         return null;
     }
-
 }

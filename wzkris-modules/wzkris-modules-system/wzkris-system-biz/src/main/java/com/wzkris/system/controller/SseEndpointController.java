@@ -1,6 +1,6 @@
 package com.wzkris.system.controller;
 
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.utils.SseUtil;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.listener.event.PublishMessageEvent;
@@ -23,18 +23,16 @@ public class SseEndpointController {
 
     @GetMapping(headers = "connect")
     public SseEmitter connect() {
-        return SseUtil.connect(LoginUtil.getUserId());
+        return SseUtil.connect(SystemUserUtil.getUserId());
     }
 
     @GetMapping(headers = "disconnect")
     public void disconnect() {
-        GlobalSseUtil.disconnect(LoginUtil.getUserId());
+        GlobalSseUtil.disconnect(SystemUserUtil.getUserId());
     }
 
-    @Scheduled(cron = "*/3 * * * * *")// 模拟
+    @Scheduled(cron = "*/3 * * * * *") // 模拟
     public void cron() {
-        GlobalSseUtil.publish(
-                new PublishMessageEvent(null, new SimpleMessageDTO("重要通知", "1", "项目难度很大，考虑清楚技术选型"))
-        );
+        GlobalSseUtil.publish(new PublishMessageEvent(null, new SimpleMessageDTO("重要通知", "1", "项目难度很大，考虑清楚技术选型")));
     }
 }

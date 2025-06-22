@@ -1,5 +1,6 @@
 package com.wzkris.auth.listener.event;
 
+import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,6 +13,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RefreshTokenEvent {
+
+    private CorePrincipal principal;
+
+    private String userToken;
 
     private String refreshToken;
 

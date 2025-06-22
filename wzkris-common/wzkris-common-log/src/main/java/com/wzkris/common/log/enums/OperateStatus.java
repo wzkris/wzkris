@@ -24,5 +24,4 @@ public enum OperateStatus {
     public String value() {
         return this.value;
     }
-
 }

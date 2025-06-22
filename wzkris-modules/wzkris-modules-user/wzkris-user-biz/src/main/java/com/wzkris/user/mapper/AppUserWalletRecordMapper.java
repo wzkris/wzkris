@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
  * @author wzkris
  */
 @Repository
-public interface AppUserWalletRecordMapper extends BaseMapperPlus<AppUserWalletRecord> {
-
-}
+public interface AppUserWalletRecordMapper extends BaseMapperPlus<AppUserWalletRecord> {}

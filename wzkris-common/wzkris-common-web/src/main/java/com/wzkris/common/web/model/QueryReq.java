@@ -1,10 +1,9 @@
 package com.wzkris.common.web.model;
 
 import cn.hutool.core.convert.Convert;
-import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Setter;
 
 @Setter
 public class QueryReq {
