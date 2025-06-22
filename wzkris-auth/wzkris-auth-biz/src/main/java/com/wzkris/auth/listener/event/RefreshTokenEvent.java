@@ -16,6 +16,8 @@ public class RefreshTokenEvent {
 
     private CorePrincipal principal;
 
+    private String userToken;
+
     private String refreshToken;
 
 }

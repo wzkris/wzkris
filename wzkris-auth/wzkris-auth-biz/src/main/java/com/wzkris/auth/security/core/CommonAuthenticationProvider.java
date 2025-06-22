@@ -5,6 +5,7 @@ import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.domain.CorePrincipal;
+import jakarta.annotation.Nullable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -69,21 +70,21 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     }
 
     final OAuth2AccessTokenAuthenticationToken buildOAuth2AccessTokenAuthenticationToken(T authenticationToken) {
-        String accessTokenStr = this.generateKey(authenticationToken.getPrincipal());
+        String userToken = this.generateKey(authenticationToken.getPrincipal());
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
-                accessTokenStr, Instant.now(), Instant.now().plus(tokenProperties.getUserTokenTimeOut(), ChronoUnit.SECONDS));
+                userToken, Instant.now(), Instant.now().plus(tokenProperties.getUserTokenTimeOut(), ChronoUnit.SECONDS));
 
-        String refreshTokenStr;
+        String userRefreshToken;
         if (authenticationToken instanceof RefreshAuthenticationToken refreshAuthenticationToken) {
-            refreshTokenStr = refreshAuthenticationToken.getRefreshToken();
+            userRefreshToken = refreshAuthenticationToken.getRefreshToken();
         } else {
-            refreshTokenStr = tokenGenerator.generateKey();
+            userRefreshToken = tokenGenerator.generateKey();
         }
 
         OAuth2RefreshToken refreshToken = new OAuth2RefreshToken(
-                refreshTokenStr, Instant.now(), Instant.now().plus(tokenProperties.getUserRefreshTokenTimeOut(), ChronoUnit.SECONDS));
+                userRefreshToken, Instant.now(), Instant.now().plus(tokenProperties.getUserRefreshTokenTimeOut(), ChronoUnit.SECONDS));
 
-        tokenService.save(authenticationToken.getPrincipal(), accessTokenStr, refreshTokenStr);
+        tokenService.save(authenticationToken.getPrincipal(), userToken, userRefreshToken);
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(
@@ -93,6 +94,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         return oAuth2AccessTokenAuthenticationToken;
     }
 
+    @Nullable
     private String generateKey(CorePrincipal principal) {
         if (principal.getType().equals(AuthenticatedType.SYSTEM_USER.getValue())) {
             return tokenGenerator.generateKey();

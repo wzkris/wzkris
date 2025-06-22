@@ -17,6 +17,8 @@ public class LoginEvent {
 
     private CorePrincipal principal;
 
+    private String refreshToken;
+
     private String grantType;
 
     private String status;

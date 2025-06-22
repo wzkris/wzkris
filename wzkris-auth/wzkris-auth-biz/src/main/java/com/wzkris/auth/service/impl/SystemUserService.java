@@ -139,6 +139,7 @@ public class SystemUserService extends UserInfoTemplate {
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         user,
+                        null,
                         grantType,
                         CommonConstants.STATUS_DISABLE,
                         errorMsg,

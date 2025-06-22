@@ -19,6 +19,7 @@ import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.filter.LoginEndpointFilter;
 import com.wzkris.auth.security.filter.LogoutHandlerImpl;
+import com.wzkris.auth.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -47,7 +48,8 @@ public class DefaultSecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           List<AuthenticationProvider> authenticationProviders,
                                                           List<CommonAuthenticationConverter<? extends CommonAuthenticationToken>>
-                                                                  authenticationConverters) throws Exception {
+                                                                  authenticationConverters,
+                                                          TokenService tokenService) throws Exception {
         http.securityMatcher("/assets/**", "/login", "/activate")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
@@ -60,7 +62,7 @@ public class DefaultSecurityConfig {
                 .addFilterAt(new LoginEndpointFilter(authenticationProviders, authenticationConverters)
                         , UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> {
-                    logout.addLogoutHandler(new LogoutHandlerImpl())
+                    logout.addLogoutHandler(new LogoutHandlerImpl(tokenService))
                             .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT));
                 });
         return http.build();

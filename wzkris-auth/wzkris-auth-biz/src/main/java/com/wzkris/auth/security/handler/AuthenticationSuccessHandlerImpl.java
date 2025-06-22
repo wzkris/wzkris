@@ -100,11 +100,14 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                 SpringUtil.getContext()
                         .publishEvent(new RefreshTokenEvent(
                                 commonAuthenticationToken.getPrincipal(),
-                                refreshAuthenticationToken.getRefreshToken()));
+                                authenticationToken.getAccessToken().getTokenValue(),
+                                refreshAuthenticationToken.getRefreshToken())
+                        );
             } else {
                 SpringUtil.getContext()
                         .publishEvent(new LoginEvent(
                                 commonAuthenticationToken.getPrincipal(),
+                                authenticationToken.getRefreshToken().getTokenValue(),
                                 request.getParameter(OAuth2ParameterNames.GRANT_TYPE),
                                 CommonConstants.STATUS_ENABLE,
                                 "",

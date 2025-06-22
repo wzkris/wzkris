@@ -7,8 +7,7 @@ import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.rmi.domain.ClientUser;
 import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
-import com.wzkris.auth.security.config.TokenProperties;
-import com.wzkris.auth.utils.OnlineUserUtil;
+import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.AddressUtil;
@@ -20,13 +19,11 @@ import com.wzkris.user.rmi.RmiSysUserFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RMapCache;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wzkris
@@ -39,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class LoginEventListener {
 
-    private final TokenProperties tokenProperties;
+    private final TokenService tokenService;
 
     private final RmiSysLogFeign rmiSysLogFeign;
 
@@ -78,7 +75,7 @@ public class LoginEventListener {
 
         if (loginSuccess) { // 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setId(user.getId());
+            onlineUser.setRefreshToken(event.getRefreshToken());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
             onlineUser.setLoginIp(ipAddr);
             onlineUser.setLoginLocation(loginLocation);
@@ -86,9 +83,7 @@ public class LoginEventListener {
             onlineUser.setOs(userAgent.getOs().getName());
             onlineUser.setLoginTime(new Date());
 
-            RMapCache<String, OnlineUser> onlineCache = OnlineUserUtil.getOnlineCache(user.getUserId());
-            onlineCache.put(
-                    onlineUser.getId(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
+            tokenService.putOnlineSession(user.getUserId(), onlineUser);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
