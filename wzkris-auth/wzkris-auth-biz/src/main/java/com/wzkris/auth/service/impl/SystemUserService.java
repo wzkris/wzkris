@@ -3,6 +3,7 @@ package com.wzkris.auth.service.impl;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.UserInfoTemplate;
@@ -12,7 +13,6 @@ import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.security.domain.SystemUser;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.rmi.RmiSysUserFeign;
@@ -34,7 +34,7 @@ import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
-public class LoginUserService extends UserInfoTemplate {
+public class SystemUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 

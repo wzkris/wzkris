@@ -1,4 +1,4 @@
-package com.wzkris.common.security.domain;
+package com.wzkris.auth.rmi.domain;
 
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.common.core.domain.CorePrincipal;
@@ -30,7 +30,11 @@ public class SystemUser extends CorePrincipal {
     private List<Long> deptScopes;
 
     public SystemUser() {
-        this(null, Collections.emptySet());
+        this(null);
+    }
+
+    public SystemUser(Long userId) {
+        this(userId, Collections.emptySet());
     }
 
     public SystemUser(Long userId, Set<String> permissions) {

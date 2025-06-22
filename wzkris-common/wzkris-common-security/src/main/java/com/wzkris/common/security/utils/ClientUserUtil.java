@@ -2,7 +2,7 @@ package com.wzkris.common.security.utils;
 
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.security.domain.ClientUser;
+import com.wzkris.common.security.model.DeferredClientUser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +32,9 @@ public class ClientUserUtil extends SecurityUtil {
      *
      * @return 当前用户
      */
-    public static ClientUser getUser() {
+    public static DeferredClientUser getUser() {
         try {
-            return (ClientUser) getAuthentication().getPrincipal();
+            return (DeferredClientUser) getAuthentication().getPrincipal();
         } catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }

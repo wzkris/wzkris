@@ -19,7 +19,7 @@ import org.apache.ibatis.type.ArrayTypeHandler;
  */
 @Data
 @AutoMappers({
-    @AutoMapper(target = OAuth2ClientResp.class),
+        @AutoMapper(target = OAuth2ClientResp.class),
 })
 @TableName(schema = "biz", autoResultMap = true, value = "oauth2_client")
 public class OAuth2Client extends BaseEntity {
@@ -40,9 +40,6 @@ public class OAuth2Client extends BaseEntity {
     @Schema(description = "客户端密钥 等价于app_secret")
     private String clientSecret;
 
-    @Schema(description = "access_token格式")
-    private String tokenFormat;
-
     @TableField(typeHandler = ArrayTypeHandler.class)
     @Schema(description = "权限域")
     private String[] scopes;
@@ -57,4 +54,5 @@ public class OAuth2Client extends BaseEntity {
 
     @Schema(description = "放行配置")
     private Boolean autoApprove;
+
 }

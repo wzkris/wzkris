@@ -1,4 +1,4 @@
-package com.wzkris.common.security.domain;
+package com.wzkris.auth.rmi.domain;
 
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.common.core.domain.CorePrincipal;
@@ -29,7 +29,11 @@ public class ClientUser extends CorePrincipal {
     private String phoneNumber;
 
     public ClientUser() {
-        this(null, Collections.emptySet());
+        this(null);
+    }
+
+    public ClientUser(Long userId) {
+        this(userId, Collections.emptySet());
     }
 
     public ClientUser(Long userId, Set<String> permissions) {

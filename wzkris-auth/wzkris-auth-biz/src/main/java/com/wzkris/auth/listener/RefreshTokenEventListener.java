@@ -2,12 +2,12 @@ package com.wzkris.auth.listener;
 
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
+import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.utils.OnlineUserUtil;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.domain.SystemUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RMapCache;

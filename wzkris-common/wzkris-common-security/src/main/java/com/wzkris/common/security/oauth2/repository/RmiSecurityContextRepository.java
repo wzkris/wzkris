@@ -1,11 +1,15 @@
 package com.wzkris.common.security.oauth2.repository;
 
+import cn.hutool.core.convert.Convert;
 import com.wzkris.auth.rmi.RmiTokenFeign;
+import com.wzkris.auth.rmi.domain.ClientUser;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.model.DeferredClientUser;
+import com.wzkris.common.security.model.SupplierDeferredSecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +21,10 @@ import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -40,8 +48,11 @@ public class RmiSecurityContextRepository implements SecurityContextRepository {
 
     private final RmiTokenFeign rmiTokenFeign;
 
-    public RmiSecurityContextRepository(RmiTokenFeign rmiTokenFeign) {
+    private final JwtDecoder jwtDecoder;
+
+    public RmiSecurityContextRepository(RmiTokenFeign rmiTokenFeign, JwtDecoder jwtDecoder) {
         this.rmiTokenFeign = rmiTokenFeign;
+        this.jwtDecoder = jwtDecoder;
     }
 
     @Override
@@ -58,21 +69,39 @@ public class RmiSecurityContextRepository implements SecurityContextRepository {
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 
-        String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
-        if (StringUtil.isBlank(userToken)) {
+        final String tenantToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
+
+        if (StringUtil.isNotBlank(tenantToken)) {
+            TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(tenantToken));
+            if (tokenResponse.isSuccess()) {
+                ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request));
+            }
             return ctx;
         }
 
-        TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(userToken));
-        if (tokenResponse.isSuccess()) {
-            ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request));
+        final String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
+        if (StringUtil.isNotBlank(userToken)) {
+            try {
+                Jwt jwt = jwtDecoder.decode(userToken);
+                Long userId = Convert.toLong(jwt.getClaimAsString(JwtClaimNames.SUB));
+                Supplier<ClientUser> supplier = () -> {
+                    TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(userToken));
+                    if (tokenResponse.isSuccess()) {
+                        return (ClientUser) tokenResponse.getPrincipal();
+                    }
+                    return null;
+                };
+                ctx.setAuthentication(createAuthentication(new DeferredClientUser(userId, supplier), request));
+            } catch (JwtException ignored) {
+            }
         }
+
         return ctx;
     }
 
-    protected Authentication createAuthentication(Object principal, HttpServletRequest request) {
+    protected Authentication createAuthentication(CorePrincipal principal, HttpServletRequest request) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, "",
-                AuthorityUtils.createAuthorityList(((CorePrincipal) principal).getPermissions()));
+                AuthorityUtils.createAuthorityList((principal).getPermissions()));
         token.setDetails(this.authenticationDetailsSource.buildDetails(request));
         return token;
     }
@@ -87,53 +116,5 @@ public class RmiSecurityContextRepository implements SecurityContextRepository {
         return securityContextHolderStrategy.getContext().getAuthentication() != null;
     }
 
-    /**
-     * Copy from @org.springframework.security.web.context.SupplierDeferredSecurityContext
-     * Because it is final class
-     */
-    @Slf4j
-    static class SupplierDeferredSecurityContext implements DeferredSecurityContext {
-
-        private final Supplier<SecurityContext> supplier;
-
-        private final SecurityContextHolderStrategy strategy;
-
-        private SecurityContext securityContext;
-
-        private boolean missingContext;
-
-        SupplierDeferredSecurityContext(Supplier<SecurityContext> supplier, SecurityContextHolderStrategy strategy) {
-            this.supplier = supplier;
-            this.strategy = strategy;
-        }
-
-        @Override
-        public SecurityContext get() {
-            init();
-            return this.securityContext;
-        }
-
-        @Override
-        public boolean isGenerated() {
-            init();
-            return this.missingContext;
-        }
-
-        private void init() {
-            if (this.securityContext != null) {
-                return;
-            }
-
-            this.securityContext = this.supplier.get();
-            this.missingContext = (this.securityContext == null);
-            if (this.missingContext) {
-                this.securityContext = this.strategy.createEmptyContext();
-                if (log.isTraceEnabled()) {
-                    log.trace("Created {}", this.securityContext);
-                }
-            }
-        }
-
-    }
-
 }
+

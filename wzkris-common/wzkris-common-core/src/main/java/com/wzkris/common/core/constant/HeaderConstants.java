@@ -28,6 +28,11 @@ public class HeaderConstants {
     public static final String X_FEIGN_EXCEPTION = "X-Feign-Exception";
 
     /**
+     * 租户Token
+     */
+    public static final String X_TENANT_TOKEN = "X-Tenant-Token";
+
+    /**
      * 用户Token
      */
     public static final String X_USER_TOKEN = "X-User-Token";

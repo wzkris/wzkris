@@ -8,11 +8,10 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,9 +32,10 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     public SmsAuthenticationProvider(
             TokenProperties tokenProperties,
             TokenService tokenService,
+            JwtEncoder jwtEncoder,
             List<UserInfoTemplate> userInfoTemplates,
             CaptchaService captchaService) {
-        super(tokenProperties, tokenService);
+        super(tokenProperties, tokenService, jwtEncoder);
         this.userInfoTemplates = userInfoTemplates;
         this.captchaService = captchaService;
     }

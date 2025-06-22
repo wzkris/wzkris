@@ -1,6 +1,6 @@
 package com.wzkris.user.utils;
 
-import com.wzkris.common.security.domain.SystemUser;
+import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.mapper.SysTenantMapper;

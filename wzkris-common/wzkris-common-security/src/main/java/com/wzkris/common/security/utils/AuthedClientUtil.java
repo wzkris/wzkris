@@ -2,7 +2,7 @@ package com.wzkris.common.security.utils;
 
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.security.domain.AuthedClient;
+import com.wzkris.auth.rmi.domain.AuthedClient;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

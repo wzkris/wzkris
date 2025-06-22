@@ -69,16 +69,13 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         String channel = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.CHANNEL));
         String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WX_CODE));
         String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.USER_TYPE));
-        AuthenticatedType authenticatedType;
-        try {
-            authenticatedType = AuthenticatedType.valueOf(userType);
-        } catch (Exception e) {
+        AuthenticatedType authenticatedType = AuthenticatedType.fromValue(userType);
+        if (authenticatedType == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "request.param.error",
                     OAuth2ParameterConstant.USER_TYPE);
-            return null; // never run this line
         }
         return new WechatAuthenticationToken(authenticatedType, channel, wxCode);
     }

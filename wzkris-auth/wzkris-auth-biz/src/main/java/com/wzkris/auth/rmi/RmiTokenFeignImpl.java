@@ -1,10 +1,10 @@
 package com.wzkris.auth.rmi;
 
+import com.wzkris.auth.rmi.domain.AuthedClient;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.security.domain.AuthedClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
