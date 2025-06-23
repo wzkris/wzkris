@@ -59,7 +59,7 @@ public class LoginEventListener {
     }
 
     private void handleSystemUser(LoginEvent event, SystemUser user) {
-        final String grantType = event.getGrantType();
+        final String loginType = event.getLoginType();
         final String status = event.getStatus();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
@@ -97,7 +97,7 @@ public class LoginEventListener {
         loginLogReq.setTenantId(user.getTenantId());
         loginLogReq.setLoginTime(DateUtil.date());
         loginLogReq.setLoginIp(ipAddr);
-        loginLogReq.setGrantType(grantType);
+        loginLogReq.setLoginType(loginType);
         loginLogReq.setStatus(status);
         loginLogReq.setErrorMsg(errorMsg);
         loginLogReq.setLoginLocation(loginLocation);

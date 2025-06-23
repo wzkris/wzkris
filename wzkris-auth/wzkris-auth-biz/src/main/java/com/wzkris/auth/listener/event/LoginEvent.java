@@ -19,7 +19,7 @@ public class LoginEvent {
 
     private String refreshToken;
 
-    private String grantType;
+    private String loginType;
 
     private String status;
 

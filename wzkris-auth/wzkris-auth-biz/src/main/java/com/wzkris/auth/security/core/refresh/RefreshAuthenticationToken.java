@@ -1,5 +1,6 @@
 package com.wzkris.auth.security.core.refresh;
 
+import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.Getter;
@@ -28,6 +29,11 @@ public final class RefreshAuthenticationToken extends CommonAuthenticationToken 
     @Override
     public Object getCredentials() {
         return this.refreshToken;
+    }
+
+    @Override
+    public String getLoginType() {
+        return OAuth2LoginTypeConstant.REFRESH;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.wzkris.auth.security.core.password;
 
+import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.Getter;
@@ -39,6 +40,11 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
     @Override
     public Object getCredentials() {
         return this.password;
+    }
+
+    @Override
+    public String getLoginType() {
+        return OAuth2LoginTypeConstant.PASSWORD;
     }
 
 }

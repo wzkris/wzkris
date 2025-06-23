@@ -1,6 +1,7 @@
 package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.Getter;
@@ -44,6 +45,11 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
     @Override
     public Object getCredentials() {
         return this.smsCode;
+    }
+
+    @Override
+    public String getLoginType() {
+        return OAuth2LoginTypeConstant.SMS;
     }
 
 }

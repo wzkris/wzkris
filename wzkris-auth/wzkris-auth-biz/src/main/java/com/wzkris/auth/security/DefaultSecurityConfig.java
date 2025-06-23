@@ -50,7 +50,7 @@ public class DefaultSecurityConfig {
                                                           List<CommonAuthenticationConverter<? extends CommonAuthenticationToken>>
                                                                   authenticationConverters,
                                                           TokenService tokenService) throws Exception {
-        http.securityMatcher("/assets/**", "/login", "/activate")
+        http.securityMatcher("/assets/**", "/activate", "/login", "/logout")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -62,7 +62,8 @@ public class DefaultSecurityConfig {
                 .addFilterAt(new LoginEndpointFilter(authenticationProviders, authenticationConverters)
                         , UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> {
-                    logout.addLogoutHandler(new LogoutHandlerImpl(tokenService))
+                    logout.logoutUrl("/logout")
+                            .addLogoutHandler(new LogoutHandlerImpl(tokenService))
                             .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT));
                 });
         return http.build();

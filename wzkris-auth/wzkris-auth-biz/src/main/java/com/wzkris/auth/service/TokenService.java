@@ -6,7 +6,6 @@ import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
@@ -91,12 +90,32 @@ public class TokenService {
     /**
      * 根据token获取用户信息
      *
-     * @param userRefreshToken token
+     * @param refreshToken token
      */
     @Nullable
-    public final CorePrincipal loadByRefreshToken(String userRefreshToken) {
+    public final CorePrincipal loadByRefreshToken(String refreshToken) {
         return redissonClient.getScript().eval(RScript.Mode.READ_ONLY, GET_CORE_USER_SCRIPT,
-                RScript.ReturnType.VALUE, List.of(REFRESH_TOKEN_PREFIX + userRefreshToken, USER_INFO_PREFIX));
+                RScript.ReturnType.VALUE, List.of(REFRESH_TOKEN_PREFIX + refreshToken, USER_INFO_PREFIX));
+    }
+
+    /**
+     * token反查
+     *
+     * @param accessToken token
+     */
+    public final String loadRefreshTokenByAccessToken(String accessToken) {
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(ACCESS_TOKEN_PREFIX + accessToken).get();
+        return tokenBody.getOtherToken();
+    }
+
+    /**
+     * token反查
+     *
+     * @param refreshToken token
+     */
+    public final String loadAccessTokenByRefreshToken(String refreshToken) {
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(REFRESH_TOKEN_PREFIX + refreshToken).get();
+        return tokenBody.getOtherToken();
     }
 
     /**
@@ -198,8 +217,7 @@ public class TokenService {
     }
 
     @Data
-    @AllArgsConstructor
-    static class TokenBody {
+    private static class TokenBody {
 
         /**
          * 用户ID
@@ -210,6 +228,14 @@ public class TokenService {
          * 另外的TOKEN
          */
         private String otherToken;
+
+        public TokenBody() {
+        }
+
+        private TokenBody(String id, String otherToken) {
+            this.id = id;
+            this.otherToken = otherToken;
+        }
 
     }
 

@@ -34,9 +34,9 @@ public class OnlineSessionController extends BaseController {
         Collection<OnlineUser> onlineUsers = onlineCache.values();
 
         ArrayList<OnlineUser> list = new ArrayList<>(onlineUsers);
-        String token = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
+        String refreshToken = tokenService.loadRefreshTokenByAccessToken(request.getHeader(HeaderConstants.X_TENANT_TOKEN));
         list.forEach(onlineUser -> {
-            if (StringUtil.equals(onlineUser.getRefreshToken(), token)) {
+            if (StringUtil.equals(onlineUser.getRefreshToken(), refreshToken)) {
                 onlineUser.setCurrent(true);
             }
         });
