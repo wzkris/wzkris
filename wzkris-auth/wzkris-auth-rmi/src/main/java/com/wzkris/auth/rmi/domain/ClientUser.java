@@ -37,7 +37,7 @@ public class ClientUser extends CorePrincipal {
     }
 
     public ClientUser(Long userId, Set<String> permissions) {
-        super(String.valueOf(userId), AuthenticatedType.CLIENT_USER.getValue(), permissions);
+        super(userId, AuthenticatedType.CLIENT_USER.getValue(), permissions);
         this.userId = userId;
     }
 
