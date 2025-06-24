@@ -2,6 +2,7 @@ package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.resp.AppUserinfo;
 import com.wzkris.auth.domain.resp.SysUserinfo;
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.security.utils.SystemUserUtil;
@@ -16,15 +17,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "OAuth自定义端点")
+@Tag(name = "用户信息端点")
 @Slf4j
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-public class OAuth2Endpoint extends BaseController {
+public class UserinfoEndpoint extends BaseController {
 
     @Operation(summary = "用户信息")
-    @GetMapping("/sysuserinfo")
+    @GetMapping(value = "/user_info", headers = HeaderConstants.X_TENANT_TOKEN)
     public Result<SysUserinfo> systemUser() {
         SysUserinfo userinfo = new SysUserinfo();
         userinfo.setAdmin(SystemUserUtil.isAdmin());
@@ -35,7 +36,7 @@ public class OAuth2Endpoint extends BaseController {
     }
 
     @Operation(summary = "用户信息")
-    @GetMapping("/appuserinfo")
+    @GetMapping(value = "/user_info", headers = HeaderConstants.X_USER_TOKEN)
     public Result<AppUserinfo> clientUser() {
         AppUserinfo userinfo = new AppUserinfo();
         userinfo.setPhoneNumber(ClientUserUtil.getPhoneNumber());

@@ -3,18 +3,14 @@ package com.wzkris.auth.service;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.redisson.api.*;
-import org.redisson.api.options.KeysScanOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,24 +21,11 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TokenService {
 
-    private final String GET_CORE_USER_SCRIPT = """
-            local tokenData = redis.call('GET', KEYS[1])
-            
-            if not tokenData then
-                return nil
-            end
-            
-            local tokenObj = cjson.decode(tokenData)
-            local userId = tokenObj.id
-            
-            return redis.call('GET', KEYS[2] .. userId)
-            """;
-
     private final RedissonClient redissonClient = RedisUtil.getClient();
 
-    private final String USER_INFO_PREFIX = "user_info:";
+    private final String USER_INFO_PREFIX = "user_info:{%s}";
 
-    private final String ONLINE_USER_PREFIX = "user_info:online:";
+    private final String ONLINE_USER_PREFIX = "user_info:{%s}:online";
 
     private final String ACCESS_TOKEN_PREFIX = "user_info:access_token:";
 
@@ -50,6 +33,22 @@ public class TokenService {
 
     @Autowired
     private TokenProperties tokenProperties;
+
+    private String buildUserInfoKey(Object id) {
+        return USER_INFO_PREFIX.formatted(id);
+    }
+
+    private String buildOnlineUserKey(Object id) {
+        return ONLINE_USER_PREFIX.formatted(id);
+    }
+
+    private String buildAccessTokenKey(String accessToken) {
+        return ACCESS_TOKEN_PREFIX + accessToken;
+    }
+
+    private String buildRefreshTokenKey(String refreshToken) {
+        return REFRESH_TOKEN_PREFIX + refreshToken;
+    }
 
     /**
      * 保存token及用户信息
@@ -61,20 +60,35 @@ public class TokenService {
     public final void save(CorePrincipal principal, String accessToken, String refreshToken) {
         RBatch batch = redissonClient.createBatch();
 
-        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(USER_INFO_PREFIX + principal.getId());
+        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildUserInfoKey(principal.getId()));
         userinfo.setAsync(principal, Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
 
-        if (StringUtil.isNotBlank(accessToken)) {
-            RBucketAsync<TokenBody> accessTokenBucket = batch.getBucket(ACCESS_TOKEN_PREFIX + accessToken);
-            accessTokenBucket.setAsync(new TokenBody(principal.getId(), refreshToken), Duration.ofSeconds(tokenProperties.getUserTokenTimeOut()));
-        }
-
-        if (StringUtil.isNotBlank(refreshToken)) {
-            RBucketAsync<TokenBody> userRefreshTokenBucket = batch.getBucket(REFRESH_TOKEN_PREFIX + refreshToken);
-            userRefreshTokenBucket.setAsync(new TokenBody(principal.getId(), accessToken), Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
-        }
+        RMapCacheAsync<String, OnlineUser> mapCache = batch.getMapCache(buildOnlineUserKey(principal.getId()));
+        mapCache.getAsync(refreshToken).thenAccept(onlineUser -> {
+            if (onlineUser == null) {
+                mapCache.putAsync(refreshToken, new OnlineUser(),
+                        tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
+            } else {
+                mapCache.expireEntryAsync(refreshToken, Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()),
+                        Duration.ofSeconds(0));
+            }
+        });
 
         batch.execute();
+
+        RBucket<TokenBody> accessTokenBucket = redissonClient.getBucket(buildAccessTokenKey(accessToken));
+        accessTokenBucket.setAsync(new TokenBody(principal.getId(), refreshToken),
+                Duration.ofSeconds(tokenProperties.getUserTokenTimeOut()));
+
+        // 立刻失效以前的access_token
+        RBucket<TokenBody> refreshTokenBucket = redissonClient.getBucket(buildRefreshTokenKey(refreshToken));
+        TokenBody tokenBody = refreshTokenBucket.get();
+        if (tokenBody != null) {
+            redissonClient.getBucket(buildAccessTokenKey(tokenBody.getOtherToken())).deleteAsync();
+        }
+
+        refreshTokenBucket.setAsync(new TokenBody(principal.getId(), accessToken),
+                Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
     }
 
     /**
@@ -84,19 +98,43 @@ public class TokenService {
      */
     @Nullable
     public final CorePrincipal loadByAccessToken(String accessToken) {
-        return redissonClient.getScript().eval(RScript.Mode.READ_ONLY, GET_CORE_USER_SCRIPT,
-                RScript.ReturnType.VALUE, List.of(ACCESS_TOKEN_PREFIX + accessToken, USER_INFO_PREFIX));
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
+        if (tokenBody == null) return null;
+
+        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).get();
     }
 
     /**
      * 根据token获取用户信息
      *
-     * @param userRefreshToken token
+     * @param refreshToken token
      */
     @Nullable
-    public final CorePrincipal loadByRefreshToken(String userRefreshToken) {
-        return redissonClient.getScript().eval(RScript.Mode.READ_ONLY, GET_CORE_USER_SCRIPT,
-                RScript.ReturnType.VALUE, List.of(REFRESH_TOKEN_PREFIX + userRefreshToken, USER_INFO_PREFIX));
+    public final CorePrincipal loadByRefreshToken(String refreshToken) {
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
+        if (tokenBody == null) return null;
+
+        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).get();
+    }
+
+    /**
+     * token反查
+     *
+     * @param accessToken token
+     */
+    public final String loadRefreshTokenByAccessToken(String accessToken) {
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
+        return tokenBody.getOtherToken();
+    }
+
+    /**
+     * token反查
+     *
+     * @param refreshToken token
+     */
+    public final String loadAccessTokenByRefreshToken(String refreshToken) {
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
+        return tokenBody.getOtherToken();
     }
 
     /**
@@ -105,17 +143,31 @@ public class TokenService {
      * @param accessToken token
      */
     public final void logoutByAccessToken(String accessToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(ACCESS_TOKEN_PREFIX + accessToken).get();
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
+        if (tokenBody == null) return;
+
+        String id = tokenBody.getId();
         String refreshToken = tokenBody.getOtherToken();
 
-        redissonClient.getKeys().delete(ACCESS_TOKEN_PREFIX + accessToken, REFRESH_TOKEN_PREFIX + refreshToken);
+        // 删除Token（独立键）
+        redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
+        redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).delete();
 
-        Iterable<String> keys = redissonClient.getKeys()
-                .getKeys(KeysScanOptions.defaults().pattern(REFRESH_TOKEN_PREFIX + "*").limit(1));
+        // 创建批量操作对象
+        RBatch batch = redissonClient.createBatch();
 
-        if (!keys.iterator().hasNext()) {
-            redissonClient.getKeys().delete(USER_INFO_PREFIX + tokenBody.getId());
-        }
+        // 删除会话
+        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineUserKey(id));
+
+        mapCacheAsync.removeAsync(refreshToken);
+
+        mapCacheAsync.sizeAsync().thenAccept(size -> {
+            if (size == 0) {
+                batch.getBucket(buildUserInfoKey(tokenBody.getId())).deleteAsync();
+            }
+        });
+
+        batch.execute();
     }
 
     /**
@@ -124,17 +176,31 @@ public class TokenService {
      * @param refreshToken token
      */
     public final void logoutByRefreshToken(String refreshToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(REFRESH_TOKEN_PREFIX + refreshToken).get();
+        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
+        if (tokenBody == null) return;
+
+        String id = tokenBody.getId();
         String accessToken = tokenBody.getOtherToken();
 
-        redissonClient.getKeys().delete(ACCESS_TOKEN_PREFIX + accessToken, REFRESH_TOKEN_PREFIX + refreshToken);
+        // 删除Token（独立键）
+        redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
+        redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).delete();
 
-        Iterable<String> keys = redissonClient.getKeys()
-                .getKeys(KeysScanOptions.defaults().pattern(REFRESH_TOKEN_PREFIX + "*").limit(1));
+        // 创建批量操作对象
+        RBatch batch = redissonClient.createBatch();
 
-        if (!keys.iterator().hasNext()) {
-            redissonClient.getKeys().delete(USER_INFO_PREFIX + tokenBody.getId());
-        }
+        // 删除会话
+        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineUserKey(id));
+
+        mapCacheAsync.removeAsync(refreshToken);
+
+        mapCacheAsync.sizeAsync().thenAccept(size -> {
+            if (size == 0) {
+                batch.getBucket(buildUserInfoKey(tokenBody.getId())).deleteAsync();
+            }
+        });
+
+        batch.execute();
     }
 
     /**
@@ -143,7 +209,7 @@ public class TokenService {
      * @param userId 用户ID
      */
     public final RMapCache<String, OnlineUser> getOnlineCache(Object userId) {
-        return redissonClient.getMapCache(ONLINE_USER_PREFIX + userId);
+        return redissonClient.getMapCache(buildOnlineUserKey(userId));
     }
 
     /**
@@ -152,54 +218,13 @@ public class TokenService {
      * @param userId     用户ID
      * @param onlineUser 会话信息
      */
-    public final void putOnlineSession(Object userId, OnlineUser onlineUser) {
+    public final void putOnlineSession(Object userId, String refreshToken, OnlineUser onlineUser) {
         RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
-        onlineCache.put(
-                onlineUser.getRefreshToken(), onlineUser, tokenProperties.getRefreshTokenTimeOut(), TimeUnit.SECONDS);
-    }
-
-    /**
-     * 延长会话过期时间
-     *
-     * @param userId       用户ID
-     * @param refreshToken token
-     */
-    public final void expireOnlineSession(Object userId, String refreshToken) {
-        RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
-        onlineCache.expireEntry(
-                refreshToken,
-                Duration.ofSeconds(tokenProperties.getRefreshTokenTimeOut()),
-                Duration.ofSeconds(0));
-    }
-
-    /**
-     * 移除在线会话
-     *
-     * @param userId       用户ID
-     * @param refreshToken token
-     */
-    public final void kickoutOnlineSessionByRefreshToken(Object userId, String refreshToken) {
-        RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
-        onlineCache.remove(refreshToken);
-    }
-
-    /**
-     * 移除在线会话
-     *
-     * @param userId      用户ID
-     * @param accessToken token
-     */
-    public final void kickoutOnlineSessionByAccessToken(Object userId, String accessToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(ACCESS_TOKEN_PREFIX + accessToken).get();
-        String refreshToken = tokenBody.getOtherToken();
-
-        RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
-        onlineCache.remove(refreshToken);
+        onlineCache.put(refreshToken, onlineUser, tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
     }
 
     @Data
-    @AllArgsConstructor
-    static class TokenBody {
+    private static class TokenBody {
 
         /**
          * 用户ID
@@ -210,6 +235,14 @@ public class TokenService {
          * 另外的TOKEN
          */
         private String otherToken;
+
+        public TokenBody() {
+        }
+
+        private TokenBody(String id, String otherToken) {
+            this.id = id;
+            this.otherToken = otherToken;
+        }
 
     }
 

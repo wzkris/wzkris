@@ -1,8 +1,9 @@
 package com.wzkris.system.rmi.domain.req;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * @author : wzkris
@@ -34,9 +35,9 @@ public class LoginLogReq implements Serializable {
     private Long tenantId;
 
     /**
-     * 授权类型
+     * 登录类型
      */
-    private String grantType;
+    private String loginType;
 
     /**
      * 登录状态（0正常 1异常）
@@ -72,4 +73,5 @@ public class LoginLogReq implements Serializable {
      * 登录时间
      */
     private Date loginTime;
+
 }

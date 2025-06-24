@@ -13,13 +13,13 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class LoginEvent {
+public class LoginTokenEvent {
 
     private CorePrincipal principal;
 
     private String refreshToken;
 
-    private String grantType;
+    private String loginType;
 
     private String status;
 

@@ -3,7 +3,6 @@ package com.wzkris.auth.controller;
 import com.wzkris.auth.security.oauth2.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.web.model.BaseController;
-import com.wzkris.user.rmi.RmiOAuth2ClientFeign;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RefreshController extends BaseController {
-
-    private final RmiOAuth2ClientFeign rmiOAuth2ClientFeign;
 
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 

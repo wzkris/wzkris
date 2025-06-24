@@ -1,7 +1,6 @@
 package com.wzkris.auth.security.core;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 public abstract class CommonAuthenticationConverter<T extends CommonAuthenticationToken>
         implements AuthenticationConverter {
 
-    static final String LOGIN_TYPE = "login_type";
+    private final String LOGIN_TYPE = "login_type";
 
     /**
      * 是否支持此convert
@@ -48,7 +47,7 @@ public abstract class CommonAuthenticationConverter<T extends CommonAuthenticati
 
         // 扩展信息
         Map<String, Object> additionalParameters = parameters.entrySet().stream()
-                .filter(e -> !e.getKey().equals(OAuth2ParameterNames.GRANT_TYPE))
+                .filter(e -> !e.getKey().equals(LOGIN_TYPE))
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
         // 创建待认证token

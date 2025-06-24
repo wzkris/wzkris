@@ -20,11 +20,6 @@ public class OnlineUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 会话编号
-     */
-    private String refreshToken;
-
-    /**
      * 设备类型
      */
     private String deviceType;
@@ -53,10 +48,5 @@ public class OnlineUser implements Serializable {
      * 登录时间
      */
     private Date loginTime;
-
-    /**
-     * 是否当前会话
-     */
-    private Boolean current = false;
 
 }

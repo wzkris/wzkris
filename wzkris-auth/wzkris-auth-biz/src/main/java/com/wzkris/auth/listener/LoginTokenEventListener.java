@@ -3,7 +3,7 @@ package com.wzkris.auth.listener;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.auth.domain.OnlineUser;
-import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.rmi.domain.ClientUser;
 import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
@@ -34,7 +34,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LoginEventListener {
+public class LoginTokenEventListener {
 
     private final TokenService tokenService;
 
@@ -46,7 +46,7 @@ public class LoginEventListener {
 
     @Async
     @EventListener
-    public void loginEvent(LoginEvent event) {
+    public void loginTokenEvent(LoginTokenEvent event) {
         final CorePrincipal principal = event.getPrincipal();
 
         if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
@@ -58,8 +58,8 @@ public class LoginEventListener {
         }
     }
 
-    private void handleSystemUser(LoginEvent event, SystemUser user) {
-        final String grantType = event.getGrantType();
+    private void handleSystemUser(LoginTokenEvent event, SystemUser user) {
+        final String loginType = event.getLoginType();
         final String status = event.getStatus();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
@@ -75,7 +75,6 @@ public class LoginEventListener {
 
         if (loginSuccess) { // 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setRefreshToken(event.getRefreshToken());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
             onlineUser.setLoginIp(ipAddr);
             onlineUser.setLoginLocation(loginLocation);
@@ -83,7 +82,7 @@ public class LoginEventListener {
             onlineUser.setOs(userAgent.getOs().getName());
             onlineUser.setLoginTime(new Date());
 
-            tokenService.putOnlineSession(user.getUserId(), onlineUser);
+            tokenService.putOnlineSession(user.getId(), event.getRefreshToken(), onlineUser);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
@@ -97,7 +96,7 @@ public class LoginEventListener {
         loginLogReq.setTenantId(user.getTenantId());
         loginLogReq.setLoginTime(DateUtil.date());
         loginLogReq.setLoginIp(ipAddr);
-        loginLogReq.setGrantType(grantType);
+        loginLogReq.setLoginType(loginType);
         loginLogReq.setStatus(status);
         loginLogReq.setErrorMsg(errorMsg);
         loginLogReq.setLoginLocation(loginLocation);
@@ -106,7 +105,7 @@ public class LoginEventListener {
         rmiSysLogFeign.saveLoginlog(loginLogReq);
     }
 
-    private void handleClientUser(LoginEvent event, ClientUser user) {
+    private void handleClientUser(LoginTokenEvent event, ClientUser user) {
         final String status = event.getStatus();
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
 

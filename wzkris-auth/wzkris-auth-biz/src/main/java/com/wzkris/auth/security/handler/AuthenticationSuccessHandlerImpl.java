@@ -18,7 +18,7 @@ package com.wzkris.auth.security.handler;
 
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
@@ -43,7 +43,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessTokenResponseMapConverter;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -105,10 +104,10 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                         );
             } else {
                 SpringUtil.getContext()
-                        .publishEvent(new LoginEvent(
+                        .publishEvent(new LoginTokenEvent(
                                 commonAuthenticationToken.getPrincipal(),
                                 authenticationToken.getRefreshToken().getTokenValue(),
-                                request.getParameter(OAuth2ParameterNames.GRANT_TYPE),
+                                commonAuthenticationToken.getLoginType(),
                                 CommonConstants.STATUS_ENABLE,
                                 "",
                                 ServletUtil.getClientIP(request),

@@ -7,7 +7,7 @@ import lombok.Getter;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 刷新TOKEN事件
+ * @description : 刷新Token事件
  * @date : 2025/04/26 08:50
  */
 @Getter
@@ -16,7 +16,7 @@ public class RefreshTokenEvent {
 
     private CorePrincipal principal;
 
-    private String userToken;
+    private String accessToken;
 
     private String refreshToken;
 

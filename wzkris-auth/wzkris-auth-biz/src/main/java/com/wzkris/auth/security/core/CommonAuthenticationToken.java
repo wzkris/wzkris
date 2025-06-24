@@ -28,6 +28,8 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
         }
     }
 
+    public abstract String getLoginType();
+
     @Override
     public final CorePrincipal getPrincipal() {
         return this.principal;
