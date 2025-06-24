@@ -164,7 +164,7 @@ public class TokenService {
 
         mapCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                batch.getBucket(buildUserInfoKey(tokenBody.getId())).deleteAsync();
+                redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).delete();
             }
         });
 
@@ -197,7 +197,7 @@ public class TokenService {
 
         mapCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                batch.getBucket(buildUserInfoKey(tokenBody.getId())).deleteAsync();
+                redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).delete();
             }
         });
 

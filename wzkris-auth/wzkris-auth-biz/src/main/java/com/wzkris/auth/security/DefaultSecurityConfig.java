@@ -62,8 +62,7 @@ public class DefaultSecurityConfig {
                 .addFilterAt(new LoginEndpointFilter(authenticationProviders, authenticationConverters)
                         , UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> {
-                    logout.logoutUrl("/logout")
-                            .addLogoutHandler(new LogoutHandlerImpl(tokenService))
+                    logout.addLogoutHandler(new LogoutHandlerImpl(tokenService))
                             .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT));
                 });
         return http.build();

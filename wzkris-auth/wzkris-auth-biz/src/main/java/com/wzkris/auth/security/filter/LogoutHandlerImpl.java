@@ -2,7 +2,8 @@ package com.wzkris.auth.security.filter;
 
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.utils.StringUtil;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -22,9 +23,9 @@ public class LogoutHandlerImpl implements LogoutHandler {
     }
 
     @Override
-    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        if (authentication != null && authentication.getPrincipal() instanceof CorePrincipal principal) {
-            String accessToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
+    public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
+        String accessToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
+        if (StringUtil.isNotBlank(accessToken)) {
             tokenService.logoutByAccessToken(accessToken);
         }
     }
