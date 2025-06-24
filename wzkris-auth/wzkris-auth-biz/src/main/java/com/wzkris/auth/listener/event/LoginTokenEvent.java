@@ -13,7 +13,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class LoginEvent {
+public class LoginTokenEvent {
 
     private CorePrincipal principal;
 

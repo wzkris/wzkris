@@ -3,7 +3,7 @@ package com.wzkris.auth.listener;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.auth.domain.OnlineUser;
-import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.rmi.domain.ClientUser;
 import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
@@ -34,7 +34,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LoginEventListener {
+public class LoginTokenEventListener {
 
     private final TokenService tokenService;
 
@@ -46,7 +46,7 @@ public class LoginEventListener {
 
     @Async
     @EventListener
-    public void loginEvent(LoginEvent event) {
+    public void loginTokenEvent(LoginTokenEvent event) {
         final CorePrincipal principal = event.getPrincipal();
 
         if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
@@ -58,7 +58,7 @@ public class LoginEventListener {
         }
     }
 
-    private void handleSystemUser(LoginEvent event, SystemUser user) {
+    private void handleSystemUser(LoginTokenEvent event, SystemUser user) {
         final String loginType = event.getLoginType();
         final String status = event.getStatus();
         final String errorMsg = event.getErrorMsg();
@@ -105,7 +105,7 @@ public class LoginEventListener {
         rmiSysLogFeign.saveLoginlog(loginLogReq);
     }
 
-    private void handleClientUser(LoginEvent event, ClientUser user) {
+    private void handleClientUser(LoginTokenEvent event, ClientUser user) {
         final String status = event.getStatus();
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
 

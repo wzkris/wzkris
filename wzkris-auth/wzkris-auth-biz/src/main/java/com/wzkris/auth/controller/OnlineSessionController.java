@@ -1,9 +1,11 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.OnlineUser;
+import com.wzkris.auth.domain.resp.OnlineUserResp;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,30 +17,40 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "在线会话")
 @Slf4j
 @RestController
-@RequestMapping("/online_session")
+@RequestMapping("/online_user")
 @RequiredArgsConstructor
 public class OnlineSessionController extends BaseController {
 
     private final TokenService tokenService;
 
     @Operation(summary = "在线会话")
-    @GetMapping("/sysuserinfo")
-    public Result<Collection<OnlineUser>> onlineSession(@RequestHeader(HeaderConstants.X_TENANT_TOKEN) String accessToken) {
+    @GetMapping
+    public Result<Collection<OnlineUserResp>> onlineSession(@RequestHeader(HeaderConstants.X_TENANT_TOKEN) String accessToken) {
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
 
         RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(SystemUserUtil.getUserId());
-        OnlineUser onlineUser = onlineCache.get(refreshToken);
-        onlineUser.setCurrent(true);
 
-        return ok(new ArrayList<>(onlineCache.values()));
+        List<OnlineUserResp> resps = new ArrayList<>();
+        for (Map.Entry<String, OnlineUser> entry : onlineCache.entrySet()) {
+            OnlineUserResp userResp = new OnlineUserResp(entry.getValue());
+            userResp.setRefreshToken(entry.getKey());
+            if (StringUtil.equals(refreshToken, entry.getKey())) {
+                userResp.setCurrent(true);
+            }
+            resps.add(userResp);
+        }
+
+        return ok(resps);
     }
 
     @Operation(summary = "踢出会话")
-    @PostMapping("/sysuserinfo/kickout")
+    @PostMapping("/kickout")
     public Result<Void> kickoutSession(@RequestBody String refreshToken) {
         tokenService.logoutByRefreshToken(refreshToken);
         return ok();

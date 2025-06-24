@@ -64,8 +64,15 @@ public class TokenService {
         userinfo.setAsync(principal, Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
 
         RMapCacheAsync<String, OnlineUser> mapCache = batch.getMapCache(buildOnlineUserKey(principal.getId()));
-        mapCache.putAsync(refreshToken, new OnlineUser(),
-                tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
+        mapCache.getAsync(refreshToken).thenAccept(onlineUser -> {
+            if (onlineUser == null) {
+                mapCache.putAsync(refreshToken, new OnlineUser(),
+                        tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
+            } else {
+                mapCache.expireEntryAsync(refreshToken, Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()),
+                        Duration.ofSeconds(0));
+            }
+        });
 
         batch.execute();
 
@@ -73,7 +80,13 @@ public class TokenService {
         accessTokenBucket.setAsync(new TokenBody(principal.getId(), refreshToken),
                 Duration.ofSeconds(tokenProperties.getUserTokenTimeOut()));
 
+        // 立刻失效以前的access_token
         RBucket<TokenBody> refreshTokenBucket = redissonClient.getBucket(buildRefreshTokenKey(refreshToken));
+        TokenBody tokenBody = refreshTokenBucket.get();
+        if (tokenBody != null) {
+            redissonClient.getBucket(buildAccessTokenKey(tokenBody.getOtherToken())).deleteAsync();
+        }
+
         refreshTokenBucket.setAsync(new TokenBody(principal.getId(), accessToken),
                 Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
     }
@@ -88,7 +101,7 @@ public class TokenService {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
         if (tokenBody == null) return null;
 
-        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.id)).get();
+        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).get();
     }
 
     /**
@@ -101,7 +114,7 @@ public class TokenService {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
         if (tokenBody == null) return null;
 
-        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.id)).get();
+        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).get();
     }
 
     /**
@@ -208,20 +221,6 @@ public class TokenService {
     public final void putOnlineSession(Object userId, String refreshToken, OnlineUser onlineUser) {
         RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
         onlineCache.put(refreshToken, onlineUser, tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
-    }
-
-    /**
-     * 延长会话过期时间
-     *
-     * @param userId       用户ID
-     * @param refreshToken token
-     */
-    public final void expireOnlineSession(Object userId, String refreshToken) {
-        RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
-        onlineCache.expireEntry(
-                refreshToken,
-                Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()),
-                Duration.ofSeconds(0));
     }
 
     @Data

@@ -1,6 +1,5 @@
 package com.wzkris.auth.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -49,11 +48,5 @@ public class OnlineUser implements Serializable {
      * 登录时间
      */
     private Date loginTime;
-
-    /**
-     * 是否当前会话
-     */
-    @JsonIgnore
-    private Boolean current = false;
 
 }

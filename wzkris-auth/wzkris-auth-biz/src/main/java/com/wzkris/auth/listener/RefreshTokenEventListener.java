@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 登录事件监听
+ * @description : 刷新Token事件监听
  * @date : 2023/8/28 10:05
  */
 @Slf4j
@@ -30,7 +30,7 @@ public class RefreshTokenEventListener {
         CorePrincipal principal = event.getPrincipal();
 
         if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
-            tokenService.expireOnlineSession(principal.getId(), event.getRefreshToken());
+
         } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CLIENT_USER.getValue())) {
             // empty
         } else {

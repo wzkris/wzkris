@@ -2,7 +2,7 @@ package com.wzkris.auth.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.http.useragent.UserAgentUtil;
-import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
@@ -137,7 +137,7 @@ public class SystemUserService extends UserInfoTemplate {
         user.setUsername(userResp.getUsername());
         user.setTenantId(userResp.getTenantId());
         SpringUtil.getContext()
-                .publishEvent(new LoginEvent(
+                .publishEvent(new LoginTokenEvent(
                         user,
                         null,
                         grantType,
