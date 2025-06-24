@@ -26,7 +26,6 @@ public class LogoutHandlerImpl implements LogoutHandler {
         if (authentication != null && authentication.getPrincipal() instanceof CorePrincipal principal) {
             String accessToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
             tokenService.logoutByAccessToken(accessToken);
-            tokenService.kickoutOnlineSessionByAccessToken(principal.getId(), accessToken);
         }
     }
 

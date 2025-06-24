@@ -1,5 +1,6 @@
 package com.wzkris.auth.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,11 +19,6 @@ public class OnlineUser implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 会话编号
-     */
-    private String refreshToken;
 
     /**
      * 设备类型
@@ -57,6 +53,7 @@ public class OnlineUser implements Serializable {
     /**
      * 是否当前会话
      */
+    @JsonIgnore
     private Boolean current = false;
 
 }

@@ -75,7 +75,6 @@ public class LoginEventListener {
 
         if (loginSuccess) { // 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setRefreshToken(event.getRefreshToken());
             onlineUser.setDeviceType(userAgent.getPlatform().getName());
             onlineUser.setLoginIp(ipAddr);
             onlineUser.setLoginLocation(loginLocation);
@@ -83,7 +82,7 @@ public class LoginEventListener {
             onlineUser.setOs(userAgent.getOs().getName());
             onlineUser.setLoginTime(new Date());
 
-            tokenService.putOnlineSession(user.getUserId(), onlineUser);
+            tokenService.putOnlineSession(user.getId(), event.getRefreshToken(), onlineUser);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
