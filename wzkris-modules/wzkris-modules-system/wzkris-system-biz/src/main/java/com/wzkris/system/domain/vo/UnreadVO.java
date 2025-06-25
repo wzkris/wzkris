@@ -17,4 +17,5 @@ public class UnreadVO {
         this.system = system;
         this.device = device;
     }
+
 }

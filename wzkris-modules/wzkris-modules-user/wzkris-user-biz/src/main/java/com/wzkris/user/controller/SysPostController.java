@@ -1,9 +1,9 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
@@ -18,10 +18,11 @@ import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 岗位信息操作处理
@@ -51,9 +52,9 @@ public class SysPostController extends BaseController {
 
     private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPostQueryReq req) {
         return new LambdaQueryWrapper<SysPost>()
-                .like(ObjUtil.isNotEmpty(req.getPostName()), SysPost::getPostName, req.getPostName())
-                .like(ObjUtil.isNotEmpty(req.getPostCode()), SysPost::getPostCode, req.getPostCode())
-                .eq(ObjUtil.isNotEmpty(req.getStatus()), SysPost::getStatus, req.getStatus())
+                .like(StringUtil.isNotEmpty(req.getPostName()), SysPost::getPostName, req.getPostName())
+                .like(StringUtil.isNotEmpty(req.getPostCode()), SysPost::getPostCode, req.getPostCode())
+                .eq(StringUtil.isNotEmpty(req.getStatus()), SysPost::getStatus, req.getStatus())
                 .orderByDesc(SysPost::getPostSort);
     }
 
@@ -91,4 +92,5 @@ public class SysPostController extends BaseController {
         postService.checkPostUsed(postIds);
         return toRes(postService.deleteByPostIds(postIds));
     }
+
 }

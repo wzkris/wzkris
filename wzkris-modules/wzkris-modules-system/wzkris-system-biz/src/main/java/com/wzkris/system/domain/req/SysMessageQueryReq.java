@@ -12,4 +12,5 @@ public class SysMessageQueryReq {
 
     @Schema(description = "状态（0正常 1关闭）")
     private String status;
+
 }

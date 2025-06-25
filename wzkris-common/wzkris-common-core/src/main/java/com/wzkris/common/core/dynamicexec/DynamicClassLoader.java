@@ -23,4 +23,5 @@ public class DynamicClassLoader extends URLClassLoader {
     public Class<?> loadClassByBytes(byte[] classData) {
         return this.defineClass(null, classData, 0, classData.length);
     }
+
 }

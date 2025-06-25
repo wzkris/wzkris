@@ -16,4 +16,5 @@ public class SysLoginLogQueryReq extends QueryReq {
 
     @Schema(description = "登录地址")
     private String loginLocation;
+
 }

@@ -1,6 +1,5 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
@@ -19,10 +18,13 @@ import com.wzkris.user.service.SysDeptService;
 import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 部门信息
@@ -68,7 +70,7 @@ public class SysDeptController extends BaseController {
         if (!tenantService.checkDeptLimit(SystemUserUtil.getTenantId())) {
             return err412("部门数量已达上限，请联系管理员");
         }
-        if (StringUtil.isNotNull(req.getParentId()) && req.getParentId() != 0) {
+        if (ObjectUtils.isNotEmpty(req.getParentId()) && req.getParentId() != 0) {
             SysDept info = deptMapper.selectById(req.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点
             if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
@@ -85,7 +87,7 @@ public class SysDeptController extends BaseController {
     public Result<?> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysDeptReq req) {
         // 校验权限
         deptService.checkDataScopes(req.getDeptId());
-        if (ObjUtil.equals(req.getParentId(), req.getDeptId())) {
+        if (Objects.equals(req.getParentId(), req.getDeptId())) {
             return err412("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
         } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
                 && deptMapper.checkExistNormalChildren(req.getDeptId())) {
@@ -108,4 +110,5 @@ public class SysDeptController extends BaseController {
         }
         return toRes(deptService.deleteById(deptId));
     }
+
 }

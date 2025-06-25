@@ -25,11 +25,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 角色信息
@@ -72,8 +73,8 @@ public class SysRoleController extends BaseController {
 
     private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRoleQueryReq req) {
         return new LambdaQueryWrapper<SysRole>()
-                .like(StringUtil.isNotNull(req.getRoleName()), SysRole::getRoleName, req.getRoleName())
-                .eq(StringUtil.isNotNull(req.getStatus()), SysRole::getStatus, req.getStatus())
+                .like(StringUtil.isNotEmpty(req.getRoleName()), SysRole::getRoleName, req.getRoleName())
+                .eq(StringUtil.isNotEmpty(req.getStatus()), SysRole::getStatus, req.getStatus())
                 .orderByDesc(SysRole::getRoleSort, SysRole::getRoleId);
     }
 
@@ -210,4 +211,5 @@ public class SysRoleController extends BaseController {
         userService.checkDataScopes(req.getUserIds());
         return toRes(roleService.allocateUsers(req.getRoleId(), req.getUserIds()));
     }
+
 }

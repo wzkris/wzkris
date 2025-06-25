@@ -5,10 +5,11 @@ import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
-import java.util.Collection;
-import java.util.List;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 部门管理 数据层
@@ -86,15 +87,16 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept> {
     @DeptScope
     @Select(
             """
-            <script>
-                SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END
-                    FROM biz.sys_dept WHERE dept_id IN
-                    <foreach collection="collection" item="deptId" open="(" separator="," close=")">
-                        <if test="deptId != null and deptId != ''">
-                            #{deptId}
-                        </if>
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END
+                            FROM biz.sys_dept WHERE dept_id IN
+                            <foreach collection="collection" item="deptId" open="(" separator="," close=")">
+                                <if test="deptId != null and deptId != ''">
+                                    #{deptId}
+                                </if>
+                            </foreach>
+                    </script>
+                    """)
     boolean checkDataScopes(Collection<Long> deptIds);
+
 }

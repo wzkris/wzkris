@@ -21,11 +21,12 @@ import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 租户钱包信息
@@ -90,4 +91,5 @@ public class SysTenantWalletProfileController extends BaseController {
         // TODO 实际提现
         return ok();
     }
+
 }

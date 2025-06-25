@@ -6,11 +6,12 @@ import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.vo.SysUserVO;
-import java.util.Collection;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 用户表 数据层
@@ -26,10 +27,10 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
      */
     @Select(
             """
-            SELECT u.*, d.dept_name, d.status AS deptStatus
-            		FROM biz.sys_user u LEFT JOIN biz.sys_dept d ON u.dept_id = d.dept_id
-            ${ew.customSqlSegment}
-            """)
+                    SELECT u.*, d.dept_name, d.status AS deptStatus
+                    		FROM biz.sys_user u LEFT JOIN biz.sys_dept d ON u.dept_id = d.dept_id
+                    ${ew.customSqlSegment}
+                    """)
     @DeptScope(tableAlias = "d")
     List<SysUserVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
@@ -88,15 +89,16 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser> {
     @DeptScope
     @Select(
             """
-            <script>
-                SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN true ELSE false END
-                    FROM biz.sys_user WHERE user_id IN
-                    <foreach collection="collection" item="userId" open="(" separator="," close=")">
-                        <if test="userId != null and userId != ''">
-                            #{userId}
-                        </if>
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        SELECT CASE WHEN COUNT(DISTINCT user_id) = ${userIds.size()} THEN true ELSE false END
+                            FROM biz.sys_user WHERE user_id IN
+                            <foreach collection="collection" item="userId" open="(" separator="," close=")">
+                                <if test="userId != null and userId != ''">
+                                    #{userId}
+                                </if>
+                            </foreach>
+                    </script>
+                    """)
     boolean checkDataScopes(Collection<Long> userIds);
+
 }

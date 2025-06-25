@@ -2,6 +2,7 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
+
 import java.util.List;
 
 /**
@@ -25,4 +26,5 @@ public interface SysTenantPackageService {
      * @return 结果
      */
     boolean checkPackageUsed(List<Long> packageIds);
+
 }

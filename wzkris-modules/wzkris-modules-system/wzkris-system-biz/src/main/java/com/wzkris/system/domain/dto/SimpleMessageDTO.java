@@ -29,4 +29,5 @@ public class SimpleMessageDTO {
         this.duration = 1500;
         this.content = content;
     }
+
 }

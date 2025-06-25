@@ -1,15 +1,17 @@
 package com.wzkris.common.orm.plus;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wzkris.common.core.exception.service.GenericException;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import org.springframework.beans.BeanUtils;
 
 /**
  * @author : wzkris
@@ -53,7 +55,7 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      */
     default <C> C selectById2VO(Serializable id, Class<C> voClass) {
         T obj = this.selectById(id);
-        if (ObjectUtil.isNull(obj)) {
+        if (Objects.isNull(obj)) {
             return null;
         }
         try {
@@ -61,9 +63,9 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             BeanUtils.copyProperties(obj, c);
             return c;
         } catch (InstantiationException
-                | IllegalAccessException
-                | InvocationTargetException
-                | NoSuchMethodException e) {
+                 | IllegalAccessException
+                 | InvocationTargetException
+                 | NoSuchMethodException e) {
             throw new GenericException(e.getMessage());
         }
     }
@@ -73,7 +75,7 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      */
     default <C> C selectOne2VO(AbstractWrapper<T, ?, ?> wrapper, Class<C> voClass) {
         T obj = this.selectOne(wrapper);
-        if (ObjectUtil.isNull(obj)) {
+        if (Objects.isNull(obj)) {
             return null;
         }
         try {
@@ -81,9 +83,9 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             BeanUtils.copyProperties(obj, c);
             return c;
         } catch (InstantiationException
-                | IllegalAccessException
-                | InvocationTargetException
-                | NoSuchMethodException e) {
+                 | IllegalAccessException
+                 | InvocationTargetException
+                 | NoSuchMethodException e) {
             throw new GenericException(e.getMessage());
         }
     }
@@ -93,7 +95,7 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      */
     default <C> List<C> selectList2VO(AbstractWrapper<T, ?, ?> wrapper, Class<C> voClass) {
         List<T> list = this.selectList(wrapper);
-        if (ObjectUtil.isEmpty(list)) {
+        if (CollectionUtils.isEmpty(list)) {
             return new ArrayList<>();
         }
 
@@ -104,12 +106,13 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
                         BeanUtils.copyProperties(obj, c);
                         return c;
                     } catch (InstantiationException
-                            | IllegalAccessException
-                            | InvocationTargetException
-                            | NoSuchMethodException e) {
+                             | IllegalAccessException
+                             | InvocationTargetException
+                             | NoSuchMethodException e) {
                         throw new GenericException(e.getMessage());
                     }
                 })
                 .collect(Collectors.toList());
     }
+
 }

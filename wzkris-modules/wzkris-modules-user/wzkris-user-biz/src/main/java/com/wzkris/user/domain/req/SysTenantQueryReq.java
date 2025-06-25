@@ -14,4 +14,5 @@ public class SysTenantQueryReq {
 
     @Schema(description = "租户状态")
     private String status;
+
 }

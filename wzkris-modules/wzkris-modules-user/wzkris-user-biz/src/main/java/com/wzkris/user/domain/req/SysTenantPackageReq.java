@@ -8,8 +8,9 @@ import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @AutoMappers({@AutoMapper(target = SysTenantPackage.class)})
@@ -32,4 +33,5 @@ public class SysTenantPackageReq {
 
     @Schema(description = "备注")
     private String remark;
+
 }

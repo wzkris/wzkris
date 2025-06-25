@@ -25,4 +25,5 @@ public interface SysDictService {
      * @return 结果
      */
     boolean checkUsedByDictKey(Long dictId, String dictKey);
+
 }

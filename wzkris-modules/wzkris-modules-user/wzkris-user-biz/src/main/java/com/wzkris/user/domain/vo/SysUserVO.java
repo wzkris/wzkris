@@ -22,4 +22,5 @@ public class SysUserVO extends SysUser {
 
     @Schema(description = "部门状态")
     private String deptStatus;
+
 }

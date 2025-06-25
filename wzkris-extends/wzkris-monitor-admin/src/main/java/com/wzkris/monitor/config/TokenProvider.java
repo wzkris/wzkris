@@ -1,6 +1,5 @@
 package com.wzkris.monitor.config;
 
-import cn.hutool.core.text.StrPool;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
@@ -38,7 +37,7 @@ public class TokenProvider {
                     .body(BodyInserters.fromFormData("grant_type", "client_credentials")
                             .with("client_id", properties.getClientId())
                             .with("client_secret", properties.getClientSecret())
-                            .with("scope", StringUtil.join(StrPool.COMMA, properties.getScopes())))
+                            .with("scope", StringUtil.join(StringUtil.COMMA, properties.getScopes())))
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<Result<OAuth2Response>>() {
                     })

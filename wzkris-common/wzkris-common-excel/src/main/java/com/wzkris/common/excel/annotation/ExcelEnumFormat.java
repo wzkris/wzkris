@@ -26,4 +26,5 @@ public @interface ExcelEnumFormat {
      * 字典枚举类中对应的text属性名称，默认为text
      */
     String textField() default "text";
+
 }

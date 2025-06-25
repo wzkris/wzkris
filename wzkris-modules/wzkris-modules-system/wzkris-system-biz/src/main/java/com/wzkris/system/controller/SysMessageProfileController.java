@@ -14,9 +14,10 @@ import com.wzkris.system.mapper.SysMessageMapper;
 import com.wzkris.system.mapper.SysNoticeMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "通知信息")
 @RestController
@@ -59,4 +60,5 @@ public class SysMessageProfileController extends BaseController {
         int count = noticeMapper.selectUnreadSize(SystemUserUtil.getUserId(), noticeType);
         return ok(count);
     }
+
 }

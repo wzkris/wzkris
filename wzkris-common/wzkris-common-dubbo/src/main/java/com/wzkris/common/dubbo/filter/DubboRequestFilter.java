@@ -2,6 +2,7 @@ package com.wzkris.common.dubbo.filter;
 
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
 import org.jboss.logging.MDC;
@@ -18,7 +19,7 @@ public class DubboRequestFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         if (RpcContext.getServiceContext().isConsumerSide()) {
             Object tracingId = MDC.get(HeaderConstants.X_TRACING_ID);
-            if (StringUtil.isNotNull(tracingId)) {
+            if (ObjectUtils.isNotEmpty(tracingId)) {
                 RpcContext.getServiceContext().setAttachment(HeaderConstants.X_TRACING_ID, tracingId);
             }
         } else {

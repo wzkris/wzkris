@@ -23,4 +23,5 @@ public class CreateTenantEvent {
     private String loginPwd;
 
     private String operPwd;
+
 }

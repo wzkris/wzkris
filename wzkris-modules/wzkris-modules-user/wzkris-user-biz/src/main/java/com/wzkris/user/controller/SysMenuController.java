@@ -17,12 +17,14 @@ import com.wzkris.user.mapper.SysMenuMapper;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 菜单管理
@@ -54,9 +56,9 @@ public class SysMenuController extends BaseController {
             menuIds = menuService.listMenuIdByUserId(SystemUserUtil.getUserId());
         }
         return new LambdaQueryWrapper<SysMenu>()
-                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
-                .like(StringUtil.isNotNull(queryReq.getMenuName()), SysMenu::getMenuName, queryReq.getMenuName())
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysMenu::getStatus, queryReq.getStatus())
+                .in(CollectionUtils.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
+                .like(StringUtil.isNotEmpty(queryReq.getMenuName()), SysMenu::getMenuName, queryReq.getMenuName())
+                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), SysMenu::getStatus, queryReq.getStatus())
                 .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
     }
 
@@ -106,4 +108,5 @@ public class SysMenuController extends BaseController {
         }
         return toRes(menuService.deleteById(menuId));
     }
+
 }

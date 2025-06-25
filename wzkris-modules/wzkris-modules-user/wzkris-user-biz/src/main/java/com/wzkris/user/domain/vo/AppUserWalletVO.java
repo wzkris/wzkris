@@ -1,8 +1,9 @@
 package com.wzkris.user.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 public class AppUserWalletVO {
@@ -12,4 +13,5 @@ public class AppUserWalletVO {
 
     @Schema(description = "状态")
     private String status;
+
 }

@@ -7,10 +7,11 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.wzkris.common.core.annotation.Sensitive;
-import java.io.IOException;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
+
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 数据脱敏json序列化工具
@@ -43,4 +44,5 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
         }
         return prov.findValueSerializer(property.getType(), property);
     }
+
 }

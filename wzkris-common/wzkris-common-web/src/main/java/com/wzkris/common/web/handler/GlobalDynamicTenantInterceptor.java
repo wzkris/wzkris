@@ -1,6 +1,5 @@
 package com.wzkris.common.web.handler;
 
-import cn.hutool.core.util.NumberUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
@@ -8,6 +7,7 @@ import com.wzkris.common.security.utils.SystemUserUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,8 +23,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     private static final String IGNORE_TYPE = "all";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // handle login request
         if (!SystemUserUtil.isLogin()) {
             return true;
@@ -37,7 +36,7 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
 
         String dynamicTenant = request.getHeader(HeaderConstants.X_TENANT_ID);
 
-        if (NumberUtil.isNumber(dynamicTenant)) {
+        if (NumberUtils.isCreatable(dynamicTenant)) {
             DynamicTenantUtil.set(Long.valueOf(dynamicTenant));
         } else if (StringUtil.equals(dynamicTenant, IGNORE_TYPE)) {
             DynamicTenantUtil.enableIgnore();
@@ -53,11 +52,10 @@ public class GlobalDynamicTenantInterceptor implements AsyncHandlerInterceptor {
     // 请求完成后的回调
     @Override
     public void postHandle(
-            HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
-            throws Exception {
+            HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
         Object dynamicTenant = request.getAttribute(HeaderConstants.X_TENANT_ID);
         if (dynamicTenant != null) {
-            if (NumberUtil.isNumber(dynamicTenant.toString())) {
+            if (NumberUtils.isCreatable(dynamicTenant.toString())) {
                 DynamicTenantUtil.remove();
             } else if (StringUtil.equals(dynamicTenant.toString(), IGNORE_TYPE)) {
                 DynamicTenantUtil.disableIgnore();

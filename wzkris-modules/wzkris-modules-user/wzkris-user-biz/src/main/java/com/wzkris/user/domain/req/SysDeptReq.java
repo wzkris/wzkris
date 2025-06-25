@@ -52,4 +52,5 @@ public class SysDeptReq {
     @Email(message = "{desc.dept}" + "{validate.email.illegal}")
     @Schema(description = "部门邮箱")
     private String email;
+
 }

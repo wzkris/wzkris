@@ -2,10 +2,11 @@ package com.wzkris.user.domain.vo;
 
 import com.wzkris.user.domain.*;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.io.Serial;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Select选择结构实体类
@@ -49,4 +50,5 @@ public class SelectVO implements Serializable {
         this.id = tenant.getTenantId();
         this.label = tenant.getTenantName();
     }
+
 }

@@ -1,11 +1,12 @@
 package com.wzkris.user.mapper;
 
 import com.wzkris.user.domain.SysRoleMenu;
-import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 角色与菜单关联表 数据层
@@ -23,13 +24,13 @@ public interface SysRoleMenuMapper {
      */
     @Select(
             """
-            <script>
-                SELECT menu_id FROM biz.sys_role_menu WHERE role_id IN
-                    <foreach collection="list" item="roleId" separator="," open="(" close=")">
-                        #{roleId}
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        SELECT menu_id FROM biz.sys_role_menu WHERE role_id IN
+                            <foreach collection="list" item="roleId" separator="," open="(" close=")">
+                                #{roleId}
+                            </foreach>
+                    </script>
+                    """)
     List<Long> listMenuIdByRoleIds(List<Long> roleIds);
 
     /**
@@ -58,13 +59,13 @@ public interface SysRoleMenuMapper {
      */
     @Delete(
             """
-            <script>
-                DELETE FROM biz.sys_role_menu WHERE role_id IN
-                    <foreach collection="list" item="roleId" open="(" separator="," close=")">
-                        #{roleId}
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        DELETE FROM biz.sys_role_menu WHERE role_id IN
+                            <foreach collection="list" item="roleId" open="(" separator="," close=")">
+                                #{roleId}
+                            </foreach>
+                    </script>
+                    """)
     int deleteByRoleIds(List<Long> roleIds);
 
     /**
@@ -84,12 +85,13 @@ public interface SysRoleMenuMapper {
      */
     @Insert(
             """
-            <script>
-                INSERT INTO biz.sys_role_menu(role_id, menu_id) VALUES
-                    <foreach collection="list" item="item" index="index" separator=",">
-                        (#{item.roleId}, #{item.menuId})
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        INSERT INTO biz.sys_role_menu(role_id, menu_id) VALUES
+                            <foreach collection="list" item="item" index="index" separator=",">
+                                (#{item.roleId}, #{item.menuId})
+                            </foreach>
+                    </script>
+                    """)
     int insertBatch(List<SysRoleMenu> roleMenus);
+
 }

@@ -1,6 +1,5 @@
 package com.wzkris.common.log.filter;
 
-import cn.hutool.core.util.IdUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.servlet.FilterChain;
@@ -12,6 +11,7 @@ import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * @author : wzkris
@@ -28,7 +28,7 @@ public class TracingLogFilter extends OncePerRequestFilter {
         // 网关转发从头拿
         String tracingId = request.getHeader(HeaderConstants.X_TRACING_ID);
         if (StringUtil.isBlank(tracingId)) {
-            tracingId = IdUtil.fastUUID();
+            tracingId = UUID.randomUUID().toString();
         }
         MDC.put(HeaderConstants.X_TRACING_ID, tracingId);
         response.setHeader(HeaderConstants.X_TRACING_ID, tracingId);

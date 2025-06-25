@@ -37,4 +37,5 @@ public class SysPostReq {
     @Range(max = Integer.MAX_VALUE, message = "{desc.sort}" + "{validate.size.illegal}")
     @Schema(description = "岗位排序")
     private Integer postSort;
+
 }

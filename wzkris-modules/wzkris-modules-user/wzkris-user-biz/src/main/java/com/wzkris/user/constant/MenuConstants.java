@@ -46,4 +46,5 @@ public class MenuConstants {
      * 基础布局组件
      */
     public static final String LAYOUT = "BasicLayout";
+
 }

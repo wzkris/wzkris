@@ -1,12 +1,12 @@
 package com.wzkris.auth.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.auth.rmi.domain.ClientUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.rmi.RmiAppUserFeign;
 import com.wzkris.user.rmi.domain.resp.AppUserResp;
@@ -71,7 +71,7 @@ public class ClientUserService extends UserInfoTemplate {
      * 校验用户账号
      */
     private void checkAccount(AppUserResp appUserResp) {
-        if (ObjUtil.equals(appUserResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
+        if (StringUtil.equals(appUserResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }

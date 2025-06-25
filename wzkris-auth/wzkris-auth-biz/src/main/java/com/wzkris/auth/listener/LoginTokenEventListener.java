@@ -1,7 +1,5 @@
 package com.wzkris.auth.listener;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.rmi.domain.ClientUser;
@@ -19,6 +17,7 @@ import com.wzkris.user.rmi.RmiSysUserFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nl.basjes.parse.useragent.UserAgent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -69,24 +68,24 @@ public class LoginTokenEventListener {
         log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", user.getName(), loginSuccess ? "成功" : "失败", ipAddr);
 
         // 获取客户端浏览器
-        String browser = userAgent.getBrowser().getName();
+        String browser = userAgent.getValue(UserAgent.AGENT_NAME);
         // 获取登录地址
         String loginLocation = AddressUtil.getRealAddressByIp(ipAddr);
 
         if (loginSuccess) { // 更新用户登录信息、在线会话信息
             OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setDeviceType(userAgent.getPlatform().getName());
+            onlineUser.setDeviceType(userAgent.getValue(UserAgent.DEVICE_NAME));
             onlineUser.setLoginIp(ipAddr);
             onlineUser.setLoginLocation(loginLocation);
             onlineUser.setBrowser(browser);
-            onlineUser.setOs(userAgent.getOs().getName());
+            onlineUser.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
             onlineUser.setLoginTime(new Date());
 
             tokenService.putOnlineSession(user.getId(), event.getRefreshToken(), onlineUser);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(DateUtil.date());
+            loginInfoReq.setLoginDate(new Date());
             rmiSysUserFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
@@ -94,13 +93,13 @@ public class LoginTokenEventListener {
         loginLogReq.setUserId(user.getUserId());
         loginLogReq.setUsername(user.getUsername());
         loginLogReq.setTenantId(user.getTenantId());
-        loginLogReq.setLoginTime(DateUtil.date());
+        loginLogReq.setLoginTime(new Date());
         loginLogReq.setLoginIp(ipAddr);
         loginLogReq.setLoginType(loginType);
         loginLogReq.setStatus(status);
         loginLogReq.setErrorMsg(errorMsg);
         loginLogReq.setLoginLocation(loginLocation);
-        loginLogReq.setOs(userAgent.getOs().getName());
+        loginLogReq.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
         loginLogReq.setBrowser(browser);
         rmiSysLogFeign.saveLoginlog(loginLogReq);
     }
@@ -112,7 +111,7 @@ public class LoginTokenEventListener {
         if (loginSuccess) { // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(event.getIpAddr());
-            loginInfoReq.setLoginDate(DateUtil.date());
+            loginInfoReq.setLoginDate(new Date());
             rmiAppUserFeign.updateLoginInfo(loginInfoReq);
         }
     }

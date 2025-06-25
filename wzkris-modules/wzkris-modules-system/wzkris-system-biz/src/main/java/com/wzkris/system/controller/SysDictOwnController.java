@@ -25,4 +25,5 @@ public class SysDictOwnController extends BaseController {
     public Result<SysDict.DictData[]> list(@PathVariable String dictKey) {
         return ok(dictService.getValueByDictKey(dictKey));
     }
+
 }

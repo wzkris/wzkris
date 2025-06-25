@@ -42,4 +42,5 @@ public class SysPost extends BaseEntity {
     public SysPost(String status) {
         this.status = status;
     }
+
 }

@@ -25,4 +25,5 @@ public final class GenericException extends BaseException {
     public String getMessage() {
         return this.getDefaultMessage();
     }
+
 }

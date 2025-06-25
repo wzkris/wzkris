@@ -1,11 +1,12 @@
 package com.wzkris.common.excel.convert;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.wzkris.common.core.utils.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.List;
 
 public class ExcelListConverter implements Converter<List<?>> {
@@ -17,12 +18,12 @@ public class ExcelListConverter implements Converter<List<?>> {
 
     @Override
     public WriteCellData<?> convertToExcelData(
-            List<?> list, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration)
-            throws Exception {
-        if (ObjectUtil.isNull(list)) {
-            return new WriteCellData<>("");
+            List<?> list, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+        if (CollectionUtils.isEmpty(list)) {
+            return new WriteCellData<>(StringUtil.EMPTY);
         }
-        String join = StringUtil.join(",", list);
+        String join = StringUtil.join(StringUtil.COMMA, list);
         return new WriteCellData<>(join);
     }
+
 }

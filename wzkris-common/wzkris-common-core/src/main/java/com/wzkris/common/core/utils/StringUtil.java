@@ -1,30 +1,29 @@
 package com.wzkris.common.core.utils;
 
-import cn.hutool.core.text.StrFormatter;
-import cn.hutool.core.util.StrUtil;
 import com.wzkris.common.core.constant.CommonConstants;
-import org.springframework.util.AntPathMatcher;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 字符串工具类
  *
  * @author wzkris
  */
-public class StringUtil extends StrUtil {
+public class StringUtil extends StringUtils {
 
     /**
-     * 空字符串
+     * 点
      */
-    private static final String NULLSTR = "";
+    public static final String DOT = ".";
+
+    /**
+     * 逗号
+     */
+    public static final CharSequence COMMA = ",";
 
     /**
      * 下划线
      */
-    private static final char SEPARATOR = '_';
+    public static final char SEPARATOR = '_';
 
     /**
      * 井号
@@ -32,104 +31,9 @@ public class StringUtil extends StrUtil {
     public static final String HASH = "#";
 
     /**
-     * * 判断一个Collection是否为空， 包含List，Set，Queue
-     *
-     * @param coll 要判断的Collection
-     * @return true：为空 false：非空
+     * @
      */
-    public static boolean isEmpty(Collection<?> coll) {
-        return isNull(coll) || coll.isEmpty();
-    }
-
-    /**
-     * * 判断一个Collection是否非空，包含List，Set，Queue
-     *
-     * @param coll 要判断的Collection
-     * @return true：非空 false：空
-     */
-    public static boolean isNotEmpty(Collection<?> coll) {
-        return !isEmpty(coll);
-    }
-
-    /**
-     * * 判断一个对象数组是否为空
-     *
-     * @param objects 要判断的对象数组
-     *                * @return true：为空 false：非空
-     */
-    public static boolean isEmpty(Object[] objects) {
-        return isNull(objects) || (objects.length == 0);
-    }
-
-    /**
-     * * 判断一个对象数组是否非空
-     *
-     * @param objects 要判断的对象数组
-     * @return true：非空 false：空
-     */
-    public static boolean isNotEmpty(Object[] objects) {
-        return !isEmpty(objects);
-    }
-
-    /**
-     * * 判断一个Map是否为空
-     *
-     * @param map 要判断的Map
-     * @return true：为空 false：非空
-     */
-    public static boolean isEmpty(Map<?, ?> map) {
-        return isNull(map) || map.isEmpty();
-    }
-
-    /**
-     * * 判断一个Map是否为空
-     *
-     * @param map 要判断的Map
-     * @return true：非空 false：空
-     */
-    public static boolean isNotEmpty(Map<?, ?> map) {
-        return !isEmpty(map);
-    }
-
-    /**
-     * * 判断一个字符串是否为空串
-     *
-     * @param str String
-     * @return true：为空 false：非空
-     */
-    public static boolean isEmpty(String str) {
-        return isNull(str) || NULLSTR.equals(str.trim());
-    }
-
-    /**
-     * * 判断一个字符串是否为非空串
-     *
-     * @param str String
-     * @return true：非空串 false：空串
-     */
-    public static boolean isNotEmpty(String str) {
-        return !isEmpty(str);
-    }
-
-    /**
-     * * 判断一个对象是否为空
-     *
-     * @param object Object
-     * @return true：为空 false：非空
-     */
-    public static boolean isNull(Object object) {
-        return object == null;
-    }
-
-    /**
-     * * 判断一个对象是否非空
-     *
-     * @param object Object
-     * @return true：非空 false：空
-     */
-    public static boolean isNotNull(Object object) {
-        return !isNull(object);
-    }
+    public static final String AT = "@";
 
     /**
      * 去空格
@@ -139,33 +43,47 @@ public class StringUtil extends StrUtil {
     }
 
     /**
-     * 格式化文本, {} 表示占位符<br>
-     * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>
-     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可<br>
-     * 例：<br>
-     * 通常使用：format("this is {} for {}", "a", "b") -> this is a for b<br>
-     * 转义{}： format("this is \\{} for {}", "a", "b") -> this is \{} for a<br>
-     * 转义\： format("this is \\\\{} for {}", "a", "b") -> this is \a for b<br>
-     *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param params   参数值
-     * @return 格式化后的文本
-     */
-    public static String format(String template, Object... params) {
-        if (isEmpty(params) || isEmpty(template)) {
-            return template;
-        }
-        return StrFormatter.format(template, params);
-    }
-
-    /**
      * 是否为http(s)://开头
      *
      * @param link 链接
      * @return 结果
      */
     public static boolean ishttp(String link) {
-        return StringUtil.startWithAny(link, CommonConstants.HTTP, CommonConstants.HTTPS);
+        return StringUtil.startsWith(link, CommonConstants.HTTP) || StringUtil.startsWith(link, CommonConstants.HTTPS);
+    }
+
+    /**
+     * 基于 Unicode 代码点替换字符串中的指定区域
+     *
+     * @param str          原始字符串
+     * @param startInclude 起始代码点索引（包含）
+     * @param endExclude   结束代码点索引（不包含）
+     * @param replacedChar 用于替换的字符
+     * @return 替换后的新字符串
+     */
+    public static String replaceAt(String str, int startInclude, int endExclude, char replacedChar) {
+        if (isEmpty(str)) {
+            return StringUtils.defaultString(str);
+        }
+
+        int[] strCodePoints = str.codePoints().toArray();
+        final int strLength = strCodePoints.length;
+
+        if (startInclude > strLength) {
+            return str;
+        }
+        if (endExclude > strLength) {
+            endExclude = strLength;
+        }
+        if (startInclude > endExclude) {
+            return str;
+        }
+
+        for (int i = startInclude; i < endExclude; i++) {
+            strCodePoints[i] = replacedChar;
+        }
+
+        return new String(strCodePoints, 0, strCodePoints.length);
     }
 
     /**
@@ -263,41 +181,16 @@ public class StringUtil extends StrUtil {
     }
 
     /**
-     * 查找指定字符串是否匹配指定字符串列表中的任意一个字符串
+     * 调用ToString方法
      *
-     * @param str  指定字符串
-     * @param strs 需要检查的字符串数组
-     * @return 是否匹配
+     * @param o 对象
+     * @return 字符串
      */
-    public static boolean matches(String str, List<String> strs) {
-        if (isEmpty(str) || isEmpty(strs)) {
-            return false;
+    public static String toStringOrNull(Object o) {
+        if (o == null) {
+            return null;
         }
-        for (String pattern : strs) {
-            if (isMatch(pattern, str)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 判断url是否与规则配置:
-     * ? 表示单个字符;
-     * * 表示一层路径内的任意字符串，不可跨层级;
-     * ** 表示任意层路径;
-     *
-     * @param pattern 匹配规则
-     * @param url     需要匹配的url
-     */
-    public static boolean isMatch(String pattern, String url) {
-        AntPathMatcher matcher = new AntPathMatcher();
-        return matcher.match(pattern, url);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T cast(Object obj) {
-        return (T) obj;
+        return o.toString();
     }
 
 }

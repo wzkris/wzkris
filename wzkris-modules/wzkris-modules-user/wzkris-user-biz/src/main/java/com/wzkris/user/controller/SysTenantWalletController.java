@@ -12,13 +12,15 @@ import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 租户钱包管理
@@ -49,7 +51,7 @@ public class SysTenantWalletController extends BaseController {
     private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantWalletRecord>()
                 .eq(
-                        StringUtil.isNotNull(queryReq.getTenantId()),
+                        ObjectUtils.isNotEmpty(queryReq.getTenantId()),
                         SysTenantWalletRecord::getTenantId,
                         queryReq.getTenantId())
                 .like(
@@ -63,4 +65,5 @@ public class SysTenantWalletController extends BaseController {
                         queryReq.getParam("endTime"))
                 .orderByDesc(SysTenantWalletRecord::getRecordId);
     }
+
 }

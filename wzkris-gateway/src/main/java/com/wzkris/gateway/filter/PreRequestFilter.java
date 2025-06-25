@@ -1,6 +1,5 @@
 package com.wzkris.gateway.filter;
 
-import cn.hutool.core.util.IdUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
@@ -19,9 +18,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,7 +67,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
                 exchange.mutate()
                         .request(
                                 request.mutate()
-                                        .header(HeaderConstants.X_TRACING_ID, IdUtil.fastUUID())
+                                        .header(HeaderConstants.X_TRACING_ID, UUID.randomUUID().toString())
                                         .build()
                         )
                         .build()
@@ -86,8 +87,14 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         return !hasToken && !isPathPermitted(request.getURI().getPath());
     }
 
-    private boolean isPathPermitted(String path) {
-        return StringUtil.matches(path, permitAllProperties.getIgnores());
+    private boolean isPathPermitted(String url) {
+        AntPathMatcher matcher = new AntPathMatcher();
+        for (String path : permitAllProperties.getIgnores()) {
+            if (matcher.match(path, url)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

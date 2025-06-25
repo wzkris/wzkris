@@ -40,4 +40,5 @@ public class ClassInjector {
         ClassModifier classModifier = new ClassModifier(classBytes);
         return classModifier.modifyUTF8Constant4Class(oldClass, newClass);
     }
+
 }

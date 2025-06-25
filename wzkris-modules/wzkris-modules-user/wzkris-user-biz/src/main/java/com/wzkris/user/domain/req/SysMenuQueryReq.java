@@ -14,4 +14,5 @@ public class SysMenuQueryReq {
 
     @Schema(description = "0代表存在 1代表停用")
     private String status;
+
 }

@@ -1,6 +1,5 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -18,16 +17,17 @@ import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysRoleService;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 /**
  * 角色 业务层处理
@@ -129,7 +129,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public boolean allocateUsers(Long roleId, List<Long> userIds) {
-        if (ObjUtil.isNotEmpty(userIds)) {
+        if (CollectionUtils.isNotEmpty(userIds)) {
             // 新增用户与角色管理
             List<SysUserRole> list = userIds.stream()
                     .map(userId -> new SysUserRole(userId, roleId))
@@ -200,10 +200,11 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @param roleIds 待操作的角色id数组
      */
     public void checkDataScopes(Collection<Long> roleIds) {
-        if (ObjUtil.isNotEmpty(roleIds)) {
+        if (CollectionUtils.isNotEmpty(roleIds)) {
             if (!roleMapper.checkDataScopes(roleIds)) {
                 throw new AccessDeniedException("无此角色数据访问权限");
             }
         }
     }
+
 }

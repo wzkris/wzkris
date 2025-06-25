@@ -17,4 +17,5 @@ public class FileException extends BaseException {
     public FileException(int biz, String code, Object... args) {
         super("文件异常", biz, code, args, null);
     }
+
 }

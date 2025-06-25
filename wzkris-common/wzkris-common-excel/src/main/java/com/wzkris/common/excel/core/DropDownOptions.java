@@ -1,16 +1,17 @@
 package com.wzkris.common.excel.core;
 
-import cn.hutool.core.util.StrUtil;
 import com.wzkris.common.core.exception.service.GenericException;
+import com.wzkris.common.core.utils.StringUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * <h1>Excel下拉可选项</h1>
@@ -69,7 +70,7 @@ public class DropDownOptions {
         StringBuilder stringBuffer = new StringBuilder();
         String regex = "^[\\S\\d\\u4e00-\\u9fa5]+$";
         for (int i = 0; i < vars.length; i++) {
-            String var = StrUtil.trimToEmpty(String.valueOf(vars[i]));
+            String var = StringUtil.trimToEmpty(String.valueOf(vars[i]));
             if (!var.matches(regex)) {
                 throw new GenericException("选项数据不符合规则，仅允许使用中英文字符以及数字");
             }
@@ -92,7 +93,7 @@ public class DropDownOptions {
      * @return 原始的参数
      */
     public static List<String> analyzeOptionValue(String option) {
-        return StrUtil.split(option, DELIMITER, true, true);
+        return List.of(StringUtil.split(option, DELIMITER, 0));
     }
 
     /**
@@ -150,4 +151,5 @@ public class DropDownOptions {
         parentLinkSonOptions.setNextOptions(sonOptions);
         return parentLinkSonOptions;
     }
+
 }

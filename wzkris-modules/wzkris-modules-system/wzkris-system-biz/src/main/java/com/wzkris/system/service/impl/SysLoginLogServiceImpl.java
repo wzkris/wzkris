@@ -16,4 +16,5 @@ import org.springframework.stereotype.Service;
 public class SysLoginLogServiceImpl implements SysLoginLogService {
 
     private final SysLoginLogMapper loginLogMapper;
+
 }

@@ -4,10 +4,11 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Entity基类 审计字段
@@ -45,4 +46,5 @@ public class BaseEntity implements Serializable {
     @JsonIgnore
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updaterId;
+
 }

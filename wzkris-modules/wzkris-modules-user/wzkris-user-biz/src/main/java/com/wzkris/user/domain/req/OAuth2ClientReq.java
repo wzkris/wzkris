@@ -41,4 +41,5 @@ public class OAuth2ClientReq {
 
     @Schema(description = "放行配置")
     private Boolean autoApprove;
+
 }

@@ -11,4 +11,5 @@ public class OAuth2ClientQueryReq {
 
     @Schema(description = "客户端状态")
     private String status;
+
 }

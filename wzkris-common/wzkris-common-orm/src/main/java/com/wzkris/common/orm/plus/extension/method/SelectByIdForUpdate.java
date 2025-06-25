@@ -28,4 +28,5 @@ public class SelectByIdForUpdate extends AbstractMethod {
                 Object.class);
         return this.addSelectMappedStatementForTable(mapperClass, this.methodName, sqlSource, tableInfo);
     }
+
 }

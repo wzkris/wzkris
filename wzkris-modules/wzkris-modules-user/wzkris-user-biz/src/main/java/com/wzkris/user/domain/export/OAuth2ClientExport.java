@@ -7,8 +7,9 @@ import com.wzkris.common.excel.convert.ExcelListConverter;
 import com.wzkris.user.domain.OAuth2Client;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @AutoMappers({@AutoMapper(target = OAuth2Client.class)})
@@ -39,4 +40,5 @@ public class OAuth2ClientExport {
     @ExcelProperty(value = "放行配置", converter = ExcelDictConvert.class)
     @ExcelDictFormat(readConverterExp = "false=自动,true=手动")
     private Boolean autoApprove;
+
 }

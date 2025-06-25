@@ -95,4 +95,5 @@ public class SysDictController extends BaseController {
         dictService.loadingDictCache();
         return ok();
     }
+
 }

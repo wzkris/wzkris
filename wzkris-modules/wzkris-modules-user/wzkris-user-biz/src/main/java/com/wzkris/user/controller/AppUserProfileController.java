@@ -71,4 +71,5 @@ public class AppUserProfileController extends BaseController {
         appUser.setAvatar(url);
         return toRes(appUserMapper.updateById(appUser));
     }
+
 }

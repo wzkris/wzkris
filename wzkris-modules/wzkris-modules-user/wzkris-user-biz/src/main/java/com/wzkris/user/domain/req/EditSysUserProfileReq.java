@@ -14,4 +14,5 @@ public class EditSysUserProfileReq {
 
     @Schema(description = "用户性别")
     private String gender;
+
 }

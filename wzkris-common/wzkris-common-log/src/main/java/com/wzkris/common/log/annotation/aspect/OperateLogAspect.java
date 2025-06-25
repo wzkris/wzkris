@@ -1,7 +1,5 @@
 package com.wzkris.common.log.annotation.aspect;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.text.StrPool;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,7 +83,7 @@ public class OperateLogAspect implements ApplicationRunner {
 
     private final List<OperLogReq> batchQ = new ArrayList<>();
 
-    private static final int BATCH_SIZE = 10;
+    private static final int BATCH_SIZE = 30;
 
     private static final int MAX_PARAM_LENGTH = 1000;
 
@@ -96,7 +94,7 @@ public class OperateLogAspect implements ApplicationRunner {
     public void run() {
         for (; ; ) {
             try {
-                OperLogReq operLogReq = bufferQ.poll(60 * 3, TimeUnit.SECONDS);
+                OperLogReq operLogReq = bufferQ.poll(60, TimeUnit.SECONDS);
                 if (operLogReq == null) {
                     flushBatchQ();
                 } else {
@@ -189,24 +187,24 @@ public class OperateLogAspect implements ApplicationRunner {
         operLogReq.setTenantId(SystemUserUtil.getTenantId());
         operLogReq.setOperType(operateLog.operateType().getValue());
         operLogReq.setStatus(OperateStatus.SUCCESS.value());
-        operLogReq.setOperTime(DateUtil.date());
+        operLogReq.setOperTime(new Date());
 
         String ip = ServletUtil.getClientIP(request);
         operLogReq.setOperIp(ip);
         operLogReq.setOperLocation(AddressUtil.getRealAddressByIp(ip));
-        operLogReq.setOperUrl(StringUtil.sub(request.getRequestURI(), 0, MAX_URL_LENGTH));
+        operLogReq.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
 
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
-        operLogReq.setMethod(className + StrPool.DOT + methodName + "()");
+        operLogReq.setMethod(className + StringUtil.DOT + methodName + "()");
         operLogReq.setRequestMethod(request.getMethod());
 
         if (exception != null) {
             operLogReq.setStatus(OperateStatus.FAIL.value());
-            operLogReq.setErrorMsg(StringUtil.sub(exception.getMessage(), 0, MAX_ERROR_LENGTH));
+            operLogReq.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
         } else if (jsonResult instanceof Result<?> result && !result.isSuccess()) {
             operLogReq.setStatus(OperateStatus.FAIL.value());
-            operLogReq.setErrorMsg(StringUtil.sub(result.getMessage(), 0, MAX_ERROR_LENGTH));
+            operLogReq.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
         }
 
         operLogReq.setOperType(operateLog.operateType().getValue());
@@ -219,7 +217,7 @@ public class OperateLogAspect implements ApplicationRunner {
         }
 
         if (operateLog.isSaveResponseData() && jsonResult != null) {
-            operLogReq.setJsonResult(StringUtil.sub(
+            operLogReq.setJsonResult(StringUtil.substring(
                     objectMapper.writeValueAsString(jsonResult), 0, MAX_PARAM_LENGTH));
         }
 
@@ -250,7 +248,7 @@ public class OperateLogAspect implements ApplicationRunner {
 
         if (!paramsMap.isEmpty()) {
             fuzzyParams(paramsMap, excludeRequestParam);
-            operParams = StringUtil.sub(
+            operParams = StringUtil.substring(
                     objectMapper.writeValueAsString(paramsMap), 0, MAX_PARAM_LENGTH);
         }
         operLogReq.setOperParam(operParams);
@@ -277,7 +275,7 @@ public class OperateLogAspect implements ApplicationRunner {
             if (o != null && !isFilterObject(o)) {
                 try {
                     String jsonObj = objectMapper.writeValueAsString(o);
-                    params.append(jsonObj).append(StrPool.C_SPACE);
+                    params.append(jsonObj).append(StringUtil.SPACE);
                 } catch (Exception ignored) {
                 }
             }

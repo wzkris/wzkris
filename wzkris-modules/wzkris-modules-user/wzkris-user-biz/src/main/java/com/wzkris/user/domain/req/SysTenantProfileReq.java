@@ -25,4 +25,5 @@ public class SysTenantProfileReq {
     @URL(protocol = "https")
     @Schema(description = "域名")
     private String domain;
+
 }

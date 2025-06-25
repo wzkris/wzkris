@@ -1,9 +1,5 @@
 package com.wzkris.common.excel.utils;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.resource.ClassPathResource;
-import cn.hutool.core.net.URLEncodeUtil;
-import cn.hutool.core.util.IdUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
@@ -16,15 +12,22 @@ import com.wzkris.common.excel.convert.ExcelBigNumberConvert;
 import com.wzkris.common.excel.core.*;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.springframework.core.io.ClassPathResource;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.util.UUID;
 
 /**
  * Excel相关处理
@@ -247,16 +250,16 @@ public class ExcelUtil {
      * @param data         模板需要的数据
      * @param os           输出流
      */
-    public static void exportTemplate(List<Object> data, String templatePath, OutputStream os) {
+    public static void exportTemplate(List<Object> data, String templatePath, OutputStream os) throws IOException {
         ClassPathResource templateResource = new ClassPathResource(templatePath);
         ExcelWriter excelWriter = EasyExcel.write(os)
-                .withTemplate(templateResource.getStream())
+                .withTemplate(templateResource.getInputStream())
                 .autoCloseStream(false)
                 // 大数值自动转换 防止失真
                 .registerConverter(new ExcelBigNumberConvert())
                 .build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        if (CollUtil.isEmpty(data)) {
+        if (CollectionUtils.isEmpty(data)) {
             throw new IllegalArgumentException("数据为空");
         }
         // 单表多数据导出 模板格式为 {.属性}
@@ -317,16 +320,16 @@ public class ExcelUtil {
      * @param data         模板需要的数据
      * @param os           输出流
      */
-    public static void exportTemplateMultiList(Map<String, Object> data, String templatePath, OutputStream os) {
+    public static void exportTemplateMultiList(Map<String, Object> data, String templatePath, OutputStream os) throws IOException {
         ClassPathResource templateResource = new ClassPathResource(templatePath);
         ExcelWriter excelWriter = EasyExcel.write(os)
-                .withTemplate(templateResource.getStream())
+                .withTemplate(templateResource.getInputStream())
                 .autoCloseStream(false)
                 // 大数值自动转换 防止失真
                 .registerConverter(new ExcelBigNumberConvert())
                 .build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        if (CollUtil.isEmpty(data)) {
+        if (MapUtils.isEmpty(data)) {
             throw new IllegalArgumentException("数据为空");
         }
         for (Map.Entry<String, Object> map : data.entrySet()) {
@@ -352,15 +355,15 @@ public class ExcelUtil {
      * @param data         模板需要的数据
      * @param os           输出流
      */
-    public static void exportTemplateMultiSheet(List<Map<String, Object>> data, String templatePath, OutputStream os) {
+    public static void exportTemplateMultiSheet(List<Map<String, Object>> data, String templatePath, OutputStream os) throws IOException {
         ClassPathResource templateResource = new ClassPathResource(templatePath);
         ExcelWriter excelWriter = EasyExcel.write(os)
-                .withTemplate(templateResource.getStream())
+                .withTemplate(templateResource.getInputStream())
                 .autoCloseStream(false)
                 // 大数值自动转换 防止失真
                 .registerConverter(new ExcelBigNumberConvert())
                 .build();
-        if (CollUtil.isEmpty(data)) {
+        if (CollectionUtils.isEmpty(data)) {
             throw new IllegalArgumentException("数据为空");
         }
         for (int i = 0; i < data.size(); i++) {
@@ -387,7 +390,7 @@ public class ExcelUtil {
     private static void resetResponse(String sheetName, HttpServletResponse response)
             throws UnsupportedEncodingException {
         String filename = encodingFilename(sheetName);
-        String encode = URLEncodeUtil.encode(filename);
+        String encode = URLEncoder.encode(filename, StandardCharsets.UTF_8);
         response.setCharacterEncoding("utf-8");
         response.setHeader("download-filename", encode);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
@@ -419,7 +422,7 @@ public class ExcelUtil {
                 }
             }
         }
-        return StringUtil.removeSuffix(propertyString.toString(), separator);
+        return StringUtil.removeEnd(propertyString.toString(), separator);
     }
 
     /**
@@ -438,7 +441,7 @@ public class ExcelUtil {
             if (StringUtil.containsAny(propertyValue, separator)) {
                 for (String value : propertyValue.split(separator)) {
                     if (itemArray[1].equals(value)) {
-                        propertyString.append(itemArray[0] + separator);
+                        propertyString.append(itemArray[0]).append(separator);
                         break;
                     }
                 }
@@ -448,13 +451,14 @@ public class ExcelUtil {
                 }
             }
         }
-        return StringUtil.removeSuffix(propertyString.toString(), separator);
+        return StringUtil.removeEnd(propertyString.toString(), separator);
     }
 
     /**
      * 编码文件名
      */
     public static String encodingFilename(String filename) {
-        return IdUtil.fastSimpleUUID() + "_" + filename + ".xlsx";
+        return UUID.randomUUID() + "_" + filename + ".xlsx";
     }
+
 }

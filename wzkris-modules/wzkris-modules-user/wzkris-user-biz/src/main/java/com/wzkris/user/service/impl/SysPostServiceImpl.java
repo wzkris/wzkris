@@ -12,12 +12,13 @@ import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysPostMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.service.SysPostService;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 岗位信息 服务层处理
@@ -94,4 +95,5 @@ public class SysPostServiceImpl implements SysPostService {
             throw new BusinessException("business.allocated");
         }
     }
+
 }

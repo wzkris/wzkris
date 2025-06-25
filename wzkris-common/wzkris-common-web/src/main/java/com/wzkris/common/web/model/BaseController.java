@@ -1,20 +1,23 @@
 package com.wzkris.common.web.model;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.date.DateUtil;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import java.beans.PropertyEditorSupport;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.beans.PropertyEditorSupport;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 /**
  * web层通用数据处理
@@ -32,6 +35,14 @@ public class BaseController {
      * 每页显示记录数
      */
     public static final String PAGE_SIZE = "pageSize";
+
+    // 支持的日期格式
+    public static final String[] DATE_PATTERNS = {
+            "yyyy-MM-dd",
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy/MM/dd",
+            "yyyy/MM/dd HH:mm:ss"
+    };
 
     /**
      * 响应请求分页数据
@@ -55,17 +66,33 @@ public class BaseController {
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        // Date 类型转换
+        // LocalDateTime 类型转换
         binder.registerCustomEditor(LocalDateTime.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) {
-                setValue(DateUtil.parse(text).toLocalDateTime());
+                try {
+                    // 使用 DateUtils 解析日期字符串
+                    Date date = DateUtils.parseDate(text, DATE_PATTERNS);
+                    // 转换为 LocalDateTime
+                    setValue(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException("无效的日期格式: " + text, e);
+                }
             }
         });
+
+        // LocalDate 类型转换
         binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) {
-                setValue(DateUtil.parse(text).toLocalDateTime().toLocalDate());
+                try {
+                    // 使用 DateUtils 解析日期字符串
+                    Date date = DateUtils.parseDate(text, DATE_PATTERNS);
+                    // 转换为 LocalDate
+                    setValue(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException("无效的日期格式: " + text, e);
+                }
             }
         });
     }
@@ -79,8 +106,8 @@ public class BaseController {
         if (requestAttributes != null) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 
-            pageNum = Convert.toLong(request.getParameter(PAGE_NUM), pageNum);
-            pageSize = Convert.toLong(request.getParameter(PAGE_SIZE), pageSize);
+            pageNum = request.getParameter(PAGE_NUM) == null ? pageNum : Long.parseLong(request.getParameter(PAGE_NUM));
+            pageSize = request.getParameter(PAGE_SIZE) == null ? pageSize : Long.parseLong(request.getParameter(PAGE_SIZE));
         }
 
         PageUtil.startPage(pageNum, pageSize);
@@ -126,4 +153,5 @@ public class BaseController {
     protected <T> Result<T> toRes(boolean result) {
         return result ? ok() : Result.err1000();
     }
+
 }

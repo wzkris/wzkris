@@ -1,7 +1,5 @@
 package com.wzkris.common.openfeign.utils;
 
-import com.wzkris.common.core.utils.StringUtil;
-
 public class RpcMsgUtil {
 
     /**
@@ -12,7 +10,7 @@ public class RpcMsgUtil {
             return "";
         }
 
-        String currentError = StringUtil.toString(throwable);
+        String currentError = throwable.getMessage();
 
         // 递归获取cause的信息
         Throwable cause = throwable.getCause();

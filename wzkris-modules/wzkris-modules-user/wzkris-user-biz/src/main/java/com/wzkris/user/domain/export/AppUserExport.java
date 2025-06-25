@@ -28,4 +28,5 @@ public class AppUserExport {
     @ExcelProperty(value = "性别", converter = ExcelDictConvert.class)
     @ExcelDictFormat(readConverterExp = "0=男,1=女,2=未知")
     private String gender;
+
 }

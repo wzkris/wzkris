@@ -1,6 +1,7 @@
 package com.wzkris.common.core.dynamicexec;
 
 import com.wzkris.common.core.utils.StringUtil;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
@@ -25,9 +26,9 @@ public class ClassExecutor {
             // 默认执行main函数
             method = cls.getMethod("main", String[].class);
             if (!StringUtil.isEmpty(param)) {
-                method.invoke(null, (Object) new String[] {param});
+                method.invoke(null, (Object) new String[]{param});
             } else {
-                method.invoke(null, (Object) new String[] {null});
+                method.invoke(null, (Object) new String[]{null});
             }
         } catch (Throwable t) {
             t.printStackTrace(out);
@@ -35,4 +36,5 @@ public class ClassExecutor {
 
         return false;
     }
+
 }

@@ -1,9 +1,9 @@
 package com.wzkris.user.config;
 
-import cn.hutool.core.util.ArrayUtil;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.threads.TracingIdRunnable;
 import jakarta.annotation.Nonnull;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +39,7 @@ public class AsyncConfig implements AsyncConfigurer {
                     .append(throwable.getMessage())
                     .append(", Method name - ")
                     .append(method.getName());
-            if (ArrayUtil.isNotEmpty(objects)) {
+            if (ArrayUtils.isNotEmpty(objects)) {
                 sb.append(", Parameter value - ").append(Arrays.toString(objects));
             }
             throw new GenericException(sb.toString());

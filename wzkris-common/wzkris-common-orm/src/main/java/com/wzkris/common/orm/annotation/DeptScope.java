@@ -22,4 +22,5 @@ public @interface DeptScope {
      * 字段的别名
      */
     String columnAlias() default "dept_id";
+
 }

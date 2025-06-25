@@ -1,8 +1,9 @@
 package com.wzkris.common.core.annotation.impl;
 
-import cn.hutool.core.util.DesensitizedUtil;
-import java.util.function.Function;
+import com.wzkris.common.core.utils.DesensitizedUtil;
 import lombok.AllArgsConstructor;
+
+import java.util.function.Function;
 
 /**
  * 脱敏策略

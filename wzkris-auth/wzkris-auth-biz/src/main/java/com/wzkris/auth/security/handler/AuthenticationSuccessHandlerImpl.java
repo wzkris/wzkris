@@ -16,7 +16,6 @@
 
 package com.wzkris.auth.security.handler;
 
-import cn.hutool.http.useragent.UserAgentUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
@@ -26,6 +25,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.UserAgentUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -111,7 +111,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                                 CommonConstants.STATUS_ENABLE,
                                 "",
                                 ServletUtil.getClientIP(request),
-                                UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+                                UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
             }
         }
     }
