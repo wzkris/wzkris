@@ -19,4 +19,5 @@ public interface SysPermissionService {
      * @return 权限
      */
     SysPermissionResp getPermission(Long userId, Long tenantId, @Nullable Long deptId);
+
 }

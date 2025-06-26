@@ -1,7 +1,5 @@
 package com.wzkris.system.service.impl;
 
-import cn.hutool.core.stream.StreamUtil;
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.system.domain.SysConfig;
@@ -10,11 +8,13 @@ import com.wzkris.system.service.SysConfigService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 参数配置 服务层实现
@@ -37,7 +37,7 @@ public class SysConfigServiceImpl implements SysConfigService {
     @Override
     public void loadingConfigCache() {
         RMap<String, String> rMap = cache();
-        Map<String, String> map = StreamUtil.of(configMapper.selectList(null))
+        Map<String, String> map = configMapper.selectList(null).stream()
                 .collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue));
         rMap.clear();
         rMap.putAll(map);
@@ -75,7 +75,8 @@ public class SysConfigServiceImpl implements SysConfigService {
     public boolean checkUsedByConfigKey(@Nullable Long configId, @Nonnull String configKey) {
         LambdaQueryWrapper<SysConfig> lqw = new LambdaQueryWrapper<SysConfig>()
                 .eq(SysConfig::getConfigKey, configKey)
-                .ne(ObjUtil.isNotNull(configId), SysConfig::getConfigId, configId);
+                .ne(Objects.nonNull(configId), SysConfig::getConfigId, configId);
         return configMapper.exists(lqw);
     }
+
 }

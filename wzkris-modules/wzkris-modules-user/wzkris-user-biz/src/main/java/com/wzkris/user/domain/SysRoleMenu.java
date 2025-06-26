@@ -20,4 +20,5 @@ public class SysRoleMenu {
 
     @Schema(description = "菜单ID")
     private Long menuId;
+
 }

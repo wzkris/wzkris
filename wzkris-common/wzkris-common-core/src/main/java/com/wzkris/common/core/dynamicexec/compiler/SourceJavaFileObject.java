@@ -1,7 +1,7 @@
 package com.wzkris.common.core.dynamicexec.compiler;
 
-import java.net.URI;
 import javax.tools.SimpleJavaFileObject;
+import java.net.URI;
 
 /**
  * 存放java源码的JavaFileObject
@@ -31,4 +31,5 @@ public class SourceJavaFileObject extends SimpleJavaFileObject {
     public String getCharContent(boolean ignoreEncodingErrors) {
         return content;
     }
+
 }

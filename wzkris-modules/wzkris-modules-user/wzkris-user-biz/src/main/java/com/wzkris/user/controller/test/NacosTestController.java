@@ -5,12 +5,13 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.wzkris.common.core.domain.Result;
 import jakarta.annotation.security.PermitAll;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -38,4 +39,5 @@ public class NacosTestController {
 
         return Result.ok(allInstances);
     }
+
 }

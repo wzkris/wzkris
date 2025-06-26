@@ -1,6 +1,5 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
@@ -10,13 +9,15 @@ import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.service.SysDeptService;
-import java.util.*;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 部门管理 服务实现
@@ -91,7 +92,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Transactional(rollbackFor = Exception.class)
     public boolean updateDept(SysDept dept) {
         SysDept parent = deptMapper.selectByIdForUpdate(dept.getParentId());
-        if (StringUtil.isNotNull(parent)) {
+        if (ObjectUtils.isNotEmpty(parent)) {
             Long[] newAncestors = Arrays.copyOf(parent.getAncestors(), parent.getAncestors().length + 1);
             newAncestors[newAncestors.length - 1] = parent.getDeptId();
             dept.setAncestors(newAncestors);
@@ -180,7 +181,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     private List<SysDept> getChildList(List<SysDept> list, SysDept t) {
         List<SysDept> tlist = new ArrayList<>();
         for (SysDept n : list) {
-            if (StringUtil.isNotNull(n.getParentId())
+            if (ObjectUtils.isNotEmpty(n.getParentId())
                     && n.getParentId().longValue() == t.getDeptId().longValue()) {
                 tlist.add(n);
             }
@@ -197,10 +198,11 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public void checkDataScopes(Collection<Long> deptIds) {
-        if (ObjUtil.isNotEmpty(deptIds)) {
+        if (CollectionUtils.isNotEmpty(deptIds)) {
             if (!deptMapper.checkDataScopes(new HashSet<>(deptIds))) {
                 throw new AccessDeniedException("无此部门数据访问权限");
             }
         }
     }
+
 }

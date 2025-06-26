@@ -7,10 +7,11 @@ import com.wzkris.common.orm.annotation.FieldPerms;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 操作日志记录表 sys_oper_log
@@ -80,4 +81,5 @@ public class SysOperLog implements Serializable {
 
     @Schema(description = "操作时间")
     private Date operTime;
+
 }

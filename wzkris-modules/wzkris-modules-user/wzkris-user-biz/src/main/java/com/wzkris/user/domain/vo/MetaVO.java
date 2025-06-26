@@ -1,9 +1,10 @@
 package com.wzkris.user.domain.vo;
 
-import java.io.Serializable;
-import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 路由元数据
@@ -51,4 +52,5 @@ public class MetaVO implements Serializable {
         this.keepAlive = keepAlive;
         this.query = query;
     }
+
 }

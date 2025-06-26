@@ -1,9 +1,9 @@
 package com.wzkris.common.core.dynamicexec.compiler;
 
+import javax.tools.*;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.tools.*;
 
 /**
  * 类编译器
@@ -132,4 +132,5 @@ public class ClassCompiler {
 
         return str.trim();
     }
+
 }

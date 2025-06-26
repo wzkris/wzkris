@@ -1,20 +1,22 @@
 package com.wzkris.system.utils;
 
-import cn.hutool.core.net.NetUtil;
 import com.wzkris.system.mqtt.MqttProperties;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author : wzkris
@@ -49,13 +51,13 @@ public class MqttUtil {
     }
 
     @PostConstruct
-    public void init() throws MqttException {
+    public void init() throws MqttException, UnknownHostException {
         Map<String, MqttProperties.GeneralSetting> settings = mqttProperties.getSettings();
 
         for (Map.Entry<String, MqttProperties.GeneralSetting> setting : settings.entrySet()) {
             MqttProperties.GeneralSetting generalSetting = setting.getValue();
             String clientidPref = generalSetting.getClientId() + "_" + setting.getKey() + "_"
-                    + NetUtil.getLocalMacAddress(); // 解决集群部署clientid冲突
+                    + InetAddress.getLocalHost().getHostAddress(); // 解决集群部署clientid冲突
             final MqttClientPool pool = new MqttClientPool();
             for (int i = 0; i < generalSetting.getClientNum(); i++) {
                 MqttClient mqttClient =
@@ -156,5 +158,7 @@ public class MqttUtil {
                 log.error("订阅主题时发生异常，errmsg：{}", e.getMessage());
             }
         }
+
     }
+
 }

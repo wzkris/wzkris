@@ -1,23 +1,25 @@
 package com.wzkris.common.excel.core;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.merge.AbstractMergeStrategy;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.annotation.CellMerge;
-import java.lang.reflect.Field;
-import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * 列值重复合并策略
@@ -44,7 +46,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
     protected void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex) {
         // 单元格写入了,遍历合并区域,如果该Cell在区域内,但非首行,则清空
         final int rowIndex = cell.getRowIndex();
-        if (CollUtil.isNotEmpty(cellList)) {
+        if (CollectionUtils.isNotEmpty(cellList)) {
             for (CellRangeAddress cellAddresses : cellList) {
                 final int firstRow = cellAddresses.getFirstRow();
                 if (cellAddresses.isInRange(cell) && rowIndex != firstRow) {
@@ -57,7 +59,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
     @Override
     public void afterWorkbookDispose(final WorkbookWriteHandlerContext context) {
         // 当前表格写完后，统一写入
-        if (CollUtil.isNotEmpty(cellList)) {
+        if (CollectionUtils.isNotEmpty(cellList)) {
             for (CellRangeAddress item : cellList) {
                 context.getWriteContext().writeSheetHolder().getSheet().addMergedRegion(item);
             }
@@ -67,11 +69,11 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
     @SneakyThrows
     private List<CellRangeAddress> handle(List<?> list, boolean hasTitle) {
         List<CellRangeAddress> cellList = new ArrayList<>();
-        if (CollUtil.isEmpty(list)) {
+        if (CollectionUtils.isEmpty(list)) {
             return cellList;
         }
         Field[] fields =
-                ReflectUtil.getFields(list.get(0).getClass(), field -> !"serialVersionUID".equals(field.getName()));
+                FieldUtils.getAllFields(list.get(0).getClass());
 
         // 有注解的字段
         List<Field> mergeFields = new ArrayList<>();
@@ -94,7 +96,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < mergeFields.size(); j++) {
                 Field field = mergeFields.get(j);
-                Object val = ReflectUtil.invoke(list.get(i), field.getName());
+                Object val = MethodUtils.invokeMethod(list.get(i), true, field.getName());
 
                 int colNum = mergeFieldsIndex.get(j);
                 if (!map.containsKey(field)) {
@@ -131,15 +133,15 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         return cellList;
     }
 
-    private boolean isMerge(List<?> list, int i, Field field) {
+    private boolean isMerge(List<?> list, int i, Field field) throws IllegalAccessException {
         boolean isMerge = true;
         CellMerge cm = field.getAnnotation(CellMerge.class);
         final String[] mergeBy = cm.mergeBy();
-        if (StrUtil.isAllNotBlank(mergeBy)) {
+        if (!StringUtil.isAllBlank(mergeBy)) {
             // 比对当前list(i)和list(i - 1)的各个属性值一一比对 如果全为真 则为真
             for (String fieldName : mergeBy) {
-                final Object valCurrent = ReflectUtil.getFieldValue(list.get(i), fieldName);
-                final Object valPre = ReflectUtil.getFieldValue(list.get(i - 1), fieldName);
+                final Object valCurrent = FieldUtils.readField(list.get(i), fieldName, true);
+                final Object valPre = FieldUtils.readField(list.get(i - 1), fieldName, true);
                 if (!Objects.equals(valPre, valCurrent)) {
                     // 依赖字段如有任一不等值,则标记为不可合并
                     isMerge = false;
@@ -156,5 +158,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         private Object value;
 
         private int current;
+
     }
+
 }

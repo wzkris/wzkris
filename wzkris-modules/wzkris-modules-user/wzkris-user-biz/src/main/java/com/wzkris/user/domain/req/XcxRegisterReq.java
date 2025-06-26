@@ -16,4 +16,5 @@ public class XcxRegisterReq {
 
     @NotBlank(message = "code {validate.notnull}")
     private String code;
+
 }

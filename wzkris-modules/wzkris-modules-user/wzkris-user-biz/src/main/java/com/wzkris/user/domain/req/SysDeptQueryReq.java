@@ -25,4 +25,5 @@ public class SysDeptQueryReq {
     public SysDeptQueryReq(String status) {
         this.status = status;
     }
+
 }

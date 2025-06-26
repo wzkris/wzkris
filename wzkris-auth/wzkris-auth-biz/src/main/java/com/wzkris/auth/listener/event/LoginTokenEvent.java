@@ -1,9 +1,9 @@
 package com.wzkris.auth.listener.event;
 
-import cn.hutool.http.useragent.UserAgent;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nl.basjes.parse.useragent.UserAgent;
 
 /**
  * @author : wzkris

@@ -16,11 +16,12 @@ import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
 import com.wzkris.user.service.SysRoleService;
 import jakarta.annotation.Nullable;
-import java.util.*;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 用户权限处理
@@ -140,4 +141,5 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         }
         return deptIds.stream().toList();
     }
+
 }

@@ -22,4 +22,5 @@ public class SysOperLogQueryReq extends QueryReq {
 
     @Schema(description = "操作状态（0正常 1异常）")
     private String status;
+
 }

@@ -1,7 +1,6 @@
 package com.wzkris.common.captcha.service;
 
 import cloud.tianai.captcha.application.ImageCaptchaProperties;
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
@@ -52,7 +51,7 @@ public class CaptchaService {
         if (StringUtil.isBlank(realcode)) {
             throw new CaptchaException("captcha.expired");
         }
-        if (ObjUtil.notEqual(realcode, code)) {
+        if (!StringUtil.equals(realcode, code)) {
             throw new CaptchaException("captcha.error");
         }
         RedisUtil.delObj(fullKey);

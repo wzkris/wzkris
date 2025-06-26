@@ -36,5 +36,7 @@ public class XxlJobProperties {
         private String logPath;
 
         private int logRetentionDays;
+
     }
+
 }

@@ -1,15 +1,16 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.AppUserWalletRecord;
 import com.wzkris.user.mapper.AppUserWalletMapper;
 import com.wzkris.user.mapper.AppUserWalletRecordMapper;
 import com.wzkris.user.service.AppUserWalletService;
-import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             record.setUserId(userId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_INCOME);
-            record.setCreateAt(DateUtil.date());
+            record.setCreateAt(new Date());
             appUserWalletRecordMapper.insert(record);
         }
         return suc;
@@ -45,9 +46,10 @@ public class AppUserWalletServiceImpl implements AppUserWalletService {
             record.setUserId(userId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_OUTCOME);
-            record.setCreateAt(DateUtil.date());
+            record.setCreateAt(new Date());
             appUserWalletRecordMapper.insert(record);
         }
         return suc;
     }
+
 }

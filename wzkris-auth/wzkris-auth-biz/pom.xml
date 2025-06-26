@@ -46,12 +46,6 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- hutool http -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-http</artifactId>
-        </dependency>
-
         <!-- wzkris Common Redis-->
         <dependency>
             <groupId>com.wzkris</groupId>

@@ -3,10 +3,11 @@ package com.wzkris.user.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 租户钱包记录表 sys_tenant_wallet_record
@@ -41,4 +42,5 @@ public class SysTenantWalletRecord {
 
     @Schema(description = "备注")
     private String remark;
+
 }

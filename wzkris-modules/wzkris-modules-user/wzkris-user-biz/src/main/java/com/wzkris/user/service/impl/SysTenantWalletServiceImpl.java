@@ -1,15 +1,16 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.mapper.SysTenantWalletMapper;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import com.wzkris.user.service.SysTenantWalletService;
-import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             record.setRecordType(UserConstants.WALLET_INCOME);
             record.setBizNo(bizNo);
             record.setBizType(bizType);
-            record.setCreateAt(DateUtil.date());
+            record.setCreateAt(new Date());
             record.setRemark(remark);
             tenantWalletRecordMapper.insert(record);
         }
@@ -50,10 +51,11 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
             record.setRecordType(UserConstants.WALLET_OUTCOME);
             record.setBizNo(bizNo);
             record.setBizType(bizType);
-            record.setCreateAt(DateUtil.date());
+            record.setCreateAt(new Date());
             record.setRemark(remark);
             tenantWalletRecordMapper.insert(record);
         }
         return suc;
     }
+
 }

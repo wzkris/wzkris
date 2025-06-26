@@ -10,4 +10,5 @@ public interface AppUserThirdinfoMapper extends BaseMapperPlus<AppUserThirdinfo>
 
     @Select("SELECT * FROM biz.app_user_thirdinfo WHERE identifier = #{identifier}")
     AppUserThirdinfo selectByIdentifier(String identifier);
+
 }

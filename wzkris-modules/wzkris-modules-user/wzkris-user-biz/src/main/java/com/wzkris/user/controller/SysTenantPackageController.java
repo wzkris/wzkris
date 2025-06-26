@@ -23,11 +23,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 租户套餐管理
@@ -61,10 +62,10 @@ public class SysTenantPackageController extends BaseController {
         return new LambdaQueryWrapper<SysTenantPackage>()
                 .select(SysTenantPackage.class, q -> !q.getColumn().equals("menu_ids"))
                 .like(
-                        StringUtil.isNotNull(queryReq.getPackageName()),
+                        StringUtil.isNotEmpty(queryReq.getPackageName()),
                         SysTenantPackage::getPackageName,
                         queryReq.getPackageName())
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysTenantPackage::getStatus, queryReq.getStatus())
+                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), SysTenantPackage::getStatus, queryReq.getStatus())
                 .orderByDesc(SysTenantPackage::getPackageId);
     }
 
@@ -123,4 +124,5 @@ public class SysTenantPackageController extends BaseController {
         }
         return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }
+
 }

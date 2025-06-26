@@ -1,12 +1,12 @@
 package com.wzkris.common.security.oauth2.annotation.aspect;
 
-import cn.hutool.core.util.ObjUtil;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -56,13 +56,13 @@ public class CheckPermsAspect {
 
         CorePrincipal principal = SecurityUtil.getPrincipal();
 
-        if (ObjUtil.notEqual(principal.getType(), checkPerms.checkType().getValue())) {
+        if (!StringUtil.equals(principal.getType(), checkPerms.checkType().getValue())) {
             throw new AccessDeniedException(
                     "Principal needs checkType :" + checkPerms.checkType() + " , but have " + principal.getType());
         }
         String[] perms = checkPerms.value();
 
-        if (StringUtil.isEmpty(perms)) {
+        if (ArrayUtils.isEmpty(perms)) {
             return;
         }
 

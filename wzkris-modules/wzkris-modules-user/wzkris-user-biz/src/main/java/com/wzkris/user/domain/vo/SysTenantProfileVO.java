@@ -1,8 +1,9 @@
 package com.wzkris.user.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 租户信息展示层
@@ -44,4 +45,5 @@ public class SysTenantProfileVO {
 
     @Schema(description = "部门数量（-1不限制）")
     private Integer deptLimit;
+
 }

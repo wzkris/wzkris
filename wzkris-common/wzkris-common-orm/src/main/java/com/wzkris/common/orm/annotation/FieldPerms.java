@@ -18,4 +18,5 @@ public @interface FieldPerms {
      * <p>若指定该参数则只在指定分组校验权限</p>
      */
     Class<?>[] groups() default {};
+
 }

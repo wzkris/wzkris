@@ -38,7 +38,7 @@ public class SystemUser extends CorePrincipal {
     }
 
     public SystemUser(Long userId, Set<String> permissions) {
-        super(String.valueOf(userId), AuthenticatedType.SYSTEM_USER.getValue(), permissions);
+        super(userId, AuthenticatedType.SYSTEM_USER.getValue(), permissions);
         this.userId = userId;
     }
 

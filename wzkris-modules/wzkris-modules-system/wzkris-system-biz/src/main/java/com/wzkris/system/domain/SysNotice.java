@@ -1,6 +1,5 @@
 package com.wzkris.system.domain;
 
-import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +35,7 @@ public class SysNotice {
     private Date createAt;
 
     public SysNotice() {
-        this.createAt = DateUtil.date();
+        this.createAt = new Date();
     }
 
 }

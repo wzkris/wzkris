@@ -30,4 +30,5 @@ public class SysUserQueryReq extends QueryReq {
 
     @Schema(description = "用户状态")
     private String status;
+
 }

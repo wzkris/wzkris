@@ -10,9 +10,10 @@ import com.wzkris.user.rmi.domain.resp.SysUserResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * 用户对象 sys_user
@@ -80,4 +81,5 @@ public class SysUser extends BaseEntity {
     public boolean isSuperAdmin() {
         return isSuperAdmin(this.userId);
     }
+
 }

@@ -1,11 +1,11 @@
 package com.wzkris.common.security.oauth2.repository;
 
-import cn.hutool.core.convert.Convert;
 import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.auth.rmi.domain.ClientUser;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.DeferredClientUser;
@@ -83,7 +83,8 @@ public class RmiSecurityContextRepository implements SecurityContextRepository {
         if (StringUtil.isNotBlank(userToken)) {
             try {
                 Jwt jwt = jwtDecoder.decode(userToken);
-                Long userId = Convert.toLong(jwt.getClaimAsString(JwtClaimNames.SUB));
+                String sub = jwt.getClaimAsString(JwtClaimNames.SUB);
+                Long userId = sub == null ? SecurityConstants.DEFAULT_USER_ID : Long.valueOf(sub);
                 Supplier<ClientUser> supplier = () -> {
                     TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(userToken));
                     if (tokenResponse.isSuccess()) {

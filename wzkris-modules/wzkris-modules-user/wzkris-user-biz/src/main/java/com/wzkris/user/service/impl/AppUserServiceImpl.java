@@ -26,4 +26,5 @@ public class AppUserServiceImpl implements AppUserService {
         AppUserWallet wallet = new AppUserWallet(user.getUserId());
         appUserWalletMapper.insert(wallet);
     }
+
 }

@@ -10,6 +10,7 @@ import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -34,11 +35,11 @@ public class TokenService {
     @Autowired
     private TokenProperties tokenProperties;
 
-    private String buildUserInfoKey(Object id) {
+    private String buildUserInfoKey(Serializable id) {
         return USER_INFO_PREFIX.formatted(id);
     }
 
-    private String buildOnlineUserKey(Object id) {
+    private String buildOnlineUserKey(Serializable id) {
         return ONLINE_USER_PREFIX.formatted(id);
     }
 
@@ -146,7 +147,7 @@ public class TokenService {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
         if (tokenBody == null) return;
 
-        String id = tokenBody.getId();
+        Serializable id = tokenBody.getId();
         String refreshToken = tokenBody.getOtherToken();
 
         // 删除Token（独立键）
@@ -163,7 +164,7 @@ public class TokenService {
 
         mapCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                batch.getBucket(buildUserInfoKey(tokenBody.getId())).deleteAsync();
+                redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).delete();
             }
         });
 
@@ -179,7 +180,7 @@ public class TokenService {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
         if (tokenBody == null) return;
 
-        String id = tokenBody.getId();
+        Serializable id = tokenBody.getId();
         String accessToken = tokenBody.getOtherToken();
 
         // 删除Token（独立键）
@@ -196,7 +197,7 @@ public class TokenService {
 
         mapCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                batch.getBucket(buildUserInfoKey(tokenBody.getId())).deleteAsync();
+                redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).delete();
             }
         });
 
@@ -208,7 +209,7 @@ public class TokenService {
      *
      * @param userId 用户ID
      */
-    public final RMapCache<String, OnlineUser> getOnlineCache(Object userId) {
+    public final RMapCache<String, OnlineUser> getOnlineCache(Serializable userId) {
         return redissonClient.getMapCache(buildOnlineUserKey(userId));
     }
 
@@ -218,7 +219,7 @@ public class TokenService {
      * @param userId     用户ID
      * @param onlineUser 会话信息
      */
-    public final void putOnlineSession(Object userId, String refreshToken, OnlineUser onlineUser) {
+    public final void putOnlineSession(Serializable userId, String refreshToken, OnlineUser onlineUser) {
         RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
         onlineCache.put(refreshToken, onlineUser, tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
     }
@@ -229,7 +230,7 @@ public class TokenService {
         /**
          * 用户ID
          */
-        private String id;
+        private Serializable id;
 
         /**
          * 另外的TOKEN
@@ -239,7 +240,7 @@ public class TokenService {
         public TokenBody() {
         }
 
-        private TokenBody(String id, String otherToken) {
+        private TokenBody(Serializable id, String otherToken) {
             this.id = id;
             this.otherToken = otherToken;
         }

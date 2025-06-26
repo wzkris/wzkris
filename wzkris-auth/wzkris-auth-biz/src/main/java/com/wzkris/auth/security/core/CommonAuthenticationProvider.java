@@ -105,7 +105,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
             Instant issuedAt = Instant.now();
             Instant expiresAt = issuedAt.plus(Duration.ofSeconds(tokenProperties.getAccessTokenTimeOut()));
             JwtClaimsSet claims = JwtClaimsSet.builder()
-                    .subject(principal.getId())
+                    .subject(principal.getId().toString())
                     .issuedAt(issuedAt)
                     .expiresAt(expiresAt)
                     .id(UUID.randomUUID().toString())

@@ -94,4 +94,5 @@ public class SysTenantProfileController extends BaseController {
         update.setOperPwd(passwordEncoder.encode(req.getNewPassword()));
         return toRes(tenantMapper.updateById(update));
     }
+
 }

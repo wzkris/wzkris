@@ -5,7 +5,6 @@ import cloud.tianai.captcha.application.vo.CaptchaResponse;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
-import cn.hutool.core.util.RandomUtil;
 import com.wzkris.auth.domain.req.SmsCodeReq;
 import com.wzkris.common.captcha.model.CheckCaptchaReq;
 import com.wzkris.common.captcha.service.CaptchaService;
@@ -17,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,7 +62,7 @@ public class CaptchaController extends BaseController {
         }
         captchaService.validateMaxTry(req.getPhone(), 1, 120);
         // TODO 发送短信
-        String code = RandomUtil.randomNumbers(6);
+        String code = String.valueOf(RandomUtils.secure().randomInt(100000, 999999));
         log.info("手机号：{} 验证码是：{}", req.getPhone(), code);
         captchaService.setCaptcha(req.getPhone(), code);
         return ok();

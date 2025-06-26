@@ -1,6 +1,5 @@
 package com.wzkris.system.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.utils.SystemUserUtil;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,7 +36,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             notice.setContent(messageDTO.getContent());
             notice.setCreatorId(
                     SystemUserUtil.isAuthenticated() ? SystemUserUtil.getUserId() : SecurityConstants.DEFAULT_USER_ID);
-            notice.setCreateAt(DateUtil.date());
+            notice.setCreateAt(new Date());
             noticeMapper.insert(notice);
             List<SysNoticeUser> list = toUsers.stream()
                     .map(uid -> new SysNoticeUser(notice.getNoticeId(), uid))

@@ -22,4 +22,5 @@ public @interface IgnoreTenant {
      * 解析租户ID的表达式，value为false时生效
      */
     String forceTenantId() default "";
+
 }

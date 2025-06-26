@@ -1,14 +1,10 @@
 package com.wzkris.common.orm.annotation.aspect;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ConcurrentHashSet;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.utils.DeptScopeUtil;
 import com.wzkris.common.security.utils.SystemUserUtil;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -20,6 +16,11 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Collectors;
 
 /**
  * @author : wzkris
@@ -31,7 +32,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 @Aspect
 public class DeptScopeAspect {
 
-    private static final ConcurrentHashSet<String> WHITE_SET = new ConcurrentHashSet<>();
+    private static final ConcurrentSkipListSet<String> WHITE_SET = new ConcurrentSkipListSet<>();
 
     /**
      * 方法执行前执行
@@ -79,11 +80,11 @@ public class DeptScopeAspect {
         // 生成权限sql片段
         String aliasColumn = StringUtil.isBlank(deptScope.tableAlias())
                 ? deptScope.columnAlias()
-                : StringUtil.format("{}.{}", deptScope.tableAlias(), deptScope.columnAlias());
+                : String.format("%s.%s", deptScope.tableAlias(), deptScope.columnAlias());
         List<Long> deptScopes = SystemUserUtil.getUser().getDeptScopes();
 
         Expression expression;
-        if (CollUtil.isEmpty(deptScopes)) {
+        if (CollectionUtils.isEmpty(deptScopes)) {
             // 没有部门权限数据则直接拼接-1, 查不出来即可
             expression = new ParenthesedExpressionList<>(new LongValue(-1L));
         } else {
@@ -94,4 +95,5 @@ public class DeptScopeAspect {
 
         DeptScopeUtil.setSqlExpression(inExpression);
     }
+
 }

@@ -1,6 +1,5 @@
 package com.wzkris.common.log.annotation.aspect;
 
-import cn.hutool.core.text.StrPool;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
@@ -42,7 +41,7 @@ public class DeprecatedAPIAspect {
             log.error(
                     "废弃方法被调用：{}",
                     signature.getDeclaringTypeName()
-                            + StrPool.AT
+                            + StringUtil.AT
                             + signature.getMethod().getName());
             return;
         }
@@ -63,4 +62,5 @@ public class DeprecatedAPIAspect {
         String version = request.getHeader(VERSION);
         return version == null ? request.getParameter(VERSION) : version;
     }
+
 }

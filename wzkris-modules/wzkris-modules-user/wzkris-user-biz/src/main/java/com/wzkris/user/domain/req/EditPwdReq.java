@@ -27,8 +27,13 @@ public class EditPwdReq {
     private String newPassword;
 
     // 登录密码校验
-    public interface LoginPwd extends Default {}
+    public interface LoginPwd extends Default {
+
+    }
 
     // 操作密码校验
-    public interface OperPwd extends Default {}
+    public interface OperPwd extends Default {
+
+    }
+
 }

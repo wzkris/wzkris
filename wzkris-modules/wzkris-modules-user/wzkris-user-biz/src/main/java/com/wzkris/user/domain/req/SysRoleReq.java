@@ -10,9 +10,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+
+import java.util.List;
 
 @Data
 @AutoMappers({@AutoMapper(target = SysRole.class)})
@@ -51,4 +52,5 @@ public class SysRoleReq {
 
     @Schema(description = "部门组")
     private List<Long> deptIds;
+
 }

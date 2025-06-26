@@ -35,4 +35,5 @@ public class SseEndpointController {
     public void cron() {
         GlobalSseUtil.publish(new PublishMessageEvent(null, new SimpleMessageDTO("重要通知", "1", "项目难度很大，考虑清楚技术选型")));
     }
+
 }

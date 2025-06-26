@@ -32,4 +32,5 @@ public class SysMessage extends BaseEntity {
     public SysMessage(Long msgId) {
         this.msgId = msgId;
     }
+
 }

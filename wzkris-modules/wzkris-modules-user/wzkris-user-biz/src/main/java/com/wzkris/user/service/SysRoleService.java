@@ -3,6 +3,7 @@ package com.wzkris.user.service;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -94,4 +95,5 @@ public interface SysRoleService {
             this.checkDataScopes(Collections.singleton(roleId));
         }
     }
+
 }

@@ -22,7 +22,6 @@
         <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
         <lombok.version>1.18.28</lombok.version>
         <netty.version>4.1.110.Final</netty.version>
-        <hutool.version>5.8.37</hutool.version>
         <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
         <knife4j.version>4.5.0</knife4j.version>
@@ -86,15 +85,6 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
-            </dependency>
-
-            <!-- hutool工具 -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-bom</artifactId>
-                <version>${hutool.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->

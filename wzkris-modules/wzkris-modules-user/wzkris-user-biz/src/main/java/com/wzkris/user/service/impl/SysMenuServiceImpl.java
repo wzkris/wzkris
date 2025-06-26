@@ -1,7 +1,5 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.net.url.UrlQuery;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -18,14 +16,18 @@ import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysRoleService;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 菜单 业务层处理
@@ -45,6 +47,63 @@ public class SysMenuServiceImpl implements SysMenuService {
     private final SysRoleService roleService;
 
     private final SysRoleMenuMapper roleMenuMapper;
+
+    /**
+     * url query参数转map
+     *
+     * @param query url查询参数
+     */
+    public static Map<String, String> parseQuery(String query) {
+        Map<String, String> result = new HashMap<>();
+        if (StringUtils.isBlank(query)) {
+            return result;
+        }
+
+        // 移除开头的 ? 字符
+        if (query.startsWith("?")) {
+            query = query.substring(1);
+        }
+
+        // 使用 & 分割参数对
+        String[] pairs = StringUtils.split(query, '&');
+        if (ArrayUtils.isEmpty(pairs)) {
+            return result;
+        }
+
+        // 处理每个参数对
+        for (String pair : pairs) {
+            if (StringUtils.isBlank(pair)) {
+                continue;
+            }
+
+            // 使用第一个 = 分割键值
+            int idx = pair.indexOf('=');
+            if (idx == -1) {
+                // 无值参数，如 "param"
+                String key = decodeUrlComponent(pair);
+                result.put(key, "");
+            } else {
+                // 有值参数，如 "param=value"
+                String key = decodeUrlComponent(pair.substring(0, idx));
+                String value = idx < pair.length() - 1 ?
+                        decodeUrlComponent(pair.substring(idx + 1)) :
+                        "";
+                result.put(key, value);
+            }
+        }
+
+        return result;
+    }
+
+    private static String decodeUrlComponent(String encoded) {
+        try {
+            // 使用 UTF-8 解码
+            return java.net.URLDecoder.decode(encoded, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            // 通常不会发生，因为 UTF-8 是标准字符集
+            return encoded;
+        }
+    }
 
     @Override
     public List<String> listPermsByRoleIds(@Nullable List<Long> roleIds) {
@@ -83,7 +142,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class)
                 .eq(SysMenu::getStatus, CommonConstants.STATUS_ENABLE)
-                .in(StringUtil.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
+                .in(CollectionUtils.isNotEmpty(menuIds), SysMenu::getMenuId, menuIds)
                 .orderByDesc(SysMenu::getMenuSort, SysMenu::getMenuId);
         return this.buildSelectTree(menuMapper.selectList(lqw));
     }
@@ -128,7 +187,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     private List<RouterVO> buildRouter(@Nullable List<SysMenu> menus) {
         List<RouterVO> routers = new LinkedList<>();
 
-        if (StringUtil.isEmpty(menus)) {
+        if (CollectionUtils.isEmpty(menus)) {
             return routers;
         }
 
@@ -140,7 +199,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
         for (SysMenu menu : sortedMenus) {
             RouterVO router = new RouterVO();
-            router.setName(StringUtil.upperFirst(menu.getPath()));
+            router.setName(WordUtils.capitalize(menu.getPath()));
             router.setPath(menu.getPath());
             router.setComponent(this.getComponent(menu));
 
@@ -150,10 +209,8 @@ public class SysMenuServiceImpl implements SysMenuService {
                     menu.getIcon(),
                     !menu.getIsVisible(),
                     menu.getIsCache(),
-                    Convert.toMap(
-                            String.class,
-                            String.class,
-                            UrlQuery.of(menu.getQuery(), StandardCharsets.UTF_8).getQueryMap()));
+                    parseQuery(menu.getQuery())
+            );
 
             // 处理菜单类型
             if (StringUtil.equals(MenuConstants.TYPE_DIR, menu.getMenuType())) {
@@ -289,4 +346,5 @@ public class SysMenuServiceImpl implements SysMenuService {
     private boolean hasChild(List<SysMenu> list, SysMenu t) {
         return !getChildList(list, t).isEmpty();
     }
+
 }

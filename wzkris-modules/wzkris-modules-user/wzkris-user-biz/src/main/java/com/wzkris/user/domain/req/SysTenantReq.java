@@ -9,8 +9,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import java.util.Date;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @author : wzkris
@@ -76,4 +77,5 @@ public class SysTenantReq {
     @NotBlank(message = "{desc.login}{desc.username}{validate.notnull}", groups = ValidationGroups.Insert.class)
     @Schema(description = "登录用户名")
     private String username;
+
 }

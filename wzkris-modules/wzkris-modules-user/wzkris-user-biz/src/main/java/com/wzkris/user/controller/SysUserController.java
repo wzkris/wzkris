@@ -1,6 +1,5 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
@@ -28,12 +27,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 系统用户管理
@@ -72,13 +74,13 @@ public class SysUserController extends BaseController {
 
     private QueryWrapper<SysUser> buildPageWrapper(SysUserQueryReq queryReq) {
         return new QueryWrapper<SysUser>()
-                .eq(StringUtil.isNotNull(queryReq.getTenantId()), "u.tenant_id", queryReq.getTenantId())
-                .like(StringUtil.isNotNull(queryReq.getUsername()), "username", queryReq.getUsername())
-                .like(StringUtil.isNotNull(queryReq.getNickname()), "nickname", queryReq.getNickname())
-                .like(StringUtil.isNotNull(queryReq.getPhoneNumber()), "phone_number", queryReq.getPhoneNumber())
-                .like(StringUtil.isNotNull(queryReq.getEmail()), "email", queryReq.getEmail())
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), "u.status", queryReq.getStatus())
-                .eq(StringUtil.isNotNull(queryReq.getDeptId()), "u.dept_id", queryReq.getDeptId())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getTenantId()), "u.tenant_id", queryReq.getTenantId())
+                .like(ObjectUtils.isNotEmpty(queryReq.getUsername()), "username", queryReq.getUsername())
+                .like(ObjectUtils.isNotEmpty(queryReq.getNickname()), "nickname", queryReq.getNickname())
+                .like(ObjectUtils.isNotEmpty(queryReq.getPhoneNumber()), "phone_number", queryReq.getPhoneNumber())
+                .like(ObjectUtils.isNotEmpty(queryReq.getEmail()), "u.email", queryReq.getEmail())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), "u.status", queryReq.getStatus())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getDeptId()), "u.dept_id", queryReq.getDeptId())
                 .between(
                         queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
                         "u.create_at",
@@ -145,7 +147,7 @@ public class SysUserController extends BaseController {
             return err412("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         SysUser user = BeanUtil.convert(userReq, SysUser.class);
-        String password = RandomUtil.randomNumbers(8);
+        String password = RandomStringUtils.secure().next(8);
         user.setPassword(password);
 
         boolean success = userService.insertUser(user, userReq.getRoleIds(), userReq.getPostIds());
@@ -233,4 +235,5 @@ public class SysUserController extends BaseController {
         roleService.checkDataScopes(req.getRoleIds());
         return toRes(userService.allocateRoles(req.getUserId(), req.getRoleIds()));
     }
+
 }

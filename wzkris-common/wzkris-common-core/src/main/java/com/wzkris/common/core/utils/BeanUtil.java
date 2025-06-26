@@ -1,10 +1,11 @@
 package com.wzkris.common.core.utils;
 
 import io.github.linpeilie.Converter;
-import java.util.List;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Mapstruct 工具类
@@ -60,4 +61,5 @@ public class BeanUtil {
     public static <T> T convert(Map<String, Object> map, Class<T> beanClass) {
         return CONVERTER.convert(map, beanClass);
     }
+
 }

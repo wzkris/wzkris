@@ -18,4 +18,5 @@ public class UserException extends BaseException {
     public UserException(int biz, String code, Object... args) {
         super("用户异常", biz, code, args, null);
     }
+
 }

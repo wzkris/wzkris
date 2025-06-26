@@ -1,7 +1,5 @@
 package com.wzkris.auth.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
-import cn.hutool.http.useragent.UserAgentUtil;
 import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
@@ -13,6 +11,8 @@ import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.UserAgentUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.rmi.RmiSysUserFeign;
@@ -112,16 +112,16 @@ public class SystemUserService extends UserInfoTemplate {
      * 校验用户账号
      */
     private void checkAccount(SysUserResp userResp) {
-        if (ObjUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
+        if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
-        } else if (ObjUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
+        } else if (StringUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
         } else if (userResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
-        } else if (ObjUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
+        } else if (StringUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
@@ -144,7 +144,7 @@ public class SystemUserService extends UserInfoTemplate {
                         CommonConstants.STATUS_DISABLE,
                         errorMsg,
                         ServletUtil.getClientIP(request),
-                        UserAgentUtil.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+                        UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
     }
 
 }

@@ -8,12 +8,13 @@ import com.wzkris.user.mapper.AppUserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 统计
@@ -34,4 +35,5 @@ public class CustomerController extends BaseController {
     public Result<List<AppUserIncryVO>> increase_rate_per_day(@Valid AppUserIncryQueryReq queryReq) {
         return ok(appUserMapper.listIncryVO(queryReq));
     }
+
 }

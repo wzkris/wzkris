@@ -18,4 +18,5 @@ public interface SysConfigMapper extends BaseMapperPlus<SysConfig> {
 
     @Select("SELECT config_value FROM biz.sys_config WHERE config_key = #{configKey}")
     String selectValueByKey(String configKey);
+
 }

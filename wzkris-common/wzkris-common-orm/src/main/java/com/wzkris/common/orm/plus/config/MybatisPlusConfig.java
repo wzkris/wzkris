@@ -1,6 +1,5 @@
 package com.wzkris.common.orm.plus.config;
 
-import cn.hutool.core.net.NetUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
@@ -15,6 +14,9 @@ import com.wzkris.common.orm.plus.interceptor.TenantLineHandlerImpl;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @author : wzkris
@@ -73,7 +75,8 @@ public class MybatisPlusConfig {
      * 防止集群雪花ID重复
      */
     @Bean
-    public IdentifierGenerator idGenerator() {
-        return new DefaultIdentifierGenerator(NetUtil.getLocalhost());
+    public IdentifierGenerator idGenerator() throws UnknownHostException {
+        return new DefaultIdentifierGenerator(InetAddress.getLocalHost());
     }
+
 }

@@ -7,11 +7,12 @@ import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 菜单信息
@@ -32,4 +33,5 @@ public class SysMenuProfileController extends BaseController {
         List<RouterVO> routerVOS = menuService.listRouter(SystemUserUtil.getUserId());
         return ok(routerVOS);
     }
+
 }

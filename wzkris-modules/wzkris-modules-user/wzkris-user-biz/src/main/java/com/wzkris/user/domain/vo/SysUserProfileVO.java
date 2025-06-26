@@ -3,8 +3,9 @@ package com.wzkris.user.domain.vo;
 import com.wzkris.common.core.annotation.Sensitive;
 import com.wzkris.common.core.annotation.impl.SensitiveStrategy;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 @Schema(description = "系统用户信息")
@@ -47,5 +48,7 @@ public class SysUserProfileVO {
 
         @Schema(description = "登录时间")
         private Date loginDate;
+
     }
+
 }

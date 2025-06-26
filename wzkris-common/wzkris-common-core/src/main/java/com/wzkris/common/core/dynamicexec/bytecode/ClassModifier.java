@@ -100,4 +100,5 @@ public class ClassModifier {
     public int getConstantPoolCount() {
         return bytes2Int(classByte, CONSTANT_POOL_COUNT_INDEX, u2);
     }
+
 }

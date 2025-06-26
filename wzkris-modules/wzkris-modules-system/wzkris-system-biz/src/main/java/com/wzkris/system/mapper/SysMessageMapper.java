@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
  * @author wzkris
  */
 @Repository
-public interface SysMessageMapper extends BaseMapperPlus<SysMessage> {}
+public interface SysMessageMapper extends BaseMapperPlus<SysMessage> {
+
+}

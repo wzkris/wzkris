@@ -15,4 +15,5 @@ public class RequestEventListener implements ApplicationListener<ServletRequestH
     public void onApplicationEvent(ServletRequestHandledEvent event) {
         log.info("接收到请求：{}", event);
     }
+
 }

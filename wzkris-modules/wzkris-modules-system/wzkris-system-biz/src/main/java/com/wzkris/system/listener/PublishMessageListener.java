@@ -24,4 +24,5 @@ public class PublishMessageListener {
     public void pushEvent(PublishMessageEvent messageEvent) {
         GlobalSseUtil.publish(messageEvent);
     }
+
 }

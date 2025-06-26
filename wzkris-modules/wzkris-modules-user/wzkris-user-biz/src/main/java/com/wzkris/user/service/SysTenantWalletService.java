@@ -27,4 +27,5 @@ public interface SysTenantWalletService {
      * @return 是否成功
      */
     boolean decryBalance(Long tenantId, BigDecimal amount, String bizNo, String bizType, String remark);
+
 }

@@ -32,4 +32,5 @@ public class EnumsCheckValidator implements ConstraintValidator<EnumsCheck, Stri
         }
         return false;
     }
+
 }

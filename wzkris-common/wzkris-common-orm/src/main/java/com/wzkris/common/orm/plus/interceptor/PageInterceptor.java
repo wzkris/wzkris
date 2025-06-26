@@ -10,10 +10,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.utils.PageUtil;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
@@ -28,6 +24,11 @@ import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author : wzkris
@@ -187,8 +188,8 @@ public class PageInterceptor extends PaginationInnerInterceptor {
                         String str = "";
                         if (rightItem instanceof Table table) {
                             str = Optional.ofNullable(table.getAlias())
-                                            .map(Alias::getName)
-                                            .orElse(table.getName())
+                                    .map(Alias::getName)
+                                    .orElse(table.getName())
                                     + StringPool.DOT;
                         } else if (rightItem instanceof ParenthesedSelect subSelect) {
                             /* 如果 left join 是子查询，并且子查询里包含 ?(代表有入参) 或者 where 条件里包含使用 join 的表的字段作条件,就不移除 join */
@@ -257,4 +258,5 @@ public class PageInterceptor extends PaginationInnerInterceptor {
         }
         return true;
     }
+
 }
