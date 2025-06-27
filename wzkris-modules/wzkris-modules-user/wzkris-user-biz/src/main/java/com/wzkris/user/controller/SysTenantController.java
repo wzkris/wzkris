@@ -117,7 +117,7 @@ public class SysTenantController extends BaseController {
         }
         SysTenant tenant = BeanUtil.convert(tenantReq, SysTenant.class);
 
-        String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100000, 999999));
+        String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
         tenant.setOperPwd(operPwd);
 
         String password = RandomStringUtils.secure().next(8);
