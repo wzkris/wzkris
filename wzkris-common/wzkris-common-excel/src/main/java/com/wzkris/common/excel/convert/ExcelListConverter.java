@@ -22,7 +22,7 @@ public class ExcelListConverter implements Converter<List<?>> {
         if (CollectionUtils.isEmpty(list)) {
             return new WriteCellData<>(StringUtil.EMPTY);
         }
-        String join = StringUtil.join(StringUtil.COMMA, list);
+        String join = String.join(StringUtil.COMMA, (List<String>) list);
         return new WriteCellData<>(join);
     }
 

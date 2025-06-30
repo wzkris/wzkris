@@ -37,7 +37,7 @@ public class TokenProvider {
                     .body(BodyInserters.fromFormData("grant_type", "client_credentials")
                             .with("client_id", properties.getClientId())
                             .with("client_secret", properties.getClientSecret())
-                            .with("scope", StringUtil.join(StringUtil.COMMA, properties.getScopes())))
+                            .with("scope", String.join(StringUtil.COMMA, properties.getScopes())))
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<Result<OAuth2Response>>() {
                     })
