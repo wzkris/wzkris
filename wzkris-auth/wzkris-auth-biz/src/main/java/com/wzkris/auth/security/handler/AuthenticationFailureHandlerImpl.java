@@ -30,7 +30,9 @@ public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHa
     public void onAuthenticationFailure(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException {
-        log.info("登录失败，详细信息：{}", exception.getMessage());
+        if (log.isDebugEnabled()) {
+            log.debug("登录失败，详细信息：{}", exception.getMessage(), exception);
+        }
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 

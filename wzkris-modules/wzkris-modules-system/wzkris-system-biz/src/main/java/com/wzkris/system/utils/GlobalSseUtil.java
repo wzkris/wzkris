@@ -40,7 +40,9 @@ public class GlobalSseUtil {
         // 消息发布
         RTopic globalChannel = RedisUtil.getClient().getTopic(GLOBAL_CHANNEL);
         globalChannel.addListener(PublishMessageEvent.class, (channel, message) -> {
-            log.info("SSE发布主题收到消息{}", message);
+            if (log.isDebugEnabled()) {
+                log.debug("SSE连接: {}, 收到消息{}", message.getIds(), message);
+            }
             // 如果key不为空就按照key发消息 如果为空就群发
             if (!CollectionUtils.isEmpty(message.getIds())) {
                 SseUtil.sendBatch(message.getIds(), message.getMessage().getType(), message.getMessage());
@@ -52,7 +54,9 @@ public class GlobalSseUtil {
         // 断开连接
         RTopic closeChannel = RedisUtil.getClient().getTopic(CLOSE_CHANNEL);
         closeChannel.addListener(Object.class, (channel, id) -> {
-            log.info("SSE断开连接主题收到消息{}", id);
+            if (log.isDebugEnabled()) {
+                log.debug("SSE断开连接： {}", id);
+            }
             SseUtil.disconnect(id);
         });
     }

@@ -1,14 +1,15 @@
 package com.wzkris.common.web.utils;
 
 import com.wzkris.common.core.utils.StringUtil;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,21 +30,29 @@ public class SseUtil {
         sseEmitter = new SseEmitter(0L);
         // 完成后回调
         sseEmitter.onCompletion(() -> {
-            log.info("SSE连接:'{}'结束...................", id);
+            if (log.isDebugEnabled()) {
+                log.debug("SSE连接:'{}'结束...................", id);
+            }
             EMITTERS.remove(id);
         });
         // 超时回调
         sseEmitter.onTimeout(() -> {
-            log.info("SSE连接:'{}'超时...................", id);
+            if (log.isDebugEnabled()) {
+                log.debug("SSE连接:'{}'超时...................", id);
+            }
             EMITTERS.remove(id);
         });
         // 异常回调
         sseEmitter.onError(throwable -> {
-            log.info("SSE连接:'{}'异常, 异常信息：{}", id, throwable.toString());
+            if (log.isDebugEnabled()) {
+                log.debug("SSE连接:'{}'异常, 异常信息：{}", id, throwable.toString());
+            }
             EMITTERS.remove(id);
         });
         EMITTERS.put(id, sseEmitter);
-        log.info("SSE连接:'{}'创建成功", id);
+        if (log.isDebugEnabled()) {
+            log.debug("SSE连接:'{}'创建成功", id);
+        }
         return sseEmitter;
     }
 
@@ -75,7 +84,7 @@ public class SseUtil {
                     .reconnectTime(3000)
                     .data(msg, MediaType.APPLICATION_JSON));
         } catch (Exception e) {
-            log.info("SSE连接:'{}'消息id:'{}'推送事件：‘{}’异常, 异常信息：{}", id, mid, eventName, e.getMessage());
+            log.error("SSE连接:'{}'消息id:'{}'推送事件：‘{}’异常, 异常信息：{}", id, mid, eventName, e.getMessage(), e);
         }
     }
 
@@ -108,4 +117,5 @@ public class SseUtil {
             sseEmitter.complete();
         }
     }
+
 }

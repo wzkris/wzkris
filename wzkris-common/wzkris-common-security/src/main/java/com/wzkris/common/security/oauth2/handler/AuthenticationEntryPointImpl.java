@@ -24,7 +24,9 @@ public final class AuthenticationEntryPointImpl implements AuthenticationEntryPo
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException {
-        log.info("token校验失败，请求URI：{}，详细信息：{}", request.getRequestURI(), exception.getMessage());
+        if (log.isDebugEnabled()) {
+            log.debug("token校验失败，请求URI：{}，详细信息：{}", request.getRequestURI(), exception.getMessage(), exception);
+        }
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 

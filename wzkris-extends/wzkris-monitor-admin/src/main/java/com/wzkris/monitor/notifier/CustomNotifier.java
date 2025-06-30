@@ -5,9 +5,7 @@ import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
 import de.codecentric.boot.admin.server.domain.events.InstanceEvent;
 import de.codecentric.boot.admin.server.domain.events.InstanceStatusChangedEvent;
 import de.codecentric.boot.admin.server.notify.AbstractEventNotifier;
-import de.codecentric.boot.admin.server.notify.LoggingNotifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -17,10 +15,9 @@ import reactor.core.publisher.Mono;
  * @author wzkris
  * @date 2025/04/12
  */
+@Slf4j
 @Component
 public class CustomNotifier extends AbstractEventNotifier {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingNotifier.class);
 
     public CustomNotifier(InstanceRepository repository) {
         super(repository);
@@ -30,13 +27,13 @@ public class CustomNotifier extends AbstractEventNotifier {
     protected Mono<Void> doNotify(InstanceEvent event, Instance instance) {
         return Mono.fromRunnable(() -> {
             if (event instanceof InstanceStatusChangedEvent) {
-                LOGGER.info(
+                log.info(
                         "收到通知：Instance {} ({}) is {}",
                         instance.getRegistration().getName(),
                         event.getInstance(),
                         ((InstanceStatusChangedEvent) event).getStatusInfo().getStatus());
             } else {
-                LOGGER.info(
+                log.info(
                         "收到通知：Instance {} ({}) {}",
                         instance.getRegistration().getName(),
                         event.getInstance(),
@@ -44,4 +41,5 @@ public class CustomNotifier extends AbstractEventNotifier {
             }
         });
     }
+
 }
