@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -16,7 +17,7 @@ import java.util.List;
 public class PublishMessageEvent {
 
     @Nullable
-    private List<?> ids;
+    private List<? extends Serializable> ids;
 
     private SimpleMessageDTO message;
 
