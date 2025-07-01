@@ -3,6 +3,7 @@ package com.wzkris.auth.rmi.fallback;
 import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
+import com.wzkris.common.openfeign.core.FeignLogAggregator;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +15,13 @@ public class RmiTokenFeignFallback implements FallbackFactory<RmiTokenFeign> {
         return new RmiTokenFeign() {
             @Override
             public TokenResponse checkOAuth2Token(TokenReq tokenReq) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
                 return TokenResponse.okAnonymous();
             }
 
             @Override
             public TokenResponse checkUserToken(TokenReq tokenReq) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
                 return TokenResponse.okAnonymous();
             }
         };

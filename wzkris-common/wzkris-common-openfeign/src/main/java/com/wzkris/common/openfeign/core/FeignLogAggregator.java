@@ -2,6 +2,7 @@ package com.wzkris.common.openfeign.core;
 
 import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.openfeign.utils.RpcMsgUtil;
 import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
@@ -41,12 +42,17 @@ public enum FeignLogAggregator {
                 1, 1, TimeUnit.SECONDS);
     }
 
-    void count(String log) {
+    public void logPrintError(Class<?> clazz, Throwable throwable) {
+        String error = RpcMsgUtil.getDetailMsg(throwable);
+        count(clazz.getName() + StringUtil.HASH + error);
+    }
+
+    private void count(String log) {
         logCache.compute(log, (k, v) ->
                 v == null ? new LogCounter() : v.increment());
     }
 
-    void flushLogs() {
+    private void flushLogs() {
         logCache.forEach((key, counter) -> {
             LoggerFactory.getLogger(key.split(StringUtil.HASH)[0])
                     .error("[聚合日志] 首次触发时间: {} 触发次数: {},\n " +
