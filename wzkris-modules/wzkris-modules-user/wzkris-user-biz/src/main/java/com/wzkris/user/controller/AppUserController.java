@@ -9,7 +9,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.export.AppUserExport;
 import com.wzkris.user.domain.req.AppUserQueryReq;

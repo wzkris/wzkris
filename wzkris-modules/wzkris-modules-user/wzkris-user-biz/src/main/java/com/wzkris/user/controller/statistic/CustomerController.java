@@ -1,7 +1,7 @@
 package com.wzkris.user.controller.statistic;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.req.AppUserIncryQueryReq;
 import com.wzkris.user.domain.vo.AppUserIncryVO;
 import com.wzkris.user.mapper.AppUserMapper;

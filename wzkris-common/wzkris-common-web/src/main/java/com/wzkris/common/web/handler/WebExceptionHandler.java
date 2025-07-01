@@ -5,7 +5,6 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.core.exception.mode.DemoModeException;
 import com.wzkris.common.core.utils.I18nUtil;
-import com.wzkris.common.openfeign.exception.RpcException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -177,15 +176,6 @@ public class WebExceptionHandler {
     @ExceptionHandler(DemoModeException.class)
     public Result<?> handleDemoModeException(DemoModeException e, HttpServletRequest request) {
         return err400(e.getMessage());
-    }
-
-    /**
-     * RPC异常
-     */
-    @ExceptionHandler(RpcException.class)
-    public Result<?> handleRpcException(RpcException e, HttpServletRequest request) {
-        log.error("请求地址'{} {}',发生远程调用异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
-        return Result.resp(e.getCode(), null, e.getMessage());
     }
 
     /**

@@ -2,7 +2,7 @@ package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.utils.SystemUserUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;

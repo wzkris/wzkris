@@ -7,7 +7,6 @@ import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.redis.annotation.RateLimit;
-import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,6 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.wzkris.common.core.domain.Result.err412;
+import static com.wzkris.common.core.domain.Result.ok;
 
 /**
  * @author : wzkris
@@ -32,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/captcha")
 @RequiredArgsConstructor
-public class CaptchaController extends BaseController {
+public class CaptchaController {
 
     private final CaptchaService captchaService;
 

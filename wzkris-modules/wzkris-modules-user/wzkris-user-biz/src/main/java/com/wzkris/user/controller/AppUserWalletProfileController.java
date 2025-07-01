@@ -5,7 +5,7 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.ClientUserUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.AppUserWalletRecord;
 import com.wzkris.user.domain.req.AppUserWalletRecordQueryReq;
 import com.wzkris.user.domain.vo.AppUserWalletVO;

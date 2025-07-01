@@ -1,7 +1,6 @@
-package com.wzkris.common.web.model;
+package com.wzkris.common.orm.model;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.time.DateUtils;

@@ -8,7 +8,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.domain.SysMessage;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.domain.req.SysMessageQueryReq;

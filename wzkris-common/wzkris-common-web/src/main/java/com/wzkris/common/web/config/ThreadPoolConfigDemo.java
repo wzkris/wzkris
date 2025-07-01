@@ -1,6 +1,5 @@
 package com.wzkris.common.web.config;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -45,7 +44,7 @@ public class ThreadPoolConfigDemo {
                 corePoolSize,
                 new ThreadFactory() {
                     @Override
-                    public Thread newThread(@NotNull Runnable r) {
+                    public Thread newThread(Runnable r) {
                         final AtomicInteger threadNumber = new AtomicInteger(0);
 
                         Thread thread = new Thread(r);

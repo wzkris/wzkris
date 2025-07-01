@@ -7,7 +7,6 @@ import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SystemUserUtil;
-import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.wzkris.common.core.domain.Result.ok;
+
 @Tag(name = "在线会话")
 @Slf4j
 @RestController
 @RequestMapping("/online_user")
 @RequiredArgsConstructor
-public class OnlineSessionController extends BaseController {
+public class OnlineSessionController {
 
     private final TokenService tokenService;
 

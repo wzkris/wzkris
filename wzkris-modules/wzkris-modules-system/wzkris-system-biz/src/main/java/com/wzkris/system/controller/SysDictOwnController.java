@@ -1,7 +1,7 @@
 package com.wzkris.system.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.domain.SysDict;
 import com.wzkris.system.service.SysDictService;
 import io.swagger.v3.oas.annotations.Operation;
