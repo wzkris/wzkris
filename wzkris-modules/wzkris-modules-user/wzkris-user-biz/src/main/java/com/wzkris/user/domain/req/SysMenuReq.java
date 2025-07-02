@@ -52,11 +52,11 @@ public class SysMenuReq {
     @NotBlank(message = "{desc.type}" + "{validate.notnull}")
     @EnumsCheck(
             values = {
-                MenuConstants.TYPE_DIR,
-                MenuConstants.TYPE_MENU,
-                MenuConstants.TYPE_BUTTON,
-                MenuConstants.TYPE_INNERLINK,
-                MenuConstants.TYPE_OUTLINK
+                    MenuConstants.TYPE_DIR,
+                    MenuConstants.TYPE_MENU,
+                    MenuConstants.TYPE_BUTTON,
+                    MenuConstants.TYPE_INNERLINK,
+                    MenuConstants.TYPE_OUTLINK
             })
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
@@ -70,4 +70,5 @@ public class SysMenuReq {
 
     @Schema(description = "菜单图标")
     private String icon;
+
 }

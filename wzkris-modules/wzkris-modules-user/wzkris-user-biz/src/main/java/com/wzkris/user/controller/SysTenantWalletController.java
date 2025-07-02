@@ -6,19 +6,21 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;
 import com.wzkris.user.mapper.SysTenantWalletRecordMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 租户钱包管理
@@ -29,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @IgnoreTenant // 忽略租户隔离
 @RequestMapping("/sys_tenant/wallet")
 public class SysTenantWalletController extends BaseController {
@@ -49,7 +51,7 @@ public class SysTenantWalletController extends BaseController {
     private LambdaQueryWrapper<SysTenantWalletRecord> buildWalletQueryWrapper(SysTenantWalletRecordQueryReq queryReq) {
         return new LambdaQueryWrapper<SysTenantWalletRecord>()
                 .eq(
-                        StringUtil.isNotNull(queryReq.getTenantId()),
+                        ObjectUtils.isNotEmpty(queryReq.getTenantId()),
                         SysTenantWalletRecord::getTenantId,
                         queryReq.getTenantId())
                 .like(
@@ -63,4 +65,5 @@ public class SysTenantWalletController extends BaseController {
                         queryReq.getParam("endTime"))
                 .orderByDesc(SysTenantWalletRecord::getRecordId);
     }
+
 }

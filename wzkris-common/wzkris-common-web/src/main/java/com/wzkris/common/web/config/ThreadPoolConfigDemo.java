@@ -1,12 +1,14 @@
 package com.wzkris.common.web.config;
 
-import cn.hutool.core.thread.ThreadFactoryBuilder;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 线程池配置模板
@@ -40,10 +42,17 @@ public class ThreadPoolConfigDemo {
     protected ScheduledExecutorService scheduledExecutorService() {
         return new ScheduledThreadPoolExecutor(
                 corePoolSize,
-                ThreadFactoryBuilder.create()
-                        .setNamePrefix("schedule-pool-%d")
-                        .setDaemon(true)
-                        .build(),
+                new ThreadFactory() {
+                    @Override
+                    public Thread newThread(Runnable r) {
+                        final AtomicInteger threadNumber = new AtomicInteger(0);
+
+                        Thread thread = new Thread(r);
+                        thread.setDaemon(true);
+                        thread.setName(String.format("schedule-pool-%d", threadNumber.getAndIncrement()));
+                        return thread;
+                    }
+                },
                 new ThreadPoolExecutor.CallerRunsPolicy()) {
             @Override
             protected void afterExecute(Runnable r, Throwable t) {
@@ -52,4 +61,5 @@ public class ThreadPoolConfigDemo {
             }
         };
     }
+
 }

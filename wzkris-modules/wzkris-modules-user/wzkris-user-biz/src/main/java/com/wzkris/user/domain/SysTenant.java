@@ -7,9 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * 租户表 sys_tenant
@@ -79,4 +80,5 @@ public class SysTenant extends BaseEntity {
     public boolean isSuperTenant() {
         return isSuperTenant(this.tenantId);
     }
+
 }

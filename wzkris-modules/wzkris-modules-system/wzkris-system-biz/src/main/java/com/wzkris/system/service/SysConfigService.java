@@ -45,4 +45,5 @@ public interface SysConfigService {
      * @return 结果
      */
     boolean checkUsedByConfigKey(@Nullable Long configId, @Nonnull String configKey);
+
 }

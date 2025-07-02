@@ -3,7 +3,7 @@ package com.wzkris.gateway.filter;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.XssProperties;
 import io.netty.buffer.ByteBufAllocator;
-import java.nio.charset.StandardCharsets;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * 跨站脚本过滤器
@@ -54,7 +56,7 @@ public class XssFilter implements GlobalFilter, Ordered {
         }
         // excludeUrls 不过滤
         String url = request.getURI().getPath();
-        if (StringUtil.matches(url, xss.getExcludeUrls())) {
+        if (CollectionUtils.containsAny(xss.getExcludeUrls(), url)) {
             return chain.filter(exchange);
         }
         ServerHttpRequestDecorator httpRequestDecorator = requestDecorator(exchange);
@@ -104,11 +106,12 @@ public class XssFilter implements GlobalFilter, Ordered {
      */
     public boolean isJsonRequest(ServerWebExchange exchange) {
         String header = exchange.getRequest().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
-        return StringUtil.startWithIgnoreCase(header, MediaType.APPLICATION_JSON_VALUE);
+        return StringUtil.equalsAnyIgnoreCase(header, MediaType.APPLICATION_JSON_VALUE);
     }
 
     @Override
     public int getOrder() {
         return -100;
     }
+
 }

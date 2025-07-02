@@ -7,7 +7,7 @@ spring:
     name: wzkris-file
   profiles:
     active: @profiles.active@
-    include: dubbo
+    include: dubbo, feign
   cloud:
     nacos:
       # 注册地址

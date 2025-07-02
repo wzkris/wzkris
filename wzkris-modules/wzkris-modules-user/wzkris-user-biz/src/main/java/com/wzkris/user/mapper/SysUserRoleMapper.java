@@ -1,12 +1,13 @@
 package com.wzkris.user.mapper;
 
 import com.wzkris.user.domain.SysUserRole;
-import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 用户与角色关联表 数据层
@@ -51,13 +52,13 @@ public interface SysUserRoleMapper {
      */
     @Delete(
             """
-            <script>
-                DELETE FROM biz.sys_user_role WHERE user_id IN
-                    <foreach collection="list" item="userId" open="(" separator="," close=")">
-                        #{userId}
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        DELETE FROM biz.sys_user_role WHERE user_id IN
+                            <foreach collection="list" item="userId" open="(" separator="," close=")">
+                                #{userId}
+                            </foreach>
+                    </script>
+                    """)
     int deleteByUserIds(List<Long> userIds);
 
     /**
@@ -68,13 +69,13 @@ public interface SysUserRoleMapper {
      */
     @Delete(
             """
-            <script>
-                DELETE FROM biz.sys_user_role WHERE role_id IN
-                    <foreach collection="list" item="roleId" open="(" separator="," close=")">
-                        #{roleId}
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        DELETE FROM biz.sys_user_role WHERE role_id IN
+                            <foreach collection="list" item="roleId" open="(" separator="," close=")">
+                                #{roleId}
+                            </foreach>
+                    </script>
+                    """)
     int deleteByRoleIds(List<Long> roleIds);
 
     /**
@@ -85,15 +86,15 @@ public interface SysUserRoleMapper {
      */
     @Select(
             """
-            <script>
-                SELECT EXISTS(
-                    SELECT role_id FROM biz.sys_user_role WHERE role_id IN
-                        <foreach collection="list" item="roleId" open="(" separator="," close=")">
-                            #{roleId}
-                        </foreach>
-                    )
-            </script>
-            """)
+                    <script>
+                        SELECT EXISTS(
+                            SELECT role_id FROM biz.sys_user_role WHERE role_id IN
+                                <foreach collection="list" item="roleId" open="(" separator="," close=")">
+                                    #{roleId}
+                                </foreach>
+                            )
+                    </script>
+                    """)
     boolean checkExistByRoleIds(List<Long> roleIds);
 
     /**
@@ -104,13 +105,13 @@ public interface SysUserRoleMapper {
      */
     @Insert(
             """
-            <script>
-                INSERT INTO biz.sys_user_role(user_id, role_id) VALUES
-                    <foreach collection="list" item="item" index="index" separator=",">
-                        (#{item.userId}, #{item.roleId})
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        INSERT INTO biz.sys_user_role(user_id, role_id) VALUES
+                            <foreach collection="list" item="item" index="index" separator=",">
+                                (#{item.userId}, #{item.roleId})
+                            </foreach>
+                    </script>
+                    """)
     int insertBatch(List<SysUserRole> userRoles);
 
     /**
@@ -130,12 +131,13 @@ public interface SysUserRoleMapper {
      */
     @Delete(
             """
-            <script>
-                DELETE FROM biz.sys_user_role WHERE role_id = #{roleId} AND user_id IN
-                    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
-                        #{userId}
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        DELETE FROM biz.sys_user_role WHERE role_id = #{roleId} AND user_id IN
+                            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                                #{userId}
+                            </foreach>
+                    </script>
+                    """)
     int deleteBatch(@Param("roleId") Long roleId, @Param("userIds") List<Long> userIds);
+
 }

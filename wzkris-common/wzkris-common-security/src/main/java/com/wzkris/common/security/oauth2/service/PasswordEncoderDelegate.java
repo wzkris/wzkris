@@ -32,4 +32,5 @@ public class PasswordEncoderDelegate implements PasswordEncoder {
     public boolean upgradeEncoding(String encodedPassword) {
         return passwordEncoder.upgradeEncoding(encodedPassword);
     }
+
 }

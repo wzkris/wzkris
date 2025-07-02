@@ -9,6 +9,16 @@ package com.wzkris.common.core.constant;
 public interface SecurityConstants {
 
     /**
+     * 默认租戶ID
+     */
+    Long DEFAULT_TENANT_ID = 0L;
+
+    /**
+     * 默认用户名
+     */
+    String DEFAULT_USER_NAME = "default_user";
+
+    /**
      * 默认用户ID
      */
     Long DEFAULT_USER_ID = 0L;
@@ -32,4 +42,5 @@ public interface SecurityConstants {
      * 超级租户ID
      */
     Long SUPER_TENANT_ID = 1L;
+
 }

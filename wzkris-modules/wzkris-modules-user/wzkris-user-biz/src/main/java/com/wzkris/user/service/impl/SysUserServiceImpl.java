@@ -1,12 +1,10 @@
 package com.wzkris.user.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
@@ -17,14 +15,17 @@ import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysUserService;
 import jakarta.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 管理员 业务层处理
@@ -123,7 +124,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     private boolean insertUserRole(Long userId, List<Long> roleIds) {
-        if (ObjUtil.isNotEmpty(roleIds)) {
+        if (CollectionUtils.isNotEmpty(roleIds)) {
             List<SysUserRole> list = roleIds.stream()
                     .map(roleId -> new SysUserRole(userId, roleId))
                     .toList();
@@ -133,7 +134,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     private void insertUserPost(Long userId, List<Long> postIds) {
-        if (ObjUtil.isNotEmpty(postIds)) {
+        if (CollectionUtils.isNotEmpty(postIds)) {
             List<SysUserPost> list = postIds.stream()
                     .map(postId -> new SysUserPost(userId, postId))
                     .toList();
@@ -143,17 +144,17 @@ public class SysUserServiceImpl implements SysUserService {
 
     private LambdaQueryWrapper<SysUser> buildQueryWrapper(SysUserQueryReq queryReq) {
         return new LambdaQueryWrapper<SysUser>()
-                .eq(StringUtil.isNotNull(queryReq.getTenantId()), SysUser::getTenantId, queryReq.getTenantId())
-                .like(StringUtil.isNotNull(queryReq.getUsername()), SysUser::getUsername, queryReq.getUsername())
-                .like(StringUtil.isNotNull(queryReq.getNickname()), SysUser::getNickname, queryReq.getNickname())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getTenantId()), SysUser::getTenantId, queryReq.getTenantId())
+                .like(ObjectUtils.isNotEmpty(queryReq.getUsername()), SysUser::getUsername, queryReq.getUsername())
+                .like(ObjectUtils.isNotEmpty(queryReq.getNickname()), SysUser::getNickname, queryReq.getNickname())
                 .like(
-                        StringUtil.isNotNull(queryReq.getPhoneNumber()),
+                        ObjectUtils.isNotEmpty(queryReq.getPhoneNumber()),
                         SysUser::getPhoneNumber,
                         queryReq.getPhoneNumber())
-                .like(StringUtil.isNotNull(queryReq.getEmail()), SysUser::getEmail, queryReq.getEmail())
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
-                .eq(StringUtil.isNotNull(queryReq.getDeptId()), SysUser::getDeptId, queryReq.getDeptId())
+                .like(ObjectUtils.isNotEmpty(queryReq.getEmail()), SysUser::getEmail, queryReq.getEmail())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getDeptId()), SysUser::getDeptId, queryReq.getDeptId())
                 .orderByDesc(SysUser::getUserId);
     }
 
@@ -162,7 +163,7 @@ public class SysUserServiceImpl implements SysUserService {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getUsername, username)
-                    .ne(ObjUtil.isNotNull(userId), SysUser::getUserId, userId);
+                    .ne(Objects.nonNull(userId), SysUser::getUserId, userId);
             return userMapper.exists(lqw);
         });
     }
@@ -172,23 +173,24 @@ public class SysUserServiceImpl implements SysUserService {
         return DynamicTenantUtil.ignore(() -> {
             LambdaQueryWrapper<SysUser> lqw = new LambdaQueryWrapper<>(SysUser.class)
                     .eq(SysUser::getPhoneNumber, phonenumber)
-                    .ne(ObjUtil.isNotNull(userId), SysUser::getUserId, userId);
+                    .ne(Objects.nonNull(userId), SysUser::getUserId, userId);
             return userMapper.exists(lqw);
         });
     }
 
     @Override
     public void checkDataScopes(Collection<Long> userIds) {
-        if (ObjUtil.isNotEmpty(userIds)) {
+        if (CollectionUtils.isNotEmpty(userIds)) {
             if (userIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
                 throw new AccessDeniedException("禁止访问超级管理员数据");
             }
-            if (userIds.contains(LoginUtil.getUserId())) {
-                throw new AccessDeniedException("userId：‘" + LoginUtil.getUserId() + "'禁止访问自身数据");
+            if (userIds.contains(SystemUserUtil.getUserId())) {
+                throw new AccessDeniedException("userId：‘" + SystemUserUtil.getUserId() + "'禁止访问自身数据");
             }
             if (!userMapper.checkDataScopes(userIds)) {
                 throw new AccessDeniedException("无此用户数据访问权限");
             }
         }
     }
+
 }

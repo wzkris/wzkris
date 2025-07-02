@@ -17,4 +17,5 @@ public final class UtilException extends BaseException {
     public UtilException(int biz, String code, Object... args) {
         super("工具类异常", biz, code, args, null);
     }
+
 }

@@ -17,4 +17,5 @@ public class DeptPermissionHandler implements MultiDataPermissionHandler {
     public Expression getSqlSegment(Table table, Expression where, String mappedStatementId) {
         return DeptScopeUtil.getSqlExpression();
     }
+
 }

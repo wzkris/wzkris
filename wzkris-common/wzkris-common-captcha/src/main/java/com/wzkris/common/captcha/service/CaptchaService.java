@@ -1,18 +1,22 @@
 package com.wzkris.common.captcha.service;
 
-import cloud.tianai.captcha.application.ImageCaptchaProperties;
-import cn.hutool.core.util.ObjUtil;
+import com.wzkris.common.captcha.exception.ChallengeStoreException;
+import com.wzkris.common.captcha.handler.CapHandler;
+import com.wzkris.common.captcha.properties.CapProperties;
+import com.wzkris.common.captcha.request.RedeemChallengeRequest;
+import com.wzkris.common.captcha.response.ChallengeResponse;
+import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
-import java.time.Duration;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RScript;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.Collections;
 
 /**
  * 验证码服务
@@ -27,8 +31,46 @@ public class CaptchaService {
 
     private static final String MAXTRY_PREFIX = "captcha:max_try:";
 
-    @Autowired
-    private ImageCaptchaProperties captchaProperties;
+    private final CapHandler capHandler;
+
+    private final CapProperties capProperties;
+
+    public CaptchaService(CapHandler capHandler, CapProperties capProperties) {
+        this.capHandler = capHandler;
+        this.capProperties = capProperties;
+    }
+
+    public ChallengeResponse createChallenge() throws ChallengeStoreException {
+        final var challenge = capHandler.createChallenge();
+        return ChallengeResponse.builder()
+                .challenge(challenge.getChallenge())
+                .expires(challenge.getExpires())
+                .token(challenge.getToken())
+                .build();
+    }
+
+    public RedeemChallengeResponse redeemChallenge(final RedeemChallengeRequest redeemChallengeRequest) {
+        try {
+            final var token = capHandler.redeemChallenge(
+                    redeemChallengeRequest.getToken(),
+                    redeemChallengeRequest.getSolutions()
+            );
+            return RedeemChallengeResponse.builder()
+                    .success(true)
+                    .token(token.getToken())
+                    .expires(token.getExpires())
+                    .build();
+        } catch (IllegalArgumentException | IllegalStateException | ChallengeStoreException e) {
+            return RedeemChallengeResponse.builder()
+                    .success(false)
+                    .message(e.getMessage())
+                    .build();
+        }
+    }
+
+    public Boolean validateToken(final String token) {
+        return capHandler.validateToken(token);
+    }
 
     /**
      * 设置验证码
@@ -37,21 +79,21 @@ public class CaptchaService {
      */
     public void setCaptcha(String key, String code) {
         RedisUtil.setObj(
-                captchaProperties.getPrefix() + ":" + key,
+                capProperties.getCaptchaPrefix() + key,
                 code,
-                Duration.ofMillis(captchaProperties.getExpire().getOrDefault("default", 120_000L)));
+                Duration.ofMillis(capProperties.getTokenExpiresMs()));
     }
 
     /**
      * 校验验证码
      */
     public void validateCaptcha(String key, String code) {
-        String fullKey = captchaProperties.getPrefix() + ":" + key;
+        String fullKey = capProperties.getCaptchaPrefix() + key;
         String realcode = RedisUtil.getObj(fullKey);
         if (StringUtil.isBlank(realcode)) {
             throw new CaptchaException("captcha.expired");
         }
-        if (ObjUtil.notEqual(realcode, code)) {
+        if (!StringUtil.equals(realcode, code)) {
             throw new CaptchaException("captcha.error");
         }
         RedisUtil.delObj(fullKey);
@@ -109,7 +151,8 @@ public class CaptchaService {
      */
     public void validateLock(String key) {
         if (RedisUtil.hasKey(LOCK_PREFIX + key)) {
-            throw new CaptchaException(BizCode.BAD_REQUEST.value(), "service.busy");
+            throw new CaptchaException(BizCode.TOO_MANY_REQUESTS.value(), "service.busy");
         }
     }
+
 }

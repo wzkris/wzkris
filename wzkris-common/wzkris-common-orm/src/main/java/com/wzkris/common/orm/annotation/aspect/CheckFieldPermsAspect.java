@@ -1,15 +1,11 @@
 package com.wzkris.common.orm.annotation.aspect;
 
-import cn.hutool.core.util.ArrayUtil;
-import com.wzkris.common.core.utils.ReflectUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.orm.annotation.CheckFieldPerms;
 import com.wzkris.common.orm.annotation.FieldPerms;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,6 +17,11 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.security.access.expression.ExpressionUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author : wzkris
@@ -74,7 +75,7 @@ public class CheckFieldPermsAspect {
         return proceed;
     }
 
-    private void handleWritePerms(Object[] objs, String spel, Class<?>[] groups) {
+    private void handleWritePerms(Object[] objs, String spel, Class<?>[] groups) throws IllegalAccessException {
         for (Object obj : objs) {
             if (obj == null) {
                 continue;
@@ -95,7 +96,7 @@ public class CheckFieldPermsAspect {
      * @param spel   表达式
      * @param groups 分组
      */
-    private void handleWritePerms(Object obj, String spel, Class<?>[] groups) {
+    private void handleWritePerms(Object obj, String spel, Class<?>[] groups) throws IllegalAccessException {
         if (obj == null) {
             return;
         }
@@ -108,13 +109,13 @@ public class CheckFieldPermsAspect {
                 this.handleParameterPerms(obj, field, fieldPerms, spel, groups);
             } else {
                 if (!isPrimitiveOrWrapper(field.getType())) { // 若是对象则递归其内部属性
-                    this.handleWritePerms(ReflectUtil.getFieldValue(obj, field), spel, groups);
+                    this.handleWritePerms(FieldUtils.readField(obj, field.getName(), true), spel, groups);
                 }
             }
         }
     }
 
-    private void handleReadPerms(Object proceed, String spel, Class<?>[] groups) {
+    private void handleReadPerms(Object proceed, String spel, Class<?>[] groups) throws IllegalAccessException {
         if (isPrimitiveOrWrapper(proceed.getClass())) { // 只处理方法返回对象类型数据
             return;
         }
@@ -129,7 +130,7 @@ public class CheckFieldPermsAspect {
      * @param spel   表达式
      * @param groups 分组
      */
-    private void doHandleReadPerms(Object obj, String spel, Class<?>[] groups) {
+    private void doHandleReadPerms(Object obj, String spel, Class<?>[] groups) throws IllegalAccessException {
         if (obj == null) {
             return;
         }
@@ -160,7 +161,7 @@ public class CheckFieldPermsAspect {
                 } else {
                     // 为空则需要判断是否是基本类型
                     if (!isPrimitiveOrWrapper(field.getType())) {
-                        this.doHandleReadPerms(ReflectUtil.getFieldValue(obj, field), spel, groups);
+                        this.doHandleReadPerms(FieldUtils.readField(obj, field.getName(), true), spel, groups);
                     }
                 }
             }
@@ -170,7 +171,7 @@ public class CheckFieldPermsAspect {
     /**
      * 处理参数权限
      */
-    private void handleParameterPerms(Object obj, Field field, FieldPerms fieldPerms, String spel, Class<?>[] groups) {
+    private void handleParameterPerms(Object obj, Field field, FieldPerms fieldPerms, String spel, Class<?>[] groups) throws IllegalAccessException {
         // 分组匹配
         if (!isMatchingGroups(fieldPerms.groups(), groups)) {
             return;
@@ -186,12 +187,12 @@ public class CheckFieldPermsAspect {
             return true;
         }
 
-        if (fieldGroups.length == 0 || methodGroups.length == 0) {
+        if (fieldGroups.length == 0) {
             return false;
         }
 
         for (Class<?> group : methodGroups) {
-            if (ArrayUtil.contains(fieldGroups, group)) {
+            if (ArrayUtils.contains(fieldGroups, group)) {
                 return true;
             }
         }
@@ -203,9 +204,9 @@ public class CheckFieldPermsAspect {
      * @param field      字段
      * @param expression 权限表达式
      */
-    private void evaluatePerms(Object arg, Field field, String expression) {
+    private void evaluatePerms(Object arg, Field field, String expression) throws IllegalAccessException {
         if (!ExpressionUtils.evaluateAsBoolean(spel.parseExpression(expression), this.createContext())) {
-            ReflectUtil.setFieldValue(arg, field, null);
+            FieldUtils.writeField(field, arg, null);
         }
     }
 
@@ -220,4 +221,5 @@ public class CheckFieldPermsAspect {
         }
         return context;
     }
+
 }

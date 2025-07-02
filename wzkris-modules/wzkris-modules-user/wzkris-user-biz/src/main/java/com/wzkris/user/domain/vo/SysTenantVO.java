@@ -2,8 +2,9 @@ package com.wzkris.user.domain.vo;
 
 import com.wzkris.user.domain.SysTenant;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * 租户信息展示层
@@ -18,4 +19,5 @@ public class SysTenantVO extends SysTenant {
 
     @Schema(description = "余额, 元")
     private BigDecimal balance;
+
 }

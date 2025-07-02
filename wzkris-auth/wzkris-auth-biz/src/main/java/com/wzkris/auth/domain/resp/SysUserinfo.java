@@ -1,8 +1,9 @@
 package com.wzkris.auth.domain.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Collection;
 import lombok.Data;
+
+import java.util.Collection;
 
 /**
  * 用户信息
@@ -23,4 +24,5 @@ public class SysUserinfo {
 
     @Schema(description = "权限")
     private Collection<String> authorities;
+
 }

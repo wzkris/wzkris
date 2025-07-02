@@ -20,4 +20,5 @@ public class SysUserPost {
 
     @Schema(description = "岗位ID")
     private Long postId;
+
 }

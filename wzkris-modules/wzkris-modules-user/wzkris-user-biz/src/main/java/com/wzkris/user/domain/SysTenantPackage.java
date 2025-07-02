@@ -40,4 +40,5 @@ public class SysTenantPackage extends BaseEntity {
     public SysTenantPackage(Long packageId) {
         this.packageId = packageId;
     }
+
 }

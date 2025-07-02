@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.wzkris.common.orm.plus.extension.method.SelectByIdForUpdate;
-import java.util.List;
 import org.apache.ibatis.session.Configuration;
+
+import java.util.List;
 
 public class ExtenseSqlInjector extends DefaultSqlInjector {
 
@@ -15,4 +16,5 @@ public class ExtenseSqlInjector extends DefaultSqlInjector {
         methodList.add(new SelectByIdForUpdate());
         return methodList;
     }
+
 }

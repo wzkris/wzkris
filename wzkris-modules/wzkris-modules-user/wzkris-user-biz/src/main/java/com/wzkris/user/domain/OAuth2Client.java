@@ -19,7 +19,7 @@ import org.apache.ibatis.type.ArrayTypeHandler;
  */
 @Data
 @AutoMappers({
-    @AutoMapper(target = OAuth2ClientResp.class),
+        @AutoMapper(target = OAuth2ClientResp.class),
 })
 @TableName(schema = "biz", autoResultMap = true, value = "oauth2_client")
 public class OAuth2Client extends BaseEntity {
@@ -54,4 +54,5 @@ public class OAuth2Client extends BaseEntity {
 
     @Schema(description = "放行配置")
     private Boolean autoApprove;
+
 }

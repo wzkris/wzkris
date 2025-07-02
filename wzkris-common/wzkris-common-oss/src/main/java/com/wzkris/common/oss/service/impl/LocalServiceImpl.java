@@ -1,15 +1,21 @@
 package com.wzkris.common.oss.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.oss.config.OssConfig;
 import com.wzkris.common.oss.domain.FileVO;
 import com.wzkris.common.oss.service.FileService;
-import com.wzkris.common.oss.utils.FileUtil;
-import java.io.IOException;
-import java.io.InputStream;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Date;
 
 /**
  * 本地文件存储
@@ -34,9 +40,22 @@ public class LocalServiceImpl implements FileService {
     @Override
     public FileVO upload(InputStream is, String relativePath, String fileName, String contentType) {
         try {
-            String pathName = relativePath + formatPathName(fileName);
-            FileUtil.writeBytes(is.readAllBytes(), properties.getPath() + "/" + pathName);
-            return new FileVO(FileUtil.getName(pathName), properties.getPrefix(), pathName);
+            // 使用Lang3的StringUtils处理路径
+            String safeFileName = StringUtil.replace(fileName, ".", "_");
+            String pathName = relativePath + safeFileName;
+
+            // 使用Java NIO替换FileUtil
+            Path targetPath = Paths.get(properties.getPath(), pathName);
+            Files.createDirectories(targetPath.getParent());
+
+            // 使用Files.copy替代FileUtil.writeBytes
+            Files.copy(is, targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+            return new FileVO(
+                    Paths.get(pathName).getFileName().toString(),
+                    properties.getPrefix(),
+                    pathName
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -47,11 +66,16 @@ public class LocalServiceImpl implements FileService {
      */
     public String formatPathName(String pathName) {
         // 以日期作为子目录
-        return DateUtil.format(DateUtil.date(), "/yyyy/MM/dd/")
-                + StringUtil.format(
-                        "{}_{}.{}",
-                        FileUtil.getPrefix(pathName),
-                        System.currentTimeMillis(),
-                        FileUtil.getSuffix(pathName));
+        try {
+            return DateFormatUtils.format(new Date(), "/yyyy/MM/dd/")
+                    + String.format(
+                    "%s_%s.%s",
+                    FilenameUtils.getPrefix(pathName),
+                    System.currentTimeMillis(),
+                    FilenameUtils.getExtension(pathName));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }

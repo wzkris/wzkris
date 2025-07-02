@@ -26,4 +26,5 @@ public final class ThirdServiceException extends BaseException {
     public String getMessage() {
         return this.getDefaultMessage();
     }
+
 }

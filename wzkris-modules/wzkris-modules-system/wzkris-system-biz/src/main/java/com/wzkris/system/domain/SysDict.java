@@ -44,5 +44,7 @@ public class SysDict extends BaseEntity {
 
         @Schema(description = "表格回显样式")
         private String tableCls;
+
     }
+
 }

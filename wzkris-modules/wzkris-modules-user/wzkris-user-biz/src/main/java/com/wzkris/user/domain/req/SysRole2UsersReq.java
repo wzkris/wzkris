@@ -2,8 +2,9 @@ package com.wzkris.user.domain.req;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 角色对用户 一对多
@@ -16,4 +17,5 @@ public class SysRole2UsersReq {
 
     @NotEmpty(message = "{desc.user}{desc.id}{validate.notnull}")
     private List<Long> userIds;
+
 }

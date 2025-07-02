@@ -1,7 +1,5 @@
 package com.wzkris.system.service.impl;
 
-import cn.hutool.core.stream.StreamUtil;
-import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -9,11 +7,13 @@ import com.wzkris.system.domain.SysDict;
 import com.wzkris.system.mapper.SysDictMapper;
 import com.wzkris.system.service.SysDictService;
 import jakarta.annotation.PostConstruct;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     public void loadingDictCache() {
         RMap<String, SysDict.DictData[]> rMap = cache();
-        Map<String, SysDict.DictData[]> map = StreamUtil.of(dictMapper.selectList(null))
+        Map<String, SysDict.DictData[]> map = dictMapper.selectList(null).stream()
                 .collect(Collectors.toMap(SysDict::getDictKey, SysDict::getDictValue));
         rMap.clear();
         rMap.putAll(map);
@@ -45,7 +45,7 @@ public class SysDictServiceImpl implements SysDictService {
         }
         SysDict dict = dictMapper.selectOne(Wrappers.lambdaQuery(SysDict.class).eq(SysDict::getDictKey, dictKey));
         if (dict == null) {
-            return new SysDict.DictData[] {};
+            return new SysDict.DictData[]{};
         }
         cache().put(dictKey, dict.getDictValue());
         return dict.getDictValue();
@@ -83,7 +83,8 @@ public class SysDictServiceImpl implements SysDictService {
     public boolean checkUsedByDictKey(Long dictId, String dictKey) {
         LambdaQueryWrapper<SysDict> lqw = new LambdaQueryWrapper<SysDict>()
                 .eq(SysDict::getDictId, dictId)
-                .ne(ObjUtil.isNotNull(dictId), SysDict::getDictKey, dictKey);
+                .ne(Objects.nonNull(dictId), SysDict::getDictKey, dictKey);
         return dictMapper.exists(lqw);
     }
+
 }

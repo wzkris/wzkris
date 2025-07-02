@@ -67,4 +67,5 @@ public class BaseException extends RuntimeException {
     public String getDefaultMessage() {
         return this.defaultMessage;
     }
+
 }

@@ -1,16 +1,15 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.util.ObjUtil;
-import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.domain.export.OAuth2ClientExport;
 import com.wzkris.user.domain.req.EditClientSecretReq;
@@ -23,10 +22,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * OAuth2客户端
@@ -56,8 +57,8 @@ public class OAuth2ClientController extends BaseController {
 
     private LambdaQueryWrapper<OAuth2Client> buildQueryWrapper(OAuth2ClientQueryReq req) {
         return new LambdaQueryWrapper<OAuth2Client>()
-                .eq(ObjUtil.isNotEmpty(req.getStatus()), OAuth2Client::getStatus, req.getStatus())
-                .like(ObjUtil.isNotEmpty(req.getClientId()), OAuth2Client::getClientId, req.getClientId());
+                .eq(StringUtil.isNotEmpty(req.getStatus()), OAuth2Client::getStatus, req.getStatus())
+                .like(StringUtil.isNotEmpty(req.getClientId()), OAuth2Client::getClientId, req.getClientId());
     }
 
     @Operation(summary = "根据id查详情")
@@ -105,7 +106,7 @@ public class OAuth2ClientController extends BaseController {
     public Result<String> add(@RequestBody @Valid OAuth2ClientReq clientReq) {
         OAuth2Client client = BeanUtil.convert(clientReq, OAuth2Client.class);
 
-        String secret = RandomUtil.randomString(16);
+        String secret = RandomStringUtils.secure().next(16);
         client.setClientSecret(passwordEncoder.encode(secret));
         oauth2ClientMapper.insert(client);
         return ok(secret);
@@ -128,4 +129,5 @@ public class OAuth2ClientController extends BaseController {
         List<OAuth2ClientExport> convert = BeanUtil.convert(list, OAuth2ClientExport.class);
         ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, response);
     }
+
 }

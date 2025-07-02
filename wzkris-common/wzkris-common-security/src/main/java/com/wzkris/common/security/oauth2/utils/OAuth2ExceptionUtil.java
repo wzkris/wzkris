@@ -4,8 +4,8 @@ import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.domain.CustomOAuth2Error;
-import com.wzkris.common.security.oauth2.exception.OAuth2AuthenticationI18nException;
+import com.wzkris.common.security.exception.CustomOAuth2Error;
+import com.wzkris.common.security.exception.OAuth2AuthenticationI18nException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -81,15 +81,15 @@ public final class OAuth2ExceptionUtil {
         } else if (errorCode.equals(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT)) {
             return Result.resp(
                     BizCode.BAD_REQUEST,
-                    StringUtil.nullToDefault(errorMsg, I18nUtil.message("oauth2.unsupport.granttype")));
+                    StringUtil.defaultIfBlank(errorMsg, I18nUtil.message("oauth2.unsupport.granttype")));
         } else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法
-                Result.resp(BizCode.UNAUTHORIZED);
+                        Result.resp(BizCode.UNAUTHORIZED);
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
-                Result.resp(BizCode.UNAUTHORIZED, StringUtil.nullToDefault(errorMsg, BizCode.UNAUTHORIZED.desc()));
+                        Result.resp(BizCode.UNAUTHORIZED, StringUtil.defaultIfBlank(errorMsg, BizCode.UNAUTHORIZED.desc()));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
-                Result.resp(BizCode.BAD_REQUEST, I18nUtil.message("oauth2.scope.invalid"));
+                        Result.resp(BizCode.BAD_REQUEST, I18nUtil.message("oauth2.scope.invalid"));
                 default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
@@ -98,4 +98,5 @@ public final class OAuth2ExceptionUtil {
             return Result.resp(BizCode.UNAUTHORIZED, errorMsg);
         }
     }
+
 }

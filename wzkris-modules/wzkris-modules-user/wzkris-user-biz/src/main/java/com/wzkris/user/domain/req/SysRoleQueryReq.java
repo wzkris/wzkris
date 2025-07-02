@@ -11,4 +11,5 @@ public class SysRoleQueryReq {
 
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;
+
 }

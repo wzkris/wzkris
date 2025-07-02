@@ -1,5 +1,4 @@
 com.wzkris.common.web.config.HikariInitPool
 com.wzkris.common.web.config.JacksonConfig
 com.wzkris.common.web.config.ValidatorConfig
-com.wzkris.common.web.config.TenantInterceptorConfig
 com.wzkris.common.web.handler.WebExceptionHandler

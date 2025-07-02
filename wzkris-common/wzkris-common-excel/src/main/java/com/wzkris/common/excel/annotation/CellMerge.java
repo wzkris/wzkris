@@ -23,4 +23,5 @@ public @interface CellMerge {
      * 合并需要依赖的其他字段名称
      */
     String[] mergeBy() default {};
+
 }

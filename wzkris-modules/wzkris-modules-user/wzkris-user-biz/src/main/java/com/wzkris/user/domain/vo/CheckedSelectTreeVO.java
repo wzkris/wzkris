@@ -1,8 +1,9 @@
 package com.wzkris.user.domain.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 节点选择树
@@ -15,4 +16,5 @@ public class CheckedSelectTreeVO {
 
     @Schema(description = "可选择树")
     private List<SelectTreeVO> selectTrees;
+
 }

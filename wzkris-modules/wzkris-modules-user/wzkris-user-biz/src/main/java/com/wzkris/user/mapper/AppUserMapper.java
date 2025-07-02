@@ -4,9 +4,10 @@ import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.req.AppUserIncryQueryReq;
 import com.wzkris.user.domain.vo.AppUserIncryVO;
-import java.util.List;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface AppUserMapper extends BaseMapperPlus<AppUser> {
@@ -15,4 +16,5 @@ public interface AppUserMapper extends BaseMapperPlus<AppUser> {
     AppUser selectByPhoneNumber(String phoneNumber);
 
     List<AppUserIncryVO> listIncryVO(AppUserIncryQueryReq queryReq);
+
 }

@@ -1,7 +1,8 @@
 package com.wzkris.user.rmi.domain.resp;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * OAuth2 客户端传输层
@@ -31,4 +32,5 @@ public class OAuth2ClientResp implements Serializable {
 
     // 是否自动放行
     private Boolean autoApprove;
+
 }

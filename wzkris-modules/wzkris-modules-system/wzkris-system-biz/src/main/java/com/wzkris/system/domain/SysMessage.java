@@ -26,10 +26,11 @@ public class SysMessage extends BaseEntity {
     @Schema(description = "内容")
     private String content;
 
-    @Schema(description = "状态（0草稿 1关闭 2已发送）")
+    @Schema(description = "状态（0草稿 1关闭 2公开）")
     private String status;
 
     public SysMessage(Long msgId) {
         this.msgId = msgId;
     }
+
 }

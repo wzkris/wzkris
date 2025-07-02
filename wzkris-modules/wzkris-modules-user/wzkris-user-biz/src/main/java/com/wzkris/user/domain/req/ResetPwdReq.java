@@ -15,4 +15,5 @@ public class ResetPwdReq {
 
     @NotBlank(message = "{desc.pwd}{validate.notnull}")
     private String password;
+
 }

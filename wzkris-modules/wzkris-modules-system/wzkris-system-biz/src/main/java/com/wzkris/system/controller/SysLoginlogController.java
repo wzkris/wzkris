@@ -7,16 +7,17 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.domain.SysLoginLog;
 import com.wzkris.system.domain.req.SysLoginLogQueryReq;
 import com.wzkris.system.mapper.SysLoginLogMapper;
 import com.wzkris.system.service.SysLoginLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -45,10 +46,10 @@ public class SysLoginlogController extends BaseController {
 
     private LambdaQueryWrapper<SysLoginLog> buildQueryWrapper(SysLoginLogQueryReq queryReq) {
         return new LambdaQueryWrapper<SysLoginLog>()
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysLoginLog::getStatus, queryReq.getStatus())
-                .like(StringUtil.isNotNull(queryReq.getUsername()), SysLoginLog::getUsername, queryReq.getUsername())
+                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), SysLoginLog::getStatus, queryReq.getStatus())
+                .like(StringUtil.isNotEmpty(queryReq.getUsername()), SysLoginLog::getUsername, queryReq.getUsername())
                 .like(
-                        StringUtil.isNotNull(queryReq.getLoginLocation()),
+                        StringUtil.isNotEmpty(queryReq.getLoginLocation()),
                         SysLoginLog::getLoginLocation,
                         queryReq.getLoginLocation())
                 .between(
@@ -66,4 +67,5 @@ public class SysLoginlogController extends BaseController {
     public Result<?> remove(@RequestBody List<Long> logIds) {
         return toRes(loginLogMapper.deleteByIds(logIds));
     }
+
 }

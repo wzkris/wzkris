@@ -8,7 +8,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.domain.SysMessage;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.domain.req.SysMessageQueryReq;
@@ -20,11 +20,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 系统消息 操作处理
@@ -80,7 +81,7 @@ public class SysMessageController extends BaseController {
     @PostMapping("/edit")
     @CheckSystemPerms("sys_message:edit")
     public Result<Void> edit(@RequestBody SysMessageReq req) {
-        noticeService.sendUsers(Collections.singletonList(1L), new SimpleMessageDTO("123", "1", "222"));
+        noticeService.saveBatch2Users(Collections.singletonList(1L), new SimpleMessageDTO("123", "1", "222"));
         return toRes(messageMapper.updateById(BeanUtil.convert(req, SysMessage.class)));
     }
 
@@ -92,4 +93,5 @@ public class SysMessageController extends BaseController {
             @RequestBody @NotEmpty(message = "{desc.message}{desc.id}{validate.notnull}") List<Long> msgIds) {
         return toRes(messageMapper.deleteByIds(msgIds));
     }
+
 }

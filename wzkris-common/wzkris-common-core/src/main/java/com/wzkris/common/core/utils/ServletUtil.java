@@ -1,35 +1,22 @@
 package com.wzkris.common.core.utils;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
-import cn.hutool.core.bean.copier.ValueProvider;
-import cn.hutool.core.collection.ArrayIter;
-import cn.hutool.core.collection.IterUtil;
-import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.map.CaseInsensitiveMap;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.net.NetUtil;
-import cn.hutool.core.net.multipart.MultipartFormData;
-import cn.hutool.core.net.multipart.UploadSetting;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
 import com.wzkris.common.core.exception.util.UtilException;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.lang.reflect.Type;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import lombok.extern.slf4j.Slf4j;
+import java.util.regex.Pattern;
 
 /**
  * 客户端工具类
@@ -39,21 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ServletUtil {
 
-    public static final String METHOD_DELETE = "DELETE";
+    private static final Pattern IPV4_PATTERN = Pattern.compile(
+            "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\." +
+                    "(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$");
 
-    public static final String METHOD_HEAD = "HEAD";
+    private static final Pattern IPV6_STD_PATTERN = Pattern.compile(
+            "^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$");
 
-    public static final String METHOD_GET = "GET";
-
-    public static final String METHOD_OPTIONS = "OPTIONS";
-
-    public static final String METHOD_POST = "POST";
-
-    public static final String METHOD_PUT = "PUT";
-
-    public static final String METHOD_TRACE = "TRACE";
-
-    // --------------------------------------------------------- getParam start
+    private static final Pattern IPV6_HEX_COMPRESSED_PATTERN = Pattern.compile(
+            "^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$");
 
     /**
      * 获得所有请求参数
@@ -75,7 +56,7 @@ public class ServletUtil {
     public static Map<String, String> getParamMap(ServletRequest request) {
         Map<String, String> params = new HashMap<>();
         for (Map.Entry<String, String[]> entry : getParams(request).entrySet()) {
-            params.put(entry.getKey(), ArrayUtil.join(entry.getValue(), StrUtil.COMMA));
+            params.put(entry.getKey(), String.join(StringUtil.COMMA, entry.getValue()));
         }
         return params;
     }
@@ -88,103 +69,16 @@ public class ServletUtil {
      * @return 获得请求体
      * @since 4.0.2
      */
-    public static String getBody(ServletRequest request) {
+    public static String getBody(ServletRequest request) throws IOException {
         try (final BufferedReader reader = request.getReader()) {
-            return IoUtil.read(reader);
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
+            final StringBuilder builder = new StringBuilder();
+            final CharBuffer buffer = CharBuffer.allocate(2 << 12);
+            while (-1 != reader.read(buffer)) {
+                builder.append(buffer.flip());
+            }
+            return builder.toString();
         }
     }
-
-    /**
-     * 获取请求体byte[]<br>
-     * 调用该方法后，getParam方法将失效
-     *
-     * @param request {@link ServletRequest}
-     * @return 获得请求体byte[]
-     * @since 4.0.2
-     */
-    public static byte[] getBodyBytes(ServletRequest request) {
-        try {
-            return IoUtil.readBytes(request.getInputStream());
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
-        }
-    }
-    // --------------------------------------------------------- getParam end
-
-    // --------------------------------------------------------- fillBean start
-
-    /**
-     * ServletRequest 参数转Bean
-     *
-     * @param <T>         Bean类型
-     * @param request     ServletRequest
-     * @param bean        Bean
-     * @param copyOptions 注入时的设置
-     * @return Bean
-     * @since 3.0.4
-     */
-    public static <T> T fillBean(final ServletRequest request, T bean, CopyOptions copyOptions) {
-        final String beanName = StrUtil.lowerFirst(bean.getClass().getSimpleName());
-        return BeanUtil.fillBean(
-                bean,
-                new ValueProvider<String>() {
-                    @Override
-                    public Object value(String key, Type valueType) {
-                        String[] values = request.getParameterValues(key);
-                        if (ArrayUtil.isEmpty(values)) {
-                            values = request.getParameterValues(beanName + StrUtil.DOT + key);
-                            if (ArrayUtil.isEmpty(values)) {
-                                return null;
-                            }
-                        }
-
-                        if (1 == values.length) {
-                            // 单值表单直接返回这个值
-                            return values[0];
-                        } else {
-                            // 多值表单返回数组
-                            return values;
-                        }
-                    }
-
-                    @Override
-                    public boolean containsKey(String key) {
-                        // 对于Servlet来说，返回值null意味着无此参数
-                        return (null != request.getParameter(key))
-                                || (null != request.getParameter(beanName + StrUtil.DOT + key));
-                    }
-                },
-                copyOptions);
-    }
-
-    /**
-     * ServletRequest 参数转Bean
-     *
-     * @param <T>           Bean类型
-     * @param request       {@link ServletRequest}
-     * @param bean          Bean
-     * @param isIgnoreError 是否忽略注入错误
-     * @return Bean
-     */
-    public static <T> T fillBean(ServletRequest request, T bean, boolean isIgnoreError) {
-        return fillBean(request, bean, CopyOptions.create().setIgnoreError(isIgnoreError));
-    }
-
-    /**
-     * ServletRequest 参数转Bean
-     *
-     * @param <T>           Bean类型
-     * @param request       ServletRequest
-     * @param beanClass     Bean Class
-     * @param isIgnoreError 是否忽略注入错误
-     * @return Bean
-     */
-    public static <T> T toBean(ServletRequest request, Class<T> beanClass, boolean isIgnoreError) {
-        return fillBean(request, ReflectUtil.newInstanceIfPossible(beanClass), isIgnoreError);
-    }
-    // --------------------------------------------------------- fillBean end
 
     /**
      * 获取客户端IP
@@ -210,15 +104,15 @@ public class ServletUtil {
      */
     public static String getClientIP(HttpServletRequest request, String... otherHeaderNames) {
         String[] headers = {
-            "X-Forwarded-For",
-            "X-Real-IP",
-            "Proxy-Client-IP",
-            "WL-Proxy-Client-IP",
-            "HTTP_CLIENT_IP",
-            "HTTP_X_FORWARDED_FOR"
+                "X-Forwarded-For",
+                "X-Real-IP",
+                "Proxy-Client-IP",
+                "WL-Proxy-Client-IP",
+                "HTTP_CLIENT_IP",
+                "HTTP_X_FORWARDED_FOR"
         };
-        if (ArrayUtil.isNotEmpty(otherHeaderNames)) {
-            headers = ArrayUtil.addAll(headers, otherHeaderNames);
+        if (ArrayUtils.isNotEmpty(otherHeaderNames)) {
+            headers = ArrayUtils.addAll(headers, otherHeaderNames);
         }
 
         return getClientIPByHeader(request, headers);
@@ -241,48 +135,88 @@ public class ServletUtil {
         String ip;
         for (String header : headerNames) {
             ip = request.getHeader(header);
-            if (!NetUtil.isUnknown(ip)) {
-                return NetUtil.getMultistageReverseProxyIp(ip);
+            if (isValidIpCandidate(ip)) {
+                return getFirstNonProxyIp(ip);
             }
         }
 
-        ip = request.getRemoteAddr();
-        return NetUtil.getMultistageReverseProxyIp(ip);
+        return request.getRemoteAddr();
     }
 
     /**
-     * 获得MultiPart表单内容，多用于获得上传的文件 在同一次请求中，此方法只能被执行一次！
-     *
-     * @param request {@link ServletRequest}
-     * @return MultipartFormData
-     * @throws IORuntimeException IO异常
-     * @since 4.0.2
+     * 判断字符串是否为有效的IP候选值
      */
-    public static MultipartFormData getMultipart(ServletRequest request) throws IORuntimeException {
-        return getMultipart(request, new UploadSetting());
+    private static boolean isValidIpCandidate(String ip) {
+        return StringUtils.isNotBlank(ip) &&
+                !"unknown".equalsIgnoreCase(ip.trim()) &&
+                !"127.0.0.1".equals(ip.trim()) &&
+                !"0:0:0:0:0:0:0:1".equals(ip.trim());
     }
 
     /**
-     * 获得multipart/form-data 表单内容<br>
-     * 包括文件和普通表单数据<br>
-     * 在同一次请求中，此方法只能被执行一次！
-     *
-     * @param request       {@link ServletRequest}
-     * @param uploadSetting 上传文件的设定，包括最大文件大小、保存在内存的边界大小、临时目录、扩展名限定等
-     * @return MultiPart表单
-     * @throws IORuntimeException IO异常
-     * @since 4.0.2
+     * 从多级代理IP列表中提取第一个非代理IP
      */
-    public static MultipartFormData getMultipart(ServletRequest request, UploadSetting uploadSetting)
-            throws IORuntimeException {
-        final MultipartFormData formData = new MultipartFormData(uploadSetting);
-        try {
-            formData.parseRequestStream(request.getInputStream(), CharsetUtil.charset(request.getCharacterEncoding()));
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
+    private static String getFirstNonProxyIp(String ip) {
+        // 如果有多个IP（如多级代理），通常用逗号分隔
+        if (ip != null && ip.contains(",")) {
+            String[] ips = ip.split(",");
+            for (String candidate : ips) {
+                candidate = candidate.trim();
+                if (isValidIp(candidate) && !isPrivateIp(candidate)) {
+                    return candidate;
+                }
+            }
         }
 
-        return formData;
+        // 如果没有逗号分隔或没有有效IP，返回原始值
+        return ip;
+    }
+
+    /**
+     * 验证是否为有效的IP地址（IPv4或IPv6）
+     */
+    private static boolean isValidIp(String ip) {
+        if (StringUtils.isBlank(ip)) {
+            return false;
+        }
+        ip = ip.trim();
+
+        if (ip.contains(":")) {
+            // 可能是IPv6
+            return IPV6_STD_PATTERN.matcher(ip).matches() ||
+                    IPV6_HEX_COMPRESSED_PATTERN.matcher(ip).matches();
+        } else {
+            // 可能是IPv4
+            return IPV4_PATTERN.matcher(ip).matches();
+        }
+    }
+
+    /**
+     * 判断是否为私有IP地址
+     */
+    private static boolean isPrivateIp(String ip) {
+        if (ip == null || !isValidIp(ip)) {
+            return false;
+        }
+
+        // IPv4私有地址范围
+        if (ip.contains(".")) {
+            String[] parts = ip.split("\\.");
+            int firstOctet = Integer.parseInt(parts[0]);
+
+            if (firstOctet == 10) return true; // 10.0.0.0/8
+            if (firstOctet == 172) {
+                int secondOctet = Integer.parseInt(parts[1]);
+                return secondOctet >= 16 && secondOctet <= 31; // 172.16.0.0/12
+            }
+            if (firstOctet == 192) {
+                int secondOctet = Integer.parseInt(parts[1]);
+                return secondOctet == 168; // 192.168.0.0/16
+            }
+        }
+
+        // IPv6链路本地地址
+        return ip.startsWith("fe80:");
     }
 
     // --------------------------------------------------------- Header start
@@ -321,7 +255,7 @@ public class ServletUtil {
         String name;
         while (names.hasMoreElements()) {
             name = names.nextElement();
-            headerMap.put(name, ListUtil.list(false, request.getHeaders(name)));
+            headerMap.put(name, Collections.list(request.getHeaders(name)));
         }
 
         return headerMap;
@@ -383,7 +317,7 @@ public class ServletUtil {
      * @return header值
      */
     public static String getHeader(HttpServletRequest request, String name, String charsetName) {
-        return getHeader(request, name, CharsetUtil.charset(charsetName));
+        return getHeader(request, name, Charset.forName(charsetName));
     }
 
     /**
@@ -403,7 +337,7 @@ public class ServletUtil {
         if (null == header) {
             return null;
         }
-        return CharsetUtil.convert(header, CharsetUtil.CHARSET_ISO_8859_1, charset);
+        return new String(header.getBytes(StandardCharsets.ISO_8859_1), charset);
     }
 
     /**
@@ -414,7 +348,7 @@ public class ServletUtil {
      */
     public static boolean isIE(HttpServletRequest request) {
         String userAgent = getHeaderIgnoreCase(request, "User-Agent");
-        if (StrUtil.isNotBlank(userAgent)) {
+        if (StringUtil.isNotBlank(userAgent)) {
             //noinspection ConstantConditions
             userAgent = userAgent.toUpperCase();
             return userAgent.contains("MSIE") || userAgent.contains("TRIDENT");
@@ -422,43 +356,6 @@ public class ServletUtil {
         return false;
     }
 
-    /**
-     * 是否为GET请求
-     *
-     * @param request 请求对象{@link HttpServletRequest}
-     * @return 是否为GET请求
-     */
-    public static boolean isGetMethod(HttpServletRequest request) {
-        return METHOD_GET.equalsIgnoreCase(request.getMethod());
-    }
-
-    /**
-     * 是否为POST请求
-     *
-     * @param request 请求对象{@link HttpServletRequest}
-     * @return 是否为POST请求
-     */
-    public static boolean isPostMethod(HttpServletRequest request) {
-        return METHOD_POST.equalsIgnoreCase(request.getMethod());
-    }
-
-    /**
-     * 是否为Multipart类型表单，此类型表单用于文件上传
-     *
-     * @param request 请求对象{@link HttpServletRequest}
-     * @return 是否为Multipart类型表单，此类型表单用于文件上传
-     */
-    public static boolean isMultipart(HttpServletRequest request) {
-        if (!isPostMethod(request)) {
-            return false;
-        }
-
-        String contentType = request.getContentType();
-        if (StrUtil.isBlank(contentType)) {
-            return false;
-        }
-        return contentType.toLowerCase().startsWith("multipart/");
-    }
     // --------------------------------------------------------- Header end
 
     // --------------------------------------------------------- Cookie start
@@ -482,12 +379,16 @@ public class ServletUtil {
      */
     public static Map<String, Cookie> readCookieMap(HttpServletRequest httpServletRequest) {
         final Cookie[] cookies = httpServletRequest.getCookies();
-        if (ArrayUtil.isEmpty(cookies)) {
-            return MapUtil.empty();
+        if (ArrayUtils.isEmpty(cookies)) {
+            return new HashMap<>();
         }
 
-        return IterUtil.toMap(
-                new ArrayIter<>(httpServletRequest.getCookies()), new CaseInsensitiveMap<>(), Cookie::getName);
+        Map<String, Cookie> map = new HashMap<>();
+        for (Cookie cookie : cookies) {
+            map.put(cookie.getName(), cookie);
+        }
+
+        return map;
     }
 
     /**
@@ -550,21 +451,6 @@ public class ServletUtil {
     // --------------------------------------------------------- Response start
 
     /**
-     * 获得PrintWriter
-     *
-     * @param response 响应对象{@link HttpServletResponse}
-     * @return 获得PrintWriter
-     * @throws IORuntimeException IO异常
-     */
-    public static PrintWriter getWriter(HttpServletResponse response) throws IORuntimeException {
-        try {
-            return response.getWriter();
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
-        }
-    }
-
-    /**
      * 返回数据给客户端
      *
      * @param response    响应对象{@link HttpServletResponse}
@@ -573,110 +459,11 @@ public class ServletUtil {
      */
     public static void write(HttpServletResponse response, String text, String contentType) {
         response.setContentType(contentType);
-        Writer writer = null;
-        try {
-            writer = response.getWriter();
+        try (Writer writer = response.getWriter()) {
             writer.write(text);
             writer.flush();
         } catch (IOException e) {
             throw new UtilException(e.getMessage());
-        } finally {
-            IoUtil.close(writer);
-        }
-    }
-
-    /**
-     * 返回文件给客户端
-     *
-     * @param response 响应对象{@link HttpServletResponse}
-     * @param file     写出的文件对象
-     * @since 4.1.15
-     */
-    public static void write(HttpServletResponse response, File file) {
-        final String fileName = file.getName();
-        final String contentType =
-                StringUtil.blankToDefault(FileUtil.getMimeType(fileName), "application/octet-stream");
-        BufferedInputStream in = null;
-        try {
-            in = FileUtil.getInputStream(file);
-            write(response, in, contentType, fileName);
-        } finally {
-            IoUtil.close(in);
-        }
-    }
-
-    /**
-     * 返回数据给客户端
-     *
-     * @param response    响应对象{@link HttpServletResponse}
-     * @param in          需要返回客户端的内容
-     * @param contentType 返回的类型，可以使用{@link FileUtil#getMimeType(String)}获取对应扩展名的MIME信息
-     *                    <ul>
-     *                      <li>application/pdf</li>
-     *                      <li>application/vnd.ms-excel</li>
-     *                      <li>application/msword</li>
-     *                      <li>application/vnd.ms-powerpoint</li>
-     *                    </ul>
-     *                    docx、xlsx 这种 office 2007 格式 设置 MIME;网页里面docx 文件是没问题，但是下载下来了之后就变成doc格式了
-     *                    参考：<a href="https://my.oschina.net/shixiaobao17145/blog/32489">https://my.oschina.net/shixiaobao17145/blog/32489</a>
-     *                    <ul>
-     *                      <li>MIME_EXCELX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";</li>
-     *                      <li>MIME_PPTX_TYPE = "application/vnd.openxmlformats-officedocument.presentationml.presentation";</li>
-     *                      <li>MIME_WORDX_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";</li>
-     *                      <li>MIME_STREAM_TYPE = "application/octet-stream;charset=utf-8"; #原始字节流</li>
-     *                    </ul>
-     * @param fileName    文件名，自动添加双引号
-     * @since 4.1.15
-     */
-    public static void write(HttpServletResponse response, InputStream in, String contentType, String fileName) {
-        final String charset = StringUtil.blankToDefault(response.getCharacterEncoding(), CharsetUtil.UTF_8);
-        final String encodeText = URLUtil.encodeAll(fileName, CharsetUtil.charset(charset));
-        response.setHeader(
-                "Content-Disposition",
-                StrUtil.format("attachment;filename=\"{}\";filename*={}''{}", encodeText, charset, encodeText));
-        response.setContentType(contentType);
-        write(response, in);
-    }
-
-    /**
-     * 返回数据给客户端
-     *
-     * @param response    响应对象{@link HttpServletResponse}
-     * @param in          需要返回客户端的内容
-     * @param contentType 返回的类型
-     */
-    public static void write(HttpServletResponse response, InputStream in, String contentType) {
-        response.setContentType(contentType);
-        write(response, in);
-    }
-
-    /**
-     * 返回数据给客户端
-     *
-     * @param response 响应对象{@link HttpServletResponse}
-     * @param in       需要返回客户端的内容
-     */
-    public static void write(HttpServletResponse response, InputStream in) {
-        write(response, in, IoUtil.DEFAULT_BUFFER_SIZE);
-    }
-
-    /**
-     * 返回数据给客户端
-     *
-     * @param response   响应对象{@link HttpServletResponse}
-     * @param in         需要返回客户端的内容
-     * @param bufferSize 缓存大小
-     */
-    public static void write(HttpServletResponse response, InputStream in, int bufferSize) {
-        ServletOutputStream out = null;
-        try {
-            out = response.getOutputStream();
-            IoUtil.copy(in, out, bufferSize);
-        } catch (IOException e) {
-            throw new UtilException(e.getMessage());
-        } finally {
-            IoUtil.close(out);
-            IoUtil.close(in);
         }
     }
 

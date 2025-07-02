@@ -19,4 +19,5 @@ public class CreateUserEvent {
     private String username;
 
     private String password;
+
 }

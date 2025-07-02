@@ -2,11 +2,12 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.user.domain.SysRoleDept;
-import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 角色与部门关联表 数据层
@@ -35,13 +36,13 @@ public interface SysRoleDeptMapper {
     @DeptScope
     @Select(
             """
-            <script>
-                SELECT dept_id FROM biz.sys_role_dept WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
-                        #{roleId}
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        SELECT dept_id FROM biz.sys_role_dept WHERE role_id IN
+                            <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                                #{roleId}
+                            </foreach>
+                    </script>
+                    """)
     List<Long> listDeptIdByRoleIds(List<Long> roleIds);
 
     /**
@@ -61,13 +62,13 @@ public interface SysRoleDeptMapper {
      */
     @Delete(
             """
-            <script>
-                DELETE FROM biz.sys_role_dept WHERE role_id IN
-                    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
-                        #{roleId}
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        DELETE FROM biz.sys_role_dept WHERE role_id IN
+                            <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                                #{roleId}
+                            </foreach>
+                    </script>
+                    """)
     int deleteByRoleIds(List<Long> roleIds);
 
     /**
@@ -87,12 +88,13 @@ public interface SysRoleDeptMapper {
      */
     @Insert(
             """
-            <script>
-                INSERT INTO biz.sys_role_dept(role_id, dept_id) VALUES
-                    <foreach item="item" index="index" collection="list" separator=",">
-                        (#{item.roleId}, #{item.deptId})
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        INSERT INTO biz.sys_role_dept(role_id, dept_id) VALUES
+                            <foreach item="item" index="index" collection="list" separator=",">
+                                (#{item.roleId}, #{item.deptId})
+                            </foreach>
+                    </script>
+                    """)
     int insertBatch(List<SysRoleDept> list);
+
 }

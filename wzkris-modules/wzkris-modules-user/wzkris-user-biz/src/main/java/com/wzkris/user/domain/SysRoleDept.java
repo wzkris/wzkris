@@ -20,4 +20,5 @@ public class SysRoleDept {
 
     @Schema(description = "部门ID")
     private Long deptId;
+
 }

@@ -10,8 +10,8 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
@@ -25,11 +25,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 角色信息
@@ -72,8 +73,8 @@ public class SysRoleController extends BaseController {
 
     private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRoleQueryReq req) {
         return new LambdaQueryWrapper<SysRole>()
-                .like(StringUtil.isNotNull(req.getRoleName()), SysRole::getRoleName, req.getRoleName())
-                .eq(StringUtil.isNotNull(req.getStatus()), SysRole::getStatus, req.getStatus())
+                .like(StringUtil.isNotEmpty(req.getRoleName()), SysRole::getRoleName, req.getRoleName())
+                .eq(StringUtil.isNotEmpty(req.getStatus()), SysRole::getStatus, req.getStatus())
                 .orderByDesc(SysRole::getRoleSort, SysRole::getRoleId);
     }
 
@@ -99,7 +100,7 @@ public class SysRoleController extends BaseController {
                 roleId == null
                         ? Collections.emptyList()
                         : roleMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUtil.getUserId()));
+        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(SystemUserUtil.getUserId()));
         return ok(checkedSelectTreeVO);
     }
 
@@ -123,7 +124,7 @@ public class SysRoleController extends BaseController {
     @PostMapping("/add")
     @CheckSystemPerms("sys_role:add")
     public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
-        if (!tenantService.checkRoleLimit(LoginUtil.getTenantId())) {
+        if (!tenantService.checkRoleLimit(SystemUserUtil.getTenantId())) {
             return err412("角色数量已达上限，请联系管理员");
         }
         return toRes(roleService.insertRole(
@@ -210,4 +211,5 @@ public class SysRoleController extends BaseController {
         userService.checkDataScopes(req.getUserIds());
         return toRes(roleService.allocateUsers(req.getRoleId(), req.getUserIds()));
     }
+
 }

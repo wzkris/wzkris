@@ -26,16 +26,6 @@ public class CommonConstants {
     public static final String LOOKUP_LDAPS = "ldaps:";
 
     /**
-     * 动态租户ID
-     */
-    public static final String X_TENANT_ID = "X-Tenant-Id";
-
-    /**
-     * tracing_id
-     */
-    public static final String X_TRACING_ID = "X-Tracing-Id";
-
-    /**
      * http请求
      */
     public static final String HTTP = "http://";
@@ -69,4 +59,5 @@ public class CommonConstants {
      * 状态 禁用
      */
     public static final String STATUS_DISABLE = "1";
+
 }

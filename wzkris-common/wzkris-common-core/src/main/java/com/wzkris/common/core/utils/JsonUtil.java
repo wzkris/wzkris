@@ -9,13 +9,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.exception.util.UtilException;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author : wzkris
@@ -201,4 +202,5 @@ public class JsonUtil {
     public static ObjectNode createObjectNode() {
         return objectMapper.createObjectNode();
     }
+
 }

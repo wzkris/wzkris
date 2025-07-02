@@ -31,4 +31,5 @@ public class UserConstants {
      * 支出
      */
     public static final String WALLET_OUTCOME = "1";
+
 }

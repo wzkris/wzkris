@@ -23,4 +23,5 @@ public interface ExcelResult<T> {
      * 导入回执
      */
     String getAnalysis();
+
 }

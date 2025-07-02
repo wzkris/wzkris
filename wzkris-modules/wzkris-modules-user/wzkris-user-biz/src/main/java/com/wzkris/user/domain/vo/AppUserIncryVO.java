@@ -20,4 +20,5 @@ public class AppUserIncryVO {
 
     @Schema(description = "增长率")
     private String growthRate;
+
 }

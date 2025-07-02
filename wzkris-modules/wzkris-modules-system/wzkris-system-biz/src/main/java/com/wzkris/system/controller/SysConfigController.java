@@ -9,7 +9,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.domain.SysConfig;
 import com.wzkris.system.domain.req.SysConfigQueryReq;
 import com.wzkris.system.domain.req.SysConfigReq;
@@ -17,11 +17,12 @@ import com.wzkris.system.mapper.SysConfigMapper;
 import com.wzkris.system.service.SysConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 参数配置 信息操作处理
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "参数管理")
 @RestController
-@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @RequestMapping("/sys_config")
 @RequiredArgsConstructor
 public class SysConfigController extends BaseController {
@@ -50,13 +51,13 @@ public class SysConfigController extends BaseController {
 
     private LambdaQueryWrapper<SysConfig> buildQueryWrapper(SysConfigQueryReq queryReq) {
         return new LambdaQueryWrapper<SysConfig>()
-                .like(StringUtil.isNotNull(queryReq.getConfigKey()), SysConfig::getConfigKey, queryReq.getConfigKey())
+                .like(StringUtil.isNotEmpty(queryReq.getConfigKey()), SysConfig::getConfigKey, queryReq.getConfigKey())
                 .like(
-                        StringUtil.isNotNull(queryReq.getConfigName()),
+                        StringUtil.isNotEmpty(queryReq.getConfigName()),
                         SysConfig::getConfigName,
                         queryReq.getConfigName())
                 .like(
-                        StringUtil.isNotNull(queryReq.getConfigType()),
+                        StringUtil.isNotEmpty(queryReq.getConfigType()),
                         SysConfig::getConfigType,
                         queryReq.getConfigType())
                 .orderByDesc(SysConfig::getConfigId);
@@ -98,7 +99,7 @@ public class SysConfigController extends BaseController {
     public Result<Void> remove(@RequestBody Long configId) {
         SysConfig config = configMapper.selectById(configId);
         if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
-            return err412(StringUtil.format("内置参数'{}'不能删除", config.getConfigKey()));
+            return err412(String.format("内置参数'%s'不能删除", config.getConfigKey()));
         }
         return toRes(configService.deleteById(configId));
     }
@@ -110,4 +111,5 @@ public class SysConfigController extends BaseController {
         configService.loadingConfigCache();
         return ok();
     }
+
 }

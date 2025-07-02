@@ -22,4 +22,5 @@ public class EditStatusReq {
     @NotBlank(message = "{desc.status}" + "{validate.notnull}")
     @Schema(description = "状态值")
     private String status;
+
 }

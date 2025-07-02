@@ -20,4 +20,5 @@ public class SysUserRole {
 
     @Schema(description = "角色ID")
     private Long roleId;
+
 }

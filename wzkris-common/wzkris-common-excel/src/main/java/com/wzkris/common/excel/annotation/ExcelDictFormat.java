@@ -21,4 +21,5 @@ public @interface ExcelDictFormat {
      * 分隔符，读取字符串组内容
      */
     String separator() default ",";
+
 }

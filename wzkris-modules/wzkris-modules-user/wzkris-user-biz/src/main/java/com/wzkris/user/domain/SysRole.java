@@ -42,4 +42,5 @@ public class SysRole extends BaseEntity {
     public SysRole(String status) {
         this.status = status;
     }
+
 }

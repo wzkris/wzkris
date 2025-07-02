@@ -1,1 +1,2 @@
 com.wzkris.common.core.utils.SpringUtil
+com.wzkris.common.core.utils.UserAgentUtil

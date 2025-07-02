@@ -5,11 +5,12 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.annotation.DeptScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.SysRole;
-import java.util.Collection;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 角色表 数据层
@@ -24,9 +25,9 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
      */
     @Select(
             """
-            SELECT DISTINCT r.* FROM biz.sys_role r LEFT JOIN biz.sys_role_dept rd ON r.role_id = rd.role_id
-            ${ew.customSqlSegment}
-            """)
+                    SELECT DISTINCT r.* FROM biz.sys_role r LEFT JOIN biz.sys_role_dept rd ON r.role_id = rd.role_id
+                    ${ew.customSqlSegment}
+                    """)
     @DeptScope(tableAlias = "rd")
     List<SysRole> selectLists(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
 
@@ -39,15 +40,16 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole> {
     @DeptScope(tableAlias = "rd")
     @Select(
             """
-            <script>
-                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END
-                        FROM biz.sys_role r LEFT JOIN biz.sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
-                    <foreach collection="collection" item="roleId" open="(" separator="," close=")">
-                        <if test="roleId != null and roleId != ''">
-                            #{roleId}
-                        </if>
-                    </foreach>
-            </script>
-            """)
+                    <script>
+                        SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END
+                                FROM biz.sys_role r LEFT JOIN biz.sys_role_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
+                            <foreach collection="collection" item="roleId" open="(" separator="," close=")">
+                                <if test="roleId != null and roleId != ''">
+                                    #{roleId}
+                                </if>
+                            </foreach>
+                    </script>
+                    """)
     boolean checkDataScopes(Collection<Long> roleIds);
+
 }

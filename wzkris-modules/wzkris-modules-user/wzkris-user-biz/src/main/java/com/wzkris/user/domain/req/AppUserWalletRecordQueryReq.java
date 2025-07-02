@@ -9,4 +9,5 @@ public class AppUserWalletRecordQueryReq extends QueryReq {
 
     @Schema(description = "记录类型 0-收入 1-支出")
     private String recordType;
+
 }

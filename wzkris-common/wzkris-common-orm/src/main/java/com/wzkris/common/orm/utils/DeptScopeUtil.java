@@ -26,4 +26,5 @@ public class DeptScopeUtil {
     public static void clear() {
         LOCAL_DATA_AUTH_SQL.remove();
     }
+
 }

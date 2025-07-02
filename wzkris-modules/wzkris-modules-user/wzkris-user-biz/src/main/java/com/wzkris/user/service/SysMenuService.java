@@ -2,8 +2,9 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.domain.vo.SelectTreeVO;
-import java.util.List;
 import org.springframework.lang.Nullable;
+
+import java.util.List;
 
 /**
  * 菜单 业务层
@@ -74,4 +75,5 @@ public interface SysMenuService {
      * @param menuId 菜单ID
      */
     boolean deleteById(Long menuId);
+
 }

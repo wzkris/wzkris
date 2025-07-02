@@ -11,9 +11,10 @@ import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.service.SysTenantPackageService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,4 +42,5 @@ public class SysTenantPackageServiceImpl implements SysTenantPackageService {
             return tenantMapper.exists(lqw);
         });
     }
+
 }

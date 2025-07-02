@@ -3,6 +3,7 @@ package com.wzkris.common.core.annotation.impl.validator;
 import com.wzkris.common.core.annotation.Xss;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,4 +29,5 @@ public class XssValidator implements ConstraintValidator<Xss, String> {
         }
         return !containsHtml(value);
     }
+
 }

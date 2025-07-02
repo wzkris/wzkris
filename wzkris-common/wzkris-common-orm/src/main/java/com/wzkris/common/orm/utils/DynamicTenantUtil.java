@@ -2,15 +2,16 @@ package com.wzkris.common.orm.utils;
 
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
-import com.wzkris.common.security.utils.LoginUtil;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import jakarta.annotation.Nullable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 动态租户工具类
@@ -35,7 +36,7 @@ public final class DynamicTenantUtil {
     public static Long get() {
         try {
             Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
-            return stack == null ? LoginUtil.getTenantId() : stack.peek();
+            return stack == null ? SystemUserUtil.getTenantId() : stack.peek();
         } catch (Exception e) {
             return null;
         }
@@ -257,5 +258,7 @@ public final class DynamicTenantUtil {
     public interface ThrowingSupplier<T, E extends Throwable> {
 
         T get() throws E;
+
     }
+
 }

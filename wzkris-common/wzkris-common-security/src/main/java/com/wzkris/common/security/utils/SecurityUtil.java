@@ -1,15 +1,12 @@
 package com.wzkris.common.security.utils;
 
+import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
-import com.wzkris.common.security.oauth2.enums.LoginType;
-import java.util.Collection;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
+
+import java.util.Collection;
 
 /**
  * @author : wzkris
@@ -26,20 +23,15 @@ public class SecurityUtil {
      * @return 认证信息
      */
     @Nullable
-    public static BearerTokenAuthentication getAuthentication() {
-        if (!(SecurityContextHolder.getContext().getAuthentication()
-                instanceof BearerTokenAuthentication bearerTokenAuthentication)) {
-            return null;
-        }
-        return bearerTokenAuthentication;
+    public static Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
     /**
-     * 获取权限
+     * 设置当前认证信息
      */
-    public static Collection<? extends GrantedAuthority> getAuthorities() {
-        Authentication authentication = getAuthentication();
-        return authentication == null ? AuthorityUtils.NO_AUTHORITIES : authentication.getAuthorities();
+    public static void setAuthentication(Authentication authentication) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     /**
@@ -49,7 +41,7 @@ public class SecurityUtil {
         Authentication authentication = getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof AuthBaseUser;
+                && authentication.getPrincipal() instanceof CorePrincipal;
     }
 
     /**
@@ -57,20 +49,28 @@ public class SecurityUtil {
      *
      * @return 当前用户
      */
-    public static AuthBaseUser getPrincipal() {
+    public static CorePrincipal getPrincipal() {
         try {
-            return (AuthBaseUser) getAuthentication().getPrincipal();
+            return (CorePrincipal) getAuthentication().getPrincipal();
         } catch (Exception e) {
             throw new UserException(401, "user.not.login");
         }
     }
 
     /**
-     * 获取当前登录类型,未登录抛出异常
+     * 获取当前认证类型,未登录抛出异常
      *
      * @return 登录类型
      */
-    public static LoginType getLoginType() {
-        return getPrincipal().getLoginType();
+    public static String getAuthenticatedType() {
+        return getPrincipal().getType();
     }
+
+    /**
+     * 获取权限
+     */
+    public static Collection<String> getAuthorities() {
+        return getPrincipal().getPermissions();
+    }
+
 }

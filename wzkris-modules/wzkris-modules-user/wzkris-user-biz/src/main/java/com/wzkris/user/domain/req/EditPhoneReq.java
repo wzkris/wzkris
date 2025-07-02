@@ -16,4 +16,5 @@ public class EditPhoneReq {
 
     @NotBlank(message = "{desc.smscode}" + "{validate.notnull}")
     private String smsCode;
+
 }

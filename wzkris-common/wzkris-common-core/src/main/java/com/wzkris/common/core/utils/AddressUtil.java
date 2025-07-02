@@ -1,13 +1,13 @@
 package com.wzkris.common.core.utils;
 
-import cn.hutool.core.net.NetUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 获取地址类
@@ -20,7 +20,7 @@ public class AddressUtil {
     /**
      * IP地址查询
      */
-    public static final String IP_URL = "http://whois.pconline.com.cn/ipJson.jsp?ip={}&json=true";
+    public static final String IP_URL = "http://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true";
 
     public static final String UNKNOWN = "未知地址";
 
@@ -34,12 +34,8 @@ public class AddressUtil {
      * @return 根据ip获取真实物理地址
      */
     public static String getRealAddressByIp(String ip) {
-        // 内网不查询
-        if (StringUtil.equals("0:0:0:0:0:0:0:1", ip) || NetUtil.isInnerIP(ip)) {
-            return "内网IP";
-        }
         try {
-            HttpRequest request = HttpRequest.newBuilder(URI.create(StringUtil.format(IP_URL, ip)))
+            HttpRequest request = HttpRequest.newBuilder(URI.create(String.format(IP_URL, ip)))
                     .GET()
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -51,13 +47,16 @@ public class AddressUtil {
             String city = objectNode.get("city").asText();
             String location = String.format("%s%s", region, city);
             if (StringUtil.isBlank(location)) {
-                location = UNKNOWN;
+                location = objectNode.get("addr").asText();
             }
-            log.info("获取到地理位置：{}", location);
+            if (log.isDebugEnabled()) {
+                log.debug("获取到地理位置：{}", location);
+            }
             return location;
         } catch (Exception e) {
             log.error("获取地理位置异常，ip：{}，errMsg：{}", ip, e.getMessage());
         }
         return UNKNOWN;
     }
+
 }

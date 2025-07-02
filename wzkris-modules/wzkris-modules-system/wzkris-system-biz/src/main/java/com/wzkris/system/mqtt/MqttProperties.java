@@ -1,11 +1,12 @@
 package com.wzkris.system.mqtt;
 
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author : wzkris
@@ -91,5 +92,7 @@ public class MqttProperties {
          * 此为发送两次心跳的间隔时间，在此期间都视为存活， 单位秒
          */
         private int keepAlive = 120;
+
     }
+
 }

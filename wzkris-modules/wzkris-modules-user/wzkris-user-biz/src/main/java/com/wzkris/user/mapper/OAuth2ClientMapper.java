@@ -11,4 +11,5 @@ public interface OAuth2ClientMapper extends BaseMapperPlus<OAuth2Client> {
     default OAuth2Client selectByClientId(String clientId) {
         return this.selectOne(Wrappers.lambdaQuery(OAuth2Client.class).eq(OAuth2Client::getClientId, clientId));
     }
+
 }

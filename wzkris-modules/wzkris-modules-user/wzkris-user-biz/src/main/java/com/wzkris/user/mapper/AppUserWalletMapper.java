@@ -2,9 +2,10 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.AppUserWallet;
-import java.math.BigDecimal;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 
 /**
  * 用户钱包表 数据层
@@ -34,4 +35,5 @@ public interface AppUserWalletMapper extends BaseMapperPlus<AppUserWallet> {
     @Update(
             "UPDATE biz.app_user_wallet SET balance = balance - #{amount} WHERE user_id = #{userId} AND #{amount} > 0 AND balance >= #{amount}")
     int decryBalance(Long userId, BigDecimal amount);
+
 }

@@ -32,15 +32,17 @@ public enum BizCode {
 
     SERVICE_UNAVAILABLE(503, "Service Unavailable"),
 
-    INVOKE_FAIL(1000, "Invoke Fail"),
+    INVOKE_FAIL(1_000, "Invoke Fail"),
 
-    RPC_ERROR(1100, "Rpc Error"),
+    RPC_ERROR(1_100, "Rpc Call Error, Remote Rejected"),
 
-    DEPRECATED_API(1200, "Deprecated API"),
+    RPC_REMOTE_ERROR(1_101, "Remote Service Error"),
 
-    VERSION_HIGH_API(1201, "API version too high"),
+    DEPRECATED_API(1_200, "Deprecated API"),
 
-    THIRD_SERVICE_ERROR(3000, "Invoke Third Service Error");
+    VERSION_HIGH_API(1_201, "API version too high"),
+
+    THIRD_SERVICE_ERROR(3_000, "Invoke Third Service Error");
 
     private final int code;
 

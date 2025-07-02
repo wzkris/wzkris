@@ -5,11 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.ArrayTypeHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 部门表 sys_dept
@@ -56,4 +57,5 @@ public class SysDept extends BaseEntity {
     public SysDept(Long deptId) {
         this.deptId = deptId;
     }
+
 }

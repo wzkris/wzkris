@@ -15,4 +15,5 @@ import org.springframework.stereotype.Service;
 public class OAuth2ClientServiceImpl implements OAuth2ClientService {
 
     private final OAuth2ClientMapper oauth2ClientMapper;
+
 }

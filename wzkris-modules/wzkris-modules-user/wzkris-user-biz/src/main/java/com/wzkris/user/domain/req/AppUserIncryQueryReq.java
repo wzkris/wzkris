@@ -3,8 +3,9 @@ package com.wzkris.user.domain.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.util.Date;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 @Schema(description = "用户增长请求")
@@ -21,4 +22,5 @@ public class AppUserIncryQueryReq {
     @NotNull(message = "需要参数结束日期")
     @Schema(description = "结束日期")
     private Date endTime;
+
 }

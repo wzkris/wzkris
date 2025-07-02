@@ -8,8 +8,8 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysTenantPackage;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.SysTenantPackageQueryReq;
@@ -23,11 +23,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 租户套餐管理
@@ -37,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "租户套餐管理")
 @Validated
 @RequiredArgsConstructor
-@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @RestController
 @RequestMapping("/sys_tenant/package")
 public class SysTenantPackageController extends BaseController {
@@ -61,10 +62,10 @@ public class SysTenantPackageController extends BaseController {
         return new LambdaQueryWrapper<SysTenantPackage>()
                 .select(SysTenantPackage.class, q -> !q.getColumn().equals("menu_ids"))
                 .like(
-                        StringUtil.isNotNull(queryReq.getPackageName()),
+                        StringUtil.isNotEmpty(queryReq.getPackageName()),
                         SysTenantPackage::getPackageName,
                         queryReq.getPackageName())
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), SysTenantPackage::getStatus, queryReq.getStatus())
+                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), SysTenantPackage::getStatus, queryReq.getStatus())
                 .orderByDesc(SysTenantPackage::getPackageId);
     }
 
@@ -74,7 +75,7 @@ public class SysTenantPackageController extends BaseController {
     public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(tenantPackageMapper.listMenuIdByPackageId(packageId));
-        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(LoginUtil.getUserId()));
+        checkedSelectTreeVO.setSelectTrees(menuService.listSelectTree(SystemUserUtil.getUserId()));
         return ok(checkedSelectTreeVO);
     }
 
@@ -123,4 +124,5 @@ public class SysTenantPackageController extends BaseController {
         }
         return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }
+
 }

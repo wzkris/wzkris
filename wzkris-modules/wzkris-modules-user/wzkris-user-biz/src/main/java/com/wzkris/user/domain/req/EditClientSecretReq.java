@@ -17,4 +17,5 @@ public class EditClientSecretReq {
     @NotBlank(message = "{desc.secret}" + "{validate.notnull}")
     @Length(min = 6, max = 6, message = "{desc.secret}" + "{validate.size.illegal}")
     private String secret;
+
 }

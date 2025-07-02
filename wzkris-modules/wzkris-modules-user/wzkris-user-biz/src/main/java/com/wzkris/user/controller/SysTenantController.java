@@ -1,7 +1,5 @@
 package com.wzkris.user.controller;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
@@ -14,8 +12,8 @@ import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.LoginUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.ResetPwdReq;
@@ -32,12 +30,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 租户管理
@@ -48,7 +50,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@lg.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @IgnoreTenant // 忽略租户隔离
 @RequestMapping("/sys_tenant")
 public class SysTenantController extends BaseController {
@@ -74,8 +76,8 @@ public class SysTenantController extends BaseController {
 
     private QueryWrapper<SysTenant> buildQueryWrapper(SysTenantQueryReq queryReq) {
         return new QueryWrapper<SysTenant>()
-                .like(StringUtil.isNotNull(queryReq.getTenantName()), "tenant_name", queryReq.getTenantName())
-                .eq(StringUtil.isNotNull(queryReq.getStatus()), "t.status", queryReq.getStatus())
+                .like(StringUtil.isNotEmpty(queryReq.getTenantName()), "tenant_name", queryReq.getTenantName())
+                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), "t.status", queryReq.getStatus())
                 .orderByDesc("t.tenant_id");
     }
 
@@ -115,15 +117,15 @@ public class SysTenantController extends BaseController {
         }
         SysTenant tenant = BeanUtil.convert(tenantReq, SysTenant.class);
 
-        String operPwd = RandomUtil.randomNumbers(6);
+        String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
         tenant.setOperPwd(operPwd);
 
-        String password = RandomUtil.randomNumbers(8);
+        String password = RandomStringUtils.secure().next(8);
         boolean success = tenantService.insertTenant(tenant, tenantReq.getUsername(), password);
         if (success) {
             SpringUtil.getContext()
                     .publishEvent(new CreateTenantEvent(
-                            LoginUtil.getUserId(),
+                            SystemUserUtil.getUserId(),
                             tenantReq.getUsername(),
                             tenantReq.getTenantName(),
                             password,
@@ -164,7 +166,7 @@ public class SysTenantController extends BaseController {
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
         tenantService.checkDataScope(req.getId());
 
-        if (StringUtil.length(req.getPassword()) != 6 || !NumberUtil.isNumber(req.getPassword())) {
+        if (StringUtil.length(req.getPassword()) != 6 || !NumberUtils.isCreatable(req.getPassword())) {
             return err412("操作密码必须为6位数字");
         }
         SysTenant update = new SysTenant(req.getId());
@@ -182,4 +184,5 @@ public class SysTenantController extends BaseController {
 
         return toRes(tenantService.deleteById(tenantId));
     }
+
 }

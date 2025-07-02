@@ -33,4 +33,5 @@ public class AppUserThirdinfo {
 
         private final String value;
     }
+
 }

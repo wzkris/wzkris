@@ -1,13 +1,13 @@
 package com.wzkris.user.controller;
 
-import com.wzkris.auth.rmi.RmiCaptchaService;
+import com.wzkris.auth.rmi.RmiCaptchaFeign;
 import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
-import com.wzkris.common.security.utils.LoginUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.req.EditPhoneReq;
 import com.wzkris.user.domain.req.EditPwdReq;
@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +36,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "个人信息")
 @RestController
 @RequestMapping("/user_profile")
-@IgnoreTenant(value = false, forceTenantId = "@lg.getTenantId()") // 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@su.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysUserProfileController extends BaseController {
 
@@ -53,17 +52,19 @@ public class SysUserProfileController extends BaseController {
 
     private final SysDeptMapper deptMapper;
 
-    @DubboReference
-    private final RmiCaptchaService rmiCaptchaService;
+    private final RmiCaptchaFeign rmiCaptchaFeign;
 
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "账户信息")
     @GetMapping
-    @Cacheable(cacheNames = PROFILE_KEY + "#1800#600", key = "@lg.getUserId()")
+    @Cacheable(cacheNames = PROFILE_KEY + "#1800#600", key = "@su.getUserId()")
     public Result<SysUserProfileVO> profile() {
-        SysUser user = userMapper.selectById(LoginUtil.getUserId());
+        SysUser user = userMapper.selectById(SystemUserUtil.getUserId());
 
+        if (user == null) {// 降级会走到这
+            user = new SysUser();
+        }
         SysUserProfileVO.UserInfo userInfo = new SysUserProfileVO.UserInfo();
         userInfo.setUsername(user.getUsername());
         userInfo.setAvatar(user.getAvatar());
@@ -84,9 +85,9 @@ public class SysUserProfileController extends BaseController {
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
     @PostMapping
-    @CacheEvict(cacheNames = PROFILE_KEY, key = "@lg.getUserId()")
+    @CacheEvict(cacheNames = PROFILE_KEY, key = "@su.getUserId()")
     public Result<Void> editProfile(@RequestBody EditSysUserProfileReq profileReq) {
-        SysUser user = new SysUser(LoginUtil.getUserId());
+        SysUser user = new SysUser(SystemUserUtil.getUserId());
         user.setNickname(profileReq.getNickname());
         user.setGender(profileReq.getGender());
         return toRes(userMapper.updateById(user));
@@ -95,16 +96,16 @@ public class SysUserProfileController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
     @PostMapping("/edit_phonenumber")
-    @CacheEvict(cacheNames = PROFILE_KEY, key = "@lg.getUserId()")
+    @CacheEvict(cacheNames = PROFILE_KEY, key = "@su.getUserId()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
-        Long userId = LoginUtil.getUserId();
+        Long userId = SystemUserUtil.getUserId();
 
         if (userService.checkExistByPhoneNumber(userId, req.getPhoneNumber())) {
             return err412("该手机号已被使用");
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        if (!rmiCaptchaService.validateSms(smsCheckReq)) {
+        if (!rmiCaptchaFeign.validateSms(smsCheckReq)) {
             return err412("验证码错误");
         }
 
@@ -117,7 +118,7 @@ public class SysUserProfileController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit_password")
     public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
-        Long userId = LoginUtil.getUserId();
+        Long userId = SystemUserUtil.getUserId();
 
         String password = userMapper.selectPwdById(userId);
 
@@ -137,10 +138,11 @@ public class SysUserProfileController extends BaseController {
     @Operation(summary = "更新头像")
     @OperateLog(title = "个人信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
     @PostMapping("/edit_avatar")
-    @CacheEvict(cacheNames = PROFILE_KEY, key = "@lg.getUserId()")
+    @CacheEvict(cacheNames = PROFILE_KEY, key = "@su.getUserId()")
     public Result<Void> updateAvatar(@RequestBody String url) {
-        SysUser sysUser = new SysUser(LoginUtil.getUserId());
+        SysUser sysUser = new SysUser(SystemUserUtil.getUserId());
         sysUser.setAvatar(url);
         return toRes(userMapper.updateById(sysUser));
     }
+
 }

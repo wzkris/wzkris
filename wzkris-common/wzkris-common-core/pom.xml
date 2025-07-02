@@ -18,6 +18,8 @@
 
     <properties>
         <caffeine.version>3.2.0</caffeine.version>
+        <collections4.version>4.5.0</collections4.version>
+        <ua-parser.version>7.31.0</ua-parser.version>
     </properties>
 
     <dependencies>
@@ -71,10 +73,22 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
-        <!-- hutool核心包 -->
+        <!-- https://mvnrepository.com/artifact/ua.parser.wso2/ua-parser -->
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
+            <groupId>nl.basjes.parse.useragent</groupId>
+            <artifactId>yauaa</artifactId>
+            <version>${ua-parser.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${collections4.version}</version>
         </dependency>
 
         <!-- Java Servlet -->

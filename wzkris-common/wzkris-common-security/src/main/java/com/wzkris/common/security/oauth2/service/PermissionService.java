@@ -1,9 +1,10 @@
 package com.wzkris.common.security.oauth2.service;
 
-import com.wzkris.common.security.oauth2.domain.AuthBaseUser;
+import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.security.utils.SecurityUtil;
-import java.util.Collection;
 import org.springframework.lang.NonNull;
+
+import java.util.Collection;
 
 /**
  * SPEL权限处理
@@ -13,13 +14,13 @@ import org.springframework.lang.NonNull;
 public class PermissionService {
 
     public boolean hasPerms(String... permissions) {
-        AuthBaseUser baseUser = SecurityUtil.getPrincipal();
+        CorePrincipal principal = SecurityUtil.getPrincipal();
 
-        if (baseUser == null) {
+        if (principal == null) {
             return false;
         }
 
-        return hasPerms(baseUser.getGrantedAuthority(), permissions);
+        return hasPerms(principal.getPermissions(), permissions);
     }
 
     /**
@@ -48,13 +49,13 @@ public class PermissionService {
     }
 
     public boolean hasPermsOr(String... permissions) {
-        AuthBaseUser baseUser = SecurityUtil.getPrincipal();
+        CorePrincipal principal = SecurityUtil.getPrincipal();
 
-        if (baseUser == null) {
+        if (principal == null) {
             return false;
         }
 
-        return hasPermsOr(baseUser.getGrantedAuthority(), permissions);
+        return hasPermsOr(principal.getPermissions(), permissions);
     }
 
     /**
@@ -163,4 +164,5 @@ public class PermissionService {
         }
         return dp[m][n];
     }
+
 }
