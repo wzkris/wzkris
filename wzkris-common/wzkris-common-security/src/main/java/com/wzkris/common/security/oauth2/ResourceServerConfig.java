@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
  * @author : wzkris
@@ -37,11 +38,13 @@ public final class ResourceServerConfig {
 
     private final PermitAllProperties permitAllProperties;
 
-    private final RmiTokenFeign rmiTokenFeign;
-
     @Bean
     @RefreshScope
-    public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
+    public SecurityFilterChain resourceSecurityFilterChain(
+            HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
+            JwtDecoder jwtDecoder)
+            throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
@@ -49,7 +52,7 @@ public final class ResourceServerConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityContext(securityContextConfigurer -> {
-                    securityContextConfigurer.securityContextRepository(new RmiSecurityContextRepository(rmiTokenFeign, jwtDecoder));
+                    securityContextConfigurer.securityContextRepository(securityContextRepository);
                 })
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
@@ -75,6 +78,11 @@ public final class ResourceServerConfig {
                 });
 
         return http.build();
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository(RmiTokenFeign rmiTokenFeign, JwtDecoder jwtDecoder) {
+        return new RmiSecurityContextRepository(rmiTokenFeign, jwtDecoder);
     }
 
     @Bean

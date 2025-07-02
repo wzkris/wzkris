@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * @date 2025/06/19 15:40
  */
 @Slf4j
-public class RmiSecurityContextRepository implements SecurityContextRepository {
+public final class RmiSecurityContextRepository implements SecurityContextRepository {
 
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
             .getContextHolderStrategy();

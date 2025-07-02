@@ -30,6 +30,7 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class AuthorizationServerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationFilterChain(
             HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
             RegisteredClientRepository registeredClientRepository)
             throws Exception {
 
@@ -59,6 +61,9 @@ public class AuthorizationServerConfig {
 
         http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .securityContext(securityContextConfigurer -> {
+                    securityContextConfigurer.securityContextRepository(securityContextRepository);// 需要支持用户token
+                })
                 .with(authorizationServerConfigurer,
                         authorizationServer -> {
                     authorizationServer.tokenEndpoint(tokenEndpoint -> {
