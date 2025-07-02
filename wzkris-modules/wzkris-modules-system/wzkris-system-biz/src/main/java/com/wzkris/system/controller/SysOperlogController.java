@@ -9,7 +9,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.CheckFieldPerms;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.domain.SysOperLog;
 import com.wzkris.system.domain.req.SysOperLogQueryReq;
 import com.wzkris.system.mapper.SysOperLogMapper;

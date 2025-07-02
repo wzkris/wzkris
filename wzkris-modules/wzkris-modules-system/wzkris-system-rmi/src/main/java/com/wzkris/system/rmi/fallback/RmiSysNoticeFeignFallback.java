@@ -1,5 +1,6 @@
 package com.wzkris.system.rmi.fallback;
 
+import com.wzkris.common.openfeign.core.FeignLogAggregator;
 import com.wzkris.system.rmi.RmiSysNoticeFeign;
 import com.wzkris.system.rmi.domain.req.SendNoticeReq;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -13,7 +14,7 @@ public class RmiSysNoticeFeignFallback implements FallbackFactory<RmiSysNoticeFe
         return new RmiSysNoticeFeign() {
             @Override
             public void send2Users(SendNoticeReq sendNoticeReq) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
             }
         };
     }

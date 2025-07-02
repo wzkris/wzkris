@@ -1,5 +1,6 @@
 package com.wzkris.system.rmi.fallback;
 
+import com.wzkris.common.openfeign.core.FeignLogAggregator;
 import com.wzkris.system.rmi.RmiSysLogFeign;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
@@ -16,12 +17,12 @@ public class RmiSysLogFeignFallback implements FallbackFactory<RmiSysLogFeign> {
         return new RmiSysLogFeign() {
             @Override
             public void saveOperlogs(List<OperLogReq> operLogReqs) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
             }
 
             @Override
             public void saveLoginlog(LoginLogReq loginLogReq) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
             }
         };
     }

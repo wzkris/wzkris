@@ -1,5 +1,10 @@
 package com.wzkris.common.openfeign.utils;
 
+/**
+ * 获取异常信息
+ *
+ * @author wzkris
+ */
 public class RpcMsgUtil {
 
     /**

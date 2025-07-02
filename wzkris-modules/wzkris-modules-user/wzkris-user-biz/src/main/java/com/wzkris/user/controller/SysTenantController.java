@@ -13,7 +13,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.SystemUserUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.ResetPwdReq;
@@ -117,7 +117,7 @@ public class SysTenantController extends BaseController {
         }
         SysTenant tenant = BeanUtil.convert(tenantReq, SysTenant.class);
 
-        String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100000, 999999));
+        String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
         tenant.setOperPwd(operPwd);
 
         String password = RandomStringUtils.secure().next(8);

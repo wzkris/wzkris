@@ -6,7 +6,6 @@ import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.security.utils.SystemUserUtil;
-import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +16,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.wzkris.common.core.domain.Result.ok;
+
 @Tag(name = "用户信息端点")
 @Slf4j
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-public class UserinfoEndpoint extends BaseController {
+public class UserinfoEndpoint {
 
     @Operation(summary = "用户信息")
     @GetMapping(value = "/user_info", headers = HeaderConstants.X_TENANT_TOKEN)

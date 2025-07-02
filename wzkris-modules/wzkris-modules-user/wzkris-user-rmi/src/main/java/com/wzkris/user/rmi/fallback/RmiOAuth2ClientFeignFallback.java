@@ -1,5 +1,6 @@
 package com.wzkris.user.rmi.fallback;
 
+import com.wzkris.common.openfeign.core.FeignLogAggregator;
 import com.wzkris.user.rmi.RmiOAuth2ClientFeign;
 import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -13,7 +14,7 @@ public class RmiOAuth2ClientFeignFallback implements FallbackFactory<RmiOAuth2Cl
         return new RmiOAuth2ClientFeign() {
             @Override
             public OAuth2ClientResp getByClientId(String clientid) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
                 return null;
             }
         };

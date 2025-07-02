@@ -26,34 +26,6 @@ spring:
       - optional:nacos:application-common.yml
       - optional:nacos:${spring.application.name}.yml
 
-# 滑块验证码配置， 详细请看 cloud.tianai.captcha.autoconfiguration.ImageCaptchaProperties 类
-captcha:
-  # 如果项目中使用到了redis，滑块验证码会自动把验证码数据存到redis中， 这里配置redis的key的前缀,默认是captcha:slider
-  prefix: captcha
-  # 验证码过期时间，默认是2分钟,单位毫秒， 可以根据自身业务进行调整
-  expire:
-    # 默认缓存时间 2分钟
-    default: 120000
-    # 针对 点选验证码 过期时间设置为 2分钟， 因为点选验证码验证比较慢，把过期时间调整大一些
-    WORD_IMAGE_CLICK: 120000
-  # 使用加载系统自带的资源， 默认是 false(这里系统的默认资源包含 滑动验证码模板/旋转验证码模板,如果想使用系统的模板，这里设置为true)
-  init-default-resource: true
-  # 缓存控制， 默认为false不开启
-  local-cache-enabled: false
-  # 缓存开启后，验证码会提前缓存一些生成好的验证数据， 默认是20
-  local-cache-size: 20
-  # 缓存开启后，缓存拉取失败后等待时间 默认是 5秒钟
-  local-cache-wait-time: 5000
-  # 缓存开启后，缓存检查间隔 默认是2秒钟
-  local-cache-period: 2000
-  secondary:
-    # 二次验证， 默认false 不开启
-    enabled: true
-    # 二次验证过期时间， 默认 2分钟
-    expire: 120000
-    # 二次验证缓存key前缀，默认是 captcha:secondary
-    keyPrefix: "captcha:secondary"
-
 jwt-rs256:
   publicKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1cdDeVUgQzB22IcCAHVKij1Csn+tOWIGu2deRxSWQU1CIkrrKyB2zWJ8RX4lp8ssxspnybsuycHmvavNBE7EBVW3bEYIN2ebOFFdOxZPnCC7mBikQBtag3TfmXSO3Mcg/rN4ulqWloDX1Wv3vdAh/eCxYlDNATAAFxEoEdzEe3MapdOygRZWbj9DEfEF1bU3ObxrBV9ExFnPLAUx0CE0MDLhAF3s+qtkcFlpG1h+Q/XDxF8wp53bTqsgFslqFCsJXL8GqFTOnCTPlUybwfa8Mtos9s/djJpm9KZWndrXlDshysnd7bQqG5HGh6Y5AHIfwcUxKFdSMk7jVI472aY4CwIDAQAB-----END PUBLIC KEY-----
   privateKey: -----BEGIN PRIVATE KEY-----MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDVx0N5VSBDMHbYhwIAdUqKPUKyf605Yga7Z15HFJZBTUIiSusrIHbNYnxFfiWnyyzGymfJuy7Jwea9q80ETsQFVbdsRgg3Z5s4UV07Fk+cILuYGKRAG1qDdN+ZdI7cxyD+s3i6WpaWgNfVa/e90CH94LFiUM0BMAAXESgR3MR7cxql07KBFlZuP0MR8QXVtTc5vGsFX0TEWc8sBTHQITQwMuEAXez6q2RwWWkbWH5D9cPEXzCnndtOqyAWyWoUKwlcvwaoVM6cJM+VTJvB9rwy2iz2z92Mmmb0plad2teUOyHKyd3ttCobkcaHpjkAch/BxTEoV1IyTuNUjjvZpjgLAgMBAAECggEBAMgCerqWTm0OduL2zYSoOGlGD5T5p5Q8hpfnimludXX7VpjHB2d+JCjcr/BEqe5nRSloTdqL6qaRZ9SlXFdfaj6jh80haKaNpMf4OAYERc+JQHp485OXBARh4KGuT8t38wLZ32ZbQvDk8wqWzV8lz+e7xbp6ZpNp2Wu7fYXYy2vC+7Zje6qYCYi+JMF6a2ujKEflLI9dDl2fkDyS7P4O2bcdbXCVV6SkaeNCNk5ZAbbRgA5wdCQE/z45cJaciTKwah+pHcN4ytcy8I5zbg410CrA9z5PWAfFxdjQ1EyuvqheDGFbnFDsZJsBP3/7P6/JU3qgep2uM6YYbY8dVpVuf6ECgYEA6xAo1O6U6gW5T7qpZ0CX3MOJVw1aFSTYoa8Rrnyq/ljLGkmNtnp9K+DDGdETAlBemfEc3sntqubIxC0/twQfErFdn0gLnS0gLBbBeYPZUmmAtIyR3dCmwlaJmok+YCTNDgz+RsbFRrS6V9WVREguEpY5NsTGltrmOLZ7WlWmsWcCgYEA6NHGg0PDuTF/MoUgL6ZnzdCtEoN+uV+NAq85C/smngbfFNR+ttFteKzLsbyJydfBFgTS2cnPXyuK/NY6Qa/lXZfxxcfmqv7mreBKc3usSqveXRRbqm6wMz6kSXWk8/2HzywRX9JPNauW13Otyl8l/myC69nAHzVbQey8sy1eab0CgYBb08o/tJxT97x22xLGlUM+KN0ENuEUFXrTXtLneShLiGB/enBz8tHnTDyrXzOv2bm7JagDmJrSAqo3iP20/1UsNkG+saRn2HMTBii60bkaKsDux2NMZfBfRvMmfaryYC4C6SyEda4nev64xWU0cYYeGLVtId36nLUHPrJdjcw6zQKBgQC74zc6DcDxPpGxGqBb9AYHoeVacIYfYY4x4Wi/U4LZux/i9o4AScj3vzNvj4D/REAN3fyvR98zpbc3zkcbZbFLs+iovWdZDfbp0X0j72WeqU79fQVw6H0IDgCVS/y/7xXfymeHFflYjc5gt3lEPT8zMS0C2yrhxLSN4lhynSV5XQKBgA2jWpc40dHIKJaIYgJp1wS4QCP21J06EdYdu3bHARPXP75nm8L6m3nh9iQRWanx1x2Fulgq3rVbX/Re0xT7zVaKaH3iaUwZmnbP+LF0/2exXw+FNlSTfA7tR0eXhYtg6CBapQs9+Wc40wYK93xsROMoGEGrwFzuBiPV7H7N9VBP-----END PRIVATE KEY-----

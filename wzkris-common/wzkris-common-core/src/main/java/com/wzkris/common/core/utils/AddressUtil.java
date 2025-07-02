@@ -49,7 +49,9 @@ public class AddressUtil {
             if (StringUtil.isBlank(location)) {
                 location = objectNode.get("addr").asText();
             }
-            log.info("获取到地理位置：{}", location);
+            if (log.isDebugEnabled()) {
+                log.debug("获取到地理位置：{}", location);
+            }
             return location;
         } catch (Exception e) {
             log.error("获取地理位置异常，ip：{}，errMsg：{}", ip, e.getMessage());

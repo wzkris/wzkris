@@ -1,5 +1,6 @@
 package com.wzkris.user.rmi.fallback;
 
+import com.wzkris.common.openfeign.core.FeignLogAggregator;
 import com.wzkris.user.rmi.RmiAppUserFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import com.wzkris.user.rmi.domain.resp.AppUserResp;
@@ -14,19 +15,19 @@ public class RmiAppUserFeignFallback implements FallbackFactory<RmiAppUserFeign>
         return new RmiAppUserFeign() {
             @Override
             public AppUserResp getByPhoneNumber(String phoneNumber) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
                 return null;
             }
 
             @Override
             public AppUserResp getOrRegisterByIdentifier(String identifierType, String authCode) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
                 return null;
             }
 
             @Override
             public void updateLoginInfo(LoginInfoReq loginInfoReq) {
-                logPrintError(cause);
+                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
             }
         };
     }

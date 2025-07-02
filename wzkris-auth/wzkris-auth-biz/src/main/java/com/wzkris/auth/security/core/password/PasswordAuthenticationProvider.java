@@ -1,6 +1,5 @@
 package com.wzkris.auth.security.core.password;
 
-import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
@@ -30,21 +29,17 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     private final CaptchaService captchaService;
 
-    private final SecondaryVerificationApplication application;
-
     public PasswordAuthenticationProvider(TokenProperties tokenProperties,
                                           TokenService tokenService,
                                           JwtEncoder jwtEncoder,
                                           List<UserInfoTemplate> userInfoTemplates,
-                                          CaptchaService captchaService,
-                                          SecondaryVerificationApplication application) {
+                                          CaptchaService captchaService) {
         super(tokenProperties, tokenService, jwtEncoder);
         this.userInfoTemplate = userInfoTemplates.stream()
                 .filter(t -> t.checkAuthenticatedType(AuthenticatedType.SYSTEM_USER))
                 .findFirst()
                 .get();
         this.captchaService = captchaService;
-        this.application = application;
     }
 
     @Override
@@ -58,7 +53,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
         }
 
-        boolean valid = application.secondaryVerification(authenticationToken.getCaptchaId());
+        boolean valid = captchaService.validateToken(authenticationToken.getCaptchaId());
         if (!valid) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
         }

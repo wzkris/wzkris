@@ -9,7 +9,7 @@ import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.SystemUserUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantWalletRecord;
 import com.wzkris.user.domain.req.SysTenantWalletRecordQueryReq;

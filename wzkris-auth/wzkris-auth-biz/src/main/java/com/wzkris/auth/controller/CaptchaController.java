@@ -1,16 +1,12 @@
 package com.wzkris.auth.controller;
 
-import cloud.tianai.captcha.application.ImageCaptchaApplication;
-import cloud.tianai.captcha.application.vo.CaptchaResponse;
-import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
-import cloud.tianai.captcha.common.response.ApiResponse;
-import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
 import com.wzkris.auth.domain.req.SmsCodeReq;
-import com.wzkris.common.captcha.model.CheckCaptchaReq;
+import com.wzkris.common.captcha.request.RedeemChallengeRequest;
+import com.wzkris.common.captcha.response.ChallengeResponse;
+import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.redis.annotation.RateLimit;
-import com.wzkris.common.web.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,7 +14,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static com.wzkris.common.core.domain.Result.err412;
+import static com.wzkris.common.core.domain.Result.ok;
 
 /**
  * @author : wzkris
@@ -32,37 +34,33 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/captcha")
 @RequiredArgsConstructor
-public class CaptchaController extends BaseController {
+public class CaptchaController {
 
     private final CaptchaService captchaService;
 
-    private final ImageCaptchaApplication application;
-
     @RateLimit
-    @Operation(summary = "生成验证码")
-    @PostMapping("/generate")
-    public CaptchaResponse<ImageCaptchaVO> genCaptcha(@RequestParam(required = false) String type) {
-        // 参数1为具体的验证码类型， 默认支持 SLIDER、ROTATE、WORD_IMAGE_CLICK、CONCAT 等验证码类型，详见： `CaptchaTypeConstant`类
-        return application.generateCaptcha(type);
+    @Operation(summary = "获取挑战")
+    @PostMapping("/challenge")
+    public ChallengeResponse challenge() {
+        return captchaService.createChallenge();
     }
 
-    @Operation(summary = "校验验证码")
-    @PostMapping("/check")
-    public ApiResponse<?> checkCaptcha(@RequestBody CheckCaptchaReq req) {
-        ApiResponse<?> response = application.matching(req.getId(), req.getData());
-        return response.isSuccess() ? ApiResponse.ofSuccess(req.getId()) : response;
+    @Operation(summary = "验证挑战")
+    @PostMapping("/redeem")
+    public RedeemChallengeResponse redeem(@RequestBody @Valid RedeemChallengeRequest redeemChallengeRequest) {
+        return captchaService.redeemChallenge(redeemChallengeRequest);
     }
 
     @Operation(summary = "短信验证码")
     @PostMapping("/sms_code")
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
-        boolean valid = ((SecondaryVerificationApplication) application).secondaryVerification(req.getCaptchaId());
+        boolean valid = captchaService.validateToken(req.getCaptchaId());
         if (!valid) {
             return err412("验证码异常");
         }
         captchaService.validateMaxTry(req.getPhone(), 1, 120);
         // TODO 发送短信
-        String code = String.valueOf(RandomUtils.secure().randomInt(100000, 999999));
+        String code = String.valueOf(RandomUtils.secure().randomInt(100_000, 999_999));
         log.info("手机号：{} 验证码是：{}", req.getPhone(), code);
         captchaService.setCaptcha(req.getPhone(), code);
         return ok();

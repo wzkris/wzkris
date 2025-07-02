@@ -14,6 +14,7 @@ wzkris
 │       └── wzkris-common-excel                        // excel处理
 │       └── wzkris-common-loadbanlancer                // rpc均衡负载
 │       └── wzkris-common-log                          // 日志记录
+│       └── wzkris-common-openfeign                    // Rpc调用
 │       └── wzkris-common-orm                          // 持久层框架, 租户、分页集成
 │       └── wzkris-common-redis                        // 分布式缓存, 轻量级限流
 │       └── wzkris-common-seata                        // 分布式事务
@@ -58,7 +59,7 @@ wzkris
 - 后端框架：`SpringCloud + SringCloudAlibaba + SpringBoot3`
 - 安全框架：`Spring-Authorization-Server`
 - 持久层框架：`Mybatis-Plus`
-- RPC框架：`dubbo3`
+- RPC框架：`dubbo3/openfeign`
 - 定时任务：`xxl-job`
 - 中间件：`Nacos` `PostgresQL` `Redis`（至少需要这三个组件项目才可以运行）
 - 消息队列： 根据需要自行搭配`spring-cloud-stream`

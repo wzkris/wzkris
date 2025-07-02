@@ -65,7 +65,9 @@ public class LoginTokenEventListener {
         final UserAgent userAgent = event.getUserAgent();
 
         boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
-        log.info("监听到用户’{}‘登录'{}'事件, 登录IP：{}", user.getName(), loginSuccess ? "成功" : "失败", ipAddr);
+        if (log.isDebugEnabled()) {
+            log.debug("监听到用户’{}‘登录'{}'事件, 登录IP：{}", user.getName(), loginSuccess ? "成功" : "失败", ipAddr);
+        }
 
         // 获取客户端浏览器
         String browser = userAgent.getValue(UserAgent.AGENT_NAME);

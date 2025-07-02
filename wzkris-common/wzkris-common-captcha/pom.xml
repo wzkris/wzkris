@@ -30,11 +30,5 @@
             <artifactId>spring-cloud-context</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>cloud.tianai.captcha</groupId>
-            <artifactId>tianai-captcha-springboot-starter</artifactId>
-            <version>${tianai.version}</version>
-        </dependency>
-
     </dependencies>
 </project>

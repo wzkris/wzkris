@@ -2,7 +2,7 @@ package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.web.model.BaseController;
+import com.wzkris.common.orm.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
