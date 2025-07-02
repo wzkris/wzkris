@@ -50,10 +50,12 @@ public final class ResourceServerConfig {
                 .cors(configurer -> configurer.configure(http))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .securityContext(securityContextConfigurer -> {
-                    securityContextConfigurer.securityContextRepository(securityContextRepository);
-                })
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .securityContext(securityContextConfigurer -> securityContextConfigurer
+                        .securityContextRepository(securityContextRepository)
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
@@ -66,16 +68,16 @@ public final class ResourceServerConfig {
                         .authenticated()
                 )
                 .oauth2ResourceServer(resourceServer -> resourceServer
-                        .jwt(jwtConfigurer -> {
-                            jwtConfigurer.decoder(jwtDecoder);
-                        })
+                        .jwt(jwtConfigurer -> jwtConfigurer
+                                .decoder(jwtDecoder)
+                        )
                         .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                         .accessDeniedHandler(new AccessDeniedHandlerImpl())
                 )
-                .exceptionHandling(exceptionHandler -> {
-                    exceptionHandler.authenticationEntryPoint(new AuthenticationEntryPointImpl())
-                            .accessDeniedHandler(new AccessDeniedHandlerImpl());
-                });
+                .exceptionHandling(exceptionHandler -> exceptionHandler
+                        .authenticationEntryPoint(new AuthenticationEntryPointImpl())
+                        .accessDeniedHandler(new AccessDeniedHandlerImpl())
+                );
 
         return http.build();
     }
