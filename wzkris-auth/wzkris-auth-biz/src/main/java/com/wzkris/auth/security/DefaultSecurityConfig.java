@@ -45,11 +45,13 @@ public class DefaultSecurityConfig {
 
     @Bean
     @Order(0)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
-                                                          List<AuthenticationProvider> authenticationProviders,
-                                                          List<CommonAuthenticationConverter<? extends CommonAuthenticationToken>>
-                                                                  authenticationConverters,
-                                                          TokenService tokenService) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(
+            HttpSecurity http,
+            List<AuthenticationProvider> authenticationProviders,
+            List<CommonAuthenticationConverter<? extends CommonAuthenticationToken>>
+                    authenticationConverters,
+            TokenService tokenService)
+            throws Exception {
         http.securityMatcher("/assets/**", "/activate", "/login", "/logout")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))

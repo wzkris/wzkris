@@ -22,11 +22,23 @@ public class LogoutHandlerImpl implements LogoutHandler {
         this.tokenService = tokenService;
     }
 
+    /**
+     * 由于该过滤器链未配置安全上下文解析，authentication必定为null
+     *
+     * @param request        the HTTP request
+     * @param response       the HTTP response
+     * @param authentication the current principal details
+     */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
         String accessToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
         if (StringUtil.isNotBlank(accessToken)) {
             tokenService.logoutByAccessToken(accessToken);
+        }
+
+        String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
+        if (StringUtil.isNotBlank(userToken)) {
+            tokenService.logoutByAccessToken(userToken);
         }
     }
 
