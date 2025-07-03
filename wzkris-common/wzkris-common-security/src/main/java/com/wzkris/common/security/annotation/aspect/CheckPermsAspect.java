@@ -1,8 +1,8 @@
-package com.wzkris.common.security.oauth2.annotation.aspect;
+package com.wzkris.common.security.annotation.aspect;
 
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +33,10 @@ public class CheckPermsAspect {
     @Autowired
     private PermissionService permissionService;
 
-    @Pointcut("@annotation(com.wzkris.common.security.oauth2.annotation.CheckPerms)"
-            + "|| @annotation(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)"
-            + "|| @within(com.wzkris.common.security.oauth2.annotation.CheckPerms)"
-            + "|| @within(com.wzkris.common.security.oauth2.annotation.CheckSystemPerms)")
+    @Pointcut("@annotation(com.wzkris.common.security.annotation.CheckPerms)"
+            + "|| @annotation(com.wzkris.common.security.annotation.CheckSystemPerms)"
+            + "|| @within(com.wzkris.common.security.annotation.CheckPerms)"
+            + "|| @within(com.wzkris.common.security.annotation.CheckSystemPerms)")
     public void pointcut() {
     }
 

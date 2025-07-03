@@ -15,7 +15,9 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -34,15 +36,21 @@ public class DeptScopeAspect {
 
     private static final ConcurrentSkipListSet<String> WHITE_SET = new ConcurrentSkipListSet<>();
 
+    @Pointcut("@annotation(com.wzkris.common.orm.annotation.DeptScope)")
+    public void pointcut() {
+    }
+
     /**
      * 方法执行前执行
      */
-    @Before("@annotation(deptScope)")
-    public void before(JoinPoint point, DeptScope deptScope) {
+    @Before("pointcut()")
+    public void before(JoinPoint point) {
         MethodSignature signature = (MethodSignature) point.getSignature();
         String methodName = signature.getDeclaringTypeName()
                 + StringPool.HASH
                 + signature.getMethod().getName();
+
+        DeptScope deptScope = AnnotationUtils.findAnnotation(signature.getMethod(), DeptScope.class);
 
         if (WHITE_SET.contains(methodName)) {
             handleDataScope(deptScope);
@@ -60,8 +68,8 @@ public class DeptScopeAspect {
     /**
      * 方法执行后销毁数据权限sql
      */
-    @After("@annotation(deptScope)")
-    public void after(DeptScope deptScope) {
+    @After("pointcut()")
+    public void after() {
         DeptScopeUtil.clear();
     }
 

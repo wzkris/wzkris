@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.annotation;
+package com.wzkris.common.security.annotation;
 
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 
