@@ -70,6 +70,9 @@ public class AuthorizationServerConfig {
                                 .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
                                 .errorResponseHandler(new AuthenticationFailureHandlerImpl()) // 登录失败处理器
                         )
+                        .tokenIntrospectionEndpoint(tokenIntrospectionEndpoint -> tokenIntrospectionEndpoint
+                                .introspectionResponseHandler(new AuthenticationSuccessHandlerImpl()) // token验证端点
+                        )
                         .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> deviceAuthorizationEndpoint
                                 .verificationUri("/activate")// 自定义设备码验证页面
                                 .errorResponseHandler(new AuthenticationFailureHandlerImpl())
