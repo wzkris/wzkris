@@ -68,10 +68,11 @@ public class AuthorizationServerConfig {
                 .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
                         .tokenEndpoint(tokenEndpoint -> tokenEndpoint
                                 .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
-                                .errorResponseHandler(new AuthenticationFailureHandlerImpl()) // 登录失败处理器
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
                         )
                         .tokenIntrospectionEndpoint(tokenIntrospectionEndpoint -> tokenIntrospectionEndpoint
                                 .introspectionResponseHandler(new AuthenticationSuccessHandlerImpl()) // token验证端点
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
                         )
                         .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> deviceAuthorizationEndpoint
                                 .verificationUri("/activate")// 自定义设备码验证页面
