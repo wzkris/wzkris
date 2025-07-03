@@ -20,22 +20,25 @@ import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
-import com.wzkris.auth.security.handler.converter.CustomOAuth2AccessTokenResponseHttpMessageConverter;
-import com.wzkris.auth.security.handler.converter.CustomOAuth2TokenIntrospectionHttpMessageConverter;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.UserAgentUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.*;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
+import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessTokenResponseMapConverter;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
-import org.springframework.security.oauth2.server.authorization.OAuth2TokenIntrospection;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2TokenIntrospectionAuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -53,11 +56,15 @@ import java.util.Map;
 @Slf4j
 public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
 
-    private final HttpMessageConverter<OAuth2AccessTokenResponse> accessTokenMessageConverter
-            = new CustomOAuth2AccessTokenResponseHttpMessageConverter();
+    private final MappingJackson2HttpMessageConverter jsonMessageConverter
+            = new MappingJackson2HttpMessageConverter();
 
-    private final HttpMessageConverter<OAuth2TokenIntrospection> introspectionMessageConverter
-            = new CustomOAuth2TokenIntrospectionHttpMessageConverter();
+    private final Converter<OAuth2AccessTokenResponse, Map<String, Object>> accessTokenResponseParametersConverter
+            = new DefaultOAuth2AccessTokenResponseMapConverter();
+
+    private final ParameterizedTypeReference<Map<String, Object>> STRING_OBJECT_MAP
+            = new ParameterizedTypeReference<>() {
+    };
 
     /**
      * Called when a user has been successfully authenticated.
@@ -83,12 +90,11 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
             this.sendIntrospectionTokenResponse(response, introspectionAuthenticationToken);
 
         } else {
-            log.error(
-                    "not support type {}",
+            log.warn("use default response info, current authentication type :{}",
                     authentication.getClass().getName());
-            OAuth2Error error = new OAuth2Error(
-                    OAuth2ErrorCodes.SERVER_ERROR, "Unable to process the access token response.", null);
-            throw new OAuth2AuthenticationException(error);
+            jsonMessageConverter.write(
+                    Result.ok(), STRING_OBJECT_MAP.getType(),
+                    MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
         }
 
     }
@@ -120,6 +126,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     private void sendAccessTokenResponse(
             HttpServletResponse response, OAuth2AccessTokenAuthenticationToken authenticationToken)
             throws IOException {
+
         // 构造响应体
         OAuth2AccessToken accessToken = authenticationToken.getAccessToken();
         OAuth2RefreshToken refreshToken = authenticationToken.getRefreshToken();
@@ -143,16 +150,19 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         // 追加输出参数
         builder.additionalParameters(additionalParameters);
 
-        ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
-        this.accessTokenMessageConverter.write(builder.build(), null, httpResponse);
+        Map<String, Object> convert = accessTokenResponseParametersConverter.convert(builder.build());
+        jsonMessageConverter.write(
+                Result.ok(convert), STRING_OBJECT_MAP.getType(),
+                MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
     }
 
     private void sendIntrospectionTokenResponse(
             HttpServletResponse response, OAuth2TokenIntrospectionAuthenticationToken authenticationToken)
             throws IOException {
-        ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
 
-        introspectionMessageConverter.write(authenticationToken.getTokenClaims(), null, httpResponse);
+        jsonMessageConverter.write(
+                Result.ok(authenticationToken.getTokenClaims().getClaims()), STRING_OBJECT_MAP.getType(),
+                MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
 
     }
 

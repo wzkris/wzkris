@@ -74,6 +74,10 @@ public class AuthorizationServerConfig {
                                 .introspectionResponseHandler(new AuthenticationSuccessHandlerImpl()) // token验证端点
                                 .errorResponseHandler(new AuthenticationFailureHandlerImpl())
                         )
+                        .tokenRevocationEndpoint(tokenRevocationEndpoint -> tokenRevocationEndpoint
+                                .revocationResponseHandler(new AuthenticationSuccessHandlerImpl()) // token撤销端点
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                        )
                         .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> deviceAuthorizationEndpoint
                                 .verificationUri("/activate")// 自定义设备码验证页面
                                 .errorResponseHandler(new AuthenticationFailureHandlerImpl())

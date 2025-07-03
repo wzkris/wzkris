@@ -89,6 +89,8 @@ public final class OAuth2ExceptionUtil {
                         Result.err401(StringUtil.defaultIfBlank(errorMsg, BizCode.UNAUTHORIZED.desc()));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
                         Result.err400(I18nUtil.message("oauth2.scope.invalid"));
+                case OAuth2ErrorCodes.INVALID_CLIENT -> // 客户端不合法
+                        Result.err400(I18nUtil.message("oauth2.client.invalid"));
                 default -> Result.err400(errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
