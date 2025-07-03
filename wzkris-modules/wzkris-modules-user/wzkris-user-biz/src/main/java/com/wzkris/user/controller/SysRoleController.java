@@ -9,8 +9,8 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.req.*;
@@ -91,7 +91,7 @@ public class SysRoleController extends BaseController {
     @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{roleId}"})
     @CheckSystemPerms(
             value = {"sys_role:edit", "sys_role:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);
@@ -108,7 +108,7 @@ public class SysRoleController extends BaseController {
     @GetMapping({"/dept_checked_select_tree/", "/dept_checked_select_tree/{roleId}"})
     @CheckSystemPerms(
             value = {"sys_role:edit", "sys_role:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleService.checkDataScopes(roleId);

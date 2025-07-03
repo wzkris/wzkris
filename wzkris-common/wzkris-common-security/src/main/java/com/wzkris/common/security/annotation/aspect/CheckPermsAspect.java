@@ -3,6 +3,7 @@ package com.wzkris.common.security.annotation.aspect;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
+import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -66,17 +67,17 @@ public class CheckPermsAspect {
             return;
         }
 
-        CheckPerms.Mode mode = checkPerms.mode();
+        CheckMode mode = checkPerms.mode();
         Set<String> grantedAuthority = principal.getPermissions();
 
-        if (mode == CheckPerms.Mode.AND) {
+        if (mode == CheckMode.AND) {
             if (!permissionService.hasPerms(grantedAuthority, perms)) {
                 throw new AccessDeniedException("AuthUser: '" + principal.getName() + "' missing permission : "
                         + Arrays.toString(perms) + " one of them");
             }
         }
 
-        if (mode == CheckPerms.Mode.OR) {
+        if (mode == CheckMode.OR) {
             if (!permissionService.hasPermsOr(grantedAuthority, perms)) {
                 throw new AccessDeniedException(
                         "AuthUser: '" + principal.getName() + "' missing all permission: " + Arrays.toString(perms));

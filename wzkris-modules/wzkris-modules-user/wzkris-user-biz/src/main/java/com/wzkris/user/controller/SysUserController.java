@@ -11,8 +11,8 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.export.SysUserExport;
@@ -93,7 +93,7 @@ public class SysUserController extends BaseController {
     @GetMapping("/dept_select_tree")
     @CheckSystemPerms(
             value = {"sys_user:edit", "sys_user:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
         return ok(deptService.listSelectTree(deptName));
     }
@@ -102,7 +102,7 @@ public class SysUserController extends BaseController {
     @GetMapping({"/role_checked_select/", "/role_checked_select/{userId}"})
     @CheckSystemPerms(
             value = {"sys_user:edit", "sys_user:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
         userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
@@ -115,7 +115,7 @@ public class SysUserController extends BaseController {
     @GetMapping({"/post_checked_select/", "/post_checked_select/{userId}"})
     @CheckSystemPerms(
             value = {"sys_user:edit", "sys_user:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
         userService.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();

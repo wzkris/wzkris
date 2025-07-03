@@ -1,4 +1,3 @@
-com.wzkris.common.orm.annotation.aspect.CheckFieldPermsAspect
 com.wzkris.common.orm.annotation.aspect.DeptScopeAspect
 com.wzkris.common.orm.annotation.aspect.IgnoreTenantAspect
 com.wzkris.common.orm.filter.DynamicTenantSwitchingFilter
