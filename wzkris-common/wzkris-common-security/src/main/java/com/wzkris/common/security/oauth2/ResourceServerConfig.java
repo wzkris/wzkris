@@ -4,6 +4,7 @@ import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.config.PermitAllProperties;
+import com.wzkris.common.security.oauth2.converter.CustomJwtAuthenticationConverter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.repository.RmiSecurityContextRepository;
@@ -70,6 +71,7 @@ public final class ResourceServerConfig {
                 .oauth2ResourceServer(resourceServer -> resourceServer
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(jwtDecoder)
+                                .jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
                         )
                         .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                         .accessDeniedHandler(new AccessDeniedHandlerImpl())

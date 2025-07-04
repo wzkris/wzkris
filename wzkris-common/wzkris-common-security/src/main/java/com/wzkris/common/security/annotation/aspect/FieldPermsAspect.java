@@ -183,7 +183,7 @@ public class FieldPermsAspect {
 
         if (!StringUtil.equals(principal.getType(), checkPerms.checkType().getValue())) {
             throw new AccessDeniedException(
-                    "Principal needs checkType :" + checkPerms.checkType() + " , but have " + principal.getType());
+                    "Principal needs checkType :" + checkPerms.checkType().getValue() + " , but have :" + principal.getType());
         }
 
         if (checkPerms.mode() == CheckMode.AND) {

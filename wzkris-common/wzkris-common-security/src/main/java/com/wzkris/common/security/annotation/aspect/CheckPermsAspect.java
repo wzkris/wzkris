@@ -59,7 +59,7 @@ public class CheckPermsAspect {
 
         if (!StringUtil.equals(principal.getType(), checkPerms.checkType().getValue())) {
             throw new AccessDeniedException(
-                    "Principal needs checkType :" + checkPerms.checkType() + " , but have " + principal.getType());
+                    "Principal needs checkType :" + checkPerms.checkType().getValue() + " , but have :" + principal.getType());
         }
         String[] perms = checkPerms.value();
 

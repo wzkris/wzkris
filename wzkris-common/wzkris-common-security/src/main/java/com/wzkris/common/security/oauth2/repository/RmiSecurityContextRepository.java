@@ -94,6 +94,7 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
                 ctx.setAuthentication(createAuthentication(new DeferredClientUser(userId, supplier), request, userToken));
             } catch (JwtException ignored) {
             }
+            return ctx;
         }
 
         return ctx;
