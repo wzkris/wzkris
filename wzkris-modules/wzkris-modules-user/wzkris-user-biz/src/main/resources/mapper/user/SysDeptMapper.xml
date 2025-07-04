@@ -20,7 +20,7 @@
         <result column="update_at" property="updateAt"/>
     </resultMap>
 
-    <select id="listChildren" resultMap="SysDeptMap">
+    <select id="listSubDept" resultMap="SysDeptMap">
         SELECT * FROM biz.sys_dept
         <where>
             <if test="parentId != null and parentId != 0">

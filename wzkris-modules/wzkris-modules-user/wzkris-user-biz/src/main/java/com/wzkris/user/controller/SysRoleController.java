@@ -16,11 +16,15 @@ import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
 import com.wzkris.user.domain.vo.SelectVO;
-import com.wzkris.user.mapper.SysRoleDeptMapper;
+import com.wzkris.user.manager.SysDeptDataScopeManager;
+import com.wzkris.user.manager.SysRoleDataScopeManager;
+import com.wzkris.user.manager.SysUserDataScopeManager;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
-import com.wzkris.user.service.*;
+import com.wzkris.user.service.SysMenuService;
+import com.wzkris.user.service.SysRoleService;
+import com.wzkris.user.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -48,15 +52,15 @@ public class SysRoleController extends BaseController {
 
     private final SysRoleService roleService;
 
-    private final SysUserService userService;
-
     private final SysUserRoleMapper userRoleMapper;
-
-    private final SysRoleDeptMapper roleDeptMapper;
 
     private final SysRoleMenuMapper roleMenuMapper;
 
-    private final SysDeptService deptService;
+    private final SysUserDataScopeManager userDataScopeManager;
+
+    private final SysRoleDataScopeManager roleDataScopeManager;
+
+    private final SysDeptDataScopeManager deptDataScopeManager;
 
     private final SysMenuService menuService;
 
@@ -67,7 +71,7 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:list")
     public Result<Page<SysRole>> listPage(SysRoleQueryReq req) {
         startPage();
-        List<SysRole> list = roleMapper.selectLists(this.buildQueryWrapper(req));
+        List<SysRole> list = roleDataScopeManager.list(this.buildQueryWrapper(req));
         return getDataTable(list);
     }
 
@@ -83,7 +87,7 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:query")
     public Result<SysRole> getInfo(@PathVariable Long roleId) {
         // 权限校验
-        roleService.checkDataScopes(roleId);
+        roleDataScopeManager.checkDataScopes(roleId);
         return ok(roleMapper.selectById(roleId));
     }
 
@@ -94,7 +98,7 @@ public class SysRoleController extends BaseController {
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
-        roleService.checkDataScopes(roleId);
+        roleDataScopeManager.checkDataScopes(roleId);
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(
                 roleId == null
@@ -111,11 +115,11 @@ public class SysRoleController extends BaseController {
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
-        roleService.checkDataScopes(roleId);
+        roleDataScopeManager.checkDataScopes(roleId);
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(
-                roleId == null ? Collections.emptyList() : roleDeptMapper.listDeptIdByRoleId(roleId));
-        checkedSelectTreeVO.setSelectTrees(deptService.listSelectTree(null));
+                roleId == null ? Collections.emptyList() : deptDataScopeManager.listDeptIdByRoleId(roleId));
+        checkedSelectTreeVO.setSelectTrees(deptDataScopeManager.listSelectTree(null));
         return ok(checkedSelectTreeVO);
     }
 
@@ -137,7 +141,7 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:edit")
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysRoleReq roleReq) {
         // 权限校验
-        roleService.checkDataScopes(roleReq.getRoleId());
+        roleDataScopeManager.checkDataScopes(roleReq.getRoleId());
         return toRes(roleService.updateRole(
                 BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
     }
@@ -148,7 +152,7 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
-        roleService.checkDataScopes(statusReq.getId());
+        roleDataScopeManager.checkDataScopes(statusReq.getId());
         SysRole update = new SysRole(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(roleMapper.updateById(update));
@@ -161,7 +165,7 @@ public class SysRoleController extends BaseController {
     public Result<Void> remove(
             @RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
         // 权限校验
-        roleService.checkDataScopes(roleIds);
+        roleDataScopeManager.checkDataScopes(roleIds);
         roleService.checkRoleUsed(roleIds);
         return toRes(roleService.deleteByIds(roleIds));
     }
@@ -171,9 +175,9 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:grant_user")
     public Result<Page<SelectVO>> allocatedList(SysUserQueryReq queryReq, Long roleId) {
         // 校验角色权限
-        roleService.checkDataScopes(roleId);
+        roleDataScopeManager.checkDataScopes(roleId);
         startPage();
-        List<SelectVO> list = userService.listAllocated(queryReq, roleId);
+        List<SelectVO> list = userDataScopeManager.listAllocated(queryReq, roleId);
         return getDataTable(list);
     }
 
@@ -182,9 +186,9 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:grant_user")
     public Result<Page<SelectVO>> unallocatedList(SysUserQueryReq queryReq, Long roleId) {
         // 校验角色权限
-        roleService.checkDataScopes(roleId);
+        roleDataScopeManager.checkDataScopes(roleId);
         startPage();
-        List<SelectVO> list = userService.listUnallocated(queryReq, roleId);
+        List<SelectVO> list = userDataScopeManager.listUnallocated(queryReq, roleId);
         return getDataTable(list);
     }
 
@@ -194,9 +198,9 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:grant_user")
     public Result<Void> cancelAuth(@RequestBody @Valid SysRole2UsersReq req) {
         // 权限校验
-        roleService.checkDataScopes(req.getRoleId());
+        roleDataScopeManager.checkDataScopes(req.getRoleId());
         // 校验用户权限
-        userService.checkDataScopes(req.getUserIds());
+        userDataScopeManager.checkDataScopes(req.getUserIds());
         return toRes(userRoleMapper.deleteBatch(req.getRoleId(), req.getUserIds()));
     }
 
@@ -206,9 +210,9 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:grant_user")
     public Result<Void> batchAuth(@RequestBody @Valid SysRole2UsersReq req) {
         // 权限校验
-        roleService.checkDataScopes(req.getRoleId());
+        roleDataScopeManager.checkDataScopes(req.getRoleId());
         // 校验用户权限
-        userService.checkDataScopes(req.getUserIds());
+        userDataScopeManager.checkDataScopes(req.getUserIds());
         return toRes(roleService.allocateUsers(req.getRoleId(), req.getUserIds()));
     }
 

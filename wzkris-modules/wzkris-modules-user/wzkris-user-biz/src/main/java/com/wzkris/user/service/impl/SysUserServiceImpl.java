@@ -1,15 +1,12 @@
 package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
-import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
 import com.wzkris.user.domain.req.SysUserQueryReq;
-import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
@@ -18,12 +15,9 @@ import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,34 +37,6 @@ public class SysUserServiceImpl implements SysUserService {
     private final SysUserPostMapper userPostMapper;
 
     private final PasswordEncoderDelegate passwordEncoder;
-
-    @Override
-    public List<SysUser> list(SysUserQueryReq queryReq) {
-        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
-        return userMapper.selectLists(lqw);
-    }
-
-    @Override
-    public List<SelectVO> listAllocated(SysUserQueryReq queryReq, Long roleId) {
-        List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
-        if (CollectionUtils.isEmpty(userIds)) {
-            return Collections.emptyList();
-        }
-        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
-        lqw.in(SysUser::getUserId, userIds);
-        return userMapper.selectLists(lqw).stream().map(SelectVO::new).toList();
-    }
-
-    @Override
-    public List<SelectVO> listUnallocated(SysUserQueryReq queryReq, Long roleId) {
-        List<Long> userIds = userRoleMapper.listUserIdByRoleId(roleId);
-
-        LambdaQueryWrapper<SysUser> lqw = this.buildQueryWrapper(queryReq);
-        if (!CollectionUtils.isEmpty(userIds)) {
-            lqw.notIn(SysUser::getUserId, userIds);
-        }
-        return userMapper.selectLists(lqw).stream().map(SelectVO::new).toList();
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -176,21 +142,6 @@ public class SysUserServiceImpl implements SysUserService {
                     .ne(Objects.nonNull(userId), SysUser::getUserId, userId);
             return userMapper.exists(lqw);
         });
-    }
-
-    @Override
-    public void checkDataScopes(Collection<Long> userIds) {
-        if (CollectionUtils.isNotEmpty(userIds)) {
-            if (userIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
-                throw new AccessDeniedException("禁止访问超级管理员数据");
-            }
-            if (userIds.contains(SystemUserUtil.getUserId())) {
-                throw new AccessDeniedException("userId：‘" + SystemUserUtil.getUserId() + "'禁止访问自身数据");
-            }
-            if (!userMapper.checkDataScopes(userIds)) {
-                throw new AccessDeniedException("无此用户数据访问权限");
-            }
-        }
     }
 
 }

@@ -1,17 +1,14 @@
 package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.service.BusinessException;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysRoleDept;
 import com.wzkris.user.domain.SysRoleMenu;
 import com.wzkris.user.domain.SysUserRole;
-import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
@@ -19,11 +16,9 @@ import com.wzkris.user.mapper.SysUserRoleMapper;
 import com.wzkris.user.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -45,19 +40,6 @@ public class SysRoleServiceImpl implements SysRoleService {
     private final SysUserRoleMapper userRoleMapper;
 
     private final SysRoleDeptMapper roleDeptMapper;
-
-    @Override
-    public List<SelectVO> listSelect(String roleName) {
-        return roleMapper
-                .selectLists(Wrappers.lambdaQuery(SysRole.class)
-                        .select(SysRole::getRoleId, SysRole::getRoleName)
-                        .eq(SysRole::getStatus, CommonConstants.STATUS_ENABLE)
-                        .like(StringUtil.isNotBlank(roleName), SysRole::getRoleName, roleName)
-                        .orderByAsc(SysRole::getRoleId))
-                .stream()
-                .map(SelectVO::new)
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<SysRole> listByUserId(Long userId) {
@@ -189,21 +171,8 @@ public class SysRoleServiceImpl implements SysRoleService {
     public void checkRoleUsed(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (userRoleMapper.checkExistByRoleIds(roleIds)) {
+        if (userRoleMapper.existByRoleIds(roleIds)) {
             throw new BusinessException("business.allocated");
-        }
-    }
-
-    /**
-     * 校验是否有角色的数据权限
-     *
-     * @param roleIds 待操作的角色id数组
-     */
-    public void checkDataScopes(Collection<Long> roleIds) {
-        if (CollectionUtils.isNotEmpty(roleIds)) {
-            if (!roleMapper.checkDataScopes(roleIds)) {
-                throw new AccessDeniedException("无此角色数据访问权限");
-            }
         }
     }
 
