@@ -1,11 +1,8 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysRole;
-import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,13 +11,6 @@ import java.util.List;
  * @author wzkris
  */
 public interface SysRoleService {
-
-    /**
-     * 查询可选择角色
-     *
-     * @return 角色列表
-     */
-    List<SelectVO> listSelect(@Nullable String roleName);
 
     /**
      * 根据用户ID查询关联角色(正常状态)
@@ -82,18 +72,5 @@ public interface SysRoleService {
      * @param roleIds 角色组
      */
     void checkRoleUsed(List<Long> roleIds);
-
-    /**
-     * 校验是否有角色的数据权限
-     *
-     * @param roleIds 待操作的角色id数组
-     */
-    void checkDataScopes(Collection<Long> roleIds);
-
-    default void checkDataScopes(Long roleId) {
-        if (roleId != null) {
-            this.checkDataScopes(Collections.singleton(roleId));
-        }
-    }
 
 }

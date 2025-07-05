@@ -1,7 +1,6 @@
-com.wzkris.common.orm.annotation.aspect.CheckFieldPermsAspect
-com.wzkris.common.orm.annotation.aspect.DeptScopeAspect
 com.wzkris.common.orm.annotation.aspect.IgnoreTenantAspect
 com.wzkris.common.orm.filter.DynamicTenantSwitchingFilter
 com.wzkris.common.orm.handler.MybatisExceptionHandler
 com.wzkris.common.orm.plus.config.MybatisPlusConfig
 com.wzkris.common.orm.plus.config.TenantProperties
+com.wzkris.common.orm.config.DataScopeConfig

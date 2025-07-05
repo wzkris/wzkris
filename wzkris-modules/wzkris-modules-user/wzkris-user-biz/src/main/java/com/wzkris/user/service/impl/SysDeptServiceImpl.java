@@ -1,8 +1,5 @@
 package com.wzkris.user.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.req.SysDeptQueryReq;
 import com.wzkris.user.domain.vo.SelectTreeVO;
@@ -12,11 +9,13 @@ import com.wzkris.user.service.SysDeptService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,23 +31,7 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     private final SysRoleDeptMapper roleDeptMapper;
 
-    @Override
-    public List<SelectTreeVO> listSelectTree(String deptName) {
-        LambdaQueryWrapper<SysDept> lqw = Wrappers.lambdaQuery(SysDept.class)
-                .select(SysDept::getDeptId, SysDept::getParentId, SysDept::getDeptName)
-                .like(StringUtil.isNotEmpty(deptName), SysDept::getDeptName, deptName);
-
-        List<SysDept> depts = deptMapper.selectLists(lqw);
-        return this.buildDeptTreeSelect(depts);
-    }
-
-    /**
-     * 构建下拉树结构
-     *
-     * @param depts 部门列表
-     * @return 下拉树结构列表
-     */
-    private List<SelectTreeVO> buildDeptTreeSelect(List<SysDept> depts) {
+    public List<SelectTreeVO> buildSelectTree(List<SysDept> depts) {
         List<SysDept> deptTrees = this.buildDeptTree(depts);
         return deptTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
     }
@@ -122,7 +105,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         // 查出子元素并更新祖先列表
         SysDeptQueryReq queryReq = new SysDeptQueryReq();
         queryReq.setParentId(deptId);
-        List<SysDept> children = deptMapper.listChildren(queryReq);
+        List<SysDept> children = deptMapper.listSubDept(queryReq);
         List<SysDept> updateList = children.stream()
                 .map(child -> {
                     // 替换旧的祖先路径为新的祖先路径
@@ -194,15 +177,6 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     private boolean hasChild(List<SysDept> list, SysDept t) {
         return !CollectionUtils.isEmpty(getChildList(list, t));
-    }
-
-    @Override
-    public void checkDataScopes(Collection<Long> deptIds) {
-        if (CollectionUtils.isNotEmpty(deptIds)) {
-            if (!deptMapper.checkDataScopes(new HashSet<>(deptIds))) {
-                throw new AccessDeniedException("无此部门数据访问权限");
-            }
-        }
     }
 
 }

@@ -9,11 +9,11 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.enums.CheckMode;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.export.SysUserExport;
 import com.wzkris.user.domain.req.*;
@@ -21,8 +21,14 @@ import com.wzkris.user.domain.vo.CheckedSelectVO;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.domain.vo.SysUserVO;
 import com.wzkris.user.listener.event.CreateUserEvent;
+import com.wzkris.user.manager.SysDeptDataScopeManager;
+import com.wzkris.user.manager.SysRoleDataScopeManager;
+import com.wzkris.user.manager.SysUserDataScopeManager;
 import com.wzkris.user.mapper.SysUserMapper;
-import com.wzkris.user.service.*;
+import com.wzkris.user.service.SysPostService;
+import com.wzkris.user.service.SysRoleService;
+import com.wzkris.user.service.SysTenantService;
+import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -53,7 +59,11 @@ public class SysUserController extends BaseController {
 
     private final SysUserService userService;
 
-    private final SysDeptService deptService;
+    private final SysUserDataScopeManager userDataScopeManager;
+
+    private final SysDeptDataScopeManager deptDataScopeManager;
+
+    private final SysRoleDataScopeManager roleDataScopeManager;
 
     private final SysRoleService roleService;
 
@@ -68,7 +78,7 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:list")
     public Result<Page<SysUserVO>> listPage(SysUserQueryReq queryReq) {
         startPage();
-        List<SysUserVO> list = userMapper.selectVOList(this.buildPageWrapper(queryReq));
+        List<SysUserVO> list = userDataScopeManager.listVO(this.buildPageWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -81,8 +91,7 @@ public class SysUserController extends BaseController {
                 .like(ObjectUtils.isNotEmpty(queryReq.getEmail()), "u.email", queryReq.getEmail())
                 .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), "u.status", queryReq.getStatus())
                 .eq(ObjectUtils.isNotEmpty(queryReq.getDeptId()), "u.dept_id", queryReq.getDeptId())
-                .between(
-                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
                         "u.create_at",
                         queryReq.getParam("beginTime"),
                         queryReq.getParam("endTime"))
@@ -93,21 +102,21 @@ public class SysUserController extends BaseController {
     @GetMapping("/dept_select_tree")
     @CheckSystemPerms(
             value = {"sys_user:edit", "sys_user:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
-        return ok(deptService.listSelectTree(deptName));
+        return ok(deptDataScopeManager.listSelectTree(deptName));
     }
 
     @Operation(summary = "用户-角色选择列表")
     @GetMapping({"/role_checked_select/", "/role_checked_select/{userId}"})
     @CheckSystemPerms(
             value = {"sys_user:edit", "sys_user:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
-        userService.checkDataScopes(userId);
+        userDataScopeManager.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
         checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : roleService.listIdByUserId(userId));
-        checkedSelectVO.setSelects(roleService.listSelect(roleName));
+        checkedSelectVO.setSelects(roleDataScopeManager.listSelect(roleName));
         return ok(checkedSelectVO);
     }
 
@@ -115,9 +124,9 @@ public class SysUserController extends BaseController {
     @GetMapping({"/post_checked_select/", "/post_checked_select/{userId}"})
     @CheckSystemPerms(
             value = {"sys_user:edit", "sys_user:add"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
-        userService.checkDataScopes(userId);
+        userDataScopeManager.checkDataScopes(userId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
         checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : postService.listIdByUserId(userId));
         checkedSelectVO.setSelects(postService.listSelect(postName));
@@ -129,7 +138,7 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:query")
     public Result<SysUser> getInfo(@PathVariable Long userId) {
         // 校验权限
-        userService.checkDataScopes(userId);
+        userDataScopeManager.checkDataScopes(userId);
         return ok(userMapper.selectById(userId));
     }
 
@@ -164,7 +173,7 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:edit")
     public Result<Void> edit(@Validated @RequestBody SysUserReq userReq) {
         // 校验权限
-        userService.checkDataScopes(userReq.getUserId());
+        userDataScopeManager.checkDataScopes(userReq.getUserId());
         if (userService.checkExistByUsername(userReq.getUserId(), userReq.getUsername())) {
             return err412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
@@ -182,7 +191,7 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
         // 校验权限
-        userService.checkDataScopes(userIds);
+        userDataScopeManager.checkDataScopes(userIds);
         if (tenantService.checkAdministrator(userIds)) {
             return err412("删除失败，用户包含租户超级管理员");
         }
@@ -195,7 +204,7 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
         // 校验权限
-        userService.checkDataScopes(req.getId());
+        userDataScopeManager.checkDataScopes(req.getId());
 
         SysUser update = new SysUser(req.getId());
         update.setPassword(passwordEncoder.encode(req.getPassword()));
@@ -208,7 +217,7 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
-        userService.checkDataScopes(statusReq.getId());
+        userDataScopeManager.checkDataScopes(statusReq.getId());
         SysUser update = new SysUser(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(userMapper.updateById(update));
@@ -219,7 +228,7 @@ public class SysUserController extends BaseController {
     @GetMapping("/export")
     @CheckSystemPerms("sys_user:export")
     public void export(HttpServletResponse response, SysUserQueryReq queryReq) {
-        List<SysUserVO> list = userMapper.selectVOList(this.buildPageWrapper(queryReq));
+        List<SysUserVO> list = userDataScopeManager.listVO(this.buildPageWrapper(queryReq));
         List<SysUserExport> convert = BeanUtil.convert(list, SysUserExport.class);
         ExcelUtil.exportExcel(convert, "后台用户数据", SysUserExport.class, response);
     }
@@ -230,9 +239,9 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:grant_role")
     public Result<Void> authRole(@RequestBody @Valid SysUser2RolesReq req) {
         // 校验用户可操作权限
-        userService.checkDataScopes(req.getUserId());
+        userDataScopeManager.checkDataScopes(req.getUserId());
         // 校验角色可操作权限
-        roleService.checkDataScopes(req.getRoleIds());
+        roleDataScopeManager.checkDataScopes(req.getRoleIds());
         return toRes(userService.allocateRoles(req.getUserId(), req.getRoleIds()));
     }
 

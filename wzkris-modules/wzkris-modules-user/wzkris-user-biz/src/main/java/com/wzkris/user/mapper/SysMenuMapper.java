@@ -29,15 +29,14 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu> {
      * @param menuIds 角色ID集合
      * @return 权限列表
      */
-    @Select(
-            """
-                    <script>
-                        SELECT perms FROM biz.sys_menu WHERE status = '0' AND menu_id IN
-                            <foreach collection="menuIds" item="menuId" separator="," open="(" close=")">
-                                #{menuId}
-                            </foreach>
-                    </script>
-                    """)
+    @Select("""
+            <script>
+                SELECT perms FROM biz.sys_menu WHERE status = '0' AND menu_id IN
+                    <foreach collection="menuIds" item="menuId" separator="," open="(" close=")">
+                        #{menuId}
+                    </foreach>
+            </script>
+            """)
     List<String> listPermsByMenuIds(List<Long> menuIds);
 
 }

@@ -1,12 +1,8 @@
 package com.wzkris.user.service;
 
 import com.wzkris.user.domain.SysUser;
-import com.wzkris.user.domain.req.SysUserQueryReq;
-import com.wzkris.user.domain.vo.SelectVO;
 import jakarta.annotation.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,31 +11,6 @@ import java.util.List;
  * @author wzkris
  */
 public interface SysUserService {
-
-    /**
-     * 列表查询
-     *
-     * @param queryReq 筛选条件
-     */
-    List<SysUser> list(SysUserQueryReq queryReq);
-
-    /**
-     * 根据条件分页查询已分配用户角色列表
-     *
-     * @param queryReq 筛选条件
-     * @param roleId   角色ID
-     * @return 系统用户选择列表
-     */
-    List<SelectVO> listAllocated(SysUserQueryReq queryReq, Long roleId);
-
-    /**
-     * 根据条件分页查询未分配用户角色列表
-     *
-     * @param queryReq 筛选条件
-     * @param roleId   角色ID
-     * @return 系统用户选择列表
-     */
-    List<SelectVO> listUnallocated(SysUserQueryReq queryReq, Long roleId);
 
     /**
      * 新增管理员信息
@@ -89,23 +60,5 @@ public interface SysUserService {
      * @param phonenumber 手机号
      */
     boolean checkExistByPhoneNumber(@Nullable Long userId, String phonenumber);
-
-    /**
-     * 校验是否有数据权限
-     *
-     * @param userIds 被操作的对象id
-     */
-    void checkDataScopes(Collection<Long> userIds);
-
-    /**
-     * 校验是否有数据权限
-     *
-     * @param userId 被操作的对象id
-     */
-    default void checkDataScopes(Long userId) {
-        if (userId != null) {
-            this.checkDataScopes(Collections.singleton(userId));
-        }
-    }
 
 }

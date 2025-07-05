@@ -4,6 +4,7 @@ import com.wzkris.auth.rmi.RmiTokenFeign;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.config.PermitAllProperties;
+import com.wzkris.common.security.oauth2.converter.CustomJwtAuthenticationConverter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.repository.RmiSecurityContextRepository;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
  * @author : wzkris
@@ -37,20 +39,24 @@ public final class ResourceServerConfig {
 
     private final PermitAllProperties permitAllProperties;
 
-    private final RmiTokenFeign rmiTokenFeign;
-
     @Bean
     @RefreshScope
-    public SecurityFilterChain resourceSecurityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
+    public SecurityFilterChain resourceSecurityFilterChain(
+            HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
+            JwtDecoder jwtDecoder)
+            throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .securityContext(securityContextConfigurer -> {
-                    securityContextConfigurer.securityContextRepository(new RmiSecurityContextRepository(rmiTokenFeign, jwtDecoder));
-                })
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .securityContext(securityContextConfigurer -> securityContextConfigurer
+                        .securityContextRepository(securityContextRepository)
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
@@ -63,18 +69,24 @@ public final class ResourceServerConfig {
                         .authenticated()
                 )
                 .oauth2ResourceServer(resourceServer -> resourceServer
-                        .jwt(jwtConfigurer -> {
-                            jwtConfigurer.decoder(jwtDecoder);
-                        })
+                        .jwt(jwtConfigurer -> jwtConfigurer
+                                .decoder(jwtDecoder)
+                                .jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
+                        )
                         .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                         .accessDeniedHandler(new AccessDeniedHandlerImpl())
                 )
-                .exceptionHandling(exceptionHandler -> {
-                    exceptionHandler.authenticationEntryPoint(new AuthenticationEntryPointImpl())
-                            .accessDeniedHandler(new AccessDeniedHandlerImpl());
-                });
+                .exceptionHandling(exceptionHandler -> exceptionHandler
+                        .authenticationEntryPoint(new AuthenticationEntryPointImpl())
+                        .accessDeniedHandler(new AccessDeniedHandlerImpl())
+                );
 
         return http.build();
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository(RmiTokenFeign rmiTokenFeign, JwtDecoder jwtDecoder) {
+        return new RmiSecurityContextRepository(rmiTokenFeign, jwtDecoder);
     }
 
     @Bean

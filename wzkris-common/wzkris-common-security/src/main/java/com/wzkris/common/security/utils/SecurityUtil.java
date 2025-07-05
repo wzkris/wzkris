@@ -45,6 +45,17 @@ public class SecurityUtil {
     }
 
     /**
+     * 获取请求的token
+     */
+    public static String getTokenValue() {
+        try {
+            return getAuthentication().getCredentials().toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * 获取当前登录用户信息,未登录抛出异常
      *
      * @return 当前用户

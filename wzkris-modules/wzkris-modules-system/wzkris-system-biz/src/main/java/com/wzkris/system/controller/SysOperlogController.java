@@ -1,15 +1,15 @@
 package com.wzkris.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.CheckFieldPerms;
-import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.FieldPerms;
+import com.wzkris.common.security.annotation.enums.Rw;
 import com.wzkris.system.domain.SysOperLog;
 import com.wzkris.system.domain.req.SysOperLogQueryReq;
 import com.wzkris.system.mapper.SysOperLogMapper;
@@ -40,7 +40,7 @@ public class SysOperlogController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @CheckSystemPerms("operlog:list")
-    @CheckFieldPerms(value = "@ps.hasPerms('operlog:field')", groups = ValidationGroups.Select.class)
+    @FieldPerms(rw = Rw.READ)
     public Result<Page<SysOperLog>> list(SysOperLogQueryReq queryReq) {
         startPage();
         List<SysOperLog> list = operLogMapper.selectList(this.buildQueryWrapper(queryReq));

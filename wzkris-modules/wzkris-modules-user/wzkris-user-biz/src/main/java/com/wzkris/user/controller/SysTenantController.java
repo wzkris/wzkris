@@ -9,11 +9,11 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
-import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.oauth2.annotation.CheckPerms;
-import com.wzkris.common.security.oauth2.annotation.CheckSystemPerms;
-import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.enums.CheckMode;
+import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.ResetPwdReq;
@@ -93,7 +93,7 @@ public class SysTenantController extends BaseController {
     @GetMapping("/package_select")
     @CheckSystemPerms(
             value = {"sys_tenant:add", "sys_tenant:edit"},
-            mode = CheckPerms.Mode.OR)
+            mode = CheckMode.OR)
     public Result<List<SelectVO>> packageSelect(String packageName) {
         List<SelectVO> selectVOS = tenantPackageService.listSelect(packageName);
         return ok(selectVOS);

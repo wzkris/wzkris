@@ -2,7 +2,7 @@ package com.wzkris.common.security.oauth2.service;
 
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.security.utils.SecurityUtil;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nullable;
 
 import java.util.Collection;
 
@@ -30,12 +30,12 @@ public class PermissionService {
      * @param permissions 权限码数组
      * @return {boolean}
      */
-    public boolean hasPerms(Collection<String> list, String... permissions) {
+    public boolean hasPerms(@Nullable Collection<String> list, @Nullable String... permissions) {
         if (permissions == null) {
             return true;
         }
 
-        if (list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return false;
         }
 
@@ -65,12 +65,12 @@ public class PermissionService {
      * @param permissions 权限码数组
      * @return true 或 false
      */
-    public boolean hasPermsOr(Collection<String> list, String... permissions) {
+    public boolean hasPermsOr(@Nullable Collection<String> list, @Nullable String... permissions) {
         if (permissions == null) {
             return true;
         }
 
-        if (list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return false;
         }
 
@@ -90,7 +90,7 @@ public class PermissionService {
      * @param element 元素
      * @return /
      */
-    public boolean hasElement(@NonNull Collection<String> list, @NonNull String element) {
+    public boolean hasElement(Collection<String> list, String element) {
         // 先尝试一下简单匹配，如果可以匹配成功则无需继续模糊匹配
         if (list.contains(element)) {
             return true;

@@ -1,8 +1,8 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.req.AppUserProfileReq;
 import com.wzkris.user.domain.vo.AppUserProfileVO;

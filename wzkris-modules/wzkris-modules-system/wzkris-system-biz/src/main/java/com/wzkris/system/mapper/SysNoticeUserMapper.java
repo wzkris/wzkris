@@ -15,15 +15,14 @@ import java.util.List;
 @Repository
 public interface SysNoticeUserMapper {
 
-    @Insert(
-            """
-                    <script>
-                        INSERT INTO biz.sys_notice_user(notice_id, user_id, read_state) VALUES
-                            <foreach collection="list" item="item" index="index" separator=",">
-                                (#{item.noticeId},  #{item.userId},  #{item.readState})
-                            </foreach>
-                    </script>
-                    """)
+    @Insert("""
+            <script>
+                INSERT INTO biz.sys_notice_user(notice_id, user_id, read_state) VALUES
+                    <foreach collection="list" item="item" index="index" separator=",">
+                        (#{item.noticeId},  #{item.userId},  #{item.readState})
+                    </foreach>
+            </script>
+            """)
     int insert(List<SysNoticeUser> list);
 
     default int insert(SysNoticeUser notifySend) {
