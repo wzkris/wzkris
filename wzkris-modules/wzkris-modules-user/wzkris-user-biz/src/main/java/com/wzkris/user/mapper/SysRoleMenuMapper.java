@@ -22,15 +22,14 @@ public interface SysRoleMenuMapper {
      * @param roleIds 角色id集合
      * @return 菜单id集合
      */
-    @Select(
-            """
-                    <script>
-                        SELECT menu_id FROM biz.sys_role_menu WHERE role_id IN
-                            <foreach collection="list" item="roleId" separator="," open="(" close=")">
-                                #{roleId}
-                            </foreach>
-                    </script>
-                    """)
+    @Select("""
+            <script>
+                SELECT menu_id FROM biz.sys_role_menu WHERE role_id IN
+                    <foreach collection="list" item="roleId" separator="," open="(" close=")">
+                        #{roleId}
+                    </foreach>
+            </script>
+            """)
     List<Long> listMenuIdByRoleIds(List<Long> roleIds);
 
     /**
@@ -40,7 +39,7 @@ public interface SysRoleMenuMapper {
      * @return 结果
      */
     @Select("SELECT EXISTS(SELECT * FROM biz.sys_role_menu WHERE menu_id = #{menuId})")
-    boolean checkMenuExistRole(Long menuId);
+    boolean existByMenuId(Long menuId);
 
     /**
      * 通过角色ID删除角色和菜单关联
@@ -57,15 +56,14 @@ public interface SysRoleMenuMapper {
      * @param roleIds 角色id集合
      * @return 结果
      */
-    @Delete(
-            """
-                    <script>
-                        DELETE FROM biz.sys_role_menu WHERE role_id IN
-                            <foreach collection="list" item="roleId" open="(" separator="," close=")">
-                                #{roleId}
-                            </foreach>
-                    </script>
-                    """)
+    @Delete("""
+            <script>
+                DELETE FROM biz.sys_role_menu WHERE role_id IN
+                    <foreach collection="list" item="roleId" open="(" separator="," close=")">
+                        #{roleId}
+                    </foreach>
+            </script>
+            """)
     int deleteByRoleIds(List<Long> roleIds);
 
     /**
@@ -83,15 +81,14 @@ public interface SysRoleMenuMapper {
      * @param roleMenus 角色菜单列表
      * @return 结果
      */
-    @Insert(
-            """
-                    <script>
-                        INSERT INTO biz.sys_role_menu(role_id, menu_id) VALUES
-                            <foreach collection="list" item="item" index="index" separator=",">
-                                (#{item.roleId}, #{item.menuId})
-                            </foreach>
-                    </script>
-                    """)
+    @Insert("""
+            <script>
+                INSERT INTO biz.sys_role_menu(role_id, menu_id) VALUES
+                    <foreach collection="list" item="item" index="index" separator=",">
+                        (#{item.roleId}, #{item.menuId})
+                    </foreach>
+            </script>
+            """)
     int insertBatch(List<SysRoleMenu> roleMenus);
 
 }

@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionIntercepto
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.wzkris.common.orm.plus.extension.ExtenseSqlInjector;
 import com.wzkris.common.orm.plus.handler.BaseFieldFillHandler;
-import com.wzkris.common.orm.plus.interceptor.DeptPermissionHandler;
+import com.wzkris.common.orm.plus.interceptor.DataPermissionHandler;
 import com.wzkris.common.orm.plus.interceptor.PageInterceptor;
 import com.wzkris.common.orm.plus.interceptor.TenantLineHandlerImpl;
 import org.mybatis.spring.annotation.MapperScan;
@@ -42,7 +42,7 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 数据权限处理
-        interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DeptPermissionHandler()));
+        interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataPermissionHandler()));
         // 多租户
         interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandlerImpl(tenantProperties)));
         // 自定义分页插件

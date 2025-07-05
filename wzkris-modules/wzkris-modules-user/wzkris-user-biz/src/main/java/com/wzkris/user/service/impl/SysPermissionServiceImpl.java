@@ -7,8 +7,8 @@ import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.domain.SysDept;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.SysUser;
+import com.wzkris.user.manager.SysDeptDataScopeManager;
 import com.wzkris.user.mapper.SysDeptMapper;
-import com.wzkris.user.mapper.SysRoleDeptMapper;
 import com.wzkris.user.mapper.SysTenantMapper;
 import com.wzkris.user.mapper.SysTenantPackageMapper;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
@@ -58,7 +58,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
 
     private final SysDeptMapper deptMapper;
 
-    private final SysRoleDeptMapper roleDeptMapper;
+    private final SysDeptDataScopeManager deptDataScopeManager;
 
     private final SysTenantMapper tenantMapper;
 
@@ -127,13 +127,13 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 break;
             } else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
-                deptIds.addAll(roleDeptMapper.listDeptIdByRoleIds(entry.getValue()));
+                deptIds.addAll(deptDataScopeManager.listDeptIdByRoleIds(entry.getValue()));
             } else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
                 // 部门自身数据权限
                 deptIds.add(deptId);
             } else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
                 // 部门及以下数据权限
-                deptIds.addAll(deptMapper.listChildrenIdById(deptId));
+                deptIds.addAll(deptMapper.listSubDeptIdById(deptId));
             } else {
                 // 本人数据权限
                 deptIds.add(-999L);

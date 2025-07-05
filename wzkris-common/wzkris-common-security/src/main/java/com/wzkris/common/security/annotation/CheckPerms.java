@@ -1,6 +1,7 @@
-package com.wzkris.common.security.oauth2.annotation;
+package com.wzkris.common.security.annotation;
 
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.common.security.annotation.enums.CheckMode;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,7 +16,7 @@ import java.lang.annotation.Target;
  * @author wzkris
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
 public @interface CheckPerms {
 
     /**
@@ -37,17 +38,6 @@ public @interface CheckPerms {
      *
      * @return /
      */
-    Mode mode() default Mode.AND;
-
-    enum Mode {
-        /**
-         * 与
-         */
-        AND,
-        /**
-         * 或
-         */
-        OR
-    }
+    CheckMode mode() default CheckMode.AND;
 
 }

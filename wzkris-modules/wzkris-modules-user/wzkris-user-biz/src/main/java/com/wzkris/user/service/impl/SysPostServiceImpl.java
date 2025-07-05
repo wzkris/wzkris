@@ -91,7 +91,7 @@ public class SysPostServiceImpl implements SysPostService {
 
     @Override
     public void checkPostUsed(List<Long> postIds) {
-        if (userPostMapper.checkExistByPostIds(postIds)) {
+        if (userPostMapper.existByPostIds(postIds)) {
             throw new BusinessException("business.allocated");
         }
     }

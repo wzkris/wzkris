@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * @date 2025/06/19 15:40
  */
 @Slf4j
-public class RmiSecurityContextRepository implements SecurityContextRepository {
+public final class RmiSecurityContextRepository implements SecurityContextRepository {
 
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
             .getContextHolderStrategy();
@@ -70,11 +70,10 @@ public class RmiSecurityContextRepository implements SecurityContextRepository {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 
         final String tenantToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
-
         if (StringUtil.isNotBlank(tenantToken)) {
             TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(tenantToken));
             if (tokenResponse.isSuccess()) {
-                ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request));
+                ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request, tenantToken));
             }
             return ctx;
         }
@@ -92,19 +91,20 @@ public class RmiSecurityContextRepository implements SecurityContextRepository {
                     }
                     return null;
                 };
-                ctx.setAuthentication(createAuthentication(new DeferredClientUser(userId, supplier), request));
+                ctx.setAuthentication(createAuthentication(new DeferredClientUser(userId, supplier), request, userToken));
             } catch (JwtException ignored) {
             }
+            return ctx;
         }
 
         return ctx;
     }
 
-    protected Authentication createAuthentication(CorePrincipal principal, HttpServletRequest request) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, "",
+    private Authentication createAuthentication(CorePrincipal principal, HttpServletRequest request, String token) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, token,
                 AuthorityUtils.createAuthorityList((principal).getPermissions()));
-        token.setDetails(this.authenticationDetailsSource.buildDetails(request));
-        return token;
+        authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
+        return authenticationToken;
     }
 
     @Override

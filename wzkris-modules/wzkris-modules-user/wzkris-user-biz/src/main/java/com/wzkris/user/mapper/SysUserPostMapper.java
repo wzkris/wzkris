@@ -40,18 +40,17 @@ public interface SysUserPostMapper {
      * @param postIds 岗位ID
      * @return 结果
      */
-    @Select(
-            """
-                    <script>
-                        SELECT EXISTS(
-                            SELECT post_id FROM biz.sys_user_post WHERE post_id IN
-                                <foreach collection="list" item="postId" open="(" separator="," close=")">
-                                    #{postId}
-                                </foreach>
-                            )
-                    </script>
-                    """)
-    boolean checkExistByPostIds(List<Long> postIds);
+    @Select("""
+            <script>
+                SELECT EXISTS(
+                    SELECT post_id FROM biz.sys_user_post WHERE post_id IN
+                        <foreach collection="list" item="postId" open="(" separator="," close=")">
+                            #{postId}
+                        </foreach>
+                    )
+            </script>
+            """)
+    boolean existByPostIds(List<Long> postIds);
 
     /**
      * 批量删除用户和岗位关联
@@ -59,15 +58,14 @@ public interface SysUserPostMapper {
      * @param userIds 用户id集合
      * @return 结果
      */
-    @Delete(
-            """
-                    <script>
-                        DELETE FROM biz.sys_user_post WHERE user_id IN
-                            <foreach collection="list" item="userId" open="(" separator="," close=")">
-                                #{userId}
-                            </foreach>
-                    </script>
-                    """)
+    @Delete("""
+            <script>
+                DELETE FROM biz.sys_user_post WHERE user_id IN
+                    <foreach collection="list" item="userId" open="(" separator="," close=")">
+                        #{userId}
+                    </foreach>
+            </script>
+            """)
     int deleteByUserIds(List<Long> userIds);
 
     /**
@@ -76,15 +74,14 @@ public interface SysUserPostMapper {
      * @param postIds 岗位id集合
      * @return 结果
      */
-    @Delete(
-            """
-                    <script>
-                        DELETE FROM biz.sys_user_post WHERE post_id IN
-                            <foreach collection="list" item="postId" open="(" separator="," close=")">
-                                #{postId}
-                            </foreach>
-                    </script>
-                    """)
+    @Delete("""
+            <script>
+                DELETE FROM biz.sys_user_post WHERE post_id IN
+                    <foreach collection="list" item="postId" open="(" separator="," close=")">
+                        #{postId}
+                    </foreach>
+            </script>
+            """)
     int deleteByPostIds(List<Long> postIds);
 
     /**
@@ -93,15 +90,14 @@ public interface SysUserPostMapper {
      * @param userPosts 用户角色列表
      * @return 结果
      */
-    @Insert(
-            """
-                    <script>
-                        INSERT INTO biz.sys_user_post(user_id, post_id) VALUES
-                            <foreach collection="list" item="item" index="index" separator=",">
-                                (#{item.userId}, #{item.postId})
-                            </foreach>
-                    </script>
-                    """)
+    @Insert("""
+            <script>
+                INSERT INTO biz.sys_user_post(user_id, post_id) VALUES
+                    <foreach collection="list" item="item" index="index" separator=",">
+                        (#{item.userId}, #{item.postId})
+                    </foreach>
+            </script>
+            """)
     int insertBatch(List<SysUserPost> userPosts);
 
 }

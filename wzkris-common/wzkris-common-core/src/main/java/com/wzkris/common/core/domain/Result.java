@@ -63,6 +63,14 @@ public class Result<T> implements Serializable {
         return resp(BizCode.BAD_REQUEST, message);
     }
 
+    public static <T> Result<T> err401(String message) {
+        return resp(BizCode.UNAUTHORIZED, message);
+    }
+
+    public static <T> Result<T> err403(String message) {
+        return resp(BizCode.FORBID, message);
+    }
+
     public static <T> Result<T> err412(String message) {
         return resp(BizCode.PRECONDITION_FAILED, message);
     }

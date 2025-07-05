@@ -40,8 +40,13 @@ public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHa
             Result<?> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
             JsonUtil.writeValue(response.getWriter(), result);
         } else {
+            int status = BizCode.UNAUTHORIZED.value();
+            if (response.getStatus() != HttpServletResponse.SC_OK) {
+                status = response.getStatus();
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
             JsonUtil.writeValue(
-                    response.getWriter(), Result.resp(BizCode.UNAUTHORIZED, exception.getLocalizedMessage()));
+                    response.getWriter(), Result.resp(status, null, exception.getLocalizedMessage()));
         }
     }
 

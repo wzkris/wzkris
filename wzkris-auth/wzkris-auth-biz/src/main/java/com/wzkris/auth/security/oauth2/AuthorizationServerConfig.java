@@ -11,13 +11,14 @@ import com.wzkris.auth.security.oauth2.customize.CustomTokenClaimsCustomizer;
 import com.wzkris.auth.security.oauth2.device.DeviceClientAuthenticationConverter;
 import com.wzkris.auth.security.oauth2.device.DeviceClientAuthenticationProvider;
 import com.wzkris.auth.security.oauth2.utils.JwkUtils;
+import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
+import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,8 +30,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.List;
 
@@ -48,6 +48,7 @@ public class AuthorizationServerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationFilterChain(
             HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
             RegisteredClientRepository registeredClientRepository)
             throws Exception {
 
@@ -58,42 +59,55 @@ public class AuthorizationServerConfig {
                 .build();
 
         http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .with(authorizationServerConfigurer,
-                        authorizationServer -> {
-                    authorizationServer.tokenEndpoint(tokenEndpoint -> {
-                                tokenEndpoint.accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
-                                        .errorResponseHandler(new AuthenticationFailureHandlerImpl()); // 登录失败处理器
-                            })
-                            .deviceAuthorizationEndpoint(
-                                    deviceAuthorizationEndpoint -> // 自定义设备码验证页面
-                                            deviceAuthorizationEndpoint
-                                                    .verificationUri("/activate")
-                                                    .errorResponseHandler(new AuthenticationFailureHandlerImpl()))
-                            .deviceVerificationEndpoint(
-                                    deviceVerificationEndpoint -> // 自定义设备授权页面
-                                            deviceVerificationEndpoint
-                                                    .consentPage("/oauth2/consent")
-                                                    .errorResponseHandler(new AuthenticationFailureHandlerImpl()))
-                            .clientAuthentication(
-                                    clientAuthentication -> { // 客户端认证
-                                        clientAuthentication
-                                                .authenticationConverter(new DeviceClientAuthenticationConverter(
-                                                        serverSettings.getDeviceAuthorizationEndpoint()))
-                                                .authenticationProvider(new DeviceClientAuthenticationProvider(registeredClientRepository))
-                                                .errorResponseHandler(new AuthenticationFailureHandlerImpl());
-                                    })
-                            .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.consentPage("/oauth2/consent"))
-                            .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
-                })
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .securityContext(securityContextConfigurer -> securityContextConfigurer
+                        .securityContextRepository(securityContextRepository)// 需要支持用户token
+                )
+                .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
+                        .tokenEndpoint(tokenEndpoint -> tokenEndpoint
+                                .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                        )
+                        .tokenIntrospectionEndpoint(tokenIntrospectionEndpoint -> tokenIntrospectionEndpoint
+                                .introspectionResponseHandler(new AuthenticationSuccessHandlerImpl()) // token验证端点
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                        )
+                        .tokenRevocationEndpoint(tokenRevocationEndpoint -> tokenRevocationEndpoint
+                                .revocationResponseHandler(new AuthenticationSuccessHandlerImpl()) // token撤销端点
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                        )
+                        .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> deviceAuthorizationEndpoint
+                                .verificationUri("/activate")// 自定义设备码验证页面
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                        )
+                        .deviceVerificationEndpoint(deviceVerificationEndpoint -> deviceVerificationEndpoint
+                                .consentPage("/oauth2/consent")// 自定义设备授权页面
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                        )
+                        .clientAuthentication(clientAuthentication -> clientAuthentication // 客户端认证
+                                .authenticationConverter(new DeviceClientAuthenticationConverter(
+                                        serverSettings.getDeviceAuthorizationEndpoint()))
+                                .authenticationProvider(new DeviceClientAuthenticationProvider(registeredClientRepository))
+                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                        )
+                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+                                .consentPage("/oauth2/consent")
+                        )
+                        .oidc(Customizer.withDefaults()) // Enable OpenID Connect 1.0
+                )
                 .authorizeHttpRequests((authorize) ->
                         authorize.anyRequest().authenticated()
                 )
-        .exceptionHandling(exceptionHandler -> {
-            exceptionHandler.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/oauth2/login"), // oauth2校验不通过会跳转到这
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML));
-        });
+        .oauth2ResourceServer(resourceServer -> resourceServer
+                .authenticationEntryPoint(new AuthenticationEntryPointImpl()) // 处理oauth路径异常
+                .accessDeniedHandler(new AccessDeniedHandlerImpl())
+        )
+        .exceptionHandling(exceptionHandler -> exceptionHandler
+                .authenticationEntryPoint(new AuthenticationEntryPointImpl())
+                .accessDeniedHandler(new AccessDeniedHandlerImpl())
+        );
 
         return http.build();
     }

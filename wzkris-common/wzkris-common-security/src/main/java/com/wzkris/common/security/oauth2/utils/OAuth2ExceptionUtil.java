@@ -64,38 +64,39 @@ public final class OAuth2ExceptionUtil {
 
         // OAuth2异常
         if (errorCode.equals(OAuth2ErrorCodes.SERVER_ERROR)) {
-            return Result.resp(BizCode.INTERNAL_ERROR, errorMsg);
+            return Result.err500(errorMsg);
         } else if (errorCode.equals(OAuth2ErrorCodes.ACCESS_DENIED)
                 || errorCode.equals(OAuth2ErrorCodes.INSUFFICIENT_SCOPE)) {
-            return Result.resp(BizCode.FORBID, errorMsg);
+            return Result.err403(errorMsg);
         } else if (errorCode.startsWith("unsupported_")) {
             return switch (errorCode) {
-                case OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE -> Result.resp(
-                        BizCode.BAD_REQUEST, I18nUtil.message("oauth2.unsupport.granttype"));
-                case OAuth2ErrorCodes.UNSUPPORTED_TOKEN_TYPE -> Result.resp(
-                        BizCode.BAD_REQUEST, I18nUtil.message("oauth2.unsupport.tokentype"));
-                case OAuth2ErrorCodes.UNSUPPORTED_RESPONSE_TYPE -> Result.resp(
-                        BizCode.BAD_REQUEST, I18nUtil.message("oauth2.unsupport.responsetype"));
-                default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
+                case OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE ->
+                        Result.err400(I18nUtil.message("oauth2.unsupport.granttype"));
+                case OAuth2ErrorCodes.UNSUPPORTED_TOKEN_TYPE ->
+                        Result.err400(I18nUtil.message("oauth2.unsupport.tokentype"));
+                case OAuth2ErrorCodes.UNSUPPORTED_RESPONSE_TYPE ->
+                        Result.err400(I18nUtil.message("oauth2.unsupport.responsetype"));
+                default -> Result.err400(errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT)) {
-            return Result.resp(
-                    BizCode.BAD_REQUEST,
+            return Result.err400(
                     StringUtil.defaultIfBlank(errorMsg, I18nUtil.message("oauth2.unsupport.granttype")));
         } else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法
-                        Result.resp(BizCode.UNAUTHORIZED);
+                        Result.err401(BizCode.UNAUTHORIZED.desc());
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
-                        Result.resp(BizCode.UNAUTHORIZED, StringUtil.defaultIfBlank(errorMsg, BizCode.UNAUTHORIZED.desc()));
+                        Result.err401(StringUtil.defaultIfBlank(errorMsg, BizCode.UNAUTHORIZED.desc()));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
-                        Result.resp(BizCode.BAD_REQUEST, I18nUtil.message("oauth2.scope.invalid"));
-                default -> Result.resp(BizCode.BAD_REQUEST, errorMsg);
+                        Result.err400(I18nUtil.message("oauth2.scope.invalid"));
+                case OAuth2ErrorCodes.INVALID_CLIENT -> // 客户端不合法
+                        Result.err400(I18nUtil.message("oauth2.client.invalid"));
+                default -> Result.err400(errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
             return Result.resp(BizCode.BAD_GATEWAY, errorMsg);
         } else {
-            return Result.resp(BizCode.UNAUTHORIZED, errorMsg);
+            return Result.err401(errorMsg);
         }
     }
 
