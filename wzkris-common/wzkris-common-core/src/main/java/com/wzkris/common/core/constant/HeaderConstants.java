@@ -18,16 +18,6 @@ public class HeaderConstants {
     public static final String X_TRACING_ID = "X-Tracing-Id";
 
     /**
-     * 内部请求
-     */
-    public static final String X_INNER_REQUEST = "X-Inner-Request";
-
-    /**
-     * feign异常响应
-     */
-    public static final String X_FEIGN_EXCEPTION = "X-Feign-Exception";
-
-    /**
      * 租户Token
      */
     public static final String X_TENANT_TOKEN = "X-Tenant-Token";
