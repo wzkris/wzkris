@@ -1,5 +1,8 @@
 package com.wzkris.common.openfeign.constants;
 
+/**
+ * @author wzkris
+ */
 public class FeignHeaderConstant {
 
     /**
@@ -8,9 +11,9 @@ public class FeignHeaderConstant {
     public static final String X_INNER_REQUEST = "X-Inner-Request";
 
     /**
-     * 认证信息
+     * 安全上下文
      */
-    public static final String X_AUTHENTICATION = "X-Authentication";
+    public static final String X_SECURITY_CONTEXT = "X-Security-Context";
 
     /**
      * feign异常响应

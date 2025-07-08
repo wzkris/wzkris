@@ -18,8 +18,8 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        template.header(HeaderConstants.X_TRACING_ID, MDC.get(HeaderConstants.X_TRACING_ID));
         template.header(FeignHeaderConstant.X_INNER_REQUEST, "true");
+        template.header(HeaderConstants.X_TRACING_ID, MDC.get(HeaderConstants.X_TRACING_ID));
     }
 
 }

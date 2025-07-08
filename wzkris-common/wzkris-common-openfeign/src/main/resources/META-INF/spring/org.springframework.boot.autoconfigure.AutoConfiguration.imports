@@ -1,4 +1,4 @@
 com.wzkris.common.openfeign.config.OpenFeignConfig
 com.wzkris.common.openfeign.handler.FeignExceptionHandler
 com.wzkris.common.openfeign.handler.RpcExceptionHandler
-com.wzkris.common.openfeign.handler.FeignAuthenticationFilter
+com.wzkris.common.openfeign.handler.FeignSecurityContextFilter
