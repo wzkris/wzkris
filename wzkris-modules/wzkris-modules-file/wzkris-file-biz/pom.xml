@@ -12,7 +12,6 @@
 
     <artifactId>wzkris-file-biz</artifactId>
 
-
     <dependencies>
         <!-- SpringCloud Alibaba Nacos -->
         <dependency>
