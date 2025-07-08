@@ -19,13 +19,15 @@ public class FeignClientProperties {
 
     private String timeUnit = "MILLISECONDS";
 
-    private int connectTimeout = 1000;
+    private int pingInterval = 60_000;
 
-    private int readTimeout = 1000;
+    private int connectTimeout = 1_000;
 
-    private int writeTimeout = 1000;
+    private int readTimeout = 1_000;
 
-    private int callTimeout = 2000;
+    private int writeTimeout = 1_000;
+
+    private int callTimeout = 2_000;
 
     private ConnectionPool connectionPool = new ConnectionPool();
 

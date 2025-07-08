@@ -1,9 +1,7 @@
 package com.wzkris.common.openfeign.handler;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
-import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +23,11 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     public void apply(RequestTemplate template) {
         template.header(HeaderConstants.X_TRACING_ID, MDC.get(HeaderConstants.X_TRACING_ID));
         template.header(FeignHeaderConstant.X_INNER_REQUEST, "true");
-        if (!StringUtil.equals(template.feignTarget().name(), ServiceIdConstant.AUTH)) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (isAuthenticated(authentication)) {
-                String serialize = AuthenticationTokenUtil.serialize(authentication);
-                template.header(FeignHeaderConstant.X_AUTHENTICATION, serialize);
-            }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (isAuthenticated(authentication)) {
+            String serialize = AuthenticationTokenUtil.serialize(authentication);
+            template.header(FeignHeaderConstant.X_AUTHENTICATION, serialize);
         }
     }
 
