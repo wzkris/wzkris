@@ -6,9 +6,6 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * @author : wzkris
@@ -23,18 +20,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     public void apply(RequestTemplate template) {
         template.header(HeaderConstants.X_TRACING_ID, MDC.get(HeaderConstants.X_TRACING_ID));
         template.header(FeignHeaderConstant.X_INNER_REQUEST, "true");
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (isAuthenticated(authentication)) {
-            String serialize = AuthenticationTokenUtil.serialize(authentication);
-            template.header(FeignHeaderConstant.X_AUTHENTICATION, serialize);
-        }
-    }
-
-    public boolean isAuthenticated(Authentication authentication) {
-        return authentication != null
-                && !AnonymousAuthenticationToken.class.isAssignableFrom(authentication.getClass())
-                && authentication.isAuthenticated();
     }
 
 }
