@@ -168,7 +168,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public void checkRoleUsed(List<Long> roleIds) {
+    public void checkExistUser(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
         if (userRoleMapper.existByRoleIds(roleIds)) {

@@ -256,13 +256,13 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public boolean checkMenuExistChild(Long menuId) {
+    public boolean checkExistSubMenu(Long menuId) {
         LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class).eq(SysMenu::getParentId, menuId);
         return menuMapper.exists(lqw);
     }
 
     @Override
-    public boolean checkMenuExistRole(Long menuId) {
+    public boolean checkExistRole(Long menuId) {
         return roleMenuMapper.existByMenuId(menuId);
     }
 

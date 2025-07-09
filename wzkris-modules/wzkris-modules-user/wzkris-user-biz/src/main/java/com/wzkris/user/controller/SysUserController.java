@@ -185,6 +185,18 @@ public class SysUserController extends BaseController {
         return toRes(userService.updateUser(user, userReq.getRoleIds(), userReq.getPostIds()));
     }
 
+    @Operation(summary = "修改用户授权角色")
+    @OperateLog(title = "系统用户", subTitle = "授权用户角色", operateType = OperateType.GRANT)
+    @PostMapping("/edit/grant_role")
+    @CheckSystemPerms("sys_user:grant_role")
+    public Result<Void> editGrantRole(@RequestBody @Valid SysUser2RolesReq req) {
+        // 校验用户可操作权限
+        userDataScopeManager.checkDataScopes(req.getUserId());
+        // 校验角色可操作权限
+        roleDataScopeManager.checkDataScopes(req.getRoleIds());
+        return toRes(userService.updateGrantRoles(req.getUserId(), req.getRoleIds()));
+    }
+
     @Operation(summary = "删除用户")
     @OperateLog(title = "系统用户", subTitle = "删除用户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
@@ -231,18 +243,6 @@ public class SysUserController extends BaseController {
         List<SysUserVO> list = userDataScopeManager.listVO(this.buildPageWrapper(queryReq));
         List<SysUserExport> convert = BeanUtil.convert(list, SysUserExport.class);
         ExcelUtil.exportExcel(convert, "后台用户数据", SysUserExport.class, response);
-    }
-
-    @Operation(summary = "用户授权角色")
-    @OperateLog(title = "系统用户", subTitle = "授权用户角色", operateType = OperateType.GRANT)
-    @PostMapping("/authorize_role")
-    @CheckSystemPerms("sys_user:grant_role")
-    public Result<Void> authRole(@RequestBody @Valid SysUser2RolesReq req) {
-        // 校验用户可操作权限
-        userDataScopeManager.checkDataScopes(req.getUserId());
-        // 校验角色可操作权限
-        roleDataScopeManager.checkDataScopes(req.getRoleIds());
-        return toRes(userService.allocateRoles(req.getUserId(), req.getRoleIds()));
     }
 
 }

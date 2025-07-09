@@ -52,10 +52,10 @@ public interface SysRoleService {
     boolean updateRole(SysRole role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds);
 
     /**
-     * 批量授权用户
+     * 角色分配用户
      *
      * @param roleId  角色ID
-     * @param userIds 需要删除的用户数据ID
+     * @param userIds 用户ID
      */
     boolean allocateUsers(Long roleId, List<Long> userIds);
 
@@ -71,6 +71,6 @@ public interface SysRoleService {
      *
      * @param roleIds 角色组
      */
-    void checkRoleUsed(List<Long> roleIds);
+    void checkExistUser(List<Long> roleIds);
 
 }

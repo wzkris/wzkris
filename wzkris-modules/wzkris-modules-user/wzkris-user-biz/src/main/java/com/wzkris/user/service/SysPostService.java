@@ -49,6 +49,6 @@ public interface SysPostService {
     /**
      * 校验岗位是否被用户关联
      */
-    void checkPostUsed(List<Long> postIds);
+    void checkExistUser(List<Long> postIds);
 
 }

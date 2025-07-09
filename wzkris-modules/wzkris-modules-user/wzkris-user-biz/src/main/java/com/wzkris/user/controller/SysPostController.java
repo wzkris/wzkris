@@ -89,7 +89,7 @@ public class SysPostController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("sys_post:remove")
     public Result<Void> remove(@RequestBody List<Long> postIds) {
-        postService.checkPostUsed(postIds);
+        postService.checkExistUser(postIds);
         return toRes(postService.deleteByPostIds(postIds));
     }
 

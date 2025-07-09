@@ -6,7 +6,6 @@ import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.SysUserPost;
 import com.wzkris.user.domain.SysUserRole;
-import com.wzkris.user.domain.req.SysUserQueryReq;
 import com.wzkris.user.mapper.SysUserMapper;
 import com.wzkris.user.mapper.SysUserPostMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
@@ -14,7 +13,6 @@ import com.wzkris.user.service.SysUserService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,7 +82,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean allocateRoles(Long userId, List<Long> roleIds) {
+    public boolean updateGrantRoles(Long userId, List<Long> roleIds) {
         userRoleMapper.deleteByUserId(userId);
         return this.insertUserRole(userId, roleIds);
     }
@@ -106,22 +104,6 @@ public class SysUserServiceImpl implements SysUserService {
                     .toList();
             userPostMapper.insertBatch(list);
         }
-    }
-
-    private LambdaQueryWrapper<SysUser> buildQueryWrapper(SysUserQueryReq queryReq) {
-        return new LambdaQueryWrapper<SysUser>()
-                .eq(ObjectUtils.isNotEmpty(queryReq.getTenantId()), SysUser::getTenantId, queryReq.getTenantId())
-                .like(ObjectUtils.isNotEmpty(queryReq.getUsername()), SysUser::getUsername, queryReq.getUsername())
-                .like(ObjectUtils.isNotEmpty(queryReq.getNickname()), SysUser::getNickname, queryReq.getNickname())
-                .like(
-                        ObjectUtils.isNotEmpty(queryReq.getPhoneNumber()),
-                        SysUser::getPhoneNumber,
-                        queryReq.getPhoneNumber())
-                .like(ObjectUtils.isNotEmpty(queryReq.getEmail()), SysUser::getEmail, queryReq.getEmail())
-                .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
-                .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), SysUser::getStatus, queryReq.getStatus())
-                .eq(ObjectUtils.isNotEmpty(queryReq.getDeptId()), SysUser::getDeptId, queryReq.getDeptId())
-                .orderByDesc(SysUser::getUserId);
     }
 
     @Override

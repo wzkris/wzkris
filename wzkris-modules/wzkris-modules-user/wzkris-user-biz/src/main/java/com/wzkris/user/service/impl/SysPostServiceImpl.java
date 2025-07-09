@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -90,7 +91,8 @@ public class SysPostServiceImpl implements SysPostService {
     }
 
     @Override
-    public void checkPostUsed(List<Long> postIds) {
+    public void checkExistUser(List<Long> postIds) {
+        postIds = postIds.stream().filter(Objects::nonNull).toList();
         if (userPostMapper.existByPostIds(postIds)) {
             throw new BusinessException("business.allocated");
         }

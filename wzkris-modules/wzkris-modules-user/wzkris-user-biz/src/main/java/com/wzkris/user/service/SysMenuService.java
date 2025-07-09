@@ -59,7 +59,7 @@ public interface SysMenuService {
      * @param menuId 菜单ID
      * @return 结果 true 存在 false 不存在
      */
-    boolean checkMenuExistChild(Long menuId);
+    boolean checkExistSubMenu(Long menuId);
 
     /**
      * 查询菜单是否存在角色
@@ -67,7 +67,7 @@ public interface SysMenuService {
      * @param menuId 菜单ID
      * @return 结果 true 存在 false 不存在
      */
-    boolean checkMenuExistRole(Long menuId);
+    boolean checkExistRole(Long menuId);
 
     /**
      * 删除菜单

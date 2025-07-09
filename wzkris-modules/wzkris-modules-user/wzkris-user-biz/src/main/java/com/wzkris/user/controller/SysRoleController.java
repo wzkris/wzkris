@@ -166,7 +166,7 @@ public class SysRoleController extends BaseController {
             @RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
         // 权限校验
         roleDataScopeManager.checkDataScopes(roleIds);
-        roleService.checkRoleUsed(roleIds);
+        roleService.checkExistUser(roleIds);
         return toRes(roleService.deleteByIds(roleIds));
     }
 
