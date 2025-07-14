@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-06-24 10:41:34
+-- Started on 2025-07-15 17:03:23
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -774,7 +774,7 @@ COMMENT ON COLUMN biz.sys_oper_log.oper_time IS '操作时间';
 --
 
 COPY biz.sys_config (config_id, config_name, config_key, config_value, config_type, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	用户管理-账号初始密码	sys.user.initPassword	123456	Y	1	1	2024-04-17 14:08:54.616+08	2025-04-01 15:41:18.055+08
+1	用户管理-账号初始密码	sys.user.initPassword	123456	Y	1	1	2024-04-17 14:08:54.616+08	2025-06-30 14:50:09.368+08
 \.
 
 
@@ -789,25 +789,16 @@ COPY biz.sys_dict (dict_id, dict_key, dict_name, dict_value, remark, creator_id,
 1905175933034930178	menu_visible	菜单可见状态	[{"label": "显示", "value": "true", "tableCls": "primary"}, {"label": "隐藏", "value": "false", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:30:10.201+08
 1905175933034930179	menu_type	菜单类型	[{"label": "目录", "value": "D", "tableCls": "info"}, {"label": "菜单", "value": "M", "tableCls": "primary"}, {"label": "按钮", "value": "B", "tableCls": "danger"}, {"label": "字段", "value": "F", "tableCls": "warning"}]	\N	1	1	2024-11-23 15:22:03.788+08	2024-11-23 15:22:03.788+08
 1905175933097844737	common_disable	是否禁用	[{"label": "正常", "value": "0", "tableCls": "primary"}, {"label": "停用", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:34:03.416+08
-1905175933097844738	sys_job_status	任务状态	[{"label": "正常", "value": "0", "tableCls": "primary"}, {"label": "暂停", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	\N
-1905175933097844739	sys_job_group	任务分组	[{"label": "默认", "value": "DEFAULT", "tableCls": ""}, {"label": "系统", "value": "SYSTEM", "tableCls": ""}]	\N	1	1	2024-04-17 14:08:54.616+08	\N
-1905175933164953602	sys_yes_no	系统是否	[{"label": "是", "value": "Y", "tableCls": "primary"}, {"label": "否", "value": "N", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	\N
 1905175933164953603	msg_type	消息类型	[{"label": "系统公告", "value": "1", "tableCls": "primary"}, {"label": "APP公告", "value": "2", "tableCls": "success"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-12-16 10:30:13.003+08
 1905175933164953604	msg_status	消息状态	[{"label": "已发布", "value": "2", "tableCls": "primary"}, {"label": "草稿", "value": "0", "tableCls": "info"}, {"label": "关闭", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-12-16 10:30:17.169+08
 1905175933227868161	sys_oper_type	操作类型	[{"label": "其他", "value": "0", "tableCls": "info"}, {"label": "新增", "value": "1", "tableCls": "info"}, {"label": "修改", "value": "2", "tableCls": "info"}, {"label": "删除", "value": "3", "tableCls": "danger"}, {"label": "授权", "value": "4", "tableCls": "primary"}, {"label": "导出", "value": "5", "tableCls": "warning"}, {"label": "导入", "value": "6", "tableCls": "warning"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:26:29.997+08
 1905175933227868162	sys_oper_status	操作状态	[{"label": "成功", "value": "0", "tableCls": "primary"}, {"label": "失败", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:13:46.583+08
 1905175933227868164	online_status	设备连接状态	[{"label": "在线", "value": "true", "tableCls": "success"}, {"label": "离线", "value": "false", "tableCls": "info"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-12-09 11:28:08.104+08
-1905175933290782722	pay_certification_status	支付认证状态	[{"label": "未认证", "value": "NO", "tableCls": "info"}, {"label": "微信支付", "value": "WX", "tableCls": "success"}, {"label": "支付宝", "value": "ALI", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:54.616+08	\N
 1905175933290782723	data_scope	数据权限	[{"label": "全部数据权限", "value": "1", "tableCls": "default"}, {"label": "自定数据权限", "value": "2", "tableCls": "default"}, {"label": "本部门数据权限", "value": "3", "tableCls": "default"}, {"label": "本部门及以下数据权限", "value": "4", "tableCls": "default"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:27:19.645+08
-1905175933290782724	pay_status	支付状态	[{"label": "支付成功", "value": "SUCCESS", "tableCls": "success"}, {"label": "订单关闭", "value": "CLOSED", "tableCls": "info"}, {"label": "未支付", "value": "NOTPAY", "tableCls": "primary"}, {"label": "支付异常", "value": "ERROR", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:03:25.137+08
-1905175933357891585	pay_type	支付方式	[{"label": "钱包支付", "value": "WALLET", "tableCls": "info"}, {"label": "微信支付", "value": "WECHAT", "tableCls": "success"}, {"label": "支付宝", "value": "ZFB", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:27:24.525+08
-1905175933425000449	protocol_type	协议类型	[{"label": "mqtt", "value": "MQTT", "tableCls": "primary"}, {"label": "http", "value": "HTTP", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:10:04.677+08
-1905175933425000450	protocol_language	协议语言	[{"label": "java", "value": "java", "tableCls": "primary"}, {"label": "lua", "value": "lua", "tableCls": "primary"}]	\N	1	1	2024-11-20 14:12:01.999+08	2024-11-20 14:12:01.999+08
 1905175933425000451	wallet_record_type	钱包记录类型	[{"label": "收入", "value": "0", "tableCls": "primary"}, {"label": "支出", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-11-25 16:32:20.36+08	2024-11-25 16:32:20.36+08
-1905175933425000452	command_type	设备指令类型	[{"label": "属性上报", "value": "1", "tableCls": "primary"}, {"label": "功能调用", "value": "2", "tableCls": "danger"}, {"label": "事件上报", "value": "3", "tableCls": "primary"}, {"label": "设备升级", "value": "4", "tableCls": "warning"}, {"label": "设备上线", "value": "5", "tableCls": "success"}, {"label": "设备离线", "value": "6", "tableCls": "info"}]	\N	1	1	2024-12-20 08:29:45.314+08	2024-12-21 16:52:53.275+08
-1905175933492109314	product_type	产品类型	[{"label": "直连产品", "value": "0", "tableCls": "default"}, {"label": "网关产品", "value": "1", "tableCls": "default"}, {"label": "网关子产品", "value": "2", "tableCls": "default"}]	\N	1	1	2024-12-21 16:50:09.279+08	2024-12-21 16:50:09.279+08
-1905175933492109315	things_model_type	物模型类型	[{"label": "属性", "value": "1", "tableCls": "default"}, {"label": "服务", "value": "2", "tableCls": "default"}, {"label": "事件", "value": "3", "tableCls": "default"}]	\N	1	1	2024-12-24 09:45:09.344+08	2024-12-24 09:45:09.344+08
-1905175933492109316	things_model_datatype	物模型数据类型	[{"label": "整形", "value": "int32", "tableCls": "default"}, {"label": "小数", "value": "decimal", "tableCls": "default"}, {"label": "布尔", "value": "boolean", "tableCls": "default"}, {"label": "枚举", "value": "enum", "tableCls": "default"}, {"label": "字符串", "value": "string", "tableCls": "default"}, {"label": "数组", "value": "array", "tableCls": "default"}, {"label": "结构体", "value": "struct", "tableCls": "default"}]	\N	1	1	2024-12-24 10:27:20.157+08	2024-12-24 10:27:20.157+08
+1905175933357891585	pay_type	支付方式	[{"label": "钱包支付", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:54.616+08	2025-07-15 17:00:24.272+08
+1905175933290782722	pay_certification_status	支付认证状态	[{"label": "未认证", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:54.616+08	2025-07-15 17:00:45.836+08
+1905175933290782724	pay_status	支付状态	[{"label": "支付成功", "value": "1", "tableCls": "success"}, {"label": "订单关闭", "value": "2", "tableCls": "info"}, {"label": "未支付", "value": "0", "tableCls": "primary"}, {"label": "支付异常", "value": "3", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	2025-07-15 17:01:13.675+08
 1905175933227868163	authorization_grant_types	授权类型	[{"label": "刷新模式", "value": "refresh_token", "tableCls": "primary"}, {"label": "客户端模式", "value": "client_credentials", "tableCls": "primary"}, {"label": "授权码模式", "value": "authorization_code", "tableCls": "primary"}, {"label": "token交换模式", "value": "urn:ietf:params:oauth:grant-type:token-exchange", "tableCls": "primary"}, {"label": "设备码模式", "value": "urn:ietf:params:oauth:grant-type:device_code", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:54.616+08	2025-06-23 16:08:47.855+08
 \.
 
@@ -839,7 +830,6 @@ COPY biz.sys_message (msg_id, title, content, status, creator_id, updater_id, cr
 --
 
 COPY biz.sys_notice (notice_id, notice_type, title, content, create_at, creator_id) FROM stdin;
-1924338255745740800	0	系统用户创建成功	用户账号：111111创建成功，临时登录密码：53194776	2025-05-19 13:36:07.302+08	1
 \.
 
 
@@ -850,7 +840,6 @@ COPY biz.sys_notice (notice_id, notice_type, title, content, create_at, creator_
 --
 
 COPY biz.sys_notice_user (notice_id, user_id, read_state) FROM stdin;
-1924338255745740800	1	0
 \.
 
 
@@ -959,7 +948,7 @@ CREATE UNIQUE INDEX u_i_config_key ON biz.sys_config USING btree (config_key);
 CREATE UNIQUE INDEX u_i_dict_key ON biz.sys_dict USING btree (dict_key);
 
 
--- Completed on 2025-06-24 10:41:34
+-- Completed on 2025-07-15 17:03:23
 
 --
 -- PostgreSQL database dump complete

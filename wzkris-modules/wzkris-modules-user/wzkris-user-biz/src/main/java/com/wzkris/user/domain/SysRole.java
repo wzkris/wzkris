@@ -32,6 +32,9 @@ public class SysRole extends BaseEntity {
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;
 
+    @Schema(description = "继承角色")
+    private Boolean inherited;
+
     @Schema(description = "角色排序")
     private Integer roleSort;
 

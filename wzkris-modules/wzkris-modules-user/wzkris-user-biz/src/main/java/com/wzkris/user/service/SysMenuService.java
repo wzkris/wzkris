@@ -30,6 +30,14 @@ public interface SysMenuService {
     List<String> listPermsByMenuIds(@Nullable List<Long> menuIds);
 
     /**
+     * 根据套餐查询权限
+     *
+     * @param tenantPackageId 租户套餐ID
+     * @return 权限列表
+     */
+    List<String> listPermsByTenantPackageId(@Nullable Long tenantPackageId);
+
+    /**
      * 查询菜单选择树
      *
      * @param userId 用户ID

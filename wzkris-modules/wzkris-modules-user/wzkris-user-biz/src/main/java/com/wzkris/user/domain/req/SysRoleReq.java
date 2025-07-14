@@ -36,6 +36,10 @@ public class SysRoleReq {
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;
 
+    @NotNull(message = "继承关系" + "{validate.notnull}")
+    @Schema(description = "继承关系")
+    private Boolean inherited;
+
     @NotNull(message = "{desc.sort}" + "{validate.notnull}")
     @Range(message = "{desc.sort}" + "{validate.size.illegal}")
     @Schema(description = "角色排序")
@@ -52,5 +56,8 @@ public class SysRoleReq {
 
     @Schema(description = "部门组")
     private List<Long> deptIds;
+
+    @Schema(description = "继承角色组")
+    private List<Long> inheritedIds;
 
 }

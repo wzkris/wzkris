@@ -15,10 +15,12 @@ import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
+import com.wzkris.user.domain.vo.CheckedSelectVO;
 import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.manager.SysDeptDataScopeManager;
 import com.wzkris.user.manager.SysRoleDataScopeManager;
 import com.wzkris.user.manager.SysUserDataScopeManager;
+import com.wzkris.user.mapper.SysRoleHierarchyMapper;
 import com.wzkris.user.mapper.SysRoleMapper;
 import com.wzkris.user.mapper.SysRoleMenuMapper;
 import com.wzkris.user.mapper.SysUserRoleMapper;
@@ -30,6 +32,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +58,8 @@ public class SysRoleController extends BaseController {
     private final SysUserRoleMapper userRoleMapper;
 
     private final SysRoleMenuMapper roleMenuMapper;
+
+    private final SysRoleHierarchyMapper roleHierarchyMapper;
 
     private final SysUserDataScopeManager userDataScopeManager;
 
@@ -91,7 +96,7 @@ public class SysRoleController extends BaseController {
         return ok(roleMapper.selectById(roleId));
     }
 
-    @Operation(summary = "角色菜单选择树")
+    @Operation(summary = "角色-菜单选择树")
     @GetMapping({"/menu_checked_select_tree/", "/menu_checked_select_tree/{roleId}"})
     @CheckSystemPerms(
             value = {"sys_role:edit", "sys_role:add"},
@@ -108,7 +113,7 @@ public class SysRoleController extends BaseController {
         return ok(checkedSelectTreeVO);
     }
 
-    @Operation(summary = "角色部门选择树")
+    @Operation(summary = "角色-部门选择树")
     @GetMapping({"/dept_checked_select_tree/", "/dept_checked_select_tree/{roleId}"})
     @CheckSystemPerms(
             value = {"sys_role:edit", "sys_role:add"},
@@ -123,6 +128,20 @@ public class SysRoleController extends BaseController {
         return ok(checkedSelectTreeVO);
     }
 
+    @Operation(summary = "角色-继承选择列表")
+    @GetMapping({"/hierarchy_checked_select/", "/hierarchy_checked_select/{roleId}"})
+    @CheckSystemPerms(
+            value = {"sys_role:edit", "sys_role:add"},
+            mode = CheckMode.OR)
+    public Result<CheckedSelectVO> roleInheritedSelect(@PathVariable(required = false) Long roleId) {
+        roleDataScopeManager.checkDataScopes(roleId);
+        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
+        checkedSelectVO.setCheckedKeys(roleId == null ?
+                Collections.emptyList() : roleDataScopeManager.listInheritedIdByRoleId(roleId));
+        checkedSelectVO.setSelects(roleDataScopeManager.listInheritedSelect(roleId));
+        return ok(checkedSelectVO);
+    }
+
     @Operation(summary = "新增角色")
     @OperateLog(title = "角色管理", subTitle = "新增角色", operateType = OperateType.INSERT)
     @PostMapping("/add")
@@ -131,8 +150,16 @@ public class SysRoleController extends BaseController {
         if (!tenantService.checkRoleLimit(SystemUserUtil.getTenantId())) {
             return err412("角色数量已达上限，请联系管理员");
         }
-        return toRes(roleService.insertRole(
-                BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
+        if (CollectionUtils.isNotEmpty(roleReq.getInheritedIds())) {
+            if (roleReq.getInherited()) {
+                roleService.checkInheritedRole(null, roleReq.getInheritedIds());
+            } else {
+                return err412("非继承角色不允许继承");
+            }
+        }
+
+        SysRole role = BeanUtil.convert(roleReq, SysRole.class);
+        return toRes(roleService.insertRole(role, roleReq.getMenuIds(), roleReq.getDeptIds(), roleReq.getInheritedIds()));
     }
 
     @Operation(summary = "修改角色")
@@ -142,8 +169,16 @@ public class SysRoleController extends BaseController {
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody SysRoleReq roleReq) {
         // 权限校验
         roleDataScopeManager.checkDataScopes(roleReq.getRoleId());
-        return toRes(roleService.updateRole(
-                BeanUtil.convert(roleReq, SysRole.class), roleReq.getMenuIds(), roleReq.getDeptIds()));
+        if (CollectionUtils.isNotEmpty(roleReq.getInheritedIds())) {
+            if (roleReq.getInherited()) {
+                roleService.checkInheritedRole(roleReq.getRoleId(), roleReq.getInheritedIds());
+            } else {
+                return err412("非继承角色不允许继承");
+            }
+        }
+
+        SysRole role = BeanUtil.convert(roleReq, SysRole.class);
+        return toRes(roleService.updateRole(role, roleReq.getMenuIds(), roleReq.getDeptIds(), roleReq.getInheritedIds()));
     }
 
     @Operation(summary = "状态修改")
@@ -167,6 +202,7 @@ public class SysRoleController extends BaseController {
         // 权限校验
         roleDataScopeManager.checkDataScopes(roleIds);
         roleService.checkExistUser(roleIds);
+        roleService.checkExistInherited(roleIds);
         return toRes(roleService.deleteByIds(roleIds));
     }
 
