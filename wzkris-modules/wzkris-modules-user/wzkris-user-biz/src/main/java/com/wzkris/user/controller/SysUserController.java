@@ -25,7 +25,6 @@ import com.wzkris.user.manager.SysDeptDataScopeManager;
 import com.wzkris.user.manager.SysRoleDataScopeManager;
 import com.wzkris.user.manager.SysUserDataScopeManager;
 import com.wzkris.user.mapper.SysUserMapper;
-import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysTenantService;
 import com.wzkris.user.service.SysUserService;
@@ -66,8 +65,6 @@ public class SysUserController extends BaseController {
     private final SysRoleDataScopeManager roleDataScopeManager;
 
     private final SysRoleService roleService;
-
-    private final SysPostService postService;
 
     private final SysTenantService tenantService;
 
@@ -120,19 +117,6 @@ public class SysUserController extends BaseController {
         return ok(checkedSelectVO);
     }
 
-    @Operation(summary = "用户-岗位选择列表")
-    @GetMapping({"/post_checked_select/", "/post_checked_select/{userId}"})
-    @CheckSystemPerms(
-            value = {"sys_user:edit", "sys_user:add"},
-            mode = CheckMode.OR)
-    public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long userId, String postName) {
-        userDataScopeManager.checkDataScopes(userId);
-        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
-        checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : postService.listIdByUserId(userId));
-        checkedSelectVO.setSelects(postService.listSelect(postName));
-        return ok(checkedSelectVO);
-    }
-
     @Operation(summary = "用户详细信息")
     @GetMapping("/{userId}")
     @CheckSystemPerms("sys_user:query")
@@ -159,7 +143,7 @@ public class SysUserController extends BaseController {
         String password = RandomStringUtils.secure().next(8);
         user.setPassword(password);
 
-        boolean success = userService.insertUser(user, userReq.getRoleIds(), userReq.getPostIds());
+        boolean success = userService.insertUser(user, userReq.getRoleIds());
         if (success) {
             SpringUtil.getContext()
                     .publishEvent(new CreateUserEvent(SystemUserUtil.getUserId(), userReq.getUsername(), password));
@@ -182,7 +166,7 @@ public class SysUserController extends BaseController {
         }
         SysUser user = BeanUtil.convert(userReq, SysUser.class);
 
-        return toRes(userService.updateUser(user, userReq.getRoleIds(), userReq.getPostIds()));
+        return toRes(userService.updateUser(user, userReq.getRoleIds()));
     }
 
     @Operation(summary = "修改用户授权角色")

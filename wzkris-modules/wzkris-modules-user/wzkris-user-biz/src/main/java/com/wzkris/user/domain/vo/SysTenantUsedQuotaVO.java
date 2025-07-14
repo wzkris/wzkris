@@ -17,9 +17,6 @@ public class SysTenantUsedQuotaVO {
     @Schema(description = "已有角色数量")
     private Integer roleHas;
 
-    @Schema(description = "已有岗位数量")
-    private Integer postHas;
-
     @Schema(description = "已有部门数量")
     private Integer deptHas;
 
