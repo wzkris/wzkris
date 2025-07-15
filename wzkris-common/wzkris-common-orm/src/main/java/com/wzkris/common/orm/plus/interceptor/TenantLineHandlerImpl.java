@@ -31,9 +31,4 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
         return !tenantProperties.getIncludes().contains(tableName);
     }
 
-    // 是否忽略表名
-    private boolean isIgnoreTable(String tableName) {
-        return !tenantProperties.getIncludes().contains(tableName);
-    }
-
 }
