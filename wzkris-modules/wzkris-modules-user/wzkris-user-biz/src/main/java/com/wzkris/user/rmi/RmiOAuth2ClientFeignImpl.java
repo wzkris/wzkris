@@ -4,15 +4,11 @@ import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
 import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author : wzkris
- * @version : V1.0.0
- * @description : OAuth2客户端接口
- * @date : 2024/7/3 14:37
- */
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class RmiOAuth2ClientFeignImpl implements RmiOAuth2ClientFeign {

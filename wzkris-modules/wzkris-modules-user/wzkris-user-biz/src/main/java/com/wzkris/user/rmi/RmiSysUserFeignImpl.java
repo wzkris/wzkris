@@ -13,16 +13,12 @@ import com.wzkris.user.rmi.domain.req.QueryPermsReq;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.rmi.domain.resp.SysUserResp;
 import com.wzkris.user.service.SysPermissionService;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 内部系统用户接口
- * @date : 2024/4/15 16:20
- */
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class RmiSysUserFeignImpl implements RmiSysUserFeign {

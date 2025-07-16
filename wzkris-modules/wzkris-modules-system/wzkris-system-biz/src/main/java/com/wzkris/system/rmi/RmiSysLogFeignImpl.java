@@ -7,18 +7,14 @@ import com.wzkris.system.mapper.SysLoginLogMapper;
 import com.wzkris.system.mapper.SysOperLogMapper;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 操作日志RPC
- * @date : 2023/3/13 16:13
- */
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class RmiSysLogFeignImpl implements RmiSysLogFeign {
