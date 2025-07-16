@@ -32,6 +32,15 @@ public interface SysRoleDscMapper extends BaseMapperPlus<SysRole> {
     List<SysRole> selectLists(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
 
     /**
+     * 带权限查询已继承的角色ID
+     */
+    @Select("""
+            SELECT DISTINCT rh.inherited_id FROM biz.sys_role_hierarchy rh LEFT JOIN biz.sys_role_dept rd ON rh.role_id = rd.role_id
+            WHERE rh.role_id = #{roleId}
+            """)
+    List<Long> listInheritedIdByRoleId(Long roleId);
+
+    /**
      * 校验是否有该角色操作权限
      *
      * @param roleIds 待操作的角色id

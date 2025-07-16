@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +39,33 @@ public class SysRoleDataScopeManager {
         } finally {
             DataScopeUtil.remove();
         }
+    }
+
+    public List<Long> listInheritedIdByRoleId(Long roleId) {
+        DataScopeUtil.putParameter("rd.dept_id", SystemUserUtil.getUser().getDeptScopes());
+
+        try {
+            return roleDscMapper.listInheritedIdByRoleId(roleId);
+        } finally {
+            DataScopeUtil.remove();
+        }
+    }
+
+    /**
+     * 查询可以被继承的角色
+     *
+     * @param roleId 继承角色ID
+     */
+    public List<SelectVO> listInheritedSelect(Long roleId) {
+        return list(Wrappers.query(SysRole.class)
+                .select("role_id", "role_name")
+                .eq("status", CommonConstants.STATUS_ENABLE)
+                .eq("inherited", false)
+                .ne(Objects.nonNull(roleId), "r.role_id", roleId)
+                .orderByAsc("role_id"))
+                .stream()
+                .map(SelectVO::new)
+                .collect(Collectors.toList());
     }
 
     /**

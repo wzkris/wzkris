@@ -17,15 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DataScopeUtil {
 
-    private static class Context {
-
-        private Map<String, Object> parameters;
-
-    }
-
     private static final Map<String, DataScope> methodCache = new ConcurrentHashMap<>();
 
-    private static final ThreadLocal<Context> CONTEXT = ThreadLocal.withInitial(Context::new);
+    private static final ThreadLocal<Map<String, Object>> CONTEXT = ThreadLocal.withInitial(HashMap::new);
 
     public static DataScope getDataScope(String methodName) {
         return methodCache.get(methodName);
@@ -36,16 +30,16 @@ public class DataScopeUtil {
     }
 
     public static Object getParameter(String column) {
-        Context context = CONTEXT.get();
-        return context.parameters == null ? null : context.parameters.get(column);
+        return CONTEXT.get() == null ? null : CONTEXT.get().get(column);
     }
 
     public static void putParameter(String column, Object value) {
-        Context context = CONTEXT.get();
-        if (context.parameters == null) {
-            context.parameters = new HashMap<>();
+        Map<String, Object> parameter = CONTEXT.get();
+        if (parameter == null) {
+            parameter = new HashMap<>();
         }
-        context.parameters.put(column, value);
+        parameter.put(column, value);
+        CONTEXT.set(parameter);
     }
 
     public static void remove() {

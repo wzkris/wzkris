@@ -30,6 +30,14 @@ public interface SysMenuService {
     List<String> listPermsByMenuIds(@Nullable List<Long> menuIds);
 
     /**
+     * 根据套餐查询权限
+     *
+     * @param tenantPackageId 租户套餐ID
+     * @return 权限列表
+     */
+    List<String> listPermsByTenantPackageId(@Nullable Long tenantPackageId);
+
+    /**
      * 查询菜单选择树
      *
      * @param userId 用户ID
@@ -59,7 +67,7 @@ public interface SysMenuService {
      * @param menuId 菜单ID
      * @return 结果 true 存在 false 不存在
      */
-    boolean checkMenuExistChild(Long menuId);
+    boolean checkExistSubMenu(Long menuId);
 
     /**
      * 查询菜单是否存在角色
@@ -67,7 +75,7 @@ public interface SysMenuService {
      * @param menuId 菜单ID
      * @return 结果 true 存在 false 不存在
      */
-    boolean checkMenuExistRole(Long menuId);
+    boolean checkExistRole(Long menuId);
 
     /**
      * 删除菜单

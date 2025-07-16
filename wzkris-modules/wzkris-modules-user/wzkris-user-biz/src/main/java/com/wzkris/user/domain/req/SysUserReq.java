@@ -51,8 +51,7 @@ public class SysUserReq {
     @Schema(description = "用户状态")
     private String status;
 
-    @EnumsCheck(
-            values = {UserConstants.GENDER_MALE, UserConstants.GENDER_FEMALE, UserConstants.GENDER_UNKNOWN},
+    @EnumsCheck(values = {UserConstants.GENDER_MALE, UserConstants.GENDER_FEMALE, UserConstants.GENDER_UNKNOWN},
             message = "{desc.gender}{validate.enums.illegal}")
     @Schema(description = "用户性别")
     private String gender;
@@ -62,8 +61,5 @@ public class SysUserReq {
 
     @Schema(description = "角色组")
     private List<Long> roleIds;
-
-    @Schema(description = "岗位组")
-    private List<Long> postIds;
 
 }

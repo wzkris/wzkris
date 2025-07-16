@@ -125,6 +125,13 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
+    public List<String> listPermsByTenantPackageId(Long tenantPackageId) {
+        // 查出套餐绑定的所有菜单
+        List<Long> menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
+        return listPermsByMenuIds(menuIds);
+    }
+
+    @Override
     public List<SelectTreeVO> listSelectTree(Long userId) {
         List<Long> menuIds = null;
         if (!SysUser.isSuperAdmin(userId)) {
@@ -171,7 +178,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * 查询用户对应菜单id
      */
     public List<Long> listMenuIdByUserId(Long userId) {
-        List<Long> roleIds = roleService.listIdByUserId(userId);
+        List<Long> roleIds = roleService.listInheritedIdByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -256,13 +263,13 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public boolean checkMenuExistChild(Long menuId) {
+    public boolean checkExistSubMenu(Long menuId) {
         LambdaQueryWrapper<SysMenu> lqw = Wrappers.lambdaQuery(SysMenu.class).eq(SysMenu::getParentId, menuId);
         return menuMapper.exists(lqw);
     }
 
     @Override
-    public boolean checkMenuExistRole(Long menuId) {
+    public boolean checkExistRole(Long menuId) {
         return roleMenuMapper.existByMenuId(menuId);
     }
 

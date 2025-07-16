@@ -15,7 +15,6 @@ import com.wzkris.user.domain.req.EditSysUserProfileReq;
 import com.wzkris.user.domain.vo.SysUserProfileVO;
 import com.wzkris.user.mapper.SysDeptMapper;
 import com.wzkris.user.mapper.SysUserMapper;
-import com.wzkris.user.service.SysPostService;
 import com.wzkris.user.service.SysRoleService;
 import com.wzkris.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,8 +47,6 @@ public class SysUserProfileController extends BaseController {
 
     private final SysRoleService roleService;
 
-    private final SysPostService postService;
-
     private final SysDeptMapper deptMapper;
 
     private final RmiCaptchaFeign rmiCaptchaFeign;
@@ -78,7 +75,6 @@ public class SysUserProfileController extends BaseController {
         profileVO.setUser(userInfo);
         profileVO.setDeptName(deptMapper.selectDeptNameById(user.getDeptId()));
         profileVO.setRoleGroup(roleService.getRoleGroup());
-        profileVO.setPostGroup(postService.getPostGroup());
         return ok(profileVO);
     }
 

@@ -6,19 +6,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户和岗位关联 biz.sys_user_post
+ * 角色继承表 sys_role_hierarchy
  *
  * @author wzkris
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysUserPost {
+public class SysRoleHierarchy {
 
-    @Schema(description = "用户ID")
-    private Long userId;
+    @Schema(description = "角色ID")
+    private Long roleId;
 
-    @Schema(description = "岗位ID")
-    private Long postId;
+    @Schema(description = "继承角色id")
+    private Long inheritedId;
 
 }

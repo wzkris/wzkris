@@ -71,33 +71,41 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
 
         final String tenantToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
         if (StringUtil.isNotBlank(tenantToken)) {
-            TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(tenantToken));
-            if (tokenResponse.isSuccess()) {
-                ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request, tenantToken));
-            }
+            generateTenantToken(request, tenantToken, ctx);
             return ctx;
         }
 
         final String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
         if (StringUtil.isNotBlank(userToken)) {
-            try {
-                Jwt jwt = jwtDecoder.decode(userToken);
-                String sub = jwt.getClaimAsString(JwtClaimNames.SUB);
-                Long userId = sub == null ? SecurityConstants.DEFAULT_USER_ID : Long.valueOf(sub);
-                Supplier<ClientUser> supplier = () -> {
-                    TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(userToken));
-                    if (tokenResponse.isSuccess()) {
-                        return (ClientUser) tokenResponse.getPrincipal();
-                    }
-                    return null;
-                };
-                ctx.setAuthentication(createAuthentication(new DeferredClientUser(userId, supplier), request, userToken));
-            } catch (JwtException ignored) {
-            }
+            generateUserToken(request, userToken, ctx);
             return ctx;
         }
 
         return ctx;
+    }
+
+    private void generateTenantToken(HttpServletRequest request, String token, SecurityContext ctx) {
+        TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(token));
+        if (tokenResponse.isSuccess()) {
+            ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request, token));
+        }
+    }
+
+    private void generateUserToken(HttpServletRequest request, String token, SecurityContext ctx) {
+        try {
+            Jwt jwt = jwtDecoder.decode(token);
+            String sub = jwt.getClaimAsString(JwtClaimNames.SUB);
+            Long userId = sub == null ? SecurityConstants.DEFAULT_USER_ID : Long.valueOf(sub);
+            Supplier<ClientUser> supplier = () -> {
+                TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(token));
+                if (tokenResponse.isSuccess()) {
+                    return (ClientUser) tokenResponse.getPrincipal();
+                }
+                return null;
+            };
+            ctx.setAuthentication(createAuthentication(new DeferredClientUser(userId, supplier), request, token));
+        } catch (JwtException ignored) {
+        }
     }
 
     private Authentication createAuthentication(CorePrincipal principal, HttpServletRequest request, String token) {

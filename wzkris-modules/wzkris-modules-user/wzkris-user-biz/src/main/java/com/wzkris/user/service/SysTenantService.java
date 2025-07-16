@@ -54,14 +54,6 @@ public interface SysTenantService {
     boolean checkRoleLimit(Long tenantId);
 
     /**
-     * 校验租户岗位数量
-     *
-     * @param tenantId 租户ID
-     * @return true通过 false不通过
-     */
-    boolean checkPostLimit(Long tenantId);
-
-    /**
      * 校验租户部门数量
      *
      * @param tenantId 租户ID

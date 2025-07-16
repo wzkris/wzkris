@@ -11,6 +11,7 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
 import net.sf.jsqlparser.schema.Column;
@@ -68,12 +69,12 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
         Expression expression;
         if (value instanceof Collection<?> collection) {
             if (CollectionUtils.isEmpty(collection)) {
-                expression = new BooleanValue(false);
+                expression = new BooleanValue(true);
             } else {
                 expression = handleCollectionParameter(column, collection);
             }
         } else {
-            expression = handleSingleParameter(value);
+            expression = new EqualsTo(new Column(column), handleSingleParameter(value));
         }
         return expression;
     }

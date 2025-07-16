@@ -16,13 +16,13 @@ public class RmiTokenFeignFallback implements FallbackFactory<RmiTokenFeign> {
             @Override
             public TokenResponse checkOAuth2Token(TokenReq tokenReq) {
                 FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
-                return TokenResponse.okAnonymous();
+                return TokenResponse.fallback(cause.getMessage());
             }
 
             @Override
             public TokenResponse checkUserToken(TokenReq tokenReq) {
                 FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
-                return TokenResponse.okAnonymous();
+                return TokenResponse.fallback(cause.getMessage());
             }
         };
     }

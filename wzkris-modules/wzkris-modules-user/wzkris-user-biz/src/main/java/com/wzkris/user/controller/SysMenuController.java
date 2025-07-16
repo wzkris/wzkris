@@ -100,10 +100,10 @@ public class SysMenuController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("sys_menu:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
-        if (menuService.checkMenuExistChild(menuId)) {
+        if (menuService.checkExistSubMenu(menuId)) {
             return err412("存在子菜单,不允许删除");
         }
-        if (menuService.checkMenuExistRole(menuId)) {
+        if (menuService.checkExistRole(menuId)) {
             return err412("菜单已分配,不允许删除");
         }
         return toRes(menuService.deleteById(menuId));
