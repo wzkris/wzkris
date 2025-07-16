@@ -15,7 +15,6 @@ import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.service.SysMenuService;
 import com.wzkris.user.service.SysPermissionService;
 import com.wzkris.user.service.SysRoleService;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -65,12 +64,12 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private final SysTenantPackageMapper tenantPackageMapper;
 
     @Override
-    public SysPermissionResp getPermission(Long userId, Long tenantId, @Nullable Long deptId) {
+    public SysPermissionResp getPermission(Long userId, Long tenantId, Long deptId) {
         return DynamicTenantUtil.switcht(tenantId, () -> {
             List<SysRole> roles;
             List<String> grantedAuthority;
             List<Long> deptScopes = Collections.emptyList();
-            boolean administrator;
+            boolean administrator = false;
             if (SysUser.isSuperAdmin(userId)) {
                 // 超级管理员查出所有角色
                 administrator = true;
@@ -81,13 +80,10 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 if (tenantPackageId != null) {
                     // 租户最高管理员查出所有租户角色
                     administrator = true;
-                    // 查出套餐绑定的所有权限
-                    List<Long> menuIds = tenantPackageMapper.listMenuIdByPackageId(tenantPackageId);
-                    grantedAuthority = menuService.listPermsByMenuIds(menuIds);
+                    grantedAuthority = menuService.listPermsByTenantPackageId(tenantPackageId);
                 } else {
                     // 否则为普通用户
-                    administrator = false;
-                    roles = roleService.listByUserId(userId);
+                    roles = roleService.listInheritedByUserId(userId);
                     // 菜单权限
                     List<Long> roleIds = roles.stream().map(SysRole::getRoleId).collect(Collectors.toList());
                     grantedAuthority = menuService.listPermsByRoleIds(roleIds);

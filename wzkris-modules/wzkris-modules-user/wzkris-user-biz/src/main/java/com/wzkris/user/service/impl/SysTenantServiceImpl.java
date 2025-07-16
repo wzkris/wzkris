@@ -40,8 +40,6 @@ public class SysTenantServiceImpl implements SysTenantService {
 
     private final SysDeptMapper deptMapper;
 
-    private final SysPostMapper postMapper;
-
     private final PasswordEncoderDelegate passwordEncoder;
 
     private final SysTenantMapper tenantMapper;
@@ -77,7 +75,7 @@ public class SysTenantServiceImpl implements SysTenantService {
         user.setTenantId(tenant.getTenantId());
         user.setUsername(username);
         user.setPassword(password);
-        return userService.insertUser(user, null, null);
+        return userService.insertUser(user, null);
     }
 
     @Override
@@ -112,9 +110,6 @@ public class SysTenantServiceImpl implements SysTenantService {
                 LambdaQueryWrapper<SysDept> deptw =
                         Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getTenantId, tenantId);
                 deptMapper.delete(deptw);
-                LambdaQueryWrapper<SysPost> postw =
-                        Wrappers.lambdaQuery(SysPost.class).eq(SysPost::getTenantId, tenantId);
-                postMapper.delete(postw);
             }
             return success;
         });
@@ -145,20 +140,6 @@ public class SysTenantServiceImpl implements SysTenantService {
             Long count = roleMapper.selectCount(
                     Wrappers.lambdaQuery(SysRole.class).eq(SysRole::getTenantId, tenantId));
             return tenant.getRoleLimit() - count > 0;
-        });
-    }
-
-    @Override
-    public boolean checkPostLimit(Long tenantId) {
-        return SysTenant.isSuperTenant(tenantId)
-                || DynamicTenantUtil.ignore(() -> {
-            SysTenant tenant = tenantMapper.selectById(tenantId);
-            if (tenant.getPostLimit() == -1) {
-                return true;
-            }
-            Long count = postMapper.selectCount(
-                    Wrappers.lambdaQuery(SysPost.class).eq(SysPost::getTenantId, tenantId));
-            return tenant.getPostLimit() - count > 0;
         });
     }
 

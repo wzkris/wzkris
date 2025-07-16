@@ -13,7 +13,10 @@ import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.domain.req.SysTenantProfileReq;
 import com.wzkris.user.domain.vo.SysTenantProfileVO;
 import com.wzkris.user.domain.vo.SysTenantUsedQuotaVO;
-import com.wzkris.user.mapper.*;
+import com.wzkris.user.mapper.SysDeptMapper;
+import com.wzkris.user.mapper.SysRoleMapper;
+import com.wzkris.user.mapper.SysTenantMapper;
+import com.wzkris.user.mapper.SysUserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +42,6 @@ public class SysTenantProfileController extends BaseController {
     private final SysUserMapper userMapper;
 
     private final SysRoleMapper roleMapper;
-
-    private final SysPostMapper postMapper;
 
     private final SysDeptMapper deptMapper;
 
@@ -68,7 +69,6 @@ public class SysTenantProfileController extends BaseController {
         SysTenantUsedQuotaVO usedQuotaVO = new SysTenantUsedQuotaVO();
         usedQuotaVO.setAccountHas(Math.toIntExact(userMapper.selectCount(null)));
         usedQuotaVO.setRoleHas(Math.toIntExact(roleMapper.selectCount(null)));
-        usedQuotaVO.setPostHas(Math.toIntExact(postMapper.selectCount(null)));
         usedQuotaVO.setDeptHas(Math.toIntExact(deptMapper.selectCount(null)));
         return ok(usedQuotaVO);
     }

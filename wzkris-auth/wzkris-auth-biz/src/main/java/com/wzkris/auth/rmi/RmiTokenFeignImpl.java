@@ -5,6 +5,7 @@ import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.domain.CorePrincipal;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -17,6 +18,7 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class RmiTokenFeignImpl implements RmiTokenFeign {

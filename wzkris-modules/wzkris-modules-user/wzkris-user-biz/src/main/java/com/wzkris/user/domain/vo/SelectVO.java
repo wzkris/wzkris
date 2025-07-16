@@ -1,6 +1,9 @@
 package com.wzkris.user.domain.vo;
 
-import com.wzkris.user.domain.*;
+import com.wzkris.user.domain.SysRole;
+import com.wzkris.user.domain.SysTenant;
+import com.wzkris.user.domain.SysTenantPackage;
+import com.wzkris.user.domain.SysUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,11 +37,6 @@ public class SelectVO implements Serializable {
     public SelectVO(SysRole role) {
         this.id = role.getRoleId();
         this.label = role.getRoleName();
-    }
-
-    public SelectVO(SysPost post) {
-        this.id = post.getPostId();
-        this.label = post.getPostName();
     }
 
     public SelectVO(SysTenantPackage tenantPackage) {

@@ -23,11 +23,6 @@
             <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-openfeign</artifactId>
-        </dependency>
-
         <!-- Spring OAuth2资源服务器-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

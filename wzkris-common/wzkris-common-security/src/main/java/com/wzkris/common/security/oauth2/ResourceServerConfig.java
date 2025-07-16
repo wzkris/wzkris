@@ -1,8 +1,8 @@
 package com.wzkris.common.security.oauth2;
 
 import com.wzkris.auth.rmi.RmiTokenFeign;
-import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.converter.CustomJwtAuthenticationConverter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
@@ -61,7 +61,7 @@ public final class ResourceServerConfig {
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
                         .requestMatchers(request ->
-                                Boolean.parseBoolean(StringUtil.defaultIfBlank(request.getHeader(HeaderConstants.X_INNER_REQUEST), "false")))
+                                Boolean.parseBoolean(StringUtil.defaultIfBlank(request.getHeader(FeignHeaderConstant.X_INNER_REQUEST), "false")))
                         .permitAll()
                         .requestMatchers("/actuator/**")
                         .hasAuthority("SCOPE_monitor")

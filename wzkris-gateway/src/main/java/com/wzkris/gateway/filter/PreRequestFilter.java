@@ -36,8 +36,6 @@ import java.util.stream.Stream;
 @Component
 public class PreRequestFilter implements GlobalFilter, Ordered {
 
-    private final String access_token = "access_token";
-
     @Autowired
     private PermitAllProperties permitAllProperties;
 

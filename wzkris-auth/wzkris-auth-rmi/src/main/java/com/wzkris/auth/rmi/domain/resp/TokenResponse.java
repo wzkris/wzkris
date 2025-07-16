@@ -21,6 +21,8 @@ public class TokenResponse implements Serializable {
 
     static final String TEMPORARILY_UNAVAILABLE = "temporarily_unavailable";
 
+    static final String FALL_BACK = "fall_back";
+
     private boolean success = false;
 
     private String errorCode;
@@ -56,8 +58,12 @@ public class TokenResponse implements Serializable {
         return resp(errorCode, description, null);
     }
 
-    public static TokenResponse error503(String description) {
+    public static TokenResponse unavailable(String description) {
         return error(TEMPORARILY_UNAVAILABLE, description);
+    }
+
+    public static TokenResponse fallback(String description) {
+        return error(FALL_BACK, description);
     }
 
 }

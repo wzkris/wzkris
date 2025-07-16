@@ -17,18 +17,16 @@ public interface SysUserService {
      *
      * @param user    管理员信息
      * @param roleIds 关联角色
-     * @param postIds 关联岗位
      */
-    boolean insertUser(SysUser user, @Nullable List<Long> roleIds, @Nullable List<Long> postIds);
+    boolean insertUser(SysUser user, @Nullable List<Long> roleIds);
 
     /**
      * 修改管理员信息
      *
      * @param user    管理员信息
      * @param roleIds 关联角色
-     * @param postIds 关联岗位
      */
-    boolean updateUser(SysUser user, @Nullable List<Long> roleIds, @Nullable List<Long> postIds);
+    boolean updateUser(SysUser user, @Nullable List<Long> roleIds);
 
     /**
      * 硬删除用户
@@ -38,12 +36,12 @@ public interface SysUserService {
     boolean deleteByIds(List<Long> userIds);
 
     /**
-     * 批量授权角色
+     * 修改用户角色
      *
-     * @param userId  管理员ID
+     * @param userId  用户ID
      * @param roleIds 角色组
      */
-    boolean allocateRoles(Long userId, List<Long> roleIds);
+    boolean updateGrantRoles(Long userId, List<Long> roleIds);
 
     /**
      * 校验用户名是否被使用

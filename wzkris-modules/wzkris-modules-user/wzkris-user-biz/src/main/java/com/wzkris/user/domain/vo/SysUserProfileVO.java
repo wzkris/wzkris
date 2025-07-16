@@ -20,9 +20,6 @@ public class SysUserProfileVO {
     @Schema(description = "角色信息")
     private String roleGroup;
 
-    @Schema(description = "岗位信息")
-    private String postGroup;
-
     @Data
     public static class UserInfo {
 
