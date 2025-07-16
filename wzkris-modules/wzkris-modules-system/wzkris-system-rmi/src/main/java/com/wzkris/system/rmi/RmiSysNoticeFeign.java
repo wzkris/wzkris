@@ -6,6 +6,7 @@ import com.wzkris.system.rmi.domain.req.SendNoticeReq;
 import com.wzkris.system.rmi.fallback.RmiSysNoticeFeignFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author : wzkris
@@ -22,6 +23,6 @@ public interface RmiSysNoticeFeign extends RmiFeign {
      * 发送通知
      */
     @PostMapping(prefix + "/send_notice")
-    void send2Users(SendNoticeReq sendNoticeReq);
+    void send2Users(@RequestBody SendNoticeReq sendNoticeReq);
 
 }
