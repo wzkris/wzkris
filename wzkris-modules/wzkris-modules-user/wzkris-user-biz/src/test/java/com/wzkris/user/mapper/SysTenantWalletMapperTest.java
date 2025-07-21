@@ -39,6 +39,10 @@ public class SysTenantWalletMapperTest {
         this.delete(tenantId);
     }
 
+    String generateId() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
     Long insert() {
         SysTenantWallet wallet = new SysTenantWallet(IdWorker.getId());
         int rows = tenantWalletMapper.insert(wallet);
@@ -47,7 +51,7 @@ public class SysTenantWalletMapperTest {
     }
 
     void incryBalance(Long tenantId, BigDecimal amount) {
-        boolean rows = sysTenantWalletService.incryBalance(tenantId, amount, UUID.randomUUID().toString(), "1", "");
+        boolean rows = sysTenantWalletService.incryBalance(tenantId, amount, generateId(), "1", "");
         Assert.state(rows, "增加余额失败");
         SysTenantWalletRecord record =
                 tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
@@ -57,7 +61,7 @@ public class SysTenantWalletMapperTest {
     }
 
     void decryBalance(Long tenantId, BigDecimal amount) {
-        boolean rows = sysTenantWalletService.decryBalance(tenantId, amount, UUID.randomUUID().toString(), "0", "");
+        boolean rows = sysTenantWalletService.decryBalance(tenantId, amount, generateId(), "0", "");
         Assert.state(rows, "扣减余额失败");
         SysTenantWalletRecord record =
                 tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(SysTenantWalletRecord.class)
