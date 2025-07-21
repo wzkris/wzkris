@@ -18,7 +18,6 @@
     </description>
 
     <modules>
-        <module>wzkris-common-bom</module>
         <module>wzkris-common-captcha</module>
         <module>wzkris-common-core</module>
         <module>wzkris-common-datasource</module>

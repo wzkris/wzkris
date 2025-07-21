@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wzkris</groupId>
-    <artifactId>wzkris-common-bom</artifactId>
+    <artifactId>wzkris-bom</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <name>wzkris-common-bom</name>
+    <name>wzkris-bom</name>
 
     <description>
-        thingslink依赖清单
+        依赖清单
     </description>
 
     <properties>

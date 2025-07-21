@@ -40,7 +40,7 @@
 
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-bom</artifactId>
+                <artifactId>wzkris-bom</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -147,6 +147,7 @@
 
     <modules>
         <module>wzkris-auth</module>
+        <module>wzkris-bom</module>
         <module>wzkris-gateway</module>
         <module>wzkris-extends</module>
         <module>wzkris-modules</module>
