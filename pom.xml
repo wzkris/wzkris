@@ -158,7 +158,6 @@
         <profile>
             <id>dev</id>
             <properties>
-                <!-- 环境标识，需要与配置文件的名称相对应 -->
                 <profiles.active>dev</profiles.active>
                 <nacos.server>localhost:8848</nacos.server>
                 <nacos.username>dev</nacos.username>
@@ -167,7 +166,6 @@
                 <nacos.group>APPLICATION_GROUP</nacos.group>
             </properties>
             <activation>
-                <!-- 默认环境 -->
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>

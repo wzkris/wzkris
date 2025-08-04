@@ -3,16 +3,13 @@ server:
   port: 8080
   http2:
     enabled: true
-# Spring
+
 spring:
   application:
-    # 应用名称
     name: wzkris-gateway
   cloud:
     nacos:
-      # 注册地址
       server-addr: @nacos.server@
-      #权限认证
       username: @nacos.username@
       password: @nacos.password@
       discovery:
@@ -41,5 +38,5 @@ spring:
             rule-type: flow
   config:
     import:
-      - optional:nacos:application-common.yml
+      - optional:nacos:common.yml?group=COMMON_GROUP
       - optional:nacos:${spring.application.name}.yml

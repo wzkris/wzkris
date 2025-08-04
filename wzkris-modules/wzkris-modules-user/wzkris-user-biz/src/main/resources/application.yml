@@ -1,18 +1,15 @@
 server:
   port: 8000
-# Spring
+
 spring:
   application:
-    # 应用名称
     name: wzkris-user
   profiles:
     active: @profiles.active@
     include: dubbo, feign
   cloud:
     nacos:
-      # 注册地址
       server-addr: @nacos.server@
-      # 权限认证
       username: @nacos.username@
       password: @nacos.password@
       discovery:
@@ -23,5 +20,6 @@ spring:
         group: @nacos.group@
   config:
     import:
-      - optional:nacos:application-common.yml
+      - optional:nacos:common.yml?group=COMMON_GROUP
+      - optional:nacos:redis.yml?group=COMMON_GROUP
       - optional:nacos:${spring.application.name}.yml
