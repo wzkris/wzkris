@@ -8,7 +8,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.rmi.RmiAppUserFeign;
+import com.wzkris.user.rmi.AppUserFeign;
 import com.wzkris.user.rmi.domain.resp.AppUserResp;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,12 @@ public class ClientUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final RmiAppUserFeign rmiAppUserFeign;
+    private final AppUserFeign appUserFeign;
 
     @Nullable
     @Override
     public ClientUser loadUserByPhoneNumber(String phoneNumber) {
-        AppUserResp userResp = rmiAppUserFeign.getByPhoneNumber(phoneNumber);
+        AppUserResp userResp = appUserFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber, 600);
@@ -41,7 +41,7 @@ public class ClientUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public ClientUser loadUserByWechat(String identifierType, String wxCode) {
-        AppUserResp userResp = rmiAppUserFeign.getOrRegisterByIdentifier(identifierType, wxCode);
+        AppUserResp userResp = appUserFeign.getOrRegisterByIdentifier(identifierType, wxCode);
 
         if (userResp == null) {
             return null;

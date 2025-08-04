@@ -2,6 +2,7 @@ package com.wzkris.user.rmi.domain.resp;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**

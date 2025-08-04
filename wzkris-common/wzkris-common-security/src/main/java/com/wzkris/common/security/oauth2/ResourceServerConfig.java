@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.auth.rmi.RmiTokenFeign;
+import com.wzkris.auth.rmi.TokenFeign;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import com.wzkris.common.security.config.PermitAllProperties;
@@ -85,8 +85,8 @@ public final class ResourceServerConfig {
     }
 
     @Bean
-    public SecurityContextRepository securityContextRepository(RmiTokenFeign rmiTokenFeign, JwtDecoder jwtDecoder) {
-        return new RmiSecurityContextRepository(rmiTokenFeign, jwtDecoder);
+    public SecurityContextRepository securityContextRepository(TokenFeign tokenFeign, JwtDecoder jwtDecoder) {
+        return new RmiSecurityContextRepository(tokenFeign, jwtDecoder);
     }
 
     @Bean

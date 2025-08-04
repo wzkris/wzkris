@@ -10,10 +10,10 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.AddressUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.system.rmi.RmiSysLogFeign;
+import com.wzkris.system.rmi.SysLogFeign;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
-import com.wzkris.user.rmi.RmiAppUserFeign;
-import com.wzkris.user.rmi.RmiSysUserFeign;
+import com.wzkris.user.rmi.AppUserFeign;
+import com.wzkris.user.rmi.SysUserFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +37,11 @@ public class LoginTokenEventListener {
 
     private final TokenService tokenService;
 
-    private final RmiSysLogFeign rmiSysLogFeign;
+    private final SysLogFeign sysLogFeign;
 
-    private final RmiSysUserFeign rmiSysUserFeign;
+    private final SysUserFeign sysUserFeign;
 
-    private final RmiAppUserFeign rmiAppUserFeign;
+    private final AppUserFeign appUserFeign;
 
     @Async
     @EventListener
@@ -88,7 +88,7 @@ public class LoginTokenEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
-            rmiSysUserFeign.updateLoginInfo(loginInfoReq);
+            sysUserFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
         final LoginLogReq loginLogReq = new LoginLogReq();
@@ -103,7 +103,7 @@ public class LoginTokenEventListener {
         loginLogReq.setLoginLocation(loginLocation);
         loginLogReq.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
         loginLogReq.setBrowser(browser);
-        rmiSysLogFeign.saveLoginlog(loginLogReq);
+        sysLogFeign.saveLoginlog(loginLogReq);
     }
 
     private void handleClientUser(LoginTokenEvent event, ClientUser user) {
@@ -114,7 +114,7 @@ public class LoginTokenEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getUserId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(new Date());
-            rmiAppUserFeign.updateLoginInfo(loginInfoReq);
+            appUserFeign.updateLoginInfo(loginInfoReq);
         }
     }
 

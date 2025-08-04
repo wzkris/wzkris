@@ -1,7 +1,9 @@
 package com.wzkris.auth.rmi.domain.req;
 
 import com.wzkris.common.core.annotation.PhoneNumber;
+
 import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -2,6 +2,7 @@ package com.wzkris.user.rmi.domain.req;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

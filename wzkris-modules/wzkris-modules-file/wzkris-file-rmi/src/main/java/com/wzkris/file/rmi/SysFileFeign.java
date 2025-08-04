@@ -8,6 +8,6 @@ import com.wzkris.common.openfeign.core.RmiFeign;
  * @description : RPC -- 文件服务
  * @date : 2023/3/13 16:24
  */
-public interface RmiSysFileFeign extends RmiFeign {
+public interface SysFileFeign extends RmiFeign {
 
 }

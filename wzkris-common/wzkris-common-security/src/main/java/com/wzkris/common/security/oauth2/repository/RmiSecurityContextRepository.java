@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.repository;
 
-import com.wzkris.auth.rmi.RmiTokenFeign;
+import com.wzkris.auth.rmi.TokenFeign;
 import com.wzkris.auth.rmi.domain.ClientUser;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
@@ -46,12 +46,12 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
 
     private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
 
-    private final RmiTokenFeign rmiTokenFeign;
+    private final TokenFeign tokenFeign;
 
     private final JwtDecoder jwtDecoder;
 
-    public RmiSecurityContextRepository(RmiTokenFeign rmiTokenFeign, JwtDecoder jwtDecoder) {
-        this.rmiTokenFeign = rmiTokenFeign;
+    public RmiSecurityContextRepository(TokenFeign tokenFeign, JwtDecoder jwtDecoder) {
+        this.tokenFeign = tokenFeign;
         this.jwtDecoder = jwtDecoder;
     }
 
@@ -85,7 +85,7 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
     }
 
     private void generateTenantToken(HttpServletRequest request, String token, SecurityContext ctx) {
-        TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(token));
+        TokenResponse tokenResponse = tokenFeign.validateUser(new TokenReq(token));
         if (tokenResponse.isSuccess()) {
             ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request, token));
         }
@@ -97,7 +97,7 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
             String sub = jwt.getClaimAsString(JwtClaimNames.SUB);
             Long userId = sub == null ? SecurityConstants.DEFAULT_USER_ID : Long.valueOf(sub);
             Supplier<ClientUser> supplier = () -> {
-                TokenResponse tokenResponse = rmiTokenFeign.checkUserToken(new TokenReq(token));
+                TokenResponse tokenResponse = tokenFeign.validateUser(new TokenReq(token));
                 if (tokenResponse.isSuccess()) {
                     return (ClientUser) tokenResponse.getPrincipal();
                 }

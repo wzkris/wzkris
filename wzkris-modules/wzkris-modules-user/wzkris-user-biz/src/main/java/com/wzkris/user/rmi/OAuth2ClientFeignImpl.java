@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Hidden
 @RestController
 @RequiredArgsConstructor
-public class RmiOAuth2ClientFeignImpl implements RmiOAuth2ClientFeign {
+public class OAuth2ClientFeignImpl implements OAuth2ClientFeign {
 
     private final OAuth2ClientMapper oAuth2ClientMapper;
 

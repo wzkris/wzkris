@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Hidden
 @RestController
 @RequiredArgsConstructor
-public class RmiSysUserFeignImpl implements RmiSysUserFeign {
+public class SysUserFeignImpl implements SysUserFeign {
 
     private final SysUserMapper userMapper;
 

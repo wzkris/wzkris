@@ -21,14 +21,14 @@ import java.util.stream.Collectors;
 @Hidden
 @RestController
 @RequiredArgsConstructor
-public class RmiTokenFeignImpl implements RmiTokenFeign {
+public class TokenFeignImpl implements TokenFeign {
 
     private final TokenService tokenService;
 
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
 
     @Override
-    public TokenResponse checkOAuth2Token(TokenReq tokenReq) {
+    public TokenResponse validateOAuth2(TokenReq tokenReq) {
         OAuth2Authorization oAuth2Authorization =
                 oAuth2AuthorizationService.findByToken(tokenReq.getToken(), OAuth2TokenType.ACCESS_TOKEN);
         if (oAuth2Authorization == null) {
@@ -52,7 +52,7 @@ public class RmiTokenFeignImpl implements RmiTokenFeign {
     }
 
     @Override
-    public TokenResponse checkUserToken(TokenReq tokenReq) {
+    public TokenResponse validateUser(TokenReq tokenReq) {
         CorePrincipal principal = tokenService.loadByAccessToken(tokenReq.getToken());
 
         if (principal == null) {
