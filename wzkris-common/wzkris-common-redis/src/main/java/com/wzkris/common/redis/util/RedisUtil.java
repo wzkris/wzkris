@@ -1,13 +1,14 @@
 package com.wzkris.common.redis.util;
 
 import com.wzkris.common.core.utils.SpringUtil;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * spring redis 工具类
@@ -107,11 +108,10 @@ public class RedisUtil {
      * 获取过期时间
      *
      * @param key Redis键
-     * @return 有效时间 秒
+     * @return 有效时间
      */
     public static long getExpire(final String key) {
-        long time = redissonclient.getBucket(key).remainTimeToLive();
-        return time <= 0 ? time : time / 1000;
+        return redissonclient.getBucket(key).remainTimeToLive();
     }
 
     public static boolean expire(final String key, final long timeout) {
@@ -150,7 +150,7 @@ public class RedisUtil {
      * @param key 键
      * @return true 存在 false不存在
      */
-    public static boolean hasKey(final String key) {
+    public static boolean exist(final String key) {
         return redissonclient.getBucket(key).isExists();
     }
 
@@ -158,7 +158,7 @@ public class RedisUtil {
      * @param key 键
      * @return 返回个数
      */
-    public static long countKey(final List<String> key) {
+    public static long countExists(final List<String> key) {
         return redissonclient.getKeys().countExists(key.toArray(new String[0]));
     }
 
