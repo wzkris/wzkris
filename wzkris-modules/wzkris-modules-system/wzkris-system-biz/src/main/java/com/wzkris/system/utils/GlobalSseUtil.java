@@ -41,6 +41,34 @@ public class GlobalSseUtil {
 
     private static final String CLOSE_CHANNEL = "global_sse_close";
 
+    static {
+        // 消息发布
+        RTopic msgChannel = getTopic(MSG_CHANNEL);
+        msgChannel.addListener(PublishMessageEvent.class, (channel, message) -> {
+            if (log.isDebugEnabled()) {
+                log.debug("SSE连接: {}, 收到消息{}", message.getIds(), message);
+            }
+            // 如果key不为空就按照key发消息 如果为空就群发
+            if (CollectionUtils.isNotEmpty(message.getIds())) {
+                SseUtil.sendBatch(message.getIds(), message.getMessage().getType(), message.getMessage());
+            } else {
+                SseUtil.sendAll(message.getMessage().getType(), message.getMessage());
+            }
+        });
+
+        // 断开连接
+        RTopic closeChannel = getTopic(CLOSE_CHANNEL);
+        closeChannel.addListener(Serializable.class, (channel, id) -> {
+            if (SseUtil.disconnect(id)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("SSE断开连接： {}", id);
+                }
+                getConnectorsZSet().remove(id);
+                getConnectorsHash().remove(id);
+            }
+        });
+    }
+
     private static RTopic getTopic(String topic) {
         return redissonClient.getTopic(topic);
     }
@@ -106,34 +134,6 @@ public class GlobalSseUtil {
 
     public static void disconnect(Serializable id) {
         getTopic(CLOSE_CHANNEL).publish(id);
-    }
-
-    static {
-        // 消息发布
-        RTopic msgChannel = getTopic(MSG_CHANNEL);
-        msgChannel.addListener(PublishMessageEvent.class, (channel, message) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("SSE连接: {}, 收到消息{}", message.getIds(), message);
-            }
-            // 如果key不为空就按照key发消息 如果为空就群发
-            if (CollectionUtils.isNotEmpty(message.getIds())) {
-                SseUtil.sendBatch(message.getIds(), message.getMessage().getType(), message.getMessage());
-            } else {
-                SseUtil.sendAll(message.getMessage().getType(), message.getMessage());
-            }
-        });
-
-        // 断开连接
-        RTopic closeChannel = getTopic(CLOSE_CHANNEL);
-        closeChannel.addListener(Serializable.class, (channel, id) -> {
-            if (SseUtil.disconnect(id)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("SSE断开连接： {}", id);
-                }
-                getConnectorsZSet().remove(id);
-                getConnectorsHash().remove(id);
-            }
-        });
     }
 
     @Data

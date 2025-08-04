@@ -150,7 +150,7 @@ public class CaptchaService {
      * 校验账号是否被冻结
      */
     public void validateLock(String key) {
-        if (RedisUtil.hasKey(LOCK_PREFIX + key)) {
+        if (RedisUtil.exist(LOCK_PREFIX + key)) {
             throw new CaptchaException(BizCode.TOO_MANY_REQUESTS.value(), "service.busy");
         }
     }

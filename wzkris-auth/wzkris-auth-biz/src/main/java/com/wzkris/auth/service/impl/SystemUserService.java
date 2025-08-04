@@ -15,7 +15,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.UserAgentUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.rmi.RmiSysUserFeign;
+import com.wzkris.user.rmi.SysUserFeign;
 import com.wzkris.user.rmi.domain.req.QueryPermsReq;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.rmi.domain.resp.SysUserResp;
@@ -38,14 +38,14 @@ public class SystemUserService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final RmiSysUserFeign rmiSysUserFeign;
+    private final SysUserFeign sysUserFeign;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public CorePrincipal loadUserByPhoneNumber(String phoneNumber) {
-        SysUserResp userResp = rmiSysUserFeign.getByPhoneNumber(phoneNumber);
+        SysUserResp userResp = sysUserFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.lockAccount(phoneNumber, 600);
@@ -63,7 +63,7 @@ public class SystemUserService extends UserInfoTemplate {
     @Nullable
     @Override
     public CorePrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        SysUserResp userResp = rmiSysUserFeign.getByUsername(username);
+        SysUserResp userResp = sysUserFeign.getByUsername(username);
 
         if (userResp == null) {
             captchaService.lockAccount(username, 600);
@@ -96,7 +96,7 @@ public class SystemUserService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        SysPermissionResp permissions = rmiSysUserFeign.getPermission(
+        SysPermissionResp permissions = sysUserFeign.getPermission(
                 new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
 
         SystemUser systemUser = new SystemUser(userResp.getUserId(), new HashSet<>(permissions.getGrantedAuthority()));

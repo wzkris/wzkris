@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Hidden
 @RestController
 @RequiredArgsConstructor
-public class RmiAppUserFeignImpl implements RmiAppUserFeign {
+public class AppUserFeignImpl implements AppUserFeign {
 
     private final AppUserMapper appUserMapper;
 

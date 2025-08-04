@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Hidden
 @RestController
 @RequiredArgsConstructor
-public class RmiSysNoticeFeignImpl implements RmiSysNoticeFeign {
+public class SysNoticeFeignImpl implements SysNoticeFeign {
 
     private final SysNoticeService noticeService;
 

@@ -6,7 +6,7 @@ import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import com.wzkris.user.rmi.domain.req.QueryPermsReq;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.rmi.domain.resp.SysUserResp;
-import com.wzkris.user.rmi.fallback.RmiSysUserFeignFallback;
+import com.wzkris.user.rmi.fallback.SysUserFeignFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : rpc - 系统用户
  * @date : 2024/4/15 16:20
  */
-@FeignClient(name = ServiceIdConstant.USER, contextId = "RmiSysUserFeign", fallbackFactory = RmiSysUserFeignFallback.class)
-public interface RmiSysUserFeign extends RmiFeign {
+@FeignClient(name = ServiceIdConstant.USER, contextId = "SysUserFeign", fallbackFactory = SysUserFeignFallback.class)
+public interface SysUserFeign extends RmiFeign {
 
     String prefix = "/rmi_sys_user";
 

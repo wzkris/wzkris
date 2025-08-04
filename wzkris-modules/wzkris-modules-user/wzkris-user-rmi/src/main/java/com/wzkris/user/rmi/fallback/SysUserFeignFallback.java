@@ -1,20 +1,20 @@
 package com.wzkris.user.rmi.fallback;
 
 import com.wzkris.common.openfeign.core.FeignLogAggregator;
-import com.wzkris.user.rmi.RmiSysUserFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import com.wzkris.user.rmi.domain.req.QueryPermsReq;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.rmi.domain.resp.SysUserResp;
+import com.wzkris.user.rmi.SysUserFeign;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RmiSysUserFeignFallback implements FallbackFactory<RmiSysUserFeign> {
+public class SysUserFeignFallback implements FallbackFactory<SysUserFeign> {
 
     @Override
-    public RmiSysUserFeign create(Throwable cause) {
-        return new RmiSysUserFeign() {
+    public SysUserFeign create(Throwable cause) {
+        return new SysUserFeign() {
             @Override
             public SysUserResp getByUsername(String username) {
                 FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);

@@ -1,6 +1,6 @@
 package com.wzkris.user.controller;
 
-import com.wzkris.auth.rmi.RmiCaptchaFeign;
+import com.wzkris.auth.rmi.CaptchaFeign;
 import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -49,7 +49,7 @@ public class SysUserProfileController extends BaseController {
 
     private final SysDeptMapper deptMapper;
 
-    private final RmiCaptchaFeign rmiCaptchaFeign;
+    private final CaptchaFeign captchaFeign;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -101,7 +101,7 @@ public class SysUserProfileController extends BaseController {
         }
         // 验证
         SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        if (!rmiCaptchaFeign.validateSms(smsCheckReq)) {
+        if (!captchaFeign.validateSms(smsCheckReq)) {
             return err412("验证码错误");
         }
 

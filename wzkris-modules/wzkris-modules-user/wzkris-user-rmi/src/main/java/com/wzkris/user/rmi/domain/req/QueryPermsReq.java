@@ -1,6 +1,7 @@
 package com.wzkris.user.rmi.domain.req;
 
 import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

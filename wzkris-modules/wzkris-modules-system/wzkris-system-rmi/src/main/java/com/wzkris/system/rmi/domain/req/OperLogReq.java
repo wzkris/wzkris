@@ -1,10 +1,12 @@
 package com.wzkris.system.rmi.domain.req;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import lombok.Data;
 
 /**

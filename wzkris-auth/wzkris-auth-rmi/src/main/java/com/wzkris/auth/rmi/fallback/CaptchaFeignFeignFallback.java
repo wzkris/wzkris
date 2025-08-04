@@ -1,17 +1,17 @@
 package com.wzkris.auth.rmi.fallback;
 
-import com.wzkris.auth.rmi.RmiCaptchaFeign;
+import com.wzkris.auth.rmi.CaptchaFeign;
 import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
 import com.wzkris.common.openfeign.core.FeignLogAggregator;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RmiCaptchaFeignFeignFallback implements FallbackFactory<RmiCaptchaFeign> {
+public class CaptchaFeignFeignFallback implements FallbackFactory<CaptchaFeign> {
 
     @Override
-    public RmiCaptchaFeign create(Throwable cause) {
-        return new RmiCaptchaFeign() {
+    public CaptchaFeign create(Throwable cause) {
+        return new CaptchaFeign() {
             @Override
             public boolean validateSms(SmsCheckReq smsCheckReq) {
                 FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);

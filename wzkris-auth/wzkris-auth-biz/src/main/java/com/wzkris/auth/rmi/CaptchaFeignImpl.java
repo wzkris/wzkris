@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Hidden
 @RestController
 @RequiredArgsConstructor
-public class RmiCaptchaFeignImpl implements RmiCaptchaFeign {
+public class CaptchaFeignImpl implements CaptchaFeign {
 
     private final CaptchaService captchaService;
 

@@ -13,7 +13,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
 import com.wzkris.common.security.utils.SystemUserUtil;
-import com.wzkris.system.rmi.RmiSysLogFeign;
+import com.wzkris.system.rmi.SysLogFeign;
 import com.wzkris.system.rmi.domain.req.OperLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,12 +55,12 @@ public class OperateLogAspect implements ApplicationRunner {
 
     private final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
-    private final RmiSysLogFeign rmiSysLogFeign;
+    private final SysLogFeign sysLogFeign;
 
     private boolean shutdown = false;
 
-    public OperateLogAspect(RmiSysLogFeign rmiSysLogFeign) {
-        this.rmiSysLogFeign = rmiSysLogFeign;
+    public OperateLogAspect(SysLogFeign sysLogFeign) {
+        this.sysLogFeign = sysLogFeign;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // 配置null不序列化, 避免大量无用参数存入DB
         executor.setThreadNamePrefix("OperateLogAspectTask-");
         executor.setCorePoolSize(2);
@@ -105,7 +105,7 @@ public class OperateLogAspect implements ApplicationRunner {
                 }
             } catch (InterruptedException e) {
                 if (!batchQ.isEmpty()) {
-                    rmiSysLogFeign.saveOperlogs(batchQ);
+                    sysLogFeign.saveOperlogs(batchQ);
                 }
                 if (shutdown) {
                     break;
@@ -123,7 +123,7 @@ public class OperateLogAspect implements ApplicationRunner {
         if (!batchQ.isEmpty()) {
             ArrayList<OperLogReq> operLogReqs = new ArrayList<>(batchQ);
             executor.execute(() -> {
-                rmiSysLogFeign.saveOperlogs(operLogReqs);
+                sysLogFeign.saveOperlogs(operLogReqs);
             });
             batchQ.clear();
         }

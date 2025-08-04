@@ -143,13 +143,13 @@ public class CapHandler {
 
     public Boolean validateToken(String tokenStr) throws IllegalArgumentException {
         if (StringUtil.isBlank(tokenStr)) {
-            throw new CaptchaException("captcha.error");
+            return false;
         }
 
         // 提取 id 和 verToken
         final String[] splits = tokenStr.split(":", 2);
         if (splits.length < 2) {
-            throw new CaptchaException("captcha.error");
+            return false;
         }
 
         // 当前日期时间
