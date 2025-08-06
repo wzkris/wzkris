@@ -1,12 +1,7 @@
 package com.wzkris.common.captcha.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.wzkris.common.captcha.model.Token;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,21 +10,14 @@ import java.util.Date;
  * @author wuhunyu
  * @date 2025/06/16 18:34
  **/
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class RedeemChallengeResponse implements Serializable {
+public record RedeemChallengeResponse(boolean success, String message, String token, Date expires) {
 
-    @Serial
-    private static final long serialVersionUID = 2634742622684976147L;
+    public static RedeemChallengeResponse error(String message) {
+        return new RedeemChallengeResponse(false, message, null, null);
+    }
 
-    private Boolean success;
-
-    private String message;
-
-    private String token;
-
-    private Date expires;
+    public static RedeemChallengeResponse ok(Token token) {
+        return new RedeemChallengeResponse(true, null, token.token(), token.expires());
+    }
 
 }

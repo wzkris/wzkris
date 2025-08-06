@@ -30,6 +30,6 @@ public class RedeemChallengeRequest implements Serializable {
     private String token;
 
     @NotEmpty(message = "Solutions is not allowed to be empty")
-    private List<List<Object>> solutions;
+    private List<Integer> solutions;
 
 }

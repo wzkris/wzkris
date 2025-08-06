@@ -33,7 +33,7 @@ public class CapProperties {
     /**
      * 挑战大小
      */
-    private int challengeSize = 32;
+    private int challengeLength = 32;
 
     /**
      * 挑战难度

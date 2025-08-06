@@ -2,9 +2,10 @@ package com.wzkris.common.captcha.service;
 
 import com.wzkris.common.captcha.exception.ChallengeStoreException;
 import com.wzkris.common.captcha.handler.CapHandler;
+import com.wzkris.common.captcha.model.ChallengeData;
+import com.wzkris.common.captcha.model.Token;
 import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
-import com.wzkris.common.captcha.response.ChallengeResponse;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
@@ -40,35 +41,23 @@ public class CaptchaService {
         this.capProperties = capProperties;
     }
 
-    public ChallengeResponse createChallenge() throws ChallengeStoreException {
-        final var challenge = capHandler.createChallenge();
-        return ChallengeResponse.builder()
-                .challenge(challenge.getChallenge())
-                .expires(challenge.getExpires())
-                .token(challenge.getToken())
-                .build();
+    public ChallengeData createChallenge() throws ChallengeStoreException {
+        return capHandler.createChallenge();
     }
 
     public RedeemChallengeResponse redeemChallenge(final RedeemChallengeRequest redeemChallengeRequest) {
         try {
-            final var token = capHandler.redeemChallenge(
+            final Token token = capHandler.redeemChallenge(
                     redeemChallengeRequest.getToken(),
                     redeemChallengeRequest.getSolutions()
             );
-            return RedeemChallengeResponse.builder()
-                    .success(true)
-                    .token(token.getToken())
-                    .expires(token.getExpires())
-                    .build();
+            return RedeemChallengeResponse.ok(token);
         } catch (IllegalArgumentException | IllegalStateException | ChallengeStoreException e) {
-            return RedeemChallengeResponse.builder()
-                    .success(false)
-                    .message(e.getMessage())
-                    .build();
+            return RedeemChallengeResponse.error(e.getMessage());
         }
     }
 
-    public Boolean validateToken(final String token) {
+    public Boolean validateChallengeToken(final String token) {
         return capHandler.validateToken(token);
     }
 

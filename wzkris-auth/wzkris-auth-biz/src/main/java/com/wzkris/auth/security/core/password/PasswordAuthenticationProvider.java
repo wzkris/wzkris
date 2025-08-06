@@ -53,7 +53,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
         }
 
-        boolean valid = captchaService.validateToken(authenticationToken.getCaptchaId());
+        boolean valid = captchaService.validateChallengeToken(authenticationToken.getCaptchaId());
         if (!valid) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
         }
