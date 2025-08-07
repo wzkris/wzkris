@@ -48,12 +48,12 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         try {
             // 校验是否被冻结
-            captchaService.validateLock(authenticationToken.getUsername());
+            captchaService.validateAccount(authenticationToken.getUsername());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
         }
 
-        boolean valid = captchaService.validateChallengeToken(authenticationToken.getCaptchaId());
+        boolean valid = captchaService.validateChallenge(authenticationToken.getCaptchaId());
         if (!valid) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
         }

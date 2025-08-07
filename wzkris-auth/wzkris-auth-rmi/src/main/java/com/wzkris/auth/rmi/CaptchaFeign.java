@@ -1,6 +1,6 @@
 package com.wzkris.auth.rmi;
 
-import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
+import com.wzkris.auth.rmi.domain.req.CaptchaCheckReq;
 import com.wzkris.auth.rmi.fallback.CaptchaFeignFeignFallback;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
@@ -23,7 +23,7 @@ public interface CaptchaFeign extends RmiFeign {
     /**
      * 校验手机号验证码
      */
-    @PostMapping(prefix + "/validate_sms")
-    boolean validateSms(@Valid @RequestBody SmsCheckReq smsCheckReq);
+    @PostMapping(prefix + "/validate")
+    boolean validateCaptcha(@Valid @RequestBody CaptchaCheckReq captchaCheckReq);
 
 }

@@ -16,9 +16,10 @@ import java.util.List;
  * @author wzkris
  **/
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RedisUtil {
+public abstract class RedisUtil {
 
-    private static final RedissonClient redissonclient = SpringUtil.getFactory().getBean(RedissonClient.class);
+    private static final RedissonClient redissonclient
+            = SpringUtil.getFactory().getBean(RedissonClient.class);
 
     public static RedissonClient getClient() {
         return redissonclient;
@@ -85,6 +86,13 @@ public class RedisUtil {
     }
 
     /**
+     * 获取脚本
+     */
+    public static RScript getScript() {
+        return redissonclient.getScript();
+    }
+
+    /**
      * 获得缓存Map
      *
      * @param key 缓存的键值
@@ -114,10 +122,6 @@ public class RedisUtil {
         return redissonclient.getBucket(key).remainTimeToLive();
     }
 
-    public static boolean expire(final String key, final long timeout) {
-        return expire(key, Duration.ofSeconds(timeout));
-    }
-
     /**
      * 设置有效时间
      *
@@ -127,10 +131,6 @@ public class RedisUtil {
      */
     public static boolean expire(final String key, final Duration duration) {
         return redissonclient.getBucket(key).expire(duration);
-    }
-
-    public static boolean expireIfSet(final String key, final long timeout) {
-        return expireIfSet(key, Duration.ofSeconds(timeout));
     }
 
     /**
@@ -180,4 +180,5 @@ public class RedisUtil {
     public static RLock getLock(final String key) {
         return redissonclient.getLock(key);
     }
+
 }

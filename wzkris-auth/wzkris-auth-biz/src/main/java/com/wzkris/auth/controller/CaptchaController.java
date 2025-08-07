@@ -54,7 +54,7 @@ public class CaptchaController {
     @Operation(summary = "短信验证码")
     @PostMapping("/sms_code")
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
-        boolean valid = captchaService.validateChallengeToken(req.getCaptchaId());
+        boolean valid = captchaService.validateChallenge(req.getCaptchaId());
         if (!valid) {
             return err412("验证码异常");
         }

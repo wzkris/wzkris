@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.auth.rmi.CaptchaFeign;
-import com.wzkris.auth.rmi.domain.req.SmsCheckReq;
+import com.wzkris.auth.rmi.domain.req.CaptchaCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -32,14 +32,14 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author wzkris
  */
-@Tag(name = "个人信息")
+@Tag(name = "个人页面信息")
 @RestController
 @RequestMapping("/user_profile")
 @IgnoreTenant(value = false, forceTenantId = "@su.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class SysUserProfileController extends BaseController {
 
-    private static final String PROFILE_KEY = "user:profile";
+    private final String profile_prefix = "user:profile";
 
     private final SysUserMapper userMapper;
 
@@ -55,24 +55,25 @@ public class SysUserProfileController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping
-    @Cacheable(cacheNames = PROFILE_KEY + "#1800#600", key = "@su.getUserId()")
+    @Cacheable(cacheNames = profile_prefix + "#3600#3600", key = "@su.getUserId()")
     public Result<SysUserProfileVO> profile() {
         SysUser user = userMapper.selectById(SystemUserUtil.getUserId());
 
         if (user == null) {// 降级会走到这
             user = new SysUser();
         }
-        SysUserProfileVO.UserInfo userInfo = new SysUserProfileVO.UserInfo();
-        userInfo.setUsername(user.getUsername());
-        userInfo.setAvatar(user.getAvatar());
-        userInfo.setNickname(user.getNickname());
-        userInfo.setEmail(user.getEmail());
-        userInfo.setPhoneNumber(user.getPhoneNumber());
-        userInfo.setGender(user.getGender());
-        userInfo.setLoginDate(user.getLoginDate());
-
         SysUserProfileVO profileVO = new SysUserProfileVO();
-        profileVO.setUser(userInfo);
+        profileVO.setAdmin(SystemUserUtil.isAdmin());
+        profileVO.setSuperTenant(SystemUserUtil.isSuperTenant());
+        profileVO.setUsername(SystemUserUtil.getUsername());
+        profileVO.setAuthorities(SystemUserUtil.getAuthorities());
+        profileVO.setAvatar(user.getAvatar());
+        profileVO.setNickname(user.getNickname());
+        profileVO.setEmail(user.getEmail());
+        profileVO.setPhoneNumber(user.getPhoneNumber());
+        profileVO.setGender(user.getGender());
+        profileVO.setLoginDate(user.getLoginDate());
+
         profileVO.setDeptName(deptMapper.selectDeptNameById(user.getDeptId()));
         profileVO.setRoleGroup(roleService.getRoleGroup());
         return ok(profileVO);
@@ -81,7 +82,7 @@ public class SysUserProfileController extends BaseController {
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
     @PostMapping
-    @CacheEvict(cacheNames = PROFILE_KEY, key = "@su.getUserId()")
+    @CacheEvict(cacheNames = profile_prefix, key = "@su.getUserId()")
     public Result<Void> editProfile(@RequestBody EditSysUserProfileReq profileReq) {
         SysUser user = new SysUser(SystemUserUtil.getUserId());
         user.setNickname(profileReq.getNickname());
@@ -92,7 +93,7 @@ public class SysUserProfileController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
     @PostMapping("/edit_phonenumber")
-    @CacheEvict(cacheNames = PROFILE_KEY, key = "@su.getUserId()")
+    @CacheEvict(cacheNames = profile_prefix, key = "@su.getUserId()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = SystemUserUtil.getUserId();
 
@@ -100,8 +101,8 @@ public class SysUserProfileController extends BaseController {
             return err412("该手机号已被使用");
         }
         // 验证
-        SmsCheckReq smsCheckReq = new SmsCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
-        if (!captchaFeign.validateSms(smsCheckReq)) {
+        CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
+        if (!captchaFeign.validateCaptcha(captchaCheckReq)) {
             return err412("验证码错误");
         }
 
@@ -134,7 +135,7 @@ public class SysUserProfileController extends BaseController {
     @Operation(summary = "更新头像")
     @OperateLog(title = "个人信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
     @PostMapping("/edit_avatar")
-    @CacheEvict(cacheNames = PROFILE_KEY, key = "@su.getUserId()")
+    @CacheEvict(cacheNames = profile_prefix, key = "@su.getUserId()")
     public Result<Void> updateAvatar(@RequestBody String url) {
         SysUser sysUser = new SysUser(SystemUserUtil.getUserId());
         sysUser.setAvatar(url);

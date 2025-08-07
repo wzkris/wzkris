@@ -48,7 +48,7 @@ public class SystemUserService extends UserInfoTemplate {
         SysUserResp userResp = sysUserFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.lockAccount(phoneNumber, 600);
+            captchaService.freezeAccount(phoneNumber, 600);
             return null;
         }
 
@@ -66,7 +66,7 @@ public class SystemUserService extends UserInfoTemplate {
         SysUserResp userResp = sysUserFeign.getByUsername(username);
 
         if (userResp == null) {
-            captchaService.lockAccount(username, 600);
+            captchaService.freezeAccount(username, 600);
             return null;
         }
 

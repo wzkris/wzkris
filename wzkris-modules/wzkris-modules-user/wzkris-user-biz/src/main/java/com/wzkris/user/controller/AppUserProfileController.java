@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author wzkris
  */
-@Tag(name = "app账户")
+@Tag(name = "app个人页面信息")
 @Slf4j
 @Validated
 @RestController
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AppUserProfileController extends BaseController {
 
-    private static final String ACCOUNT_PREFIX = "app:account";
+    private final String profile_prefix = "app_user:profile";
 
     private final AppUserMapper appUserMapper;
 
@@ -38,24 +38,22 @@ public class AppUserProfileController extends BaseController {
 
     @Operation(summary = "获取信息")
     @GetMapping
-    @Cacheable(cacheNames = ACCOUNT_PREFIX + "#1800#600", key = "@cu.getUserId()")
-    public Result<AppUserProfileVO> appuserInfo() {
+    @Cacheable(cacheNames = profile_prefix + "#3600#3600", key = "@cu.getUserId()")
+    public Result<AppUserProfileVO> profile() {
         AppUser user = appUserMapper.selectById(ClientUserUtil.getUserId());
 
         AppUserProfileVO profileVO = new AppUserProfileVO();
-        AppUserProfileVO.UserInfo userInfo = new AppUserProfileVO.UserInfo();
-        userInfo.setNickname(user.getNickname());
-        userInfo.setPhoneNumber(user.getPhoneNumber());
-        userInfo.setGender(user.getGender());
-        userInfo.setAvatar(user.getAvatar());
+        profileVO.setNickname(user.getNickname());
+        profileVO.setPhoneNumber(user.getPhoneNumber());
+        profileVO.setGender(user.getGender());
+        profileVO.setAvatar(user.getAvatar());
 
-        profileVO.setUser(userInfo);
         return ok(profileVO);
     }
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cu.getUserId()")
+    @CacheEvict(cacheNames = profile_prefix, key = "@cu.getUserId()")
     public Result<?> appuserInfo(@RequestBody AppUserProfileReq profileReq) {
         AppUser user = new AppUser(ClientUserUtil.getUserId());
         user.setNickname(profileReq.getNickname());
@@ -65,7 +63,7 @@ public class AppUserProfileController extends BaseController {
 
     @Operation(summary = "更新头像")
     @PostMapping("/edit_avatar")
-    @CacheEvict(cacheNames = ACCOUNT_PREFIX, key = "@cu.getUserId()")
+    @CacheEvict(cacheNames = profile_prefix, key = "@cu.getUserId()")
     public Result<?> updateAvatar(@RequestBody String url) {
         AppUser appUser = new AppUser(ClientUserUtil.getUserId());
         appUser.setAvatar(url);
