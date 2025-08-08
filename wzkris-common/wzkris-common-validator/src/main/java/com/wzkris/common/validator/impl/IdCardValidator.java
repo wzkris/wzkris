@@ -1,6 +1,6 @@
-package com.wzkris.common.core.annotation.impl.validator;
+package com.wzkris.common.validator.impl;
 
-import com.wzkris.common.core.annotation.IdCard;
+import com.wzkris.common.validator.annotation.IdCard;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

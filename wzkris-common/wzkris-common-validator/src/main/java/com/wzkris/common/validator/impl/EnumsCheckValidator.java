@@ -1,7 +1,7 @@
-package com.wzkris.common.core.annotation.impl.validator;
+package com.wzkris.common.validator.impl;
 
-import com.wzkris.common.core.annotation.EnumsCheck;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.validator.annotation.EnumsCheck;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

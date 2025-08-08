@@ -1,6 +1,6 @@
-package com.wzkris.common.core.annotation.impl.validator;
+package com.wzkris.common.validator.impl;
 
-import com.wzkris.common.core.annotation.Xss;
+import com.wzkris.common.validator.annotation.Xss;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

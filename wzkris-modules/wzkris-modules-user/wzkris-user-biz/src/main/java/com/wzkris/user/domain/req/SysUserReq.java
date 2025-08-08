@@ -1,10 +1,10 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.EnumsCheck;
-import com.wzkris.common.core.annotation.PhoneNumber;
-import com.wzkris.common.core.annotation.Xss;
-import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.validator.annotation.EnumsCheck;
+import com.wzkris.common.validator.annotation.PhoneNumber;
+import com.wzkris.common.validator.annotation.Xss;
+import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.user.constant.UserConstants;
 import com.wzkris.user.domain.SysUser;
 import io.github.linpeilie.annotations.AutoMapper;

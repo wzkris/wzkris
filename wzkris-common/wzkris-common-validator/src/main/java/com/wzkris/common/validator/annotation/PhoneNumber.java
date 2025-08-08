@@ -1,6 +1,6 @@
-package com.wzkris.common.core.annotation;
+package com.wzkris.common.validator.annotation;
 
-import com.wzkris.common.core.annotation.impl.validator.EnumsCheckValidator;
+import com.wzkris.common.validator.impl.PhoneNumberValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -12,20 +12,15 @@ import java.lang.annotation.Target;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 枚举固定值校验注解，null视为通过
- * @date : 2024/12/25 16:40
+ * @description : 手机号注解
+ * @date : 2023/12/14 11:15
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER})
-@Constraint(validatedBy = {EnumsCheckValidator.class})
-public @interface EnumsCheck {
+@Constraint(validatedBy = {PhoneNumberValidator.class})
+public @interface PhoneNumber {
 
-    /**
-     * 枚举值
-     */
-    String[] values() default {};
-
-    String message() default "{validate.enums.illegal}";
+    String message() default "{validate.phonenumber.illegal}";
 
     Class<?>[] groups() default {};
 

@@ -1,6 +1,6 @@
 package com.wzkris.system.rmi;
 
-import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.domain.SysLoginLog;
 import com.wzkris.system.domain.SysOperLog;
 import com.wzkris.system.mapper.SysLoginLogMapper;

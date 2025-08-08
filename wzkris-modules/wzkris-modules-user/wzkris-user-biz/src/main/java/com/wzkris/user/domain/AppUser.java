@@ -2,8 +2,8 @@ package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.common.core.annotation.Xss;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.user.rmi.domain.resp.AppUserResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;

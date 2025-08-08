@@ -1,4 +1,4 @@
-package com.wzkris.common.core.annotation.impl;
+package com.wzkris.common.validator.impl;
 
 import com.wzkris.common.core.utils.DesensitizedUtil;
 import lombok.AllArgsConstructor;
@@ -45,7 +45,6 @@ public enum SensitiveStrategy {
     BANK_CARD(DesensitizedUtil::bankCard);
 
     // 可自行添加其他脱敏策略
-
     private final Function<String, String> desensitizer;
 
     public Function<String, String> desensitizer() {

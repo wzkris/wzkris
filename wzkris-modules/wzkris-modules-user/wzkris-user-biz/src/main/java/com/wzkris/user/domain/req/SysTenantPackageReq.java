@@ -1,7 +1,7 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.EnumsCheck;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.user.domain.SysTenantPackage;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;

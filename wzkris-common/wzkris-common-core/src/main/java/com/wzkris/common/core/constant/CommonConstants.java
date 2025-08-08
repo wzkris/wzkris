@@ -11,21 +11,6 @@ import java.util.Date;
 public class CommonConstants {
 
     /**
-     * RMI 远程方法调用
-     */
-    public static final String LOOKUP_RMI = "rmi:";
-
-    /**
-     * LDAP 远程方法调用
-     */
-    public static final String LOOKUP_LDAP = "ldap:";
-
-    /**
-     * LDAPS 远程方法调用
-     */
-    public static final String LOOKUP_LDAPS = "ldaps:";
-
-    /**
      * http请求
      */
     public static final String HTTP = "http://";
@@ -48,7 +33,7 @@ public class CommonConstants {
     /**
      * 不过期时间
      */
-    public static final Date NOT_EXPIRED_TIME = Date.from(Instant.parse("2099-12-31T23:59:59.999Z"));
+    public static final Date NEVER_EXPIRED_TIME = Date.from(Instant.parse("2099-12-31T23:59:59.999Z"));
 
     /**
      * 状态 启用

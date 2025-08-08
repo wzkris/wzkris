@@ -27,4 +27,5 @@ public class FileChunk {
 
     @Schema(description = "文件块")
     private MultipartFile chunk;
+
 }

@@ -1,4 +1,4 @@
-package com.wzkris.common.core.annotation.group;
+package com.wzkris.common.validator.group;
 
 import jakarta.validation.groups.Default;
 

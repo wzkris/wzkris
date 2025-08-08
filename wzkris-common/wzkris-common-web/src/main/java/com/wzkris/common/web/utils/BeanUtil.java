@@ -1,5 +1,6 @@
-package com.wzkris.common.core.utils;
+package com.wzkris.common.web.utils;
 
+import com.wzkris.common.core.utils.SpringUtil;
 import io.github.linpeilie.Converter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

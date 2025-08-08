@@ -1,6 +1,6 @@
 package com.wzkris.user.rmi;
 
-import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.mapper.OAuth2ClientMapper;
 import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;

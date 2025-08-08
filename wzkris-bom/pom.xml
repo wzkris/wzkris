@@ -141,6 +141,13 @@
                 <version>${revision}</version>
             </dependency>
 
+            <!-- 校验模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-validator</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- web容器-->
             <dependency>
                 <groupId>com.wzkris</groupId>

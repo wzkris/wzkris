@@ -1,7 +1,7 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.Xss;
-import com.wzkris.common.core.annotation.group.ValidationGroups;
+import com.wzkris.common.validator.annotation.Xss;
+import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.user.domain.SysTenant;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;

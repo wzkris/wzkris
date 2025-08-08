@@ -1,9 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -14,6 +12,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.validator.group.ValidationGroups;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.ResetPwdReq;

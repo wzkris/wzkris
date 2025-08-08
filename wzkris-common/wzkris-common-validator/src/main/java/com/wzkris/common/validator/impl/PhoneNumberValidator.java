@@ -1,6 +1,6 @@
-package com.wzkris.common.core.annotation.impl.validator;
+package com.wzkris.common.validator.impl;
 
-import com.wzkris.common.core.annotation.PhoneNumber;
+import com.wzkris.common.validator.annotation.PhoneNumber;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

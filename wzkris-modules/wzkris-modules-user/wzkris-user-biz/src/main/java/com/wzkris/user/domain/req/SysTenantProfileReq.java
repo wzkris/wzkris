@@ -1,6 +1,6 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.PhoneNumber;
+import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.user.domain.SysTenant;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;

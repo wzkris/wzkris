@@ -2,7 +2,7 @@ package com.wzkris.user.rmi;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.common.core.exception.service.ThirdServiceException;
-import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.AppUserThirdinfo;
 import com.wzkris.user.mapper.AppUserMapper;

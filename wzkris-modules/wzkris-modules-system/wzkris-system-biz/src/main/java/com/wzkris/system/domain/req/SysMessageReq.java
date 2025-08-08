@@ -1,7 +1,7 @@
 package com.wzkris.system.domain.req;
 
-import com.wzkris.common.core.annotation.EnumsCheck;
-import com.wzkris.common.core.annotation.Xss;
+import com.wzkris.common.validator.annotation.EnumsCheck;
+import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.system.constant.MessageConstants;
 import com.wzkris.system.domain.SysMessage;
 import io.github.linpeilie.annotations.AutoMapper;

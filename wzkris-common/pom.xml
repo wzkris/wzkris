@@ -35,6 +35,7 @@
         <module>wzkris-common-statemachine</module>
         <module>wzkris-common-stream</module>
         <module>wzkris-common-swagger</module>
+        <module>wzkris-common-validator</module>
         <module>wzkris-common-web</module>
         <module>wzkris-common-weixin-sdk</module>
     </modules>
