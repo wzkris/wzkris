@@ -1,4 +1,4 @@
-package com.wzkris.common.core.utils;
+package com.wzkris.common.web.utils;
 
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import org.springframework.boot.ApplicationArguments;

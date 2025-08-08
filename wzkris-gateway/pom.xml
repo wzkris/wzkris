@@ -15,6 +15,10 @@
         wzkris-gateway网关模块
     </description>
 
+    <properties>
+        <caffeine.version>3.2.0</caffeine.version>
+    </properties>
+
     <dependencies>
         <!-- SpringCloud Gateway -->
         <dependency>
@@ -61,6 +65,13 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <!-- 本地缓存 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
 
         <!-- 核心包 -->

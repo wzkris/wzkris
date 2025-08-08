@@ -12,6 +12,10 @@
 
     <artifactId>wzkris-common-web</artifactId>
 
+    <properties>
+        <ua-parser.version>7.31.0</ua-parser.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -28,6 +32,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/ua.parser.wso2/ua-parser -->
+        <dependency>
+            <groupId>nl.basjes.parse.useragent</groupId>
+            <artifactId>yauaa</artifactId>
+            <version>${ua-parser.version}</version>
         </dependency>
 
         <dependency>
