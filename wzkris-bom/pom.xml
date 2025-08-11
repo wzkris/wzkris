@@ -141,6 +141,13 @@
                 <version>${revision}</version>
             </dependency>
 
+            <!-- 线程池模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-thread</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- 校验模块 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
