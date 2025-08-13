@@ -71,6 +71,13 @@
                 <version>${revision}</version>
             </dependency>
 
+            <!-- 通知SDK继承 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-notifier</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- feign调用 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
