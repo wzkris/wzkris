@@ -68,7 +68,7 @@ public class CapHandler {
     public Token redeemChallenge(String token, List<Integer> solutions)
             throws IllegalArgumentException, IllegalStateException, ChallengeStoreException {
         if (StringUtil.isBlank(token) || CollectionUtils.isEmpty(solutions)) {
-            throw new CaptchaException("captcha.error");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
 
         // 当前日期时间
@@ -89,7 +89,7 @@ public class CapHandler {
         });
 
         if (!isValid) {
-            throw new CaptchaException("captcha.error");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
 
         // 保存 token，用于后续验证

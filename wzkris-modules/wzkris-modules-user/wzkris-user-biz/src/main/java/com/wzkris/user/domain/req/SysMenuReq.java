@@ -20,17 +20,17 @@ public class SysMenuReq {
 
     private Long menuId;
 
-    @NotBlank(message = "{desc.menu}{desc.name}" + "{validate.notnull}")
-    @Size(min = 0, max = 30, message = "{desc.menu}{desc.name}" + "{validate.size.illegal}")
+    @NotBlank(message = "{invalidParameter.menuName.invalid}")
+    @Size(min = 0, max = 30, message = "{invalidParameter.menuName.invalid}")
     @Schema(description = "菜单名称")
     private String menuName;
 
-    @NotNull(message = "{desc.parentNode}{validate.notnull}")
+    @NotNull(message = "{invalidParameter.parentId.invalid}")
     @Schema(description = "父菜单ID")
     private Long parentId;
 
-    @NotNull(message = "{desc.menu}{desc.sort}" + "{validate.notnull}")
-    @Range(max = Integer.MAX_VALUE, message = "{desc.sort}" + "{validate.size.illegal}")
+    @NotNull(message = "{invalidParameter.sort.invalid}")
+    @Range(max = Integer.MAX_VALUE, message = "{invalidParameter.sort.invalid}")
     @Schema(description = "显示顺序")
     private Integer menuSort;
 
@@ -49,7 +49,7 @@ public class SysMenuReq {
     @Schema(description = "是否显示")
     private Boolean isVisible;
 
-    @NotBlank(message = "{desc.type}" + "{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.menuType.invalid}")
     @EnumsCheck(
             values = {
                     MenuConstants.TYPE_DIR,
@@ -57,11 +57,12 @@ public class SysMenuReq {
                     MenuConstants.TYPE_BUTTON,
                     MenuConstants.TYPE_INNERLINK,
                     MenuConstants.TYPE_OUTLINK
-            })
+            }, message = "{invalidParameter.menuType.invalid}")
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
 
-    @EnumsCheck(values = {CommonConstants.STATUS_ENABLE, CommonConstants.STATUS_DISABLE})
+    @EnumsCheck(values = {CommonConstants.STATUS_ENABLE, CommonConstants.STATUS_DISABLE},
+            message = "{invalidParameter.status.invalid}")
     @Schema(description = "菜单状态（0正常 1停用）") // 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
     private String status;
 

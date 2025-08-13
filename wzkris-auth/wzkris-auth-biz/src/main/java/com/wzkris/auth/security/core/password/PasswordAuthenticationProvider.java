@@ -55,7 +55,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         boolean valid = captchaService.validateChallenge(authenticationToken.getCaptchaId());
         if (!valid) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), "captcha.error");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCode.PRECONDITION_FAILED.value(), "invalidParameter.captcha.error");
         }
 
         CorePrincipal principal = userInfoTemplate.loadByUsernameAndPassword(

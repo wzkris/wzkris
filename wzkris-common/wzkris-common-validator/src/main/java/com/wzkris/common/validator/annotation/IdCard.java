@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {IdCardValidator.class})
 public @interface IdCard {
 
-    String message() default "{validate.idcard.illegal}";
+    String message() default "{invalidParameter.idcard.invalid}";
 
     Class<?>[] groups() default {};
 

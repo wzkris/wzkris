@@ -56,7 +56,7 @@ public class JsonUtil {
             return objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -71,7 +71,7 @@ public class JsonUtil {
             return objectMapper.writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -83,7 +83,7 @@ public class JsonUtil {
             objectMapper.writeValue(writer, obj);
         } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -99,7 +99,7 @@ public class JsonUtil {
             return objectMapper.readValue(obj, clazz);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -112,7 +112,7 @@ public class JsonUtil {
                     content, TypeFactory.defaultInstance().constructMapType(mapClass, keyClass, valueClass));
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -125,7 +125,7 @@ public class JsonUtil {
                     content, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -135,7 +135,7 @@ public class JsonUtil {
                     parser, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -147,7 +147,7 @@ public class JsonUtil {
             return objectMapper.readValue(reader, clazz);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -159,7 +159,7 @@ public class JsonUtil {
             return objectMapper.readValue(bytes, clazz);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -168,7 +168,7 @@ public class JsonUtil {
             return objectMapper.readValue(jsonParser, clazz);
         } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -181,7 +181,7 @@ public class JsonUtil {
             return objectMapper.readValue(text, ObjectNode.class);
         } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
@@ -190,7 +190,7 @@ public class JsonUtil {
             return objectMapper.readTree(jsonParser);
         } catch (IOException e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
-            throw new UtilException("util.json.error");
+            throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 

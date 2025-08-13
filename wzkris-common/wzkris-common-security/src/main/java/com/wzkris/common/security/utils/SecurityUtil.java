@@ -64,7 +64,7 @@ public class SecurityUtil {
         try {
             return (CorePrincipal) getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new UserException(401, "user.not.login");
+            throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }
     }
 

@@ -17,19 +17,19 @@ public class SysDictReq {
 
     private Long dictId;
 
-    @NotBlank(message = "{desc.dict}" + "{validate.notnull}")
-    @Size(min = 2, max = 50, message = "{desc.dict}{desc.key}" + "{validate.size.illegal}")
-    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{desc.dict}{validate.illegal}") // 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
+    @NotBlank(message = "{invalidParameter.dictKey.invalid}")
+    @Size(min = 5, max = 30, message = "{invalidParameter.dictKey.invalid}")
+    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{invalidParameter.dictKey.invalid}") // 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
     @Schema(description = "字典键")
     private String dictKey;
 
-    @NotBlank(message = "{desc.dict}{desc.name}" + "{validate.notnull}")
-    @Size(min = 2, max = 50, message = "{desc.dict}{desc.name}" + "{validate.size.illegal}")
+    @NotBlank(message = "{invalidParameter.dictName.invalid}")
+    @Size(min = 2, max = 50, message = "{invalidParameter.dictName.invalid}")
     @Schema(description = "字典名称")
     private String dictName;
 
-    @NotNull(message = "{desc.dict}{desc.value}" + "{validate.notnull}")
-    @Size(min = 1, message = "{desc.dict}{desc.value}" + "{validate.size.illegal}")
+    @NotNull(message = "{invalidParameter.dictValue.invalid}")
+    @Size(min = 1, message = "{invalidParameter.dictValue.invalid}")
     @Schema(description = "字典键值")
     private SysDict.DictData[] dictValue;
 

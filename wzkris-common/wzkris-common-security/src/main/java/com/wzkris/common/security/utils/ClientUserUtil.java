@@ -36,7 +36,7 @@ public class ClientUserUtil extends SecurityUtil {
         try {
             return (DeferredClientUser) getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new UserException(401, "user.not.login");
+            throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }
     }
 

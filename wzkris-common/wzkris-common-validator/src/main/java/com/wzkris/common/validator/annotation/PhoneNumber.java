@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {PhoneNumberValidator.class})
 public @interface PhoneNumber {
 
-    String message() default "{validate.phonenumber.illegal}";
+    String message() default "{invalidParameter.phonenumber.invalid}";
 
     Class<?>[] groups() default {};
 

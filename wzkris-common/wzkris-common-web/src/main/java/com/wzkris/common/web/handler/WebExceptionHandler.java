@@ -45,7 +45,7 @@ public class WebExceptionHandler {
         if (log.isDebugEnabled()) {
             log.debug("请求地址'{} {}',不支持媒体类型，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
         }
-        return err400(I18nUtil.message("request.media.error"));
+        return err400(I18nUtil.message("invalidParameter.mediaType.invalid"));
     }
 
     /**
@@ -55,7 +55,7 @@ public class WebExceptionHandler {
     public Result<?> handleHttpMessageNotReadableException(
             HttpMessageNotReadableException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',请求数据格式异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return err400(I18nUtil.message("request.param.error"));
+        return err400(I18nUtil.message("invalidParameter.param.invalid"));
     }
 
     /**

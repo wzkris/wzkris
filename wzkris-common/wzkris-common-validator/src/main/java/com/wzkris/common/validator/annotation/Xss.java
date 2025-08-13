@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {XssValidator.class})
 public @interface Xss {
 
-    String message() default "{validate.xss.forbid}";
+    String message() default "{invalidParameter.xss.invalid}";
 
     Class<?>[] groups() default {};
 

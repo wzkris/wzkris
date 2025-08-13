@@ -83,7 +83,7 @@ public class CaptchaService {
             throw new CaptchaException("captcha.expired");
         }
         if (!StringUtil.equals(realcode, code)) {
-            throw new CaptchaException("captcha.error");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
         RedisUtil.delObj(fullKey);
     }

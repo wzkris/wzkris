@@ -103,7 +103,7 @@ public class SysTenantController extends BaseController {
     @GetMapping("/{tenantId}")
     @CheckSystemPerms("sys_tenant:query")
     public Result<SysTenant> queryByid(
-            @NotNull(message = "{desc.tenant}{desc.id}{validate.notnull}") @PathVariable Long tenantId) {
+            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long tenantId) {
         return ok(tenantMapper.selectById(tenantId));
     }
 
@@ -179,7 +179,7 @@ public class SysTenantController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("sys_tenant:remove")
     public Result<Void> remove(
-            @RequestBody @NotNull(message = "{desc.tenant}{desc.id}{validate.notnull}") Long tenantId) {
+            @RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {
         tenantService.checkDataScope(tenantId);
 
         return toRes(tenantService.deleteById(tenantId));

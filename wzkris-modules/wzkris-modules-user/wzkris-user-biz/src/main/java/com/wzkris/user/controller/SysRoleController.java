@@ -198,7 +198,7 @@ public class SysRoleController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("sys_role:remove")
     public Result<Void> remove(
-            @RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
+            @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> roleIds) {
         // 权限校验
         roleDataScopeManager.checkDataScopes(roleIds);
         roleService.checkExistUser(roleIds);

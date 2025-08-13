@@ -28,18 +28,18 @@ public class SysUserReq {
     @Schema(description = "部门ID")
     private Long deptId;
 
-    @Pattern(regexp = "^[a-z0-9_]+$", message = "{desc.username}{validate.illegal}") // 用户名只能为小写英文、数字和下划线
-    @Xss(message = "{desc.user}{desc.name}" + "{validate.xss.forbid}")
-    @NotBlank(message = "{desc.user}" + "{validate.notnull}", groups = ValidationGroups.Insert.class)
-    @Size(min = 6, max = 30, message = "{desc.user}" + "{validate.size.illegal}")
+    @Pattern(regexp = "^[a-z0-9_]+$", message = "{invalidParameter.username.invalid}")// 用户名只能为小写英文、数字和下划线
+    @Xss
+    @NotBlank(message = "{invalidParameter.username.invalid}", groups = ValidationGroups.Insert.class)
+    @Size(min = 6, max = 30, message = "{invalidParameter.username.invalid}")
     @Schema(description = "用户名")
     private String username;
 
-    @Xss(message = "{desc.user}{desc.name}" + "{validate.xss.forbid}")
+    @Xss
     @Schema(description = "用户昵称")
     private String nickname;
 
-    @Email(message = "{desc.user}" + "{validate.email.illegal}")
+    @Email(message = "{invalidParameter.email.invalid}")
     @Schema(description = "用户邮箱")
     private String email;
 
@@ -47,12 +47,13 @@ public class SysUserReq {
     @Schema(description = "手机号码")
     private String phoneNumber;
 
-    @EnumsCheck(values = {CommonConstants.STATUS_DISABLE, CommonConstants.STATUS_ENABLE})
+    @EnumsCheck(values = {CommonConstants.STATUS_DISABLE, CommonConstants.STATUS_ENABLE},
+            message = "{invalidParameter.status.invalid}")
     @Schema(description = "用户状态")
     private String status;
 
     @EnumsCheck(values = {UserConstants.GENDER_MALE, UserConstants.GENDER_FEMALE, UserConstants.GENDER_UNKNOWN},
-            message = "{desc.gender}{validate.enums.illegal}")
+            message = "{invalidParameter.gender.invalid}")
     @Schema(description = "用户性别")
     private String gender;
 

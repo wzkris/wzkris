@@ -90,7 +90,7 @@ public class SysMessageController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("sys_message:remove")
     public Result<Void> remove(
-            @RequestBody @NotEmpty(message = "{desc.message}{desc.id}{validate.notnull}") List<Long> msgIds) {
+            @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> msgIds) {
         return toRes(messageMapper.deleteByIds(msgIds));
     }
 

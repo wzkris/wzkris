@@ -25,7 +25,7 @@ public @interface EnumsCheck {
      */
     String[] values() default {};
 
-    String message() default "{validate.enums.illegal}";
+    String message() default "{invalidParameter.enums.invalid}";
 
     Class<?>[] groups() default {};
 

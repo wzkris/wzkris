@@ -11,10 +11,10 @@ import lombok.Data;
 public class EditPhoneReq {
 
     @PhoneNumber
-    @NotBlank(message = "{desc.phonenumber}" + "{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.phonenumber.invalid}")
     private String phoneNumber;
 
-    @NotBlank(message = "{desc.smscode}" + "{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.captcha.error}")
     private String smsCode;
 
 }

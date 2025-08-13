@@ -18,10 +18,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class CaptchaCheckReq implements Serializable {
 
-    @NotEmpty(message = "{captcha.error}")
+    @NotEmpty(message = "{invalidParameter.captcha.error}")
     private String key;
 
-    @NotEmpty(message = "{captcha.error}")
+    @NotEmpty(message = "{invalidParameter.captcha.error}")
     private String code;
 
 }

@@ -18,9 +18,9 @@ public class SysMessageReq {
 
     private Long msgId;
 
-    @Xss(message = "{desc.system}{desc.message}" + "{validate.xss.forbid}")
-    @NotBlank(message = "{desc.system}{desc.message}" + "{validate.notnull}")
-    @Size(min = 2, max = 30, message = "{desc.system}{desc.message}" + "{validate.size.illegal}")
+    @Xss
+    @NotBlank(message = "{invalidParameter.messageTitle.invalid}")
+    @Size(min = 2, max = 30, message = "{invalidParameter.messageTitle.invalid}")
     @Schema(description = "标题")
     private String title;
 
@@ -32,7 +32,8 @@ public class SysMessageReq {
     private String content;
 
     @EnumsCheck(
-            values = {MessageConstants.STATUS_CLOSED, MessageConstants.STATUS_DRAFT, MessageConstants.STATUS_PUBLISH})
+            values = {MessageConstants.STATUS_CLOSED, MessageConstants.STATUS_DRAFT, MessageConstants.STATUS_PUBLISH},
+            message = "{invalidParameter.status.invalid}")
     @Schema(description = "状态（0草稿 1关闭 2已发送）")
     private String status;
 

@@ -18,7 +18,7 @@ public class SysTenantProfileReq {
     @Schema(description = "联系电话")
     private String contactPhone;
 
-    @Size(min = 2, max = 20, message = "{desc.tenant}{desc.name}" + "{validate.size.illegal}")
+    @Size(min = 2, max = 20, message = "{invalidParameter.tenantName.invalid}")
     @Schema(description = "租户名称")
     private String tenantName;
 
