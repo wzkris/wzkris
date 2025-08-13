@@ -22,6 +22,7 @@ spring:
     import:
       - optional:nacos:common.yml?group=COMMON_GROUP
       - optional:nacos:redis.yml?group=COMMON_GROUP
+      - optional:nacos:thread.yml?group=COMMON_GROUP
       - optional:nacos:${spring.application.name}.yml
 
 jwt-rs256:

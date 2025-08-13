@@ -20,6 +20,7 @@ package com.wzkris.common.thread.refresh;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.thread.properties.ExecutorProperties;
 import com.wzkris.common.thread.properties.TpProperties;
+import com.wzkris.common.thread.refresh.adapter.WebServerTpAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 
@@ -34,7 +35,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 public abstract class AbstractTpRefresher {
 
-    public void refreshTp(TpProperties tpProperties) {
+    protected final TpProperties tpProperties;
+
+    private final WebServerTpAdapter webServerTpRefresher;
+
+    protected AbstractTpRefresher(TpProperties tpProperties, WebServerTpAdapter webServerTpAdapter) {
+        this.tpProperties = tpProperties;
+        this.webServerTpRefresher = webServerTpAdapter;
+    }
+
+    public final void refreshTp() {
         if (tpProperties.getTpExecutors() == null) {
             return;
         }
@@ -50,6 +60,7 @@ public abstract class AbstractTpRefresher {
                 log.error("无此名称‘{}’的线程池", tpExecutor.getThreadPoolName());
             }
         }
+        webServerTpRefresher.refreshWeb(tpProperties.getTomcatExecutor());
     }
 
 }
