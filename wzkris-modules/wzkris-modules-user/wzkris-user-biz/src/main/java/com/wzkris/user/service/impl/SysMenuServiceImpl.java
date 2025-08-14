@@ -214,8 +214,8 @@ public class SysMenuServiceImpl implements SysMenuService {
             MetaVO meta = new MetaVO(
                     menu.getMenuName(),
                     menu.getIcon(),
-                    !menu.getIsVisible(),
-                    menu.getIsCache(),
+                    !menu.getVisible(),
+                    menu.getCacheable(),
                     parseQuery(menu.getQuery())
             );
 

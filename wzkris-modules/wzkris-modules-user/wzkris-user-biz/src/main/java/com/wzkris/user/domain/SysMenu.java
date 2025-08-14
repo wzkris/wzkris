@@ -43,10 +43,10 @@ public class SysMenu extends BaseEntity {
     private String query;
 
     @Schema(description = "是否缓存")
-    private Boolean isCache;
+    private Boolean cacheable;
 
     @Schema(description = "是否显示")
-    private Boolean isVisible;
+    private Boolean visible;
 
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;

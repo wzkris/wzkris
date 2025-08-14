@@ -44,10 +44,10 @@ public class SysMenuReq {
     private String query;
 
     @Schema(description = "是否缓存")
-    private Boolean isCache;
+    private Boolean cacheable;
 
     @Schema(description = "是否显示")
-    private Boolean isVisible;
+    private Boolean visible;
 
     @NotBlank(message = "{invalidParameter.menuType.invalid}")
     @EnumsCheck(
