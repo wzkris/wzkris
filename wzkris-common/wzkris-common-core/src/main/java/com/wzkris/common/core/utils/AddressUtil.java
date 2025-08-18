@@ -15,7 +15,7 @@ import java.time.Duration;
  * @author wzkris
  */
 @Slf4j
-public class AddressUtil {
+public abstract class AddressUtil {
 
     /**
      * IP地址查询

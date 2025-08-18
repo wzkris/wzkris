@@ -1,4 +1,3 @@
 com.wzkris.common.web.config.HikariInitPool
 com.wzkris.common.web.config.JacksonConfig
-com.wzkris.common.web.handler.WebExceptionHandler
 com.wzkris.common.web.utils.UserAgentUtil

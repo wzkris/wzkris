@@ -26,6 +26,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -42,6 +43,7 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Aspect
+@Component
 public class OperateLogAspect implements ApplicationRunner {
 
     /**
@@ -94,7 +96,7 @@ public class OperateLogAspect implements ApplicationRunner {
     public void run() {
         for (; ; ) {
             try {
-                OperLogReq operLogReq = bufferQ.poll(60, TimeUnit.SECONDS);
+                OperLogReq operLogReq = bufferQ.poll(3, TimeUnit.SECONDS);
                 if (operLogReq == null) {
                     flushBatchQ();
                 } else {

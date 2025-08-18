@@ -1,4 +1,4 @@
-package com.wzkris.common.openfeign.handler;
+package com.wzkris.common.openfeign.interceptor;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
@@ -10,10 +10,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
 @ConditionalOnClass(UsernamePasswordAuthenticationToken.class)
 public class FeignSecurityContextFilter extends OncePerRequestFilter {
 

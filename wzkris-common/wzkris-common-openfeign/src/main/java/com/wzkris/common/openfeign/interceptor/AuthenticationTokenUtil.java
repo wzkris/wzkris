@@ -1,4 +1,4 @@
-package com.wzkris.common.openfeign.handler;
+package com.wzkris.common.openfeign.interceptor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.Module;

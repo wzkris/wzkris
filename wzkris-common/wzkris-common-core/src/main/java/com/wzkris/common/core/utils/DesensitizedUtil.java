@@ -5,7 +5,7 @@ package com.wzkris.common.core.utils;
  *
  * @author wzkris
  */
-public class DesensitizedUtil {
+public abstract class DesensitizedUtil {
 
     /**
      * 脱敏，使用默认的脱敏策略

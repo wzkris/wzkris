@@ -25,7 +25,7 @@ import java.util.Map;
  * @date : 2023/1/2 8:37
  */
 @Slf4j
-public class JsonUtil {
+public abstract class JsonUtil {
 
     @Getter
     private static final ObjectMapper objectMapper = new ObjectMapper();

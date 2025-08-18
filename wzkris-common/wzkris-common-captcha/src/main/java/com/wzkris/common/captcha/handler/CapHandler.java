@@ -12,6 +12,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -27,6 +28,7 @@ import java.util.stream.IntStream;
  * @author wuhunyu
  * @date 2025/06/16 16:22
  **/
+@Component
 public class CapHandler {
 
     public static final String HEX_STR = "0123456789abcdef";

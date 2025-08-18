@@ -6,6 +6,7 @@ import com.wzkris.common.captcha.properties.StoreType;
 import com.wzkris.common.captcha.store.CapStore;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Date;
  * @author wuhunyu
  * @date 2025/06/16 23:07
  **/
+@Component
 @RequiredArgsConstructor
 public class RedisStore implements CapStore {
 
