@@ -1,7 +1,7 @@
 package com.wzkris.common.core.utils;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.MDC;
@@ -31,7 +31,7 @@ public abstract class TraceIdUtil {
     public static String get() {
         return Optional.ofNullable(MDC.get(HeaderConstants.X_TRACING_ID))
                 .orElse(DateFormatUtils.format(new Date(), "yyyyMMddHHmmssSSS") + "-" +
-                        RandomStringUtils.secure().next(4));
+                        RandomUtils.secure().randomInt(1_000_000, 9_999_999));
     }
 
 }

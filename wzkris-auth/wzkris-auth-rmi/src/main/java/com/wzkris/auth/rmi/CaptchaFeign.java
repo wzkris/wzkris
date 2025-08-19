@@ -15,15 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : rpc - 验证码服务
  * @date : 2023/8/21 11:27
  */
-@FeignClient(name = ServiceIdConstant.AUTH, contextId = "CaptchaFeign", fallbackFactory = CaptchaFeignFeignFallback.class)
+@FeignClient(name = ServiceIdConstant.AUTH, contextId = "CaptchaFeign",
+        fallbackFactory = CaptchaFeignFeignFallback.class, path = "/feign-captcha")
 public interface CaptchaFeign extends RmiFeign {
-
-    String prefix = "/rmi_captcha";
 
     /**
      * 校验手机号验证码
      */
-    @PostMapping(prefix + "/validate")
+    @PostMapping("/validate")
     boolean validateCaptcha(@Valid @RequestBody CaptchaCheckReq captchaCheckReq);
 
 }

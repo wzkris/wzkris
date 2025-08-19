@@ -25,13 +25,13 @@ import java.util.Optional;
 @Slf4j
 @Aspect
 @Component
-public class RequestStatisticAspect {
+public class ControllerStatisticAspect {
 
     @Pointcut("bean(*Controller)")
-    public void reqPointCut() {
+    public void pointCut() {
     }
 
-    @Around("reqPointCut()")
+    @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();

@@ -18,21 +18,20 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @date : 2024/09/28 10:27
  */
 @FeignIgnoreInterceptor
-@FeignClient(name = ServiceIdConstant.AUTH, contextId = "TokenFeign", fallbackFactory = TokenFeignFallback.class)
+@FeignClient(name = ServiceIdConstant.AUTH, contextId = "TokenFeign",
+        fallbackFactory = TokenFeignFallback.class, path = "/feign-token")
 public interface TokenFeign extends RmiFeign {
-
-    String prefix = "/rmi_token";
 
     /**
      * 校验oauth2_token
      */
-    @PostMapping(prefix + "/check_oauth2")
+    @PostMapping("/check-oauth2")
     TokenResponse validateOAuth2(@Valid @RequestBody TokenReq tokenReq);
 
     /**
      * 校验用户token
      */
-    @PostMapping(prefix + "/check_user")
+    @PostMapping("/check-user")
     TokenResponse validateUser(@Valid @RequestBody TokenReq tokenReq);
 
 }

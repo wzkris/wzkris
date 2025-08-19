@@ -1,11 +1,12 @@
 package com.wzkris.system.rmi.fallback;
 
-import com.wzkris.common.openfeign.core.FeignLogAggregator;
 import com.wzkris.system.rmi.SysNoticeFeign;
 import com.wzkris.system.rmi.domain.req.SendNoticeReq;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class SysNoticeFeignFallback implements FallbackFactory<SysNoticeFeign> {
 
@@ -14,7 +15,7 @@ public class SysNoticeFeignFallback implements FallbackFactory<SysNoticeFeign> {
         return new SysNoticeFeign() {
             @Override
             public void send2Users(SendNoticeReq sendNoticeReq) {
-                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
+                log.error("send2Users => req: {}", sendNoticeReq, cause);
             }
         };
     }

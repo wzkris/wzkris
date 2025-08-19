@@ -17,21 +17,20 @@ import java.util.List;
  * @description : RPC -- 系统日志服务
  * @date : 2023/3/13 16:12
  */
-@FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "SysLogFeign", fallbackFactory = SysLogFeignFallback.class)
+@FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "SysLogFeign",
+        fallbackFactory = SysLogFeignFallback.class, path = "/feign-sys-log")
 public interface SysLogFeign extends RmiFeign {
-
-    String prefix = "/rmi_log";
 
     /**
      * 新增操作日志
      */
-    @PostMapping(prefix + "/save_oper_logs")
+    @PostMapping("/save-operlogs")
     void saveOperlogs(@RequestBody List<OperLogReq> operLogReqs);
 
     /**
      * 新增登录日志
      */
-    @PostMapping(prefix + "/save_login_logs")
+    @PostMapping("/save-loginlogs")
     void saveLoginlog(@RequestBody LoginLogReq loginLogReq);
 
 }

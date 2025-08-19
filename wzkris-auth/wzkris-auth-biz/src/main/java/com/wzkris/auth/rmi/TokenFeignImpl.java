@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Hidden
 @RestController
+@RequestMapping("/feign-token")
 @RequiredArgsConstructor
 public class TokenFeignImpl implements TokenFeign {
 

@@ -14,15 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : RPC -- 系统通知服务
  * @since : 2024/12/16 12:55
  */
-@FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "SysNoticeFeign", fallbackFactory = SysNoticeFeignFallback.class)
+@FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "SysNoticeFeign",
+        fallbackFactory = SysNoticeFeignFallback.class, path = "/feign-sys-notice")
 public interface SysNoticeFeign extends RmiFeign {
-
-    String prefix = "/rmi_notice";
 
     /**
      * 发送通知
      */
-    @PostMapping(prefix + "/send_notice")
+    @PostMapping("/send-users")
     void send2Users(@RequestBody SendNoticeReq sendNoticeReq);
 
 }

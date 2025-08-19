@@ -16,27 +16,26 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @description : rpc - APP用户
  * @date : 2024/4/15 16:20
  */
-@FeignClient(name = ServiceIdConstant.USER, contextId = "AppUserFeign", fallbackFactory = AppUserFeignFallback.class)
+@FeignClient(name = ServiceIdConstant.USER, contextId = "AppUserFeign",
+        fallbackFactory = AppUserFeignFallback.class, path = "/feign-app-user")
 public interface AppUserFeign extends RmiFeign {
-
-    String prefix = "/rmi_app_user";
 
     /**
      * 根据手机号查询app用户
      */
-    @PostMapping(prefix + "/get_by_phonenumber")
+    @PostMapping("/query-by-phonenumber")
     AppUserResp getByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
      * 根据authCode去不同渠道获取三方唯一标识，并转换成用户信息
      */
-    @PostMapping(prefix + "/get_or_register_by_identifier")
+    @PostMapping("/query-or-register-by-identifier")
     AppUserResp getOrRegisterByIdentifier(@RequestParam String identifierType, @RequestParam String authCode);
 
     /**
      * 更新用户登录信息
      */
-    @PostMapping(prefix + "/update_login_info")
+    @PostMapping("/update-logininfo")
     void updateLoginInfo(@RequestBody LoginInfoReq loginInfoReq);
 
 }

@@ -16,10 +16,12 @@ import com.wzkris.user.service.SysPermissionService;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Hidden
 @RestController
+@RequestMapping("/feign-sys-user")
 @RequiredArgsConstructor
 public class SysUserFeignImpl implements SysUserFeign {
 
