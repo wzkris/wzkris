@@ -18,8 +18,8 @@ public class WithdrawalReq {
     @DecimalMin(value = "1.00", message = "提现金额最少为1元")
     private BigDecimal amount;
 
-    @NotBlank(message = "{desc.pwd}" + "{validate.notnull}")
-    @Size(min = 6, max = 6, message = "{desc.pwd}" + "{validate.size.illegal}")
+    @NotBlank(message = "{invalidParameter.password.invalid}")
+    @Size(min = 6, max = 6, message = "{invalidParameter.password.invalid}")
     private String operPwd;
 
 }

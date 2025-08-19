@@ -71,6 +71,13 @@
                 <version>${revision}</version>
             </dependency>
 
+            <!-- 通知SDK继承 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-notifier</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- feign调用 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
@@ -138,6 +145,20 @@
             <dependency>
                 <groupId>com.wzkris</groupId>
                 <artifactId>wzkris-common-swagger</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 线程池模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-thread</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 校验模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-validator</artifactId>
                 <version>${revision}</version>
             </dependency>
 

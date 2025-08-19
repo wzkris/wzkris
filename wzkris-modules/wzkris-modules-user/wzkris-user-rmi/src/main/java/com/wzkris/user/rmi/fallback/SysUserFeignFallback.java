@@ -1,14 +1,15 @@
 package com.wzkris.user.rmi.fallback;
 
-import com.wzkris.common.openfeign.core.FeignLogAggregator;
+import com.wzkris.user.rmi.SysUserFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
 import com.wzkris.user.rmi.domain.req.QueryPermsReq;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
 import com.wzkris.user.rmi.domain.resp.SysUserResp;
-import com.wzkris.user.rmi.SysUserFeign;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class SysUserFeignFallback implements FallbackFactory<SysUserFeign> {
 
@@ -17,25 +18,25 @@ public class SysUserFeignFallback implements FallbackFactory<SysUserFeign> {
         return new SysUserFeign() {
             @Override
             public SysUserResp getByUsername(String username) {
-                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
+                log.error("getByUsername => req: {}", username, cause);
                 return null;
             }
 
             @Override
             public SysUserResp getByPhoneNumber(String phoneNumber) {
-                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
+                log.error("getByPhoneNumber => req: {}", phoneNumber, cause);
                 return null;
             }
 
             @Override
             public SysPermissionResp getPermission(QueryPermsReq queryPermsReq) {
-                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
+                log.error("getPermission => req: {}", queryPermsReq, cause);
                 return null;
             }
 
             @Override
             public void updateLoginInfo(LoginInfoReq loginInfoReq) {
-                FeignLogAggregator.INSTANCE.logPrintError(this.getClass(), cause);
+                log.error("updateLoginInfo => req: {}", loginInfoReq, cause);
             }
         };
     }

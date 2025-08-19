@@ -1,8 +1,8 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.req.SmsCodeReq;
+import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
-import com.wzkris.common.captcha.response.ChallengeResponse;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
@@ -41,7 +41,7 @@ public class CaptchaController {
     @RateLimit
     @Operation(summary = "获取挑战")
     @PostMapping("/challenge")
-    public ChallengeResponse challenge() {
+    public ChallengeData challenge() {
         return captchaService.createChallenge();
     }
 
@@ -54,7 +54,7 @@ public class CaptchaController {
     @Operation(summary = "短信验证码")
     @PostMapping("/sms_code")
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
-        boolean valid = captchaService.validateToken(req.getCaptchaId());
+        boolean valid = captchaService.validateChallenge(req.getCaptchaId());
         if (!valid) {
             return err412("验证码异常");
         }

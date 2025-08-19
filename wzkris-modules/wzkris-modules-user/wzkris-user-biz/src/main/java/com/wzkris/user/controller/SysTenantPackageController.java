@@ -2,7 +2,6 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -10,6 +9,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.SysTenantPackage;
 import com.wzkris.user.domain.req.EditStatusReq;
 import com.wzkris.user.domain.req.SysTenantPackageQueryReq;
@@ -83,7 +83,7 @@ public class SysTenantPackageController extends BaseController {
     @GetMapping("/{packageId}")
     @CheckSystemPerms("tenant_package:query")
     public Result<SysTenantPackage> getInfo(
-            @NotNull(message = "{desc.package}{desc.id}{validate.notnull}") @PathVariable Long packageId) {
+            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long packageId) {
         return ok(tenantPackageMapper.selectById(packageId));
     }
 
@@ -118,7 +118,7 @@ public class SysTenantPackageController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("tenant_package:remove")
     public Result<Void> remove(
-            @NotEmpty(message = "{desc.package}{desc.id}{validate.notnull}") @RequestBody List<Long> packageIds) {
+            @NotEmpty(message = "{invalidParameter.id.invalid}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
             return err412("删除失败, 套餐正在使用");
         }

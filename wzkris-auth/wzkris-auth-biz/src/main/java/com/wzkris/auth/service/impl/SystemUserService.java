@@ -12,7 +12,7 @@ import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.core.utils.UserAgentUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.user.rmi.SysUserFeign;
@@ -48,7 +48,7 @@ public class SystemUserService extends UserInfoTemplate {
         SysUserResp userResp = sysUserFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.lockAccount(phoneNumber, 600);
+            captchaService.freezeAccount(phoneNumber, 600);
             return null;
         }
 
@@ -66,7 +66,7 @@ public class SystemUserService extends UserInfoTemplate {
         SysUserResp userResp = sysUserFeign.getByUsername(username);
 
         if (userResp == null) {
-            captchaService.lockAccount(username, 600);
+            captchaService.freezeAccount(username, 600);
             return null;
         }
 

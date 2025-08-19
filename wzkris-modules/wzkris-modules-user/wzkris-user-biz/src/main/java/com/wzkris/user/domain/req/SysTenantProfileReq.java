@@ -1,6 +1,6 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.PhoneNumber;
+import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.user.domain.SysTenant;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -18,7 +18,7 @@ public class SysTenantProfileReq {
     @Schema(description = "联系电话")
     private String contactPhone;
 
-    @Size(min = 2, max = 20, message = "{desc.tenant}{desc.name}" + "{validate.size.illegal}")
+    @Size(min = 2, max = 20, message = "{invalidParameter.tenantName.invalid}")
     @Schema(description = "租户名称")
     private String tenantName;
 

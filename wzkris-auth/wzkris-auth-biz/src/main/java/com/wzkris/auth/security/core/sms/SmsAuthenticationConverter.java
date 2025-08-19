@@ -74,7 +74,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
-                    "request.param.error",
+                    "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.USER_TYPE);
         }
         return new SmsAuthenticationToken(authenticatedType, phoneNumber, smsCode);

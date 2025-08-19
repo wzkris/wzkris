@@ -5,6 +5,7 @@ import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author wzkris
  */
 @Slf4j
+@Component
 @RestControllerAdvice
 public class SecurityExceptionHandler {
 

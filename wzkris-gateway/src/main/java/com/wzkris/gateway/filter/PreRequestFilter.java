@@ -3,6 +3,7 @@ package com.wzkris.gateway.filter;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,7 +65,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
                 exchange.mutate()
                         .request(
                                 request.mutate()
-                                        .header(HeaderConstants.X_TRACING_ID, UUID.randomUUID().toString())
+                                        .header(HeaderConstants.X_TRACING_ID, TraceIdUtil.get())
                                         .build()
                         )
                         .build()

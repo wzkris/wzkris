@@ -17,33 +17,32 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : rpc - 系统用户
  * @date : 2024/4/15 16:20
  */
-@FeignClient(name = ServiceIdConstant.USER, contextId = "SysUserFeign", fallbackFactory = SysUserFeignFallback.class)
+@FeignClient(name = ServiceIdConstant.USER, contextId = "SysUserFeign",
+        fallbackFactory = SysUserFeignFallback.class, path = "/feign-sys-user")
 public interface SysUserFeign extends RmiFeign {
-
-    String prefix = "/rmi_sys_user";
 
     /**
      * 根据用户名查询系统用户
      */
-    @PostMapping(prefix + "/get_by_username")
+    @PostMapping("/query-by-username")
     SysUserResp getByUsername(@RequestBody String username);
 
     /**
      * 根据手机号查询系统用户
      */
-    @PostMapping(prefix + "/get_by_phonenumber")
+    @PostMapping("/query-by-phonenumber")
     SysUserResp getByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
      * 查询管理员权限
      */
-    @PostMapping(prefix + "/get_permission")
+    @PostMapping("/query-permission")
     SysPermissionResp getPermission(@RequestBody QueryPermsReq queryPermsReq);
 
     /**
      * 更新用户登录信息
      */
-    @PostMapping(prefix + "/update_login_info")
+    @PostMapping("/update-logininfo")
     void updateLoginInfo(@RequestBody LoginInfoReq loginInfoReq);
 
 }

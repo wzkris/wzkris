@@ -2,7 +2,7 @@ package com.wzkris.user.rmi;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.common.core.exception.service.ThirdServiceException;
-import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.AppUserThirdinfo;
 import com.wzkris.user.mapper.AppUserMapper;
@@ -17,10 +17,12 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Hidden
 @RestController
+@RequestMapping("/feign-app-user")
 @RequiredArgsConstructor
 public class AppUserFeignImpl implements AppUserFeign {
 

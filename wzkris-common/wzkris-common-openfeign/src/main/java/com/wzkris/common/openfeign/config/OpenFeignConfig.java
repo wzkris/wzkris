@@ -1,9 +1,9 @@
 package com.wzkris.common.openfeign.config;
 
 import com.wzkris.common.openfeign.core.TargeterDecorator;
-import com.wzkris.common.openfeign.handler.FeignRequestContextInterceptor;
-import com.wzkris.common.openfeign.handler.FeignRequestInterceptor;
-import com.wzkris.common.openfeign.handler.FeignResponseInterceptor;
+import com.wzkris.common.openfeign.interceptor.FeignRequestContextInterceptor;
+import com.wzkris.common.openfeign.interceptor.FeignRequestInterceptor;
+import com.wzkris.common.openfeign.interceptor.FeignResponseInterceptor;
 import feign.RequestInterceptor;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;

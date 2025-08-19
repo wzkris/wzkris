@@ -2,7 +2,6 @@ package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -10,6 +9,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.OAuth2Client;
 import com.wzkris.user.domain.export.OAuth2ClientExport;
 import com.wzkris.user.domain.req.EditClientSecretReq;

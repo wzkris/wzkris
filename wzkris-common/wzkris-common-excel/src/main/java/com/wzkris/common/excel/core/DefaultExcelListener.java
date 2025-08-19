@@ -5,15 +5,10 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.wzkris.common.core.utils.JsonUtil;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Excel 导入监听
@@ -54,18 +49,6 @@ public class DefaultExcelListener<T> extends AnalysisEventListener<T> implements
             Integer columnIndex = excelDataConvertException.getColumnIndex();
             errMsg = String.format(
                     "第%s行-第%s列-表头%s: 解析异常<br/>", rowIndex + 1, columnIndex + 1, headMap.get(columnIndex));
-            if (log.isDebugEnabled()) {
-                log.error(errMsg);
-            }
-        }
-        if (exception instanceof ConstraintViolationException constraintViolationException) {
-            Set<ConstraintViolation<?>> constraintViolations = constraintViolationException.getConstraintViolations();
-            String constraintViolationsMsg = constraintViolations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.joining(", "));
-            errMsg = String.format(
-                    "第%s行数据校验异常: %s", context.readRowHolder().getRowIndex() + 1, constraintViolationsMsg);
             if (log.isDebugEnabled()) {
                 log.error(errMsg);
             }

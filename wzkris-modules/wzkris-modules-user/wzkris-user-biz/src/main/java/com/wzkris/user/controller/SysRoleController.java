@@ -1,9 +1,7 @@
 package com.wzkris.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.annotation.group.ValidationGroups;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
@@ -12,6 +10,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.validator.group.ValidationGroups;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.SysRole;
 import com.wzkris.user.domain.req.*;
 import com.wzkris.user.domain.vo.CheckedSelectTreeVO;
@@ -198,7 +198,7 @@ public class SysRoleController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("sys_role:remove")
     public Result<Void> remove(
-            @RequestBody @NotEmpty(message = "{desc.role}{desc.id}{validate.notnull}") List<Long> roleIds) {
+            @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> roleIds) {
         // 权限校验
         roleDataScopeManager.checkDataScopes(roleIds);
         roleService.checkExistUser(roleIds);

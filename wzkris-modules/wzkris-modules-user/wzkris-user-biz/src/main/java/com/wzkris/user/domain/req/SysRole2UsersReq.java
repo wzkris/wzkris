@@ -12,10 +12,10 @@ import java.util.List;
 @Data
 public class SysRole2UsersReq {
 
-    @NotNull(message = "{desc.role}{desc.id}{validate.notnull}")
+    @NotNull(message = "{invalidParameter.id.invalid}")
     private Long roleId;
 
-    @NotEmpty(message = "{desc.user}{desc.id}{validate.notnull}")
+    @NotEmpty(message = "{invalidParameter.id.invalid}")
     private List<Long> userIds;
 
 }

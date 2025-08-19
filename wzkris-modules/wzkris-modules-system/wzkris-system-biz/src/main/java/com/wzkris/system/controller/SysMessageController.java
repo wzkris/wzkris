@@ -2,13 +2,13 @@ package com.wzkris.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.domain.SysMessage;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.domain.req.SysMessageQueryReq;
@@ -90,7 +90,7 @@ public class SysMessageController extends BaseController {
     @PostMapping("/remove")
     @CheckSystemPerms("sys_message:remove")
     public Result<Void> remove(
-            @RequestBody @NotEmpty(message = "{desc.message}{desc.id}{validate.notnull}") List<Long> msgIds) {
+            @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> msgIds) {
         return toRes(messageMapper.deleteByIds(msgIds));
     }
 

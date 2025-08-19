@@ -60,7 +60,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
-                    "captcha.error",
+                    "invalidParameter.captcha.error",
                     OAuth2ParameterNames.PASSWORD);
         }
     }

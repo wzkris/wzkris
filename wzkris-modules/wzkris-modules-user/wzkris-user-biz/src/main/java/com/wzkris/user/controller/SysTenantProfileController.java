@@ -1,13 +1,13 @@
 package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.utils.BeanUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
 import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.domain.req.SysTenantProfileReq;

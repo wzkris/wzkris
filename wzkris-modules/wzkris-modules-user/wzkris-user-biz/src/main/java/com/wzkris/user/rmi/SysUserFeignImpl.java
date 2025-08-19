@@ -1,7 +1,7 @@
 package com.wzkris.user.rmi;
 
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.utils.BeanUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.SysTenant;
 import com.wzkris.user.domain.SysTenantPackage;
 import com.wzkris.user.domain.SysUser;
@@ -16,10 +16,12 @@ import com.wzkris.user.service.SysPermissionService;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Hidden
 @RestController
+@RequestMapping("/feign-sys-user")
 @RequiredArgsConstructor
 public class SysUserFeignImpl implements SysUserFeign {
 
@@ -54,7 +56,7 @@ public class SysUserFeignImpl implements SysUserFeign {
         if (userResp == null) return;
         if (SysTenant.isSuperTenant(userResp.getTenantId())) {
             userResp.setTenantStatus(CommonConstants.STATUS_ENABLE);
-            userResp.setTenantExpired(CommonConstants.NOT_EXPIRED_TIME);
+            userResp.setTenantExpired(CommonConstants.NEVER_EXPIRED_TIME);
             userResp.setPackageStatus(CommonConstants.STATUS_ENABLE);
         } else {
             SysTenant tenant = tenantMapper.selectById(userResp.getTenantId());

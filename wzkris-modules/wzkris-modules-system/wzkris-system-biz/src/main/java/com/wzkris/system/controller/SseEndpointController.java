@@ -2,7 +2,7 @@ package com.wzkris.system.controller;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.UserAgentUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.system.utils.GlobalSseUtil;

@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : rpc - OAuth2客户端
  * @date : 2024/7/3 14:37
  */
-@FeignClient(name = ServiceIdConstant.USER, contextId = "OAuth2ClientFeign", fallbackFactory = OAuth2ClientFeignFallback.class)
+@FeignClient(name = ServiceIdConstant.USER, contextId = "OAuth2ClientFeign",
+        fallbackFactory = OAuth2ClientFeignFallback.class, path = "/feign-oauth2-client")
 public interface OAuth2ClientFeign extends RmiFeign {
-
-    String prefix = "/rmi_oauth2_client";
 
     /**
      * 根据clientid查询客户端信息
@@ -25,7 +24,7 @@ public interface OAuth2ClientFeign extends RmiFeign {
      * @param clientid clientid
      * @return oauth2客户端
      */
-    @PostMapping(prefix + "/get_by_clientid")
+    @PostMapping("/query-by-clientid")
     OAuth2ClientResp getByClientId(@RequestBody String clientid);
 
 }

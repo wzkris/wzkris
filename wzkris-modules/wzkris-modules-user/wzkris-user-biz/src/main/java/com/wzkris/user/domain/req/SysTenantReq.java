@@ -1,11 +1,13 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.Xss;
-import com.wzkris.common.core.annotation.group.ValidationGroups;
+import com.wzkris.common.validator.annotation.EnumsCheck;
+import com.wzkris.common.validator.annotation.Xss;
+import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.user.domain.SysTenant;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -25,14 +27,15 @@ public class SysTenantReq {
 
     private Long tenantId;
 
-    @NotBlank(message = "{desc.tenant}{desc.type}{validate.notnull}")
+    @EnumsCheck(message = "{invalidParameter.tenantType.invalid}",
+            values = {"0", "1"})
     @Schema(description = "租户类型 0-个人 1-企业")
     private String tenantType;
 
     @Schema(description = "联系电话")
     private String contactPhone;
 
-    @NotBlank(message = "{desc.tenant}{desc.name}{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.tenantName.invalid}")
     @Schema(description = "租户名称")
     private String tenantName;
 
@@ -48,7 +51,8 @@ public class SysTenantReq {
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
-    @NotNull(message = "{desc.expireTime}{validate.notnull}")
+    @NotNull(message = "{invalidParameter.expireTime.invalid}")
+    @Future(message = "{invalidParameter.expireTime.invalid}")
     @Schema(description = "过期时间")
     private Date expireTime;
 
@@ -71,10 +75,10 @@ public class SysTenantReq {
     // 用户名只能为小写英文、数字和下划线
     @Pattern(
             regexp = "^[a-z0-9_]+$",
-            message = "{desc.username}{validate.illegal}",
+            message = "{invalidParameter.username.invalid}",
             groups = ValidationGroups.Insert.class)
-    @Xss(message = "{desc.user}{desc.name}" + "{validate.xss.forbid}", groups = ValidationGroups.Insert.class)
-    @NotBlank(message = "{desc.login}{desc.username}{validate.notnull}", groups = ValidationGroups.Insert.class)
+    @Xss(groups = ValidationGroups.Insert.class)
+    @NotBlank(message = "{invalidParameter.username.invalid}", groups = ValidationGroups.Insert.class)
     @Schema(description = "登录用户名")
     private String username;
 

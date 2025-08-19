@@ -87,14 +87,6 @@
                 <version>${knife4j.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
-            <!--字段映射-->
-            <dependency>
-                <groupId>io.github.linpeilie</groupId>
-                <artifactId>mapstruct-plus</artifactId>
-                <version>${mapstruct-plus.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>

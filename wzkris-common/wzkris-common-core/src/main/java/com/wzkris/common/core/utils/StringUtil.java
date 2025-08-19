@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author wzkris
  */
-public class StringUtil extends StringUtils {
+public abstract class StringUtil extends StringUtils {
 
     /**
      * 点

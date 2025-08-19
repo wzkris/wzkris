@@ -25,6 +25,7 @@
         <module>wzkris-common-excel</module>
         <module>wzkris-common-loadbalancer</module>
         <module>wzkris-common-log</module>
+        <module>wzkris-common-notifier</module>
         <module>wzkris-common-openfeign</module>
         <module>wzkris-common-orm</module>
         <module>wzkris-common-oss</module>
@@ -35,6 +36,8 @@
         <module>wzkris-common-statemachine</module>
         <module>wzkris-common-stream</module>
         <module>wzkris-common-swagger</module>
+        <module>wzkris-common-thread</module>
+        <module>wzkris-common-validator</module>
         <module>wzkris-common-web</module>
         <module>wzkris-common-weixin-sdk</module>
     </modules>

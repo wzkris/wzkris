@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -29,6 +30,7 @@ import java.util.Set;
 @Slf4j
 @Aspect
 @Order(-1)
+@Component
 public class CheckPermsAspect {
 
     @Autowired

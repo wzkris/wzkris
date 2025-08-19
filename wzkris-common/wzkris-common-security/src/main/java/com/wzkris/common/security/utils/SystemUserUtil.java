@@ -37,7 +37,7 @@ public class SystemUserUtil extends SecurityUtil {
         try {
             return (SystemUser) getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new UserException(401, "user.not.login");
+            throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }
     }
 

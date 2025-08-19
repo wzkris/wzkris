@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-07-15 17:03:12
+-- Started on 2025-08-14 10:22:43
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 6 (class 2615 OID 16399)
+-- TOC entry 6 (class 2615 OID 16581)
 -- Name: biz; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -33,7 +33,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 215 (class 1259 OID 16400)
+-- TOC entry 215 (class 1259 OID 16582)
 -- Name: app_user; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -155,7 +155,7 @@ COMMENT ON COLUMN biz.app_user.updater_id IS '更新者';
 
 
 --
--- TOC entry 216 (class 1259 OID 16405)
+-- TOC entry 216 (class 1259 OID 16587)
 -- Name: app_user_thirdinfo; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -196,7 +196,7 @@ COMMENT ON COLUMN biz.app_user_thirdinfo.identifier_type IS '三方渠道';
 
 
 --
--- TOC entry 217 (class 1259 OID 16408)
+-- TOC entry 217 (class 1259 OID 16590)
 -- Name: app_user_wallet; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -237,7 +237,7 @@ COMMENT ON COLUMN biz.app_user_wallet.status IS '状态';
 
 
 --
--- TOC entry 218 (class 1259 OID 16411)
+-- TOC entry 218 (class 1259 OID 16593)
 -- Name: app_user_wallet_record; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -308,7 +308,7 @@ COMMENT ON COLUMN biz.app_user_wallet_record.remark IS '备注';
 
 
 --
--- TOC entry 219 (class 1259 OID 16414)
+-- TOC entry 219 (class 1259 OID 16596)
 -- Name: oauth2_client; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -413,7 +413,7 @@ COMMENT ON COLUMN biz.oauth2_client.auto_approve IS '是否自动放行';
 
 
 --
--- TOC entry 220 (class 1259 OID 16422)
+-- TOC entry 220 (class 1259 OID 16604)
 -- Name: sys_dept; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -545,7 +545,7 @@ COMMENT ON COLUMN biz.sys_dept.updater_id IS '更新者';
 
 
 --
--- TOC entry 221 (class 1259 OID 16429)
+-- TOC entry 221 (class 1259 OID 16611)
 -- Name: sys_menu; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -561,8 +561,8 @@ CREATE TABLE biz.sys_menu (
     status character(1) NOT NULL,
     perms character varying(30),
     icon character varying(50) DEFAULT '#'::character varying NOT NULL,
-    is_cache boolean NOT NULL,
-    is_visible boolean NOT NULL,
+    cacheable boolean NOT NULL,
+    visible boolean NOT NULL,
     create_at timestamp(6) with time zone NOT NULL,
     creator_id bigint NOT NULL,
     update_at timestamp(6) with time zone,
@@ -683,19 +683,19 @@ COMMENT ON COLUMN biz.sys_menu.icon IS '菜单图标';
 --
 -- TOC entry 3521 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_menu.is_cache; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN sys_menu.cacheable; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_menu.is_cache IS '是否缓存';
+COMMENT ON COLUMN biz.sys_menu.cacheable IS '是否缓存';
 
 
 --
 -- TOC entry 3522 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_menu.is_visible; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN sys_menu.visible; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_menu.is_visible IS '是否显示';
+COMMENT ON COLUMN biz.sys_menu.visible IS '是否显示';
 
 
 --
@@ -735,7 +735,7 @@ COMMENT ON COLUMN biz.sys_menu.updater_id IS '更新者';
 
 
 --
--- TOC entry 232 (class 1259 OID 16623)
+-- TOC entry 222 (class 1259 OID 16616)
 -- Name: sys_role; Type: TABLE; Schema: biz; Owner: root
 --
 
@@ -758,7 +758,7 @@ ALTER TABLE biz.sys_role OWNER TO root;
 
 --
 -- TOC entry 3527 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 222
 -- Name: COLUMN sys_role.role_id; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -767,7 +767,7 @@ COMMENT ON COLUMN biz.sys_role.role_id IS '角色ID';
 
 --
 -- TOC entry 3528 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 222
 -- Name: COLUMN sys_role.tenant_id; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -776,7 +776,7 @@ COMMENT ON COLUMN biz.sys_role.tenant_id IS '租户ID';
 
 --
 -- TOC entry 3529 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 222
 -- Name: COLUMN sys_role.data_scope; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -785,7 +785,7 @@ COMMENT ON COLUMN biz.sys_role.data_scope IS '数据范围（1=所有数据权�
 
 --
 -- TOC entry 3530 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 222
 -- Name: COLUMN sys_role.role_name; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -794,7 +794,7 @@ COMMENT ON COLUMN biz.sys_role.role_name IS '角色名称';
 
 --
 -- TOC entry 3531 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 222
 -- Name: COLUMN sys_role.status; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -803,7 +803,7 @@ COMMENT ON COLUMN biz.sys_role.status IS '状态（0代表正常 1代表停用�
 
 --
 -- TOC entry 3532 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 222
 -- Name: COLUMN sys_role.inherited; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -812,7 +812,7 @@ COMMENT ON COLUMN biz.sys_role.inherited IS '继承关系';
 
 --
 -- TOC entry 3533 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 222
 -- Name: COLUMN sys_role.role_sort; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -820,7 +820,7 @@ COMMENT ON COLUMN biz.sys_role.role_sort IS '排序';
 
 
 --
--- TOC entry 222 (class 1259 OID 16440)
+-- TOC entry 223 (class 1259 OID 16620)
 -- Name: sys_role_dept; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -834,7 +834,7 @@ ALTER TABLE biz.sys_role_dept OWNER TO postgres;
 
 --
 -- TOC entry 3534 (class 0 OID 0)
--- Dependencies: 222
+-- Dependencies: 223
 -- Name: TABLE sys_role_dept; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -843,7 +843,7 @@ COMMENT ON TABLE biz.sys_role_dept IS '角色数据权限关联表';
 
 --
 -- TOC entry 3535 (class 0 OID 0)
--- Dependencies: 222
+-- Dependencies: 223
 -- Name: COLUMN sys_role_dept.role_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -852,7 +852,7 @@ COMMENT ON COLUMN biz.sys_role_dept.role_id IS '角色id';
 
 --
 -- TOC entry 3536 (class 0 OID 0)
--- Dependencies: 222
+-- Dependencies: 223
 -- Name: COLUMN sys_role_dept.dept_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -860,7 +860,7 @@ COMMENT ON COLUMN biz.sys_role_dept.dept_id IS '部门id';
 
 
 --
--- TOC entry 231 (class 1259 OID 16594)
+-- TOC entry 224 (class 1259 OID 16623)
 -- Name: sys_role_hierarchy; Type: TABLE; Schema: biz; Owner: root
 --
 
@@ -874,7 +874,7 @@ ALTER TABLE biz.sys_role_hierarchy OWNER TO root;
 
 --
 -- TOC entry 3537 (class 0 OID 0)
--- Dependencies: 231
+-- Dependencies: 224
 -- Name: TABLE sys_role_hierarchy; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -883,7 +883,7 @@ COMMENT ON TABLE biz.sys_role_hierarchy IS '角色继承表';
 
 --
 -- TOC entry 3538 (class 0 OID 0)
--- Dependencies: 231
+-- Dependencies: 224
 -- Name: COLUMN sys_role_hierarchy.role_id; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -892,7 +892,7 @@ COMMENT ON COLUMN biz.sys_role_hierarchy.role_id IS '角色id';
 
 --
 -- TOC entry 3539 (class 0 OID 0)
--- Dependencies: 231
+-- Dependencies: 224
 -- Name: COLUMN sys_role_hierarchy.inherited_id; Type: COMMENT; Schema: biz; Owner: root
 --
 
@@ -900,7 +900,7 @@ COMMENT ON COLUMN biz.sys_role_hierarchy.inherited_id IS '继承角色id';
 
 
 --
--- TOC entry 223 (class 1259 OID 16443)
+-- TOC entry 225 (class 1259 OID 16626)
 -- Name: sys_role_menu; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -914,7 +914,7 @@ ALTER TABLE biz.sys_role_menu OWNER TO postgres;
 
 --
 -- TOC entry 3540 (class 0 OID 0)
--- Dependencies: 223
+-- Dependencies: 225
 -- Name: TABLE sys_role_menu; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -923,7 +923,7 @@ COMMENT ON TABLE biz.sys_role_menu IS '角色和菜单关联表';
 
 --
 -- TOC entry 3541 (class 0 OID 0)
--- Dependencies: 223
+-- Dependencies: 225
 -- Name: COLUMN sys_role_menu.role_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -932,7 +932,7 @@ COMMENT ON COLUMN biz.sys_role_menu.role_id IS '角色ID';
 
 --
 -- TOC entry 3542 (class 0 OID 0)
--- Dependencies: 223
+-- Dependencies: 225
 -- Name: COLUMN sys_role_menu.menu_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -940,7 +940,7 @@ COMMENT ON COLUMN biz.sys_role_menu.menu_id IS '菜单ID';
 
 
 --
--- TOC entry 224 (class 1259 OID 16446)
+-- TOC entry 226 (class 1259 OID 16629)
 -- Name: sys_tenant; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -971,7 +971,7 @@ ALTER TABLE biz.sys_tenant OWNER TO postgres;
 
 --
 -- TOC entry 3543 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: TABLE sys_tenant; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -980,7 +980,7 @@ COMMENT ON TABLE biz.sys_tenant IS '租户表';
 
 --
 -- TOC entry 3544 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -989,7 +989,7 @@ COMMENT ON COLUMN biz.sys_tenant.tenant_id IS '租户编号';
 
 --
 -- TOC entry 3545 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.administrator; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -998,7 +998,7 @@ COMMENT ON COLUMN biz.sys_tenant.administrator IS '管理员ID';
 
 --
 -- TOC entry 3546 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.tenant_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1007,7 +1007,7 @@ COMMENT ON COLUMN biz.sys_tenant.tenant_type IS '租户类型';
 
 --
 -- TOC entry 3547 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.contact_phone; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1016,7 +1016,7 @@ COMMENT ON COLUMN biz.sys_tenant.contact_phone IS '联系电话';
 
 --
 -- TOC entry 3548 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.tenant_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1025,7 +1025,7 @@ COMMENT ON COLUMN biz.sys_tenant.tenant_name IS '租户名称';
 
 --
 -- TOC entry 3549 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.oper_pwd; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1034,7 +1034,7 @@ COMMENT ON COLUMN biz.sys_tenant.oper_pwd IS '操作密码';
 
 --
 -- TOC entry 3550 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1043,7 +1043,7 @@ COMMENT ON COLUMN biz.sys_tenant.status IS '租户状态';
 
 --
 -- TOC entry 3551 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.domain; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1052,7 +1052,7 @@ COMMENT ON COLUMN biz.sys_tenant.domain IS '域名';
 
 --
 -- TOC entry 3552 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.remark; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1061,7 +1061,7 @@ COMMENT ON COLUMN biz.sys_tenant.remark IS '备注';
 
 --
 -- TOC entry 3553 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.package_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1070,7 +1070,7 @@ COMMENT ON COLUMN biz.sys_tenant.package_id IS '租户套餐编号';
 
 --
 -- TOC entry 3554 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.expire_time; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1079,7 +1079,7 @@ COMMENT ON COLUMN biz.sys_tenant.expire_time IS '过期时间';
 
 --
 -- TOC entry 3555 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.account_limit; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1088,7 +1088,7 @@ COMMENT ON COLUMN biz.sys_tenant.account_limit IS '账号数量（-1不限制）
 
 --
 -- TOC entry 3556 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.role_limit; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1097,7 +1097,7 @@ COMMENT ON COLUMN biz.sys_tenant.role_limit IS '角色数量（-1不限制）';
 
 --
 -- TOC entry 3557 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.post_limit; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1106,7 +1106,7 @@ COMMENT ON COLUMN biz.sys_tenant.post_limit IS '岗位数量（-1不限制）';
 
 --
 -- TOC entry 3558 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.dept_limit; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1115,7 +1115,7 @@ COMMENT ON COLUMN biz.sys_tenant.dept_limit IS '部门数量（-1不限制）';
 
 --
 -- TOC entry 3559 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1124,7 +1124,7 @@ COMMENT ON COLUMN biz.sys_tenant.creator_id IS '创建者';
 
 --
 -- TOC entry 3560 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.create_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1133,7 +1133,7 @@ COMMENT ON COLUMN biz.sys_tenant.create_at IS '创建时间';
 
 --
 -- TOC entry 3561 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1142,7 +1142,7 @@ COMMENT ON COLUMN biz.sys_tenant.updater_id IS '更新者';
 
 --
 -- TOC entry 3562 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 226
 -- Name: COLUMN sys_tenant.update_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1150,7 +1150,7 @@ COMMENT ON COLUMN biz.sys_tenant.update_at IS '更新时间';
 
 
 --
--- TOC entry 225 (class 1259 OID 16449)
+-- TOC entry 227 (class 1259 OID 16632)
 -- Name: sys_tenant_package; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -1171,7 +1171,7 @@ ALTER TABLE biz.sys_tenant_package OWNER TO postgres;
 
 --
 -- TOC entry 3563 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: TABLE sys_tenant_package; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1180,7 +1180,7 @@ COMMENT ON TABLE biz.sys_tenant_package IS '租户套餐表';
 
 --
 -- TOC entry 3564 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.package_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1189,7 +1189,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.package_id IS '租户套餐id';
 
 --
 -- TOC entry 3565 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.package_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1198,7 +1198,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.package_name IS '套餐名称';
 
 --
 -- TOC entry 3566 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1207,7 +1207,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.status IS '状态（0正常 1停用）'
 
 --
 -- TOC entry 3567 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.menu_ids; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1216,7 +1216,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.menu_ids IS '套餐绑定的菜单';
 
 --
 -- TOC entry 3568 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.remark; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1225,7 +1225,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.remark IS '备注';
 
 --
 -- TOC entry 3569 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1234,7 +1234,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.creator_id IS '创建者';
 
 --
 -- TOC entry 3570 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.create_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1243,7 +1243,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.create_at IS '创建时间';
 
 --
 -- TOC entry 3571 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1252,7 +1252,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.updater_id IS '更新者';
 
 --
 -- TOC entry 3572 (class 0 OID 0)
--- Dependencies: 225
+-- Dependencies: 227
 -- Name: COLUMN sys_tenant_package.update_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1260,7 +1260,7 @@ COMMENT ON COLUMN biz.sys_tenant_package.update_at IS '更新时间';
 
 
 --
--- TOC entry 226 (class 1259 OID 16455)
+-- TOC entry 228 (class 1259 OID 16638)
 -- Name: sys_tenant_wallet; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -1275,7 +1275,7 @@ ALTER TABLE biz.sys_tenant_wallet OWNER TO postgres;
 
 --
 -- TOC entry 3573 (class 0 OID 0)
--- Dependencies: 226
+-- Dependencies: 228
 -- Name: TABLE sys_tenant_wallet; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1284,7 +1284,7 @@ COMMENT ON TABLE biz.sys_tenant_wallet IS '租户钱包';
 
 --
 -- TOC entry 3574 (class 0 OID 0)
--- Dependencies: 226
+-- Dependencies: 228
 -- Name: COLUMN sys_tenant_wallet.balance; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1293,7 +1293,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet.balance IS '余额, 元';
 
 --
 -- TOC entry 3575 (class 0 OID 0)
--- Dependencies: 226
+-- Dependencies: 228
 -- Name: COLUMN sys_tenant_wallet.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1301,7 +1301,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet.status IS '状态';
 
 
 --
--- TOC entry 227 (class 1259 OID 16458)
+-- TOC entry 229 (class 1259 OID 16641)
 -- Name: sys_tenant_wallet_record; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -1321,7 +1321,7 @@ ALTER TABLE biz.sys_tenant_wallet_record OWNER TO postgres;
 
 --
 -- TOC entry 3576 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: TABLE sys_tenant_wallet_record; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1330,7 +1330,7 @@ COMMENT ON TABLE biz.sys_tenant_wallet_record IS '租户钱包记录';
 
 --
 -- TOC entry 3577 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1339,7 +1339,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet_record.tenant_id IS '租户ID';
 
 --
 -- TOC entry 3578 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.amount; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1348,7 +1348,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet_record.amount IS '金额, 单位元';
 
 --
 -- TOC entry 3579 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.record_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1357,7 +1357,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet_record.record_type IS '记录类型';
 
 --
 -- TOC entry 3580 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.biz_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1366,7 +1366,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet_record.biz_type IS '业务类型';
 
 --
 -- TOC entry 3581 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.biz_no; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1375,7 +1375,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet_record.biz_no IS '业务编号';
 
 --
 -- TOC entry 3582 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.create_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1384,7 +1384,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet_record.create_at IS '创建时间';
 
 --
 -- TOC entry 3583 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 229
 -- Name: COLUMN sys_tenant_wallet_record.remark; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1392,7 +1392,7 @@ COMMENT ON COLUMN biz.sys_tenant_wallet_record.remark IS '备注';
 
 
 --
--- TOC entry 228 (class 1259 OID 16461)
+-- TOC entry 230 (class 1259 OID 16644)
 -- Name: sys_user; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -1422,7 +1422,7 @@ ALTER TABLE biz.sys_user OWNER TO postgres;
 
 --
 -- TOC entry 3584 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: TABLE sys_user; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1431,7 +1431,7 @@ COMMENT ON TABLE biz.sys_user IS '用户信息表';
 
 --
 -- TOC entry 3585 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1440,7 +1440,7 @@ COMMENT ON COLUMN biz.sys_user.user_id IS '管理员ID';
 
 --
 -- TOC entry 3586 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1449,7 +1449,7 @@ COMMENT ON COLUMN biz.sys_user.tenant_id IS '租户ID';
 
 --
 -- TOC entry 3587 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.dept_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1458,7 +1458,7 @@ COMMENT ON COLUMN biz.sys_user.dept_id IS '部门ID';
 
 --
 -- TOC entry 3588 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.username; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1467,7 +1467,7 @@ COMMENT ON COLUMN biz.sys_user.username IS '用户账号';
 
 --
 -- TOC entry 3589 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.email; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1476,7 +1476,7 @@ COMMENT ON COLUMN biz.sys_user.email IS '用户邮箱';
 
 --
 -- TOC entry 3590 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.nickname; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1485,7 +1485,7 @@ COMMENT ON COLUMN biz.sys_user.nickname IS '用户昵称';
 
 --
 -- TOC entry 3591 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.phone_number; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1494,7 +1494,7 @@ COMMENT ON COLUMN biz.sys_user.phone_number IS '手机号码';
 
 --
 -- TOC entry 3592 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1503,7 +1503,7 @@ COMMENT ON COLUMN biz.sys_user.status IS '状态值';
 
 --
 -- TOC entry 3593 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.gender; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1512,7 +1512,7 @@ COMMENT ON COLUMN biz.sys_user.gender IS '用户性别（0男 1女 2未知）';
 
 --
 -- TOC entry 3594 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.avatar; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1521,7 +1521,7 @@ COMMENT ON COLUMN biz.sys_user.avatar IS '头像地址';
 
 --
 -- TOC entry 3595 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.password; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1530,7 +1530,7 @@ COMMENT ON COLUMN biz.sys_user.password IS '密码';
 
 --
 -- TOC entry 3596 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.login_ip; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1539,7 +1539,7 @@ COMMENT ON COLUMN biz.sys_user.login_ip IS '登录ip';
 
 --
 -- TOC entry 3597 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.login_date; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1548,7 +1548,7 @@ COMMENT ON COLUMN biz.sys_user.login_date IS '登录时间';
 
 --
 -- TOC entry 3598 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.remark; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1557,7 +1557,7 @@ COMMENT ON COLUMN biz.sys_user.remark IS '备注';
 
 --
 -- TOC entry 3599 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1566,7 +1566,7 @@ COMMENT ON COLUMN biz.sys_user.creator_id IS '创建者';
 
 --
 -- TOC entry 3600 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 230
 -- Name: COLUMN sys_user.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1574,7 +1574,7 @@ COMMENT ON COLUMN biz.sys_user.updater_id IS '更新者';
 
 
 --
--- TOC entry 229 (class 1259 OID 16471)
+-- TOC entry 231 (class 1259 OID 16651)
 -- Name: sys_user_role; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -1588,7 +1588,7 @@ ALTER TABLE biz.sys_user_role OWNER TO postgres;
 
 --
 -- TOC entry 3601 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 231
 -- Name: TABLE sys_user_role; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1597,7 +1597,7 @@ COMMENT ON TABLE biz.sys_user_role IS '用户和角色关联表';
 
 --
 -- TOC entry 3602 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 231
 -- Name: COLUMN sys_user_role.user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1606,7 +1606,7 @@ COMMENT ON COLUMN biz.sys_user_role.user_id IS '管理员ID';
 
 --
 -- TOC entry 3603 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 231
 -- Name: COLUMN sys_user_role.role_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1614,7 +1614,7 @@ COMMENT ON COLUMN biz.sys_user_role.role_id IS '角色ID';
 
 
 --
--- TOC entry 230 (class 1259 OID 16474)
+-- TOC entry 232 (class 1259 OID 16654)
 -- Name: sys_withdrawal_record; Type: TABLE; Schema: biz; Owner: postgres
 --
 
@@ -1637,7 +1637,7 @@ ALTER TABLE biz.sys_withdrawal_record OWNER TO postgres;
 
 --
 -- TOC entry 3604 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: TABLE sys_withdrawal_record; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1646,7 +1646,7 @@ COMMENT ON TABLE biz.sys_withdrawal_record IS '系统提现记录';
 
 --
 -- TOC entry 3605 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.withdrawal_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1655,7 +1655,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.withdrawal_id IS 'id';
 
 --
 -- TOC entry 3606 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.order_no; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1664,7 +1664,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.order_no IS '订单号';
 
 --
 -- TOC entry 3607 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1676,7 +1676,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.status IS '状态
 
 --
 -- TOC entry 3608 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1685,7 +1685,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.tenant_id IS '租户id';
 
 --
 -- TOC entry 3609 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.request_params; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1694,7 +1694,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.request_params IS '第三方请求�
 
 --
 -- TOC entry 3610 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.amount; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1703,7 +1703,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.amount IS '金额, 单位元';
 
 --
 -- TOC entry 3611 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1712,7 +1712,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.error_msg IS '错误信息';
 
 --
 -- TOC entry 3612 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1721,7 +1721,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.creator_id IS '创建者';
 
 --
 -- TOC entry 3613 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.create_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1730,7 +1730,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.create_at IS '创建时间';
 
 --
 -- TOC entry 3614 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.complete_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1739,7 +1739,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.complete_at IS '完成时间';
 
 --
 -- TOC entry 3615 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 232
 -- Name: COLUMN sys_withdrawal_record.remark; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -1747,7 +1747,7 @@ COMMENT ON COLUMN biz.sys_withdrawal_record.remark IS '备注';
 
 
 --
--- TOC entry 3442 (class 0 OID 16400)
+-- TOC entry 3442 (class 0 OID 16582)
 -- Dependencies: 215
 -- Data for Name: app_user; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
@@ -1758,7 +1758,7 @@ COPY biz.app_user (user_id, nickname, phone_number, status, gender, avatar, logi
 
 
 --
--- TOC entry 3443 (class 0 OID 16405)
+-- TOC entry 3443 (class 0 OID 16587)
 -- Dependencies: 216
 -- Data for Name: app_user_thirdinfo; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
@@ -1768,7 +1768,7 @@ COPY biz.app_user_thirdinfo (user_id, identifier, identifier_type) FROM stdin;
 
 
 --
--- TOC entry 3444 (class 0 OID 16408)
+-- TOC entry 3444 (class 0 OID 16590)
 -- Dependencies: 217
 -- Data for Name: app_user_wallet; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
@@ -1779,7 +1779,7 @@ COPY biz.app_user_wallet (user_id, balance, status) FROM stdin;
 
 
 --
--- TOC entry 3445 (class 0 OID 16411)
+-- TOC entry 3445 (class 0 OID 16593)
 -- Dependencies: 218
 -- Data for Name: app_user_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
@@ -1789,7 +1789,7 @@ COPY biz.app_user_wallet_record (record_id, user_id, amount, record_type, create
 
 
 --
--- TOC entry 3446 (class 0 OID 16414)
+-- TOC entry 3446 (class 0 OID 16596)
 -- Dependencies: 219
 -- Data for Name: oauth2_client; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
@@ -1801,7 +1801,7 @@ COPY biz.oauth2_client (id, client_name, client_id, client_secret, scopes, autho
 
 
 --
--- TOC entry 3447 (class 0 OID 16422)
+-- TOC entry 3447 (class 0 OID 16604)
 -- Dependencies: 220
 -- Data for Name: sys_dept; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
@@ -1811,12 +1811,12 @@ COPY biz.sys_dept (dept_id, tenant_id, parent_id, ancestors, dept_name, status, 
 
 
 --
--- TOC entry 3448 (class 0 OID 16429)
+-- TOC entry 3448 (class 0 OID 16611)
 -- Dependencies: 221
 -- Data for Name: sys_menu; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, is_cache, is_visible, create_at, creator_id, update_at, updater_id) FROM stdin;
+COPY biz.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, create_at, creator_id, update_at, updater_id) FROM stdin;
 1906263415450001049	字典删除	1906263415450000102	4	#	\N	\N	B	0	sys_dict:remove	#	f	t	2024-05-26 12:30:16+08	1	2025-03-28 09:13:19+08	1
 1906263415450000001	系统管理	0	100	system	\N	\N	D	0	\N	carbon:tool-kit	f	t	2024-05-26 12:30:16+08	1	2025-03-28 10:52:58+08	1
 1906263415450000101	控制台入口	1906263415450000001	0	controller	\N	\N	D	0	\N	carbon:dashboard	f	t	2024-05-26 12:30:16+08	1	2025-03-28 10:41:57+08	1
@@ -1905,8 +1905,8 @@ COPY biz.sys_menu (menu_id, menu_name, parent_id, menu_sort, path, component, qu
 
 
 --
--- TOC entry 3459 (class 0 OID 16623)
--- Dependencies: 232
+-- TOC entry 3449 (class 0 OID 16616)
+-- Dependencies: 222
 -- Data for Name: sys_role; Type: TABLE DATA; Schema: biz; Owner: root
 --
 
@@ -1915,8 +1915,8 @@ COPY biz.sys_role (role_id, tenant_id, data_scope, role_name, status, inherited,
 
 
 --
--- TOC entry 3449 (class 0 OID 16440)
--- Dependencies: 222
+-- TOC entry 3450 (class 0 OID 16620)
+-- Dependencies: 223
 -- Data for Name: sys_role_dept; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -1925,8 +1925,8 @@ COPY biz.sys_role_dept (role_id, dept_id) FROM stdin;
 
 
 --
--- TOC entry 3458 (class 0 OID 16594)
--- Dependencies: 231
+-- TOC entry 3451 (class 0 OID 16623)
+-- Dependencies: 224
 -- Data for Name: sys_role_hierarchy; Type: TABLE DATA; Schema: biz; Owner: root
 --
 
@@ -1935,8 +1935,8 @@ COPY biz.sys_role_hierarchy (role_id, inherited_id) FROM stdin;
 
 
 --
--- TOC entry 3450 (class 0 OID 16443)
--- Dependencies: 223
+-- TOC entry 3452 (class 0 OID 16626)
+-- Dependencies: 225
 -- Data for Name: sys_role_menu; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -1945,8 +1945,8 @@ COPY biz.sys_role_menu (role_id, menu_id) FROM stdin;
 
 
 --
--- TOC entry 3451 (class 0 OID 16446)
--- Dependencies: 224
+-- TOC entry 3453 (class 0 OID 16629)
+-- Dependencies: 226
 -- Data for Name: sys_tenant; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -1957,8 +1957,8 @@ COPY biz.sys_tenant (tenant_id, administrator, tenant_type, contact_phone, tenan
 
 
 --
--- TOC entry 3452 (class 0 OID 16449)
--- Dependencies: 225
+-- TOC entry 3454 (class 0 OID 16632)
+-- Dependencies: 227
 -- Data for Name: sys_tenant_package; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -1968,8 +1968,8 @@ COPY biz.sys_tenant_package (package_id, package_name, status, menu_ids, remark,
 
 
 --
--- TOC entry 3453 (class 0 OID 16455)
--- Dependencies: 226
+-- TOC entry 3455 (class 0 OID 16638)
+-- Dependencies: 228
 -- Data for Name: sys_tenant_wallet; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -1980,8 +1980,8 @@ COPY biz.sys_tenant_wallet (tenant_id, balance, status) FROM stdin;
 
 
 --
--- TOC entry 3454 (class 0 OID 16458)
--- Dependencies: 227
+-- TOC entry 3456 (class 0 OID 16641)
+-- Dependencies: 229
 -- Data for Name: sys_tenant_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -1990,20 +1990,20 @@ COPY biz.sys_tenant_wallet_record (record_id, tenant_id, amount, record_type, bi
 
 
 --
--- TOC entry 3455 (class 0 OID 16461)
--- Dependencies: 228
+-- TOC entry 3457 (class 0 OID 16644)
+-- Dependencies: 230
 -- Data for Name: sys_user; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
 COPY biz.sys_user (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
 1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.111	2025-07-04 09:23:28+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
-1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	192.168.0.111	2025-07-15 16:04:19+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2025-08-07 17:53:14+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
 --
--- TOC entry 3456 (class 0 OID 16471)
--- Dependencies: 229
+-- TOC entry 3458 (class 0 OID 16651)
+-- Dependencies: 231
 -- Data for Name: sys_user_role; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -2012,8 +2012,8 @@ COPY biz.sys_user_role (user_id, role_id) FROM stdin;
 
 
 --
--- TOC entry 3457 (class 0 OID 16474)
--- Dependencies: 230
+-- TOC entry 3459 (class 0 OID 16654)
+-- Dependencies: 232
 -- Data for Name: sys_withdrawal_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -2022,7 +2022,7 @@ COPY biz.sys_withdrawal_record (withdrawal_id, order_no, status, tenant_id, requ
 
 
 --
--- TOC entry 3253 (class 2606 OID 16480)
+-- TOC entry 3253 (class 2606 OID 16660)
 -- Name: app_user app_user_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2031,7 +2031,7 @@ ALTER TABLE ONLY biz.app_user
 
 
 --
--- TOC entry 3256 (class 2606 OID 16482)
+-- TOC entry 3256 (class 2606 OID 16662)
 -- Name: app_user_thirdinfo app_user_thirdinfo_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2040,7 +2040,7 @@ ALTER TABLE ONLY biz.app_user_thirdinfo
 
 
 --
--- TOC entry 3259 (class 2606 OID 16484)
+-- TOC entry 3259 (class 2606 OID 16664)
 -- Name: app_user_wallet app_user_wallet_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2049,7 +2049,7 @@ ALTER TABLE ONLY biz.app_user_wallet
 
 
 --
--- TOC entry 3261 (class 2606 OID 16486)
+-- TOC entry 3261 (class 2606 OID 16666)
 -- Name: app_user_wallet_record app_user_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2058,7 +2058,7 @@ ALTER TABLE ONLY biz.app_user_wallet_record
 
 
 --
--- TOC entry 3264 (class 2606 OID 16488)
+-- TOC entry 3264 (class 2606 OID 16668)
 -- Name: oauth2_client oauth2_client_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2067,7 +2067,7 @@ ALTER TABLE ONLY biz.oauth2_client
 
 
 --
--- TOC entry 3269 (class 2606 OID 16490)
+-- TOC entry 3269 (class 2606 OID 16670)
 -- Name: sys_dept sys_dept_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2076,7 +2076,7 @@ ALTER TABLE ONLY biz.sys_dept
 
 
 --
--- TOC entry 3271 (class 2606 OID 16492)
+-- TOC entry 3271 (class 2606 OID 16672)
 -- Name: sys_menu sys_menu_copy1_pkey1; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2085,7 +2085,7 @@ ALTER TABLE ONLY biz.sys_menu
 
 
 --
--- TOC entry 3274 (class 2606 OID 16496)
+-- TOC entry 3276 (class 2606 OID 16674)
 -- Name: sys_role_dept sys_role_dept_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2094,7 +2094,7 @@ ALTER TABLE ONLY biz.sys_role_dept
 
 
 --
--- TOC entry 3297 (class 2606 OID 16600)
+-- TOC entry 3278 (class 2606 OID 16676)
 -- Name: sys_role_hierarchy sys_role_hierarchy_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
 --
 
@@ -2103,7 +2103,7 @@ ALTER TABLE ONLY biz.sys_role_hierarchy
 
 
 --
--- TOC entry 3276 (class 2606 OID 16498)
+-- TOC entry 3280 (class 2606 OID 16678)
 -- Name: sys_role_menu sys_role_menu_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2112,7 +2112,7 @@ ALTER TABLE ONLY biz.sys_role_menu
 
 
 --
--- TOC entry 3299 (class 2606 OID 16628)
+-- TOC entry 3274 (class 2606 OID 16680)
 -- Name: sys_role sys_role_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
 --
 
@@ -2121,7 +2121,7 @@ ALTER TABLE ONLY biz.sys_role
 
 
 --
--- TOC entry 3281 (class 2606 OID 16502)
+-- TOC entry 3285 (class 2606 OID 16682)
 -- Name: sys_tenant_package sys_tenant_package_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2130,7 +2130,7 @@ ALTER TABLE ONLY biz.sys_tenant_package
 
 
 --
--- TOC entry 3278 (class 2606 OID 16504)
+-- TOC entry 3282 (class 2606 OID 16684)
 -- Name: sys_tenant sys_tenant_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2139,7 +2139,7 @@ ALTER TABLE ONLY biz.sys_tenant
 
 
 --
--- TOC entry 3283 (class 2606 OID 16506)
+-- TOC entry 3287 (class 2606 OID 16686)
 -- Name: sys_tenant_wallet sys_tenant_wallet_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2148,7 +2148,7 @@ ALTER TABLE ONLY biz.sys_tenant_wallet
 
 
 --
--- TOC entry 3286 (class 2606 OID 16508)
+-- TOC entry 3290 (class 2606 OID 16688)
 -- Name: sys_tenant_wallet_record sys_tenant_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2157,7 +2157,7 @@ ALTER TABLE ONLY biz.sys_tenant_wallet_record
 
 
 --
--- TOC entry 3288 (class 2606 OID 16510)
+-- TOC entry 3292 (class 2606 OID 16690)
 -- Name: sys_user sys_user_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2166,7 +2166,7 @@ ALTER TABLE ONLY biz.sys_user
 
 
 --
--- TOC entry 3292 (class 2606 OID 16514)
+-- TOC entry 3296 (class 2606 OID 16692)
 -- Name: sys_user_role sys_user_role_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2175,7 +2175,7 @@ ALTER TABLE ONLY biz.sys_user_role
 
 
 --
--- TOC entry 3295 (class 2606 OID 16516)
+-- TOC entry 3299 (class 2606 OID 16694)
 -- Name: sys_withdrawal_record sys_withdrawal_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2184,7 +2184,7 @@ ALTER TABLE ONLY biz.sys_withdrawal_record
 
 
 --
--- TOC entry 3262 (class 1259 OID 16517)
+-- TOC entry 3262 (class 1259 OID 16695)
 -- Name: i_app_user_wallet_record_user_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2192,7 +2192,7 @@ CREATE INDEX i_app_user_wallet_record_user_id ON biz.app_user_wallet_record USIN
 
 
 --
--- TOC entry 3266 (class 1259 OID 16518)
+-- TOC entry 3266 (class 1259 OID 16696)
 -- Name: sys_dept_i_ancestors; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2200,7 +2200,7 @@ CREATE INDEX sys_dept_i_ancestors ON biz.sys_dept USING btree (ancestors);
 
 
 --
--- TOC entry 3267 (class 1259 OID 16519)
+-- TOC entry 3267 (class 1259 OID 16697)
 -- Name: sys_dept_i_parent_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2208,7 +2208,7 @@ CREATE INDEX sys_dept_i_parent_id ON biz.sys_dept USING btree (parent_id);
 
 
 --
--- TOC entry 3272 (class 1259 OID 16520)
+-- TOC entry 3272 (class 1259 OID 16698)
 -- Name: sys_menu_i_parent_id_copy1_copy1; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2216,7 +2216,7 @@ CREATE INDEX sys_menu_i_parent_id_copy1_copy1 ON biz.sys_menu USING btree (paren
 
 
 --
--- TOC entry 3284 (class 1259 OID 16521)
+-- TOC entry 3288 (class 1259 OID 16699)
 -- Name: sys_tenant_wallet_record_i_tenant_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2224,7 +2224,7 @@ CREATE INDEX sys_tenant_wallet_record_i_tenant_id ON biz.sys_tenant_wallet_recor
 
 
 --
--- TOC entry 3293 (class 1259 OID 16522)
+-- TOC entry 3297 (class 1259 OID 16700)
 -- Name: sys_withdrawal_record_i_order_no; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2232,7 +2232,7 @@ CREATE UNIQUE INDEX sys_withdrawal_record_i_order_no ON biz.sys_withdrawal_recor
 
 
 --
--- TOC entry 3279 (class 1259 OID 16523)
+-- TOC entry 3283 (class 1259 OID 16701)
 -- Name: u_i_administrator; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2240,7 +2240,7 @@ CREATE UNIQUE INDEX u_i_administrator ON biz.sys_tenant USING btree (administrat
 
 
 --
--- TOC entry 3254 (class 1259 OID 16524)
+-- TOC entry 3254 (class 1259 OID 16702)
 -- Name: u_i_app_user_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2248,7 +2248,7 @@ CREATE UNIQUE INDEX u_i_app_user_phone_number ON biz.app_user USING btree (phone
 
 
 --
--- TOC entry 3265 (class 1259 OID 16525)
+-- TOC entry 3265 (class 1259 OID 16703)
 -- Name: u_i_client_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2256,7 +2256,7 @@ CREATE UNIQUE INDEX u_i_client_id ON biz.oauth2_client USING btree (client_id);
 
 
 --
--- TOC entry 3257 (class 1259 OID 16526)
+-- TOC entry 3257 (class 1259 OID 16704)
 -- Name: u_i_identifier; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2264,7 +2264,7 @@ CREATE UNIQUE INDEX u_i_identifier ON biz.app_user_thirdinfo USING btree (identi
 
 
 --
--- TOC entry 3289 (class 1259 OID 16527)
+-- TOC entry 3293 (class 1259 OID 16705)
 -- Name: u_i_sys_user_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2272,14 +2272,14 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz.sys_user USING btree (phone
 
 
 --
--- TOC entry 3290 (class 1259 OID 16528)
+-- TOC entry 3294 (class 1259 OID 16706)
 -- Name: u_i_sys_user_username; Type: INDEX; Schema: biz; Owner: postgres
 --
 
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz.sys_user USING btree (username);
 
 
--- Completed on 2025-07-15 17:03:12
+-- Completed on 2025-08-14 10:22:43
 
 --
 -- PostgreSQL database dump complete

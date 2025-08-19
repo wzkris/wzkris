@@ -1,7 +1,7 @@
 package com.wzkris.system.domain.req;
 
-import com.wzkris.common.core.annotation.EnumsCheck;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.system.domain.SysConfig;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -17,22 +17,23 @@ public class SysConfigReq {
 
     private Long configId;
 
-    @NotBlank(message = "{desc.system}{desc.config}{desc.name}" + "{validate.notnull}")
-    @Size(min = 1, max = 50, message = "{desc.system}{desc.config}{desc.name}" + "{validate.size.illegal}")
+    @NotBlank(message = "{invalidParameter.configName.invalid}")
+    @Size(min = 1, max = 50, message = "{invalidParameter.configName.invalid}")
     @Schema(description = "参数名称")
     private String configName;
 
-    @NotBlank(message = "{desc.system}{desc.config}{desc.key}" + "{validate.notnull}")
-    @Size(min = 3, max = 50, message = "{desc.system}{desc.config}{desc.key}" + "{validate.size.illegal}")
+    @NotBlank(message = "{invalidParameter.configKey.invalid}")
+    @Size(min = 3, max = 50, message = "{invalidParameter.configKey.invalid}")
     @Schema(description = "参数键名")
     private String configKey;
 
-    @NotBlank(message = "{desc.system}{desc.config}{desc.value}" + "{validate.notnull}")
-    @Size(min = 1, max = 500, message = "{desc.system}{desc.config}{desc.value}" + "{validate.size.illegal}")
+    @NotBlank(message = "{invalidParameter.configValue.invalid}")
+    @Size(min = 1, max = 500, message = "{invalidParameter.configValue.invalid}")
     @Schema(description = "参数键值")
     private String configValue;
 
-    @EnumsCheck(values = {CommonConstants.YES, CommonConstants.NO})
+    @EnumsCheck(values = {CommonConstants.YES, CommonConstants.NO},
+            message = "{invalidParameter.configType.invalid}")
     @Schema(description = "系统内置（Y是 N否）")
     private String configType;
 

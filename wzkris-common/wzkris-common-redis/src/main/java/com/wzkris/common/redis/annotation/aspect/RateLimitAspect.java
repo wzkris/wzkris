@@ -9,6 +9,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.redisson.api.RRateLimiter;
+import org.springframework.stereotype.Component;
 
 /**
  * 限流处理
@@ -18,6 +19,7 @@ import org.redisson.api.RRateLimiter;
  */
 @Slf4j
 @Aspect
+@Component
 public class RateLimitAspect {
 
     @Before("@annotation(rateLimit)")

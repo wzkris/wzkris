@@ -16,14 +16,14 @@ public class OAuth2ClientReq {
 
     private Long id;
 
-    @NotBlank(message = "{desc.client}{desc.name}{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.clientName.invalid}")
     @Schema(description = "客户端名称")
     private String clientName;
 
     @Schema(description = "客户端状态")
     private String status;
 
-    @NotBlank(message = "{desc.client}{desc.id}{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.id.invalid}")
     @Schema(description = "客户端id 等价于app_id")
     private String clientId;
 

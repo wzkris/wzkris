@@ -1,7 +1,7 @@
 package com.wzkris.user.domain.req;
 
-import com.wzkris.common.core.annotation.EnumsCheck;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.user.domain.SysTenantPackage;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -19,8 +19,8 @@ public class SysTenantPackageReq {
 
     private Long packageId;
 
-    @NotBlank(message = "{desc.package}{desc.name}" + "{validate.notnull}")
-    @Size(min = 2, max = 20, message = "{desc.package}{desc.name}" + "{validate.size.illegal}")
+    @NotBlank(message = "{invalidParameter.packageName.invalid}")
+    @Size(min = 2, max = 20, message = "{invalidParameter.packageName.invalid}")
     @Schema(description = "套餐名称")
     private String packageName;
 

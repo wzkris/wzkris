@@ -26,7 +26,7 @@ public final class AccessDeniedHandlerImpl implements AccessDeniedHandler {
             throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.FORBID, I18nUtil.message("request.forbid")));
+        JsonUtil.writeValue(response.getWriter(), Result.resp(BizCode.FORBID, I18nUtil.message("forbidden.accessDenied.permissionDenied")));
     }
 
 }

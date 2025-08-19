@@ -12,17 +12,17 @@ import lombok.Data;
 public class EditPwdReq {
 
     @NotBlank(
-            message = "{desc.oldpwd}" + "{validate.notnull}",
+            message = "{invalidParameter.oldPassword.invalid}",
             groups = {LoginPwd.class, OperPwd.class})
     private String oldPassword;
 
-    @Pattern(regexp = "^\\d{6}$", message = "{desc.newpwd}{validate.illegal}", groups = OperPwd.class)
+    @Pattern(regexp = "^\\d{6}$", message = "{invalidParameter.newPassword.invalid}", groups = OperPwd.class)
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])\\S{8,20}$",
-            message = "{desc.newpwd}{validate.illegal}",
+            message = "{invalidParameter.newPassword.invalid}",
             groups = LoginPwd.class)
     @NotBlank(
-            message = "{desc.newpwd}" + "{validate.notnull}",
+            message = "{invalidParameter.newPassword.invalid}",
             groups = {LoginPwd.class, OperPwd.class})
     private String newPassword;
 

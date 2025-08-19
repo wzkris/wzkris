@@ -1,4 +1,0 @@
-com.wzkris.common.captcha.properties.CapProperties
-com.wzkris.common.captcha.handler.CapHandler
-com.wzkris.common.captcha.store.impl.InMemoryStore
-com.wzkris.common.captcha.store.impl.RedisStore

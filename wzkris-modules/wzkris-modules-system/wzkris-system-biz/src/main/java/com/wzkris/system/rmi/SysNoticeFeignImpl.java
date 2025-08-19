@@ -6,10 +6,12 @@ import com.wzkris.system.rmi.domain.req.SendNoticeReq;
 import com.wzkris.system.service.SysNoticeService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Hidden
 @RestController
+@RequestMapping("/feign-sys-notice")
 @RequiredArgsConstructor
 public class SysNoticeFeignImpl implements SysNoticeFeign {
 

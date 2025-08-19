@@ -1,9 +1,9 @@
 package com.wzkris.user.domain.export;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.wzkris.common.core.annotation.PhoneNumber;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
 import com.wzkris.common.excel.convert.ExcelDictConvert;
+import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.user.domain.vo.SysUserVO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;

@@ -2,9 +2,10 @@ package com.wzkris.common.captcha.service;
 
 import com.wzkris.common.captcha.exception.ChallengeStoreException;
 import com.wzkris.common.captcha.handler.CapHandler;
+import com.wzkris.common.captcha.model.ChallengeData;
+import com.wzkris.common.captcha.model.Token;
 import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
-import com.wzkris.common.captcha.response.ChallengeResponse;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.core.enums.BizCode;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
@@ -40,35 +41,23 @@ public class CaptchaService {
         this.capProperties = capProperties;
     }
 
-    public ChallengeResponse createChallenge() throws ChallengeStoreException {
-        final var challenge = capHandler.createChallenge();
-        return ChallengeResponse.builder()
-                .challenge(challenge.getChallenge())
-                .expires(challenge.getExpires())
-                .token(challenge.getToken())
-                .build();
+    public ChallengeData createChallenge() throws ChallengeStoreException {
+        return capHandler.createChallenge();
     }
 
     public RedeemChallengeResponse redeemChallenge(final RedeemChallengeRequest redeemChallengeRequest) {
         try {
-            final var token = capHandler.redeemChallenge(
+            final Token token = capHandler.redeemChallenge(
                     redeemChallengeRequest.getToken(),
                     redeemChallengeRequest.getSolutions()
             );
-            return RedeemChallengeResponse.builder()
-                    .success(true)
-                    .token(token.getToken())
-                    .expires(token.getExpires())
-                    .build();
+            return RedeemChallengeResponse.ok(token);
         } catch (IllegalArgumentException | IllegalStateException | ChallengeStoreException e) {
-            return RedeemChallengeResponse.builder()
-                    .success(false)
-                    .message(e.getMessage())
-                    .build();
+            return RedeemChallengeResponse.error(e.getMessage());
         }
     }
 
-    public Boolean validateToken(final String token) {
+    public Boolean validateChallenge(final String token) {
         return capHandler.validateToken(token);
     }
 
@@ -94,7 +83,7 @@ public class CaptchaService {
             throw new CaptchaException("captcha.expired");
         }
         if (!StringUtil.equals(realcode, code)) {
-            throw new CaptchaException("captcha.error");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
         RedisUtil.delObj(fullKey);
     }
@@ -121,7 +110,7 @@ public class CaptchaService {
                 + "end";
 
         // 执行 Lua 脚本
-        RScript script = RedisUtil.getClient().getScript();
+        RScript script = RedisUtil.getScript();
         Long result = script.eval(
                 RScript.Mode.READ_WRITE,
                 luaScript,
@@ -142,14 +131,14 @@ public class CaptchaService {
      * @param key     唯一标识
      * @param timeout 冻结时长（秒）
      */
-    public void lockAccount(String key, int timeout) {
+    public void freezeAccount(String key, int timeout) {
         RedisUtil.setObj(LOCK_PREFIX + key, "", timeout);
     }
 
     /**
      * 校验账号是否被冻结
      */
-    public void validateLock(String key) {
+    public void validateAccount(String key) {
         if (RedisUtil.exist(LOCK_PREFIX + key)) {
             throw new CaptchaException(BizCode.TOO_MANY_REQUESTS.value(), "service.busy");
         }
