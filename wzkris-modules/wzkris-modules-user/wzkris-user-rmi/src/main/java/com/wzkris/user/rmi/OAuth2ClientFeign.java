@@ -1,5 +1,6 @@
 package com.wzkris.user.rmi;
 
+import com.wzkris.common.openfeign.constants.ServiceContextPathConstant;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @date : 2024/7/3 14:37
  */
 @FeignClient(name = ServiceIdConstant.USER, contextId = "OAuth2ClientFeign",
-        fallbackFactory = OAuth2ClientFeignFallback.class, path = "/feign-oauth2-client")
+        fallbackFactory = OAuth2ClientFeignFallback.class,
+        path = ServiceContextPathConstant.USER + "/feign-oauth2-client")
 public interface OAuth2ClientFeign extends RmiFeign {
 
     /**

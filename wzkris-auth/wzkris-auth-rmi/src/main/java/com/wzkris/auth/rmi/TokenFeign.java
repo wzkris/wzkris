@@ -4,6 +4,7 @@ import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.auth.rmi.fallback.TokenFeignFallback;
 import com.wzkris.common.openfeign.annotation.FeignIgnoreInterceptor;
+import com.wzkris.common.openfeign.constants.ServiceContextPathConstant;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import jakarta.validation.Valid;
@@ -19,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @FeignIgnoreInterceptor
 @FeignClient(name = ServiceIdConstant.AUTH, contextId = "TokenFeign",
-        fallbackFactory = TokenFeignFallback.class, path = "/feign-token")
+        fallbackFactory = TokenFeignFallback.class,
+        path = ServiceContextPathConstant.AUTH + "/feign-token")
 public interface TokenFeign extends RmiFeign {
 
     /**

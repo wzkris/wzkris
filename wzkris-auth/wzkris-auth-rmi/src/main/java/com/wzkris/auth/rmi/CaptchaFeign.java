@@ -2,6 +2,7 @@ package com.wzkris.auth.rmi;
 
 import com.wzkris.auth.rmi.domain.req.CaptchaCheckReq;
 import com.wzkris.auth.rmi.fallback.CaptchaFeignFeignFallback;
+import com.wzkris.common.openfeign.constants.ServiceContextPathConstant;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import jakarta.validation.Valid;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @date : 2023/8/21 11:27
  */
 @FeignClient(name = ServiceIdConstant.AUTH, contextId = "CaptchaFeign",
-        fallbackFactory = CaptchaFeignFeignFallback.class, path = "/feign-captcha")
+        fallbackFactory = CaptchaFeignFeignFallback.class,
+        path = ServiceContextPathConstant.AUTH + "/feign-captcha")
 public interface CaptchaFeign extends RmiFeign {
 
     /**

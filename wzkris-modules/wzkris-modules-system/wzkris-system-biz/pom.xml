@@ -50,11 +50,6 @@
             <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-file-rmi</artifactId>
-        </dependency>
-
         <!-- wzkris Common DataSource -->
         <dependency>
             <groupId>com.wzkris</groupId>

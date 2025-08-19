@@ -1,5 +1,6 @@
 package com.wzkris.system.rmi;
 
+import com.wzkris.common.openfeign.constants.ServiceContextPathConstant;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.system.rmi.domain.req.LoginLogReq;
@@ -18,7 +19,8 @@ import java.util.List;
  * @date : 2023/3/13 16:12
  */
 @FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "SysLogFeign",
-        fallbackFactory = SysLogFeignFallback.class, path = "/feign-sys-log")
+        fallbackFactory = SysLogFeignFallback.class,
+        path = ServiceContextPathConstant.SYSTEM + "/feign-sys-log")
 public interface SysLogFeign extends RmiFeign {
 
     /**
