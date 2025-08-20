@@ -1,8 +1,6 @@
 package com.wzkris.common.core.threads;
 
-import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.TraceIdUtil;
-import org.slf4j.MDC;
 
 /**
  * tracing_id包装任务
@@ -21,7 +19,7 @@ public class TracingIdRunnable implements Runnable {
     }
 
     public TracingIdRunnable(Runnable delegate) {
-        this(delegate, MDC.get(HeaderConstants.X_TRACING_ID));
+        this(delegate, TraceIdUtil.get());
     }
 
     @Override
@@ -30,7 +28,7 @@ public class TracingIdRunnable implements Runnable {
         try {
             delegate.run();
         } finally {
-            MDC.clear();
+            TraceIdUtil.clear();
         }
     }
 
