@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.service;
 
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -16,7 +16,7 @@ public final class ThirdServiceException extends BaseException {
     }
 
     public ThirdServiceException(String message) {
-        this(BizCode.THIRD_SERVICE_ERROR.value(), message);
+        this(BizBaseCode.THIRD_SERVICE_ERROR.value(), message);
     }
 
     /**

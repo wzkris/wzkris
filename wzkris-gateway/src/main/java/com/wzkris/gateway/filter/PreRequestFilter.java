@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.gateway.config.PermitAllProperties;
@@ -57,7 +57,7 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
 
         // 检查是否需要认证
         if (isAuthenticationRequired(request)) {
-            return WebFluxUtil.writeResponse(exchange.getResponse(), BizCode.UNAUTHORIZED);
+            return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.UNAUTHORIZED);
         }
 
         // 添加追踪ID并继续过滤器链

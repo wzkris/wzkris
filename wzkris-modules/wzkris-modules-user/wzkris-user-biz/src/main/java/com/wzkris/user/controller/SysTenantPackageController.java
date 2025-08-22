@@ -120,7 +120,7 @@ public class SysTenantPackageController extends BaseController {
     public Result<Void> remove(
             @NotEmpty(message = "{invalidParameter.id.invalid}") @RequestBody List<Long> packageIds) {
         if (tenantPackageService.checkPackageUsed(packageIds)) {
-            return err412("删除失败, 套餐正在使用");
+            return err40000("删除失败, 套餐正在使用");
         }
         return toRes(tenantPackageMapper.deleteByIds(packageIds));
     }

@@ -1,7 +1,5 @@
 server:
   port: 5555
-  servlet:
-    context-path: /system-api
 
 spring:
   application:

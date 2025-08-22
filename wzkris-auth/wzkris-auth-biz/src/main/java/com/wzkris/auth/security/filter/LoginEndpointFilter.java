@@ -4,7 +4,7 @@ import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -73,7 +73,7 @@ public class LoginEndpointFilter extends OncePerRequestFilter {
             }
 
             if (commonAuthenticationToken == null) {
-                OAuth2ExceptionUtil.throwErrorI18n(BizCode.BAD_REQUEST.value(), "oauth2.unsupport.logintype");
+                OAuth2ExceptionUtil.throwErrorI18n(BizBaseCode.BAD_REQUEST.value(), "oauth2.unsupport.logintype");
             }
 
             commonAuthenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));

@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.file;
 
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -11,7 +11,7 @@ import com.wzkris.common.core.exception.BaseException;
 public class FileException extends BaseException {
 
     public FileException(String code, Object... args) {
-        this(BizCode.INVOKE_FAIL.value(), code, args);
+        this(BizBaseCode.BAD_REQUEST.value(), code, args);
     }
 
     public FileException(int biz, String code, Object... args) {

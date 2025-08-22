@@ -8,7 +8,7 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -73,7 +73,7 @@ public class SystemUserService extends UserInfoTemplate {
         try {
             if (!passwordEncoder.matches(password, userResp.getPassword())) {
                 OAuth2ExceptionUtil.throwErrorI18n(
-                        BizCode.PRECONDITION_FAILED.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
+                        BizBaseCode.BAD_REQUEST.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
             return this.buildLoginUser(userResp);
@@ -114,16 +114,16 @@ public class SystemUserService extends UserInfoTemplate {
     private void checkAccount(SysUserResp userResp) {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         } else if (StringUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
+                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
         } else if (userResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
+                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
         } else if (StringUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
+                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }
 

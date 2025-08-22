@@ -15,7 +15,7 @@
  */
 package com.wzkris.auth.security.oauth2.device;
 
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,7 +69,7 @@ public final class DeviceClientAuthenticationConverter implements Authentication
         String clientId = request.getParameter(OAuth2ParameterNames.CLIENT_ID);
         if (!StringUtils.hasText(clientId) || request.getParameterValues(OAuth2ParameterNames.CLIENT_ID).length != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
         return new DeviceClientAuthenticationToken(

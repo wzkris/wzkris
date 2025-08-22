@@ -76,7 +76,7 @@ public class SysConfigController extends BaseController {
     @CheckSystemPerms("sys_config:add")
     public Result<Void> add(@Validated @RequestBody SysConfigReq req) {
         if (configService.checkUsedByConfigKey(null, req.getConfigKey())) {
-            return err412("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
+            return err40000("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
         return toRes(configService.insertConfig(BeanUtil.convert(req, SysConfig.class)));
     }
@@ -87,7 +87,7 @@ public class SysConfigController extends BaseController {
     @CheckSystemPerms("sys_config:edit")
     public Result<Void> edit(@Validated @RequestBody SysConfigReq req) {
         if (configService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
-            return err412("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
+            return err40000("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
         return toRes(configService.updateConfig(BeanUtil.convert(req, SysConfig.class)));
     }
@@ -99,7 +99,7 @@ public class SysConfigController extends BaseController {
     public Result<Void> remove(@RequestBody Long configId) {
         SysConfig config = configMapper.selectById(configId);
         if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
-            return err412(String.format("内置参数'%s'不能删除", config.getConfigKey()));
+            return err40000(String.format("内置参数'%s'不能删除", config.getConfigKey()));
         }
         return toRes(configService.deleteById(configId));
     }

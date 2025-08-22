@@ -1,6 +1,5 @@
 package com.wzkris.user.rmi;
 
-import com.wzkris.common.openfeign.constants.ServiceContextPathConstant;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.user.rmi.domain.req.LoginInfoReq;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @FeignClient(name = ServiceIdConstant.USER, contextId = "SysUserFeign",
         fallbackFactory = SysUserFeignFallback.class,
-        path = ServiceContextPathConstant.USER + "/feign-sys-user")
+        path = "/feign-sys-user")
 public interface SysUserFeign extends RmiFeign {
 
     /**

@@ -83,11 +83,11 @@ public class SysTenantProfileController extends BaseController {
         String operPwd = tenantMapper.selectOperPwdById(tenantId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), operPwd)) {
-            return err412("修改密码失败，旧密码错误");
+            return err40000("修改密码失败，旧密码错误");
         }
 
         if (passwordEncoder.matches(req.getNewPassword(), operPwd)) {
-            return err412("新密码不能与旧密码相同");
+            return err40000("新密码不能与旧密码相同");
         }
 
         SysTenant update = new SysTenant(tenantId);

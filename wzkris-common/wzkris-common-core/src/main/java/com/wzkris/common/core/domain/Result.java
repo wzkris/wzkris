@@ -1,8 +1,6 @@
 package com.wzkris.common.core.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.service.GenericException;
+import com.wzkris.common.core.enums.BizBaseCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -52,43 +50,39 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> ok() {
-        return resp(BizCode.OK, BizCode.OK.desc());
+        return resp(BizBaseCode.OK, BizBaseCode.OK.desc());
     }
 
     public static <T> Result<T> ok(T data) {
-        return resp(BizCode.OK.value(), data, BizCode.OK.desc());
+        return resp(BizBaseCode.OK.value(), data, BizBaseCode.OK.desc());
     }
 
-    public static <T> Result<T> err400(String message) {
-        return resp(BizCode.BAD_REQUEST, message);
+    public static <T> Result<T> err40000(String message) {
+        return resp(BizBaseCode.BAD_REQUEST, message);
     }
 
-    public static <T> Result<T> err401(String message) {
-        return resp(BizCode.UNAUTHORIZED, message);
+    public static <T> Result<T> err40001(String message) {
+        return resp(BizBaseCode.UNAUTHORIZED, message);
     }
 
-    public static <T> Result<T> err403(String message) {
-        return resp(BizCode.FORBID, message);
+    public static <T> Result<T> err40003(String message) {
+        return resp(BizBaseCode.FORBID, message);
     }
 
-    public static <T> Result<T> err412(String message) {
-        return resp(BizCode.PRECONDITION_FAILED, message);
+    public static <T> Result<T> err50000(String message) {
+        return resp(BizBaseCode.INTERNAL_ERROR, message);
     }
 
-    public static <T> Result<T> err500(String message) {
-        return resp(BizCode.INTERNAL_ERROR, message);
+    public static <T> Result<T> err10000() {
+        return resp(BizBaseCode.BAD_REQUEST);
     }
 
-    public static <T> Result<T> err1000() {
-        return resp(BizCode.INVOKE_FAIL);
+    public static <T> Result<T> resp(BizBaseCode bizBaseCode) {
+        return resp(bizBaseCode.value(), null, bizBaseCode.desc());
     }
 
-    public static <T> Result<T> resp(BizCode bizCode) {
-        return resp(bizCode.value(), null, bizCode.desc());
-    }
-
-    public static <T> Result<T> resp(BizCode bizCode, String message) {
-        return resp(bizCode.value(), null, message);
+    public static <T> Result<T> resp(BizBaseCode bizBaseCode, String message) {
+        return resp(bizBaseCode.value(), null, message);
     }
 
     public static <T> Result<T> resp(int code, T data, String message) {
@@ -98,20 +92,8 @@ public class Result<T> implements Serializable {
     /**
      * 是否成功
      */
-    @JsonIgnore
-    public boolean isSuccess() {
-        return this.code == BizCode.OK.value();
-    }
-
-    /**
-     * 校验返回结果是否正常，若不是则抛出业务异常
-     */
-    @JsonIgnore
-    public T checkData() throws GenericException {
-        if (this.isSuccess()) {
-            return this.data;
-        }
-        throw new GenericException(this.code, this.message);
+    public final boolean isSuccess() {
+        return this.code == BizBaseCode.OK.value();
     }
 
 }

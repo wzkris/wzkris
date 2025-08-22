@@ -3,7 +3,7 @@ package com.wzkris.auth.security.core.refresh;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -34,7 +34,7 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
         if (!StringUtils.hasText(refreshToken)
                 || parameters.get(OAuth2ParameterNames.REFRESH_TOKEN).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.refresh.fail",
                     OAuth2ParameterNames.REFRESH_TOKEN);
