@@ -98,12 +98,12 @@ public class SysUserProfileController extends BaseController {
         Long userId = SystemUserUtil.getUserId();
 
         if (userService.checkExistByPhoneNumber(userId, req.getPhoneNumber())) {
-            return err412("该手机号已被使用");
+            return err40000("该手机号已被使用");
         }
         // 验证
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(userMapper.selectPhoneNumberById(userId), req.getSmsCode());
         if (!captchaFeign.validateCaptcha(captchaCheckReq)) {
-            return err412("验证码错误");
+            return err40000("验证码错误");
         }
 
         SysUser user = new SysUser(userId);
@@ -120,11 +120,11 @@ public class SysUserProfileController extends BaseController {
         String password = userMapper.selectPwdById(userId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), password)) {
-            return err412("修改密码失败，旧密码错误");
+            return err40000("修改密码失败，旧密码错误");
         }
 
         if (passwordEncoder.matches(req.getNewPassword(), password)) {
-            return err412("新密码不能与旧密码相同");
+            return err40000("新密码不能与旧密码相同");
         }
 
         SysUser update = new SysUser(userId);

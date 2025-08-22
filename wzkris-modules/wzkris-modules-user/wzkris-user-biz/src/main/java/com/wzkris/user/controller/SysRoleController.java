@@ -148,13 +148,13 @@ public class SysRoleController extends BaseController {
     @CheckSystemPerms("sys_role:add")
     public Result<Void> add(@Validated @RequestBody SysRoleReq roleReq) {
         if (!tenantService.checkRoleLimit(SystemUserUtil.getTenantId())) {
-            return err412("角色数量已达上限，请联系管理员");
+            return err40000("角色数量已达上限，请联系管理员");
         }
         if (CollectionUtils.isNotEmpty(roleReq.getInheritedIds())) {
             if (roleReq.getInherited()) {
                 roleService.checkInheritedRole(null, roleReq.getInheritedIds());
             } else {
-                return err412("非继承角色不允许继承");
+                return err40000("非继承角色不允许继承");
             }
         }
 
@@ -173,7 +173,7 @@ public class SysRoleController extends BaseController {
             if (roleReq.getInherited()) {
                 roleService.checkInheritedRole(roleReq.getRoleId(), roleReq.getInheritedIds());
             } else {
-                return err412("非继承角色不允许继承");
+                return err40000("非继承角色不允许继承");
             }
         }
 

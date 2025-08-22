@@ -132,12 +132,12 @@ public class SysUserController extends BaseController {
     @CheckSystemPerms("sys_user:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody SysUserReq userReq) {
         if (!tenantService.checkAccountLimit(SystemUserUtil.getTenantId())) {
-            return err412("账号数量已达上限，请联系管理员");
+            return err40000("账号数量已达上限，请联系管理员");
         } else if (userService.checkExistByUsername(userReq.getUserId(), userReq.getUsername())) {
-            return err412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
+            return err40000("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
                 && userService.checkExistByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
-            return err412("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
+            return err40000("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         SysUser user = BeanUtil.convert(userReq, SysUser.class);
         String password = RandomStringUtils.secure().next(8);
@@ -159,10 +159,10 @@ public class SysUserController extends BaseController {
         // 校验权限
         userDataScopeManager.checkDataScopes(userReq.getUserId());
         if (userService.checkExistByUsername(userReq.getUserId(), userReq.getUsername())) {
-            return err412("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
+            return err40000("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
                 && userService.checkExistByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
-            return err412("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
+            return err40000("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         SysUser user = BeanUtil.convert(userReq, SysUser.class);
 
@@ -189,7 +189,7 @@ public class SysUserController extends BaseController {
         // 校验权限
         userDataScopeManager.checkDataScopes(userIds);
         if (tenantService.checkAdministrator(userIds)) {
-            return err412("删除失败，用户包含租户超级管理员");
+            return err40000("删除失败，用户包含租户超级管理员");
         }
         return toRes(userService.deleteByIds(userIds));
     }

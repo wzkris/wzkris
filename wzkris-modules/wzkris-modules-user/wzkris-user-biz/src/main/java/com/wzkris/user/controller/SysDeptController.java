@@ -86,13 +86,13 @@ public class SysDeptController extends BaseController {
         // 校验权限
         deptDataScopeManager.checkDataScopes(req.getParentId());
         if (!tenantService.checkDeptLimit(SystemUserUtil.getTenantId())) {
-            return err412("部门数量已达上限，请联系管理员");
+            return err40000("部门数量已达上限，请联系管理员");
         }
         if (ObjectUtils.isNotEmpty(req.getParentId()) && req.getParentId() != 0) {
             SysDept info = deptMapper.selectById(req.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点
             if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
-                return err412("无法在被禁用的部门下添加下级");
+                return err40000("无法在被禁用的部门下添加下级");
             }
         }
         return toRes(deptService.insertDept(BeanUtil.convert(req, SysDept.class)));
@@ -106,10 +106,10 @@ public class SysDeptController extends BaseController {
         // 校验权限
         deptDataScopeManager.checkDataScopes(req.getDeptId());
         if (Objects.equals(req.getParentId(), req.getDeptId())) {
-            return err412("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
+            return err40000("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
         } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
                 && deptMapper.existNormalSubDept(req.getDeptId())) {
-            return err412("该部门包含未停用的子部门");
+            return err40000("该部门包含未停用的子部门");
         }
         return toRes(deptService.updateDept(BeanUtil.convert(req, SysDept.class)));
     }
@@ -121,10 +121,10 @@ public class SysDeptController extends BaseController {
     public Result<?> remove(@RequestBody Long deptId) {
         deptDataScopeManager.checkDataScopes(deptId);
         if (deptMapper.existSubDept(deptId)) {
-            return err412("存在下级部门,不允许删除");
+            return err40000("存在下级部门,不允许删除");
         }
         if (deptMapper.existUser(deptId)) {
-            return err412("部门存在用户,不允许删除");
+            return err40000("部门存在用户,不允许删除");
         }
         return toRes(deptService.deleteById(deptId));
     }

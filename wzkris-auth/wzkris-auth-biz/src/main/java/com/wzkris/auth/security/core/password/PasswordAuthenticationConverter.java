@@ -3,7 +3,7 @@ package com.wzkris.auth.security.core.password;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -36,7 +36,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(username)
                 || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.USERNAME);
@@ -47,7 +47,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(password)
                 || parameters.get(OAuth2ParameterNames.PASSWORD).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.PASSWORD);
@@ -58,7 +58,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(captchaId)
                 || parameters.get(CAPTCHA_ID).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.captcha.error",
                     OAuth2ParameterNames.PASSWORD);

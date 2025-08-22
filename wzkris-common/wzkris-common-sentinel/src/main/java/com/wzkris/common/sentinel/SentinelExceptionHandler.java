@@ -2,10 +2,11 @@ package com.wzkris.common.sentinel;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author : wzkris
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date : 2023/12/7 14:31
  */
 @Slf4j
+@Component
 public class SentinelExceptionHandler implements BlockExceptionHandler {
 
     public static final String RETRY_AFTER = "Retry-After";
@@ -23,6 +25,7 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
             throws Exception {
         log.warn("应用：‘{}’的接口‘{}’触发限流", e.getRule().getResource(), request.getRequestURI());
         response.setHeader(RETRY_AFTER, "10");
-        response.sendError(BizCode.TOO_MANY_REQUESTS.value(), BizCode.TOO_MANY_REQUESTS.desc());
+        response.sendError(BizBaseCode.TOO_MANY_REQUESTS.value(), BizBaseCode.TOO_MANY_REQUESTS.desc());
     }
+
 }

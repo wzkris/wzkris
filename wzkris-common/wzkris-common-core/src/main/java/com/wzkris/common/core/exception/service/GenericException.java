@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.service;
 
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -15,7 +15,7 @@ public final class GenericException extends BaseException {
     }
 
     public GenericException(String message) {
-        this(BizCode.INVOKE_FAIL.value(), message);
+        this(BizBaseCode.BAD_REQUEST.value(), message);
     }
 
     /**

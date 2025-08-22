@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.service;
 
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -12,7 +12,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class BusinessException extends BaseException {
 
     public BusinessException(String code, Object... args) {
-        this(BizCode.INVOKE_FAIL.value(), code, args);
+        this(BizBaseCode.BAD_REQUEST.value(), code, args);
     }
 
     public BusinessException(int biz, String code, Object... args) {

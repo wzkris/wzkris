@@ -1,7 +1,7 @@
 package com.wzkris.gateway.utils;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.JsonUtil;
 import jakarta.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
@@ -20,12 +20,12 @@ import reactor.core.publisher.Mono;
  */
 public class WebFluxUtil {
 
-    public static Mono<Void> writeResponse(ServerHttpResponse response, BizCode bizCode) {
-        return writeResponse(response, HttpStatus.OK, Result.resp(bizCode));
+    public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode) {
+        return writeResponse(response, HttpStatus.OK, Result.resp(bizBaseCode));
     }
 
-    public static Mono<Void> writeResponse(ServerHttpResponse response, BizCode bizCode, String msg) {
-        return writeResponse(response, HttpStatus.OK, Result.resp(bizCode, msg));
+    public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode, String msg) {
+        return writeResponse(response, HttpStatus.OK, Result.resp(bizBaseCode, msg));
     }
 
     public static Mono<Void> writeResponse(ServerHttpResponse response, int biz, String msg) {

@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.request;
 
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -12,7 +12,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class TooManyRequestException extends BaseException {
 
     public TooManyRequestException() {
-        this(BizCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
+        this(BizBaseCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
     }
 
     public TooManyRequestException(int biz, String code, Object... args) {

@@ -129,8 +129,8 @@ public class BaseController {
     /**
      * 返回失败消息
      */
-    public <T> Result<T> err412(String errMsg) {
-        return Result.err412(errMsg);
+    public <T> Result<T> err40000(String errMsg) {
+        return Result.err40000(errMsg);
     }
 
     /**
@@ -150,7 +150,7 @@ public class BaseController {
      * @return 操作结果
      */
     protected <T> Result<T> toRes(boolean result) {
-        return result ? ok() : Result.err1000();
+        return result ? ok() : Result.err10000();
     }
 
 }

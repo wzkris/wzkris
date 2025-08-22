@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.domain.Result.err412;
+import static com.wzkris.common.core.domain.Result.err40000;
 import static com.wzkris.common.core.domain.Result.ok;
 
 /**
@@ -56,7 +56,7 @@ public class CaptchaController {
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
         boolean valid = captchaService.validateChallenge(req.getCaptchaId());
         if (!valid) {
-            return err412("验证码异常");
+            return err40000("验证码异常");
         }
         captchaService.validateMaxTry(req.getPhone(), 1, 120);
         // TODO 发送短信

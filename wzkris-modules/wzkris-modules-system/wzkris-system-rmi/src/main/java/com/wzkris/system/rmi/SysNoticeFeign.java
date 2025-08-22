@@ -1,6 +1,5 @@
 package com.wzkris.system.rmi;
 
-import com.wzkris.common.openfeign.constants.ServiceContextPathConstant;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.system.rmi.domain.req.SendNoticeReq;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "SysNoticeFeign",
         fallbackFactory = SysNoticeFeignFallback.class,
-        path = ServiceContextPathConstant.SYSTEM + "/feign-sys-notice")
+        path = "/feign-sys-notice")
 public interface SysNoticeFeign extends RmiFeign {
 
     /**

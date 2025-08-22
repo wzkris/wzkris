@@ -5,7 +5,7 @@ import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -35,7 +35,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         if (!StringUtils.hasText(channel)
                 || parameters.get(OAuth2ParameterConstant.CHANNEL).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
                     OAuth2ParameterConstant.CHANNEL);
@@ -46,7 +46,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         if (!StringUtils.hasText(wxCode)
                 || parameters.get(OAuth2ParameterConstant.WX_CODE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
                     OAuth2ParameterConstant.WX_CODE);
@@ -57,7 +57,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         if (!StringUtils.hasText(userType)
                 || parameters.get(OAuth2ParameterConstant.USER_TYPE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
                     OAuth2ParameterConstant.USER_TYPE);
@@ -72,7 +72,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         AuthenticatedType authenticatedType = AuthenticatedType.fromValue(userType);
         if (authenticatedType == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.USER_TYPE);

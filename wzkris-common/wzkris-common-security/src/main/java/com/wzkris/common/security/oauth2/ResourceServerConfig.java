@@ -12,6 +12,7 @@ import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -91,6 +92,7 @@ public final class ResourceServerConfig {
 
     @Bean
     @RefreshScope
+    @ConditionalOnMissingBean(JwtDecoder.class)
     public JwtDecoder decoder() {
         return NimbusJwtDecoder.withJwkSetUri(
                 "http://localhost:9000/oauth2/jwks").build();

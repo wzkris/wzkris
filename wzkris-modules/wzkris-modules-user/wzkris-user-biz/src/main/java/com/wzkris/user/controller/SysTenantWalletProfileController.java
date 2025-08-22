@@ -86,7 +86,7 @@ public class SysTenantWalletProfileController extends BaseController {
     public Result<Void> withdrawal(@RequestBody @Valid WithdrawalReq req) {
         SysTenant sysTenant = tenantMapper.selectById(SystemUserUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
-            return err412("密码错误");
+            return err40000("密码错误");
         }
         // TODO 实际提现
         return ok();

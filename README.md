@@ -3,10 +3,9 @@
 
 ~~~
 wzkris     
-├── wzkris-gateway         // 网关模块 
 ├── wzkris-auth            // OAuth2认证服务
+├── wzkris-bom             // 依赖清单
 ├── wzkris-common          // 模块控制
-│       └── wzkris-common-bom                          // 模块版本控制
 │       └── wzkris-common-captcha                      // 验证码模块
 │       └── wzkris-common-core                         // 核心模块(工具包)
 │       └── wzkris-common-datasource                   // 多数据源
@@ -14,8 +13,10 @@ wzkris
 │       └── wzkris-common-excel                        // excel处理
 │       └── wzkris-common-loadbanlancer                // rpc均衡负载
 │       └── wzkris-common-log                          // 日志记录
+│       └── wzkris-common-notifier                     // 通知SDK集成
 │       └── wzkris-common-openfeign                    // Rpc调用
 │       └── wzkris-common-orm                          // 持久层框架, 租户、分页集成
+│       └── wzkris-common-oss                          // 对象存储SDK集成
 │       └── wzkris-common-redis                        // 分布式缓存, 轻量级限流
 │       └── wzkris-common-seata                        // 分布式事务
 │       └── wzkris-common-security                     // 安全模块 OAuth2.1
@@ -23,16 +24,18 @@ wzkris
 │       └── wzkris-common-statemachine                 // spring状态机
 │       └── wzkris-common-stream                       // spring-stream
 │       └── wzkris-common-swagger                      // openAPI3规范
+│       └── wzkris-common-thread                       // 动态线程池
+│       └── wzkris-common-validator                    // 集成hibernate-validator
 │       └── wzkris-common-web                          // web服务依赖
 │       └── wzkris-common-weixin-sdk                   // 微信接口支持
-├── wzkris-modules         // 业务模块
-│       └── wzkris-modules-file                                // 文件服务 
-│       └── wzkris-modules-system                              // 系统服务 
-│       └── wzkris-modules-user                                // 用户服务 
-├── wzkris-extends        // 扩展模块
+├── wzkris-extends         // 扩展模块
 │       └── wzkris-monitor-admin                               // 监控中心 
 │       └── wzkris-xxl-job-admin                               // xxl-job控制台 
-├──pom.xml                // 依赖管理
+├── wzkris-gateway         // 网关模块 
+├── wzkris-modules         // 业务模块
+│       └── wzkris-modules-system                              // 系统服务 
+│       └── wzkris-modules-user                                // 用户服务 
+├──pom.xml                 // 依赖管理
 ~~~
 
 ## 内置功能

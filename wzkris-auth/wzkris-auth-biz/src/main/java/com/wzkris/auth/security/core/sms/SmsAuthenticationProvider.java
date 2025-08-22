@@ -7,7 +7,7 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
@@ -52,7 +52,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(),
+                    BizBaseCode.BAD_REQUEST.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.USER_TYPE);
@@ -72,7 +72,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         if (principal == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
         return new SmsAuthenticationToken(authenticationToken.getAuthenticatedType(), authenticationToken.getPhoneNumber(), principal);

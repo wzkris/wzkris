@@ -64,7 +64,7 @@ public class SysDictController extends BaseController {
     @CheckSystemPerms("sys_dict:add")
     public Result<Void> add(@Validated @RequestBody SysDictReq req) {
         if (dictService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
-            return err412("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
+            return err40000("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictService.insertDict(BeanUtil.convert(req, SysDict.class)));
     }
@@ -75,7 +75,7 @@ public class SysDictController extends BaseController {
     @CheckSystemPerms("sys_dict:edit")
     public Result<Void> edit(@Validated @RequestBody SysDictReq req) {
         if (dictService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
-            return err412("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
+            return err40000("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictService.updateDict(BeanUtil.convert(req, SysDict.class)));
     }
