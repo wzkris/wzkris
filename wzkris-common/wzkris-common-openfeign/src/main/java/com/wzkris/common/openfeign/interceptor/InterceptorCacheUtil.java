@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wzkris
  * @date 2025/07/08
  */
-class InterceptorCacheUtil {
+public abstract class InterceptorCacheUtil {
 
     static final ConcurrentHashMap<String, Boolean> cache = new ConcurrentHashMap<>();
 

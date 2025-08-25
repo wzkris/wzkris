@@ -1,4 +1,4 @@
-package com.wzkris.common.openfeign.interceptor;
+package com.wzkris.common.openfeign.interceptor.response;
 
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;

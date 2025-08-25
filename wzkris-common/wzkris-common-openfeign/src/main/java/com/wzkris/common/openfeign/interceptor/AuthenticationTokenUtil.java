@@ -8,7 +8,7 @@ import org.springframework.security.jackson2.SecurityJackson2Modules;
 
 import java.util.List;
 
-class AuthenticationTokenUtil {
+public abstract class AuthenticationTokenUtil {
 
     static ObjectMapper objectMapper = new ObjectMapper();
 

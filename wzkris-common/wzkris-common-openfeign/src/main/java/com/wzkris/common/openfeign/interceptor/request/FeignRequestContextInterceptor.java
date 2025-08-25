@@ -1,6 +1,8 @@
-package com.wzkris.common.openfeign.interceptor;
+package com.wzkris.common.openfeign.interceptor.request;
 
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
+import com.wzkris.common.openfeign.interceptor.AuthenticationTokenUtil;
+import com.wzkris.common.openfeign.interceptor.InterceptorCacheUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.security.core.context.SecurityContext;
@@ -26,7 +28,7 @@ public class FeignRequestContextInterceptor implements RequestInterceptor {
         }
     }
 
-    public boolean isNotEmptyContext(SecurityContext context) {
+    public static boolean isNotEmptyContext(SecurityContext context) {
         return context != null
                 && !context.getClass().isAssignableFrom(SecurityContextHolder.createEmptyContext().getClass());
     }

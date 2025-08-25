@@ -1,10 +1,12 @@
 package com.wzkris.common.openfeign.config;
 
 import com.wzkris.common.openfeign.core.TargeterDecorator;
-import com.wzkris.common.openfeign.interceptor.FeignRequestContextInterceptor;
-import com.wzkris.common.openfeign.interceptor.FeignRequestInterceptor;
-import com.wzkris.common.openfeign.interceptor.FeignResponseInterceptor;
+import com.wzkris.common.openfeign.interceptor.request.FeignRequestContextInterceptor;
+import com.wzkris.common.openfeign.interceptor.request.FeignRequestInterceptor;
+import com.wzkris.common.openfeign.interceptor.response.FeignResponseContextInterceptor;
+import com.wzkris.common.openfeign.interceptor.response.FeignResponseInterceptor;
 import feign.RequestInterceptor;
+import feign.ResponseInterceptor;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
@@ -71,8 +73,13 @@ public class OpenFeignConfig implements ApplicationContextAware, BeanPostProcess
     }
 
     @Bean
-    public FeignResponseInterceptor responseInterceptor() {
+    public ResponseInterceptor responseInterceptor() {
         return new FeignResponseInterceptor();
+    }
+
+    @Bean
+    public ResponseInterceptor responseContextInterceptor() {
+        return new FeignResponseContextInterceptor();
     }
 
     @Bean
@@ -82,7 +89,7 @@ public class OpenFeignConfig implements ApplicationContextAware, BeanPostProcess
 
     @Bean
     @ConditionalOnClass(UsernamePasswordAuthenticationToken.class)
-    public RequestInterceptor requestAuthenticationInterceptor() {
+    public RequestInterceptor requestContextInterceptor() {
         return new FeignRequestContextInterceptor();
     }
 
