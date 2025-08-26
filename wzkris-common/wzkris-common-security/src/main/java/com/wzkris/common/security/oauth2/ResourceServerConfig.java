@@ -62,7 +62,7 @@ public final class ResourceServerConfig {
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
                         .requestMatchers(request ->
-                                Boolean.parseBoolean(StringUtil.defaultIfBlank(request.getHeader(FeignHeaderConstant.X_INNER_REQUEST), "false")))
+                                Boolean.parseBoolean(StringUtil.defaultIfBlank(request.getHeader(FeignHeaderConstant.X_FEIGN_REQUEST), "false")))
                         .permitAll()
                         .requestMatchers("/actuator/**")
                         .hasAuthority("SCOPE_monitor")

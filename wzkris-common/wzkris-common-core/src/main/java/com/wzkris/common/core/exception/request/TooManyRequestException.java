@@ -12,7 +12,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class TooManyRequestException extends BaseException {
 
     public TooManyRequestException() {
-        this(BizBaseCode.TOO_MANY_REQUESTS.value(), "frequent.retry");
+        this(BizBaseCode.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
     }
 
     public TooManyRequestException(int biz, String code, Object... args) {

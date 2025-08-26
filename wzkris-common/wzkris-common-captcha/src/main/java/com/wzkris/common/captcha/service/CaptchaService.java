@@ -140,7 +140,7 @@ public class CaptchaService {
      */
     public void validateAccount(String key) {
         if (RedisUtil.exist(LOCK_PREFIX + key)) {
-            throw new CaptchaException(BizBaseCode.TOO_MANY_REQUESTS.value(), "service.busy");
+            throw new CaptchaException(BizBaseCode.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
         }
     }
 

@@ -3,7 +3,6 @@ package com.wzkris.auth.rmi;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.auth.rmi.fallback.TokenFeignFallback;
-import com.wzkris.common.openfeign.annotation.FeignIgnoreInterceptor;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import jakarta.validation.Valid;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : rpc - token服务
  * @date : 2024/09/28 10:27
  */
-@FeignIgnoreInterceptor
 @FeignClient(name = ServiceIdConstant.AUTH, contextId = "TokenFeign",
         fallbackFactory = TokenFeignFallback.class,
         path = "/feign-token")

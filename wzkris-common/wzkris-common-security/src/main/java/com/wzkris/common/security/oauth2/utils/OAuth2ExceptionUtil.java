@@ -64,10 +64,10 @@ public final class OAuth2ExceptionUtil {
 
         // OAuth2异常
         if (errorCode.equals(OAuth2ErrorCodes.SERVER_ERROR)) {
-            return Result.err50000(errorMsg);
+            return Result.err50000(I18nUtil.message("service.internalError.error"));
         } else if (errorCode.equals(OAuth2ErrorCodes.ACCESS_DENIED)
                 || errorCode.equals(OAuth2ErrorCodes.INSUFFICIENT_SCOPE)) {
-            return Result.err40003(errorMsg);
+            return Result.err40003(I18nUtil.message("forbidden.accessDenied.permissionDenied"));
         } else if (errorCode.startsWith("unsupported_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE ->
@@ -84,9 +84,9 @@ public final class OAuth2ExceptionUtil {
         } else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法
-                        Result.err40001(BizBaseCode.UNAUTHORIZED.desc());
+                        Result.err40001(I18nUtil.message("forbidden.accessDenied.tokenExpired"));
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
-                        Result.err40001(StringUtil.defaultIfBlank(errorMsg, BizBaseCode.UNAUTHORIZED.desc()));
+                        Result.err40001(StringUtil.defaultIfBlank(errorMsg, I18nUtil.message("forbidden.accessDenied.tokenExpired")));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
                         Result.err40000(I18nUtil.message("oauth2.scope.invalid"));
                 case OAuth2ErrorCodes.INVALID_CLIENT -> // 客户端不合法
