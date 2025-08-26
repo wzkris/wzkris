@@ -1,10 +1,10 @@
 package com.wzkris.user.rmi.domain.req;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 登录信息
@@ -24,4 +24,5 @@ public class LoginInfoReq implements Serializable {
     public LoginInfoReq(Long userId) {
         this.userId = userId;
     }
+
 }

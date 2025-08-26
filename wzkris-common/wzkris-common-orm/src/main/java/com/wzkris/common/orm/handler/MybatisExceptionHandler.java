@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,6 +18,7 @@ import static com.wzkris.common.core.domain.Result.err50000;
  * @author wzkris
  */
 @Slf4j
+@Component
 @RestControllerAdvice
 public class MybatisExceptionHandler {
 

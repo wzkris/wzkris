@@ -3,13 +3,14 @@ package com.wzkris.common.redis.annotation.aspect;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
 import com.wzkris.common.redis.annotation.RateLimit;
 import com.wzkris.common.redis.util.RedisUtil;
-import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.redisson.api.RRateLimiter;
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
 
 /**
  * 限流处理
@@ -40,4 +41,5 @@ public class RateLimitAspect {
             throw new TooManyRequestException();
         }
     }
+
 }

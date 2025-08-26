@@ -14,15 +14,16 @@ public class CompileTest {
     public void t1() {
         String str = dynamicExecuteService.executeDynamically(
                 """
-                        package org.test;
+                                package org.test;
 
-                        public class Test {
-                            public static void main(String[] args) {
-                                System.out.println("hello, world");
-                            }
-                        }
-                """,
+                                public class Test {
+                                    public static void main(String[] args) {
+                                        System.out.println("hello, world");
+                                    }
+                                }
+                        """,
                 null);
         log.info(str);
     }
+
 }

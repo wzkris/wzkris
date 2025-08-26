@@ -1,6 +1,7 @@
 package com.wzkris.common.log.annotation;
 
 import com.wzkris.common.log.enums.OperateType;
+
 import java.lang.annotation.*;
 
 /**
@@ -42,4 +43,5 @@ public @interface OperateLog {
      * 是否保存响应的参数
      */
     boolean isSaveResponseData() default true;
+
 }

@@ -20,12 +20,12 @@ import java.util.Map;
 @Slf4j
 public class DingtalkRobotApi {
 
+    private static final String HOST = "https://api.dingtalk.com";
+
     private final DingtalkProperties.AppProperties appProperties;
 
     private final OkHttpClient okHttpClient = new OkHttpClientBuilder()
             .buildOkHttpClient();
-
-    private static final String HOST = "https://api.dingtalk.com";
 
     private String accessToken;
 

@@ -19,7 +19,7 @@ public class SysDictReq {
 
     @NotBlank(message = "{invalidParameter.dictKey.invalid}")
     @Size(min = 5, max = 30, message = "{invalidParameter.dictKey.invalid}")
-    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{invalidParameter.dictKey.invalid}") // 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
+    @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "{invalidParameter.dictKey.invalid}")// 字典类型必须以字母开头，且只能为小写字母，数字，下滑线
     @Schema(description = "字典键")
     private String dictKey;
 

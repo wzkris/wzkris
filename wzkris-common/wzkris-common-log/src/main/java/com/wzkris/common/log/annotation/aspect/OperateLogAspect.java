@@ -46,6 +46,14 @@ import java.util.stream.Stream;
 @Component
 public class OperateLogAspect implements ApplicationRunner {
 
+    private static final int BATCH_SIZE = 30;
+
+    private static final int MAX_PARAM_LENGTH = 1000;
+
+    private static final int MAX_ERROR_LENGTH = 1000;
+
+    private static final int MAX_URL_LENGTH = 150;
+
     /**
      * 敏感属性字段
      */
@@ -58,6 +66,10 @@ public class OperateLogAspect implements ApplicationRunner {
     private final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
     private final SysLogFeign sysLogFeign;
+
+    private final BlockingQueue<OperLogReq> bufferQ = new LinkedBlockingQueue<>();
+
+    private final List<OperLogReq> batchQ = new ArrayList<>();
 
     private boolean shutdown = false;
 
@@ -80,18 +92,6 @@ public class OperateLogAspect implements ApplicationRunner {
         executor.setDaemon(true);
         executor.initialize();
     }
-
-    private final BlockingQueue<OperLogReq> bufferQ = new LinkedBlockingQueue<>();
-
-    private final List<OperLogReq> batchQ = new ArrayList<>();
-
-    private static final int BATCH_SIZE = 30;
-
-    private static final int MAX_PARAM_LENGTH = 1000;
-
-    private static final int MAX_ERROR_LENGTH = 1000;
-
-    private static final int MAX_URL_LENGTH = 150;
 
     public void run() {
         for (; ; ) {

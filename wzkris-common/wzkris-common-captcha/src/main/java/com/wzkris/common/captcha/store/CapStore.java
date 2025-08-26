@@ -23,7 +23,7 @@ public interface CapStore {
     /**
      * 存储 挑战
      *
-     * @param token     token
+     * @param token         token
      * @param challengeData 挑战
      * @return 是否存储成功(true : 成功 ; false : 失败)
      */
