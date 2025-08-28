@@ -27,7 +27,7 @@ public class SysMenuProfileController extends BaseController {
 
     private final SysMenuService menuService;
 
-    @Operation(summary = "路由")
+    @Operation(summary = "获取路由")
     @GetMapping("/router")
     public Result<List<RouterVO>> routers() {
         List<RouterVO> routerVOS = menuService.listRouter(SystemUserUtil.getUserId());
