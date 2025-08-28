@@ -1,9 +1,9 @@
 package com.wzkris.user.rmi.domain.resp;
 
-import java.io.Serializable;
-
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
+
+import java.io.Serializable;
 
 /**
  * app用户传输层
@@ -21,4 +21,5 @@ public class AppUserResp implements Serializable {
     private String phoneNumber;
 
     private String status;
+
 }

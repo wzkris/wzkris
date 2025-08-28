@@ -1,10 +1,11 @@
 package com.wzkris.monitor.config;
 
-import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -37,4 +38,5 @@ public class OAuth2ClientProperties {
      * 授权
      */
     private List<String> scopes;
+
 }

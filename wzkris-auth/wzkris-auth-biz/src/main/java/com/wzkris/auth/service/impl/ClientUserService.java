@@ -31,7 +31,7 @@ public class ClientUserService extends UserInfoTemplate {
         AppUserResp userResp = appUserFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.freezeAccount(phoneNumber, 600);
+            captchaService.freezeAccount(phoneNumber, 60);
             return null;
         }
 

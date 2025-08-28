@@ -17,4 +17,5 @@ public class CustomSlotChainBuilder implements com.alibaba.csp.sentinel.slotchai
         chain.addLast(new FlowWarningProcessorSlot());
         return chain;
     }
+
 }

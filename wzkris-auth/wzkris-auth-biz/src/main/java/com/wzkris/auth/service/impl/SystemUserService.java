@@ -12,9 +12,9 @@ import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.user.rmi.SysUserFeign;
 import com.wzkris.user.rmi.domain.req.QueryPermsReq;
 import com.wzkris.user.rmi.domain.resp.SysPermissionResp;
@@ -48,7 +48,7 @@ public class SystemUserService extends UserInfoTemplate {
         SysUserResp userResp = sysUserFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.freezeAccount(phoneNumber, 600);
+            captchaService.freezeAccount(phoneNumber, 60);
             return null;
         }
 
@@ -66,7 +66,7 @@ public class SystemUserService extends UserInfoTemplate {
         SysUserResp userResp = sysUserFeign.getByUsername(username);
 
         if (userResp == null) {
-            captchaService.freezeAccount(username, 600);
+            captchaService.freezeAccount(username, 60);
             return null;
         }
 

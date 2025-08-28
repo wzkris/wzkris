@@ -6,10 +6,6 @@ import com.alibaba.cloud.nacos.balancer.NacosBalancer;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import jakarta.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -23,6 +19,11 @@ import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSuppli
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author : wzkris
@@ -163,4 +164,5 @@ public class NacosGrayscaleLoadBalancer implements ReactorServiceInstanceLoadBal
             return null;
         }
     }
+
 }

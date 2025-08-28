@@ -16,4 +16,5 @@ public class VersionContext {
     public static void clear() {
         CONTEXT_THREAD_LOCAL.remove();
     }
+
 }

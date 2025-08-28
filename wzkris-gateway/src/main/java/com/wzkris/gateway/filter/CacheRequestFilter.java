@@ -36,4 +36,5 @@ public class CacheRequestFilter implements GlobalFilter, Ordered {
     public int getOrder() {
         return 1;
     }
+
 }

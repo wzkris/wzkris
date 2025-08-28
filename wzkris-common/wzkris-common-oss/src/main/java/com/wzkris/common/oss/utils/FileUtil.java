@@ -9,4 +9,6 @@ import org.apache.commons.io.FileUtils;
  * @author wzkris
  */
 @Slf4j
-public class FileUtil extends FileUtils {}
+public class FileUtil extends FileUtils {
+
+}

@@ -39,6 +39,7 @@ public class SwaggerConfig {
                                 .license(new License().url(swaggerProperties.getLicense()))
                                 .version(swaggerProperties.getVersion())
                                 .termsOfService("gg bom") // API服务条款
-                        );
+                );
     }
+
 }

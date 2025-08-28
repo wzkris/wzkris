@@ -14,4 +14,5 @@ public class MQTopic {
      * 交易关闭主题
      */
     public static final String ORDER_CLOSE = "order_close";
+
 }

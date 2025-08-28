@@ -32,19 +32,4 @@ public class MenuConstants {
      */
     public static final String TYPE_OUTLINK = "O";
 
-    /**
-     * 内嵌组件
-     */
-    public static final String IFRAME_VIEW = "IFrameView";
-
-    /**
-     * 外链组件
-     */
-    public static final String LINK = "link";
-
-    /**
-     * 基础布局组件
-     */
-    public static final String LAYOUT = "BasicLayout";
-
 }

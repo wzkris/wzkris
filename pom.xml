@@ -127,13 +127,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!--文件rpc服务-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-file-rmi</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 

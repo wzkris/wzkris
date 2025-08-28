@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -206,13 +205,13 @@ public class SysMenuServiceImpl implements SysMenuService {
 
         for (SysMenu menu : sortedMenus) {
             RouterVO router = new RouterVO();
-            router.setName(WordUtils.capitalize(menu.getPath()));
             router.setPath(menu.getPath());
-            router.setComponent(this.getComponent(menu));
+            router.setComponent(menu.getComponent());
 
             // 构建meta信息
             MetaVO meta = new MetaVO(
                     menu.getMenuName(),
+                    menu.getMenuType(),
                     menu.getIcon(),
                     !menu.getVisible(),
                     menu.getCacheable(),
@@ -281,24 +280,6 @@ public class SysMenuServiceImpl implements SysMenuService {
             roleMenuMapper.deleteByMenuId(menuId);
         }
         return success;
-    }
-
-    /**
-     * 获取组件信息
-     *
-     * @param menu 菜单信息
-     * @return 组件信息
-     */
-    public String getComponent(SysMenu menu) {
-        String component = menu.getComponent();
-        if (StringUtil.isEmpty(component) && StringUtil.equals(MenuConstants.TYPE_INNERLINK, menu.getMenuType())) {
-            component = MenuConstants.IFRAME_VIEW;
-        } else if (StringUtil.isEmpty(component) && StringUtil.equals(MenuConstants.TYPE_OUTLINK, menu.getMenuType())) {
-            component = MenuConstants.LINK;
-        } else if (StringUtil.isEmpty(component) && !StringUtil.equals(MenuConstants.TYPE_DIR, menu.getMenuType())) {
-            component = MenuConstants.LAYOUT;
-        }
-        return component;
     }
 
     /**

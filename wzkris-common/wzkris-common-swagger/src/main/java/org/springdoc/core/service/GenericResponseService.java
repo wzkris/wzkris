@@ -24,28 +24,6 @@
 
 package org.springdoc.core.service;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,7 +46,6 @@ import org.springdoc.core.providers.JavadocProvider;
 import org.springdoc.core.providers.ObjectMapperProvider;
 import org.springdoc.core.utils.PropertyResolverUtils;
 import org.springdoc.core.utils.SpringDocAnnotationsUtils;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -85,12 +62,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.ControllerAdviceBean;
 import org.springframework.web.method.HandlerMethod;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static java.util.Arrays.asList;
 import static org.springdoc.core.converters.ConverterUtils.isResponseTypeWrapper;
 import static org.springdoc.core.utils.Constants.DEFAULT_DESCRIPTION;
-import static org.springdoc.core.utils.SpringDocAnnotationsUtils.extractSchema;
-import static org.springdoc.core.utils.SpringDocAnnotationsUtils.getContent;
-import static org.springdoc.core.utils.SpringDocAnnotationsUtils.mergeSchema;
+import static org.springdoc.core.utils.SpringDocAnnotationsUtils.*;
 
 // ！！！补丁位置 Maven: org.springdoc:springdoc-openapi-starter-common:2.3.0
 // 解决当前 knife4j 4.5 版本依赖的 springdoc 2.3 版本 与 Spring Boot 3.4 不兼容的问题
@@ -107,6 +94,11 @@ public class GenericResponseService implements ApplicationContextAware {
      * the exception classes.
      */
     private static final String EXTENSION_EXCEPTION_CLASSES = "x-exception-class";
+
+    /**
+     * The constant LOGGER.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericResponseService.class);
 
     /**
      * The Response entity exception handler class.
@@ -147,11 +139,6 @@ public class GenericResponseService implements ApplicationContextAware {
      * The Reentrant lock.
      */
     private final Lock reentrantLock = new ReentrantLock();
-
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(GenericResponseService.class);
 
     /**
      * A list of all beans annotated with {@code @ControllerAdvice}
@@ -205,15 +192,12 @@ public class GenericResponseService implements ApplicationContextAware {
                             mergeSchema(existingContent, newContent.get(mediaTypeStr).getSchema(), mediaTypeStr);
                     });
                     apiResponse.content(existingContent);
-                }
-                else
+                } else
                     apiResponse.content(newContent);
-            }
-            else {
+            } else {
                 apiResponse.content(existingContent);
             }
-        }
-        else {
+        } else {
             optionalContent.ifPresent(apiResponse::content);
         }
     }
@@ -228,8 +212,7 @@ public class GenericResponseService implements ApplicationContextAware {
         try {
             HttpStatus httpStatus = HttpStatus.valueOf(Integer.parseInt(httpCode));
             apiResponse.setDescription(httpStatus.getReasonPhrase());
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             apiResponse.setDescription(DEFAULT_DESCRIPTION);
         }
     }
@@ -325,7 +308,7 @@ public class GenericResponseService implements ApplicationContextAware {
             for (Method method : methods) {
                 if (!operationService.isHidden(method)) {
                     RequestMapping reqMappingMethod = AnnotatedElementUtils.findMergedAnnotation(method, RequestMapping.class);
-                    String[] methodProduces = { springDocConfigProperties.getDefaultProducesMediaType() };
+                    String[] methodProduces = {springDocConfigProperties.getDefaultProducesMediaType()};
                     if (reqMappingMethod != null)
                         methodProduces = reqMappingMethod.produces();
                     Map<String, ApiResponse> controllerAdviceInfoApiResponseMap = controllerAdviceInfo.getApiResponseMap();
@@ -347,8 +330,7 @@ public class GenericResponseService implements ApplicationContextAware {
             }
             if (AnnotatedElementUtils.hasAnnotation(objClz, ControllerAdvice.class)) {
                 controllerAdviceInfos.add(controllerAdviceInfo);
-            }
-            else {
+            } else {
                 localExceptionHandlers.add(controllerAdviceInfo);
             }
         }
@@ -420,8 +402,7 @@ public class GenericResponseService implements ApplicationContextAware {
                 ApiResponse apiResponse = entry.getValue();
                 buildApiResponses(components, methodParameter, apiResponsesOp, methodAttributes, httpCode, apiResponse, true);
             }
-        }
-        else {
+        } else {
             // Use response parameters with no description filled - No documentation
             // available
             String httpCode = evaluateResponseStatus(methodParameter.getMethod(), Objects.requireNonNull(methodParameter.getMethod()).getClass(), true);
@@ -461,8 +442,7 @@ public class GenericResponseService implements ApplicationContextAware {
                     buildApiResponses(components, methodParameter, apiResponsesOp, methodAttributes, httpCode, new ApiResponse(), false);
                 }
             }
-        }
-        else {
+        } else {
             String httpCode = evaluateResponseStatus(methodParameter.getMethod(), Objects.requireNonNull(methodParameter.getMethod()).getClass(), false);
             if (Objects.nonNull(httpCode))
                 buildApiResponses(components, methodParameter, apiResponsesOp, methodAttributes, httpCode, new ApiResponse(), false);
@@ -552,8 +532,7 @@ public class GenericResponseService implements ApplicationContextAware {
         for (ReturnTypeParser returnTypeParser : returnTypeParsers) {
             if (returnType.getTypeName().equals(Object.class.getTypeName())) {
                 returnType = returnTypeParser.getReturnType(methodParameter);
-            }
-            else
+            } else
                 break;
         }
 
@@ -606,8 +585,7 @@ public class GenericResponseService implements ApplicationContextAware {
                 Content content = buildContent(components, methodParameter, methodAttributes.getMethodProduces(),
                         methodAttributes.getJsonViewAnnotation());
                 apiResponse.setContent(content);
-            }
-            else if (CollectionUtils.isEmpty(apiResponse.getContent()))
+            } else if (CollectionUtils.isEmpty(apiResponse.getContent()))
                 apiResponse.setContent(null);
             if (StringUtils.isBlank(apiResponse.getDescription())) {
                 // use javadoc
@@ -639,8 +617,7 @@ public class GenericResponseService implements ApplicationContextAware {
                         exceptions.add(parameter.getType());
                     }
                 }
-            }
-            else {
+            } else {
                 exceptions.addAll(asList(exceptionHandler.value()));
             }
             apiResponse.addExtension(EXTENSION_EXCEPTION_CLASSES, exceptions);
@@ -695,7 +672,7 @@ public class GenericResponseService implements ApplicationContextAware {
      */
     private ControllerAdviceBean getControllerAdviceBean(List<ControllerAdviceBean> controllerAdviceBeans, Object controllerAdvice) {
         return controllerAdviceBeans.stream()
-                .filter(controllerAdviceBean -> (controllerAdviceBean.getBeanType()!=null && controllerAdviceBean.getBeanType().isAssignableFrom(controllerAdvice.getClass())))
+                .filter(controllerAdviceBean -> (controllerAdviceBean.getBeanType() != null && controllerAdviceBean.getBeanType().isAssignableFrom(controllerAdvice.getClass())))
                 .findFirst()
                 .orElse(null);
     }
@@ -741,13 +718,11 @@ public class GenericResponseService implements ApplicationContextAware {
                 ObjectMapper objectMapper = ObjectMapperProvider.createJson(springDocConfigProperties);
                 genericApiResponsesClone = objectMapper.readValue(objectMapper.writeValueAsString(genericApiResponseMap), ApiResponses.class);
                 return genericApiResponsesClone;
-            }
-            catch (JsonProcessingException e) {
+            } catch (JsonProcessingException e) {
                 LOGGER.warn("Json Processing Exception occurred: {}", e.getMessage());
                 return genericApiResponseMap;
             }
-        }
-        finally {
+        } finally {
             reentrantLock.unlock();
         }
     }
@@ -773,8 +748,7 @@ public class GenericResponseService implements ApplicationContextAware {
                     responseSet = new HashSet<>(Arrays.asList(apiOperation.responses()));
                     if (isHttpCodePresent(httpCode, responseSet))
                         result = true;
-                }
-                else if (httpCode.equals(evaluateResponseStatus(method, method.getClass(), false)))
+                } else if (httpCode.equals(evaluateResponseStatus(method, method.getClass(), false)))
                     result = true;
             }
         }

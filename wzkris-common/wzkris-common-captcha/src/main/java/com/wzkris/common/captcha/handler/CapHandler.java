@@ -43,6 +43,52 @@ public class CapHandler {
                 .findFirst().orElse(null);
     }
 
+    public static String prng(String seed, int length) {
+        if (StringUtils.isBlank(seed) || length <= 0) {
+            throw new IllegalArgumentException("种子不能为空且长度必须大于0");
+        }
+
+        int state = fnv1a(seed);
+        StringBuilder result = new StringBuilder(length);
+
+        while (result.length() < length) {
+            int rnd = next(state);
+            state = rnd;
+            // 使用与JavaScript完全一致的十六进制转换
+            result.append(toHexString(rnd));
+        }
+
+        return result.substring(0, length);
+    }
+
+    private static int fnv1a(String str) {
+        int hash = 0x811c9dc5; // 2166136261
+        for (int i = 0; i < str.length(); i++) {
+            hash ^= str.charAt(i);
+            // 乘以FNV倍数16777619，等价于移位相加
+            // Java int的32位环绕特性确保与JavaScript完全一致
+            hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+        }
+        return hash; // 32位环绕自动处理，无需额外操作
+    }
+
+    private static int next(int state) {
+        state ^= state << 13;
+        state ^= state >>> 17;
+        state ^= state << 5;
+        return state;
+    }
+
+    private static String toHexString(int value) {
+        // 将int转换为无符号32位值，然后转十六进制
+        String hex = Integer.toHexString(value);
+        // 补齐8位，与JavaScript的padStart(8, "0")一致
+        if (hex.length() < 8) {
+            return StringUtils.leftPad(hex, 8, '0');
+        }
+        return hex;
+    }
+
     public ChallengeData createChallenge() throws ChallengeStoreException {
         final int challengeCount = capProperties.getChallengeCount();
         final int challengeSize = capProperties.getChallengeLength();
@@ -105,52 +151,6 @@ public class CapHandler {
 
         // 构造验证凭证
         return new Token(this.makeupVerToken(id, verToken), expires);
-    }
-
-    public static String prng(String seed, int length) {
-        if (StringUtils.isBlank(seed) || length <= 0) {
-            throw new IllegalArgumentException("种子不能为空且长度必须大于0");
-        }
-
-        int state = fnv1a(seed);
-        StringBuilder result = new StringBuilder(length);
-
-        while (result.length() < length) {
-            int rnd = next(state);
-            state = rnd;
-            // 使用与JavaScript完全一致的十六进制转换
-            result.append(toHexString(rnd));
-        }
-
-        return result.substring(0, length);
-    }
-
-    private static int fnv1a(String str) {
-        int hash = 0x811c9dc5; // 2166136261
-        for (int i = 0; i < str.length(); i++) {
-            hash ^= str.charAt(i);
-            // 乘以FNV倍数16777619，等价于移位相加
-            // Java int的32位环绕特性确保与JavaScript完全一致
-            hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-        }
-        return hash; // 32位环绕自动处理，无需额外操作
-    }
-
-    private static int next(int state) {
-        state ^= state << 13;
-        state ^= state >>> 17;
-        state ^= state << 5;
-        return state;
-    }
-
-    private static String toHexString(int value) {
-        // 将int转换为无符号32位值，然后转十六进制
-        String hex = Integer.toHexString(value);
-        // 补齐8位，与JavaScript的padStart(8, "0")一致
-        if (hex.length() < 8) {
-            return StringUtils.leftPad(hex, 8, '0');
-        }
-        return hex;
     }
 
     private String makeupToken(String id, String hash) {

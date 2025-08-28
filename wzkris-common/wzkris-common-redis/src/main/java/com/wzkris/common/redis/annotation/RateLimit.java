@@ -1,7 +1,8 @@
 package com.wzkris.common.redis.annotation;
 
-import java.lang.annotation.*;
 import org.redisson.api.RateType;
+
+import java.lang.annotation.*;
 
 /**
  * 限流注解
@@ -33,4 +34,5 @@ public @interface RateLimit {
      * 限流类型
      */
     RateType rateType() default RateType.PER_CLIENT;
+
 }

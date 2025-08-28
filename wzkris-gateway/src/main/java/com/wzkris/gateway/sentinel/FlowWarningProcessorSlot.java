@@ -7,11 +7,12 @@ import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleChecker;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
+
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author : wzkris
@@ -104,4 +105,5 @@ public class FlowWarningProcessorSlot extends AbstractLinkedProcessorSlot<Defaul
     public void exit(Context context, ResourceWrapper resourceWrapper, int count, Object... args) {
         fireExit(context, resourceWrapper, count, args);
     }
+
 }
