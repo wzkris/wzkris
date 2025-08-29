@@ -1,4 +1,4 @@
-package com.wzkris.gateway.sentinel;
+package com.wzkris.common.sentinel.slot.processor;
 
 import com.alibaba.csp.sentinel.context.Context;
 import com.alibaba.csp.sentinel.node.DefaultNode;

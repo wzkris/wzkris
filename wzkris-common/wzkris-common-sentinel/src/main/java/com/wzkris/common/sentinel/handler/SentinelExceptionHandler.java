@@ -1,4 +1,4 @@
-package com.wzkris.common.sentinel;
+package com.wzkris.common.sentinel.handler;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
