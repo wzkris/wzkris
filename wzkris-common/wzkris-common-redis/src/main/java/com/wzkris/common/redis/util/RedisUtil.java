@@ -174,11 +174,4 @@ public abstract class RedisUtil {
         return keys;
     }
 
-    /**
-     * 获取非公平锁
-     */
-    public static RLock getLock(final String key) {
-        return redissonclient.getLock(key);
-    }
-
 }
