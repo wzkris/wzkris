@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
  * 业务调用服务状态码
  */
 @AllArgsConstructor
-public enum BizCaptchaCode {
+public enum BizCallCode {
 
-    CAPTCHA_ERROR(40_101, "验证码错误"),
+    WX_ERROR(30_001, "调用微信服务异常"),
 
-    CAPTCHA_EXPIRED(40_102, "验证码已过期");
+    DINGTALK_ERROR(30_002, "调用钉钉服务异常");
 
     private final int code;
 

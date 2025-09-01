@@ -3,9 +3,9 @@ package com.wzkris.common.orm.model;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.enums.BizSqlCode;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.enums.BizSqlCode;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
@@ -82,7 +82,7 @@ public abstract class BaseController {
             String orderBys = request.getParameter(ORDER_BY);
             if (StringUtil.isNotBlank(orderBys)) {
                 if (SqlInjectionUtils.check(orderBys)) {
-                    throw new GenericException(BizSqlCode.INJECT_SQL);
+                    throw new GenericException(BizSqlCode.INJECT_SQL.value(), BizSqlCode.INJECT_SQL.desc());
                 }
                 for (String orderBy : orderBys.split(",")) {
                     OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))

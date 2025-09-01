@@ -1,5 +1,6 @@
 package com.wzkris.auth.service.impl;
 
+import com.wzkris.auth.enums.BizLoginCode;
 import com.wzkris.auth.listener.event.LoginTokenEvent;
 import com.wzkris.auth.rmi.domain.SystemUser;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
@@ -114,16 +115,16 @@ public class SystemUserService extends UserInfoTemplate {
     private void checkAccount(SysUserResp userResp) {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCode.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         } else if (StringUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
+                    BizLoginCode.TENANT_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
         } else if (userResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
+                    BizLoginCode.TENANT_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
         } else if (StringUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
+                    BizLoginCode.TENANT_PACKAGE_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }
 

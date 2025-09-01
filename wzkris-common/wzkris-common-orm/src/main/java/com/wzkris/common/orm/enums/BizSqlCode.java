@@ -1,16 +1,14 @@
-package com.wzkris.common.core.enums;
+package com.wzkris.common.orm.enums;
 
 import lombok.AllArgsConstructor;
 
 /**
- * 业务调用服务状态码
+ * 业务SQL状态码
  */
 @AllArgsConstructor
-public enum BizCaptchaCode {
+public enum BizSqlCode {
 
-    CAPTCHA_ERROR(40_101, "验证码错误"),
-
-    CAPTCHA_EXPIRED(40_102, "验证码已过期");
+    INJECT_SQL(20_001, "存在SQL注入");
 
     private final int code;
 

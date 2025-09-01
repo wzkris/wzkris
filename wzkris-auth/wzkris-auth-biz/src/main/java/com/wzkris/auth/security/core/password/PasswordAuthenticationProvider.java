@@ -1,5 +1,6 @@
 package com.wzkris.auth.security.core.password;
 
+import com.wzkris.auth.enums.BizLoginCode;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
@@ -7,7 +8,6 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.enums.BizCaptchaCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
@@ -65,7 +65,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
         if (principal == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+                    BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
         return new PasswordAuthenticationToken(authenticationToken.getUsername(), principal);

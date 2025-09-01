@@ -36,7 +36,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(username)
                 || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(),
+                    BizBaseCode.MISSING_PARAMETER.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.USERNAME);
@@ -47,7 +47,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(password)
                 || parameters.get(OAuth2ParameterNames.PASSWORD).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(),
+                    BizBaseCode.MISSING_PARAMETER.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.PASSWORD);
@@ -58,7 +58,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(captchaId)
                 || parameters.get(CAPTCHA_ID).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.BAD_REQUEST.value(),
+                    BizBaseCode.MISSING_PARAMETER.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.captcha.error",
                     OAuth2ParameterNames.PASSWORD);
