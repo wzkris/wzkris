@@ -3,19 +3,10 @@ package com.wzkris.common.orm.model;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.beans.PropertyEditorSupport;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,7 +14,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public class BaseController {
+public abstract class BaseController {
 
     /**
      * 当前记录起始索引
@@ -61,46 +52,10 @@ public class BaseController {
     }
 
     /**
-     * 将前台传递过来的日期格式的字符串，自动转化为对应类型
-     */
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        // LocalDateTime 类型转换
-        binder.registerCustomEditor(LocalDateTime.class, new PropertyEditorSupport() {
-            @Override
-            public void setAsText(String text) {
-                try {
-                    // 使用 DateUtils 解析日期字符串
-                    Date date = DateUtils.parseDate(text, DATE_PATTERNS);
-                    // 转换为 LocalDateTime
-                    setValue(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException("无效的日期格式: " + text, e);
-                }
-            }
-        });
-
-        // LocalDate 类型转换
-        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
-            @Override
-            public void setAsText(String text) {
-                try {
-                    // 使用 DateUtils 解析日期字符串
-                    Date date = DateUtils.parseDate(text, DATE_PATTERNS);
-                    // 转换为 LocalDate
-                    setValue(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException("无效的日期格式: " + text, e);
-                }
-            }
-        });
-    }
-
-    /**
      * 设置请求分页数据
      */
     protected void startPage() {
-        long pageNum = 1L, pageSize = 10L;
+        long pageNum = 1, pageSize = 10;
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
