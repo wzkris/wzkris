@@ -1,10 +1,10 @@
 package com.wzkris.common.orm.model;
 
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wzkris.common.orm.utils.PageUtil;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Setter
 @Getter
+@ToString
 public class Page<T> implements AutoCloseable {
 
     /**
@@ -44,7 +45,6 @@ public class Page<T> implements AutoCloseable {
      */
     private long pages;
 
-    @JsonIgnore
     private List<OrderItem> orders = new ArrayList<>();
 
     public Page(long pageNum, long pageSize) {

@@ -1,12 +1,18 @@
 package com.wzkris.common.orm.model;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.enums.BizSqlCode;
+import com.wzkris.common.core.exception.service.GenericException;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +31,16 @@ public abstract class BaseController {
      * 每页显示记录数
      */
     public static final String PAGE_SIZE = "pageSize";
+
+    /**
+     * 排序
+     */
+    public static final String ORDER_BY = "orderBy";
+
+    /**
+     * 排序
+     */
+    public static final String ASC = "asc";
 
     // 支持的日期格式
     public static final String[] DATE_PATTERNS = {
@@ -56,15 +72,27 @@ public abstract class BaseController {
      */
     protected void startPage() {
         long pageNum = 1, pageSize = 10;
+        List<OrderItem> orders = new ArrayList<>();
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 
             pageNum = request.getParameter(PAGE_NUM) == null ? pageNum : Long.parseLong(request.getParameter(PAGE_NUM));
             pageSize = request.getParameter(PAGE_SIZE) == null ? pageSize : Long.parseLong(request.getParameter(PAGE_SIZE));
+            String orderBys = request.getParameter(ORDER_BY);
+            if (StringUtil.isNotBlank(orderBys)) {
+                if (SqlInjectionUtils.check(orderBys)) {
+                    throw new GenericException(BizSqlCode.INJECT_SQL);
+                }
+                for (String orderBy : orderBys.split(",")) {
+                    OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))
+                            ? OrderItem.asc(orderBy) : OrderItem.desc(orderBy);
+                    orders.add(orderItem);
+                }
+            }
         }
 
-        PageUtil.startPage(pageNum, pageSize);
+        PageUtil.startPage(pageNum, pageSize, orders);
     }
 
     /**
