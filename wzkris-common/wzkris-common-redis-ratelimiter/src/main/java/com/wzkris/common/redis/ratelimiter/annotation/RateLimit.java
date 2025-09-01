@@ -1,4 +1,4 @@
-package com.wzkris.common.redis.annotation;
+package com.wzkris.common.redis.ratelimiter.annotation;
 
 import org.redisson.api.RateType;
 

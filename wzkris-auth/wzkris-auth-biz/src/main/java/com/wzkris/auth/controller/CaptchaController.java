@@ -6,7 +6,7 @@ import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.redis.annotation.RateLimit;
+import com.wzkris.common.redis.ratelimiter.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

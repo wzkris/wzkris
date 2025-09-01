@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.captcha;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizCaptchaCode;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -11,7 +11,7 @@ import com.wzkris.common.core.exception.BaseException;
 public class CaptchaException extends BaseException {
 
     public CaptchaException(String code, Object... args) {
-        this(BizBaseCode.BAD_REQUEST.value(), code, args);
+        this(BizCaptchaCode.CAPTCHA_ERROR.value(), code, args);
     }
 
     public CaptchaException(int biz, String code, Object... args) {

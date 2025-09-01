@@ -1,7 +1,8 @@
 package com.wzkris.common.notifier.api;
 
 import com.aliyun.tea.okhttp.OkHttpClientBuilder;
-import com.wzkris.common.core.exception.service.ThirdServiceException;
+import com.wzkris.common.core.enums.BizCallCode;
+import com.wzkris.common.core.exception.service.ExternalServiceException;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.notifier.properties.DingtalkProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,7 @@ public class DingtalkRobotApi {
         Call call = okHttpClient.newCall(request);
         try (Response response = call.execute()) {
             if (!response.isSuccessful()) {
-                throw new ThirdServiceException(response.body().string());
+                throw new ExternalServiceException(BizCallCode.DINGTALK_ERROR.value(), response.body().string());
             }
             ResponseBody responseBody = response.body();
             Map<String, Object> res = JsonUtil.toMap(responseBody.string(), Map.class, String.class, Object.class);
@@ -88,7 +89,7 @@ public class DingtalkRobotApi {
         Call call = okHttpClient.newCall(request);
         try (Response response = call.execute()) {
             if (!response.isSuccessful()) {
-                throw new ThirdServiceException(response.body().string());
+                throw new ExternalServiceException(BizCallCode.DINGTALK_ERROR.value(), response.body().string());
             }
             ResponseBody responseBody = response.body();
             Map<String, Object> res = JsonUtil.toMap(responseBody.string(), Map.class, String.class, Object.class);

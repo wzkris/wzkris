@@ -12,29 +12,25 @@ import lombok.AllArgsConstructor;
 public enum BizBaseCode {
     OK(0, "ok"),
 
-    BAD_REQUEST(40000, "Bad Request"),
+    BAD_REQUEST(40_000, "请求失败"),
 
-    UNAUTHORIZED(40001, "Unauthorized"),
+    UNAUTHORIZED(40_001, "请求未认证"),
 
-    FORBID(40003, "Forbidden"),
+    FORBID(40_003, "拒绝请求"),
 
-    NOT_FOUND(40004, "Not Found"),
+    NOT_FOUND(40_004, "请求地址不存在"),
 
-    BAD_METHOD(40005, "Method Not Allowed"),
+    BAD_METHOD(40_005, "不支持此方法"),
 
-    TOO_MANY_REQUESTS(40029, "Too Many Requests"),
+    TOO_MANY_REQUESTS(40_029, "请求频率过多"),
 
-    INTERNAL_ERROR(50000, "Internal Server Error"),
+    MISSING_PARAMETER(40_099, "参数缺失"),
 
-    BAD_GATEWAY(50002, "Bad Gateway"),
+    INTERNAL_ERROR(50_000, "服务异常"),
 
-    SERVICE_UNAVAILABLE(50003, "Service Unavailable"),
+    BAD_GATEWAY(50_002, "网关异常"),
 
-    RPC_ERROR(11000, "Rpc Call Error, Remote Rejected"),
-
-    RPC_REMOTE_ERROR(11001, "Remote Service Error"),
-
-    THIRD_SERVICE_ERROR(30000, "Invoke Third Service Error");
+    SERVICE_UNAVAILABLE(50_003, "服务不可用");
 
     private final int code;
 

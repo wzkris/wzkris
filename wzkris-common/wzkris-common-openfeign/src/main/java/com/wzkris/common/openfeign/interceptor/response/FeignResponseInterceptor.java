@@ -1,7 +1,7 @@
 package com.wzkris.common.openfeign.interceptor.response;
 
-import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
+import com.wzkris.common.openfeign.enums.BizRpcCode;
 import com.wzkris.common.openfeign.exception.RpcException;
 import feign.InvocationContext;
 import feign.Response;
@@ -30,12 +30,12 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
             Collection<String> ex = response.headers().get(FeignHeaderConstant.X_FEIGN_EXCEPTION);
             if (CollectionUtils.isNotEmpty(ex)) {
                 Optional<String> first = ex.stream().findFirst();
-                throw new RpcException(BizBaseCode.RPC_REMOTE_ERROR.value(), URLDecoder.decode(first.get(), StandardCharsets.UTF_8));
+                throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), URLDecoder.decode(first.get(), StandardCharsets.UTF_8));
             }
             if (!HttpStatus.valueOf(response.status()).is2xxSuccessful()) {
                 log.error("feign called failed, <request> => {} " +
                         " <response> => {}", response.request(), response);
-                throw new RpcException(BizBaseCode.RPC_REMOTE_ERROR.value(), BizBaseCode.RPC_REMOTE_ERROR.desc());
+                throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), BizRpcCode.RPC_REMOTE_ERROR.desc());
             }
             return chain.next(invocationContext);
         }

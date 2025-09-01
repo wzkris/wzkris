@@ -1,7 +1,8 @@
 package com.wzkris.user.rmi;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
-import com.wzkris.common.core.exception.service.ThirdServiceException;
+import com.wzkris.common.core.enums.BizCallCode;
+import com.wzkris.common.core.exception.service.ExternalServiceException;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.AppUserThirdinfo;
@@ -70,7 +71,7 @@ public class AppUserFeignImpl implements AppUserFeign {
                 default -> identifier = null;
             }
         } catch (WxErrorException e) {
-            throw new ThirdServiceException(e.getError().getErrorMsg());
+            throw new ExternalServiceException(BizCallCode.WX_ERROR.value(), e.getError().getErrorMsg());
         }
 
         AppUserThirdinfo userThirdinfo = appUserThirdinfoMapper.selectByIdentifier(identifier);

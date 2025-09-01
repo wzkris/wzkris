@@ -1,21 +1,18 @@
 package com.wzkris.common.orm.model;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
 import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.exception.service.GenericException;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.enums.BizSqlCode;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.beans.PropertyEditorSupport;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +20,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public class BaseController {
+public abstract class BaseController {
 
     /**
      * 当前记录起始索引
@@ -34,6 +31,16 @@ public class BaseController {
      * 每页显示记录数
      */
     public static final String PAGE_SIZE = "pageSize";
+
+    /**
+     * 排序
+     */
+    public static final String ORDER_BY = "orderBy";
+
+    /**
+     * 排序
+     */
+    public static final String ASC = "asc";
 
     // 支持的日期格式
     public static final String[] DATE_PATTERNS = {
@@ -61,55 +68,31 @@ public class BaseController {
     }
 
     /**
-     * 将前台传递过来的日期格式的字符串，自动转化为对应类型
-     */
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        // LocalDateTime 类型转换
-        binder.registerCustomEditor(LocalDateTime.class, new PropertyEditorSupport() {
-            @Override
-            public void setAsText(String text) {
-                try {
-                    // 使用 DateUtils 解析日期字符串
-                    Date date = DateUtils.parseDate(text, DATE_PATTERNS);
-                    // 转换为 LocalDateTime
-                    setValue(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException("无效的日期格式: " + text, e);
-                }
-            }
-        });
-
-        // LocalDate 类型转换
-        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
-            @Override
-            public void setAsText(String text) {
-                try {
-                    // 使用 DateUtils 解析日期字符串
-                    Date date = DateUtils.parseDate(text, DATE_PATTERNS);
-                    // 转换为 LocalDate
-                    setValue(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException("无效的日期格式: " + text, e);
-                }
-            }
-        });
-    }
-
-    /**
      * 设置请求分页数据
      */
     protected void startPage() {
-        long pageNum = 1L, pageSize = 10L;
+        long pageNum = 1, pageSize = 10;
+        List<OrderItem> orders = new ArrayList<>();
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 
             pageNum = request.getParameter(PAGE_NUM) == null ? pageNum : Long.parseLong(request.getParameter(PAGE_NUM));
             pageSize = request.getParameter(PAGE_SIZE) == null ? pageSize : Long.parseLong(request.getParameter(PAGE_SIZE));
+            String orderBys = request.getParameter(ORDER_BY);
+            if (StringUtil.isNotBlank(orderBys)) {
+                if (SqlInjectionUtils.check(orderBys)) {
+                    throw new GenericException(BizSqlCode.INJECT_SQL.value(), BizSqlCode.INJECT_SQL.desc());
+                }
+                for (String orderBy : orderBys.split(",")) {
+                    OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))
+                            ? OrderItem.asc(orderBy) : OrderItem.desc(orderBy);
+                    orders.add(orderItem);
+                }
+            }
         }
 
-        PageUtil.startPage(pageNum, pageSize);
+        PageUtil.startPage(pageNum, pageSize, orders);
     }
 
     /**
