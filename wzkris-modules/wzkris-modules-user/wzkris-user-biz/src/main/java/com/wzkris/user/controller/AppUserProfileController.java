@@ -2,6 +2,7 @@ package com.wzkris.user.controller;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.security.utils.ClientUserUtil;
 import com.wzkris.user.domain.AppUser;
 import com.wzkris.user.domain.req.AppUserProfileReq;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +38,7 @@ public class AppUserProfileController extends BaseController {
 
     @Operation(summary = "获取信息")
     @GetMapping
-    @Cacheable(cacheNames = profile_prefix + "#3600#3600", key = "@cu.getUserId()")
+    @GlobalCache(keyPrefix = profile_prefix, key = "@cu.getUserId()", ttl = 3_600_000, sync = true)
     public Result<AppUserProfileVO> profile() {
         AppUser user = appUserMapper.selectById(ClientUserUtil.getUserId());
 

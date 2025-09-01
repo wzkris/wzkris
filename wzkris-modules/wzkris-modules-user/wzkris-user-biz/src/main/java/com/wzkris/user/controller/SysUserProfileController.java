@@ -7,6 +7,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.security.utils.SystemUserUtil;
 import com.wzkris.user.domain.SysUser;
 import com.wzkris.user.domain.req.EditPhoneReq;
@@ -22,7 +23,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +55,7 @@ public class SysUserProfileController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping
-    @Cacheable(cacheNames = profile_prefix + "#3600#3600", key = "@su.getUserId()")
+    @GlobalCache(keyPrefix = profile_prefix, key = "@su.getUserId()", ttl = 3_600_000, sync = true)
     public Result<SysUserProfileVO> profile() {
         SysUser user = userMapper.selectById(SystemUserUtil.getUserId());
 
