@@ -38,7 +38,7 @@ public class SysDictServiceImpl implements SysDictService {
     }
 
     @Override
-    public SysDict.DictData[] getValueByDictKey(String dictKey) {
+    public SysDict.DictData[] getValueByKey(String dictKey) {
         SysDict.DictData[] dictData = cache().get(dictKey);
         if (dictData != null) {
             return dictData;

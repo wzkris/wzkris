@@ -17,6 +17,11 @@ public interface SysConfigService {
     void loadingConfigCache();
 
     /**
+     * 先查缓存在查db
+     */
+    String getValueByKey(String configkey);
+
+    /**
      * 新增参数配置
      *
      * @param config 参数配置信息

@@ -1,6 +1,7 @@
 package com.wzkris.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.system.domain.SysConfig;
 import com.wzkris.system.mapper.SysConfigMapper;
@@ -41,6 +42,15 @@ public class SysConfigServiceImpl implements SysConfigService {
                 .collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue));
         rMap.clear();
         rMap.putAll(map);
+    }
+
+    @Override
+    public String getValueByKey(String configkey) {
+        String value = cache().get(configkey);
+        if (StringUtil.isNotBlank(value)) return value;
+        value = configMapper.selectValueByKey(configkey);
+        cache().put(configkey, value);
+        return value;
     }
 
     @Override

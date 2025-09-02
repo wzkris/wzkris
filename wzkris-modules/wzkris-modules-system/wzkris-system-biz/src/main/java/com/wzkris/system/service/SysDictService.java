@@ -9,7 +9,7 @@ public interface SysDictService {
      */
     void loadingDictCache();
 
-    SysDict.DictData[] getValueByDictKey(String dictKey);
+    SysDict.DictData[] getValueByKey(String dictKey);
 
     boolean insertDict(SysDict dict);
 
