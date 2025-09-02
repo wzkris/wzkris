@@ -30,7 +30,6 @@ wzkris
 │       └── wzkris-common-weixin-sdk                   // 微信接口支持
 ├── wzkris-extends         // 扩展模块
 │       └── wzkris-monitor-admin                               // 监控中心 
-│       └── wzkris-xxl-job-admin                               // xxl-job控制台 
 ├── wzkris-gateway         // 网关模块 
 ├── wzkris-modules         // 业务模块
 │       └── wzkris-modules-system                              // 系统服务 
