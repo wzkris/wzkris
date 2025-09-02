@@ -71,24 +71,21 @@ public abstract class BaseController {
      * 设置请求分页数据
      */
     protected void startPage() {
-        long pageNum = 1, pageSize = 10;
         List<OrderItem> orders = new ArrayList<>();
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 
-            pageNum = request.getParameter(PAGE_NUM) == null ? pageNum : Long.parseLong(request.getParameter(PAGE_NUM));
-            pageSize = request.getParameter(PAGE_SIZE) == null ? pageSize : Long.parseLong(request.getParameter(PAGE_SIZE));
-            String orderBys = request.getParameter(ORDER_BY);
-            if (StringUtil.isNotBlank(orderBys)) {
-                if (SqlInjectionUtils.check(orderBys)) {
-                    throw new GenericException(BizSqlCode.INJECT_SQL.value(), BizSqlCode.INJECT_SQL.desc());
-                }
-                for (String orderBy : orderBys.split(",")) {
-                    OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))
-                            ? OrderItem.asc(orderBy) : OrderItem.desc(orderBy);
-                    orders.add(orderItem);
-                }
+        long pageNum = request.getParameter(PAGE_NUM) == null ? 1 : Long.parseLong(request.getParameter(PAGE_NUM));
+        long pageSize = request.getParameter(PAGE_SIZE) == null ? 10 : Long.parseLong(request.getParameter(PAGE_SIZE));
+        String orderBys = request.getParameter(ORDER_BY);
+        if (StringUtil.isNotBlank(orderBys)) {
+            if (SqlInjectionUtils.check(orderBys)) {
+                throw new GenericException(BizSqlCode.INJECT_SQL.value(), BizSqlCode.INJECT_SQL.desc());
+            }
+            for (String orderBy : orderBys.split(",")) {
+                OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))
+                        ? OrderItem.asc(orderBy) : OrderItem.desc(orderBy);
+                orders.add(orderItem);
             }
         }
 

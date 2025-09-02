@@ -10,7 +10,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
 import com.wzkris.common.web.utils.BeanUtil;
-import com.wzkris.user.domain.OAuth2Client;
+import com.wzkris.user.domain.OAuth2ClientDO;
 import com.wzkris.user.domain.export.OAuth2ClientExport;
 import com.wzkris.user.domain.req.EditClientSecretReq;
 import com.wzkris.user.domain.req.EditStatusReq;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 @Tag(name = "OAuth2客户端管理")
 @RestController
-@RequestMapping("/oauth2_client")
+@RequestMapping("/oauth2client-manage")
 @RequiredArgsConstructor
 public class OAuth2ClientController extends BaseController {
 
@@ -48,40 +48,40 @@ public class OAuth2ClientController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckSystemPerms("oauth2_client:list")
-    public Result<Page<OAuth2Client>> listPage(OAuth2ClientQueryReq req) {
+    @CheckSystemPerms("user-mod:oauth2client-mng:list")
+    public Result<Page<OAuth2ClientDO>> listPage(OAuth2ClientQueryReq req) {
         startPage();
-        List<OAuth2Client> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
+        List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
         return getDataTable(list);
     }
 
-    private LambdaQueryWrapper<OAuth2Client> buildQueryWrapper(OAuth2ClientQueryReq req) {
-        return new LambdaQueryWrapper<OAuth2Client>()
-                .eq(StringUtil.isNotEmpty(req.getStatus()), OAuth2Client::getStatus, req.getStatus())
-                .like(StringUtil.isNotEmpty(req.getClientId()), OAuth2Client::getClientId, req.getClientId());
+    private LambdaQueryWrapper<OAuth2ClientDO> buildQueryWrapper(OAuth2ClientQueryReq req) {
+        return new LambdaQueryWrapper<OAuth2ClientDO>()
+                .eq(StringUtil.isNotEmpty(req.getStatus()), OAuth2ClientDO::getStatus, req.getStatus())
+                .like(StringUtil.isNotEmpty(req.getClientId()), OAuth2ClientDO::getClientId, req.getClientId());
     }
 
     @Operation(summary = "根据id查详情")
     @GetMapping("/{id}")
-    @CheckSystemPerms("oauth2_client:query")
-    public Result<OAuth2Client> query(@PathVariable Long id) {
+    @CheckSystemPerms("user-mod:oauth2client-mng:query")
+    public Result<OAuth2ClientDO> query(@PathVariable Long id) {
         return ok(oauth2ClientMapper.selectById(id));
     }
 
     @Operation(summary = "根据id修改客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("oauth2_client:edit")
+    @CheckSystemPerms("user-mod:oauth2client-mng:edit")
     public Result<Void> edit(@RequestBody OAuth2ClientReq clientReq) {
-        return toRes(oauth2ClientMapper.updateById(BeanUtil.convert(clientReq, OAuth2Client.class)));
+        return toRes(oauth2ClientMapper.updateById(BeanUtil.convert(clientReq, OAuth2ClientDO.class)));
     }
 
     @Operation(summary = "修改密钥")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改密钥", operateType = OperateType.UPDATE)
-    @PostMapping("/edit_secret")
-    @CheckSystemPerms("oauth2_client:edit_secret")
+    @PostMapping("/edit-secret")
+    @CheckSystemPerms("user-mod:oauth2client-mng:edit-secret")
     public Result<Void> editSecret(@RequestBody @Valid EditClientSecretReq req) {
-        OAuth2Client update = new OAuth2Client();
+        OAuth2ClientDO update = new OAuth2ClientDO();
         update.setId(req.getId());
         update.setClientSecret(passwordEncoder.encode(req.getSecret()));
         return toRes(oauth2ClientMapper.updateById(update));
@@ -89,11 +89,11 @@ public class OAuth2ClientController extends BaseController {
 
     @Operation(summary = "状态修改")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
-    @PostMapping("/edit_status")
-    @CheckSystemPerms("app_user:edit")
+    @PostMapping("/edit-status")
+    @CheckSystemPerms("user-mod:oauth2client-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
-        OAuth2Client update = new OAuth2Client();
+        OAuth2ClientDO update = new OAuth2ClientDO();
         update.setId(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(oauth2ClientMapper.updateById(update));
@@ -102,9 +102,9 @@ public class OAuth2ClientController extends BaseController {
     @Operation(summary = "添加客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("oauth2_client:add")
+    @CheckSystemPerms("user-mod:oauth2client-mng:add")
     public Result<String> add(@RequestBody @Valid OAuth2ClientReq clientReq) {
-        OAuth2Client client = BeanUtil.convert(clientReq, OAuth2Client.class);
+        OAuth2ClientDO client = BeanUtil.convert(clientReq, OAuth2ClientDO.class);
 
         String secret = RandomStringUtils.secure().next(16);
         client.setClientSecret(passwordEncoder.encode(secret));
@@ -115,7 +115,7 @@ public class OAuth2ClientController extends BaseController {
     @Operation(summary = "删除客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "删除客户端", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("oauth2_client:remove")
+    @CheckSystemPerms("user-mod:oauth2client-mng:remove")
     public Result<Void> remove(@RequestBody Long id) {
         return toRes(oauth2ClientMapper.deleteById(id));
     }
@@ -123,9 +123,9 @@ public class OAuth2ClientController extends BaseController {
     @Operation(summary = "导出")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "导出客户端数据", operateType = OperateType.EXPORT)
     @GetMapping("/export")
-    @CheckSystemPerms("oauth2_client:export")
+    @CheckSystemPerms("user-mod:oauth2client-mng:export")
     public void export(HttpServletResponse response, OAuth2ClientQueryReq queryReq) {
-        List<OAuth2Client> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(queryReq));
+        List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(queryReq));
         List<OAuth2ClientExport> convert = BeanUtil.convert(list, OAuth2ClientExport.class);
         ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, response);
     }

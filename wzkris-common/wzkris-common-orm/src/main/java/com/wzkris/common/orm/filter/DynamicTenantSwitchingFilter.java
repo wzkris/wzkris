@@ -3,7 +3,7 @@ package com.wzkris.common.orm.filter;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +34,7 @@ public class DynamicTenantSwitchingFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!SystemUserUtil.isLogin() || !SystemUserUtil.isSuperTenant()) {
+        if (!LoginUserUtil.isLogin() || !LoginUserUtil.isSuperTenant()) {
             filterChain.doFilter(request, response);
             return;
         }

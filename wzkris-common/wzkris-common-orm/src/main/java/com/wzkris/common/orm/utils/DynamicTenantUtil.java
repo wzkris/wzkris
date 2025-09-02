@@ -3,7 +3,7 @@ package com.wzkris.common.orm.utils;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.wzkris.common.core.function.ThrowableSupplier;
-import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -37,7 +37,7 @@ public final class DynamicTenantUtil {
     public static Long get() {
         try {
             Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
-            return stack == null ? SystemUserUtil.getTenantId() : stack.peek();
+            return stack == null ? LoginUserUtil.getTenantId() : stack.peek();
         } catch (Exception e) {
             return null;
         }

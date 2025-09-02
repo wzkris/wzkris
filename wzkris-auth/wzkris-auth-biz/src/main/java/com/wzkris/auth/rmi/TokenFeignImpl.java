@@ -43,8 +43,7 @@ public class TokenFeignImpl implements TokenFeign {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check expired");
         }
 
-        CorePrincipal principal = new AuthedClient(
-                oAuth2Authorization.getRegisteredClientId(),
+        CorePrincipal principal = new AuthedClient(oAuth2Authorization.getRegisteredClientId(),
                 this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
         return TokenResponse.ok(principal);
     }

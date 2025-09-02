@@ -39,7 +39,7 @@ public class WxJsTicketController extends BaseController {
     private WxMpService wxMpService;
 
     @Operation(summary = "获取jsticket")
-    @GetMapping("/js_ticket")
+    @GetMapping("/js-ticket")
     public Result<?> jsticket() {
         try {
             Map<String, String> jsapiKey = Map.of("js_ticket", wxMpService.getJsapiTicket());
@@ -54,7 +54,7 @@ public class WxJsTicketController extends BaseController {
     }
 
     @Operation(summary = "获取jsticket签名")
-    @GetMapping("/js_ticket_sign")
+    @GetMapping("/js-ticket-sign")
     public Result<?> JsapiSignature(String url) {
         if (!StringUtil.ishttp(url)) {
             return err40000("url格式不正确");

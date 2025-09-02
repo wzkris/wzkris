@@ -4,13 +4,14 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.common.security.utils.ClientUserUtil;
+import com.wzkris.common.security.utils.LoginCustomerUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.security.utils.SystemUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.reflection.MetaObject;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -28,14 +29,14 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
                 && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
             if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.SYSTEM_USER.getValue())) {
-                fillInsert(SystemUserUtil.getUserId(), metaObject);
-            } else if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.CLIENT_USER.getValue())) {
-                fillInsert(ClientUserUtil.getUserId(), metaObject);
+                fillInsert(LoginUserUtil.getId(), metaObject);
+            } else if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.CUSTOMER.getValue())) {
+                fillInsert(LoginCustomerUtil.getId(), metaObject);
             }
         }
     }
 
-    private void fillInsert(Long userId, MetaObject metaObject) {
+    private void fillInsert(Serializable userId, MetaObject metaObject) {
         Date current = new Date();
         this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
@@ -49,14 +50,14 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
                 && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
             if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.SYSTEM_USER.getValue())) {
-                fillUpdate(SystemUserUtil.getUserId(), metaObject);
-            } else if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.CLIENT_USER.getValue())) {
-                fillUpdate(ClientUserUtil.getUserId(), metaObject);
+                fillUpdate(LoginUserUtil.getId(), metaObject);
+            } else if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.CUSTOMER.getValue())) {
+                fillUpdate(LoginCustomerUtil.getId(), metaObject);
             }
         }
     }
 
-    private void fillUpdate(Long userId, MetaObject metaObject) {
+    private void fillUpdate(Serializable userId, MetaObject metaObject) {
         Date current = new Date();
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);

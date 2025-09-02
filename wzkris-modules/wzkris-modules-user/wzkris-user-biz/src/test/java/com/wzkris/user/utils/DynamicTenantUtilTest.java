@@ -1,9 +1,9 @@
 package com.wzkris.user.utils;
 
-import com.wzkris.auth.rmi.domain.SystemUser;
+import com.wzkris.auth.rmi.domain.LoginUser;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.user.mapper.SysTenantMapper;
+import com.wzkris.user.mapper.TenantInfoMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class DynamicTenantUtilTest {
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
     static {
-        SystemUser user = new SystemUser(1L, Collections.singleton("*"));
+        LoginUser user = new LoginUser(1L, Collections.singleton("*"));
         user.setTenantId(0L);
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(
                 OAuth2AccessToken.TokenType.BEARER, "xxxxxx", Instant.MIN, Instant.MAX, Collections.emptySet());
@@ -39,7 +39,7 @@ public class DynamicTenantUtilTest {
     }
 
     @Autowired
-    SysTenantMapper tenantMapper;
+    TenantInfoMapper tenantMapper;
 
     @Test
     public void test() {

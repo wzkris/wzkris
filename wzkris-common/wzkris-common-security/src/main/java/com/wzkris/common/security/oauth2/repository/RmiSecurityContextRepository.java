@@ -1,14 +1,14 @@
 package com.wzkris.common.security.oauth2.repository;
 
 import com.wzkris.auth.rmi.TokenFeign;
-import com.wzkris.auth.rmi.domain.ClientUser;
+import com.wzkris.auth.rmi.domain.LoginCustomer;
 import com.wzkris.auth.rmi.domain.req.TokenReq;
 import com.wzkris.auth.rmi.domain.resp.TokenResponse;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.model.DeferredClientUser;
+import com.wzkris.common.security.model.DeferredLoginCustomer;
 import com.wzkris.common.security.model.SupplierDeferredSecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -96,14 +96,14 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
             Jwt jwt = jwtDecoder.decode(token);
             String sub = jwt.getClaimAsString(JwtClaimNames.SUB);
             Long userId = sub == null ? SecurityConstants.DEFAULT_USER_ID : Long.valueOf(sub);
-            Supplier<ClientUser> supplier = () -> {
+            Supplier<LoginCustomer> supplier = () -> {
                 TokenResponse tokenResponse = tokenFeign.validateUser(new TokenReq(token));
                 if (tokenResponse.isSuccess()) {
-                    return (ClientUser) tokenResponse.getPrincipal();
+                    return (LoginCustomer) tokenResponse.getPrincipal();
                 }
                 return null;
             };
-            ctx.setAuthentication(createAuthentication(new DeferredClientUser(userId, supplier), request, token));
+            ctx.setAuthentication(createAuthentication(new DeferredLoginCustomer(userId, supplier), request, token));
         } catch (JwtException ignored) {
         }
     }
