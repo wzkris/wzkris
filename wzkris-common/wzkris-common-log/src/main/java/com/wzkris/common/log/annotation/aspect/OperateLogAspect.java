@@ -100,6 +100,7 @@ public class OperateLogAspect implements ApplicationRunner {
                 if (operateLogReq == null) {
                     flushBatchQ();
                 } else {
+                    operateLogReq.setOperLocation(IpUtil.parseIp(operateLogReq.getOperIp()));
                     batchQ.add(operateLogReq);
                     if (batchQ.size() >= BATCH_SIZE) {
                         flushBatchQ();
@@ -193,7 +194,6 @@ public class OperateLogAspect implements ApplicationRunner {
 
         String ip = ServletUtil.getClientIP(request);
         operateLogReq.setOperIp(ip);
-        operateLogReq.setOperLocation(IpUtil.parseIp(ip));
         operateLogReq.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
 
         String className = joinPoint.getTarget().getClass().getName();
