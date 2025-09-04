@@ -98,7 +98,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     private String generateKey(CorePrincipal principal) {
         if (principal.getType().equals(AuthenticatedType.SYSTEM_USER.getValue())) {
             return tokenGenerator.generateKey();
-        } else if (principal.getType().equals(AuthenticatedType.CLIENT_USER.getValue())) {
+        } else if (principal.getType().equals(AuthenticatedType.CUSTOMER.getValue())) {
             JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
             JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
                     .build();

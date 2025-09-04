@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-07-15 17:03:23
+-- Started on 2025-09-04 16:04:13
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 6 (class 2615 OID 16531)
+-- TOC entry 6 (class 2615 OID 16527)
 -- Name: biz; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -33,11 +33,111 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 215 (class 1259 OID 16532)
--- Name: sys_config; Type: TABLE; Schema: biz; Owner: postgres
+-- TOC entry 218 (class 1259 OID 16543)
+-- Name: announcement_info; Type: TABLE; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.sys_config (
+CREATE TABLE biz.announcement_info (
+    announcement_id bigint NOT NULL,
+    title character varying(30) NOT NULL,
+    content text NOT NULL,
+    status character(1) NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp with time zone,
+    update_at timestamp with time zone
+);
+
+
+ALTER TABLE biz.announcement_info OWNER TO postgres;
+
+--
+-- TOC entry 3369 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: TABLE announcement_info; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON TABLE biz.announcement_info IS '系统消息表';
+
+
+--
+-- TOC entry 3370 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.announcement_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.announcement_id IS '公告ID';
+
+
+--
+-- TOC entry 3371 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.title; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.title IS '公告标题';
+
+
+--
+-- TOC entry 3372 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.content; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.content IS '公告内容';
+
+
+--
+-- TOC entry 3373 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.status; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.status IS '公告状态（0草稿 1关闭 2公开）';
+
+
+--
+-- TOC entry 3374 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.creator_id IS '创建者ID';
+
+
+--
+-- TOC entry 3375 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.updater_id IS '更新者ID';
+
+
+--
+-- TOC entry 3376 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.create_at; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.create_at IS '创建时间';
+
+
+--
+-- TOC entry 3377 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: COLUMN announcement_info.update_at; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.announcement_info.update_at IS '更新时间';
+
+
+--
+-- TOC entry 215 (class 1259 OID 16528)
+-- Name: config_info; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.config_info (
     config_id bigint NOT NULL,
     config_name character varying(50) NOT NULL,
     config_key character varying(50) NOT NULL,
@@ -50,86 +150,86 @@ CREATE TABLE biz.sys_config (
 );
 
 
-ALTER TABLE biz.sys_config OWNER TO postgres;
+ALTER TABLE biz.config_info OWNER TO postgres;
 
 --
--- TOC entry 3369 (class 0 OID 0)
+-- TOC entry 3378 (class 0 OID 0)
 -- Dependencies: 215
--- Name: TABLE sys_config; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE config_info; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.sys_config IS '参数配置表';
+COMMENT ON TABLE biz.config_info IS '参数配置表';
 
 
 --
--- TOC entry 3370 (class 0 OID 0)
+-- TOC entry 3379 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN sys_config.config_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.config_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_config.config_id IS '参数主键';
+COMMENT ON COLUMN biz.config_info.config_id IS '参数主键';
 
 
 --
--- TOC entry 3371 (class 0 OID 0)
+-- TOC entry 3380 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN sys_config.config_name; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.config_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_config.config_name IS '参数名称';
+COMMENT ON COLUMN biz.config_info.config_name IS '参数名称';
 
 
 --
--- TOC entry 3372 (class 0 OID 0)
+-- TOC entry 3381 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN sys_config.config_key; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.config_key; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_config.config_key IS '参数键名';
+COMMENT ON COLUMN biz.config_info.config_key IS '参数键名';
 
 
 --
--- TOC entry 3373 (class 0 OID 0)
+-- TOC entry 3382 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN sys_config.config_value; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.config_value; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_config.config_value IS '参数键值';
+COMMENT ON COLUMN biz.config_info.config_value IS '参数键值';
 
 
 --
--- TOC entry 3374 (class 0 OID 0)
+-- TOC entry 3383 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN sys_config.config_type; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.config_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_config.config_type IS '系统内置（Y是 N否）';
+COMMENT ON COLUMN biz.config_info.config_type IS '系统内置（Y是 N否）';
 
 
 --
--- TOC entry 3375 (class 0 OID 0)
+-- TOC entry 3384 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN sys_config.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_config.creator_id IS '创建者';
+COMMENT ON COLUMN biz.config_info.creator_id IS '创建者';
 
 
 --
--- TOC entry 3376 (class 0 OID 0)
+-- TOC entry 3385 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN sys_config.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_config.updater_id IS '更新者';
+COMMENT ON COLUMN biz.config_info.updater_id IS '更新者';
 
 
 --
--- TOC entry 216 (class 1259 OID 16537)
--- Name: sys_dict; Type: TABLE; Schema: biz; Owner: postgres
+-- TOC entry 216 (class 1259 OID 16533)
+-- Name: dictionary_info; Type: TABLE; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.sys_dict (
+CREATE TABLE biz.dictionary_info (
     dict_id bigint NOT NULL,
     dict_key character varying(32) NOT NULL,
     dict_name character varying(32) NOT NULL,
@@ -142,95 +242,216 @@ CREATE TABLE biz.sys_dict (
 );
 
 
-ALTER TABLE biz.sys_dict OWNER TO postgres;
+ALTER TABLE biz.dictionary_info OWNER TO postgres;
 
 --
--- TOC entry 3377 (class 0 OID 0)
+-- TOC entry 3386 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.dict_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.dict_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.dict_id IS '字典主键';
+COMMENT ON COLUMN biz.dictionary_info.dict_id IS '字典主键';
 
 
 --
--- TOC entry 3378 (class 0 OID 0)
+-- TOC entry 3387 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.dict_key; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.dict_key; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.dict_key IS '字典键';
+COMMENT ON COLUMN biz.dictionary_info.dict_key IS '字典键';
 
 
 --
--- TOC entry 3379 (class 0 OID 0)
+-- TOC entry 3388 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.dict_name; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.dict_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.dict_name IS '字典名称';
+COMMENT ON COLUMN biz.dictionary_info.dict_name IS '字典名称';
 
 
 --
--- TOC entry 3380 (class 0 OID 0)
+-- TOC entry 3389 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.dict_value; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.dict_value; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.dict_value IS '字典键值';
+COMMENT ON COLUMN biz.dictionary_info.dict_value IS '字典键值';
 
 
 --
--- TOC entry 3381 (class 0 OID 0)
+-- TOC entry 3390 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.remark; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.remark; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.remark IS '备注';
+COMMENT ON COLUMN biz.dictionary_info.remark IS '备注';
 
 
 --
--- TOC entry 3382 (class 0 OID 0)
+-- TOC entry 3391 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.creator_id IS '创建者';
+COMMENT ON COLUMN biz.dictionary_info.creator_id IS '创建者';
 
 
 --
--- TOC entry 3383 (class 0 OID 0)
+-- TOC entry 3392 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.updater_id IS '更新者';
+COMMENT ON COLUMN biz.dictionary_info.updater_id IS '更新者';
 
 
 --
--- TOC entry 3384 (class 0 OID 0)
+-- TOC entry 3393 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.create_at; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.create_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.create_at IS '创建时间';
+COMMENT ON COLUMN biz.dictionary_info.create_at IS '创建时间';
 
 
 --
--- TOC entry 3385 (class 0 OID 0)
+-- TOC entry 3394 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN sys_dict.update_at; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.update_at; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_dict.update_at IS '更新时间';
+COMMENT ON COLUMN biz.dictionary_info.update_at IS '更新时间';
 
 
 --
--- TOC entry 217 (class 1259 OID 16542)
--- Name: sys_login_log; Type: TABLE; Schema: biz; Owner: postgres
+-- TOC entry 219 (class 1259 OID 16548)
+-- Name: notification_info; Type: TABLE; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.sys_login_log (
+CREATE TABLE biz.notification_info (
+    notification_id bigint NOT NULL,
+    notification_type character(1) NOT NULL,
+    title character varying(32) NOT NULL,
+    content text NOT NULL,
+    create_at timestamp with time zone NOT NULL,
+    creator_id bigint NOT NULL
+);
+
+
+ALTER TABLE biz.notification_info OWNER TO postgres;
+
+--
+-- TOC entry 3395 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: TABLE notification_info; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON TABLE biz.notification_info IS '系统通知表';
+
+
+--
+-- TOC entry 3396 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: COLUMN notification_info.notification_type; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_info.notification_type IS '通知类型（0系统通知 1设备告警）';
+
+
+--
+-- TOC entry 3397 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: COLUMN notification_info.title; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_info.title IS '标题';
+
+
+--
+-- TOC entry 3398 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: COLUMN notification_info.content; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_info.content IS '通知内容';
+
+
+--
+-- TOC entry 3399 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: COLUMN notification_info.create_at; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_info.create_at IS '创建时间';
+
+
+--
+-- TOC entry 3400 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: COLUMN notification_info.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_info.creator_id IS '创建者ID';
+
+
+--
+-- TOC entry 220 (class 1259 OID 16553)
+-- Name: notification_to_user; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.notification_to_user (
+    notification_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    read_state character(1) NOT NULL
+);
+
+
+ALTER TABLE biz.notification_to_user OWNER TO postgres;
+
+--
+-- TOC entry 3401 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: TABLE notification_to_user; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON TABLE biz.notification_to_user IS '通知发送表';
+
+
+--
+-- TOC entry 3402 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN notification_to_user.notification_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_to_user.notification_id IS '通知ID';
+
+
+--
+-- TOC entry 3403 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN notification_to_user.user_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_to_user.user_id IS '接收用户ID';
+
+
+--
+-- TOC entry 3404 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN notification_to_user.read_state; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notification_to_user.read_state IS '已读1 未读0';
+
+
+--
+-- TOC entry 217 (class 1259 OID 16538)
+-- Name: user_login_log; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.user_login_log (
     log_id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -246,343 +467,122 @@ CREATE TABLE biz.sys_login_log (
 );
 
 
-ALTER TABLE biz.sys_login_log OWNER TO postgres;
-
---
--- TOC entry 3386 (class 0 OID 0)
--- Dependencies: 217
--- Name: TABLE sys_login_log; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.sys_login_log IS '后台登录日志';
-
-
---
--- TOC entry 3387 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.tenant_id IS '租户ID';
-
-
---
--- TOC entry 3388 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.user_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.user_id IS '用户ID';
-
-
---
--- TOC entry 3389 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.username; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.username IS '用户名';
-
-
---
--- TOC entry 3390 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.login_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.login_type IS '登录类型';
-
-
---
--- TOC entry 3391 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.status IS '登录状态（0正常 1异常）';
-
-
---
--- TOC entry 3392 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.error_msg IS '失败信息';
-
-
---
--- TOC entry 3393 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.login_ip; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.login_ip IS '登录ip';
-
-
---
--- TOC entry 3394 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.login_location; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.login_location IS '登录地址';
-
-
---
--- TOC entry 3395 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.browser; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.browser IS '浏览器类型';
-
-
---
--- TOC entry 3396 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.os; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.os IS '操作系统';
-
-
---
--- TOC entry 3397 (class 0 OID 0)
--- Dependencies: 217
--- Name: COLUMN sys_login_log.login_time; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_login_log.login_time IS '登录时间';
-
-
---
--- TOC entry 218 (class 1259 OID 16547)
--- Name: sys_message; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.sys_message (
-    msg_id bigint NOT NULL,
-    title character varying(30) NOT NULL,
-    content text NOT NULL,
-    status character(1) NOT NULL,
-    creator_id bigint NOT NULL,
-    updater_id bigint,
-    create_at timestamp with time zone,
-    update_at timestamp with time zone
-);
-
-
-ALTER TABLE biz.sys_message OWNER TO postgres;
-
---
--- TOC entry 3398 (class 0 OID 0)
--- Dependencies: 218
--- Name: TABLE sys_message; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.sys_message IS '系统消息表';
-
-
---
--- TOC entry 3399 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.msg_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_message.msg_id IS '消息ID';
-
-
---
--- TOC entry 3400 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.title; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_message.title IS '消息标题';
-
-
---
--- TOC entry 3401 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.content; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_message.content IS '消息内容';
-
-
---
--- TOC entry 3402 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_message.status IS '消息状态（0草稿 1关闭 2已发送）';
-
-
---
--- TOC entry 3403 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_message.creator_id IS '创建者ID';
-
-
---
--- TOC entry 3404 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.sys_message.updater_id IS '更新者ID';
-
+ALTER TABLE biz.user_login_log OWNER TO postgres;
 
 --
 -- TOC entry 3405 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.create_at; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: TABLE user_login_log; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_message.create_at IS '创建时间';
+COMMENT ON TABLE biz.user_login_log IS '后台登录日志';
 
 
 --
 -- TOC entry 3406 (class 0 OID 0)
--- Dependencies: 218
--- Name: COLUMN sys_message.update_at; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_message.update_at IS '更新时间';
+COMMENT ON COLUMN biz.user_login_log.tenant_id IS '租户ID';
 
-
---
--- TOC entry 219 (class 1259 OID 16552)
--- Name: sys_notice; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.sys_notice (
-    notice_id bigint NOT NULL,
-    notice_type character(1) NOT NULL,
-    title character varying(32) NOT NULL,
-    content text NOT NULL,
-    create_at timestamp with time zone NOT NULL,
-    creator_id bigint NOT NULL
-);
-
-
-ALTER TABLE biz.sys_notice OWNER TO postgres;
 
 --
 -- TOC entry 3407 (class 0 OID 0)
--- Dependencies: 219
--- Name: TABLE sys_notice; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.sys_notice IS '系统通知表';
+COMMENT ON COLUMN biz.user_login_log.user_id IS '用户ID';
 
 
 --
 -- TOC entry 3408 (class 0 OID 0)
--- Dependencies: 219
--- Name: COLUMN sys_notice.notice_type; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.username; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice.notice_type IS '通知类型（0系统通知 1设备告警）';
+COMMENT ON COLUMN biz.user_login_log.username IS '用户名';
 
 
 --
 -- TOC entry 3409 (class 0 OID 0)
--- Dependencies: 219
--- Name: COLUMN sys_notice.title; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.login_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice.title IS '标题';
+COMMENT ON COLUMN biz.user_login_log.login_type IS '登录类型';
 
 
 --
 -- TOC entry 3410 (class 0 OID 0)
--- Dependencies: 219
--- Name: COLUMN sys_notice.content; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice.content IS '通知内容';
+COMMENT ON COLUMN biz.user_login_log.status IS '登录状态（0正常 1异常）';
 
 
 --
 -- TOC entry 3411 (class 0 OID 0)
--- Dependencies: 219
--- Name: COLUMN sys_notice.create_at; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice.create_at IS '创建时间';
+COMMENT ON COLUMN biz.user_login_log.error_msg IS '失败信息';
 
 
 --
 -- TOC entry 3412 (class 0 OID 0)
--- Dependencies: 219
--- Name: COLUMN sys_notice.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.login_ip; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice.creator_id IS '创建者ID';
+COMMENT ON COLUMN biz.user_login_log.login_ip IS '登录ip';
 
-
---
--- TOC entry 220 (class 1259 OID 16557)
--- Name: sys_notice_user; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.sys_notice_user (
-    notice_id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    read_state character(1) NOT NULL
-);
-
-
-ALTER TABLE biz.sys_notice_user OWNER TO postgres;
 
 --
 -- TOC entry 3413 (class 0 OID 0)
--- Dependencies: 220
--- Name: TABLE sys_notice_user; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.login_location; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.sys_notice_user IS '通知发送表';
+COMMENT ON COLUMN biz.user_login_log.login_location IS '登录地址';
 
 
 --
 -- TOC entry 3414 (class 0 OID 0)
--- Dependencies: 220
--- Name: COLUMN sys_notice_user.notice_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.browser; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice_user.notice_id IS '通知ID';
+COMMENT ON COLUMN biz.user_login_log.browser IS '浏览器类型';
 
 
 --
 -- TOC entry 3415 (class 0 OID 0)
--- Dependencies: 220
--- Name: COLUMN sys_notice_user.user_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.os; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice_user.user_id IS '接收用户ID';
+COMMENT ON COLUMN biz.user_login_log.os IS '操作系统';
 
 
 --
 -- TOC entry 3416 (class 0 OID 0)
--- Dependencies: 220
--- Name: COLUMN sys_notice_user.read_state; Type: COMMENT; Schema: biz; Owner: postgres
+-- Dependencies: 217
+-- Name: COLUMN user_login_log.login_time; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_notice_user.read_state IS '已读1 未读0';
+COMMENT ON COLUMN biz.user_login_log.login_time IS '登录时间';
 
 
 --
--- TOC entry 221 (class 1259 OID 16560)
--- Name: sys_oper_log; Type: TABLE; Schema: biz; Owner: postgres
+-- TOC entry 221 (class 1259 OID 16556)
+-- Name: user_operate_log; Type: TABLE; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.sys_oper_log (
+CREATE TABLE biz.user_operate_log (
     oper_id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     title character varying(20) NOT NULL,
@@ -603,188 +603,198 @@ CREATE TABLE biz.sys_oper_log (
 );
 
 
-ALTER TABLE biz.sys_oper_log OWNER TO postgres;
+ALTER TABLE biz.user_operate_log OWNER TO postgres;
 
 --
 -- TOC entry 3417 (class 0 OID 0)
 -- Dependencies: 221
--- Name: TABLE sys_oper_log; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE user_operate_log; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.sys_oper_log IS '操作日志记录';
+COMMENT ON TABLE biz.user_operate_log IS '操作日志记录';
 
 
 --
 -- TOC entry 3418 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_id IS '日志主键';
+COMMENT ON COLUMN biz.user_operate_log.oper_id IS '日志主键';
 
 
 --
 -- TOC entry 3419 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.tenant_id IS '租户ID';
+COMMENT ON COLUMN biz.user_operate_log.tenant_id IS '租户ID';
 
 
 --
 -- TOC entry 3420 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.title; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.title; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.title IS '模块标题';
+COMMENT ON COLUMN biz.user_operate_log.title IS '模块标题';
 
 
 --
 -- TOC entry 3421 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.sub_title; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.sub_title; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.sub_title IS '子标题';
+COMMENT ON COLUMN biz.user_operate_log.sub_title IS '子标题';
 
 
 --
 -- TOC entry 3422 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_type; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除）';
+COMMENT ON COLUMN biz.user_operate_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除）';
 
 
 --
 -- TOC entry 3423 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.method; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.method; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.method IS '方法名称';
+COMMENT ON COLUMN biz.user_operate_log.method IS '方法名称';
 
 
 --
 -- TOC entry 3424 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.request_method; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.request_method; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.request_method IS '请求方式';
+COMMENT ON COLUMN biz.user_operate_log.request_method IS '请求方式';
 
 
 --
 -- TOC entry 3425 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.user_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.user_id IS '操作人员ID';
+COMMENT ON COLUMN biz.user_operate_log.user_id IS '操作人员ID';
 
 
 --
 -- TOC entry 3426 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_name; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_name IS '操作人员';
+COMMENT ON COLUMN biz.user_operate_log.oper_name IS '操作人员';
 
 
 --
 -- TOC entry 3427 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_url; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_url; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_url IS '请求URL';
+COMMENT ON COLUMN biz.user_operate_log.oper_url IS '请求URL';
 
 
 --
 -- TOC entry 3428 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_ip; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_ip; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_ip IS '主机地址';
+COMMENT ON COLUMN biz.user_operate_log.oper_ip IS '主机地址';
 
 
 --
 -- TOC entry 3429 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_location; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_location; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_location IS '操作地点';
+COMMENT ON COLUMN biz.user_operate_log.oper_location IS '操作地点';
 
 
 --
 -- TOC entry 3430 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_param; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_param; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_param IS '请求参数';
+COMMENT ON COLUMN biz.user_operate_log.oper_param IS '请求参数';
 
 
 --
 -- TOC entry 3431 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.json_result; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.json_result; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.json_result IS '返回参数';
+COMMENT ON COLUMN biz.user_operate_log.json_result IS '返回参数';
 
 
 --
 -- TOC entry 3432 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.status; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.status IS '操作状态（0正常 1异常）';
+COMMENT ON COLUMN biz.user_operate_log.status IS '操作状态（0正常 1异常）';
 
 
 --
 -- TOC entry 3433 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.error_msg IS '错误消息';
+COMMENT ON COLUMN biz.user_operate_log.error_msg IS '错误消息';
 
 
 --
 -- TOC entry 3434 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN sys_oper_log.oper_time; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.oper_time; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.sys_oper_log.oper_time IS '操作时间';
+COMMENT ON COLUMN biz.user_operate_log.oper_time IS '操作时间';
 
 
 --
--- TOC entry 3357 (class 0 OID 16532)
--- Dependencies: 215
--- Data for Name: sys_config; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- TOC entry 3360 (class 0 OID 16543)
+-- Dependencies: 218
+-- Data for Name: announcement_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.sys_config (config_id, config_name, config_key, config_value, config_type, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	用户管理-账号初始密码	sys.user.initPassword	123456	Y	1	1	2024-04-17 14:08:54.616+08	2025-06-30 14:50:09.368+08
+COPY biz.announcement_info (announcement_id, title, content, status, creator_id, updater_id, create_at, update_at) FROM stdin;
 \.
 
 
 --
--- TOC entry 3358 (class 0 OID 16537)
--- Dependencies: 216
--- Data for Name: sys_dict; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- TOC entry 3357 (class 0 OID 16528)
+-- Dependencies: 215
+-- Data for Name: config_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.sys_dict (dict_id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
+COPY biz.config_info (config_id, config_name, config_key, config_value, config_type, creator_id, updater_id, create_at, update_at) FROM stdin;
+1	用户管理-账号初始密码	sys.user.initPassword	123456	Y	1	1	2024-04-17 14:08:54.616+08	2025-09-04 16:02:01.137+08
+\.
+
+
+--
+-- TOC entry 3358 (class 0 OID 16533)
+-- Dependencies: 216
+-- Data for Name: dictionary_info; Type: TABLE DATA; Schema: biz; Owner: postgres
+--
+
+COPY biz.dictionary_info (dict_id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
 1905175932909101057	user_sex	用户性别	[{"label": "男", "value": "0", "tableCls": ""}, {"label": "女", "value": "1", "tableCls": ""}, {"label": "未知", "value": "2", "tableCls": ""}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:29:20.647+08
 1905175933034930178	menu_visible	菜单可见状态	[{"label": "显示", "value": "true", "tableCls": "primary"}, {"label": "隐藏", "value": "false", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:54.616+08	2024-11-20 14:30:10.201+08
 1905175933034930179	menu_type	菜单类型	[{"label": "目录", "value": "D", "tableCls": "info"}, {"label": "菜单", "value": "M", "tableCls": "primary"}, {"label": "按钮", "value": "B", "tableCls": "danger"}, {"label": "字段", "value": "F", "tableCls": "warning"}]	\N	1	1	2024-11-23 15:22:03.788+08	2024-11-23 15:22:03.788+08
@@ -804,151 +814,141 @@ COPY biz.sys_dict (dict_id, dict_key, dict_name, dict_value, remark, creator_id,
 
 
 --
--- TOC entry 3359 (class 0 OID 16542)
--- Dependencies: 217
--- Data for Name: sys_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-COPY biz.sys_login_log (log_id, tenant_id, user_id, username, login_type, status, error_msg, login_ip, login_location, browser, os, login_time) FROM stdin;
-\.
-
-
---
--- TOC entry 3360 (class 0 OID 16547)
--- Dependencies: 218
--- Data for Name: sys_message; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-COPY biz.sys_message (msg_id, title, content, status, creator_id, updater_id, create_at, update_at) FROM stdin;
-\.
-
-
---
--- TOC entry 3361 (class 0 OID 16552)
+-- TOC entry 3361 (class 0 OID 16548)
 -- Dependencies: 219
--- Data for Name: sys_notice; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: notification_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.sys_notice (notice_id, notice_type, title, content, create_at, creator_id) FROM stdin;
+COPY biz.notification_info (notification_id, notification_type, title, content, create_at, creator_id) FROM stdin;
 \.
 
 
 --
--- TOC entry 3362 (class 0 OID 16557)
+-- TOC entry 3362 (class 0 OID 16553)
 -- Dependencies: 220
--- Data for Name: sys_notice_user; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: notification_to_user; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.sys_notice_user (notice_id, user_id, read_state) FROM stdin;
+COPY biz.notification_to_user (notification_id, user_id, read_state) FROM stdin;
 \.
 
 
 --
--- TOC entry 3363 (class 0 OID 16560)
+-- TOC entry 3359 (class 0 OID 16538)
+-- Dependencies: 217
+-- Data for Name: user_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
+--
+
+COPY biz.user_login_log (log_id, tenant_id, user_id, username, login_type, status, error_msg, login_ip, login_location, browser, os, login_time) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3363 (class 0 OID 16556)
 -- Dependencies: 221
--- Data for Name: sys_oper_log; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: user_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.sys_oper_log (oper_id, tenant_id, title, sub_title, oper_type, method, request_method, user_id, oper_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time) FROM stdin;
+COPY biz.user_operate_log (oper_id, tenant_id, title, sub_title, oper_type, method, request_method, user_id, oper_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time) FROM stdin;
 \.
 
 
 --
--- TOC entry 3198 (class 2606 OID 16566)
--- Name: sys_config sys_config_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- TOC entry 3198 (class 2606 OID 16562)
+-- Name: config_info sys_config_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.sys_config
+ALTER TABLE ONLY biz.config_info
     ADD CONSTRAINT sys_config_pkey PRIMARY KEY (config_id);
 
 
 --
--- TOC entry 3201 (class 2606 OID 16568)
--- Name: sys_dict sys_dict_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- TOC entry 3201 (class 2606 OID 16564)
+-- Name: dictionary_info sys_dict_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.sys_dict
+ALTER TABLE ONLY biz.dictionary_info
     ADD CONSTRAINT sys_dict_pkey PRIMARY KEY (dict_id);
 
 
 --
--- TOC entry 3205 (class 2606 OID 16570)
--- Name: sys_login_log sys_login_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- TOC entry 3205 (class 2606 OID 16566)
+-- Name: user_login_log sys_login_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.sys_login_log
+ALTER TABLE ONLY biz.user_login_log
     ADD CONSTRAINT sys_login_log_pkey PRIMARY KEY (log_id);
 
 
 --
--- TOC entry 3207 (class 2606 OID 16572)
--- Name: sys_message sys_message_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- TOC entry 3207 (class 2606 OID 16722)
+-- Name: announcement_info sys_message_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.sys_message
-    ADD CONSTRAINT sys_message_pkey PRIMARY KEY (msg_id);
-
-
---
--- TOC entry 3209 (class 2606 OID 16574)
--- Name: sys_notice sys_notify_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.sys_notice
-    ADD CONSTRAINT sys_notify_pkey PRIMARY KEY (notice_id);
+ALTER TABLE ONLY biz.announcement_info
+    ADD CONSTRAINT sys_message_pkey PRIMARY KEY (announcement_id);
 
 
 --
--- TOC entry 3211 (class 2606 OID 16576)
--- Name: sys_notice_user sys_notify_send_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- TOC entry 3209 (class 2606 OID 16724)
+-- Name: notification_info sys_notify_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.sys_notice_user
-    ADD CONSTRAINT sys_notify_send_pkey PRIMARY KEY (notice_id, user_id);
+ALTER TABLE ONLY biz.notification_info
+    ADD CONSTRAINT sys_notify_pkey PRIMARY KEY (notification_id);
 
 
 --
--- TOC entry 3214 (class 2606 OID 16578)
--- Name: sys_oper_log sys_oper_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- TOC entry 3211 (class 2606 OID 16726)
+-- Name: notification_to_user sys_notify_send_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.sys_oper_log
+ALTER TABLE ONLY biz.notification_to_user
+    ADD CONSTRAINT sys_notify_send_pkey PRIMARY KEY (notification_id, user_id);
+
+
+--
+-- TOC entry 3214 (class 2606 OID 16574)
+-- Name: user_operate_log sys_oper_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.user_operate_log
     ADD CONSTRAINT sys_oper_log_pkey PRIMARY KEY (oper_id);
 
 
 --
--- TOC entry 3203 (class 1259 OID 16579)
+-- TOC entry 3203 (class 1259 OID 16575)
 -- Name: i_sys_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX i_sys_login_log_login_time ON biz.sys_login_log USING brin (login_time);
+CREATE INDEX i_sys_login_log_login_time ON biz.user_login_log USING brin (login_time);
 
 
 --
--- TOC entry 3212 (class 1259 OID 16580)
+-- TOC entry 3212 (class 1259 OID 16576)
 -- Name: i_sys_oper_log_oper_time; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX i_sys_oper_log_oper_time ON biz.sys_oper_log USING brin (oper_time);
+CREATE INDEX i_sys_oper_log_oper_time ON biz.user_operate_log USING brin (oper_time);
 
 
 --
--- TOC entry 3199 (class 1259 OID 16581)
+-- TOC entry 3199 (class 1259 OID 16577)
 -- Name: u_i_config_key; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX u_i_config_key ON biz.sys_config USING btree (config_key);
+CREATE UNIQUE INDEX u_i_config_key ON biz.config_info USING btree (config_key);
 
 
 --
--- TOC entry 3202 (class 1259 OID 16582)
+-- TOC entry 3202 (class 1259 OID 16578)
 -- Name: u_i_dict_key; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX u_i_dict_key ON biz.sys_dict USING btree (dict_key);
+CREATE UNIQUE INDEX u_i_dict_key ON biz.dictionary_info USING btree (dict_key);
 
 
--- Completed on 2025-07-15 17:03:23
+-- Completed on 2025-09-04 16:04:13
 
 --
 -- PostgreSQL database dump complete

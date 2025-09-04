@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzkris.user.mapper.DeptInfoMapper">
+
+    <resultMap id="DeptInfoMap" type="deptInfoDO">
+        <result column="dept_id" property="deptId"/>
+        <result column="tenantId" property="tenantId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="ancestors" property="ancestors" typeHandler="org.apache.ibatis.type.ArrayTypeHandler"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="status" property="status"/>
+        <result column="dept_sort" property="deptSort"/>
+        <result column="contact" property="contact"/>
+        <result column="email" property="email"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="create_at" property="createAt"/>
+        <result column="update_at" property="updateAt"/>
+    </resultMap>
+
+    <select id="listSubDept" resultMap="DeptInfoMap">
+        SELECT * FROM biz.dept_info
+        <where>
+            <if test="parentId != null and parentId != 0">
+                AND #{parentId} = ANY(ancestors)
+            </if>
+            <if test="deptId != null and deptId != 0">
+                AND (dept_id = #{deptId} OR #{deptId} = ANY(ancestors))
+            </if>
+            <if test="deptName != null and deptName != ''">
+                AND dept_name LIKE CONCAT('%', #{deptName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY dept_sort, dept_id DESC
+    </select>
+
+</mapper>

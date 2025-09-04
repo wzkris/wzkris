@@ -1,0 +1,37 @@
+package com.wzkris.user.domain;
+
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+
+/**
+ * 客户第三方信息
+ *
+ * @author wzkris
+ */
+@Data
+@TableName(schema = "biz", value = "customer_social_info")
+public class CustomerSocialInfoDO {
+
+    @TableId
+    private Long customerId;
+
+    private String identifier;
+
+    @Schema(description = "渠道")
+    private String identifierType;
+
+    @Getter
+    @AllArgsConstructor
+    public enum IdentifierType {
+        WX_XCX("wx_xcx"),
+
+        WX_GZH("wx_gzh");
+
+        private final String value;
+    }
+
+}

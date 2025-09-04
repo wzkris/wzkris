@@ -31,7 +31,7 @@ public class RefreshTokenEventListener {
 
         if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
 
-        } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CLIENT_USER.getValue())) {
+        } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CUSTOMER.getValue())) {
             // empty
         } else {
             log.warn("{} 发生刷新TOKEN事件, 忽略处理", principal);

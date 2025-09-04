@@ -19,7 +19,6 @@
 
     <modules>
         <module>wzkris-monitor-admin</module>
-        <module>wzkris-xxl-job-admin</module>
     </modules>
 
 
