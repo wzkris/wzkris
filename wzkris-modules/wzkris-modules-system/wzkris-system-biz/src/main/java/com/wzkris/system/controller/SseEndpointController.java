@@ -2,9 +2,9 @@ package com.wzkris.system.controller;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.UserAgentUtil;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.system.utils.GlobalSseUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "SSE端点")
 @Slf4j
 @RestController
-@RequestMapping("/sse_endpoint")
+@RequestMapping("/sse-endpoint")
 @RequiredArgsConstructor
 public class SseEndpointController extends BaseController {
 
@@ -34,13 +34,13 @@ public class SseEndpointController extends BaseController {
     public SseEmitter connect(HttpServletRequest request,
                               @RequestHeader(value = "User-Agent") String userAgentStr) {
         UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(userAgentStr);
-        return GlobalSseUtil.connect(SystemUserUtil.getUserId(), 10_000,
+        return GlobalSseUtil.connect(LoginUserUtil.getId(), 10_000,
                 userAgent.getValue(UserAgent.AGENT_NAME), userAgent.getValue(ServletUtil.getClientIP(request)));
     }
 
     @GetMapping(headers = "disconnect")
     public void disconnect() {
-        GlobalSseUtil.disconnect(SystemUserUtil.getUserId());
+        GlobalSseUtil.disconnect(LoginUserUtil.getId());
     }
 
 }

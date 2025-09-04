@@ -1,13 +1,14 @@
 package com.wzkris.common.redis.util;
 
 import com.wzkris.common.core.utils.SpringUtil;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * spring redis 工具类
@@ -15,9 +16,10 @@ import org.redisson.api.options.KeysScanOptions;
  * @author wzkris
  **/
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RedisUtil {
+public abstract class RedisUtil {
 
-    private static final RedissonClient redissonclient = SpringUtil.getFactory().getBean(RedissonClient.class);
+    private static final RedissonClient redissonclient
+            = SpringUtil.getFactory().getBean(RedissonClient.class);
 
     public static RedissonClient getClient() {
         return redissonclient;
@@ -84,6 +86,13 @@ public class RedisUtil {
     }
 
     /**
+     * 获取脚本
+     */
+    public static RScript getScript() {
+        return redissonclient.getScript();
+    }
+
+    /**
      * 获得缓存Map
      *
      * @param key 缓存的键值
@@ -107,15 +116,10 @@ public class RedisUtil {
      * 获取过期时间
      *
      * @param key Redis键
-     * @return 有效时间 秒
+     * @return 有效时间
      */
     public static long getExpire(final String key) {
-        long time = redissonclient.getBucket(key).remainTimeToLive();
-        return time <= 0 ? time : time / 1000;
-    }
-
-    public static boolean expire(final String key, final long timeout) {
-        return expire(key, Duration.ofSeconds(timeout));
+        return redissonclient.getBucket(key).remainTimeToLive();
     }
 
     /**
@@ -127,10 +131,6 @@ public class RedisUtil {
      */
     public static boolean expire(final String key, final Duration duration) {
         return redissonclient.getBucket(key).expire(duration);
-    }
-
-    public static boolean expireIfSet(final String key, final long timeout) {
-        return expireIfSet(key, Duration.ofSeconds(timeout));
     }
 
     /**
@@ -150,7 +150,7 @@ public class RedisUtil {
      * @param key 键
      * @return true 存在 false不存在
      */
-    public static boolean hasKey(final String key) {
+    public static boolean exist(final String key) {
         return redissonclient.getBucket(key).isExists();
     }
 
@@ -158,7 +158,7 @@ public class RedisUtil {
      * @param key 键
      * @return 返回个数
      */
-    public static long countKey(final List<String> key) {
+    public static long countExists(final List<String> key) {
         return redissonclient.getKeys().countExists(key.toArray(new String[0]));
     }
 
@@ -174,10 +174,4 @@ public class RedisUtil {
         return keys;
     }
 
-    /**
-     * 获取非公平锁
-     */
-    public static RLock getLock(final String key) {
-        return redissonclient.getLock(key);
-    }
 }

@@ -26,4 +26,5 @@ public class FileVO {
      * url
      */
     private String url;
+
 }

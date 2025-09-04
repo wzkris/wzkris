@@ -1,6 +1,6 @@
 package com.wzkris.common.captcha.store;
 
-import com.wzkris.common.captcha.model.Challenge;
+import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.properties.StoreType;
 
 import java.util.Date;
@@ -23,11 +23,11 @@ public interface CapStore {
     /**
      * 存储 挑战
      *
-     * @param token     token
-     * @param challenge 挑战
+     * @param token         token
+     * @param challengeData 挑战
      * @return 是否存储成功(true : 成功 ; false : 失败)
      */
-    boolean putChallenge(String token, Challenge challenge);
+    boolean putChallenge(String token, ChallengeData challengeData);
 
     /**
      * 删除 挑战
@@ -35,7 +35,7 @@ public interface CapStore {
      * @param token token
      * @return 返回被删除的挑战，如果token不存在则为空
      */
-    Challenge removeChallenge(String token);
+    ChallengeData removeChallenge(String token);
 
     /**
      * 获取指定 token 的挑战
@@ -43,7 +43,7 @@ public interface CapStore {
      * @param token token
      * @return 挑战，可能为空
      */
-    Challenge getChallenge(String token);
+    ChallengeData getChallenge(String token);
 
     /**
      * 存储 token

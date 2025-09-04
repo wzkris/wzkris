@@ -1,7 +1,5 @@
 package com.wzkris.common.captcha.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,10 +24,8 @@ public class RedeemChallengeRequest implements Serializable {
     @Serial
     private static final long serialVersionUID = -8683647715596989623L;
 
-    @NotBlank(message = "Token is not allowed to be blank")
     private String token;
 
-    @NotEmpty(message = "Solutions is not allowed to be empty")
-    private List<List<Object>> solutions;
+    private List<Integer> solutions;
 
 }

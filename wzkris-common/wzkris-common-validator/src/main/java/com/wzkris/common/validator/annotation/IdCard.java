@@ -1,0 +1,29 @@
+package com.wzkris.common.validator.annotation;
+
+import com.wzkris.common.validator.impl.IdCardValidator;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * @author : wzkris
+ * @version : V1.0.0
+ * @description : 身份证注解
+ * @date : 2023/12/15 10:49
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value = {ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER})
+@Constraint(validatedBy = {IdCardValidator.class})
+public @interface IdCard {
+
+    String message() default "{invalidParameter.idcard.invalid}";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+
+}

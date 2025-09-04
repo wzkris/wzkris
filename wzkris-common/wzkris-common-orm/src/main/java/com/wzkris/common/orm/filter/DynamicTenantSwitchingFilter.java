@@ -3,12 +3,13 @@ package com.wzkris.common.orm.filter;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
-import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.io.IOException;
  * @description : 全局动态租户拦截器，提供切换租户的能力
  * @date : 2025/07/01 11:10
  */
+@Component
 public class DynamicTenantSwitchingFilter extends OncePerRequestFilter {
 
     private static final String IGNORE_TYPE = "all";
@@ -32,7 +34,7 @@ public class DynamicTenantSwitchingFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!SystemUserUtil.isLogin() || !SystemUserUtil.isSuperTenant()) {
+        if (!LoginUserUtil.isLogin() || !LoginUserUtil.isSuperTenant()) {
             filterChain.doFilter(request, response);
             return;
         }

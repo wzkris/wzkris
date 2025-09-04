@@ -6,12 +6,13 @@ import com.wzkris.common.oss.service.FileService;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Service;
 
 /**
  * Minio 文件存储
@@ -49,15 +50,16 @@ public class MinioServiceImpl implements FileService {
             client.putObject(args);
             return new FileVO(fileName, properties.getUrl(), "/" + relativePath + "/" + fileName);
         } catch (ErrorResponseException
-                | InsufficientDataException
-                | InternalException
-                | InvalidKeyException
-                | InvalidResponseException
-                | IOException
-                | NoSuchAlgorithmException
-                | ServerException
-                | XmlParserException e) {
+                 | InsufficientDataException
+                 | InternalException
+                 | InvalidKeyException
+                 | InvalidResponseException
+                 | IOException
+                 | NoSuchAlgorithmException
+                 | ServerException
+                 | XmlParserException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
+
 }

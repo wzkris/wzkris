@@ -1,6 +1,7 @@
 package com.wzkris.common.oss.service;
 
 import com.wzkris.common.oss.domain.FileVO;
+
 import java.io.InputStream;
 
 /**
@@ -23,4 +24,5 @@ public interface FileService {
      * @return
      */
     FileVO upload(InputStream is, String relativePath, String fileName, String contentType);
+
 }

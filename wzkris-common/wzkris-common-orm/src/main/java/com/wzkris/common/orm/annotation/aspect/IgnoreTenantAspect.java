@@ -13,6 +13,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.stereotype.Component;
 
 /**
  * @author : wzkris
@@ -21,6 +22,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
  */
 @Slf4j
 @Aspect
+@Component
 public class IgnoreTenantAspect {
 
     private static volatile StandardEvaluationContext context;

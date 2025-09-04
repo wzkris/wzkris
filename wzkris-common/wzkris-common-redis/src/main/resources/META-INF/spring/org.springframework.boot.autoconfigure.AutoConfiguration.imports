@@ -1,2 +1,0 @@
-com.wzkris.common.redis.config.CacheConfig
-com.wzkris.common.redis.annotation.aspect.RateLimitAspect

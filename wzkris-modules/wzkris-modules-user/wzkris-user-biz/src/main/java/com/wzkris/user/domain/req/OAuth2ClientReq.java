@@ -1,7 +1,7 @@
 package com.wzkris.user.domain.req;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.wzkris.user.domain.OAuth2Client;
+import com.wzkris.user.domain.OAuth2ClientDO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,20 +10,20 @@ import lombok.Data;
 import org.apache.ibatis.type.ArrayTypeHandler;
 
 @Data
-@AutoMappers({@AutoMapper(target = OAuth2Client.class)})
+@AutoMappers({@AutoMapper(target = OAuth2ClientDO.class)})
 @Schema(description = "客户端请求体")
 public class OAuth2ClientReq {
 
     private Long id;
 
-    @NotBlank(message = "{desc.client}{desc.name}{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.clientName.invalid}")
     @Schema(description = "客户端名称")
     private String clientName;
 
     @Schema(description = "客户端状态")
     private String status;
 
-    @NotBlank(message = "{desc.client}{desc.id}{validate.notnull}")
+    @NotBlank(message = "{invalidParameter.id.invalid}")
     @Schema(description = "客户端id 等价于app_id")
     private String clientId;
 

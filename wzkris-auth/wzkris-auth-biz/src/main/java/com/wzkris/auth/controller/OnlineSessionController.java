@@ -6,7 +6,7 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class OnlineSessionController {
     public Result<Collection<OnlineUserResp>> onlineSession(@RequestHeader(HeaderConstants.X_TENANT_TOKEN) String accessToken) {
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
 
-        RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(SystemUserUtil.getUserId());
+        RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(LoginUserUtil.getId());
 
         List<OnlineUserResp> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineUser> entry : onlineCache.entrySet()) {

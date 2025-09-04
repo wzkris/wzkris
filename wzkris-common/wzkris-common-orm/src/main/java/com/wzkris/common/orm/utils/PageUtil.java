@@ -1,8 +1,11 @@
 package com.wzkris.common.orm.utils;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.wzkris.common.orm.model.Page;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -16,7 +19,12 @@ public final class PageUtil {
     private static final ThreadLocal<Page<?>> LOCAL_PAGE = new ThreadLocal<>();
 
     public static void startPage(long pageNum, long pageSize) {
+        startPage(pageNum, pageSize, null);
+    }
+
+    public static void startPage(long pageNum, long pageSize, List<OrderItem> orders) {
         Page<?> page = new Page<>(pageNum, pageSize);
+        page.setOrders(orders);
         LOCAL_PAGE.set(page);
     }
 

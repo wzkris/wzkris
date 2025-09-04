@@ -1,5 +1,6 @@
 package com.wzkris.user.domain.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,38 +16,32 @@ import java.util.Map;
 @NoArgsConstructor
 public class MetaVO implements Serializable {
 
-    /**
-     * 设置该路由在侧边栏和面包屑中展示的名字
-     */
+    @Schema(description = "路由在侧边栏和面包屑中展示的名字")
     private String title;
 
-    /**
-     * 设置该路由的图标
-     */
+    @Schema(description = "路由类型")
+    private String type;
+
+    @Schema(description = "路由图标")
     private String icon;
 
-    /**
-     * 是否隐藏路由
-     */
+    @Schema(description = "是否隐藏")
     private boolean hidden;
 
-    /**
-     * <keep-alive>缓存
-     */
+    @Schema(description = "<keep-alive>缓存")
     private boolean keepAlive;
 
-    /**
-     * 路由参数：如 {"id": 1, "name": "ry"}
-     */
+    @Schema(description = "路由参数：如 {\"id\": 1, \"name\": \"zhang3\"}")
     private Map<String, String> query;
 
-    /**
-     * 外部链接
-     */
+    @Schema(description = "外部链接, http或https开头")
     private String link;
 
-    public MetaVO(String title, String icon, boolean hidden, boolean keepAlive, Map<String, String> query) {
+    public MetaVO(String title, String type, String icon,
+                  boolean hidden, boolean keepAlive,
+                  Map<String, String> query) {
         this.title = title;
+        this.type = type;
         this.icon = icon;
         this.hidden = hidden;
         this.keepAlive = keepAlive;

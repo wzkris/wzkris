@@ -1,11 +1,12 @@
 package com.wzkris.common.captcha.store.impl;
 
-import com.wzkris.common.captcha.model.Challenge;
+import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.properties.StoreType;
 import com.wzkris.common.captcha.store.CapStore;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Date;
  * @author wuhunyu
  * @date 2025/06/16 23:07
  **/
+@Component
 @RequiredArgsConstructor
 public class RedisStore implements CapStore {
 
@@ -29,28 +31,28 @@ public class RedisStore implements CapStore {
     }
 
     @Override
-    public boolean putChallenge(final String token, final Challenge challenge) {
+    public boolean putChallenge(final String token, final ChallengeData challengeData) {
         redissonClient.getBucket(
                         this.makeupChallengeKey(token)
                 )
                 .set(
-                        challenge,
+                        challengeData,
                         Duration.ofMillis(capProperties.getChallengeExpiresMs())
                 );
         return true;
     }
 
     @Override
-    public Challenge removeChallenge(final String token) {
-        return (Challenge) redissonClient.getBucket(
+    public ChallengeData removeChallenge(final String token) {
+        return (ChallengeData) redissonClient.getBucket(
                         this.makeupChallengeKey(token)
                 )
                 .getAndDelete();
     }
 
     @Override
-    public Challenge getChallenge(final String token) {
-        return (Challenge) redissonClient.getBucket(
+    public ChallengeData getChallenge(final String token) {
+        return (ChallengeData) redissonClient.getBucket(
                         this.makeupChallengeKey(token)
                 )
                 .get();

@@ -5,7 +5,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,8 +22,7 @@ import java.util.regex.Pattern;
  *
  * @author wzkris
  */
-@Slf4j
-public class ServletUtil {
+public abstract class ServletUtil {
 
     private static final Pattern IPV4_PATTERN = Pattern.compile(
             "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\." +

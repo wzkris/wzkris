@@ -6,10 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.wzkris.common.core.domain.Result.err500;
+import static com.wzkris.common.core.domain.Result.err50000;
 
 /**
  * Mybatis异常处理器
@@ -17,6 +18,7 @@ import static com.wzkris.common.core.domain.Result.err500;
  * @author wzkris
  */
 @Slf4j
+@Component
 @RestControllerAdvice
 public class MybatisExceptionHandler {
 
@@ -26,7 +28,7 @@ public class MybatisExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<?> handledDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到唯一索引异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return err500("唯一索引异常");
+        return err50000("唯一索引异常");
     }
 
     /**
@@ -35,7 +37,7 @@ public class MybatisExceptionHandler {
     @ExceptionHandler(MyBatisSystemException.class)
     public Result<Void> handleCannotFindDataSourceException(MyBatisSystemException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',Mybatis异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return err500("未找到数据源，请联系管理员确认");
+        return err50000("未找到数据源，请联系管理员确认");
     }
 
     /**
@@ -44,7 +46,7 @@ public class MybatisExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public Result<?> handleSqlException(DataAccessException e, HttpServletRequest request) {
         log.error("请求地址'{} {}',捕获到sql异常，异常信息：{}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
-        return err500("sql异常，请联系管理员");
+        return err50000("sql异常，请联系管理员");
     }
 
 }

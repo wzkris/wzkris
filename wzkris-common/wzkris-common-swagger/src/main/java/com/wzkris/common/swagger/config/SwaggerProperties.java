@@ -1,14 +1,17 @@
 package com.wzkris.common.swagger.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wzkris
  */
 @Data
+@Configuration
 @ConfigurationProperties(prefix = "springdoc")
 public class SwaggerProperties {
 
@@ -94,6 +97,7 @@ public class SwaggerProperties {
          * 联系人email
          **/
         private String email = "";
+
     }
 
     @Data
@@ -115,6 +119,7 @@ public class SwaggerProperties {
         private List<AuthorizationScope> authorizationScopeList = new ArrayList<>();
 
         private List<String> tokenUrlList = new ArrayList<>();
+
     }
 
     @Data
@@ -129,5 +134,7 @@ public class SwaggerProperties {
          * 作用域描述
          */
         private String description = "";
+
     }
+
 }

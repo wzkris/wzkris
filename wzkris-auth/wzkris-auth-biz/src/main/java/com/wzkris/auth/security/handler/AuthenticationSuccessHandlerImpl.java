@@ -24,7 +24,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.UserAgentUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -167,4 +167,3 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     }
 
 }
-

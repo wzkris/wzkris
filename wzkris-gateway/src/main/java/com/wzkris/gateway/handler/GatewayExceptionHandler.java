@@ -1,7 +1,6 @@
 package com.wzkris.gateway.handler;
 
-import com.wzkris.common.core.enums.BizCode;
-import com.wzkris.common.core.exception.BaseException;
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -42,27 +41,21 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
                 e.getMessage());
         if (e instanceof ResponseStatusException respEx) {
             return switch (respEx.getStatusCode().value()) {
-                case 400 -> WebFluxUtil.writeResponse(response, BizCode.BAD_REQUEST);
-                case 401 -> WebFluxUtil.writeResponse(response, BizCode.UNAUTHORIZED);
-                case 403 -> WebFluxUtil.writeResponse(response, BizCode.FORBID);
-                case 404 -> WebFluxUtil.writeResponse(response, BizCode.NOT_FOUND);
-                case 405 -> WebFluxUtil.writeResponse(response, BizCode.BAD_METHOD);
-                case 500 -> WebFluxUtil.writeResponse(response, BizCode.INTERNAL_ERROR);
-                case 502 -> WebFluxUtil.writeResponse(response, BizCode.BAD_GATEWAY);
-                case 503 -> WebFluxUtil.writeResponse(response, BizCode.SERVICE_UNAVAILABLE);
+                case 400 -> WebFluxUtil.writeResponse(response, BizBaseCode.BAD_REQUEST);
+                case 401 -> WebFluxUtil.writeResponse(response, BizBaseCode.UNAUTHORIZED);
+                case 403 -> WebFluxUtil.writeResponse(response, BizBaseCode.FORBID);
+                case 404 -> WebFluxUtil.writeResponse(response, BizBaseCode.NOT_FOUND);
+                case 405 -> WebFluxUtil.writeResponse(response, BizBaseCode.BAD_METHOD);
+                case 500 -> WebFluxUtil.writeResponse(response, BizBaseCode.INTERNAL_ERROR);
+                case 502 -> WebFluxUtil.writeResponse(response, BizBaseCode.BAD_GATEWAY);
+                case 503 -> WebFluxUtil.writeResponse(response, BizBaseCode.SERVICE_UNAVAILABLE);
                 default -> WebFluxUtil.writeResponse(
                         response, respEx.getStatusCode().value(), respEx.getMessage());
             };
-        } else if (e instanceof BaseException bizEx) {
-            // 若状态码为远程调用异常，则返回前端数据需要覆盖
-            String errorMsg = bizEx.getMessage();
-            if (bizEx.getBiz() == BizCode.RPC_ERROR.value()) {
-                errorMsg = BizCode.RPC_ERROR.desc();
-            }
-            return WebFluxUtil.writeResponse(response, bizEx.getBiz(), errorMsg);
         }
 
         // 返回500内部异常
-        return WebFluxUtil.writeResponse(response, BizCode.INTERNAL_ERROR, e.getMessage());
+        return WebFluxUtil.writeResponse(response, BizBaseCode.INTERNAL_ERROR, e.getMessage());
     }
+
 }

@@ -13,9 +13,9 @@ public enum AuthenticatedType {
 
     SYSTEM_USER("system_user"),
 
-    CLIENT_USER("client_user"),
+    CUSTOMER("customer"),
 
-    CLIENT("client");
+    CLIENT("oauth2_client");
 
     private final String value;
 

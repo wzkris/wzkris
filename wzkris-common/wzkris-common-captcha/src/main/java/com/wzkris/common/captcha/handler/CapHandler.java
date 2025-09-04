@@ -2,17 +2,24 @@ package com.wzkris.common.captcha.handler;
 
 import com.wzkris.common.captcha.exception.ChallengeStoreException;
 import com.wzkris.common.captcha.model.Challenge;
+import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.model.Token;
 import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.store.CapStore;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.utils.StringUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 /**
@@ -21,6 +28,7 @@ import java.util.stream.IntStream;
  * @author wuhunyu
  * @date 2025/06/16 16:22
  **/
+@Component
 public class CapHandler {
 
     public static final String HEX_STR = "0123456789abcdef";
@@ -35,20 +43,57 @@ public class CapHandler {
                 .findFirst().orElse(null);
     }
 
-    public Challenge createChallenge() throws ChallengeStoreException {
+    public static String prng(String seed, int length) {
+        if (StringUtils.isBlank(seed) || length <= 0) {
+            throw new IllegalArgumentException("种子不能为空且长度必须大于0");
+        }
+
+        int state = fnv1a(seed);
+        StringBuilder result = new StringBuilder(length);
+
+        while (result.length() < length) {
+            int rnd = next(state);
+            state = rnd;
+            // 使用与JavaScript完全一致的十六进制转换
+            result.append(toHexString(rnd));
+        }
+
+        return result.substring(0, length);
+    }
+
+    private static int fnv1a(String str) {
+        int hash = 0x811c9dc5; // 2166136261
+        for (int i = 0; i < str.length(); i++) {
+            hash ^= str.charAt(i);
+            // 乘以FNV倍数16777619，等价于移位相加
+            // Java int的32位环绕特性确保与JavaScript完全一致
+            hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+        }
+        return hash; // 32位环绕自动处理，无需额外操作
+    }
+
+    private static int next(int state) {
+        state ^= state << 13;
+        state ^= state >>> 17;
+        state ^= state << 5;
+        return state;
+    }
+
+    private static String toHexString(int value) {
+        // 将int转换为无符号32位值，然后转十六进制
+        String hex = Integer.toHexString(value);
+        // 补齐8位，与JavaScript的padStart(8, "0")一致
+        if (hex.length() < 8) {
+            return StringUtils.leftPad(hex, 8, '0');
+        }
+        return hex;
+    }
+
+    public ChallengeData createChallenge() throws ChallengeStoreException {
         final int challengeCount = capProperties.getChallengeCount();
-        final int challengeSize = capProperties.getChallengeSize();
+        final int challengeSize = capProperties.getChallengeLength();
         final int challengeDifficulty = capProperties.getChallengeDifficulty();
         final long challengeExpiresMs = capProperties.getChallengeExpiresMs();
-
-        // 随机生成挑战
-        List<List<String>> challenges = IntStream.range(0, challengeCount)
-                .boxed()
-                .map(i -> List.of(
-                        RandomStringUtils.secure().next(challengeSize, HEX_STR),
-                        RandomStringUtils.secure().next(challengeDifficulty, HEX_STR)
-                ))
-                .toList();
 
         // 生成 token
         final String token = UUID.randomUUID().toString();
@@ -58,79 +103,54 @@ public class CapHandler {
                 .plus(challengeExpiresMs, ChronoUnit.MILLIS));
 
         // 构建挑战对象
-        final Challenge challenge = Challenge.builder()
-                .challenge(challenges)
-                .token(token)
-                .expires(expires)
-                .build();
+        final ChallengeData challengeData = new ChallengeData(new Challenge(challengeCount, challengeSize, challengeDifficulty), expires, token);
 
         // 存储挑战
-        if (!capStore.putChallenge(token, challenge)) {
+        if (!capStore.putChallenge(token, challengeData)) {
             throw new ChallengeStoreException("Storage challenge failed, please try again later.");
         }
 
-        return challenge;
+        return challengeData;
     }
 
-    public Token redeemChallenge(String token, List<List<Object>> solutions)
+    public Token redeemChallenge(String token, List<Integer> solutions)
             throws IllegalArgumentException, IllegalStateException, ChallengeStoreException {
         if (StringUtil.isBlank(token) || CollectionUtils.isEmpty(solutions)) {
-            throw new CaptchaException("captcha.error");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
-        solutions = new ArrayList<>(solutions.subList(0, capProperties.getChallengeCount()));
 
         // 当前日期时间
         final Date now = new Date();
 
         // 移除 token
-        final Challenge challenge = capStore.removeChallenge(token);
-        if (Objects.isNull(challenge) || !challenge.getExpires().after(now)) {
+        final ChallengeData challengeData = capStore.removeChallenge(token);
+        if (Objects.isNull(challengeData) || !challengeData.getExpires().after(now)) {
             throw new CaptchaException("captcha.expired");
         }
 
         // 验证计算结果是否有效
-        boolean isValid = false;
-        outer:
-        for (final List<String> challenges : challenge.getChallenge()) {
-            final String salt = challenges.get(0);
-            final String target = challenges.get(1);
-
-            for (final List<Object> solution : solutions) {
-                if (Objects.isNull(solution) || solution.size() != 3) {
-                    throw new CaptchaException("captcha.error");
-                }
-                final Object s = solution.get(0);
-                final Object t = solution.get(1);
-                final Object ans = solution.get(2);
-                if (Objects.equals(salt, s) &&
-                        Objects.equals(target, t) &&
-                        SHA256Helper.sha256Hex(salt + ans.toString())
-                                .startsWith(target)
-                ) {
-                    isValid = true;
-                    break outer;
-                }
-            }
-        }
+        boolean isValid = IntStream.range(0, capProperties.getChallengeCount()).allMatch(i -> {
+            String salt = prng("%s%d".formatted(token, i + 1), capProperties.getChallengeLength());
+            String target = prng("%s%dd".formatted(token, i + 1), capProperties.getChallengeDifficulty());
+            int solution = solutions.get(i);
+            return DigestUtils.sha256Hex(salt + solution).startsWith(target);
+        });
 
         if (!isValid) {
-            throw new CaptchaException("captcha.error");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
 
         // 保存 token，用于后续验证
         final String verToken = UUID.randomUUID().toString();
         final Date expires = Date.from(now.toInstant().plus(capProperties.getTokenExpiresMs(), ChronoUnit.MILLIS));
-        final String hash = SHA256Helper.sha256Hex(verToken);
+        final String hash = DigestUtils.sha256Hex(verToken);
         final String id = RandomStringUtils.secure().next(capProperties.getIdSize(), HEX_STR);
         if (!capStore.putToken(this.makeupToken(id, hash), expires)) {
             throw new ChallengeStoreException("Storage token failed, please try again later.");
         }
 
         // 构造验证凭证
-        return Token.builder()
-                .token(this.makeupVerToken(id, verToken))
-                .expires(expires)
-                .build();
+        return new Token(this.makeupVerToken(id, verToken), expires);
     }
 
     private String makeupToken(String id, String hash) {
@@ -143,13 +163,13 @@ public class CapHandler {
 
     public Boolean validateToken(String tokenStr) throws IllegalArgumentException {
         if (StringUtil.isBlank(tokenStr)) {
-            throw new CaptchaException("captcha.error");
+            return false;
         }
 
         // 提取 id 和 verToken
         final String[] splits = tokenStr.split(":", 2);
-        if (splits.length < 2) {
-            throw new CaptchaException("captcha.error");
+        if (splits.length != 2) {
+            return false;
         }
 
         // 当前日期时间
@@ -157,7 +177,7 @@ public class CapHandler {
 
         final String id = splits[0];
         final String verToken = splits[1];
-        final String hash = SHA256Helper.sha256Hex(verToken);
+        final String hash = DigestUtils.sha256Hex(verToken);
         final String tokenKey = this.makeupToken(id, hash);
 
         // 取出 token 的过期时间

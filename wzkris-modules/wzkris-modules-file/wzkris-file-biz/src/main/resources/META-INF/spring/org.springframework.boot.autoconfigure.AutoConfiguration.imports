@@ -1,2 +1,0 @@
-# 解决spring.factories被移除的问题
-com.github.tobato.fastdfs.FdfsClientConfig

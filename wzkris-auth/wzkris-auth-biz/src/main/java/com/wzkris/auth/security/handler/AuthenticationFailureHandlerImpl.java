@@ -1,7 +1,8 @@
 package com.wzkris.auth.security.handler;
 
 import com.wzkris.common.core.domain.Result;
-import com.wzkris.common.core.enums.BizCode;
+import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,13 +41,9 @@ public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHa
             Result<?> result = OAuth2ExceptionUtil.translate(oAuth2AuthenticationException.getError());
             JsonUtil.writeValue(response.getWriter(), result);
         } else {
-            int status = BizCode.UNAUTHORIZED.value();
-            if (response.getStatus() != HttpServletResponse.SC_OK) {
-                status = response.getStatus();
-                response.setStatus(HttpServletResponse.SC_OK);
-            }
             JsonUtil.writeValue(
-                    response.getWriter(), Result.resp(status, null, exception.getLocalizedMessage()));
+                    response.getWriter(), Result.resp(BizBaseCode.UNAUTHORIZED.value(), null,
+                            I18nUtil.message("forbidden.accessDenied.tokenExpired")));
         }
     }
 

@@ -40,7 +40,7 @@
 
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-bom</artifactId>
+                <artifactId>wzkris-bom</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -87,14 +87,6 @@
                 <version>${knife4j.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
-            <!--字段映射-->
-            <dependency>
-                <groupId>io.github.linpeilie</groupId>
-                <artifactId>mapstruct-plus</artifactId>
-                <version>${mapstruct-plus.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
@@ -135,18 +127,12 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!--文件rpc服务-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-file-rmi</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
     <modules>
         <module>wzkris-auth</module>
+        <module>wzkris-bom</module>
         <module>wzkris-gateway</module>
         <module>wzkris-extends</module>
         <module>wzkris-modules</module>
@@ -157,7 +143,6 @@
         <profile>
             <id>dev</id>
             <properties>
-                <!-- 环境标识，需要与配置文件的名称相对应 -->
                 <profiles.active>dev</profiles.active>
                 <nacos.server>localhost:8848</nacos.server>
                 <nacos.username>dev</nacos.username>
@@ -166,7 +151,6 @@
                 <nacos.group>APPLICATION_GROUP</nacos.group>
             </properties>
             <activation>
-                <!-- 默认环境 -->
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>

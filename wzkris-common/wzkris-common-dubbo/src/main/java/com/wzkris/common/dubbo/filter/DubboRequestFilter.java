@@ -2,10 +2,10 @@ package com.wzkris.common.dubbo.filter;
 
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
-import org.jboss.logging.MDC;
 
 @Activate(
         group = {
@@ -18,14 +18,14 @@ public class DubboRequestFilter implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         if (RpcContext.getServiceContext().isConsumerSide()) {
-            Object tracingId = MDC.get(HeaderConstants.X_TRACING_ID);
+            String tracingId = TraceIdUtil.get();
             if (ObjectUtils.isNotEmpty(tracingId)) {
                 RpcContext.getServiceContext().setAttachment(HeaderConstants.X_TRACING_ID, tracingId);
             }
         } else {
             String tracingId = RpcContext.getServiceContext().getAttachment(HeaderConstants.X_TRACING_ID);
             if (StringUtil.isNotBlank(tracingId)) {
-                MDC.put(HeaderConstants.X_TRACING_ID, tracingId);
+                TraceIdUtil.set(tracingId);
             }
         }
 
@@ -33,7 +33,7 @@ public class DubboRequestFilter implements Filter {
             return invoker.invoke(invocation);
         } finally {
             if (RpcContext.getServiceContext().isProviderSide()) {
-                MDC.clear();
+                TraceIdUtil.clear();
             }
         }
     }

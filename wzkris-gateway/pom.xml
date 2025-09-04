@@ -15,6 +15,10 @@
         wzkris-gateway网关模块
     </description>
 
+    <properties>
+        <caffeine.version>3.2.0</caffeine.version>
+    </properties>
+
     <dependencies>
         <!-- SpringCloud Gateway -->
         <dependency>
@@ -40,15 +44,10 @@
             <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
         </dependency>
 
+        <!-- 限流 -->
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-        </dependency>
-
-        <!-- Sentinel Datasource Nacos -->
-        <dependency>
-            <groupId>com.alibaba.csp</groupId>
-            <artifactId>sentinel-datasource-nacos</artifactId>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-sentinel</artifactId>
         </dependency>
 
         <!-- SpringBoot Actuator -->
@@ -61,6 +60,13 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <!-- 本地缓存 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
 
         <!-- 核心包 -->

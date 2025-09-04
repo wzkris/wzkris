@@ -6,9 +6,9 @@ package com.wzkris.common.openfeign.constants;
 public class FeignHeaderConstant {
 
     /**
-     * 内部请求
+     * feign请求
      */
-    public static final String X_INNER_REQUEST = "X-Inner-Request";
+    public static final String X_FEIGN_REQUEST = "X-Feign-Request";
 
     /**
      * 安全上下文

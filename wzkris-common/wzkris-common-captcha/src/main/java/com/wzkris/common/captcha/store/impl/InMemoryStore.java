@@ -1,10 +1,11 @@
 package com.wzkris.common.captcha.store.impl;
 
-import com.wzkris.common.captcha.model.Challenge;
+import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.properties.StoreType;
 import com.wzkris.common.captcha.store.CapStore;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Map;
@@ -16,10 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wuhunyu
  * @date 2025/06/16 16:11
  **/
+@Component
 @RequiredArgsConstructor
 public class InMemoryStore implements CapStore {
 
-    private final Map<String, Challenge> challengeMap = new ConcurrentHashMap<>();
+    private final Map<String, ChallengeData> challengeMap = new ConcurrentHashMap<>();
 
     private final Map<String, Date> tokenMap = new ConcurrentHashMap<>();
 
@@ -29,22 +31,22 @@ public class InMemoryStore implements CapStore {
     }
 
     @Override
-    public boolean putChallenge(@NonNull final String token, @NonNull final Challenge challenge) {
+    public boolean putChallenge(@NonNull final String token, @NonNull final ChallengeData challengeData) {
         this.cleanChallenge(new Date());
 
-        challengeMap.put(token, challenge);
+        challengeMap.put(token, challengeData);
         return true;
     }
 
     @Override
-    public Challenge removeChallenge(@NonNull final String token) {
+    public ChallengeData removeChallenge(@NonNull final String token) {
         this.cleanChallenge(new Date());
 
         return challengeMap.remove(token);
     }
 
     @Override
-    public Challenge getChallenge(@NonNull final String token) {
+    public ChallengeData getChallenge(@NonNull final String token) {
         return challengeMap.get(token);
     }
 

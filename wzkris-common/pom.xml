@@ -18,7 +18,6 @@
     </description>
 
     <modules>
-        <module>wzkris-common-bom</module>
         <module>wzkris-common-captcha</module>
         <module>wzkris-common-core</module>
         <module>wzkris-common-datasource</module>
@@ -26,16 +25,20 @@
         <module>wzkris-common-excel</module>
         <module>wzkris-common-loadbalancer</module>
         <module>wzkris-common-log</module>
+        <module>wzkris-common-notifier</module>
         <module>wzkris-common-openfeign</module>
         <module>wzkris-common-orm</module>
         <module>wzkris-common-oss</module>
         <module>wzkris-common-redis</module>
+        <module>wzkris-common-redis-ratelimiter</module>
         <module>wzkris-common-seata</module>
         <module>wzkris-common-security</module>
         <module>wzkris-common-sentinel</module>
         <module>wzkris-common-statemachine</module>
         <module>wzkris-common-stream</module>
         <module>wzkris-common-swagger</module>
+        <module>wzkris-common-thread</module>
+        <module>wzkris-common-validator</module>
         <module>wzkris-common-web</module>
         <module>wzkris-common-weixin-sdk</module>
     </modules>

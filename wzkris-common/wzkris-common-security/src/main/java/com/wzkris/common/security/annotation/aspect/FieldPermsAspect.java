@@ -19,6 +19,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -34,6 +35,7 @@ import java.util.Map;
 @Slf4j
 @Aspect
 @Order(1)
+@Component
 public class FieldPermsAspect {
 
     @Autowired

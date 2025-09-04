@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-common</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>wzkris-common-redis-ratelimiter</artifactId>
+
+    <description>
+        wzkris-common-redis-ratelimiter 基于redis的限流模块
+    </description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+        
+    </dependencies>
+</project>

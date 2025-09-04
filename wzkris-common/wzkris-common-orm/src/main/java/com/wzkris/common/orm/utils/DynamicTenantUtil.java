@@ -2,7 +2,8 @@ package com.wzkris.common.orm.utils;
 
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
-import com.wzkris.common.security.utils.SystemUserUtil;
+import com.wzkris.common.core.function.ThrowableSupplier;
+import com.wzkris.common.security.utils.LoginUserUtil;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ public final class DynamicTenantUtil {
     public static Long get() {
         try {
             Deque<Long> stack = LOCAL_DYNAMIC_TENANT.get();
-            return stack == null ? SystemUserUtil.getTenantId() : stack.peek();
+            return stack == null ? LoginUserUtil.getTenantId() : stack.peek();
         } catch (Exception e) {
             return null;
         }
@@ -147,14 +148,14 @@ public final class DynamicTenantUtil {
     /**
      * 忽略租户执行(可抛异常)
      */
-    public static <T> T ignoreWithThrowable(ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+    public static <T> T ignoreWithThrowable(ThrowableSupplier<T, Throwable> supplier) throws Throwable {
         return ignoreIfWithThrowable(true, supplier);
     }
 
     /**
      * 条件忽略租户执行(可抛异常)
      */
-    public static <T> T ignoreIfWithThrowable(boolean ignore, ThrowingSupplier<T, Throwable> supplier)
+    public static <T> T ignoreIfWithThrowable(boolean ignore, ThrowableSupplier<T, Throwable> supplier)
             throws Throwable {
         if (supplier == null) return null;
 
@@ -221,14 +222,14 @@ public final class DynamicTenantUtil {
     /**
      * 切换租户执行(可抛异常)
      */
-    public static <T> T switchtWithThrowable(Long tenantId, ThrowingSupplier<T, Throwable> supplier) throws Throwable {
+    public static <T> T switchtWithThrowable(Long tenantId, ThrowableSupplier<T, Throwable> supplier) throws Throwable {
         return switchtIfWithThrowable(true, tenantId, supplier);
     }
 
     /**
      * 条件切换租户执行(可抛异常)
      */
-    public static <T> T switchtIfWithThrowable(boolean swch, Long tenantId, ThrowingSupplier<T, Throwable> supplier)
+    public static <T> T switchtIfWithThrowable(boolean swch, Long tenantId, ThrowableSupplier<T, Throwable> supplier)
             throws Throwable {
         if (supplier == null) return null;
 
@@ -249,16 +250,6 @@ public final class DynamicTenantUtil {
     public static void clear() {
         LOCAL_DYNAMIC_TENANT.remove();
         LOCAL_IGNORE.remove();
-    }
-
-    /**
-     * 可抛出异常的Supplier接口
-     */
-    @FunctionalInterface
-    public interface ThrowingSupplier<T, E extends Throwable> {
-
-        T get() throws E;
-
     }
 
 }

@@ -4,7 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
 import com.wzkris.common.excel.convert.ExcelDictConvert;
 import com.wzkris.common.excel.convert.ExcelListConverter;
-import com.wzkris.user.domain.OAuth2Client;
+import com.wzkris.user.domain.OAuth2ClientDO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import lombok.Data;
@@ -12,7 +12,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@AutoMappers({@AutoMapper(target = OAuth2Client.class)})
+@AutoMappers({@AutoMapper(target = OAuth2ClientDO.class)})
 public class OAuth2ClientExport {
 
     @ExcelProperty("客户端")

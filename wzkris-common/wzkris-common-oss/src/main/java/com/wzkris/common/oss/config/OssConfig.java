@@ -1,11 +1,12 @@
 package com.wzkris.common.oss.config;
 
-import java.util.List;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * 对象配置信息
@@ -44,6 +45,7 @@ public class OssConfig {
          * 存储地址
          */
         private String path;
+
     }
 
     @Data
@@ -63,6 +65,7 @@ public class OssConfig {
          * 密码
          */
         private String secretKey;
+
     }
 
     @Data
@@ -87,5 +90,7 @@ public class OssConfig {
          * tracker ip列表
          */
         private List<String> trackerList;
+
     }
+
 }

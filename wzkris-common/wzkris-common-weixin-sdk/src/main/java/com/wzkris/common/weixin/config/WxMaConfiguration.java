@@ -6,12 +6,13 @@ import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.binarywang.wx.miniapp.config.impl.WxMaRedissonConfigImpl;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.weixin.properties.WxMaProperties;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxRuntimeException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>

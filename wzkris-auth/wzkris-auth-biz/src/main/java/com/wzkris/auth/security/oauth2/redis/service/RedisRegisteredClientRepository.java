@@ -20,7 +20,7 @@ import com.wzkris.auth.security.oauth2.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.oauth2.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.I18nUtil;
-import com.wzkris.user.rmi.RmiOAuth2ClientFeign;
+import com.wzkris.user.rmi.OAuth2ClientFeign;
 import com.wzkris.user.rmi.domain.resp.OAuth2ClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
@@ -46,7 +46,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
 
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 
-    private final RmiOAuth2ClientFeign rmiOAuth2ClientFeign;
+    private final OAuth2ClientFeign oAuth2ClientFeign;
 
     private final TokenProperties tokenProperties;
 
@@ -75,7 +75,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oauth2RegisteredClient);
         }
 
-        OAuth2ClientResp oauth2Client = rmiOAuth2ClientFeign.getByClientId(clientId);
+        OAuth2ClientResp oauth2Client = oAuth2ClientFeign.getByClientId(clientId);
 
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常

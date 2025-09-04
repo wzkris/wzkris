@@ -1,0 +1,31 @@
+package com.wzkris.auth.rmi.fallback;
+
+import com.wzkris.auth.rmi.TokenFeign;
+import com.wzkris.auth.rmi.domain.req.TokenReq;
+import com.wzkris.auth.rmi.domain.resp.TokenResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+public class TokenFeignFallback implements FallbackFactory<TokenFeign> {
+
+    @Override
+    public TokenFeign create(Throwable cause) {
+        return new TokenFeign() {
+            @Override
+            public TokenResponse validateOAuth2(TokenReq tokenReq) {
+                log.error("validateOAuth2 => req: {}", tokenReq, cause);
+                return TokenResponse.fallback(cause.getMessage());
+            }
+
+            @Override
+            public TokenResponse validateUser(TokenReq tokenReq) {
+                log.error("validateUser => req: {}", tokenReq, cause);
+                return TokenResponse.fallback(cause.getMessage());
+            }
+        };
+    }
+
+}

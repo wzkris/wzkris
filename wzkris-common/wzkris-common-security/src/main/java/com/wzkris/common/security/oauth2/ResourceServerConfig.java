@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.auth.rmi.RmiTokenFeign;
+import com.wzkris.auth.rmi.TokenFeign;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import com.wzkris.common.security.config.PermitAllProperties;
@@ -12,6 +12,7 @@ import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.common.security.oauth2.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,7 +20,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -61,7 +61,7 @@ public final class ResourceServerConfig {
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
                         .requestMatchers(request ->
-                                Boolean.parseBoolean(StringUtil.defaultIfBlank(request.getHeader(FeignHeaderConstant.X_INNER_REQUEST), "false")))
+                                Boolean.parseBoolean(StringUtil.defaultIfBlank(request.getHeader(FeignHeaderConstant.X_FEIGN_REQUEST), "false")))
                         .permitAll()
                         .requestMatchers("/actuator/**")
                         .hasAuthority("SCOPE_monitor")
@@ -85,12 +85,13 @@ public final class ResourceServerConfig {
     }
 
     @Bean
-    public SecurityContextRepository securityContextRepository(RmiTokenFeign rmiTokenFeign, JwtDecoder jwtDecoder) {
-        return new RmiSecurityContextRepository(rmiTokenFeign, jwtDecoder);
+    public SecurityContextRepository securityContextRepository(TokenFeign tokenFeign, JwtDecoder jwtDecoder) {
+        return new RmiSecurityContextRepository(tokenFeign, jwtDecoder);
     }
 
     @Bean
     @RefreshScope
+    @ConditionalOnMissingBean(JwtDecoder.class)
     public JwtDecoder decoder() {
         return NimbusJwtDecoder.withJwkSetUri(
                 "http://localhost:9000/oauth2/jwks").build();
@@ -102,7 +103,7 @@ public final class ResourceServerConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoderDelegate passwordEncoder() {
         return new PasswordEncoderDelegate();
     }
 

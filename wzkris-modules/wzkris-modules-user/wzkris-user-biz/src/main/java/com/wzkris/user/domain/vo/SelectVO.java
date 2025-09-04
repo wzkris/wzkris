@@ -1,9 +1,9 @@
 package com.wzkris.user.domain.vo;
 
-import com.wzkris.user.domain.SysRole;
-import com.wzkris.user.domain.SysTenant;
-import com.wzkris.user.domain.SysTenantPackage;
-import com.wzkris.user.domain.SysUser;
+import com.wzkris.user.domain.RoleInfoDO;
+import com.wzkris.user.domain.TenantInfoDO;
+import com.wzkris.user.domain.TenantPackageInfoDO;
+import com.wzkris.user.domain.UserInfoDO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,22 +29,22 @@ public class SelectVO implements Serializable {
     @Schema(description = "节点名称")
     private String label;
 
-    public SelectVO(SysUser user) {
+    public SelectVO(UserInfoDO user) {
         this.id = user.getUserId();
         this.label = user.getUsername();
     }
 
-    public SelectVO(SysRole role) {
+    public SelectVO(RoleInfoDO role) {
         this.id = role.getRoleId();
         this.label = role.getRoleName();
     }
 
-    public SelectVO(SysTenantPackage tenantPackage) {
+    public SelectVO(TenantPackageInfoDO tenantPackage) {
         this.id = tenantPackage.getPackageId();
         this.label = tenantPackage.getPackageName();
     }
 
-    public SelectVO(SysTenant tenant) {
+    public SelectVO(TenantInfoDO tenant) {
         this.id = tenant.getTenantId();
         this.label = tenant.getTenantName();
     }

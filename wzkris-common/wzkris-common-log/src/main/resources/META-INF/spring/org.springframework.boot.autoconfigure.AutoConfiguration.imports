@@ -1,3 +1,0 @@
-com.wzkris.common.log.annotation.aspect.DeprecatedAPIAspect
-com.wzkris.common.log.annotation.aspect.OperateLogAspect
-com.wzkris.common.log.filter.TracingLogFilter
