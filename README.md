@@ -54,6 +54,7 @@ wzkris
 14. 定时任务：xxl-job。
 15. 系统接口：根据业务代码自动生成相关的api接口文档。
 
+
 ## 技术架构
 
 - JDK版本：`17+`
@@ -64,6 +65,8 @@ wzkris
 - 定时任务：`xxl-job`
 - 中间件：`Nacos` `PostgresQL` `Redis`（至少需要这三个组件项目才可以运行）
 - 消息队列： 根据需要自行搭配`spring-cloud-stream`
+## 前端项目地址
+https://gitee.com/wzkris/wzkris-ui-vben
 
 ## 演示图
 
@@ -71,7 +74,8 @@ wzkris
 
 |                                                                                            |                                                                                            |
 |--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
-| ![输入图片说明](https://foruda.gitee.com/images/1744348068350490903/f3deccdb_8354566.png "屏幕截图")           | ![输入图片说明](https://foruda.gitee.com/images/1744348068417169323/b751865b_8354566.png "屏幕截图") |
+| ![输入图片说明](https://foruda.gitee.com/images/1744348068350490903/f3deccdb_8354566.png "屏幕截图")           | ![输入图片说明](https://foruda.gitee.com/images/1756798438238613539/4086da84_8354566.png "屏幕截图") |
+| ![输入图片说明](https://foruda.gitee.com/images/1756798505818840216/68121aea_8354566.png "屏幕截图")         | ![输入图片说明](https://foruda.gitee.com/images/1756798657905378641/f1404d51_8354566.png "屏幕截图")|
 | ![输入图片说明](https://foruda.gitee.com/images/1744348256674700279/bd33def1_8354566.png "屏幕截图") | ![输入图片说明](https://foruda.gitee.com/images/1744348272532367001/deb6c1a9_8354566.png "屏幕截图") |
 | ![输入图片说明](https://foruda.gitee.com/images/1744348353122059293/04cdb889_8354566.png "屏幕截图") | ![输入图片说明](https://foruda.gitee.com/images/1744348368296240184/6a796b0f_8354566.png "屏幕截图") |
 | ![输入图片说明](https://foruda.gitee.com/images/1744348497996669620/f6215b22_8354566.png "屏幕截图") | ![输入图片说明](https://foruda.gitee.com/images/1744348509244436175/2ecfaaa2_8354566.png "屏幕截图") |
