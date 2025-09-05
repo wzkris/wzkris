@@ -1,10 +1,11 @@
 package com.wzkris.user.mapper;
 
-import com.wzkris.user.domain.RoleToDepartmentDO;
+import com.wzkris.user.domain.RoleToDeptDO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,6 +64,10 @@ public interface RoleToDeptMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(List<RoleToDepartmentDO> list);
+    int insert(List<RoleToDeptDO> list);
+
+    default int insert(RoleToDeptDO roleToDeptDO) {
+        return this.insert(Collections.singletonList(roleToDeptDO));
+    }
 
 }

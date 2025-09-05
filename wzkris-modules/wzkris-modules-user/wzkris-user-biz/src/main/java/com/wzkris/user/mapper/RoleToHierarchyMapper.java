@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,7 +41,11 @@ public interface RoleToHierarchyMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(List<RoleToHierarchyDO> list);
+    int insert(List<RoleToHierarchyDO> list);
+
+    default int insert(RoleToHierarchyDO roleToHierarchyDO) {
+        return this.insert(Collections.singletonList(roleToHierarchyDO));
+    }
 
     @Delete("DELETE FROM biz.role_to_hierarchy WHERE role_id = #{roleId}")
     int deleteByRoleId(Long roleId);

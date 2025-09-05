@@ -2,7 +2,7 @@ package com.wzkris.system.utils;
 
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.web.utils.SseUtil;
-import com.wzkris.system.listener.event.PublishMessageEvent;
+import com.wzkris.system.listener.event.NotificationEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,7 +44,7 @@ public class GlobalSseUtil {
     static {
         // 消息发布
         RTopic msgChannel = getTopic(MSG_CHANNEL);
-        msgChannel.addListener(PublishMessageEvent.class, (channel, message) -> {
+        msgChannel.addListener(NotificationEvent.class, (channel, message) -> {
             if (log.isDebugEnabled()) {
                 log.debug("SSE连接: {}, 收到消息{}", message.getIds(), message);
             }
@@ -128,7 +128,7 @@ public class GlobalSseUtil {
                 });
     }
 
-    public static void publish(PublishMessageEvent messageEvent) {
+    public static void publish(NotificationEvent messageEvent) {
         getTopic(MSG_CHANNEL).publish(messageEvent);
     }
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleToDepartmentDO {
+public class RoleToDeptDO {
 
     @Schema(description = "角色ID")
     private Long roleId;

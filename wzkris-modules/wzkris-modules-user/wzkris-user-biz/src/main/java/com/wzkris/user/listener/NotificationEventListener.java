@@ -1,7 +1,7 @@
 package com.wzkris.user.listener;
 
 import com.wzkris.system.rmi.NotificationInfoFeign;
-import com.wzkris.system.rmi.domain.req.SendNoticeReq;
+import com.wzkris.system.rmi.domain.req.NotificationReq;
 import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.listener.event.CreateUserEvent;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +12,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+/**
+ * 通知 事件监听器
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SendNotifyListener {
+public class NotificationEventListener {
 
     private final NotificationInfoFeign notificationInfoFeign;
 
     @Async
     @EventListener
     public void createTenantEvent(CreateTenantEvent event) {
-        SendNoticeReq req = new SendNoticeReq(
+        NotificationReq req = new NotificationReq(
                 Collections.singletonList(event.getToUserId()),
                 "租户创建成功",
                 String.format(
@@ -38,7 +41,7 @@ public class SendNotifyListener {
     @Async
     @EventListener
     public void createUserEvent(CreateUserEvent event) {
-        SendNoticeReq req = new SendNoticeReq(
+        NotificationReq req = new NotificationReq(
                 Collections.singletonList(event.getToUserId()),
                 "系统用户创建成功",
                 String.format("用户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));

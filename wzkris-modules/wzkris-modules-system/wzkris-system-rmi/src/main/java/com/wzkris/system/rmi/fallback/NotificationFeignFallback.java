@@ -1,7 +1,7 @@
 package com.wzkris.system.rmi.fallback;
 
 import com.wzkris.system.rmi.NotificationInfoFeign;
-import com.wzkris.system.rmi.domain.req.SendNoticeReq;
+import com.wzkris.system.rmi.domain.req.NotificationReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -14,8 +14,8 @@ public class NotificationFeignFallback implements FallbackFactory<NotificationIn
     public NotificationInfoFeign create(Throwable cause) {
         return new NotificationInfoFeign() {
             @Override
-            public void send2Users(SendNoticeReq sendNoticeReq) {
-                log.error("send2Users => req: {}", sendNoticeReq, cause);
+            public void send2Users(NotificationReq notificationReq) {
+                log.error("send2Users => req: {}", notificationReq, cause);
             }
         };
     }

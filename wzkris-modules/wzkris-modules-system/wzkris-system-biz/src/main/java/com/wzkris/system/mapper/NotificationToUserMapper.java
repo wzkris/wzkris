@@ -17,7 +17,7 @@ public interface NotificationToUserMapper {
 
     @Insert("""
             <script>
-                INSERT INTO biz.notification_to_user(notice_id, user_id, read_state) VALUES
+                INSERT INTO biz.notification_to_user(notification_id, user_id, read_state) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.notificationId},  #{item.userId},  #{item.readState})
                     </foreach>
@@ -25,8 +25,8 @@ public interface NotificationToUserMapper {
             """)
     int insert(List<NotificationToUserDO> list);
 
-    default int insert(NotificationToUserDO notifySend) {
-        return this.insert(Collections.singletonList(notifySend));
+    default int insert(NotificationToUserDO notification) {
+        return this.insert(Collections.singletonList(notification));
     }
 
 }

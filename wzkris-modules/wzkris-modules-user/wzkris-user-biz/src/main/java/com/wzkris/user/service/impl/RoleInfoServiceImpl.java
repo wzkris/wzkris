@@ -153,7 +153,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
             List<UserToRoleDO> list = userIds.stream()
                     .map(userId -> new UserToRoleDO(userId, roleId))
                     .toList();
-            return userToRoleMapper.insertBatch(list) > 0;
+            return userToRoleMapper.insert(list) > 0;
         }
         return false;
     }
@@ -177,7 +177,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
             List<RoleToMenuDO> list = menuIds.stream()
                     .map(menuId -> new RoleToMenuDO(roleId, menuId))
                     .toList();
-            roleToMenuMapper.insertBatch(list);
+            roleToMenuMapper.insert(list);
         }
     }
 
@@ -189,10 +189,10 @@ public class RoleInfoServiceImpl implements RoleInfoService {
      */
     public void insertRoleDept(Long roleId, List<Long> deptIds) {
         if (CollectionUtils.isNotEmpty(deptIds)) {
-            List<RoleToDepartmentDO> list = deptIds.stream()
-                    .map(deptId -> new RoleToDepartmentDO(roleId, deptId))
+            List<RoleToDeptDO> list = deptIds.stream()
+                    .map(deptId -> new RoleToDeptDO(roleId, deptId))
                     .toList();
-            roleToDeptMapper.insertBatch(list);
+            roleToDeptMapper.insert(list);
         }
     }
 
@@ -207,7 +207,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
             List<RoleToHierarchyDO> list = inheritedIds.stream()
                     .map(inheritedId -> new RoleToHierarchyDO(roleId, inheritedId))
                     .toList();
-            roleToHierarchyMapper.insertBatch(list);
+            roleToHierarchyMapper.insert(list);
         }
     }
 

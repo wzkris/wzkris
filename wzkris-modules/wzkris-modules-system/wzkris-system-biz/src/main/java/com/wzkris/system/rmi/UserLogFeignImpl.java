@@ -21,20 +21,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserLogFeignImpl implements UserLogFeign {
 
-    private final UserOperateLogMapper operLogMapper;
+    private final UserOperateLogMapper userOperateLogMapper;
 
-    private final UserLoginLogMapper loginLogMapper;
+    private final UserLoginLogMapper userLoginLogMapper;
 
     @Override
     public void saveOperlogs(@RequestBody List<OperateLogReq> operateLogReqs) {
         List<UserOperateLogDO> operLogs = BeanUtil.convert(operateLogReqs, UserOperateLogDO.class);
-        operLogMapper.insert(operLogs, 1000);
+        userOperateLogMapper.insert(operLogs, 1000);
     }
 
     @Override
     public void saveLoginlog(@RequestBody LoginLogReq loginLogReq) {
         UserLoginLogDO userLoginLogDO = BeanUtil.convert(loginLogReq, UserLoginLogDO.class);
-        loginLogMapper.insert(userLoginLogDO);
+        userLoginLogMapper.insert(userLoginLogDO);
     }
 
 }

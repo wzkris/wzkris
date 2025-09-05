@@ -2,7 +2,7 @@ package com.wzkris.system.rmi;
 
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
-import com.wzkris.system.rmi.domain.req.SendNoticeReq;
+import com.wzkris.system.rmi.domain.req.NotificationReq;
 import com.wzkris.system.rmi.fallback.NotificationFeignFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +22,7 @@ public interface NotificationInfoFeign extends RmiFeign {
     /**
      * 发送通知
      */
-    @PostMapping("/send-users")
-    void send2Users(@RequestBody SendNoticeReq sendNoticeReq);
+    @PostMapping("/send-to-users")
+    void send2Users(@RequestBody NotificationReq notificationReq);
 
 }

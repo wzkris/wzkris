@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -97,7 +98,7 @@ public interface UserToRoleMapper {
     /**
      * 批量新增用户角色信息
      *
-     * @param userRoles 用户角色列表
+     * @param list 用户角色列表
      * @return 结果
      */
     @Insert("""
@@ -108,7 +109,11 @@ public interface UserToRoleMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(List<UserToRoleDO> userRoles);
+    int insert(List<UserToRoleDO> list);
+
+    default int insert(UserToRoleDO userToRoleDO) {
+        return this.insert(Collections.singletonList(userToRoleDO));
+    }
 
     /**
      * 删除

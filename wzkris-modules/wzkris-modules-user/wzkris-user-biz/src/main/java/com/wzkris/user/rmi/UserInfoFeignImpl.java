@@ -25,17 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserInfoFeignImpl implements UserInfoFeign {
 
-    private final UserInfoMapper userMapper;
+    private final UserInfoMapper userInfoMapper;
 
-    private final TenantInfoMapper tenantMapper;
+    private final TenantInfoMapper tenantInfoMapper;
 
-    private final TenantPackageInfoMapper tenantPackageMapper;
+    private final TenantPackageInfoMapper tenantPackageInfoMapper;
 
     private final PermissionService permissionService;
 
     @Override
     public UserInfoResp getByUsername(String username) {
-        UserInfoDO user = userMapper.selectByUsername(username);
+        UserInfoDO user = userInfoMapper.selectByUsername(username);
         UserInfoResp userResp = BeanUtil.convert(user, UserInfoResp.class);
         this.retrieveAllStatus(userResp);
         return userResp;
@@ -43,7 +43,7 @@ public class UserInfoFeignImpl implements UserInfoFeign {
 
     @Override
     public UserInfoResp getByPhoneNumber(String phoneNumber) {
-        UserInfoDO userInfoDO = userMapper.selectByPhoneNumber(phoneNumber);
+        UserInfoDO userInfoDO = userInfoMapper.selectByPhoneNumber(phoneNumber);
         UserInfoResp userResp = BeanUtil.convert(userInfoDO, UserInfoResp.class);
         this.retrieveAllStatus(userResp);
         return userResp;
@@ -59,10 +59,10 @@ public class UserInfoFeignImpl implements UserInfoFeign {
             userResp.setTenantExpired(CommonConstants.NEVER_EXPIRED_TIME);
             userResp.setPackageStatus(CommonConstants.STATUS_ENABLE);
         } else {
-            TenantInfoDO tenant = tenantMapper.selectById(userResp.getTenantId());
+            TenantInfoDO tenant = tenantInfoMapper.selectById(userResp.getTenantId());
             userResp.setTenantStatus(tenant.getStatus());
             userResp.setTenantExpired(tenant.getExpireTime());
-            TenantPackageInfoDO tenantPackage = tenantPackageMapper.selectById(tenant.getPackageId());
+            TenantPackageInfoDO tenantPackage = tenantPackageInfoMapper.selectById(tenant.getPackageId());
             userResp.setPackageStatus(tenantPackage.getStatus());
         }
     }
@@ -79,7 +79,7 @@ public class UserInfoFeignImpl implements UserInfoFeign {
         userInfoDO.setLoginIp(loginInfoReq.getLoginIp());
         userInfoDO.setLoginDate(loginInfoReq.getLoginDate());
 
-        userMapper.updateById(userInfoDO);
+        userInfoMapper.updateById(userInfoDO);
     }
 
 }

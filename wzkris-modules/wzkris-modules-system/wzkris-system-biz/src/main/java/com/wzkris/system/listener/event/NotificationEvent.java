@@ -13,8 +13,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "发布消息事件")
-public class PublishMessageEvent {
+@Schema(description = "发布通知事件")
+public class NotificationEvent {
 
     @Nullable
     private List<? extends Serializable> ids;

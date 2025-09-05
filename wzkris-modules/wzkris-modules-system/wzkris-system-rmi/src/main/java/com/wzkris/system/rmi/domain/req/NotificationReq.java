@@ -7,10 +7,13 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * 发送通知请求体
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SendNoticeReq implements Serializable {
+public class NotificationReq implements Serializable {
 
     private List<Long> userIds;
 
