@@ -1,9 +1,9 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.feign.domain.LoginUser;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.auth.listener.event.LoginTokenEvent;
-import com.wzkris.auth.rmi.domain.LoginUser;
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.captcha.service.CaptchaService;
@@ -16,10 +16,10 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
-import com.wzkris.user.rmi.UserInfoFeign;
-import com.wzkris.user.rmi.domain.req.QueryPermsReq;
-import com.wzkris.user.rmi.domain.resp.PermissionResp;
-import com.wzkris.user.rmi.domain.resp.UserInfoResp;
+import com.wzkris.user.feign.userinfo.UserInfoFeign;
+import com.wzkris.user.feign.userinfo.req.QueryPermsReq;
+import com.wzkris.user.feign.userinfo.resp.PermissionResp;
+import com.wzkris.user.feign.userinfo.resp.UserInfoResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

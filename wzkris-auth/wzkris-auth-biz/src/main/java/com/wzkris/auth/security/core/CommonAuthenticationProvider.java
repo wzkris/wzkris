@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;

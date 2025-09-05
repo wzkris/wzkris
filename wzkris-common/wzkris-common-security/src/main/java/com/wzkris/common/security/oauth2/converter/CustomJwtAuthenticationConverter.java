@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.converter;
 
-import com.wzkris.auth.rmi.domain.AuthedClient;
+import com.wzkris.auth.feign.domain.AuthedClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

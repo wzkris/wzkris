@@ -1,7 +1,7 @@
 package com.wzkris.user.controller;
 
-import com.wzkris.auth.rmi.CaptchaFeign;
-import com.wzkris.auth.rmi.domain.req.CaptchaCheckReq;
+import com.wzkris.auth.feign.captcha.CaptchaFeign;
+import com.wzkris.auth.feign.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;

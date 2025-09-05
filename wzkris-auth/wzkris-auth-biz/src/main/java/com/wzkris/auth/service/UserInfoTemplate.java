@@ -1,6 +1,6 @@
 package com.wzkris.auth.service;
 
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.common.core.domain.CorePrincipal;
 import jakarta.annotation.Nullable;
 

@@ -1,9 +1,9 @@
 package com.wzkris.common.security.oauth2.repository;
 
-import com.wzkris.auth.rmi.TokenFeign;
-import com.wzkris.auth.rmi.domain.LoginCustomer;
-import com.wzkris.auth.rmi.domain.req.TokenReq;
-import com.wzkris.auth.rmi.domain.resp.TokenResponse;
+import com.wzkris.auth.feign.domain.LoginCustomer;
+import com.wzkris.auth.feign.token.TokenFeign;
+import com.wzkris.auth.feign.token.req.TokenReq;
+import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.CorePrincipal;

@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.utils.LoginCustomerUtil;

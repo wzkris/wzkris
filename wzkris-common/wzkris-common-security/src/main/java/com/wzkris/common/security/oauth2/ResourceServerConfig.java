@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.auth.rmi.TokenFeign;
+import com.wzkris.auth.feign.token.TokenFeign;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import com.wzkris.common.security.config.PermitAllProperties;

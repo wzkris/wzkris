@@ -1,7 +1,7 @@
 package com.wzkris.user.listener;
 
-import com.wzkris.system.rmi.NotificationInfoFeign;
-import com.wzkris.system.rmi.domain.req.NotificationReq;
+import com.wzkris.system.feign.notification.NotificationInfoFeign;
+import com.wzkris.system.feign.notification.req.NotificationReq;
 import com.wzkris.user.listener.event.CreateTenantEvent;
 import com.wzkris.user.listener.event.CreateUserEvent;
 import lombok.RequiredArgsConstructor;

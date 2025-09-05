@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core.wechat;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;

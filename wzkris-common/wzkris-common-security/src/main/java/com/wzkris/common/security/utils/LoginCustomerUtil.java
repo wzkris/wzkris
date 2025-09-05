@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.security.model.DeferredLoginCustomer;
 import lombok.AccessLevel;

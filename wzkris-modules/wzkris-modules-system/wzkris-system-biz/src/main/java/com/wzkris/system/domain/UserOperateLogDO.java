@@ -3,7 +3,7 @@ package com.wzkris.system.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.security.annotation.CheckSystemPerms;
-import com.wzkris.system.rmi.domain.req.OperateLogReq;
+import com.wzkris.system.feign.userlog.req.OperateLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
