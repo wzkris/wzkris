@@ -32,7 +32,6 @@ wzkris
 │       └── wzkris-common-captcha                      // 验证码模块
 │       └── wzkris-common-core                         // 核心模块(工具包)
 │       └── wzkris-common-datasource                   // 多数据源
-│       └── wzkris-common-dubbo                        // Rpc调用
 │       └── wzkris-common-excel                        // excel处理
 │       └── wzkris-common-loadbanlancer                // rpc均衡负载
 │       └── wzkris-common-log                          // 日志记录
