@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/customer-manage")
+@PreAuthorize("@su.isSuperTenant()")
 @RequiredArgsConstructor
 public class CustomerManageController extends BaseController {
 

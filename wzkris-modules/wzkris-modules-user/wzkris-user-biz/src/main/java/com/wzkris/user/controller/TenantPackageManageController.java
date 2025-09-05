@@ -37,10 +37,10 @@ import java.util.List;
  */
 @Tag(name = "租户套餐管理")
 @Validated
-@RequiredArgsConstructor
-@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
 @RestController
 @RequestMapping("/tenant-package-manage")
+@PreAuthorize("@su.isSuperTenant()")
+@RequiredArgsConstructor
 public class TenantPackageManageController extends BaseController {
 
     private final TenantPackageInfoMapper tenantPackageInfoMapper;
@@ -61,8 +61,7 @@ public class TenantPackageManageController extends BaseController {
     private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageManageQueryReq queryReq) {
         return new LambdaQueryWrapper<TenantPackageInfoDO>()
                 .select(TenantPackageInfoDO.class, q -> !q.getColumn().equals("menu_ids"))
-                .like(
-                        StringUtil.isNotEmpty(queryReq.getPackageName()),
+                .like(StringUtil.isNotEmpty(queryReq.getPackageName()),
                         TenantPackageInfoDO::getPackageName,
                         queryReq.getPackageName())
                 .eq(StringUtil.isNotEmpty(queryReq.getStatus()), TenantPackageInfoDO::getStatus, queryReq.getStatus())

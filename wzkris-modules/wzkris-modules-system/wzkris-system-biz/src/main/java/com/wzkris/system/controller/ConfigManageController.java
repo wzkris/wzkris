@@ -30,9 +30,10 @@ import java.util.List;
  * @author wzkris
  */
 @Tag(name = "系统配置管理")
+@Validated
 @RestController
-@PreAuthorize("@su.isSuperTenant()")
 @RequestMapping("/config-manage")
+@PreAuthorize("@su.isSuperTenant()")
 @RequiredArgsConstructor
 public class ConfigManageController extends BaseController {
 
@@ -74,7 +75,7 @@ public class ConfigManageController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckSystemPerms("system-mod:config-mng:add")
-    public Result<Void> add(@Validated @RequestBody ConfigManageReq req) {
+    public Result<Void> add(@RequestBody ConfigManageReq req) {
         if (configInfoService.checkUsedByConfigKey(null, req.getConfigKey())) {
             return err40000("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
@@ -85,7 +86,7 @@ public class ConfigManageController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckSystemPerms("system-mod:config-mng:edit")
-    public Result<Void> edit(@Validated @RequestBody ConfigManageReq req) {
+    public Result<Void> edit(@RequestBody ConfigManageReq req) {
         if (configInfoService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
             return err40000("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }

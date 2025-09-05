@@ -17,6 +17,7 @@ import com.wzkris.system.service.DictionaryInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +27,10 @@ import org.springframework.web.bind.annotation.*;
  * @author wzkris
  */
 @Tag(name = "字典管理")
+@Validated
 @RestController
 @RequestMapping("/dictionary-manage")
+@PreAuthorize("@su.isSuperTenant()")
 @RequiredArgsConstructor
 public class DictionaryManageController extends BaseController {
 
@@ -62,7 +65,7 @@ public class DictionaryManageController extends BaseController {
     @OperateLog(title = "数据字典", subTitle = "添加字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckSystemPerms("system-mod:dictionary-mng:add")
-    public Result<Void> add(@Validated @RequestBody DictionaryManageReq req) {
+    public Result<Void> add(@RequestBody DictionaryManageReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return err40000("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
@@ -73,7 +76,7 @@ public class DictionaryManageController extends BaseController {
     @OperateLog(title = "数据字典", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckSystemPerms("system-mod:dictionary-mng:edit")
-    public Result<Void> edit(@Validated @RequestBody DictionaryManageReq req) {
+    public Result<Void> edit(@RequestBody DictionaryManageReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return err40000("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
