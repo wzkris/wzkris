@@ -6,7 +6,7 @@ import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.annotation.FieldPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.annotation.enums.Rw;
-import com.wzkris.common.security.oauth2.service.PermissionService;
+import com.wzkris.common.security.oauth2.utils.PermissionUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -14,12 +14,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -35,11 +33,7 @@ import java.util.Map;
 @Slf4j
 @Aspect
 @Order(1)
-@Component
 public class FieldPermsAspect {
-
-    @Autowired
-    private PermissionService permissionService;
 
     // 判断是否是基本类型或包装类（如 int, Integer, boolean, Boolean 等）
     public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
@@ -189,13 +183,13 @@ public class FieldPermsAspect {
         }
 
         if (checkPerms.mode() == CheckMode.AND) {
-            if (!permissionService.hasPerms(checkPerms.value())) {
+            if (!PermissionUtil.hasPerms(checkPerms.value())) {
                 FieldUtils.writeField(field, obj, null, true);
             }
         }
 
         if (checkPerms.mode() == CheckMode.OR) {
-            if (!permissionService.hasPermsOr(checkPerms.value())) {
+            if (!PermissionUtil.hasPermsOr(checkPerms.value())) {
                 FieldUtils.writeField(field, obj, null, true);
             }
         }

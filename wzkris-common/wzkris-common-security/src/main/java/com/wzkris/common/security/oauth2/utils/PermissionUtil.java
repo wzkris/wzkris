@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.service;
+package com.wzkris.common.security.oauth2.utils;
 
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -11,9 +11,9 @@ import java.util.Collection;
  *
  * @author wzkris
  */
-public class PermissionService {
+public class PermissionUtil {
 
-    public boolean hasPerms(String... permissions) {
+    public static boolean hasPerms(String... permissions) {
         CorePrincipal principal = SecurityUtil.getPrincipal();
 
         if (principal == null) {
@@ -30,7 +30,7 @@ public class PermissionService {
      * @param permissions 权限码数组
      * @return {boolean}
      */
-    public boolean hasPerms(@Nullable Collection<String> list, @Nullable String... permissions) {
+    public static boolean hasPerms(@Nullable Collection<String> list, @Nullable String... permissions) {
         if (permissions == null) {
             return true;
         }
@@ -40,7 +40,7 @@ public class PermissionService {
         }
 
         for (String permission : permissions) {
-            if (!this.hasElement(list, permission)) {
+            if (!hasElement(list, permission)) {
                 return false;
             }
         }
@@ -48,7 +48,7 @@ public class PermissionService {
         return true;
     }
 
-    public boolean hasPermsOr(String... permissions) {
+    public static boolean hasPermsOr(String... permissions) {
         CorePrincipal principal = SecurityUtil.getPrincipal();
 
         if (principal == null) {
@@ -65,7 +65,7 @@ public class PermissionService {
      * @param permissions 权限码数组
      * @return true 或 false
      */
-    public boolean hasPermsOr(@Nullable Collection<String> list, @Nullable String... permissions) {
+    public static boolean hasPermsOr(@Nullable Collection<String> list, @Nullable String... permissions) {
         if (permissions == null) {
             return true;
         }
@@ -75,7 +75,7 @@ public class PermissionService {
         }
 
         for (String permission : permissions) {
-            if (this.hasElement(list, permission)) {
+            if (hasElement(list, permission)) {
                 return true;
             }
         }
@@ -90,7 +90,7 @@ public class PermissionService {
      * @param element 元素
      * @return /
      */
-    public boolean hasElement(Collection<String> list, String element) {
+    public static boolean hasElement(Collection<String> list, String element) {
         // 先尝试一下简单匹配，如果可以匹配成功则无需继续模糊匹配
         if (list.contains(element)) {
             return true;
@@ -98,7 +98,7 @@ public class PermissionService {
 
         // 开始模糊匹配
         for (String pattern : list) {
-            if (this.vagueMatch(pattern, element)) {
+            if (vagueMatch(pattern, element)) {
                 return true;
             }
         }
@@ -117,7 +117,7 @@ public class PermissionService {
      * @param str     待匹配的字符串
      * @return 是否可以匹配
      */
-    public boolean vagueMatch(String pattern, String str) {
+    public static boolean vagueMatch(String pattern, String str) {
         // 两者均为 null 时，直接返回 true
         if (pattern == null && str == null) {
             return true;
@@ -141,7 +141,7 @@ public class PermissionService {
      * @param str     /
      * @return /
      */
-    private boolean vagueMatchMethod(String pattern, String str) {
+    private static boolean vagueMatchMethod(String pattern, String str) {
         int m = str.length();
         int n = pattern.length();
         boolean[][] dp = new boolean[m + 1][n + 1];

@@ -16,7 +16,6 @@ import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
@@ -28,7 +27,6 @@ import java.time.Duration;
  */
 @Slf4j
 @Aspect
-@Component
 public class GlobalCacheAspect {
 
     private static volatile StandardEvaluationContext context;
@@ -37,6 +35,24 @@ public class GlobalCacheAspect {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    /**
+     * 执行原方法并回写缓存
+     */
+    private static Object proceedAndRewrite(ProceedingJoinPoint point, long ttl, RBucket<Object> bucket) throws Throwable {
+        Object proceedResult = point.proceed();
+        // 回写缓存
+        if (proceedResult != null) {
+            if (ttl > 0) {
+                bucket.set(proceedResult, Duration.ofMillis(ttl));
+            } else {
+                bucket.set(proceedResult);
+            }
+        } else {
+            bucket.set(null, Duration.ofSeconds(15));// null值缓存15s
+        }
+        return proceedResult;
+    }
 
     @Around("@annotation(globalCache)")
     public Object around(ProceedingJoinPoint point, GlobalCache globalCache) throws Throwable {
@@ -66,24 +82,6 @@ public class GlobalCacheAspect {
         }
 
         return o;
-    }
-
-    /**
-     * 执行原方法并回写缓存
-     */
-    private static Object proceedAndRewrite(ProceedingJoinPoint point, long ttl, RBucket<Object> bucket) throws Throwable {
-        Object proceedResult = point.proceed();
-        // 回写缓存
-        if (proceedResult != null) {
-            if (ttl > 0) {
-                bucket.set(proceedResult, Duration.ofMillis(ttl));
-            } else {
-                bucket.set(proceedResult);
-            }
-        } else {
-            bucket.set(null, Duration.ofSeconds(15));// null值缓存15s
-        }
-        return proceedResult;
     }
 
     private StandardEvaluationContext createContext() {

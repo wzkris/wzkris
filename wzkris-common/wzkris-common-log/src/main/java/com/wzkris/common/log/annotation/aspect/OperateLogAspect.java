@@ -26,7 +26,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -43,7 +42,6 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Aspect
-@Component
 public class OperateLogAspect implements ApplicationRunner {
 
     private static final int BATCH_SIZE = 30;

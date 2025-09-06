@@ -13,11 +13,9 @@ import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect
-@Component
 public class GlobalCacheEvictAspect {
 
     private static volatile StandardEvaluationContext context;

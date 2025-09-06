@@ -27,14 +27,6 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class JacksonConfig {
 
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customizer() {
-        return builder -> {
-            // 全局配置序列化返回 JSON 处理
-            builder.modules(setupNumber(), setupTime());
-        };
-    }
-
     private static SimpleModule setupNumber() {
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Long.class, BigNumberSerializer.INSTANCE);
@@ -52,6 +44,14 @@ public class JacksonConfig {
         javaTimeModule.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer(OffsetDateTimeSerializer.INSTANCE,
                 true, formatter, JsonFormat.Shape.STRING));
         return javaTimeModule;
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer customizer() {
+        return builder -> {
+            // 全局配置序列化返回 JSON 处理
+            builder.modules(setupNumber(), setupTime());
+        };
     }
 
 }
