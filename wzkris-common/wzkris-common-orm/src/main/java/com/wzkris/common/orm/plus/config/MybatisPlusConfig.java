@@ -11,9 +11,8 @@ import com.wzkris.common.orm.plus.handler.BaseFieldFillHandler;
 import com.wzkris.common.orm.plus.interceptor.DataPermissionHandler;
 import com.wzkris.common.orm.plus.interceptor.PageInterceptor;
 import com.wzkris.common.orm.plus.interceptor.TenantLineHandlerImpl;
-import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -24,9 +23,7 @@ import java.net.UnknownHostException;
  * @description : 配置类
  * @date : 2024/1/11 14:54
  */
-// 指定要扫描的Mapper类的包的路径
-@MapperScan("com.wzkris.**.mapper")
-@Configuration
+@AutoConfiguration
 public class MybatisPlusConfig {
 
     private final TenantProperties tenantProperties;

@@ -35,7 +35,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 @RequiredArgsConstructor
-public final class ResourceServerConfig {
+public class ResourceServerConfig {
 
     private final PermitAllProperties permitAllProperties;
 

@@ -1,7 +1,7 @@
 package com.wzkris.system.service;
 
 import com.wzkris.system.domain.UserLoginLogDO;
-import com.wzkris.system.domain.req.UserLoginLogQueryReq;
+import com.wzkris.system.domain.req.userlog.UserLoginLogQueryReq;
 
 import java.util.List;
 

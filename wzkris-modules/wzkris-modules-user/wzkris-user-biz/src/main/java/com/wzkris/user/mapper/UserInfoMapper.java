@@ -2,6 +2,7 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.UserInfoDO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @author wzkris
  * @description 该接口全部为单表查询
  */
+@Mapper
 @Repository
 public interface UserInfoMapper extends BaseMapperPlus<UserInfoDO> {
 

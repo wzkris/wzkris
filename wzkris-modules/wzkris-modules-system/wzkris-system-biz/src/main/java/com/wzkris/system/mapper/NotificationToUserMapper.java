@@ -2,6 +2,7 @@ package com.wzkris.system.mapper;
 
 import com.wzkris.system.domain.NotificationToUserDO;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.List;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface NotificationToUserMapper {
 

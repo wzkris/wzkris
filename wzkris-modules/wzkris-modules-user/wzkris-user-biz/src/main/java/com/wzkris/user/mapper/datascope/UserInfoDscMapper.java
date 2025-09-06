@@ -6,7 +6,8 @@ import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.UserInfoDO;
-import com.wzkris.user.domain.vo.UserInfoManageVO;
+import com.wzkris.user.domain.vo.userinfo.UserManageVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,7 @@ import java.util.List;
  * @author wzkris
  */
 @DataScope(value = {@DataColumn(column = "dept_id")})
+@Mapper
 @Repository
 public interface UserInfoDscMapper extends BaseMapperPlus<UserInfoDO> {
 
@@ -32,7 +34,7 @@ public interface UserInfoDscMapper extends BaseMapperPlus<UserInfoDO> {
                     		FROM biz.user_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
                     ${ew.customSqlSegment}
             """)
-    List<UserInfoManageVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<UserInfoDO> queryWrapper);
+    List<UserManageVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<UserInfoDO> queryWrapper);
 
     /**
      * 带权限查询列表

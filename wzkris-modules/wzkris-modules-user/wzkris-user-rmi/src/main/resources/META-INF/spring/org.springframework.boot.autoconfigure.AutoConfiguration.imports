@@ -1,0 +1,3 @@
+com.wzkris.user.feign.customer.fallback.CustomerFeignFallback
+com.wzkris.user.feign.oauth2.fallback.OAuth2ClientFeignFallback
+com.wzkris.user.feign.userinfo.fallback.UserInfoFeignFallback

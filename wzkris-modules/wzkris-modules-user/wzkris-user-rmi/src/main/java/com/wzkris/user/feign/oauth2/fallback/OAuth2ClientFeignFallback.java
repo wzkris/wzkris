@@ -4,10 +4,8 @@ import com.wzkris.user.feign.oauth2.OAuth2ClientFeign;
 import com.wzkris.user.feign.oauth2.resp.OAuth2ClientResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class OAuth2ClientFeignFallback implements FallbackFactory<OAuth2ClientFeign> {
 
     @Override

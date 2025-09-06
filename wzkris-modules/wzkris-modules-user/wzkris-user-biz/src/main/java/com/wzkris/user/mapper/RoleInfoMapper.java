@@ -2,6 +2,7 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.RoleInfoDO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import java.util.List;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
 

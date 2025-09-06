@@ -3,6 +3,7 @@ package com.wzkris.user.mapper;
 import com.wzkris.user.domain.RoleToDeptDO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface RoleToDeptMapper {
 

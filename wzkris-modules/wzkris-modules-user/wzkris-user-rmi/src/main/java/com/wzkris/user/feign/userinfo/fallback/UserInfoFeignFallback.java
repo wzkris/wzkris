@@ -7,10 +7,8 @@ import com.wzkris.user.feign.userinfo.resp.PermissionResp;
 import com.wzkris.user.feign.userinfo.resp.UserInfoResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class UserInfoFeignFallback implements FallbackFactory<UserInfoFeign> {
 
     @Override

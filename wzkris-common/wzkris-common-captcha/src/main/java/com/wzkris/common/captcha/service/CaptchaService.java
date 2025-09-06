@@ -14,7 +14,6 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RScript;
-import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -25,7 +24,6 @@ import java.util.Collections;
  * @author wzkris
  */
 @Slf4j
-@Service
 public class CaptchaService {
 
     private static final String LOCK_PREFIX = "captcha:lock:";
