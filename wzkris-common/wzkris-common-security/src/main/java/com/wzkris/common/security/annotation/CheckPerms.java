@@ -1,6 +1,6 @@
 package com.wzkris.common.security.annotation;
 
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 
 import java.lang.annotation.ElementType;

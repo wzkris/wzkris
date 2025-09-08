@@ -3,6 +3,7 @@ package com.wzkris.user.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.TenantPackageInfoDO;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,7 @@ import java.util.List;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface TenantPackageInfoMapper extends BaseMapperPlus<TenantPackageInfoDO> {
 

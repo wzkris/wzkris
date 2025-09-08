@@ -2,7 +2,8 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.DeptInfoDO;
-import com.wzkris.user.domain.req.DeptManageQueryReq;
+import com.wzkris.user.domain.req.dept.DeptManageQueryReq;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
 

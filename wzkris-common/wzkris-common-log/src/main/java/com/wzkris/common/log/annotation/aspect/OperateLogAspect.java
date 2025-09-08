@@ -13,8 +13,8 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateStatus;
 import com.wzkris.common.security.utils.LoginUserUtil;
-import com.wzkris.system.rmi.UserLogFeign;
-import com.wzkris.system.rmi.domain.req.OperateLogReq;
+import com.wzkris.system.feign.userlog.UserLogFeign;
+import com.wzkris.system.feign.userlog.req.OperateLogReq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -43,7 +42,6 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Aspect
-@Component
 public class OperateLogAspect implements ApplicationRunner {
 
     private static final int BATCH_SIZE = 30;

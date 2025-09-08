@@ -21,7 +21,6 @@
         <module>wzkris-common-captcha</module>
         <module>wzkris-common-core</module>
         <module>wzkris-common-datasource</module>
-        <module>wzkris-common-dubbo</module>
         <module>wzkris-common-excel</module>
         <module>wzkris-common-loadbalancer</module>
         <module>wzkris-common-log</module>

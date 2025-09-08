@@ -6,9 +6,9 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.utils.DataScopeUtil;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.UserInfoDO;
-import com.wzkris.user.domain.req.UserManageQueryReq;
+import com.wzkris.user.domain.req.user.UserManageQueryReq;
 import com.wzkris.user.domain.vo.SelectVO;
-import com.wzkris.user.domain.vo.UserInfoManageVO;
+import com.wzkris.user.domain.vo.userinfo.UserManageVO;
 import com.wzkris.user.mapper.UserToRoleMapper;
 import com.wzkris.user.mapper.datascope.UserInfoDscMapper;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class UserInfoDataScopeManager {
         }
     }
 
-    public List<UserInfoManageVO> listVO(Wrapper<UserInfoDO> queryWrapper) {
+    public List<UserManageVO> listVO(Wrapper<UserInfoDO> queryWrapper) {
         DataScopeUtil.putParameter("d.dept_id", LoginUserUtil.getUser().getDeptScopes());
 
         try {

@@ -1,11 +1,8 @@
 package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
-import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.common.security.utils.LoginCustomerUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -28,11 +25,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
-            if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.SYSTEM_USER.getValue())) {
-                fillInsert(LoginUserUtil.getId(), metaObject);
-            } else if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.CUSTOMER.getValue())) {
-                fillInsert(LoginCustomerUtil.getId(), metaObject);
-            }
+            CorePrincipal principal = SecurityUtil.getPrincipal();
+            fillInsert(principal.getId(), metaObject);
         }
     }
 
@@ -49,11 +43,8 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
-            if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.SYSTEM_USER.getValue())) {
-                fillUpdate(LoginUserUtil.getId(), metaObject);
-            } else if (StringUtil.equals(SecurityUtil.getAuthenticatedType(), AuthenticatedType.CUSTOMER.getValue())) {
-                fillUpdate(LoginCustomerUtil.getId(), metaObject);
-            }
+            CorePrincipal principal = SecurityUtil.getPrincipal();
+            fillUpdate(principal.getId(), metaObject);
         }
     }
 

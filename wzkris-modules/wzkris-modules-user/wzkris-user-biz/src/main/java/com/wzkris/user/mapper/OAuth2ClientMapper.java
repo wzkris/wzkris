@@ -3,8 +3,10 @@ package com.wzkris.user.mapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.OAuth2ClientDO;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+@Mapper
 @Repository
 public interface OAuth2ClientMapper extends BaseMapperPlus<OAuth2ClientDO> {
 

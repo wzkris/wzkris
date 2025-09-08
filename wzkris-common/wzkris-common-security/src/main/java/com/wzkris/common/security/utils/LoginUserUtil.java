@@ -1,7 +1,7 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.auth.rmi.domain.LoginUser;
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.domain.LoginUser;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.user.UserException;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("su") // 加入Spring容器以用于SPEL
+@Component("su")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginUserUtil extends SecurityUtil {
 

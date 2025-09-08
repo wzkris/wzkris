@@ -1,6 +1,6 @@
 package com.wzkris.user.utils;
 
-import com.wzkris.auth.rmi.domain.LoginUser;
+import com.wzkris.auth.feign.domain.LoginUser;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.mapper.TenantInfoMapper;
@@ -19,13 +19,6 @@ import java.util.Collections;
 @SpringBootTest
 public class DynamicTenantUtilTest {
 
-    TenantProperties tenantProperties;
-
-    public void DynamicTenantUtilTest(TenantProperties tenantProperties) {
-        this.tenantProperties = tenantProperties;
-        this.tenantProperties.getIncludes().add("t_sys_test");
-    }
-
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
     static {
@@ -38,8 +31,15 @@ public class DynamicTenantUtilTest {
                         new UsernamePasswordAuthenticationToken(user, ""));
     }
 
+    TenantProperties tenantProperties;
+
     @Autowired
     TenantInfoMapper tenantMapper;
+
+    public void DynamicTenantUtilTest(TenantProperties tenantProperties) {
+        this.tenantProperties = tenantProperties;
+        this.tenantProperties.getIncludes().add("t_sys_test");
+    }
 
     @Test
     public void test() {

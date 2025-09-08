@@ -43,13 +43,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!--rpc服务 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-dubbo</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- excel导入导出-->
             <dependency>
                 <groupId>com.wzkris</groupId>

@@ -2,7 +2,7 @@ package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.system.rmi.domain.req.LoginLogReq;
+import com.wzkris.system.feign.userlog.req.LoginLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

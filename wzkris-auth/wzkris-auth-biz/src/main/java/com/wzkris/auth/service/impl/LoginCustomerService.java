@@ -1,15 +1,15 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.rmi.domain.LoginCustomer;
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.domain.LoginCustomer;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
-import com.wzkris.user.rmi.CustomerFeign;
-import com.wzkris.user.rmi.domain.resp.CustomerResp;
+import com.wzkris.user.feign.customer.CustomerFeign;
+import com.wzkris.user.feign.customer.resp.CustomerResp;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

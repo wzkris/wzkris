@@ -15,7 +15,7 @@ import java.util.Collection;
  * @create : 2024/04/22 12:22
  * @update : 2024/12/20 16:35
  */
-public class SecurityUtil {
+public abstract class SecurityUtil {
 
     /**
      * 获得当前认证信息，可能登录可能未登录

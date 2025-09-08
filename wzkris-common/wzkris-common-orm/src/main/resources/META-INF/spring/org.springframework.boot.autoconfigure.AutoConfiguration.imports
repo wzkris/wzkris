@@ -1,2 +1,1 @@
-com.wzkris.common.orm.plus.config.MybatisPlusConfig
-com.wzkris.common.orm.config.DataScopeConfig
+com.wzkris.common.orm.config.OrmAutoConfiguration

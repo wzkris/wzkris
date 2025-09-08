@@ -6,7 +6,7 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.system.domain.NotificationInfoDO;
 import com.wzkris.system.domain.NotificationToUserDO;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
-import com.wzkris.system.listener.event.PublishMessageEvent;
+import com.wzkris.system.listener.event.NotificationEvent;
 import com.wzkris.system.mapper.NotificationInfoMapper;
 import com.wzkris.system.mapper.NotificationToUserMapper;
 import com.wzkris.system.service.NotificationInfoService;
@@ -28,22 +28,22 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
     private final TransactionTemplate transactionTemplate;
 
     @Override
-    public void saveBatch2Users(List<Long> toUsers, SimpleMessageDTO messageDTO) {
+    public void saveBatchAndNotify(List<Long> toUserIds, SimpleMessageDTO messageDTO) {
         transactionTemplate.executeWithoutResult(status -> {
-            NotificationInfoDO notice = new NotificationInfoDO();
-            notice.setTitle(messageDTO.getTitle());
-            notice.setNotificationType(messageDTO.getType());
-            notice.setContent(messageDTO.getContent());
-            notice.setCreatorId(
+            NotificationInfoDO notificationInfoDO = new NotificationInfoDO();
+            notificationInfoDO.setTitle(messageDTO.getTitle());
+            notificationInfoDO.setNotificationType(messageDTO.getType());
+            notificationInfoDO.setContent(messageDTO.getContent());
+            notificationInfoDO.setCreatorId(
                     LoginUserUtil.isAuthenticated() ? LoginUserUtil.getId() : SecurityConstants.DEFAULT_USER_ID);
-            notice.setCreateAt(new Date());
-            notificationInfoMapper.insert(notice);
-            List<NotificationToUserDO> list = toUsers.stream()
-                    .map(uid -> new NotificationToUserDO(notice.getNotificationId(), uid))
+            notificationInfoDO.setCreateAt(new Date());
+            notificationInfoMapper.insert(notificationInfoDO);
+            List<NotificationToUserDO> list = toUserIds.stream()
+                    .map(uid -> new NotificationToUserDO(notificationInfoDO.getNotificationId(), uid))
                     .toList();
             notificationToUserMapper.insert(list);
         });
-        SpringUtil.getContext().publishEvent(new PublishMessageEvent(toUsers, messageDTO));
+        SpringUtil.getContext().publishEvent(new NotificationEvent(toUserIds, messageDTO));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.security.model.DeferredLoginCustomer;
 import lombok.AccessLevel;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("cu") // 加入Spring容器以用于SPEL
+@Component("cu")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginCustomerUtil extends SecurityUtil {
 

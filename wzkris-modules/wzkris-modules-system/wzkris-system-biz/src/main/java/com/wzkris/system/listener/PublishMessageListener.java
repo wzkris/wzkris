@@ -1,6 +1,6 @@
 package com.wzkris.system.listener;
 
-import com.wzkris.system.listener.event.PublishMessageEvent;
+import com.wzkris.system.listener.event.NotificationEvent;
 import com.wzkris.system.utils.GlobalSseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class PublishMessageListener {
 
     @Async
     @EventListener
-    public void pushEvent(PublishMessageEvent messageEvent) {
+    public void pushEvent(NotificationEvent messageEvent) {
         GlobalSseUtil.publish(messageEvent);
     }
 

@@ -5,7 +5,6 @@ import com.wzkris.common.captcha.properties.StoreType;
 import com.wzkris.common.captcha.store.CapStore;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Map;
@@ -17,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wuhunyu
  * @date 2025/06/16 16:11
  **/
-@Component
 @RequiredArgsConstructor
 public class InMemoryStore implements CapStore {
 

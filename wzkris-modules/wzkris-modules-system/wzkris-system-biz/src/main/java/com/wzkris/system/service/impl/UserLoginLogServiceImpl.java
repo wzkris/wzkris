@@ -3,7 +3,7 @@ package com.wzkris.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.system.domain.UserLoginLogDO;
-import com.wzkris.system.domain.req.UserLoginLogQueryReq;
+import com.wzkris.system.domain.req.userlog.UserLoginLogQueryReq;
 import com.wzkris.system.mapper.UserLoginLogMapper;
 import com.wzkris.system.service.UserLoginLogService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.wzkris.user.service;
 
-import com.wzkris.user.rmi.domain.resp.PermissionResp;
+import com.wzkris.user.feign.userinfo.resp.PermissionResp;
 import jakarta.annotation.Nullable;
 
 /**

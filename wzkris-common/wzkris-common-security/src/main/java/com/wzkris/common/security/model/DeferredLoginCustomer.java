@@ -1,6 +1,6 @@
 package com.wzkris.common.security.model;
 
-import com.wzkris.auth.rmi.domain.LoginCustomer;
+import com.wzkris.auth.feign.domain.LoginCustomer;
 
 import java.util.function.Supplier;
 

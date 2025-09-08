@@ -3,9 +3,11 @@ package com.wzkris.user.mapper;
 import com.wzkris.user.domain.RoleToMenuDO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,6 +15,7 @@ import java.util.List;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface RoleToMenuMapper {
 
@@ -78,7 +81,7 @@ public interface RoleToMenuMapper {
     /**
      * 批量新增角色菜单信息
      *
-     * @param roleMenus 角色菜单列表
+     * @param list 角色菜单列表
      * @return 结果
      */
     @Insert("""
@@ -89,6 +92,10 @@ public interface RoleToMenuMapper {
                     </foreach>
             </script>
             """)
-    int insertBatch(List<RoleToMenuDO> roleMenus);
+    int insert(List<RoleToMenuDO> list);
+
+    default int insert(RoleToMenuDO roleToMenuDO) {
+        return this.insert(Collections.singletonList(roleToMenuDO));
+    }
 
 }

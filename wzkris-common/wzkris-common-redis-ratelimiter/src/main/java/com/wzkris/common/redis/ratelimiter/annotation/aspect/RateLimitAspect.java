@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Before;
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
@@ -21,7 +20,6 @@ import java.time.Duration;
  */
 @Slf4j
 @Aspect
-@Component
 public class RateLimitAspect {
 
     @Autowired

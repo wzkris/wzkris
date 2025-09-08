@@ -2,6 +2,7 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.TenantWalletRecordDO;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface TenantWalletRecordMapper extends BaseMapperPlus<TenantWalletRecordDO> {
 

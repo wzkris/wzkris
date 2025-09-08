@@ -2,6 +2,7 @@ package com.wzkris.user.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.user.domain.TenantWalletInfoDO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
  *
  * @author wzkris
  */
+@Mapper
 @Repository
 public interface TenantWalletInfoMapper extends BaseMapperPlus<TenantWalletInfoDO> {
 

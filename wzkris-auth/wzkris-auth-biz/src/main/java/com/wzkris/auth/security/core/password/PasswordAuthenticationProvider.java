@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.rmi.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthenticatedType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.TokenService;

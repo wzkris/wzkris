@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.auth.rmi.TokenFeign;
+import com.wzkris.auth.feign.token.TokenFeign;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import com.wzkris.common.security.config.PermitAllProperties;
@@ -9,7 +9,6 @@ import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.repository.RmiSecurityContextRepository;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
-import com.wzkris.common.security.oauth2.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,7 +34,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 @RequiredArgsConstructor
-public final class ResourceServerConfig {
+public class ResourceServerConfig {
 
     private final PermitAllProperties permitAllProperties;
 
@@ -95,11 +94,6 @@ public final class ResourceServerConfig {
     public JwtDecoder decoder() {
         return NimbusJwtDecoder.withJwkSetUri(
                 "http://localhost:9000/oauth2/jwks").build();
-    }
-
-    @Bean("ps")
-    public PermissionService permissionService() {
-        return new PermissionService();
     }
 
     @Bean

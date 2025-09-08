@@ -81,7 +81,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             List<UserToRoleDO> list = roleIds.stream()
                     .map(roleId -> new UserToRoleDO(userId, roleId))
                     .toList();
-            return userToRoleMapper.insertBatch(list) > 0;
+            return userToRoleMapper.insert(list) > 0;
         }
         return false;
     }
