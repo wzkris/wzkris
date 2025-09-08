@@ -5,7 +5,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.FieldPerms;
 import com.wzkris.common.security.annotation.enums.Rw;
 import com.wzkris.system.domain.UserOperateLogDO;
@@ -36,7 +36,7 @@ public class UserOperateLogManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckSystemPerms("system-mod:operatelog-mng:list")
+    @CheckUserPerms("system-mod:operatelog-mng:list")
     @FieldPerms(rw = Rw.READ)
     public Result<Page<UserOperateLogDO>> list(UserOperateLogQueryReq queryReq) {
         startPage();
@@ -47,7 +47,7 @@ public class UserOperateLogManageController extends BaseController {
     @Operation(summary = "删除日志")
     @OperateLog(title = "操作日志", subTitle = "删除日志", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("system-mod:operatelog-mng:remove")
+    @CheckUserPerms("system-mod:operatelog-mng:remove")
     public Result<?> remove(@RequestBody List<Long> operIds) {
         return toRes(userOperateLogMapper.deleteByIds(operIds));
     }

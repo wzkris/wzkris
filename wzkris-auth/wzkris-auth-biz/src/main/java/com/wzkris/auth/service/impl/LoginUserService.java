@@ -2,11 +2,11 @@ package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCode;
 import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CaptchaService;
+import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizBaseCode;
@@ -37,7 +37,7 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class LoginUserService extends UserInfoTemplate {
 
-    private final CaptchaService captchaService;
+    private final CapService capService;
 
     private final UserInfoFeign userInfoFeign;
 
@@ -49,7 +49,7 @@ public class LoginUserService extends UserInfoTemplate {
         UserInfoResp userResp = userInfoFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            captchaService.freezeAccount(phoneNumber, 60);
+            capService.freezeAccount(phoneNumber, 60);
             return null;
         }
 
@@ -67,7 +67,7 @@ public class LoginUserService extends UserInfoTemplate {
         UserInfoResp userResp = userInfoFeign.getByUsername(username);
 
         if (userResp == null) {
-            captchaService.freezeAccount(username, 60);
+            capService.freezeAccount(username, 60);
             return null;
         }
 
@@ -85,8 +85,8 @@ public class LoginUserService extends UserInfoTemplate {
     }
 
     @Override
-    public boolean checkAuthenticatedType(AuthenticatedType authenticatedType) {
-        return AuthenticatedType.SYSTEM_USER.equals(authenticatedType);
+    public boolean checkAuthType(AuthType authType) {
+        return AuthType.USER.equals(authType);
     }
 
     /**

@@ -8,7 +8,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.domain.ConfigInfoDO;
 import com.wzkris.system.domain.req.config.ConfigManageQueryReq;
@@ -33,7 +33,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/config-manage")
-@PreAuthorize("@su.isSuperTenant()")
+@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class ConfigManageController extends BaseController {
 
@@ -43,7 +43,7 @@ public class ConfigManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckSystemPerms("system-mod:config-mng:list")
+    @CheckUserPerms("system-mod:config-mng:list")
     public Result<Page<ConfigInfoDO>> list(ConfigManageQueryReq queryReq) {
         startPage();
         List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -66,7 +66,7 @@ public class ConfigManageController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{configId}")
-    @CheckSystemPerms("system-mod:config-mng:query")
+    @CheckUserPerms("system-mod:config-mng:query")
     public Result<ConfigInfoDO> getInfo(@PathVariable Long configId) {
         return ok(configInfoMapper.selectById(configId));
     }
@@ -74,7 +74,7 @@ public class ConfigManageController extends BaseController {
     @Operation(summary = "添加参数")
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("system-mod:config-mng:add")
+    @CheckUserPerms("system-mod:config-mng:add")
     public Result<Void> add(@RequestBody ConfigManageReq req) {
         if (configInfoService.checkUsedByConfigKey(null, req.getConfigKey())) {
             return err40000("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
@@ -85,7 +85,7 @@ public class ConfigManageController extends BaseController {
     @Operation(summary = "修改参数")
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("system-mod:config-mng:edit")
+    @CheckUserPerms("system-mod:config-mng:edit")
     public Result<Void> edit(@RequestBody ConfigManageReq req) {
         if (configInfoService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
             return err40000("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
@@ -96,7 +96,7 @@ public class ConfigManageController extends BaseController {
     @Operation(summary = "删除参数")
     @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("system-mod:config-mng:remove")
+    @CheckUserPerms("system-mod:config-mng:remove")
     public Result<Void> remove(@RequestBody Long configId) {
         ConfigInfoDO config = configInfoMapper.selectById(configId);
         if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
@@ -107,7 +107,7 @@ public class ConfigManageController extends BaseController {
 
     @Operation(summary = "刷新参数缓存")
     @PostMapping("/refresh-cache")
-    @CheckSystemPerms("system-mod:config-mng:remove")
+    @CheckUserPerms("system-mod:config-mng:remove")
     public Result<Void> refreshCache() {
         configInfoService.loadingConfigCache();
         return ok();

@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.constant.MenuConstants;
@@ -34,7 +34,7 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/menu-manage")
-@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@lu.isSuperTenant()") // 只允许超级租户访问
 @RequiredArgsConstructor
 public class MenuManageController extends BaseController {
 
@@ -44,7 +44,7 @@ public class MenuManageController extends BaseController {
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:menu-mng:list")
+    @CheckUserPerms("user-mod:menu-mng:list")
     public Result<List<MenuInfoDO>> list(MenuManageQueryReq queryReq) {
         List<MenuInfoDO> menus = menuInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return ok(menus);
@@ -64,7 +64,7 @@ public class MenuManageController extends BaseController {
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @CheckSystemPerms("user-mod:menu-mng:query")
+    @CheckUserPerms("user-mod:menu-mng:query")
     public Result<MenuInfoDO> getInfo(@PathVariable Long menuId) {
         return ok(menuInfoMapper.selectById(menuId));
     }
@@ -72,7 +72,7 @@ public class MenuManageController extends BaseController {
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("user-mod:menu-mng:add")
+    @CheckUserPerms("user-mod:menu-mng:add")
     public Result<Void> add(@Validated @RequestBody MenuManageReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
                 && !StringUtil.ishttp(req.getPath())) {
@@ -84,7 +84,7 @@ public class MenuManageController extends BaseController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("user-mod:menu-mng:edit")
+    @CheckUserPerms("user-mod:menu-mng:edit")
     public Result<Void> edit(@Validated @RequestBody MenuManageReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
                 && !StringUtil.ishttp(req.getPath())) {
@@ -98,7 +98,7 @@ public class MenuManageController extends BaseController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("user-mod:menu-mng:remove")
+    @CheckUserPerms("user-mod:menu-mng:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
         if (menuInfoService.existSubMenu(menuId)) {
             return err40000("存在子菜单,不允许删除");

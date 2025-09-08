@@ -24,7 +24,7 @@ import java.util.Collections;
  * @author wzkris
  */
 @Slf4j
-public class CaptchaService {
+public class CapService {
 
     private static final String LOCK_PREFIX = "captcha:lock:";
 
@@ -34,7 +34,7 @@ public class CaptchaService {
 
     private final CapProperties capProperties;
 
-    public CaptchaService(CapHandler capHandler, CapProperties capProperties) {
+    public CapService(CapHandler capHandler, CapProperties capProperties) {
         this.capHandler = capHandler;
         this.capProperties = capProperties;
     }

@@ -1,7 +1,7 @@
 package com.wzkris.auth.feign.captcha;
 
 import com.wzkris.auth.feign.captcha.req.CaptchaCheckReq;
-import com.wzkris.common.captcha.service.CaptchaService;
+import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CaptchaFeignImpl implements CaptchaFeign {
 
-    private final CaptchaService captchaService;
+    private final CapService capService;
 
     @Override
     public boolean validateCaptcha(CaptchaCheckReq captchaCheckReq) {
         try {
-            captchaService.validateCaptcha(captchaCheckReq.getKey(), captchaCheckReq.getCode());
+            capService.validateCaptcha(captchaCheckReq.getKey(), captchaCheckReq.getCode());
             return true;
         } catch (CaptchaException ignored) {
         }

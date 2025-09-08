@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.exception.user.UserException;
 import com.wzkris.common.security.model.DeferredLoginCustomer;
 import lombok.AccessLevel;
@@ -24,7 +24,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthenticatedType().equals(AuthenticatedType.CUSTOMER.getValue());
+        return isAuthenticated() && getAuthenticatedType().equals(AuthType.CUSTOMER.getValue());
     }
 
     /**

@@ -1,12 +1,12 @@
 package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CaptchaService;
+import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizCaptchaCode;
 import com.wzkris.common.core.exception.BaseException;
@@ -28,19 +28,19 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     private final UserInfoTemplate userInfoTemplate;
 
-    private final CaptchaService captchaService;
+    private final CapService capService;
 
     public PasswordAuthenticationProvider(TokenProperties tokenProperties,
                                           TokenService tokenService,
                                           JwtEncoder jwtEncoder,
                                           List<UserInfoTemplate> userInfoTemplates,
-                                          CaptchaService captchaService) {
+                                          CapService capService) {
         super(tokenProperties, tokenService, jwtEncoder);
         this.userInfoTemplate = userInfoTemplates.stream()
-                .filter(t -> t.checkAuthenticatedType(AuthenticatedType.SYSTEM_USER))
+                .filter(t -> t.checkAuthType(AuthType.USER))
                 .findFirst()
                 .get();
-        this.captchaService = captchaService;
+        this.capService = capService;
     }
 
     @Override
@@ -49,12 +49,12 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         try {
             // 校验是否被冻结
-            captchaService.validateAccount(authenticationToken.getUsername());
+            capService.validateAccount(authenticationToken.getUsername());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
         }
 
-        boolean valid = captchaService.validateChallenge(authenticationToken.getCaptchaId());
+        boolean valid = capService.validateChallenge(authenticationToken.getCaptchaId());
         if (!valid) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCode.CAPTCHA_ERROR.value(), "invalidParameter.captcha.error");
         }

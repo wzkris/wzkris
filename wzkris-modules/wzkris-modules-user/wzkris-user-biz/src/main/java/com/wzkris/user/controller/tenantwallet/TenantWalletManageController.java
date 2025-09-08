@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.user.domain.TenantWalletRecordDO;
 import com.wzkris.user.domain.req.tenantwallet.TenantWalletRecordQueryReq;
 import com.wzkris.user.mapper.TenantWalletRecordMapper;
@@ -32,7 +32,7 @@ import java.util.List;
 @RestController
 @IgnoreTenant // 忽略租户隔离
 @RequestMapping("/tenant-wallet-manage")
-@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@lu.isSuperTenant()") // 只允许超级租户访问
 @RequiredArgsConstructor
 public class TenantWalletManageController extends BaseController {
 
@@ -40,7 +40,7 @@ public class TenantWalletManageController extends BaseController {
 
     @Operation(summary = "钱包记录列表")
     @GetMapping("/record")
-    @CheckSystemPerms("user-mod:tenant-wallet-mng:list")
+    @CheckUserPerms("user-mod:tenant-wallet-mng:list")
     public Result<Page<TenantWalletRecordDO>> listWalletPage(TenantWalletRecordQueryReq queryReq) {
         startPage();
         List<TenantWalletRecordDO> recordList =

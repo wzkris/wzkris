@@ -1,7 +1,7 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.auth.feign.domain.AuthedClient;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.exception.user.UserException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class AuthedClientUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthenticatedType().equals(AuthenticatedType.CLIENT.getValue());
+        return isAuthenticated() && getAuthenticatedType().equals(AuthType.CLIENT.getValue());
     }
 
     /**

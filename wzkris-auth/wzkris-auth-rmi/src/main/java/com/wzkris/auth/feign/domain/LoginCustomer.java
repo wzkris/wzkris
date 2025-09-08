@@ -1,6 +1,6 @@
 package com.wzkris.auth.feign.domain;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class LoginCustomer extends CorePrincipal {
     }
 
     public LoginCustomer(Long customerId, Set<String> permissions) {
-        super(customerId, AuthenticatedType.CUSTOMER.getValue(), permissions);
+        super(customerId, AuthType.CUSTOMER.getValue(), permissions);
     }
 
 }

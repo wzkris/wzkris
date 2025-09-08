@@ -1,6 +1,6 @@
 package com.wzkris.auth.feign.domain;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +36,7 @@ public class LoginUser extends CorePrincipal {
     }
 
     public LoginUser(Long userId, Set<String> permissions) {
-        super(userId, AuthenticatedType.SYSTEM_USER.getValue(), permissions);
+        super(userId, AuthType.USER.getValue(), permissions);
     }
 
 }

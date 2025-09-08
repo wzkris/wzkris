@@ -8,7 +8,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.OAuth2ClientDO;
 import com.wzkris.user.domain.export.oauth2.OAuth2ClientExport;
@@ -38,7 +38,7 @@ import java.util.List;
 @Tag(name = "OAuth2客户端管理")
 @RestController
 @RequestMapping("/oauth2client-manage")
-@PreAuthorize("@su.isSuperTenant()")
+@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class OAuth2ClientManageController extends BaseController {
 
@@ -50,7 +50,7 @@ public class OAuth2ClientManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:oauth2client-mng:list")
+    @CheckUserPerms("user-mod:oauth2client-mng:list")
     public Result<Page<OAuth2ClientDO>> listPage(OAuth2ClientManageQueryReq req) {
         startPage();
         List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
@@ -65,7 +65,7 @@ public class OAuth2ClientManageController extends BaseController {
 
     @Operation(summary = "根据id查详情")
     @GetMapping("/{id}")
-    @CheckSystemPerms("user-mod:oauth2client-mng:query")
+    @CheckUserPerms("user-mod:oauth2client-mng:query")
     public Result<OAuth2ClientDO> query(@PathVariable Long id) {
         return ok(oauth2ClientMapper.selectById(id));
     }
@@ -73,7 +73,7 @@ public class OAuth2ClientManageController extends BaseController {
     @Operation(summary = "根据id修改客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("user-mod:oauth2client-mng:edit")
+    @CheckUserPerms("user-mod:oauth2client-mng:edit")
     public Result<Void> edit(@RequestBody OAuth2ClientManageReq clientReq) {
         return toRes(oauth2ClientMapper.updateById(BeanUtil.convert(clientReq, OAuth2ClientDO.class)));
     }
@@ -81,7 +81,7 @@ public class OAuth2ClientManageController extends BaseController {
     @Operation(summary = "修改密钥")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改密钥", operateType = OperateType.UPDATE)
     @PostMapping("/edit-secret")
-    @CheckSystemPerms("user-mod:oauth2client-mng:edit-secret")
+    @CheckUserPerms("user-mod:oauth2client-mng:edit-secret")
     public Result<Void> editSecret(@RequestBody @Valid EditClientSecretReq req) {
         OAuth2ClientDO update = new OAuth2ClientDO();
         update.setId(req.getId());
@@ -92,7 +92,7 @@ public class OAuth2ClientManageController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckSystemPerms("user-mod:oauth2client-mng:edit")
+    @CheckUserPerms("user-mod:oauth2client-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         OAuth2ClientDO update = new OAuth2ClientDO();
@@ -104,7 +104,7 @@ public class OAuth2ClientManageController extends BaseController {
     @Operation(summary = "添加客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("user-mod:oauth2client-mng:add")
+    @CheckUserPerms("user-mod:oauth2client-mng:add")
     public Result<String> add(@RequestBody @Valid OAuth2ClientManageReq clientReq) {
         OAuth2ClientDO client = BeanUtil.convert(clientReq, OAuth2ClientDO.class);
 
@@ -117,7 +117,7 @@ public class OAuth2ClientManageController extends BaseController {
     @Operation(summary = "删除客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "删除客户端", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("user-mod:oauth2client-mng:remove")
+    @CheckUserPerms("user-mod:oauth2client-mng:remove")
     public Result<Void> remove(@RequestBody Long id) {
         return toRes(oauth2ClientMapper.deleteById(id));
     }
@@ -125,7 +125,7 @@ public class OAuth2ClientManageController extends BaseController {
     @Operation(summary = "导出")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "导出客户端数据", operateType = OperateType.EXPORT)
     @GetMapping("/export")
-    @CheckSystemPerms("user-mod:oauth2client-mng:export")
+    @CheckUserPerms("user-mod:oauth2client-mng:export")
     public void export(HttpServletResponse response, OAuth2ClientManageQueryReq queryReq) {
         List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(queryReq));
         List<OAuth2ClientExport> convert = BeanUtil.convert(list, OAuth2ClientExport.class);

@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
@@ -70,15 +70,15 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
         String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
         String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.USER_TYPE));
-        AuthenticatedType authenticatedType = AuthenticatedType.fromValue(userType);
-        if (authenticatedType == null) {
+        AuthType authType = AuthType.fromValue(userType);
+        if (authType == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCode.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.USER_TYPE);
         }
-        return new SmsAuthenticationToken(authenticatedType, phoneNumber, smsCode);
+        return new SmsAuthenticationToken(authType, phoneNumber, smsCode);
     }
 
 }

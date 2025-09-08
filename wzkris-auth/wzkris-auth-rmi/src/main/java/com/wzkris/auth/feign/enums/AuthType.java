@@ -9,9 +9,9 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AuthenticatedType {
+public enum AuthType {
 
-    SYSTEM_USER("system_user"),
+    USER("user"),
 
     CUSTOMER("customer"),
 
@@ -20,10 +20,10 @@ public enum AuthenticatedType {
     private final String value;
 
     @Nullable
-    public static AuthenticatedType fromValue(String value) {
-        for (AuthenticatedType authenticatedType : values()) {
-            if (authenticatedType.value.equals(value)) {
-                return authenticatedType;
+    public static AuthType fromValue(String value) {
+        for (AuthType authType : values()) {
+            if (authType.value.equals(value)) {
+                return authType;
             }
         }
         return null;

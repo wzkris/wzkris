@@ -6,7 +6,7 @@ import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CaptchaService;
+import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.exception.CustomErrorCodes;
@@ -29,17 +29,17 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
     private final List<UserInfoTemplate> userInfoTemplates;
 
-    private final CaptchaService captchaService;
+    private final CapService capService;
 
     public SmsAuthenticationProvider(
             TokenProperties tokenProperties,
             TokenService tokenService,
             JwtEncoder jwtEncoder,
             List<UserInfoTemplate> userInfoTemplates,
-            CaptchaService captchaService) {
+            CapService capService) {
         super(tokenProperties, tokenService, jwtEncoder);
         this.userInfoTemplates = userInfoTemplates;
-        this.captchaService = captchaService;
+        this.capService = capService;
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
-                .filter(t -> t.checkAuthenticatedType(authenticationToken.getAuthenticatedType()))
+                .filter(t -> t.checkAuthType(authenticationToken.getAuthType()))
                 .findFirst();
 
         if (templateOptional.isEmpty()) {
@@ -60,9 +60,9 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         try {
             // 校验是否被冻结
-            captchaService.validateAccount(authenticationToken.getPhoneNumber());
+            capService.validateAccount(authenticationToken.getPhoneNumber());
             // 校验验证码
-            captchaService.validateCaptcha(
+            capService.validateCaptcha(
                     authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
@@ -75,7 +75,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        return new SmsAuthenticationToken(authenticationToken.getAuthenticatedType(), authenticationToken.getPhoneNumber(), principal);
+        return new SmsAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getPhoneNumber(), principal);
     }
 
     @Override

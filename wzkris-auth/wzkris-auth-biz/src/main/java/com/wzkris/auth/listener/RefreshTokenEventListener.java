@@ -1,6 +1,6 @@
 package com.wzkris.auth.listener;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.domain.CorePrincipal;
@@ -30,9 +30,9 @@ public class RefreshTokenEventListener {
         CorePrincipal principal = event.getPrincipal();
         log.info("'{}' 发生刷新TOKEN事件", principal);
 
-        if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
+        if (StringUtil.equals(principal.getType(), AuthType.USER.getValue())) {
 
-        } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CUSTOMER.getValue())) {
+        } else if (StringUtil.equals(principal.getType(), AuthType.CUSTOMER.getValue())) {
             // empty
         }
     }

@@ -2,7 +2,7 @@ package com.wzkris.common.captcha.config;
 
 import com.wzkris.common.captcha.handler.CapHandler;
 import com.wzkris.common.captcha.properties.CapProperties;
-import com.wzkris.common.captcha.service.CaptchaService;
+import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.captcha.store.CapStore;
 import com.wzkris.common.captcha.store.impl.InMemoryStore;
 import com.wzkris.common.captcha.store.impl.RedisStore;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 /**
  * 自动配置类
  */
-@Import({CapProperties.class, CaptchaService.class, CapHandler.class})
+@Import({CapProperties.class, CapService.class, CapHandler.class})
 @AutoConfiguration
 public class CaptchaAutoConfiguration {
 

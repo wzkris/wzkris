@@ -3,7 +3,7 @@ package com.wzkris.auth.listener;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.feign.domain.LoginCustomer;
 import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -49,9 +49,9 @@ public class LoginEventListener {
         final CorePrincipal principal = event.getPrincipal();
         log.info("'{}' 发生登录事件", principal);
 
-        if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
+        if (StringUtil.equals(principal.getType(), AuthType.USER.getValue())) {
             this.handleLoginUser(event, (LoginUser) principal);
-        } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CUSTOMER.getValue())) {
+        } else if (StringUtil.equals(principal.getType(), AuthType.CUSTOMER.getValue())) {
             this.handleLoginCustomer(event, (LoginCustomer) principal);
         }
     }

@@ -8,6 +8,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.redis.annotation.GlobalCache;
+import com.wzkris.common.redis.annotation.GlobalCacheEvict;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.UserInfoDO;
 import com.wzkris.user.domain.req.EditPhoneReq;
@@ -22,7 +23,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "用户信息")
 @RestController
 @RequestMapping("/user-info")
-@IgnoreTenant(value = false, forceTenantId = "@su.getTenantId()") // 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@lu.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class UserInfoController extends BaseController {
 
@@ -55,34 +55,34 @@ public class UserInfoController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping
-    @GlobalCache(keyPrefix = info_prefix, key = "@su.getId()", ttl = 600_000, sync = true) // TODO 这里缓存的需要在退出时移除
+    @GlobalCache(keyPrefix = info_prefix, key = "@lu.getId()", ttl = 600_000, sync = true) // TODO 这里缓存的需要在退出时移除
     public Result<UserInfoVO> userinfo() {
         UserInfoDO user = userInfoMapper.selectById(LoginUserUtil.getId());
 
         if (user == null) {// 降级会走到这
             user = new UserInfoDO();
         }
-        UserInfoVO profileVO = new UserInfoVO();
-        profileVO.setAdmin(LoginUserUtil.isAdmin());
-        profileVO.setSuperTenant(LoginUserUtil.isSuperTenant());
-        profileVO.setUsername(LoginUserUtil.getUsername());
-        profileVO.setAuthorities(LoginUserUtil.getAuthorities());
-        profileVO.setAvatar(user.getAvatar());
-        profileVO.setNickname(user.getNickname());
-        profileVO.setEmail(user.getEmail());
-        profileVO.setPhoneNumber(user.getPhoneNumber());
-        profileVO.setGender(user.getGender());
-        profileVO.setLoginDate(user.getLoginDate());
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setAdmin(LoginUserUtil.isAdmin());
+        userInfoVO.setSuperTenant(LoginUserUtil.isSuperTenant());
+        userInfoVO.setUsername(LoginUserUtil.getUsername());
+        userInfoVO.setAuthorities(LoginUserUtil.getAuthorities());
+        userInfoVO.setAvatar(user.getAvatar());
+        userInfoVO.setNickname(user.getNickname());
+        userInfoVO.setEmail(user.getEmail());
+        userInfoVO.setPhoneNumber(user.getPhoneNumber());
+        userInfoVO.setGender(user.getGender());
+        userInfoVO.setLoginDate(user.getLoginDate());
 
-        profileVO.setDeptName(deptInfoMapper.selectDeptNameById(user.getDeptId()));
-        profileVO.setRoleGroup(roleInfoService.getRoleGroup());
-        return ok(profileVO);
+        userInfoVO.setDeptName(deptInfoMapper.selectDeptNameById(user.getDeptId()));
+        userInfoVO.setRoleGroup(roleInfoService.getRoleGroup());
+        return ok(userInfoVO);
     }
 
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
     @PostMapping
-    @CacheEvict(cacheNames = info_prefix, key = "@su.id()")
+    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@lu.getId()")
     public Result<Void> editInfo(@RequestBody UserInfoReq profileReq) {
         UserInfoDO user = new UserInfoDO(LoginUserUtil.getId());
         user.setNickname(profileReq.getNickname());
@@ -93,7 +93,7 @@ public class UserInfoController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
     @PostMapping("/edit-phonenumber")
-    @CacheEvict(cacheNames = info_prefix, key = "@su.id()")
+    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@lu.getId()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = LoginUserUtil.getId();
 
@@ -135,7 +135,7 @@ public class UserInfoController extends BaseController {
     @Operation(summary = "更新头像")
     @OperateLog(title = "个人信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
     @PostMapping("/edit-avatar")
-    @CacheEvict(cacheNames = info_prefix, key = "@su.id()")
+    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@lu.getId()")
     public Result<Void> editAvatar(@RequestBody String url) {
         UserInfoDO userInfoDO = new UserInfoDO(LoginUserUtil.getId());
         userInfoDO.setAvatar(url);

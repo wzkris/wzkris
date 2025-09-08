@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.filter;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
@@ -40,7 +40,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
         if (StringUtil.isNotBlank(userToken)) {
             Serializable id = tokenService.logoutByAccessToken(userToken);
             if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthenticatedType.SYSTEM_USER.getValue()));
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.USER.getValue()));
             }
         }
 
@@ -48,7 +48,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
         if (StringUtil.isNotBlank(customerToken)) {
             Serializable id = tokenService.logoutByAccessToken(customerToken);
             if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthenticatedType.CUSTOMER.getValue()));
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.CUSTOMER.getValue()));
             }
         }
     }
