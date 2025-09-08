@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * @description : restTemplate配置类
  * @date : 2022/12/1 10:02
  */
-@EnableFeignClients(basePackages = "com.wzkris.**")
+@EnableFeignClients(basePackages = "com.wzkris.*.feign")
 public class OpenFeignConfig implements ApplicationContextAware, BeanPostProcessor {
 
     private final FeignClientProperties properties;
@@ -38,15 +38,7 @@ public class OpenFeignConfig implements ApplicationContextAware, BeanPostProcess
 
     @Bean
     public okhttp3.OkHttpClient okHttpClient() {
-        return new OkHttpClient.Builder()
-                .protocols(Arrays.asList(Protocol.HTTP_2, Protocol.HTTP_1_1))
-                // 连接池配置
-                .connectionPool(new ConnectionPool(
-                                properties.getConnectionPool().getMaxIdleConnections(),
-                                properties.getConnectionPool().getKeepAliveDuration(),
-                                TimeUnit.valueOf(properties.getConnectionPool().getTimeUnit())
-                        )
-                )
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 // HTTP2连接心跳
                 .pingInterval(properties.getPingInterval(), TimeUnit.valueOf(properties.getTimeUnit()))
                 // 连接超时
@@ -56,8 +48,19 @@ public class OpenFeignConfig implements ApplicationContextAware, BeanPostProcess
                 // 写入超时
                 .writeTimeout(properties.getWriteTimeout(), TimeUnit.valueOf(properties.getTimeUnit()))
                 // 全链路超时
-                .callTimeout(properties.getCallTimeout(), TimeUnit.valueOf(properties.getTimeUnit()))
-                .build();
+                .callTimeout(properties.getCallTimeout(), TimeUnit.valueOf(properties.getTimeUnit()));
+
+        builder.setProtocols$okhttp(Arrays.asList(Protocol.HTTP_1_1, Protocol.HTTP_2));
+
+        // 连接池配置
+        ConnectionPool connectionPool = new ConnectionPool(
+                properties.getConnectionPool().getMaxIdleConnections(),
+                properties.getConnectionPool().getKeepAliveDuration(),
+                TimeUnit.valueOf(properties.getConnectionPool().getTimeUnit())
+        );
+        builder.setConnectionPool$okhttp(connectionPool);
+
+        return builder.build();
     }
 
     @Override
