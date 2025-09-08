@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: prod
+      password: nacos
+      discovery:
+        namespace: application-prod
+        group: APPLICATION_GROUP
+      config:
+        namespace: application-prod
+        group: APPLICATION_GROUP
+  config:
+    import:
+      - optional:nacos:common.yml?group=COMMON_GROUP
+      - optional:nacos:redis.yml?group=COMMON_GROUP
+      - optional:nacos:thread.yml?group=COMMON_GROUP
+      - optional:nacos:${spring.application.name}.yml

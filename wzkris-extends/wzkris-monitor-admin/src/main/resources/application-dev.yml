@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: dev
+      password: nacos
+      discovery:
+        namespace: application-dev
+        group: APPLICATION_GROUP
+      config:
+        namespace: application-dev
+        group: APPLICATION_GROUP
+  config:
+    import:
+      - optional:nacos:common.yml?group=COMMON_GROUP
+      - optional:nacos:${spring.application.name}.yml

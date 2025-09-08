@@ -1,0 +1,34 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: prod
+      password: nacos
+      discovery:
+        namespace: application-prod
+        group: APPLICATION_GROUP
+      config:
+        namespace: application-prod
+        group: APPLICATION_GROUP
+    sentinel:
+      # 取消控制台懒加载
+      eager: true
+      transport:
+        # 控制台地址
+        dashboard: 127.0.0.1:8718
+      # nacos配置持久化
+      datasource:
+        ds1:
+          nacos:
+            server-addr: localhost:8848
+            username: prod
+            password: nacos
+            namespace: application-prod
+            groupId: APPLICATION_GROUP
+            dataId: sentinel-gateway
+            data-type: json
+            rule-type: flow
+  config:
+    import:
+      - optional:nacos:common.yml?group=COMMON_GROUP
+      - optional:nacos:${spring.application.name}.yml
