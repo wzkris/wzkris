@@ -45,7 +45,7 @@ public class LoginEventListener {
 
     @Async
     @EventListener
-    public void loginTokenEvent(LoginEvent event) {
+    public void loginEvent(LoginEvent event) {
         final CorePrincipal principal = event.getPrincipal();
         log.info("'{}' 发生登录事件", principal);
 

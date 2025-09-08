@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DictionaryInfoServiceImpl implements DictionaryInfoService {
 
-    private static final String DICT_KEY = "system_dictionary";
+    private static final String DICT_KEY = "system-dictionary";
 
     private final DictionaryInfoMapper dictionaryInfoMapper;
 

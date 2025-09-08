@@ -39,11 +39,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserInfoController extends BaseController {
 
-    private final String profile_prefix = "user:profile";
+    private final String info_prefix = "userinfo";
 
     private final UserInfoMapper userInfoMapper;
 
-    private final UserInfoService userService;
+    private final UserInfoService userInfoService;
 
     private final RoleInfoService roleInfoService;
 
@@ -55,8 +55,8 @@ public class UserInfoController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping
-    @GlobalCache(keyPrefix = profile_prefix, key = "@su.getId()", ttl = 3_600_000, sync = true) // TODO 这里缓存的需要在退出时移除
-    public Result<UserInfoVO> profile() {
+    @GlobalCache(keyPrefix = info_prefix, key = "@su.getId()", ttl = 600_000, sync = true) // TODO 这里缓存的需要在退出时移除
+    public Result<UserInfoVO> userinfo() {
         UserInfoDO user = userInfoMapper.selectById(LoginUserUtil.getId());
 
         if (user == null) {// 降级会走到这
@@ -82,8 +82,8 @@ public class UserInfoController extends BaseController {
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
     @PostMapping
-    @CacheEvict(cacheNames = profile_prefix, key = "@su.id()")
-    public Result<Void> editProfile(@RequestBody UserInfoReq profileReq) {
+    @CacheEvict(cacheNames = info_prefix, key = "@su.id()")
+    public Result<Void> editInfo(@RequestBody UserInfoReq profileReq) {
         UserInfoDO user = new UserInfoDO(LoginUserUtil.getId());
         user.setNickname(profileReq.getNickname());
         user.setGender(profileReq.getGender());
@@ -93,11 +93,11 @@ public class UserInfoController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
     @PostMapping("/edit-phonenumber")
-    @CacheEvict(cacheNames = profile_prefix, key = "@su.id()")
+    @CacheEvict(cacheNames = info_prefix, key = "@su.id()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long userId = LoginUserUtil.getId();
 
-        if (userService.existByPhoneNumber(userId, req.getPhoneNumber())) {
+        if (userInfoService.existByPhoneNumber(userId, req.getPhoneNumber())) {
             return err40000("该手机号已被使用");
         }
         // 验证
@@ -135,8 +135,8 @@ public class UserInfoController extends BaseController {
     @Operation(summary = "更新头像")
     @OperateLog(title = "个人信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
     @PostMapping("/edit-avatar")
-    @CacheEvict(cacheNames = profile_prefix, key = "@su.id()")
-    public Result<Void> updateAvatar(@RequestBody String url) {
+    @CacheEvict(cacheNames = info_prefix, key = "@su.id()")
+    public Result<Void> editAvatar(@RequestBody String url) {
         UserInfoDO userInfoDO = new UserInfoDO(LoginUserUtil.getId());
         userInfoDO.setAvatar(url);
         return toRes(userInfoMapper.updateById(userInfoDO));

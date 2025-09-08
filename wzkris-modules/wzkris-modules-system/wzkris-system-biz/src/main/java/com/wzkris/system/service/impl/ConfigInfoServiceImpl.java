@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ConfigInfoServiceImpl implements ConfigInfoService {
 
-    private static final String DICT_KEY = "config_info";
+    private static final String DICT_KEY = "system-config";
 
     private final ConfigInfoMapper configInfoMapper;
 

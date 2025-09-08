@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CustomerInfoController extends BaseController {
 
-    private final String profile_prefix = "customer_info:profile";
+    private final String info_prefix = "customer-info";
 
     private final CustomerInfoMapper customerInfoMapper;
 
@@ -38,8 +38,8 @@ public class CustomerInfoController extends BaseController {
 
     @Operation(summary = "获取信息")
     @GetMapping
-    @GlobalCache(keyPrefix = profile_prefix, key = "@cu.getId()", ttl = 3_600_000, sync = true)
-    public Result<CustomerInfoVO> profile() {
+    @GlobalCache(keyPrefix = info_prefix, key = "@cu.getId()", ttl = 3_600_000, sync = true)
+    public Result<CustomerInfoVO> customerInfo() {
         CustomerInfoDO user = customerInfoMapper.selectById(LoginCustomerUtil.getId());
 
         CustomerInfoVO profileVO = new CustomerInfoVO();
@@ -53,8 +53,8 @@ public class CustomerInfoController extends BaseController {
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CacheEvict(cacheNames = profile_prefix, key = "@cu.id()")
-    public Result<?> appuserInfo(@RequestBody CustomerInfoReq profileReq) {
+    @CacheEvict(cacheNames = info_prefix, key = "@cu.id()")
+    public Result<?> editInfo(@RequestBody CustomerInfoReq profileReq) {
         CustomerInfoDO user = new CustomerInfoDO(LoginCustomerUtil.getId());
         user.setNickname(profileReq.getNickname());
         user.setGender(profileReq.getGender());
@@ -63,8 +63,8 @@ public class CustomerInfoController extends BaseController {
 
     @Operation(summary = "更新头像")
     @PostMapping("/edit-avatar")
-    @CacheEvict(cacheNames = profile_prefix, key = "@cu.id()")
-    public Result<?> updateAvatar(@RequestBody String url) {
+    @CacheEvict(cacheNames = info_prefix, key = "@cu.id()")
+    public Result<?> editAvatar(@RequestBody String url) {
         CustomerInfoDO customerInfoDO = new CustomerInfoDO(LoginCustomerUtil.getId());
         customerInfoDO.setAvatar(url);
         return toRes(customerInfoMapper.updateById(customerInfoDO));
