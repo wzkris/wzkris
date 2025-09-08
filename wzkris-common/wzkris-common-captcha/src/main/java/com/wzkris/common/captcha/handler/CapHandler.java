@@ -122,7 +122,7 @@ public class CapHandler {
         // 移除 token
         final ChallengeData challengeData = capStore.removeChallenge(token);
         if (Objects.isNull(challengeData) || !challengeData.getExpires().after(now)) {
-            throw new CaptchaException("captcha.expired");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
 
         // 验证计算结果是否有效

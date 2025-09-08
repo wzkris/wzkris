@@ -78,7 +78,7 @@ public class CapService {
         String fullKey = capProperties.getCaptchaPrefix() + key;
         String realcode = RedisUtil.getObj(fullKey);
         if (StringUtil.isBlank(realcode)) {
-            throw new CaptchaException("captcha.expired");
+            throw new CaptchaException("invalidParameter.captcha.error");
         }
         if (!StringUtil.equals(realcode, code)) {
             throw new CaptchaException("invalidParameter.captcha.error");
