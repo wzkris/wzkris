@@ -5,8 +5,8 @@ import com.wzkris.auth.feign.domain.LoginCustomer;
 import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -30,7 +30,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @RequiredArgsConstructor
 public class LoginCustomerService extends UserInfoTemplate {
 
-    private final CapService capService;
+    private final CaptchaService captchaService;
 
     private final CustomerFeign customerFeign;
 
@@ -40,7 +40,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         CustomerResp customerResp = customerFeign.getByPhoneNumber(phoneNumber);
 
         if (customerResp == null) {
-            capService.freezeAccount(phoneNumber, 60);
+            captchaService.freezeAccount(phoneNumber, 60);
             return null;
         }
 

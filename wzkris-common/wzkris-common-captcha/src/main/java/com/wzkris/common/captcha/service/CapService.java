@@ -7,16 +7,10 @@ import com.wzkris.common.captcha.model.Token;
 import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
-import com.wzkris.common.core.enums.BizBaseCode;
-import com.wzkris.common.core.exception.captcha.CaptchaException;
-import com.wzkris.common.core.exception.request.TooManyRequestException;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RScript;
 
 import java.time.Duration;
-import java.util.Collections;
 
 /**
  * 验证码服务
@@ -25,10 +19,6 @@ import java.util.Collections;
  */
 @Slf4j
 public class CapService {
-
-    private static final String LOCK_PREFIX = "captcha:lock:";
-
-    private static final String MAXTRY_PREFIX = "captcha:max_try:";
 
     private final CapHandler capHandler;
 
@@ -69,77 +59,6 @@ public class CapService {
                 capProperties.getCaptchaPrefix() + key,
                 code,
                 Duration.ofMillis(capProperties.getTokenExpiresMs()));
-    }
-
-    /**
-     * 校验验证码
-     */
-    public void validateCaptcha(String key, String code) {
-        String fullKey = capProperties.getCaptchaPrefix() + key;
-        String realcode = RedisUtil.getObj(fullKey);
-        if (StringUtil.isBlank(realcode)) {
-            throw new CaptchaException("invalidParameter.captcha.error");
-        }
-        if (!StringUtil.equals(realcode, code)) {
-            throw new CaptchaException("invalidParameter.captcha.error");
-        }
-        RedisUtil.delObj(fullKey);
-    }
-
-    /**
-     * 验证最大尝试次数
-     *
-     * @param key     唯一标识
-     * @param maxTry  最大尝试次数, 超出则抛出异常
-     * @param timeout 超时时长（秒）
-     */
-    public void validateMaxTry(String key, int maxTry, int timeout) {
-        // 构建 Redis 中的键名
-        String counterKey = MAXTRY_PREFIX + key;
-
-        // 定义 Lua 脚本
-        String luaScript = "local currentTry = redis.call('get', KEYS[1]) or 0 "
-                + "if tonumber(currentTry) >= tonumber(ARGV[1]) then "
-                + "    return 0 "
-                + "else "
-                + "    redis.call('incr', KEYS[1]) "
-                + "    redis.call('expire', KEYS[1], ARGV[2]) "
-                + "    return 1 "
-                + "end";
-
-        // 执行 Lua 脚本
-        RScript script = RedisUtil.getScript();
-        Long result = script.eval(
-                RScript.Mode.READ_WRITE,
-                luaScript,
-                RScript.ReturnType.INTEGER,
-                Collections.singletonList(counterKey),
-                maxTry,
-                timeout);
-
-        // 检查结果
-        if (result.intValue() == 0) {
-            throw new TooManyRequestException();
-        }
-    }
-
-    /**
-     * 冻结账号
-     *
-     * @param key     唯一标识
-     * @param timeout 冻结时长（秒）
-     */
-    public void freezeAccount(String key, int timeout) {
-        RedisUtil.setObj(LOCK_PREFIX + key, "", timeout);
-    }
-
-    /**
-     * 校验账号是否被冻结
-     */
-    public void validateAccount(String key) {
-        if (RedisUtil.exist(LOCK_PREFIX + key)) {
-            throw new CaptchaException(BizBaseCode.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
-        }
     }
 
 }

@@ -5,8 +5,8 @@ import com.wzkris.auth.feign.domain.LoginUser;
 import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizBaseCode;
@@ -37,7 +37,7 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class LoginUserService extends UserInfoTemplate {
 
-    private final CapService capService;
+    private final CaptchaService captchaService;
 
     private final UserInfoFeign userInfoFeign;
 
@@ -49,7 +49,7 @@ public class LoginUserService extends UserInfoTemplate {
         UserInfoResp userResp = userInfoFeign.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
-            capService.freezeAccount(phoneNumber, 60);
+            captchaService.freezeAccount(phoneNumber, 60);
             return null;
         }
 
@@ -67,7 +67,7 @@ public class LoginUserService extends UserInfoTemplate {
         UserInfoResp userResp = userInfoFeign.getByUsername(username);
 
         if (userResp == null) {
-            capService.freezeAccount(username, 60);
+            captchaService.freezeAccount(username, 60);
             return null;
         }
 

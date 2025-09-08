@@ -4,9 +4,9 @@ import com.wzkris.auth.enums.BizLoginCode;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.exception.CustomErrorCodes;
@@ -29,17 +29,17 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
     private final List<UserInfoTemplate> userInfoTemplates;
 
-    private final CapService capService;
+    private final CaptchaService captchaService;
 
     public SmsAuthenticationProvider(
             TokenProperties tokenProperties,
             TokenService tokenService,
             JwtEncoder jwtEncoder,
             List<UserInfoTemplate> userInfoTemplates,
-            CapService capService) {
+            CaptchaService captchaService) {
         super(tokenProperties, tokenService, jwtEncoder);
         this.userInfoTemplates = userInfoTemplates;
-        this.capService = capService;
+        this.captchaService = captchaService;
     }
 
     @Override
@@ -60,9 +60,9 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         try {
             // 校验是否被冻结
-            capService.validateAccount(authenticationToken.getPhoneNumber());
+            captchaService.validateAccount(authenticationToken.getPhoneNumber());
             // 校验验证码
-            capService.validateCaptcha(
+            captchaService.validateCaptcha(
                     authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());

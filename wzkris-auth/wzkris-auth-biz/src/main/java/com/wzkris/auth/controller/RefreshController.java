@@ -23,7 +23,7 @@ public class RefreshController {
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 
     @Operation(summary = "刷新缓存")
-    @PostMapping("/refresh_client")
+    @PostMapping("/refresh-client")
     public Result<Void> refresh_client(@RequestBody String clientId) {
         registeredClientRepository.deleteById(clientId);
         return ok();

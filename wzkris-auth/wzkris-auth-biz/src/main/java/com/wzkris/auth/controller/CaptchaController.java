@@ -1,10 +1,10 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.req.SmsCodeReq;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
-import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.redis.ratelimiter.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,33 +36,33 @@ import static com.wzkris.common.core.domain.Result.ok;
 @RequiredArgsConstructor
 public class CaptchaController {
 
-    private final CapService capService;
+    private final CaptchaService captchaService;
 
     @RateLimit
     @Operation(summary = "获取挑战")
     @PostMapping("/challenge")
     public ChallengeData challenge() {
-        return capService.createChallenge();
+        return captchaService.createChallenge();
     }
 
     @Operation(summary = "验证挑战")
     @PostMapping("/redeem")
     public RedeemChallengeResponse redeem(@RequestBody @Valid RedeemChallengeRequest redeemChallengeRequest) {
-        return capService.redeemChallenge(redeemChallengeRequest);
+        return captchaService.redeemChallenge(redeemChallengeRequest);
     }
 
     @Operation(summary = "短信验证码")
-    @PostMapping("/sms_code")
+    @PostMapping("/smscode")
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
-        boolean valid = capService.validateChallenge(req.getCaptchaId());
+        boolean valid = captchaService.validateChallenge(req.getCaptchaId());
         if (!valid) {
             return err40000("验证码异常");
         }
-        capService.validateMaxTry(req.getPhone(), 1, 120);
+        captchaService.validateMaxTry(req.getPhone(), 1, 120);
         // TODO 发送短信
         String code = String.valueOf(RandomUtils.secure().randomInt(100_000, 999_999));
         log.info("手机号：{} 验证码是：{}", req.getPhone(), code);
-        capService.setCaptcha(req.getPhone(), code);
+        captchaService.setCaptcha(req.getPhone(), code);
         return ok();
     }
 

@@ -24,7 +24,7 @@ import static com.wzkris.common.core.domain.Result.ok;
 @Tag(name = "在线会话")
 @Slf4j
 @RestController
-@RequestMapping("/online_user")
+@RequestMapping("/online-session")
 @RequiredArgsConstructor
 public class OnlineSessionController {
 
