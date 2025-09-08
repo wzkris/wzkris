@@ -16,7 +16,7 @@
 
 package com.wzkris.auth.security.handler;
 
-import com.wzkris.auth.listener.event.LoginTokenEvent;
+import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
@@ -111,11 +111,11 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                         );
             } else {
                 SpringUtil.getContext()
-                        .publishEvent(new LoginTokenEvent(
+                        .publishEvent(new LoginEvent(
                                 commonAuthenticationToken.getPrincipal(),
                                 authenticationToken.getRefreshToken().getTokenValue(),
                                 commonAuthenticationToken.getLoginType(),
-                                CommonConstants.STATUS_ENABLE,
+                                CommonConstants.SUCCESS,
                                 "",
                                 ServletUtil.getClientIP(request),
                                 UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));

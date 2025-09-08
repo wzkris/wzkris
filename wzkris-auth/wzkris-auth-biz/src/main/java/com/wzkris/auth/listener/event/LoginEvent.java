@@ -13,7 +13,7 @@ import nl.basjes.parse.useragent.UserAgent;
  */
 @Getter
 @AllArgsConstructor
-public class LoginTokenEvent {
+public class LoginEvent {
 
     private CorePrincipal principal;
 

@@ -143,9 +143,9 @@ public class TokenService {
      *
      * @param accessToken token
      */
-    public final void logoutByAccessToken(String accessToken) {
+    public final Serializable logoutByAccessToken(String accessToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
-        if (tokenBody == null) return;
+        if (tokenBody == null) return null;
 
         Serializable id = tokenBody.getId();
         String refreshToken = tokenBody.getOtherToken();
@@ -169,6 +169,7 @@ public class TokenService {
         });
 
         batch.execute();
+        return id;
     }
 
     /**

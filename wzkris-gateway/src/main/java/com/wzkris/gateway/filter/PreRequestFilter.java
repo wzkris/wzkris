@@ -76,8 +76,8 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         // 检查是否有任一认证token存在
         boolean hasToken = Stream.of(
                         request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION),
-                        request.getHeaders().getFirst(HeaderConstants.X_USER_TOKEN),
-                        request.getHeaders().getFirst(HeaderConstants.X_TENANT_TOKEN)
+                        request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN),
+                        request.getHeaders().getFirst(HeaderConstants.X_User_TOKEN)
                 )
                 .anyMatch(StringUtil::isNotBlank);
 

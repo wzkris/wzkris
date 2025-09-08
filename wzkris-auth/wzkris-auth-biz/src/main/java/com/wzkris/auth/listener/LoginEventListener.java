@@ -4,7 +4,7 @@ import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.feign.domain.LoginCustomer;
 import com.wzkris.auth.feign.domain.LoginUser;
 import com.wzkris.auth.feign.enums.AuthenticatedType;
-import com.wzkris.auth.listener.event.LoginTokenEvent;
+import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
@@ -33,7 +33,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LoginTokenEventListener {
+public class LoginEventListener {
 
     private final TokenService tokenService;
 
@@ -45,26 +45,25 @@ public class LoginTokenEventListener {
 
     @Async
     @EventListener
-    public void loginTokenEvent(LoginTokenEvent event) {
+    public void loginTokenEvent(LoginEvent event) {
         final CorePrincipal principal = event.getPrincipal();
+        log.info("'{}' 发生登录事件", principal);
 
         if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
             this.handleLoginUser(event, (LoginUser) principal);
         } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CUSTOMER.getValue())) {
-            this.handleCustomer(event, (LoginCustomer) principal);
-        } else {
-            log.warn("{} 发生登录事件, 忽略处理", principal);
+            this.handleLoginCustomer(event, (LoginCustomer) principal);
         }
     }
 
-    private void handleLoginUser(LoginTokenEvent event, LoginUser user) {
+    private void handleLoginUser(LoginEvent event, LoginUser user) {
         final String loginType = event.getLoginType();
         final String status = event.getStatus();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
 
-        boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
+        boolean loginSuccess = status.equals(CommonConstants.SUCCESS);
         if (log.isDebugEnabled()) {
             log.debug("监听到用户’{}‘登录'{}'事件, 登录IP：{}", user.getName(), loginSuccess ? "成功" : "失败", ipAddr);
         }
@@ -106,9 +105,9 @@ public class LoginTokenEventListener {
         userLogFeign.saveLoginlog(loginLogReq);
     }
 
-    private void handleCustomer(LoginTokenEvent event, LoginCustomer user) {
+    private void handleLoginCustomer(LoginEvent event, LoginCustomer user) {
         final String status = event.getStatus();
-        boolean loginSuccess = status.equals(CommonConstants.STATUS_ENABLE);
+        boolean loginSuccess = status.equals(CommonConstants.SUCCESS);
 
         if (loginSuccess) { // 更新用户登录信息
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());

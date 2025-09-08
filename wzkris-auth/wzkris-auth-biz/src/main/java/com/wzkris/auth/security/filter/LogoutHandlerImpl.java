@@ -1,13 +1,18 @@
 package com.wzkris.auth.security.filter;
 
+import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+
+import java.io.Serializable;
 
 /**
  * 退出登录
@@ -31,14 +36,20 @@ public class LogoutHandlerImpl implements LogoutHandler {
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        String accessToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
-        if (StringUtil.isNotBlank(accessToken)) {
-            tokenService.logoutByAccessToken(accessToken);
+        String userToken = request.getHeader(HeaderConstants.X_User_TOKEN);
+        if (StringUtil.isNotBlank(userToken)) {
+            Serializable id = tokenService.logoutByAccessToken(userToken);
+            if (id != null) {
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthenticatedType.SYSTEM_USER.getValue()));
+            }
         }
 
-        String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
-        if (StringUtil.isNotBlank(userToken)) {
-            tokenService.logoutByAccessToken(userToken);
+        String customerToken = request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN);
+        if (StringUtil.isNotBlank(customerToken)) {
+            Serializable id = tokenService.logoutByAccessToken(customerToken);
+            if (id != null) {
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthenticatedType.CUSTOMER.getValue()));
+            }
         }
     }
 

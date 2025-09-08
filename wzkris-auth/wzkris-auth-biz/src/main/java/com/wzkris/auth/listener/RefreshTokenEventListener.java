@@ -28,13 +28,12 @@ public class RefreshTokenEventListener {
     @EventListener
     public void refreshTokenEvent(RefreshTokenEvent event) {
         CorePrincipal principal = event.getPrincipal();
+        log.info("'{}' 发生刷新TOKEN事件", principal);
 
         if (StringUtil.equals(principal.getType(), AuthenticatedType.SYSTEM_USER.getValue())) {
 
         } else if (StringUtil.equals(principal.getType(), AuthenticatedType.CUSTOMER.getValue())) {
             // empty
-        } else {
-            log.warn("{} 发生刷新TOKEN事件, 忽略处理", principal);
         }
     }
 
