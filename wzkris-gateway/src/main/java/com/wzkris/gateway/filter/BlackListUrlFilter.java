@@ -1,9 +1,9 @@
 package com.wzkris.gateway.filter;
 
+import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class BlackListUrlFilter extends AbstractGatewayFilterFactory<BlackListUr
         return (exchange, chain) -> {
             String url = exchange.getRequest().getURI().getPath();
             if (config.matchBlacklist(url)) {
-                return WebFluxUtil.writeResponse(exchange.getResponse(), HttpStatus.FORBIDDEN, null);
+                return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.FORBID);
             }
 
             return chain.filter(exchange);
