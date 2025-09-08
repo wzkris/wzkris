@@ -16,11 +16,6 @@ import org.springframework.context.annotation.Configuration;
 public class CapProperties {
 
     /**
-     * 存储类型
-     */
-    private String storeType = "REDIS";
-
-    /**
      * 前缀
      */
     private String captchaPrefix = "captcha:";

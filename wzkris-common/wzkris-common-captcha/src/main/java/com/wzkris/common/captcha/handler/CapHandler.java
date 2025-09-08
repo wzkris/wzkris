@@ -35,10 +35,9 @@ public class CapHandler {
 
     private final CapStore capStore;
 
-    public CapHandler(CapProperties capProperties, List<CapStore> capStoreList) {
+    public CapHandler(CapProperties capProperties, CapStore capStore) {
         this.capProperties = capProperties;
-        this.capStore = capStoreList.stream().filter(store -> store.storeType().name().equals(capProperties.getStoreType()))
-                .findFirst().orElse(null);
+        this.capStore = capStore;
     }
 
     public static String prng(String seed, int length) {
