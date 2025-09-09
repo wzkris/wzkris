@@ -6,7 +6,6 @@ import com.wzkris.common.core.enums.BizBaseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 /**
  * @author : wzkris
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
  * @date : 2023/12/7 14:31
  */
 @Slf4j
-@Component
 public class SentinelExceptionHandler implements BlockExceptionHandler {
 
     public static final String RETRY_AFTER = "Retry-After";
