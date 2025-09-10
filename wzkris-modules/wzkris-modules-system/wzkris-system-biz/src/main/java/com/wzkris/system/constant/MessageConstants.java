@@ -35,21 +35,21 @@ public class MessageConstants {
     /**
      * 通知 已读
      */
-    public static final String NOTICE_READ = "1";
+    public static final String READ = "1";
 
     /**
      * 通知 未读
      */
-    public static final String NOTICE_UNREAD = "0";
+    public static final String UNREAD = "0";
 
     /**
      * 通知类型 系统通知
      */
-    public static final String NOTICE_TYPE_SYSTEM = "0";
+    public static final String NOTIFICATION_TYPE_SYSTEM = "0";
 
     /**
      * 通知类型 设备告警
      */
-    public static final String NOTICE_TYPE_DEVICE = "1";
+    public static final String NOTIFICATION_TYPE_DEVICE = "1";
 
 }

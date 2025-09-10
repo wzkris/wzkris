@@ -1,8 +1,6 @@
 package com.wzkris.common.web.utils;
 
 import com.wzkris.common.core.utils.StringUtil;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -13,33 +11,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+/**
+ * sse连接持有工具
+ */
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SseUtil {
+public abstract class SseConnectHolder {
 
-    private static final Map<Serializable, SseEmitter> EMITTERS = new ConcurrentHashMap<>(256);
-
-    /**
-     * 创建默认连接
-     */
-    public static SseEmitter connectByDefault(Serializable id) {
-        return connect(id, 0L,
-                () -> {
-                    if (log.isDebugEnabled()) {
-                        log.debug("SSE连接:'{}'结束...................", id);
-                    }
-                },
-                () -> {
-                    if (log.isDebugEnabled()) {
-                        log.debug("SSE连接:'{}'超时...................", id);
-                    }
-                },
-                throwable -> {
-                    if (log.isDebugEnabled()) {
-                        log.debug("SSE连接:'{}'异常, 异常信息：{}", id, throwable.toString());
-                    }
-                });
-    }
+    private static final Map<Serializable, SseEmitter> HOLDER = new ConcurrentHashMap<>(256);
 
     /**
      * @param id         指向连接
@@ -51,7 +29,7 @@ public class SseUtil {
      */
     public static SseEmitter connect(Serializable id, long timeout,
                                      Runnable onComplete, Runnable onTimeout, Consumer<Throwable> onError) {
-        SseEmitter sseEmitter = EMITTERS.get(id);
+        SseEmitter sseEmitter = HOLDER.get(id);
         if (sseEmitter != null) {
             return sseEmitter;
         }
@@ -61,19 +39,19 @@ public class SseUtil {
         // 完成后回调
         sseEmitter.onCompletion(() -> {
             onComplete.run();
-            EMITTERS.remove(id);
+            HOLDER.remove(id);
         });
         // 超时回调
         sseEmitter.onTimeout(() -> {
             onTimeout.run();
-            EMITTERS.remove(id);
+            HOLDER.remove(id);
         });
         // 异常回调
         sseEmitter.onError(throwable -> {
             onError.accept(throwable);
-            EMITTERS.remove(id);
+            HOLDER.remove(id);
         });
-        EMITTERS.put(id, sseEmitter);
+        HOLDER.put(id, sseEmitter);
         if (log.isDebugEnabled()) {
             log.debug("SSE连接:'{}'创建成功", id);
         }
@@ -93,7 +71,7 @@ public class SseUtil {
      * 给指定通道发送消息
      */
     public static void send(Serializable id, String mid, String eventName, Object msg) {
-        SseEmitter sseEmitter = EMITTERS.get(id);
+        SseEmitter sseEmitter = HOLDER.get(id);
         if (sseEmitter == null) {
             return;
         }
@@ -105,7 +83,6 @@ public class SseUtil {
             sseEmitter.send(SseEmitter.event()
                     .id(mid)
                     .name(eventName)
-                    .reconnectTime(3000)
                     .data(msg, MediaType.APPLICATION_JSON));
         } catch (Exception e) {
             log.error("SSE连接:'{}'消息id:'{}'推送事件：‘{}’异常, 异常信息：{}", id, mid, eventName, e.getMessage(), e);
@@ -128,7 +105,7 @@ public class SseUtil {
      */
     public static void sendAll(String eventName, Object msg) {
         String mid = String.valueOf(System.currentTimeMillis());
-        for (Serializable id : EMITTERS.keySet()) {
+        for (Serializable id : HOLDER.keySet()) {
             send(id, mid, eventName, msg);
         }
     }
@@ -137,7 +114,7 @@ public class SseUtil {
      * 断开
      */
     public static boolean disconnect(Serializable id) {
-        SseEmitter sseEmitter = EMITTERS.remove(id);
+        SseEmitter sseEmitter = HOLDER.remove(id);
         if (sseEmitter != null) {
             sseEmitter.complete();
             return true;

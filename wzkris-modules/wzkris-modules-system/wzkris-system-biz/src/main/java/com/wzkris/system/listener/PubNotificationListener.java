@@ -1,7 +1,8 @@
 package com.wzkris.system.listener;
 
-import com.wzkris.system.listener.event.NotificationEvent;
-import com.wzkris.system.utils.GlobalSseUtil;
+import com.wzkris.system.listener.event.PubNotificationEvent;
+import com.wzkris.system.utils.WebSocketSessionHolder;
+import com.wzkris.system.websocket.protocol.WsMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -17,12 +18,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PublishMessageListener {
+public class PubNotificationListener {
 
     @Async
     @EventListener
-    public void pushEvent(NotificationEvent messageEvent) {
-        GlobalSseUtil.publish(messageEvent);
+    public void pubNotificationEvent(PubNotificationEvent event) {
+        event.getIds().forEach(id -> {
+            WebSocketSessionHolder.sendMessage(id, WsMessage.convertToBinaryMessage(WsMessage.notification(event.getMessage())));
+        });
     }
 
 }

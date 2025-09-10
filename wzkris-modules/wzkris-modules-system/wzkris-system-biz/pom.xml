@@ -67,10 +67,10 @@
             <artifactId>wzkris-common-orm</artifactId>
         </dependency>
 
-        <!-- mqtt消息队列 -->
+        <!--websocket-->
         <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-mqtt</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
         <!-- wzkris Common ORM -->

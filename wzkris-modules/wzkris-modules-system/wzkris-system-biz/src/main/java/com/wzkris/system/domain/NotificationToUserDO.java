@@ -28,7 +28,7 @@ public class NotificationToUserDO {
     public NotificationToUserDO(Long notificationId, Long userId) {
         this.notificationId = notificationId;
         this.userId = userId;
-        this.readState = MessageConstants.NOTICE_UNREAD;
+        this.readState = MessageConstants.UNREAD;
     }
 
 }

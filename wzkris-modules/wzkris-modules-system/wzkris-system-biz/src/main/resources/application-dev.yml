@@ -38,32 +38,3 @@ xxl.job:
     logpath: ./logs/xxl-job
     # 执行器日志文件保存天数:大于3生效
     logretentiondays: 30
-
-#mqtt基本配置
-mqtt:
-  enable: false
-  settings:
-    car:
-      clientNum: 3
-      host: tcp://127.0.0.1:1883
-      username: server_prod
-      password: ${server.port}
-      clientId: server_prod
-      automaticReconnect: true
-      maxReconnectDelay: 60000
-      cleanSession: false
-      maxInFlight: 1000
-      connectTimeout: 15
-      keepAlive: 180
-    example:
-      clientNum: 2
-      host: tcp://127.0.0.1:1883
-      username: server_prod
-      password: ${server.port}
-      clientId: server_prod
-      automaticReconnect: true
-      maxReconnectDelay: 60000
-      cleanSession: true
-      maxInFlight: 100
-      connectTimeout: 15
-      keepAlive: 10

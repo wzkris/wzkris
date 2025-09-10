@@ -21,7 +21,7 @@ public class NotificationInfoFeignImpl implements NotificationInfoFeign {
     public void send2Users(NotificationReq req) {
         notificationInfoService.saveBatchAndNotify(
                 req.getUserIds(),
-                new SimpleMessageDTO(req.getTitle(), MessageConstants.NOTICE_TYPE_SYSTEM, req.getContent()));
+                new SimpleMessageDTO(req.getTitle(), MessageConstants.NOTIFICATION_TYPE_SYSTEM, req.getContent()));
     }
 
 }

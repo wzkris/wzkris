@@ -6,7 +6,7 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.system.domain.NotificationInfoDO;
 import com.wzkris.system.domain.NotificationToUserDO;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
-import com.wzkris.system.listener.event.NotificationEvent;
+import com.wzkris.system.listener.event.PubNotificationEvent;
 import com.wzkris.system.mapper.NotificationInfoMapper;
 import com.wzkris.system.mapper.NotificationToUserMapper;
 import com.wzkris.system.service.NotificationInfoService;
@@ -43,7 +43,7 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
                     .toList();
             notificationToUserMapper.insert(list);
         });
-        SpringUtil.getContext().publishEvent(new NotificationEvent(toUserIds, messageDTO));
+        SpringUtil.getContext().publishEvent(new PubNotificationEvent(toUserIds, messageDTO));
     }
 
 }

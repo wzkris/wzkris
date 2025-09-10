@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "发布通知事件")
-public class NotificationEvent {
+public class PubNotificationEvent {
 
     @Nullable
     private List<? extends Serializable> ids;

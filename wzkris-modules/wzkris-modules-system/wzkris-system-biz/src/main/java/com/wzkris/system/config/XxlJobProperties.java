@@ -1,4 +1,4 @@
-package com.wzkris.system.config.properties;
+package com.wzkris.system.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
