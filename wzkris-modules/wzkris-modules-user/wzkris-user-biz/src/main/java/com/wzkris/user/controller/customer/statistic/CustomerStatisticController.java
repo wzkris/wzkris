@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "用户统计")
+@Tag(name = "客户统计")
 @Validated
 @RestController
 @RequestMapping("/statistic")

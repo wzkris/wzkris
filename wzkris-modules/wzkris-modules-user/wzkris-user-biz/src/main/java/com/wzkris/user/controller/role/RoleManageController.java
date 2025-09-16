@@ -179,7 +179,7 @@ public class RoleManageController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
     @CheckUserPerms("user-mod:role-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {

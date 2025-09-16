@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * @author : wzkris
  * @version : V1.0.1
- * @description : 系统用户
+ * @description : 用户管理
  * @date : 2024/6/14 15:30
  */
 @Getter

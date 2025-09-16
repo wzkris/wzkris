@@ -24,7 +24,7 @@ public class AnnouncementManageReq {
     @Schema(description = "标题")
     private String title;
 
-    @EnumsCheck(values = {MessageConstants.TYPE_APP, MessageConstants.TYPE_SYSTEM})
+    @EnumsCheck(values = {MessageConstants.ANN_TYPE_APP, MessageConstants.ANN_TYPE_SYSTEM})
     @Schema(description = "消息类型（1系统公告 2APP公告）")
     private String msgType;
 

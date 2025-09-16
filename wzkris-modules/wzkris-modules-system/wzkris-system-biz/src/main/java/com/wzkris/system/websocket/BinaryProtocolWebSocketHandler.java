@@ -1,11 +1,11 @@
-package com.wzkris.system.websocket.notification;
+package com.wzkris.system.websocket;
 
-import com.wzkris.system.constant.WsProtocolConstants;
 import com.wzkris.system.utils.WebSocketSessionHolder;
-import com.wzkris.system.websocket.BaseWebSocketHandler;
 import com.wzkris.system.websocket.handler.AuthHandler;
+import com.wzkris.system.websocket.handler.ChatHandler;
 import com.wzkris.system.websocket.handler.HeartBeatHandler;
 import com.wzkris.system.websocket.protocol.WsMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
@@ -15,9 +15,18 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+/**
+ * 自定义二进制协议
+ * <p>
+ * 心跳包  下行  无消息体
+ * 0x01  0x01  0x0000
+ */
 @Slf4j
 @Component
-public class NotificationWebSocketHandler extends BaseWebSocketHandler {
+@RequiredArgsConstructor
+public class BinaryProtocolWebSocketHandler extends BaseWebSocketHandler {
+
+    private final ChatHandler chatHandler;
 
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
@@ -27,20 +36,18 @@ public class NotificationWebSocketHandler extends BaseWebSocketHandler {
             // 解析消息头
             WsMessage wsMessage = WsMessage.fromByteBuffer(buffer);
 
-            // 根据消息类型进行处理
-            switch (wsMessage.getType()) {
-                case WsProtocolConstants.TYPE_HEARTBEAT:
-                    HeartBeatHandler.handle(session, wsMessage, this::closeSession);
-                    break;
-                case WsProtocolConstants.TYPE_AUTH:
-                    AuthHandler.handle(session, wsMessage, this::closeSession);
-                    break;
-                case WsProtocolConstants.TYPE_CHAT:
-                    // do chat
-                    break;
-                default:
-                    closeSession(session, CloseStatus.NOT_ACCEPTABLE);
-                    break;
+            if (wsMessage.isDownDirection()) {// 接收到的必须是上行数据
+                closeSession(session, CloseStatus.PROTOCOL_ERROR);
+            }
+
+            if (wsMessage.isHeartbeat()) {
+                HeartBeatHandler.handle(session, wsMessage, this::closeSession);
+            } else if (wsMessage.isAuth()) {
+                AuthHandler.handle(session, wsMessage, this::closeSession);
+            } else if (wsMessage.isChat()) {
+                chatHandler.handle(session, wsMessage, this::closeSession);
+            } else {
+                closeSession(session, CloseStatus.NOT_ACCEPTABLE);
             }
         } catch (IllegalArgumentException e) {
             log.warn("消息格式错误: {}", e.getMessage());

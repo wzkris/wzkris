@@ -1,9 +1,7 @@
 package com.wzkris.auth.service;
 
 import com.wzkris.auth.config.MockProperties;
-import com.wzkris.common.captcha.exception.ChallengeStoreException;
 import com.wzkris.common.captcha.handler.CapHandler;
-import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
@@ -17,6 +15,7 @@ import org.redisson.api.RScript;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 
 @Service
 public class CaptchaService extends CapService {
@@ -112,17 +111,9 @@ public class CaptchaService extends CapService {
     }
 
     @Override
-    public ChallengeData createChallenge() throws ChallengeStoreException {
-        if (mockProperties.getCaptchaValidateMock()) {
-            return null;
-        }
-        return super.createChallenge();
-    }
-
-    @Override
     public RedeemChallengeResponse redeemChallenge(RedeemChallengeRequest redeemChallengeRequest) {
         if (mockProperties.getCaptchaValidateMock()) {
-            return null;
+            return new RedeemChallengeResponse(true, null, "mock", new Date(System.currentTimeMillis() + 300_000));
         }
         return super.redeemChallenge(redeemChallengeRequest);
     }

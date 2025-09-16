@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Date;
 
 @Data
-@Schema(description = "系统用户信息")
+@Schema(description = "用户信息")
 public class UserInfoVO {
 
     @Schema(description = "是否租户管理员")

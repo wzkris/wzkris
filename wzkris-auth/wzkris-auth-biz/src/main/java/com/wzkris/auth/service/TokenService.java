@@ -3,7 +3,6 @@ package com.wzkris.auth.service;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nullable;
 import lombok.Data;
 import org.redisson.api.*;
@@ -22,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TokenService {
 
-    private final RedissonClient redissonClient = RedisUtil.getClient();
-
     private final String TOKEN_PREFIX = "auth-token:{%s}";
 
     private final String ONLINE_PREFIX = "auth-token:{%s}:online";
@@ -31,6 +28,9 @@ public class TokenService {
     private final String ACCESS_TOKEN_PREFIX = "auth-token:access-token:";
 
     private final String REFRESH_TOKEN_PREFIX = "auth-token:refresh-token:";
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Autowired
     private TokenProperties tokenProperties;

@@ -8,14 +8,14 @@ package com.wzkris.system.constant;
 public class MessageConstants {
 
     /**
-     * 消息类型 系统公告
+     * 公告类型 系统公告
      */
-    public static final String TYPE_SYSTEM = "1";
+    public static final String ANN_TYPE_SYSTEM = "1";
 
     /**
-     * 消息类型 APP公告
+     * 公告类型 APP公告
      */
-    public static final String TYPE_APP = "2";
+    public static final String ANN_TYPE_APP = "2";
 
     /**
      * 消息状态 草稿

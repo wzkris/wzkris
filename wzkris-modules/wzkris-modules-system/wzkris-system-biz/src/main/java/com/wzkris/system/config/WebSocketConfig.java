@@ -1,7 +1,7 @@
 package com.wzkris.system.config;
 
 import com.wzkris.system.websocket.AuthHandShakeInterceptor;
-import com.wzkris.system.websocket.notification.NotificationWebSocketHandler;
+import com.wzkris.system.websocket.BinaryProtocolWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +16,13 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    private final NotificationWebSocketHandler notificationWebSocketHandler;
+    private final BinaryProtocolWebSocketHandler binaryProtocolWebSocketHandler;
 
     private final AuthHandShakeInterceptor authHandShakeInterceptor;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(notificationWebSocketHandler, "/ws/notification")
+        registry.addHandler(binaryProtocolWebSocketHandler, "/ws/message")
                 .addInterceptors(authHandShakeInterceptor, new HttpSessionHandshakeInterceptor())
                 .setAllowedOriginPatterns("*");
 

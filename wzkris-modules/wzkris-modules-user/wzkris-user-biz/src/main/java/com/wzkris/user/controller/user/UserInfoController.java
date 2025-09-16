@@ -1,5 +1,6 @@
 package com.wzkris.user.controller.user;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.auth.feign.captcha.CaptchaFeign;
 import com.wzkris.auth.feign.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.domain.Result;
@@ -14,6 +15,7 @@ import com.wzkris.user.domain.UserInfoDO;
 import com.wzkris.user.domain.req.EditPhoneReq;
 import com.wzkris.user.domain.req.EditPwdReq;
 import com.wzkris.user.domain.req.user.UserInfoReq;
+import com.wzkris.user.domain.vo.userinfo.ChatPersonVO;
 import com.wzkris.user.domain.vo.userinfo.UserInfoVO;
 import com.wzkris.user.mapper.DeptInfoMapper;
 import com.wzkris.user.mapper.UserInfoMapper;
@@ -26,6 +28,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 个人信息 业务处理
@@ -77,6 +82,22 @@ public class UserInfoController extends BaseController {
         userInfoVO.setDeptName(deptInfoMapper.selectDeptNameById(user.getDeptId()));
         userInfoVO.setRoleGroup(roleInfoService.getRoleGroup());
         return ok(userInfoVO);
+    }
+
+    @Operation(summary = "聊天人员列表")
+    @GetMapping("/chat-person-list")
+    public Result<List<ChatPersonVO>> chatPersonList() {
+        List<UserInfoDO> userInfoDOS = userInfoMapper.selectList(Wrappers.lambdaQuery(UserInfoDO.class)
+                .select(UserInfoDO::getUserId, UserInfoDO::getNickname, UserInfoDO::getAvatar)
+                .ne(UserInfoDO::getUserId, LoginUserUtil.getId()));
+
+        return ok(cast2ChatVO(userInfoDOS));
+    }
+
+    private List<ChatPersonVO> cast2ChatVO(List<UserInfoDO> userInfoDOS) {
+        return userInfoDOS.stream().map(userInfoDO ->
+                        new ChatPersonVO(userInfoDO.getUserId(), userInfoDO.getNickname(), userInfoDO.getAvatar()))
+                .collect(Collectors.toList());
     }
 
     @Operation(summary = "修改基本信息")

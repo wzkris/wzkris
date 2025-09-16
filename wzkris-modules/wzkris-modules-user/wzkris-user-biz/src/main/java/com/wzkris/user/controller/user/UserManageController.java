@@ -47,7 +47,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 系统用户管理
+ * 用户管理
  *
  * @author wzkris
  */
@@ -131,7 +131,7 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "新增用户")
-    @OperateLog(title = "系统用户", subTitle = "新增用户", operateType = OperateType.INSERT)
+    @OperateLog(title = "用户管理", subTitle = "新增用户", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckUserPerms("user-mod:user-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody UserManageReq userReq) {
@@ -156,7 +156,7 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "修改用户")
-    @OperateLog(title = "系统用户", subTitle = "修改用户", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "修改用户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckUserPerms("user-mod:user-mng:edit")
     public Result<Void> edit(@Validated @RequestBody UserManageReq userReq) {
@@ -174,7 +174,7 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "用户授权角色")
-    @OperateLog(title = "系统用户", subTitle = "授权用户角色", operateType = OperateType.GRANT)
+    @OperateLog(title = "用户管理", subTitle = "授权用户角色", operateType = OperateType.GRANT)
     @PostMapping("/grant-role")
     @CheckUserPerms("user-mod:user-mng:grant-role")
     public Result<Void> grantRoles(@RequestBody @Valid UserToRolesReq req) {
@@ -186,7 +186,7 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "删除用户")
-    @OperateLog(title = "系统用户", subTitle = "删除用户", operateType = OperateType.DELETE)
+    @OperateLog(title = "用户管理", subTitle = "删除用户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckUserPerms("user-mod:user-mng:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
@@ -199,7 +199,7 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "重置密码")
-    @OperateLog(title = "系统用户", subTitle = "重置密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset-password")
     @CheckUserPerms("user-mod:user-mng:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
@@ -212,7 +212,7 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
     @CheckUserPerms("user-mod:user-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -224,7 +224,7 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "系统用户", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
+    @OperateLog(title = "用户管理", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
     @GetMapping("/export")
     @CheckUserPerms("user-mod:user-mng:export")
     public void export(HttpServletResponse response, UserManageQueryReq queryReq) {

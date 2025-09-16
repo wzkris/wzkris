@@ -24,7 +24,7 @@ public class PubNotificationListener {
     @EventListener
     public void pubNotificationEvent(PubNotificationEvent event) {
         event.getIds().forEach(id -> {
-            WebSocketSessionHolder.sendMessage(id, WsMessage.convertToBinaryMessage(WsMessage.notification(event.getMessage())));
+            WebSocketSessionHolder.sendMessage(id, WsMessage.convertToBinaryMessage(WsMessage.newNotification(event.getMessage())));
         });
     }
 
