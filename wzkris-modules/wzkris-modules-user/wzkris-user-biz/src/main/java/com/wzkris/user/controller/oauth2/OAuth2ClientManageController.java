@@ -108,7 +108,7 @@ public class OAuth2ClientManageController extends BaseController {
     public Result<String> add(@RequestBody @Valid OAuth2ClientManageReq clientReq) {
         OAuth2ClientDO client = BeanUtil.convert(clientReq, OAuth2ClientDO.class);
 
-        String secret = RandomStringUtils.secure().next(16);
+        String secret = RandomStringUtils.secure().nextAlphabetic(16);
         client.setClientSecret(passwordEncoder.encode(secret));
         oauth2ClientMapper.insert(client);
         return ok(secret);

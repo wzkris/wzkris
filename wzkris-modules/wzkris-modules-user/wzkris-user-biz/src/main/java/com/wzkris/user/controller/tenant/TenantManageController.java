@@ -120,7 +120,7 @@ public class TenantManageController extends BaseController {
         String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
         tenant.setOperPwd(operPwd);
 
-        String password = RandomStringUtils.secure().next(8);
+        String password = RandomStringUtils.secure().nextAlphabetic(8);
         boolean success = tenantInfoService.saveTenant(tenant, tenantReq.getUsername(), password);
         if (success) {
             SpringUtil.getContext()

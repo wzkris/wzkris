@@ -144,7 +144,7 @@ public class UserManageController extends BaseController {
             return err40000("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         UserInfoDO user = BeanUtil.convert(userReq, UserInfoDO.class);
-        String password = RandomStringUtils.secure().next(8);
+        String password = RandomStringUtils.secure().nextAlphabetic(8);
         user.setPassword(password);
 
         boolean success = userInfoService.saveUser(user, userReq.getRoleIds());
