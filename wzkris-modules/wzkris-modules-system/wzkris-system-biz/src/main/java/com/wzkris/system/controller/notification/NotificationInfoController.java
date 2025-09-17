@@ -23,9 +23,9 @@ public class NotificationInfoController extends BaseController {
 
     @Operation(summary = "通知分页")
     @GetMapping("/list")
-    public Result<Page<NotificationInfoVO>> list(String readState, String notificationType) {
+    public Result<Page<NotificationInfoVO>> list(String read, String notificationType) {
         startPage();
-        List<NotificationInfoVO> list = notificationInfoMapper.listNotice(LoginUserUtil.getId(), notificationType, readState);
+        List<NotificationInfoVO> list = notificationInfoMapper.listNotice(LoginUserUtil.getId(), notificationType, read);
         return getDataTable(list);
     }
 

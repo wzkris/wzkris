@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -99,7 +98,7 @@ public class ConfigManageController extends BaseController {
     @CheckUserPerms("system-mod:config-mng:remove")
     public Result<Void> remove(@RequestBody Long configId) {
         ConfigInfoDO config = configInfoMapper.selectById(configId);
-        if (StringUtil.equals(CommonConstants.YES, config.getConfigType())) {
+        if (config.getBuiltIn()) {
             return err40000(String.format("内置参数'%s'不能删除", config.getConfigKey()));
         }
         return toRes(configInfoService.deleteById(configId));

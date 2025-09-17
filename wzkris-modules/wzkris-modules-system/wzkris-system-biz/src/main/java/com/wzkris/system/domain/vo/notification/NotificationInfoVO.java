@@ -19,7 +19,7 @@ public class NotificationInfoVO {
     private String content;
 
     @Schema(description = "已读未读")
-    private String readState;
+    private Boolean read;
 
     @Schema(description = "创建时间")
     private Date createAt;

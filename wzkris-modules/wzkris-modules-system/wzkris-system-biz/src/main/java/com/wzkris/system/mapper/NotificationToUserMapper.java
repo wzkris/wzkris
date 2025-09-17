@@ -19,9 +19,9 @@ public interface NotificationToUserMapper {
 
     @Insert("""
             <script>
-                INSERT INTO biz.notification_to_user(notification_id, user_id, read_state) VALUES
+                INSERT INTO biz.notification_to_user(notification_id, user_id, read) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
-                        (#{item.notificationId},  #{item.userId},  #{item.readState})
+                        (#{item.notificationId},  #{item.userId},  #{item.read})
                     </foreach>
             </script>
             """)

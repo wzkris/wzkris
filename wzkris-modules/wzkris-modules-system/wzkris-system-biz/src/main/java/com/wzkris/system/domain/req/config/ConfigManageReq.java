@@ -1,7 +1,5 @@
 package com.wzkris.system.domain.req.config;
 
-import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.system.domain.ConfigInfoDO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -32,9 +30,10 @@ public class ConfigManageReq {
     @Schema(description = "参数键值")
     private String configValue;
 
-    @EnumsCheck(values = {CommonConstants.YES, CommonConstants.NO},
-            message = "{invalidParameter.configType.invalid}")
-    @Schema(description = "系统内置（Y是 N否）")
+    @Schema(description = "配置类型")
     private String configType;
+
+    @Schema(description = "是否内置")
+    private Boolean builtIn;
 
 }

@@ -21,16 +21,6 @@ public class CommonConstants {
     public static final String HTTPS = "https://";
 
     /**
-     * 是否为系统默认（是）
-     */
-    public static final String YES = "Y";
-
-    /**
-     * 是否为系统默认（否）
-     */
-    public static final String NO = "N";
-
-    /**
      * 不过期时间
      */
     public static final Date NEVER_EXPIRED_TIME = Date.from(Instant.parse("2099-12-31T23:59:59.999Z"));
