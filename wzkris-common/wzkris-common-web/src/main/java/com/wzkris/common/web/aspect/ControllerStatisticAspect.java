@@ -1,4 +1,4 @@
-package com.wzkris.common.web.annotation.aspect;
+package com.wzkris.common.web.aspect;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
