@@ -1,6 +1,7 @@
 package com.wzkris.gateway.filter;
 
 import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
@@ -15,7 +16,6 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -75,9 +75,10 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
     private boolean isAuthenticationRequired(ServerHttpRequest request) {
         // 检查是否有任一认证token存在
         boolean hasToken = Stream.of(
-                        request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION),
                         request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN),
-                        request.getHeaders().getFirst(HeaderConstants.X_User_TOKEN)
+                        request.getHeaders().getFirst(HeaderConstants.X_User_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_User_TOKEN)
                 )
                 .anyMatch(StringUtil::isNotBlank);
 

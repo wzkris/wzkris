@@ -5,6 +5,7 @@ import com.wzkris.auth.feign.token.TokenFeign;
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
@@ -69,29 +70,45 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 
-        final String tenantToken = request.getHeader(HeaderConstants.X_User_TOKEN);
-        if (StringUtil.isNotBlank(tenantToken)) {
-            generateTenantToken(request, tenantToken, ctx);
+        final String userToken = getUserToken(request);
+        if (StringUtil.isNotBlank(userToken)) {
+            generateUserToken(request, userToken, ctx);
             return ctx;
         }
 
-        final String userToken = request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN);
-        if (StringUtil.isNotBlank(userToken)) {
-            generateUserToken(request, userToken, ctx);
+        final String customerToken = getCustomerToken(request);
+        if (StringUtil.isNotBlank(customerToken)) {
+            generateCustomerToken(request, customerToken, ctx);
             return ctx;
         }
 
         return ctx;
     }
 
-    private void generateTenantToken(HttpServletRequest request, String token, SecurityContext ctx) {
+    private static String getUserToken(HttpServletRequest request) {
+        String token = request.getHeader(HeaderConstants.X_User_TOKEN);
+        if (StringUtil.isNotBlank(token)) {
+            return token;
+        }
+        return request.getParameter(QueryParamConstants.X_User_TOKEN);
+    }
+
+    private static String getCustomerToken(HttpServletRequest request) {
+        String token = request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN);
+        if (StringUtil.isNotBlank(token)) {
+            return token;
+        }
+        return request.getParameter(QueryParamConstants.X_CUSTOMER_TOKEN);
+    }
+
+    private void generateUserToken(HttpServletRequest request, String token, SecurityContext ctx) {
         TokenResponse tokenResponse = tokenFeign.validateUser(new TokenReq(token));
         if (tokenResponse.isSuccess()) {
             ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request, token));
         }
     }
 
-    private void generateUserToken(HttpServletRequest request, String token, SecurityContext ctx) {
+    private void generateCustomerToken(HttpServletRequest request, String token, SecurityContext ctx) {
         try {
             Jwt jwt = jwtDecoder.decode(token);
             String sub = jwt.getClaimAsString(JwtClaimNames.SUB);

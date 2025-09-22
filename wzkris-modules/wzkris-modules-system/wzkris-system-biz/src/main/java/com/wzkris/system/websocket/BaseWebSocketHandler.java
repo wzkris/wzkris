@@ -3,6 +3,7 @@ package com.wzkris.system.websocket;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.system.utils.WebSocketSessionHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -11,8 +12,8 @@ import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 @Slf4j
 public abstract class BaseWebSocketHandler extends BinaryWebSocketHandler {
 
-    public CorePrincipal getLoginInfo(WebSocketSession session) {
-        return (CorePrincipal) session.getAttributes().get(CorePrincipal.class.getName());
+    public static CorePrincipal getLoginInfo(WebSocketSession session) {
+        return (CorePrincipal) ((UsernamePasswordAuthenticationToken) session.getPrincipal()).getPrincipal();
     }
 
     @Override

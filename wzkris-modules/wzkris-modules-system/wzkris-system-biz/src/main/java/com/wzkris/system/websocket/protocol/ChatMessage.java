@@ -15,14 +15,14 @@ public class ChatMessage implements WsChatProtocol {
 
     private final byte subType;
 
-    @Setter
-    private long senderId;
-
     private final long receiverId;
 
     private final byte[] data;
 
     private final byte[] metadata; // 改为byte[]类型，支持二进制元数据
+
+    @Setter
+    private long senderId;
 
     public ChatMessage(byte subType, long senderId, long receiverId, byte[] data, byte[] metadata) {
         this.subType = subType;
