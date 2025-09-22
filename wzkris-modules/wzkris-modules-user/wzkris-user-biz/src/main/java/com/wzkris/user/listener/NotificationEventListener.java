@@ -43,7 +43,7 @@ public class NotificationEventListener {
     public void createUserEvent(CreateUserEvent event) {
         NotificationReq req = new NotificationReq(
                 Collections.singletonList(event.getToUserId()),
-                "系统用户创建成功",
+                "用户创建成功",
                 String.format("用户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
         notificationInfoFeign.send2Users(req);

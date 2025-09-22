@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import java.util.Arrays;
 import java.util.concurrent.Executor;
@@ -66,8 +65,7 @@ public class AsyncConfig implements AsyncConfigurer {
         });
         executor.setDaemon(true);
         executor.initialize();
-        // 使用SpringSecurity的线程池，否则异步线程无法传递用户信息
-        return new DelegatingSecurityContextAsyncTaskExecutor(executor);
+        return executor;
     }
 
 }

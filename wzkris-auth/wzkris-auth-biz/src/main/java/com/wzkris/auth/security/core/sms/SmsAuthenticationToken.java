@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.domain.CorePrincipal;
@@ -16,28 +16,28 @@ import org.springframework.security.core.Transient;
 @Transient
 public final class SmsAuthenticationToken extends CommonAuthenticationToken {
 
-    private final AuthenticatedType authenticatedType;
+    private final AuthType authType;
 
     private final String phoneNumber;
 
     private final String smsCode;
 
     public SmsAuthenticationToken(
-            AuthenticatedType authenticatedType,
+            AuthType authType,
             String phoneNumber,
             String smsCode) {
         super(null);
-        this.authenticatedType = authenticatedType;
+        this.authType = authType;
         this.phoneNumber = phoneNumber;
         this.smsCode = smsCode;
     }
 
     public SmsAuthenticationToken(
-            AuthenticatedType authenticatedType,
+            AuthType authType,
             String phoneNumber,
             CorePrincipal principal) {
         super(null, principal);
-        this.authenticatedType = authenticatedType;
+        this.authType = authType;
         this.phoneNumber = phoneNumber;
         this.smsCode = null;
     }

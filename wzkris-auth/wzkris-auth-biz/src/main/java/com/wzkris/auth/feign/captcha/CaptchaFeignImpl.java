@@ -1,7 +1,7 @@
 package com.wzkris.auth.feign.captcha;
 
 import com.wzkris.auth.feign.captcha.req.CaptchaCheckReq;
-import com.wzkris.common.captcha.service.CaptchaService;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;

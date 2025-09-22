@@ -24,7 +24,7 @@ import static com.wzkris.common.core.domain.Result.ok;
 @Tag(name = "在线会话")
 @Slf4j
 @RestController
-@RequestMapping("/online_user")
+@RequestMapping("/online-session")
 @RequiredArgsConstructor
 public class OnlineSessionController {
 
@@ -32,7 +32,7 @@ public class OnlineSessionController {
 
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineUserResp>> onlineSession(@RequestHeader(HeaderConstants.X_TENANT_TOKEN) String accessToken) {
+    public Result<Collection<OnlineUserResp>> onlineSession(@RequestHeader(HeaderConstants.X_User_TOKEN) String accessToken) {
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
 
         RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(LoginUserUtil.getId());

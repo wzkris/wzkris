@@ -1,6 +1,5 @@
 package com.wzkris.system;
 
-import com.wzkris.common.web.annotation.EnableCustomConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
@@ -11,7 +10,6 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
  *
  * @author wzkris
  */
-@EnableCustomConfig
 @SpringBootApplication
 public class SystemServerApplication {
 

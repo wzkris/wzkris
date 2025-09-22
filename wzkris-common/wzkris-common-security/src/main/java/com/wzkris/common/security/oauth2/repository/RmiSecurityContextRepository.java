@@ -69,13 +69,13 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 
-        final String tenantToken = request.getHeader(HeaderConstants.X_TENANT_TOKEN);
+        final String tenantToken = request.getHeader(HeaderConstants.X_User_TOKEN);
         if (StringUtil.isNotBlank(tenantToken)) {
             generateTenantToken(request, tenantToken, ctx);
             return ctx;
         }
 
-        final String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
+        final String userToken = request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN);
         if (StringUtil.isNotBlank(userToken)) {
             generateUserToken(request, userToken, ctx);
             return ctx;

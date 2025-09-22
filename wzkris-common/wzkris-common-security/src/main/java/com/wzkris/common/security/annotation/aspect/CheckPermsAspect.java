@@ -31,9 +31,9 @@ import java.util.Set;
 public class CheckPermsAspect {
 
     @Pointcut("@annotation(com.wzkris.common.security.annotation.CheckPerms)"
-            + "|| @annotation(com.wzkris.common.security.annotation.CheckSystemPerms)"
+            + "|| @annotation(com.wzkris.common.security.annotation.CheckUserPerms)"
             + "|| @within(com.wzkris.common.security.annotation.CheckPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckSystemPerms)")
+            + "|| @within(com.wzkris.common.security.annotation.CheckUserPerms)")
     public void pointcut() {
     }
 

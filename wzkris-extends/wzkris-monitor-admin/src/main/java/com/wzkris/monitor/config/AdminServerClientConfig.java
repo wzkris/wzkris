@@ -3,6 +3,7 @@ package com.wzkris.monitor.config;
 import com.wzkris.monitor.filter.CustomCsrfFilter;
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 import jakarta.servlet.DispatcherType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
  *
  * @author wzkris
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class AdminServerClientConfig {
@@ -81,10 +83,18 @@ public class AdminServerClientConfig {
     @Bean
     public WebClient.Builder adminWebClientBuilder(TokenProvider tokenProvider) {
         return WebClient.builder().filter((request, next) -> {
-            String token = tokenProvider.getAccessToken();
-            return next.exchange(ClientRequest.from(request)
-                    .headers(headers -> headers.setBearerAuth(token))
-                    .build());
+            // 使用响应式方式获取token
+            return tokenProvider.getAccessToken()
+                    .flatMap(token -> {
+                        ClientRequest newRequest = ClientRequest.from(request)
+                                .headers(headers -> headers.setBearerAuth(token))
+                                .build();
+                        return next.exchange(newRequest);
+                    })
+                    .onErrorResume(e -> {
+                        log.error("失败获取oauth2_token", e);
+                        return next.exchange(request); // 继续请求，但没有token
+                    });
         });
     }
 

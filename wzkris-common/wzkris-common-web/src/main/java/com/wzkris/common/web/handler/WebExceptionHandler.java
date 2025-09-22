@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -37,7 +36,6 @@ import static com.wzkris.common.core.domain.Result.resp;
  */
 @Slf4j
 @Order(100)
-@Component
 @RestControllerAdvice
 public class WebExceptionHandler {
 

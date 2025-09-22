@@ -7,7 +7,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
@@ -71,7 +71,7 @@ public class RoleManageController extends BaseController {
 
     @Operation(summary = "角色分页")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:role-mng:list")
+    @CheckUserPerms("user-mod:role-mng:list")
     public Result<Page<RoleInfoDO>> listPage(RoleManageQueryReq queryReq) {
         startPage();
         List<RoleInfoDO> list = roleInfoDataScopeManager.list(this.buildQueryWrapper(queryReq));
@@ -87,7 +87,7 @@ public class RoleManageController extends BaseController {
 
     @Operation(summary = "角色详细信息")
     @GetMapping("/{roleId}")
-    @CheckSystemPerms("user-mod:role-mng:query")
+    @CheckUserPerms("user-mod:role-mng:query")
     public Result<RoleInfoDO> getInfo(@PathVariable Long roleId) {
         // 权限校验
         roleInfoDataScopeManager.checkDataScopes(roleId);
@@ -96,7 +96,7 @@ public class RoleManageController extends BaseController {
 
     @Operation(summary = "角色-菜单选择树")
     @GetMapping({"/menu-checked-selecttree/", "/menu-checked-selecttree/{roleId}"})
-    @CheckSystemPerms(
+    @CheckUserPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
@@ -112,7 +112,7 @@ public class RoleManageController extends BaseController {
 
     @Operation(summary = "角色-部门选择树")
     @GetMapping({"/dept-checked-selecttree/", "/dept-checked-selecttree/{roleId}"})
-    @CheckSystemPerms(
+    @CheckUserPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
@@ -127,7 +127,7 @@ public class RoleManageController extends BaseController {
 
     @Operation(summary = "角色-继承选择列表")
     @GetMapping({"/hierarchy-checked-select/", "/hierarchy-checked-select/{roleId}"})
-    @CheckSystemPerms(
+    @CheckUserPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectVO> roleInheritedSelect(@PathVariable(required = false) Long roleId) {
@@ -142,7 +142,7 @@ public class RoleManageController extends BaseController {
     @Operation(summary = "新增角色")
     @OperateLog(title = "角色管理", subTitle = "新增角色", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("user-mod:role-mng:add")
+    @CheckUserPerms("user-mod:role-mng:add")
     public Result<Void> add(@Validated @RequestBody RoleManageReq req) {
         if (!tenantInfoService.checkRoleLimit(LoginUserUtil.getTenantId())) {
             return err40000("角色数量已达上限，请联系管理员");
@@ -162,7 +162,7 @@ public class RoleManageController extends BaseController {
     @Operation(summary = "修改角色")
     @OperateLog(title = "角色管理", subTitle = "修改角色", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("user-mod:role-mng:edit")
+    @CheckUserPerms("user-mod:role-mng:edit")
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody RoleManageReq req) {
         // 权限校验
         roleInfoDataScopeManager.checkDataScopes(req.getRoleId());
@@ -179,9 +179,9 @@ public class RoleManageController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckSystemPerms("user-mod:role-mng:edit")
+    @CheckUserPerms("user-mod:role-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         roleInfoDataScopeManager.checkDataScopes(statusReq.getId());
@@ -193,7 +193,7 @@ public class RoleManageController extends BaseController {
     @Operation(summary = "删除角色")
     @OperateLog(title = "角色管理", subTitle = "删除角色", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("user-mod:role-mng:remove")
+    @CheckUserPerms("user-mod:role-mng:remove")
     public Result<Void> remove(
             @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> roleIds) {
         // 权限校验
@@ -205,7 +205,7 @@ public class RoleManageController extends BaseController {
 
     @Operation(summary = "已授权的用户列表")
     @GetMapping("/authorized-user-list")
-    @CheckSystemPerms("user-mod:role-mng:grant-user")
+    @CheckUserPerms("user-mod:role-mng:grant-user")
     public Result<Page<SelectVO>> allocatedList(UserManageQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleInfoDataScopeManager.checkDataScopes(roleId);
@@ -216,7 +216,7 @@ public class RoleManageController extends BaseController {
 
     @Operation(summary = "未授权的用户列表")
     @GetMapping("/unauthorized-user-list")
-    @CheckSystemPerms("user-mod:role-mng:grant-user")
+    @CheckUserPerms("user-mod:role-mng:grant-user")
     public Result<Page<SelectVO>> unallocatedList(UserManageQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleInfoDataScopeManager.checkDataScopes(roleId);
@@ -228,7 +228,7 @@ public class RoleManageController extends BaseController {
     @Operation(summary = "取消授权")
     @OperateLog(title = "角色管理", subTitle = "取消授权", operateType = OperateType.GRANT)
     @PostMapping("/cancel-authorize-user")
-    @CheckSystemPerms("user-mod:role-mng:grant-user")
+    @CheckUserPerms("user-mod:role-mng:grant-user")
     public Result<Void> cancelAuth(@RequestBody @Valid RoleToUsersReq req) {
         // 权限校验
         roleInfoDataScopeManager.checkDataScopes(req.getRoleId());
@@ -240,7 +240,7 @@ public class RoleManageController extends BaseController {
     @Operation(summary = "角色授权")
     @OperateLog(title = "角色管理", subTitle = "授权用户", operateType = OperateType.GRANT)
     @PostMapping("/authorize-user")
-    @CheckSystemPerms("user-mod:role-mng:grant-user")
+    @CheckUserPerms("user-mod:role-mng:grant-user")
     public Result<Void> batchAuth(@RequestBody @Valid RoleToUsersReq req) {
         // 权限校验
         roleInfoDataScopeManager.checkDataScopes(req.getRoleId());

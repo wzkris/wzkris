@@ -7,7 +7,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.TenantPackageInfoDO;
@@ -39,7 +39,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/tenant-package-manage")
-@PreAuthorize("@su.isSuperTenant()")
+@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class TenantPackageManageController extends BaseController {
 
@@ -51,7 +51,7 @@ public class TenantPackageManageController extends BaseController {
 
     @Operation(summary = "套餐分页")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:tenantpackage-mng:list")
+    @CheckUserPerms("user-mod:tenantpackage-mng:list")
     public Result<Page<TenantPackageInfoDO>> listPage(TenantPackageManageQueryReq queryReq) {
         startPage();
         List<TenantPackageInfoDO> list = tenantPackageInfoMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -70,7 +70,7 @@ public class TenantPackageManageController extends BaseController {
 
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/menu-checked-selecttree/", "/menu-checked-selecttree/{packageId}"})
-    @CheckSystemPerms("user-mod:tenantpackage-mng:query")
+    @CheckUserPerms("user-mod:tenantpackage-mng:query")
     public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(tenantPackageInfoMapper.listMenuIdByPackageId(packageId));
@@ -80,7 +80,7 @@ public class TenantPackageManageController extends BaseController {
 
     @Operation(summary = "套餐详细信息")
     @GetMapping("/{packageId}")
-    @CheckSystemPerms("user-mod:tenantpackage-mng:query")
+    @CheckUserPerms("user-mod:tenantpackage-mng:query")
     public Result<TenantPackageInfoDO> getInfo(
             @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long packageId) {
         return ok(tenantPackageInfoMapper.selectById(packageId));
@@ -89,7 +89,7 @@ public class TenantPackageManageController extends BaseController {
     @Operation(summary = "新增租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "新增套餐", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("user-mod:tenantpackage-mng:add")
+    @CheckUserPerms("user-mod:tenantpackage-mng:add")
     public Result<Void> add(@Valid @RequestBody TenantPackageManageReq req) {
         return toRes(tenantPackageInfoMapper.insert(BeanUtil.convert(req, TenantPackageInfoDO.class)));
     }
@@ -97,7 +97,7 @@ public class TenantPackageManageController extends BaseController {
     @Operation(summary = "修改租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "修改套餐", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("user-mod:tenantpackage-mng:edit")
+    @CheckUserPerms("user-mod:tenantpackage-mng:edit")
     public Result<Void> edit(@Valid @RequestBody TenantPackageManageReq req) {
         return toRes(tenantPackageInfoMapper.updateById(BeanUtil.convert(req, TenantPackageInfoDO.class)));
     }
@@ -105,7 +105,7 @@ public class TenantPackageManageController extends BaseController {
     @Operation(summary = "修改租户套餐状态")
     @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckSystemPerms("user-mod:tenantpackage-mng:edit")
+    @CheckUserPerms("user-mod:tenantpackage-mng:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         TenantPackageInfoDO update = new TenantPackageInfoDO(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -115,7 +115,7 @@ public class TenantPackageManageController extends BaseController {
     @Operation(summary = "删除租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("user-mod:tenantpackage-mng:remove")
+    @CheckUserPerms("user-mod:tenantpackage-mng:remove")
     public Result<Void> remove(
             @NotEmpty(message = "{invalidParameter.id.invalid}") @RequestBody List<Long> packageIds) {
         if (tenantPackageInfoService.checkPackageUsed(packageIds)) {

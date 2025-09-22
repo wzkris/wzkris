@@ -1,10 +1,10 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.req.SmsCodeReq;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
-import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.redis.ratelimiter.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,7 +52,7 @@ public class CaptchaController {
     }
 
     @Operation(summary = "短信验证码")
-    @PostMapping("/sms_code")
+    @PostMapping("/smscode")
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
         boolean valid = captchaService.validateChallenge(req.getCaptchaId());
         if (!valid) {

@@ -1,7 +1,7 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.user.UserException;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @UPDATE : 2024/04/22 12:22
  */
 @Slf4j
-@Component("su")
+@Component("lu")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginUserUtil extends SecurityUtil {
 
@@ -25,7 +25,7 @@ public class LoginUserUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthenticatedType().equals(AuthenticatedType.SYSTEM_USER.getValue());
+        return isAuthenticated() && getAuthenticatedType().equals(AuthType.USER.getValue());
     }
 
     /**

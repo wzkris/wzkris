@@ -8,7 +8,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.CustomerInfoDO;
 import com.wzkris.user.domain.export.customer.CustomerInfoExport;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 用户管理
+ * 客户管理
  *
  * @author wzkris
  */
@@ -35,7 +35,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/customer-manage")
-@PreAuthorize("@su.isSuperTenant()")
+@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class CustomerManageController extends BaseController {
 
@@ -43,9 +43,9 @@ public class CustomerManageController extends BaseController {
 
     private final CustomerInfoService customerInfoService;
 
-    @Operation(summary = "用户分页列表")
+    @Operation(summary = "客户分页列表")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:customer-mng:list")
+    @CheckUserPerms("user-mod:customer-mng:list")
     public Result<Page<CustomerInfoDO>> listPage(CustomerManageQueryReq queryReq) {
         startPage();
         List<CustomerInfoDO> list = customerInfoMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -66,17 +66,17 @@ public class CustomerManageController extends BaseController {
                 .orderByDesc(CustomerInfoDO::getCustomerId);
     }
 
-    @Operation(summary = "用户详细信息")
+    @Operation(summary = "客户详细信息")
     @GetMapping("/{userId}")
-    @CheckSystemPerms("user-mod:customer-mng:query")
+    @CheckUserPerms("user-mod:customer-mng:query")
     public Result<CustomerInfoDO> query(@PathVariable Long userId) {
         return ok(customerInfoMapper.selectById(userId));
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "客户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckSystemPerms("user-mod:customer-mng:edit")
+    @CheckUserPerms("user-mod:customer-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         CustomerInfoDO update = new CustomerInfoDO(statusReq.getId());
@@ -85,13 +85,13 @@ public class CustomerManageController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "用户管理", operateType = OperateType.EXPORT)
+    @OperateLog(title = "客户管理", operateType = OperateType.EXPORT)
     @GetMapping("/export")
-    @CheckSystemPerms("user-mod:customer-mng:export")
+    @CheckUserPerms("user-mod:customer-mng:export")
     public void export(HttpServletResponse response, CustomerManageQueryReq queryReq) {
         List<CustomerInfoDO> list = customerInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         List<CustomerInfoExport> convert = BeanUtil.convert(list, CustomerInfoExport.class);
-        ExcelUtil.exportExcel(convert, "用户数据", CustomerInfoExport.class, response);
+        ExcelUtil.exportExcel(convert, "客户数据", CustomerInfoExport.class, response);
     }
 
 }

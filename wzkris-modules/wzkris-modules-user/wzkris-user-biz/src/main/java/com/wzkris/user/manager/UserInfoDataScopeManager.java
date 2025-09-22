@@ -59,7 +59,7 @@ public class UserInfoDataScopeManager {
      *
      * @param queryReq 筛选条件
      * @param roleId   角色ID
-     * @return 系统用户选择列表
+     * @return 用户选择列表
      */
     public List<SelectVO> listAllocated(UserManageQueryReq queryReq, Long roleId) {
         List<Long> userIds = userToRoleMapper.listUserIdByRoleId(roleId);
@@ -76,7 +76,7 @@ public class UserInfoDataScopeManager {
      *
      * @param queryReq 筛选条件
      * @param roleId   角色ID
-     * @return 系统用户选择列表
+     * @return 用户选择列表
      */
     public List<SelectVO> listUnallocated(UserManageQueryReq queryReq, Long roleId) {
         List<Long> userIds = userToRoleMapper.listUserIdByRoleId(roleId);

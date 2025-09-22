@@ -5,7 +5,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.TenantInfoDO;
@@ -33,9 +33,9 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "租户信息")
 @Validated
 @RestController
-@CheckSystemPerms("user-mod:tenant-info")
+@CheckUserPerms("user-mod:tenant-info")
 @RequestMapping("/tenant-info")
-@IgnoreTenant(value = false, forceTenantId = "@su.getTenantId()") // 忽略切换
+@IgnoreTenant(value = false, forceTenantId = "@lu.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class TenantInfoController extends BaseController {
 
@@ -57,7 +57,7 @@ public class TenantInfoController extends BaseController {
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CheckSystemPerms("user-mod:tenant-info:edit")
+    @CheckUserPerms("user-mod:tenant-info:edit")
     public Result<TenantInfoVO> tenantInfo(@RequestBody TenantInfoReq req) {
         TenantInfoDO sysTenant = BeanUtil.convert(req, new TenantInfoDO(LoginUserUtil.getTenantId()));
         return toRes(tenantInfoMapper.updateById(sysTenant));
@@ -76,7 +76,7 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit-operpwd")
-    @PreAuthorize("@su.isAdmin()") // 只允许租户的超级管理员修改
+    @PreAuthorize("@lu.isAdmin()") // 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
         Long tenantId = LoginUserUtil.getTenantId();
 

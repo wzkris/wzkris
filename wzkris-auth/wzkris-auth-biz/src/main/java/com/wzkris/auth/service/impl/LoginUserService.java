@@ -2,11 +2,11 @@ package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCode;
 import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
-import com.wzkris.auth.listener.event.LoginTokenEvent;
+import com.wzkris.auth.feign.enums.AuthType;
+import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizBaseCode;
@@ -85,8 +85,8 @@ public class LoginUserService extends UserInfoTemplate {
     }
 
     @Override
-    public boolean checkAuthenticatedType(AuthenticatedType authenticatedType) {
-        return AuthenticatedType.SYSTEM_USER.equals(authenticatedType);
+    public boolean checkAuthType(AuthType authType) {
+        return AuthType.USER.equals(authType);
     }
 
     /**
@@ -131,18 +131,18 @@ public class LoginUserService extends UserInfoTemplate {
     /**
      * 记录失败日志
      */
-    private void recordFailedLog(UserInfoResp userResp, String grantType, String errorMsg) {
+    private void recordFailedLog(UserInfoResp userResp, String loginType, String errorMsg) {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         LoginUser user = new LoginUser(userResp.getUserId(), null);
         user.setUsername(userResp.getUsername());
         user.setTenantId(userResp.getTenantId());
         SpringUtil.getContext()
-                .publishEvent(new LoginTokenEvent(
+                .publishEvent(new LoginEvent(
                         user,
                         null,
-                        grantType,
-                        CommonConstants.STATUS_DISABLE,
+                        loginType,
+                        CommonConstants.FAIL,
                         errorMsg,
                         ServletUtil.getClientIP(request),
                         UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));

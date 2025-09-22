@@ -7,20 +7,3 @@ spring:
   profiles:
     active: @profiles.active@
     include: feign
-  cloud:
-    nacos:
-      server-addr: @nacos.server@
-      username: @nacos.username@
-      password: @nacos.password@
-      discovery:
-        namespace: @nacos.namespace@
-        group: @nacos.group@
-      config:
-        namespace: @nacos.namespace@
-        group: @nacos.group@
-  config:
-    import:
-      - optional:nacos:common.yml?group=COMMON_GROUP
-      - optional:nacos:redis.yml?group=COMMON_GROUP
-      - optional:nacos:thread.yml?group=COMMON_GROUP
-      - optional:nacos:${spring.application.name}.yml

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : rpc - 系统用户
+ * @description : rpc - 用户管理
  * @date : 2024/4/15 16:20
  */
 @FeignClient(name = ServiceIdConstant.USER, contextId = "UserInfoFeign",
@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserInfoFeign extends RmiFeign {
 
     /**
-     * 根据用户名查询系统用户
+     * 根据用户名查询用户
      */
     @PostMapping("/query-by-username")
     UserInfoResp getByUsername(@RequestBody String username);
 
     /**
-     * 根据手机号查询系统用户
+     * 根据手机号查询用户
      */
     @PostMapping("/query-by-phonenumber")
     UserInfoResp getByPhoneNumber(@RequestBody String phoneNumber);

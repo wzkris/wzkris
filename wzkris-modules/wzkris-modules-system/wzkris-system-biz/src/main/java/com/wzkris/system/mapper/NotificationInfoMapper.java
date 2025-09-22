@@ -23,8 +23,8 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             	    <if test="notificationType != null and notificationType != ''">
             	        AND notification_type = #{notificationType}
             	    </if>
-            	    <if test="readState != null and readState != ''">
-            	        AND read_state = #{readState}
+            	    <if test="read != null and read != ''">
+            	        AND read = #{read}
             	    </if>
                 ORDER BY s.notification_id DESC
             </script>
@@ -32,12 +32,12 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     List<NotificationInfoVO> listNotice(
             @Param("userId") Long userId,
             @Nullable @Param("notificationType") String notificationType,
-            @Nullable @Param("readState") String readState);
+            @Nullable @Param("read") String read);
 
     /**
      * 标记已读
      */
-    @Update("UPDATE biz.notification_to_user SET read_state = '1' WHERE notification_id = #{notificationId} AND user_id = #{userId}")
+    @Update("UPDATE biz.notification_to_user SET read = '1' WHERE notification_id = #{notificationId} AND user_id = #{userId}")
     int markRead(@Param("notificationId") Long notificationId, @Param("userId") Long userId);
 
     /**
@@ -47,7 +47,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             <script>
                 SELECT COUNT(*) FROM
                 (SELECT 1 FROM biz.notification_to_user u LEFT JOIN biz.notification_info n ON u.notification_id = n.notification_id
-                WHERE user_id = #{userId} AND read_state = '0'
+                WHERE user_id = #{userId} AND read = '0'
                     <if test="notificationType != null and notificationType != ''">
             	        AND notification_type = #{notificationType}
             	    </if>

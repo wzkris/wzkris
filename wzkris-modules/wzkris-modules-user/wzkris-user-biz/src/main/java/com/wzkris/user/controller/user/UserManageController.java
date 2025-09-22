@@ -9,7 +9,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
@@ -47,7 +47,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 系统用户管理
+ * 用户管理
  *
  * @author wzkris
  */
@@ -76,7 +76,7 @@ public class UserManageController extends BaseController {
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:user-mng:list")
+    @CheckUserPerms("user-mod:user-mng:list")
     public Result<Page<UserManageVO>> listPage(UserManageQueryReq queryReq) {
         startPage();
         List<UserManageVO> list = userInfoDataScopeManager.listVO(this.buildPageWrapper(queryReq));
@@ -101,7 +101,7 @@ public class UserManageController extends BaseController {
 
     @Operation(summary = "用户-部门选择树")
     @GetMapping("/dept-selecttree")
-    @CheckSystemPerms(
+    @CheckUserPerms(
             value = {"user-mod:user-mng:edit", "user-mod:user-mng:add"},
             mode = CheckMode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
@@ -110,7 +110,7 @@ public class UserManageController extends BaseController {
 
     @Operation(summary = "用户-角色选择列表")
     @GetMapping({"/role-checked-select/", "/role-checked-select/{userId}"})
-    @CheckSystemPerms(
+    @CheckUserPerms(
             value = {"user-mod:user-mng:edit", "user-mod:user-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
@@ -123,7 +123,7 @@ public class UserManageController extends BaseController {
 
     @Operation(summary = "用户详细信息")
     @GetMapping("/{userId}")
-    @CheckSystemPerms("user-mod:user-mng:query")
+    @CheckUserPerms("user-mod:user-mng:query")
     public Result<UserInfoDO> getInfo(@PathVariable Long userId) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(userId);
@@ -131,9 +131,9 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "新增用户")
-    @OperateLog(title = "系统用户", subTitle = "新增用户", operateType = OperateType.INSERT)
+    @OperateLog(title = "用户管理", subTitle = "新增用户", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("user-mod:user-mng:add")
+    @CheckUserPerms("user-mod:user-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody UserManageReq userReq) {
         if (!tenantInfoService.checkAccountLimit(LoginUserUtil.getTenantId())) {
             return err40000("账号数量已达上限，请联系管理员");
@@ -144,7 +144,7 @@ public class UserManageController extends BaseController {
             return err40000("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         UserInfoDO user = BeanUtil.convert(userReq, UserInfoDO.class);
-        String password = RandomStringUtils.secure().next(8);
+        String password = RandomStringUtils.secure().nextAlphabetic(8);
         user.setPassword(password);
 
         boolean success = userInfoService.saveUser(user, userReq.getRoleIds());
@@ -156,9 +156,9 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "修改用户")
-    @OperateLog(title = "系统用户", subTitle = "修改用户", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "修改用户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("user-mod:user-mng:edit")
+    @CheckUserPerms("user-mod:user-mng:edit")
     public Result<Void> edit(@Validated @RequestBody UserManageReq userReq) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(userReq.getUserId());
@@ -174,9 +174,9 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "用户授权角色")
-    @OperateLog(title = "系统用户", subTitle = "授权用户角色", operateType = OperateType.GRANT)
+    @OperateLog(title = "用户管理", subTitle = "授权用户角色", operateType = OperateType.GRANT)
     @PostMapping("/grant-role")
-    @CheckSystemPerms("user-mod:user-mng:grant-role")
+    @CheckUserPerms("user-mod:user-mng:grant-role")
     public Result<Void> grantRoles(@RequestBody @Valid UserToRolesReq req) {
         // 校验用户可操作权限
         userInfoDataScopeManager.checkDataScopes(req.getUserId());
@@ -186,9 +186,9 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "删除用户")
-    @OperateLog(title = "系统用户", subTitle = "删除用户", operateType = OperateType.DELETE)
+    @OperateLog(title = "用户管理", subTitle = "删除用户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("user-mod:user-mng:remove")
+    @CheckUserPerms("user-mod:user-mng:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(userIds);
@@ -199,9 +199,9 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "重置密码")
-    @OperateLog(title = "系统用户", subTitle = "重置密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset-password")
-    @CheckSystemPerms("user-mod:user-mng:edit")
+    @CheckUserPerms("user-mod:user-mng:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(req.getId());
@@ -212,9 +212,9 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "系统用户", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckSystemPerms("user-mod:user-mng:edit")
+    @CheckUserPerms("user-mod:user-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(statusReq.getId());
@@ -224,9 +224,9 @@ public class UserManageController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "系统用户", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
+    @OperateLog(title = "用户管理", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
     @GetMapping("/export")
-    @CheckSystemPerms("user-mod:user-mng:export")
+    @CheckUserPerms("user-mod:user-mng:export")
     public void export(HttpServletResponse response, UserManageQueryReq queryReq) {
         List<UserManageVO> list = userInfoDataScopeManager.listVO(this.buildPageWrapper(queryReq));
         List<UserInfoExport> convert = BeanUtil.convert(list, UserInfoExport.class);

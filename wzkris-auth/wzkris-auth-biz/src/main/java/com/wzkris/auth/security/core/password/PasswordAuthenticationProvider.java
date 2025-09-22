@@ -1,12 +1,12 @@
 package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
+import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.captcha.service.CaptchaService;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizCaptchaCode;
 import com.wzkris.common.core.exception.BaseException;
@@ -37,7 +37,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                                           CaptchaService captchaService) {
         super(tokenProperties, tokenService, jwtEncoder);
         this.userInfoTemplate = userInfoTemplates.stream()
-                .filter(t -> t.checkAuthenticatedType(AuthenticatedType.SYSTEM_USER))
+                .filter(t -> t.checkAuthType(AuthType.USER))
                 .findFirst()
                 .get();
         this.captchaService = captchaService;

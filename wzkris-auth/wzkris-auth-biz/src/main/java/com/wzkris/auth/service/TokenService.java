@@ -3,7 +3,6 @@ package com.wzkris.auth.service;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nullable;
 import lombok.Data;
 import org.redisson.api.*;
@@ -22,25 +21,26 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TokenService {
 
-    private final RedissonClient redissonClient = RedisUtil.getClient();
+    private final String TOKEN_PREFIX = "auth-token:{%s}";
 
-    private final String USER_INFO_PREFIX = "user_info:{%s}";
+    private final String ONLINE_PREFIX = "auth-token:{%s}:online";
 
-    private final String ONLINE_USER_PREFIX = "user_info:{%s}:online";
+    private final String ACCESS_TOKEN_PREFIX = "auth-token:access-token:";
 
-    private final String ACCESS_TOKEN_PREFIX = "user_info:access_token:";
+    private final String REFRESH_TOKEN_PREFIX = "auth-token:refresh-token:";
 
-    private final String REFRESH_TOKEN_PREFIX = "user_info:refresh_token:";
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Autowired
     private TokenProperties tokenProperties;
 
-    private String buildUserInfoKey(Serializable id) {
-        return USER_INFO_PREFIX.formatted(id);
+    private String buildInfoKey(Serializable id) {
+        return TOKEN_PREFIX.formatted(id);
     }
 
-    private String buildOnlineUserKey(Serializable id) {
-        return ONLINE_USER_PREFIX.formatted(id);
+    private String buildOnlineKey(Serializable id) {
+        return ONLINE_PREFIX.formatted(id);
     }
 
     private String buildAccessTokenKey(String accessToken) {
@@ -61,10 +61,10 @@ public class TokenService {
     public final void save(CorePrincipal principal, String accessToken, String refreshToken) {
         RBatch batch = redissonClient.createBatch();
 
-        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildUserInfoKey(principal.getId()));
+        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildInfoKey(principal.getId()));
         userinfo.setAsync(principal, Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
 
-        RMapCacheAsync<String, OnlineUser> mapCache = batch.getMapCache(buildOnlineUserKey(principal.getId()));
+        RMapCacheAsync<String, OnlineUser> mapCache = batch.getMapCache(buildOnlineKey(principal.getId()));
         mapCache.getAsync(refreshToken).thenAccept(onlineUser -> {
             if (onlineUser == null) {
                 mapCache.putAsync(refreshToken, new OnlineUser(),
@@ -102,7 +102,7 @@ public class TokenService {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
         if (tokenBody == null) return null;
 
-        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).get();
+        return (CorePrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
     }
 
     /**
@@ -115,7 +115,7 @@ public class TokenService {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
         if (tokenBody == null) return null;
 
-        return (CorePrincipal) redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).get();
+        return (CorePrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
     }
 
     /**
@@ -143,9 +143,9 @@ public class TokenService {
      *
      * @param accessToken token
      */
-    public final void logoutByAccessToken(String accessToken) {
+    public final Serializable logoutByAccessToken(String accessToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
-        if (tokenBody == null) return;
+        if (tokenBody == null) return null;
 
         Serializable id = tokenBody.getId();
         String refreshToken = tokenBody.getOtherToken();
@@ -158,17 +158,18 @@ public class TokenService {
         RBatch batch = redissonClient.createBatch();
 
         // 删除会话
-        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineUserKey(id));
+        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineKey(id));
 
         mapCacheAsync.removeAsync(refreshToken);
 
         mapCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).delete();
+                redissonClient.getBucket(buildInfoKey(tokenBody.getId())).delete();
             }
         });
 
         batch.execute();
+        return id;
     }
 
     /**
@@ -191,13 +192,13 @@ public class TokenService {
         RBatch batch = redissonClient.createBatch();
 
         // 删除会话
-        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineUserKey(id));
+        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineKey(id));
 
         mapCacheAsync.removeAsync(refreshToken);
 
         mapCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                redissonClient.getBucket(buildUserInfoKey(tokenBody.getId())).delete();
+                redissonClient.getBucket(buildInfoKey(tokenBody.getId())).delete();
             }
         });
 
@@ -210,7 +211,7 @@ public class TokenService {
      * @param userId 用户ID
      */
     public final RMapCache<String, OnlineUser> getOnlineCache(Serializable userId) {
-        return redissonClient.getMapCache(buildOnlineUserKey(userId));
+        return redissonClient.getMapCache(buildOnlineKey(userId));
     }
 
     /**

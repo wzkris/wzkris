@@ -1,9 +1,8 @@
 package com.wzkris.auth.feign.domain;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.domain.CorePrincipal;
 import lombok.Getter;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Collections;
 import java.util.Set;
@@ -24,7 +23,7 @@ public class AuthedClient extends CorePrincipal {
     }
 
     public AuthedClient(String clientId, Set<String> scopes) {
-        super((long) HashCodeBuilder.reflectionHashCode(clientId), AuthenticatedType.CLIENT.getValue(), scopes);
+        super(System.currentTimeMillis(), AuthType.CLIENT.getValue(), scopes);
         this.clientId = clientId;
     }
 

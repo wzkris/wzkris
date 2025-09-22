@@ -1,7 +1,6 @@
 package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.system.constant.MessageConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,13 +21,13 @@ public class NotificationToUserDO {
     @Schema(description = "接收用户ID")
     private Long userId;
 
-    @Schema(description = "已读1 未读0")
-    private String readState;
+    @Schema(description = "是否已读")
+    private Boolean read;
 
     public NotificationToUserDO(Long notificationId, Long userId) {
         this.notificationId = notificationId;
         this.userId = userId;
-        this.readState = MessageConstants.NOTICE_UNREAD;
+        this.read = false;
     }
 
 }

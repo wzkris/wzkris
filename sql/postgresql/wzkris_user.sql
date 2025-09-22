@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-09-05 17:06:36
+-- Started on 2025-09-17 17:51:32
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1743,7 +1743,7 @@ COMMENT ON COLUMN biz.user_to_role.role_id IS '角色ID';
 --
 
 COPY biz.customer_info (customer_id, nickname, phone_number, status, gender, avatar, login_ip, login_date, creator_id, updater_id, create_at, update_at) FROM stdin;
-1826896461245968383	\N	15888888888	0	2	\N	::1	2025-06-22 15:09:13+08	1	\N	2024-04-17 14:08:54.616+08	\N
+1826896461245968383	\N	15888888888	0	2	\N	172.16.8.76	2025-09-09 11:18:32+08	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -1943,7 +1943,7 @@ COPY biz.role_to_menu (role_id, menu_id) FROM stdin;
 
 COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, account_limit, role_limit, dept_limit, creator_id, create_at, updater_id, update_at) FROM stdin;
 1	1	1	13665656563	supertenant	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	\N	2099-12-31 00:00:00+08	-1	-1	-1	1	2025-04-22 13:47:13+08	1	2025-04-27 16:10:30.389+08
-1910557183820165122	1910557183820165120	0	\N	test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-09-06 00:00:00+08	5	5	5	1	2025-04-11 12:55:03.715+08	1	2025-09-05 15:05:52.6+08
+1910557183820165122	1910557183820165120	0	\N	test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-09-30 00:00:00+08	5	5	5	1	2025-04-11 12:55:03.715+08	1	2025-09-17 13:55:48.224+08
 \.
 
 
@@ -1954,7 +1954,7 @@ COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tena
 --
 
 COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at) FROM stdin;
-1773625804122202113	默认套餐	0	{1906272182215585793,1915322746249367554,1906263415450001127,1906263415450001126,1906263415450000001,1906263415450000100,1906263415450001059,1906263415450001058,1906263415450001057,1906263415450001056,1906263415450000104,1906263415450000151,1906263415450001064,1906263415450000150,1906263415450001062,1906263415450001061,1906263415450000002,1906263415450000203,1906263415450002078,1906263415450002062,1906263415450002064,1906263415450002077,1906263415450002072,1910569625749024770,1906263415450002071,1906263415450000206,1906263415450002207,1906263415450002211,1906263415450002210,1906263415450002209,1906263415450002208,1906263415450000205,1906263415450002040,1906263415450002039,1906263415450002038,1906263415450002037}	通用租户套餐	1	2024-04-17 14:08:54+08	1	2025-09-05 15:57:07.448+08
+1773625804122202113	默认套餐	0	{1906272182215585793,1915322746249367554,1906263415450001127,1906263415450001126,1906263415450000001,1906263415450000100,1906263415450001059,1906263415450001058,1906263415450001057,1906263415450001056,1906263415450000104,1906263415450000151,1906263415450001064,1906263415450000150,1906263415450001061,1906263415450000002,1906263415450000203,1906263415450002078,1906263415450002062,1906263415450002064,1906263415450002077,1906263415450002072,1910569625749024770,1906263415450002071,1906263415450000206,1906263415450002207,1906263415450002211,1906263415450002210,1906263415450002209,1906263415450002208,1906263415450000205,1906263415450002040,1906263415450002039,1906263415450002038,1906263415450002037}	通用租户套餐	1	2024-04-17 14:08:54+08	1	2025-09-08 09:41:49.754+08
 \.
 
 
@@ -1997,8 +1997,9 @@ COPY biz.tenant_wallet_withdrawal_record (withdrawal_id, order_no, status, tenan
 --
 
 COPY biz.user_info (user_id, tenant_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2025-09-05 15:05:58+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
-1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2025-09-05 15:55:52+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1	1	\N	admin	\N	nick_a	15888888888	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.76	2025-09-09 13:35:04+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1910557183820165120	1910557183820165122	\N	testadmin	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.76	2025-09-17 13:55:55+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
+1968228585288978433	1	\N	111111	\N	\N	\N	0	2	\N	{bcrypt}$2a$10$ZFJAnKSfvfYWuktcoJ/.6ueVPe825x3wnjtdYJCvSCL7SdmL0z8em	172.16.8.76	2025-09-17 16:21:03+08	\N	1	\N	2025-09-17 16:20:37.308+08	\N
 \.
 
 
@@ -2014,38 +2015,56 @@ COPY biz.user_to_role (user_id, role_id) FROM stdin;
 
 --
 -- TOC entry 3253 (class 2606 OID 16713)
--- Name: customer_info app_user_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: customer_info customer_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.customer_info
-    ADD CONSTRAINT app_user_pkey PRIMARY KEY (customer_id);
+    ADD CONSTRAINT customer_info_pkey PRIMARY KEY (customer_id);
 
 
 --
 -- TOC entry 3256 (class 2606 OID 16720)
--- Name: customer_social_info app_user_thirdinfo_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: customer_social_info customer_social_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.customer_social_info
-    ADD CONSTRAINT app_user_thirdinfo_pkey PRIMARY KEY (customer_id);
+    ADD CONSTRAINT customer_social_info_pkey PRIMARY KEY (customer_id);
 
 
 --
 -- TOC entry 3259 (class 2606 OID 16718)
--- Name: customer_wallet_info app_user_wallet_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: customer_wallet_info customer_wallet_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.customer_wallet_info
-    ADD CONSTRAINT app_user_wallet_pkey PRIMARY KEY (customer_id);
+    ADD CONSTRAINT customer_wallet_info_pkey PRIMARY KEY (customer_id);
 
 
 --
 -- TOC entry 3261 (class 2606 OID 16666)
--- Name: customer_wallet_record app_user_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: customer_wallet_record customer_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.customer_wallet_record
-    ADD CONSTRAINT app_user_wallet_record_pkey PRIMARY KEY (record_id);
+    ADD CONSTRAINT customer_wallet_record_pkey PRIMARY KEY (record_id);
+
+
+--
+-- TOC entry 3267 (class 2606 OID 16711)
+-- Name: dept_info dept_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.dept_info
+    ADD CONSTRAINT dept_info_pkey PRIMARY KEY (dept_id);
+
+
+--
+-- TOC entry 3271 (class 2606 OID 16672)
+-- Name: menu_info menu_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.menu_info
+    ADD CONSTRAINT menu_info_pkey PRIMARY KEY (menu_id);
 
 
 --
@@ -2058,120 +2077,102 @@ ALTER TABLE ONLY biz.oauth2_client
 
 
 --
--- TOC entry 3269 (class 2606 OID 16711)
--- Name: dept_info sys_dept_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- TOC entry 3274 (class 2606 OID 16680)
+-- Name: role_info role_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
 --
 
-ALTER TABLE ONLY biz.dept_info
-    ADD CONSTRAINT sys_dept_pkey PRIMARY KEY (dept_id);
-
-
---
--- TOC entry 3271 (class 2606 OID 16672)
--- Name: menu_info sys_menu_copy1_pkey1; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.menu_info
-    ADD CONSTRAINT sys_menu_copy1_pkey1 PRIMARY KEY (menu_id);
+ALTER TABLE ONLY biz.role_info
+    ADD CONSTRAINT role_info_pkey PRIMARY KEY (role_id);
 
 
 --
 -- TOC entry 3276 (class 2606 OID 16674)
--- Name: role_to_dept sys_role_dept_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: role_to_dept role_to_dept_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.role_to_dept
-    ADD CONSTRAINT sys_role_dept_pkey PRIMARY KEY (role_id, dept_id);
+    ADD CONSTRAINT role_to_dept_pkey PRIMARY KEY (role_id, dept_id);
 
 
 --
 -- TOC entry 3278 (class 2606 OID 16676)
--- Name: role_to_hierarchy sys_role_hierarchy_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
+-- Name: role_to_hierarchy role_to_hierarchy_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
 --
 
 ALTER TABLE ONLY biz.role_to_hierarchy
-    ADD CONSTRAINT sys_role_hierarchy_pkey PRIMARY KEY (role_id, inherited_id);
+    ADD CONSTRAINT role_to_hierarchy_pkey PRIMARY KEY (role_id, inherited_id);
 
 
 --
 -- TOC entry 3280 (class 2606 OID 16678)
--- Name: role_to_menu sys_role_menu_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: role_to_menu role_to_menu_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.role_to_menu
-    ADD CONSTRAINT sys_role_menu_pkey PRIMARY KEY (role_id, menu_id);
-
-
---
--- TOC entry 3274 (class 2606 OID 16680)
--- Name: role_info sys_role_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
---
-
-ALTER TABLE ONLY biz.role_info
-    ADD CONSTRAINT sys_role_pkey PRIMARY KEY (role_id);
-
-
---
--- TOC entry 3285 (class 2606 OID 16682)
--- Name: tenant_package_info sys_tenant_package_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.tenant_package_info
-    ADD CONSTRAINT sys_tenant_package_pkey PRIMARY KEY (package_id);
+    ADD CONSTRAINT role_to_menu_pkey PRIMARY KEY (role_id, menu_id);
 
 
 --
 -- TOC entry 3282 (class 2606 OID 16684)
--- Name: tenant_info sys_tenant_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_info tenant_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.tenant_info
-    ADD CONSTRAINT sys_tenant_pkey PRIMARY KEY (tenant_id);
+    ADD CONSTRAINT tenant_info_pkey PRIMARY KEY (tenant_id);
+
+
+--
+-- TOC entry 3285 (class 2606 OID 16682)
+-- Name: tenant_package_info tenant_package_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.tenant_package_info
+    ADD CONSTRAINT tenant_package_info_pkey PRIMARY KEY (package_id);
 
 
 --
 -- TOC entry 3287 (class 2606 OID 16686)
--- Name: tenant_wallet_info sys_tenant_wallet_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_wallet_info tenant_wallet_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.tenant_wallet_info
-    ADD CONSTRAINT sys_tenant_wallet_pkey PRIMARY KEY (tenant_id);
+    ADD CONSTRAINT tenant_wallet_info_pkey PRIMARY KEY (tenant_id);
 
 
 --
 -- TOC entry 3290 (class 2606 OID 16688)
--- Name: tenant_wallet_record sys_tenant_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_wallet_record tenant_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.tenant_wallet_record
-    ADD CONSTRAINT sys_tenant_wallet_record_pkey PRIMARY KEY (record_id);
-
-
---
--- TOC entry 3292 (class 2606 OID 16690)
--- Name: user_info sys_user_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.user_info
-    ADD CONSTRAINT sys_user_pkey PRIMARY KEY (user_id);
-
-
---
--- TOC entry 3296 (class 2606 OID 16692)
--- Name: user_to_role sys_user_role_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.user_to_role
-    ADD CONSTRAINT sys_user_role_pkey PRIMARY KEY (user_id, role_id);
+    ADD CONSTRAINT tenant_wallet_record_pkey PRIMARY KEY (record_id);
 
 
 --
 -- TOC entry 3299 (class 2606 OID 16694)
--- Name: tenant_wallet_withdrawal_record sys_withdrawal_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_wallet_withdrawal_record tenant_wallet_withdrawal_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.tenant_wallet_withdrawal_record
-    ADD CONSTRAINT sys_withdrawal_record_pkey PRIMARY KEY (withdrawal_id);
+    ADD CONSTRAINT tenant_wallet_withdrawal_record_pkey PRIMARY KEY (withdrawal_id);
+
+
+--
+-- TOC entry 3294 (class 2606 OID 16690)
+-- Name: user_info user_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.user_info
+    ADD CONSTRAINT user_info_pkey PRIMARY KEY (user_id);
+
+
+--
+-- TOC entry 3296 (class 2606 OID 16692)
+-- Name: user_to_role user_to_role_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.user_to_role
+    ADD CONSTRAINT user_to_role_pkey PRIMARY KEY (user_id, role_id);
 
 
 --
@@ -2183,7 +2184,7 @@ CREATE INDEX i_app_user_wallet_record_user_id ON biz.customer_wallet_record USIN
 
 
 --
--- TOC entry 3266 (class 1259 OID 16696)
+-- TOC entry 3268 (class 1259 OID 16696)
 -- Name: sys_dept_i_ancestors; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2191,7 +2192,7 @@ CREATE INDEX sys_dept_i_ancestors ON biz.dept_info USING btree (ancestors);
 
 
 --
--- TOC entry 3267 (class 1259 OID 16697)
+-- TOC entry 3269 (class 1259 OID 16697)
 -- Name: sys_dept_i_parent_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2255,7 +2256,7 @@ CREATE UNIQUE INDEX u_i_identifier ON biz.customer_social_info USING btree (iden
 
 
 --
--- TOC entry 3293 (class 1259 OID 16705)
+-- TOC entry 3291 (class 1259 OID 16705)
 -- Name: u_i_sys_user_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
@@ -2263,14 +2264,14 @@ CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz.user_info USING btree (phon
 
 
 --
--- TOC entry 3294 (class 1259 OID 16706)
+-- TOC entry 3292 (class 1259 OID 16706)
 -- Name: u_i_sys_user_username; Type: INDEX; Schema: biz; Owner: postgres
 --
 
 CREATE UNIQUE INDEX u_i_sys_user_username ON biz.user_info USING btree (username);
 
 
--- Completed on 2025-09-05 17:06:36
+-- Completed on 2025-09-17 17:51:32
 
 --
 -- PostgreSQL database dump complete

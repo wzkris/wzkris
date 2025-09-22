@@ -7,36 +7,5 @@ server:
 spring:
   application:
     name: wzkris-gateway
-  cloud:
-    nacos:
-      server-addr: @nacos.server@
-      username: @nacos.username@
-      password: @nacos.password@
-      discovery:
-        namespace: @nacos.namespace@
-        group: @nacos.group@
-      config:
-        namespace: @nacos.namespace@
-        group: @nacos.group@
-    sentinel:
-      # 取消控制台懒加载
-      eager: true
-      transport:
-        # 控制台地址
-        dashboard: 127.0.0.1:8718
-      # nacos配置持久化
-      datasource:
-        ds1:
-          nacos:
-            server-addr: @nacos.server@
-            username: @nacos.username@
-            password: @nacos.password@
-            namespace: @nacos.namespace@
-            groupId: @nacos.group@
-            dataId: sentinel-gateway
-            data-type: json
-            rule-type: flow
-  config:
-    import:
-      - optional:nacos:common.yml?group=COMMON_GROUP
-      - optional:nacos:${spring.application.name}.yml
+  profiles:
+    active: @profiles.active@

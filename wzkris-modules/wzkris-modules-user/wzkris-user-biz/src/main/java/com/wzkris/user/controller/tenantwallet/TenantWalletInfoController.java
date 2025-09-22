@@ -8,7 +8,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.TenantInfoDO;
 import com.wzkris.user.domain.TenantWalletRecordDO;
@@ -37,8 +37,8 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/tenant-wallet")
-@CheckSystemPerms("user-mod:tenant-wallet-info")
-@IgnoreTenant(value = false, forceTenantId = "@su.getTenantId()") // 忽略切换
+@CheckUserPerms("user-mod:tenant-wallet-info")
+@IgnoreTenant(value = false, forceTenantId = "@lu.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class TenantWalletInfoController extends BaseController {
 
@@ -82,7 +82,7 @@ public class TenantWalletInfoController extends BaseController {
     @Operation(summary = "提现")
     @OperateLog(title = "商户信息", subTitle = "提现", operateType = OperateType.OTHER)
     @PostMapping("/withdrawal")
-    @CheckSystemPerms("user-mod:tenant-wallet-info:withdrawal")
+    @CheckUserPerms("user-mod:tenant-wallet-info:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
         TenantInfoDO sysTenant = tenantInfoMapper.selectById(LoginUserUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {

@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
@@ -49,7 +49,7 @@ public class DeptManageController extends BaseController {
 
     @Operation(summary = "部门列表(不带分页)")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:dept-mng:list")
+    @CheckUserPerms("user-mod:dept-mng:list")
     public Result<List<DeptInfoDO>> list(DeptManageQueryReq queryReq) {
         List<DeptInfoDO> depts = deptInfoDataScopeManager.list(buildQueryWrapper(queryReq));
         return ok(depts);
@@ -71,7 +71,7 @@ public class DeptManageController extends BaseController {
 
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/{deptId}")
-    @CheckSystemPerms("user-mod:dept-mng:query")
+    @CheckUserPerms("user-mod:dept-mng:query")
     public Result<?> getInfo(@PathVariable Long deptId) {
         // 校验权限
         deptInfoDataScopeManager.checkDataScopes(deptId);
@@ -81,7 +81,7 @@ public class DeptManageController extends BaseController {
     @Operation(summary = "新增部门")
     @OperateLog(title = "部门管理", subTitle = "新增部门", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("user-mod:dept-mng:add")
+    @CheckUserPerms("user-mod:dept-mng:add")
     public Result<?> add(@Validated @RequestBody DeptManageReq req) {
         // 校验权限
         deptInfoDataScopeManager.checkDataScopes(req.getParentId());
@@ -101,7 +101,7 @@ public class DeptManageController extends BaseController {
     @Operation(summary = "修改部门")
     @OperateLog(title = "部门管理", subTitle = "修改部门", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("user-mod:dept-mng:edit")
+    @CheckUserPerms("user-mod:dept-mng:edit")
     public Result<?> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody DeptManageReq req) {
         // 校验权限
         deptInfoDataScopeManager.checkDataScopes(req.getDeptId());
@@ -117,7 +117,7 @@ public class DeptManageController extends BaseController {
     @Operation(summary = "删除部门")
     @OperateLog(title = "部门管理", subTitle = "删除部门", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("user-mod:dept-mng:remove")
+    @CheckUserPerms("user-mod:dept-mng:remove")
     public Result<?> remove(@RequestBody Long deptId) {
         deptInfoDataScopeManager.checkDataScopes(deptId);
         if (deptInfoMapper.existSubDept(deptId)) {

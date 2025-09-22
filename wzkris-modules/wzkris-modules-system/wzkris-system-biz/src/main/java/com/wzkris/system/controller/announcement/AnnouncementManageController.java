@@ -7,7 +7,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.domain.AnnouncementInfoDO;
 import com.wzkris.system.domain.req.announcement.AnnouncementManageQueryReq;
@@ -42,7 +42,7 @@ public class AnnouncementManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckSystemPerms("system-mod:announcement-mng:list")
+    @CheckUserPerms("system-mod:announcement-mng:list")
     public Result<Page<AnnouncementInfoDO>> list(AnnouncementManageQueryReq queryReq) {
         startPage();
         List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -58,7 +58,7 @@ public class AnnouncementManageController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{announcementId}")
-    @CheckSystemPerms("system-mod:announcement-mng:query")
+    @CheckUserPerms("system-mod:announcement-mng:query")
     public Result<AnnouncementInfoDO> query(@PathVariable Long announcementId) {
         return ok(announcementInfoMapper.selectById(announcementId));
     }
@@ -66,7 +66,7 @@ public class AnnouncementManageController extends BaseController {
     @Operation(summary = "添加草稿")
     @OperateLog(title = "系统消息", subTitle = "添加草稿", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("system-mod:announcement-mng:add")
+    @CheckUserPerms("system-mod:announcement-mng:add")
     public Result<Void> add(@Valid @RequestBody AnnouncementManageReq req) {
         return toRes(announcementInfoMapper.insert(BeanUtil.convert(req, AnnouncementInfoDO.class)));
     }
@@ -74,7 +74,7 @@ public class AnnouncementManageController extends BaseController {
     @Operation(summary = "修改草稿")
     @OperateLog(title = "系统消息", subTitle = "修改草稿", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("system-mod:announcement-mng:edit")
+    @CheckUserPerms("system-mod:announcement-mng:edit")
     public Result<Void> edit(@RequestBody AnnouncementManageReq req) {
         return toRes(announcementInfoMapper.updateById(BeanUtil.convert(req, AnnouncementInfoDO.class)));
     }
@@ -82,7 +82,7 @@ public class AnnouncementManageController extends BaseController {
     @Operation(summary = "删除草稿")
     @OperateLog(title = "系统消息", subTitle = "删除草稿", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("system-mod:announcement-mng:remove")
+    @CheckUserPerms("system-mod:announcement-mng:remove")
     public Result<Void> remove(
             @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> msgIds) {
         return toRes(announcementInfoMapper.deleteByIds(msgIds));

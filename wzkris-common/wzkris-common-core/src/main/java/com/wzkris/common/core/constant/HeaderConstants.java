@@ -18,13 +18,13 @@ public class HeaderConstants {
     public static final String X_TRACING_ID = "X-Tracing-Id";
 
     /**
-     * 租户Token
-     */
-    public static final String X_TENANT_TOKEN = "X-Tenant-Token";
-
-    /**
      * 用户Token
      */
-    public static final String X_USER_TOKEN = "X-User-Token";
+    public static final String X_User_TOKEN = "X-User-Token";
+
+    /**
+     * 客户Token
+     */
+    public static final String X_CUSTOMER_TOKEN = "X-Customer-Token";
 
 }

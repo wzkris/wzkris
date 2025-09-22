@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.auth.feign.enums.AuthenticatedType;
+import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
@@ -96,9 +96,9 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
 
     @Nullable
     private String generateKey(CorePrincipal principal) {
-        if (principal.getType().equals(AuthenticatedType.SYSTEM_USER.getValue())) {
+        if (principal.getType().equals(AuthType.USER.getValue())) {
             return tokenGenerator.generateKey();
-        } else if (principal.getType().equals(AuthenticatedType.CUSTOMER.getValue())) {
+        } else if (principal.getType().equals(AuthType.CUSTOMER.getValue())) {
             JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
             JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
                     .build();

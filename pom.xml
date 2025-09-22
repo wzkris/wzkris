@@ -144,11 +144,6 @@
             <id>dev</id>
             <properties>
                 <profiles.active>dev</profiles.active>
-                <nacos.server>localhost:8848</nacos.server>
-                <nacos.username>dev</nacos.username>
-                <nacos.password>nacos</nacos.password>
-                <nacos.namespace>application-dev</nacos.namespace>
-                <nacos.group>APPLICATION_GROUP</nacos.group>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -158,11 +153,6 @@
             <id>prod</id>
             <properties>
                 <profiles.active>prod</profiles.active>
-                <nacos.server>localhost:8848</nacos.server>
-                <nacos.username>prod</nacos.username>
-                <nacos.password>nacos</nacos.password>
-                <nacos.namespace>application-prod</nacos.namespace>
-                <nacos.group>APPLICATION_GROUP</nacos.group>
             </properties>
         </profile>
     </profiles>

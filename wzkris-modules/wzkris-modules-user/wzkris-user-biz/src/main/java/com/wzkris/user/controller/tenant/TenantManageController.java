@@ -9,7 +9,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckSystemPerms;
+import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
@@ -50,7 +50,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@su.isSuperTenant()") // 只允许超级租户访问
+@PreAuthorize("@lu.isSuperTenant()") // 只允许超级租户访问
 @IgnoreTenant // 忽略租户隔离
 @RequestMapping("/tenant-manage")
 public class TenantManageController extends BaseController {
@@ -67,7 +67,7 @@ public class TenantManageController extends BaseController {
 
     @Operation(summary = "租户分页")
     @GetMapping("/list")
-    @CheckSystemPerms("user-mod:tenant-mng:list")
+    @CheckUserPerms("user-mod:tenant-mng:list")
     public Result<Page<TenantManageVO>> listPage(TenantManageQueryReq queryReq) {
         startPage();
         List<TenantManageVO> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(queryReq));
@@ -91,7 +91,7 @@ public class TenantManageController extends BaseController {
 
     @Operation(summary = "套餐选择列表")
     @GetMapping("/package-select")
-    @CheckSystemPerms(
+    @CheckUserPerms(
             value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
             mode = CheckMode.OR)
     public Result<List<SelectVO>> packageSelect(String packageName) {
@@ -101,7 +101,7 @@ public class TenantManageController extends BaseController {
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/{tenantId}")
-    @CheckSystemPerms("user-mod:tenant-mng:query")
+    @CheckUserPerms("user-mod:tenant-mng:query")
     public Result<TenantInfoDO> queryByid(
             @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long tenantId) {
         return ok(tenantInfoMapper.selectById(tenantId));
@@ -110,7 +110,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "新增租户")
     @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckSystemPerms("user-mod:tenant-mng:add")
+    @CheckUserPerms("user-mod:tenant-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody TenantManageReq tenantReq) {
         if (userInfoService.existByUsername(null, tenantReq.getUsername())) {
             return err40000("登录账号'" + tenantReq.getUsername() + "'已存在");
@@ -120,7 +120,7 @@ public class TenantManageController extends BaseController {
         String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
         tenant.setOperPwd(operPwd);
 
-        String password = RandomStringUtils.secure().next(8);
+        String password = RandomStringUtils.secure().nextAlphabetic(8);
         boolean success = tenantInfoService.saveTenant(tenant, tenantReq.getUsername(), password);
         if (success) {
             SpringUtil.getContext()
@@ -137,7 +137,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckSystemPerms("user-mod:tenant-mng:edit")
+    @CheckUserPerms("user-mod:tenant-mng:edit")
     public Result<Void> edit(@Validated @RequestBody TenantManageReq tenantReq) {
         tenantInfoService.checkDataScope(tenantReq.getTenantId());
 
@@ -150,7 +150,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "修改租户状态")
     @OperateLog(title = "租户管理", subTitle = "修改租户状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckSystemPerms("user-mod:tenant-mng:edit")
+    @CheckUserPerms("user-mod:tenant-mng:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         tenantInfoService.checkDataScope(statusReq.getId());
 
@@ -162,7 +162,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset-operpwd")
-    @CheckSystemPerms("user-mod:tenant-mng:reset-operpwd")
+    @CheckUserPerms("user-mod:tenant-mng:reset-operpwd")
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
         tenantInfoService.checkDataScope(req.getId());
 
@@ -177,7 +177,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "删除租户")
     @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckSystemPerms("user-mod:tenant-mng:remove")
+    @CheckUserPerms("user-mod:tenant-mng:remove")
     public Result<Void> remove(
             @RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {
         tenantInfoService.checkDataScope(tenantId);

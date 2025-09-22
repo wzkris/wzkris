@@ -40,7 +40,7 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
         WechatAuthenticationToken authenticationToken = (WechatAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
-                .filter(t -> t.checkAuthenticatedType(authenticationToken.getAuthenticatedType()))
+                .filter(t -> t.checkAuthType(authenticationToken.getAuthType()))
                 .findFirst();
 
         if (templateOptional.isEmpty()) {
@@ -61,7 +61,7 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
                     BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        return new WechatAuthenticationToken(authenticationToken.getAuthenticatedType(), authenticationToken.getIdentifierType(), principal);
+        return new WechatAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getIdentifierType(), principal);
     }
 
     @Override
