@@ -16,6 +16,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -33,8 +34,11 @@ import java.util.stream.Stream;
  * @date : 2023/4/13 15:22
  */
 @Slf4j
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
-public class PreRequestFilter implements GlobalFilter, Ordered {
+public class PreRequestFilter implements GlobalFilter {
+
+    static final AntPathMatcher matcher = new AntPathMatcher();
 
     @Autowired
     private PermitAllProperties permitAllProperties;
@@ -54,6 +58,11 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         final ServerHttpRequest request = exchange.getRequest();
+
+        // 检查是否是黑名单
+        if (isPathDenied(request.getPath().value())) {
+            return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.FORBID);
+        }
 
         // 检查是否需要认证
         if (isAuthenticationRequired(request)) {
@@ -83,11 +92,10 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
                 .anyMatch(StringUtil::isNotBlank);
 
         // 如果没有任何token且路径不在白名单中，则需要认证
-        return !hasToken && !isPathPermitted(request.getURI().getPath());
+        return !hasToken && !isPathPermitted(request.getPath().value());
     }
 
     private boolean isPathPermitted(String url) {
-        AntPathMatcher matcher = new AntPathMatcher();
         for (String path : permitAllProperties.getIgnores()) {
             if (matcher.match(path, url)) {
                 return true;
@@ -96,9 +104,13 @@ public class PreRequestFilter implements GlobalFilter, Ordered {
         return false;
     }
 
-    @Override
-    public int getOrder() {
-        return HIGHEST_PRECEDENCE;
+    private boolean isPathDenied(String url) {
+        for (String path : permitAllProperties.getDenys()) {
+            if (matcher.match(path, url)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
