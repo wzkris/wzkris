@@ -1,8 +1,7 @@
-package com.wzkris.user.controller.test;
+package com.wzkris.auth.controller;
 
 import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import static com.wzkris.common.core.domain.Result.*;
+
 /**
  * 微信js签名
  *
@@ -32,7 +33,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/wx_req")
 @RequiredArgsConstructor
-public class WxJsTicketController extends BaseController {
+public class WxJsTicketController {
 
     @Autowired
     @Lazy
@@ -46,7 +47,7 @@ public class WxJsTicketController extends BaseController {
             return ok(jsapiKey);
         } catch (WxErrorException e) {
             log.error("获取js_ticket发生异常，errmsg：{}", e.getError());
-            return resp(e.getError().getErrorCode(), e.getError().getErrorMsg());
+            return resp(e.getError().getErrorCode(), null, e.getError().getErrorMsg());
         } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
             return err40000("暂时无法使用微信jsticket");
@@ -74,7 +75,7 @@ public class WxJsTicketController extends BaseController {
             return ok(jsapiSignature);
         } catch (WxErrorException e) {
             log.error("获取js_ticket发生异常，errmsg：{}", e.getError());
-            return resp(e.getError().getErrorCode(), e.getError().getErrorMsg());
+            return resp(e.getError().getErrorCode(), null, e.getError().getErrorMsg());
         } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
             return err40000("暂时无法使用微信js签名");

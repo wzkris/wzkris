@@ -81,6 +81,11 @@
             <artifactId>wzkris-common-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-weixin-sdk</artifactId>
+        </dependency>
+
         <!--本地rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>

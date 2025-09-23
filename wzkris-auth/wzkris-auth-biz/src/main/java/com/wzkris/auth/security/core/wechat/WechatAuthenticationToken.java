@@ -10,7 +10,7 @@ import org.springframework.security.core.Transient;
 /**
  * @author wzkris
  * @date 2024/3/11
- * @description 短信验证token
+ * @description 微信验证token
  */
 @Getter
 @Transient
