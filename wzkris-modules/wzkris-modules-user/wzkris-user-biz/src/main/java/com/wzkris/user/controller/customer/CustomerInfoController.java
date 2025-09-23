@@ -54,10 +54,10 @@ public class CustomerInfoController extends BaseController {
     @Operation(summary = "修改信息")
     @PostMapping
     @GlobalCacheEvict(keyPrefix = info_prefix, key = "@cu.getId()")
-    public Result<?> editInfo(@RequestBody CustomerInfoReq profileReq) {
+    public Result<?> editInfo(@RequestBody CustomerInfoReq req) {
         CustomerInfoDO user = new CustomerInfoDO(LoginCustomerUtil.getId());
-        user.setNickname(profileReq.getNickname());
-        user.setGender(profileReq.getGender());
+        user.setNickname(req.getNickname());
+        user.setGender(req.getGender());
         return toRes(customerInfoMapper.updateById(user));
     }
 

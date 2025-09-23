@@ -67,10 +67,10 @@ public class CustomerManageController extends BaseController {
     }
 
     @Operation(summary = "客户详细信息")
-    @GetMapping("/{userId}")
+    @GetMapping("/{customerId}")
     @CheckUserPerms("user-mod:customer-mng:query")
-    public Result<CustomerInfoDO> query(@PathVariable Long userId) {
-        return ok(customerInfoMapper.selectById(userId));
+    public Result<CustomerInfoDO> query(@PathVariable Long customerId) {
+        return ok(customerInfoMapper.selectById(customerId));
     }
 
     @Operation(summary = "状态修改")

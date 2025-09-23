@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 用户钱包记录表 customer_wallet_record
+ * 客户钱包记录表 customer_wallet_record
  *
  * @author wzkris
  */
@@ -22,8 +22,8 @@ public class CustomerWalletRecordDO {
     @TableId
     private Long recordId;
 
-    @Schema(description = "用户ID")
-    private Long userId;
+    @Schema(description = "客户ID")
+    private Long customerId;
 
     @Schema(description = "金额, 元")
     private BigDecimal amount;

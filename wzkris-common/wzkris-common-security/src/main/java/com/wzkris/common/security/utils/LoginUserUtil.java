@@ -33,7 +33,7 @@ public class LoginUserUtil extends SecurityUtil {
      *
      * @return 当前用户
      */
-    public static LoginUser getUser() {
+    public static LoginUser get() {
         try {
             return (LoginUser) getAuthentication().getPrincipal();
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class LoginUserUtil extends SecurityUtil {
      * @return 当前用户ID
      */
     public static Long getId() {
-        return getUser().getId();
+        return get().getId();
     }
 
     /**
@@ -56,7 +56,7 @@ public class LoginUserUtil extends SecurityUtil {
      * @return 当前用户名
      */
     public static String getUsername() {
-        return getUser().getUsername();
+        return get().getUsername();
     }
 
     /**
@@ -65,7 +65,7 @@ public class LoginUserUtil extends SecurityUtil {
      * @return 当前租户ID
      */
     public static Long getTenantId() {
-        return getUser().getTenantId();
+        return get().getTenantId();
     }
 
     /**
@@ -74,7 +74,7 @@ public class LoginUserUtil extends SecurityUtil {
      * @return 是否
      */
     public static boolean isAdmin() {
-        return getUser().isAdmin();
+        return get().isAdmin();
     }
 
     /**

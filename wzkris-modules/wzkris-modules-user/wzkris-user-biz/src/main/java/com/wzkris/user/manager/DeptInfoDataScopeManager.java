@@ -34,7 +34,7 @@ public class DeptInfoDataScopeManager {
     private final DeptInfoService deptInfoService;
 
     public List<DeptInfoDO> list(Wrapper<DeptInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("dept_id", LoginUserUtil.getUser().getDeptScopes());
+        DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
 
         try {
             return deptInfoDscMapper.selectLists(queryWrapper);
@@ -65,7 +65,7 @@ public class DeptInfoDataScopeManager {
      * @return 部门id集合
      */
     public List<Long> listDeptIdByRoleIds(List<Long> roleIds) {
-        DataScopeUtil.putParameter("dept_id", LoginUserUtil.getUser().getDeptScopes());
+        DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
 
         try {
             return deptInfoDscMapper.listDeptIdByRoleIds(roleIds);
@@ -85,7 +85,7 @@ public class DeptInfoDataScopeManager {
      */
     public void checkDataScopes(Collection<Long> deptIds) {
         if (CollectionUtils.isNotEmpty(deptIds)) {
-            DataScopeUtil.putParameter("dept_id", LoginUserUtil.getUser().getDeptScopes());
+            DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
 
             try {
                 if (!deptInfoDscMapper.checkDataScopes(new HashSet<>(deptIds))) {

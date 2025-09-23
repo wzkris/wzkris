@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-09-17 17:51:32
+-- Started on 2025-09-23 10:07:12
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -243,7 +243,7 @@ COMMENT ON COLUMN biz.customer_wallet_info.status IS '状态';
 
 CREATE TABLE biz.customer_wallet_record (
     record_id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    customer_id bigint NOT NULL,
     amount numeric(10,2) NOT NULL,
     record_type character(1) NOT NULL,
     create_at timestamp(6) with time zone NOT NULL,
@@ -265,10 +265,10 @@ COMMENT ON TABLE biz.customer_wallet_record IS '用户钱包记录';
 --
 -- TOC entry 3483 (class 0 OID 0)
 -- Dependencies: 218
--- Name: COLUMN customer_wallet_record.user_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN customer_wallet_record.customer_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.customer_wallet_record.user_id IS '用户ID';
+COMMENT ON COLUMN biz.customer_wallet_record.customer_id IS '客户ID';
 
 
 --
@@ -1774,7 +1774,7 @@ COPY biz.customer_wallet_info (customer_id, balance, status) FROM stdin;
 -- Data for Name: customer_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_wallet_record (record_id, user_id, amount, record_type, create_at, remark) FROM stdin;
+COPY biz.customer_wallet_record (record_id, customer_id, amount, record_type, create_at, remark) FROM stdin;
 \.
 
 
@@ -2059,7 +2059,7 @@ ALTER TABLE ONLY biz.dept_info
 
 
 --
--- TOC entry 3271 (class 2606 OID 16672)
+-- TOC entry 3272 (class 2606 OID 16672)
 -- Name: menu_info menu_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
@@ -2176,102 +2176,102 @@ ALTER TABLE ONLY biz.user_to_role
 
 
 --
--- TOC entry 3262 (class 1259 OID 16695)
--- Name: i_app_user_wallet_record_user_id; Type: INDEX; Schema: biz; Owner: postgres
+-- TOC entry 3254 (class 1259 OID 16702)
+-- Name: idx_customer_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX i_app_user_wallet_record_user_id ON biz.customer_wallet_record USING btree (user_id);
+CREATE UNIQUE INDEX idx_customer_info_phone_number ON biz.customer_info USING btree (phone_number);
+
+
+--
+-- TOC entry 3262 (class 1259 OID 16695)
+-- Name: idx_customer_wallet_record_customer_id; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE INDEX idx_customer_wallet_record_customer_id ON biz.customer_wallet_record USING btree (customer_id);
 
 
 --
 -- TOC entry 3268 (class 1259 OID 16696)
--- Name: sys_dept_i_ancestors; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_dept_info_ancestors; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX sys_dept_i_ancestors ON biz.dept_info USING btree (ancestors);
+CREATE INDEX idx_dept_info_ancestors ON biz.dept_info USING btree (ancestors);
 
 
 --
 -- TOC entry 3269 (class 1259 OID 16697)
--- Name: sys_dept_i_parent_id; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_dept_info_parent_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX sys_dept_i_parent_id ON biz.dept_info USING btree (parent_id);
+CREATE INDEX idx_dept_info_parent_id ON biz.dept_info USING btree (parent_id);
 
 
 --
--- TOC entry 3272 (class 1259 OID 16698)
--- Name: sys_menu_i_parent_id_copy1_copy1; Type: INDEX; Schema: biz; Owner: postgres
+-- TOC entry 3270 (class 1259 OID 16698)
+-- Name: idx_menu_info_parent_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX sys_menu_i_parent_id_copy1_copy1 ON biz.menu_info USING btree (parent_id);
+CREATE INDEX idx_menu_info_parent_id ON biz.menu_info USING btree (parent_id);
 
 
 --
 -- TOC entry 3288 (class 1259 OID 16699)
--- Name: sys_tenant_wallet_record_i_tenant_id; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_tenant_wallet_record_tenant_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX sys_tenant_wallet_record_i_tenant_id ON biz.tenant_wallet_record USING btree (tenant_id);
+CREATE INDEX idx_tenant_wallet_record_tenant_id ON biz.tenant_wallet_record USING btree (tenant_id);
 
 
 --
 -- TOC entry 3297 (class 1259 OID 16700)
--- Name: sys_withdrawal_record_i_order_no; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_tenant_wallet_withdrawal_record_order_no; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX sys_withdrawal_record_i_order_no ON biz.tenant_wallet_withdrawal_record USING btree (order_no);
-
-
---
--- TOC entry 3283 (class 1259 OID 16701)
--- Name: u_i_administrator; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX u_i_administrator ON biz.tenant_info USING btree (administrator);
-
-
---
--- TOC entry 3254 (class 1259 OID 16702)
--- Name: u_i_app_user_phone_number; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX u_i_app_user_phone_number ON biz.customer_info USING btree (phone_number);
-
-
---
--- TOC entry 3265 (class 1259 OID 16703)
--- Name: u_i_client_id; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX u_i_client_id ON biz.oauth2_client USING btree (client_id);
+CREATE UNIQUE INDEX idx_tenant_wallet_withdrawal_record_order_no ON biz.tenant_wallet_withdrawal_record USING btree (order_no);
 
 
 --
 -- TOC entry 3257 (class 1259 OID 16704)
--- Name: u_i_identifier; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_customer_social_info_identifier; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX u_i_identifier ON biz.customer_social_info USING btree (identifier);
+CREATE UNIQUE INDEX uk_customer_social_info_identifier ON biz.customer_social_info USING btree (identifier);
+
+
+--
+-- TOC entry 3265 (class 1259 OID 16703)
+-- Name: uk_oauth2_client_client_id; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uk_oauth2_client_client_id ON biz.oauth2_client USING btree (client_id);
+
+
+--
+-- TOC entry 3283 (class 1259 OID 16701)
+-- Name: uk_tenant_info_administrator; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uk_tenant_info_administrator ON biz.tenant_info USING btree (administrator);
 
 
 --
 -- TOC entry 3291 (class 1259 OID 16705)
--- Name: u_i_sys_user_phone_number; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_user_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX u_i_sys_user_phone_number ON biz.user_info USING btree (phone_number);
+CREATE UNIQUE INDEX uk_user_info_phone_number ON biz.user_info USING btree (phone_number);
 
 
 --
 -- TOC entry 3292 (class 1259 OID 16706)
--- Name: u_i_sys_user_username; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_user_info_username; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX u_i_sys_user_username ON biz.user_info USING btree (username);
+CREATE UNIQUE INDEX uk_user_info_username ON biz.user_info USING btree (username);
 
 
--- Completed on 2025-09-17 17:51:32
+-- Completed on 2025-09-23 10:07:12
 
 --
 -- PostgreSQL database dump complete

@@ -32,7 +32,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      *
      * @return 当前用户
      */
-    public static DeferredLoginCustomer getUser() {
+    public static DeferredLoginCustomer get() {
         try {
             return (DeferredLoginCustomer) getAuthentication().getPrincipal();
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      * @return 当前用户ID
      */
     public static Long getId() {
-        return getUser().getId();
+        return get().getId();
     }
 
     /**
@@ -55,7 +55,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      * @return 手机号
      */
     public static String getPhoneNumber() {
-        return getUser().getPhoneNumber();
+        return get().getPhoneNumber();
     }
 
 }
