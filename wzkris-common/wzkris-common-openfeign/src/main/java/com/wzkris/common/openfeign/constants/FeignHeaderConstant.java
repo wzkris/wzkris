@@ -11,9 +11,9 @@ public class FeignHeaderConstant {
     public static final String X_FEIGN_REQUEST = "X-Feign-Request";
 
     /**
-     * 安全上下文
+     * feign请求时间戳
      */
-    public static final String X_SECURITY_CONTEXT = "X-Security-Context";
+    public static final String X_FEIGN_REQTIME = "X-Feign-Reqtime";
 
     /**
      * feign异常响应

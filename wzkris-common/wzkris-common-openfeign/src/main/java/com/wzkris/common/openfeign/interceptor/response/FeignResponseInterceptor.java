@@ -26,18 +26,56 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
 
     @Override
     public Object intercept(InvocationContext invocationContext, Chain chain) throws Exception {
-        try (Response response = invocationContext.response()) {
-            Collection<String> ex = response.headers().get(FeignHeaderConstant.X_FEIGN_EXCEPTION);
-            if (CollectionUtils.isNotEmpty(ex)) {
-                Optional<String> first = ex.stream().findFirst();
-                throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), URLDecoder.decode(first.get(), StandardCharsets.UTF_8));
-            }
-            if (!HttpStatus.valueOf(response.status()).is2xxSuccessful()) {
-                log.error("feign called failed, <request> => {} " +
-                        " <response> => {}", response.request(), response);
-                throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), BizRpcCode.RPC_REMOTE_ERROR.desc());
-            }
-            return chain.next(invocationContext);
+        try (Response originalResponse = invocationContext.response()) {
+            checkSuccess(originalResponse);
+
+            Object next = chain.next(invocationContext);
+
+            // 打印响应信息
+            logResponseInfo(originalResponse, next);
+
+            return next;
+        }
+    }
+
+    private void checkSuccess(Response originalResponse) {
+        Collection<String> ex = originalResponse.headers().get(FeignHeaderConstant.X_FEIGN_EXCEPTION);
+        if (CollectionUtils.isNotEmpty(ex)) {
+            Optional<String> first = ex.stream().findFirst();
+            String errmsg = URLDecoder.decode(first.get(), StandardCharsets.UTF_8);
+            log.error("""
+                            feign called failed => Url: {}
+                            Response: {},
+                            Error msg: {}
+                            """,
+                    originalResponse.request().url(), originalResponse, errmsg);
+            throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), errmsg);
+        }
+        if (!HttpStatus.valueOf(originalResponse.status()).is2xxSuccessful()) {
+            log.error("""
+                            feign called failed => Url: {}
+                            Response: {}
+                            """,
+                    originalResponse.request().url(), originalResponse);
+            throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), BizRpcCode.RPC_REMOTE_ERROR.desc());
+        }
+    }
+
+    /**
+     * 打印Feign响应信息
+     */
+    private void logResponseInfo(Response response, Object next) {
+        try {
+            Optional<String> reqTime = response.request().headers().get(FeignHeaderConstant.X_FEIGN_REQTIME).stream().findFirst();
+            log.info("""
+                            Feign called Success =>  Url: {}
+                            Response: {}
+                            Response Body: {}
+                            Taken time: {} ms
+                            """,
+                    response.request().url(), response, next, System.currentTimeMillis() - Long.parseLong(reqTime.get()));
+        } catch (Exception e) {
+            log.warn("Feign Response => 打印响应发生异常: {}", e.getMessage(), e);
         }
     }
 
