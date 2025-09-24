@@ -1,13 +1,10 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.auth.feign.token.TokenFeign;
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.converter.CustomJwtAuthenticationConverter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
-import com.wzkris.common.security.oauth2.repository.RmiSecurityContextRepository;
+import com.wzkris.common.security.oauth2.repository.HttpHeaderSecurityContextRepository;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,9 +56,6 @@ public class ResourceServerConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
                         .permitAll()
-                        .requestMatchers(request ->
-                                Boolean.parseBoolean(StringUtil.defaultIfBlank(request.getHeader(FeignHeaderConstant.X_FEIGN_REQUEST), "false")))
-                        .permitAll()
                         .requestMatchers("/actuator/**")
                         .hasAuthority("SCOPE_monitor")
                         .anyRequest()
@@ -84,8 +78,8 @@ public class ResourceServerConfig {
     }
 
     @Bean
-    public SecurityContextRepository securityContextRepository(TokenFeign tokenFeign, JwtDecoder jwtDecoder) {
-        return new RmiSecurityContextRepository(tokenFeign, jwtDecoder);
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpHeaderSecurityContextRepository();
     }
 
     @Bean

@@ -1,7 +1,6 @@
 package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
@@ -10,6 +9,7 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizCaptchaCode;
 import com.wzkris.common.core.exception.BaseException;
+import com.wzkris.common.security.enums.AuthType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;

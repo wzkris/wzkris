@@ -1,13 +1,12 @@
 package com.wzkris.common.security.oauth2.repository;
 
-import com.wzkris.auth.feign.domain.LoginCustomer;
-import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.token.TokenFeign;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.SupplierDeferredSecurityContext;
+import com.wzkris.common.security.model.domain.LoginCustomer;
+import com.wzkris.common.security.model.domain.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -27,28 +25,18 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import java.util.function.Supplier;
 
 /**
- * 原SecurityContextRepository支持http session，
- * 作为纯API服务，禁止http session管理，重写此类以支持中心化的认证架构
+ * 重写此类以支持网关统一认证
  *
  * @author wzkris
  * @date 2025/06/19 15:40
  */
 @Slf4j
-public final class RmiSecurityContextRepository implements SecurityContextRepository {
+public final class HttpHeaderSecurityContextRepository implements SecurityContextRepository {
 
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
             .getContextHolderStrategy();
 
     private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
-
-    private final TokenFeign tokenFeign;
-
-    private final JwtDecoder jwtDecoder;
-
-    public RmiSecurityContextRepository(TokenFeign tokenFeign, JwtDecoder jwtDecoder) {
-        this.tokenFeign = tokenFeign;
-        this.jwtDecoder = jwtDecoder;
-    }
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
@@ -72,7 +60,6 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
             return ctx;
         }
 
-        log.error("本次请求的请求头未携带用户信息");
         return ctx;
     }
 

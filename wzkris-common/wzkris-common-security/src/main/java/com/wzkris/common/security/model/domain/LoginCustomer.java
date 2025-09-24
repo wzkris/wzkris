@@ -1,9 +1,10 @@
-package com.wzkris.auth.feign.domain;
+package com.wzkris.common.security.model.domain;
 
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.security.enums.AuthType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Collections;
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.Set;
  */
 @Setter
 @Getter
+@ToString
 public class LoginCustomer extends CorePrincipal {
 
     /**

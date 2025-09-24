@@ -1,13 +1,13 @@
 package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.enums.AuthType;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;

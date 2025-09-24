@@ -1,9 +1,9 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.user.UserException;
+import com.wzkris.common.security.enums.AuthType;
+import com.wzkris.common.security.model.domain.LoginUser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

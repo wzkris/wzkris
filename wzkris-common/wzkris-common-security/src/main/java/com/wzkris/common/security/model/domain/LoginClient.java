@@ -1,8 +1,9 @@
-package com.wzkris.auth.feign.domain;
+package com.wzkris.common.security.model.domain;
 
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.security.enums.AuthType;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Collections;
 import java.util.Set;
@@ -14,15 +15,16 @@ import java.util.Set;
  * @date : 2024/6/14 15:30
  */
 @Getter
-public class AuthedClient extends CorePrincipal {
+@ToString
+public class LoginClient extends CorePrincipal {
 
     private final String clientId;
 
-    public AuthedClient() {
+    public LoginClient() {
         this(null, Collections.emptySet());
     }
 
-    public AuthedClient(String clientId, Set<String> scopes) {
+    public LoginClient(String clientId, Set<String> scopes) {
         super(System.currentTimeMillis(), AuthType.CLIENT.getValue(), scopes);
         this.clientId = clientId;
     }

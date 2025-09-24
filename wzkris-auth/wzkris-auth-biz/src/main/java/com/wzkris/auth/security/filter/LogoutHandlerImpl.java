@@ -1,11 +1,11 @@
 package com.wzkris.auth.security.filter;
 
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.enums.AuthType;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

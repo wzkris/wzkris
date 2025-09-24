@@ -1,15 +1,15 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.domain.OnlineUser;
-import com.wzkris.auth.feign.domain.LoginCustomer;
-import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.enums.AuthType;
+import com.wzkris.common.security.model.domain.LoginCustomer;
+import com.wzkris.common.security.model.domain.LoginUser;
 import com.wzkris.system.feign.userlog.UserLogFeign;
 import com.wzkris.system.feign.userlog.req.LoginLogReq;
 import com.wzkris.user.feign.customer.CustomerFeign;

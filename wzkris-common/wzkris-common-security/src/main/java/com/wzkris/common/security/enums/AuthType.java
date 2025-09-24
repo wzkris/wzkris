@@ -1,4 +1,4 @@
-package com.wzkris.auth.feign.enums;
+package com.wzkris.common.security.enums;
 
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;

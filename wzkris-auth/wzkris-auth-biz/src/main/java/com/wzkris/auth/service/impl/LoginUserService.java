@@ -1,8 +1,6 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
@@ -13,7 +11,9 @@ import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.enums.AuthType;
 import com.wzkris.common.security.exception.CustomErrorCodes;
+import com.wzkris.common.security.model.domain.LoginUser;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.user.feign.userinfo.UserInfoFeign;

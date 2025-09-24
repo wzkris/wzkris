@@ -1,7 +1,7 @@
 package com.wzkris.common.security.annotation;
 
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.common.security.annotation.enums.CheckMode;
+import com.wzkris.common.security.enums.AuthType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,10 +1,10 @@
 package com.wzkris.auth.feign.token;
 
-import com.wzkris.auth.feign.domain.AuthedClient;
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.security.model.domain.LoginClient;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -43,7 +43,7 @@ public class TokenFeignImpl implements TokenFeign {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check expired");
         }
 
-        CorePrincipal principal = new AuthedClient(oAuth2Authorization.getRegisteredClientId(),
+        CorePrincipal principal = new LoginClient(oAuth2Authorization.getRegisteredClientId(),
                 this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
         return TokenResponse.ok(principal);
     }

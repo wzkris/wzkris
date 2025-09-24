@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.converter;
 
-import com.wzkris.auth.feign.domain.AuthedClient;
+import com.wzkris.common.security.model.domain.LoginClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -31,7 +31,7 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
 
         String clientid = jwt.getClaimAsString(JwtClaimNames.SUB);
 
-        return new UsernamePasswordAuthenticationToken(new AuthedClient(clientid, toPerms(authorities)), jwt.getTokenValue(), authorities);
+        return new UsernamePasswordAuthenticationToken(new LoginClient(clientid, toPerms(authorities)), jwt.getTokenValue(), authorities);
     }
 
     private Set<String> toPerms(Collection<GrantedAuthority> authorities) {
