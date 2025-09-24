@@ -54,12 +54,10 @@ public class ResourceServerConfig {
                         .securityContextRepository(securityContextRepository)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new))
-                        .permitAll()
-                        .requestMatchers("/actuator/**")
-                        .hasAuthority("SCOPE_monitor")
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new)).permitAll()
+                        .requestMatchers("/feign-**/**").permitAll()
+                        .requestMatchers("/actuator/**").hasAuthority("SCOPE_monitor")// 保护监控端点
+                        .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(resourceServer -> resourceServer
                         .jwt(jwtConfigurer -> jwtConfigurer

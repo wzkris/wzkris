@@ -27,6 +27,13 @@ public @interface CheckPerms {
     AuthType checkType();
 
     /**
+     * 权限前缀
+     *
+     * @return /
+     */
+    String prefix() default "";
+
+    /**
      * 需要校验的权限码 [ 数组 ]
      *
      * @return /

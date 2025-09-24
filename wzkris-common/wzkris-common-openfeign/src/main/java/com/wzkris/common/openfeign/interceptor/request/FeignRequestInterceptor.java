@@ -2,7 +2,6 @@ package com.wzkris.common.openfeign.interceptor.request;
 
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.utils.TraceIdUtil;
-import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        template.header(FeignHeaderConstant.X_FEIGN_REQUEST, "true");
         template.header(HeaderConstants.X_TRACING_ID, TraceIdUtil.get());
     }
 
