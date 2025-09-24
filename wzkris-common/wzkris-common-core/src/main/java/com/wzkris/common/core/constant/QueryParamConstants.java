@@ -10,7 +10,7 @@ public class QueryParamConstants {
     /**
      * 用户Token
      */
-    public static final String X_User_TOKEN = "X_User_Token";
+    public static final String X_USER_TOKEN = "X_User_Token";
 
     /**
      * 客户Token

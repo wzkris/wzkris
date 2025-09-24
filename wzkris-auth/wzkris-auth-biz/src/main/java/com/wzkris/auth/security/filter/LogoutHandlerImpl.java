@@ -36,7 +36,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        String userToken = request.getHeader(HeaderConstants.X_User_TOKEN);
+        String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
         if (StringUtil.isNotBlank(userToken)) {
             Serializable id = tokenService.logoutByAccessToken(userToken);
             if (id != null) {

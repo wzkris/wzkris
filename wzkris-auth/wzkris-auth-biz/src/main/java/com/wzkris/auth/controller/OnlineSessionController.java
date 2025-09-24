@@ -32,7 +32,7 @@ public class OnlineSessionController {
 
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineUserResp>> onlineSession(@RequestHeader(HeaderConstants.X_User_TOKEN) String accessToken) {
+    public Result<Collection<OnlineUserResp>> onlineSession(@RequestHeader(HeaderConstants.X_USER_TOKEN) String accessToken) {
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
 
         RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(LoginUserUtil.getId());

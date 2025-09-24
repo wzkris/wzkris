@@ -20,11 +20,21 @@ public class HeaderConstants {
     /**
      * 用户Token
      */
-    public static final String X_User_TOKEN = "X-User-Token";
+    public static final String X_USER_TOKEN = "X-User-Token";
+
+    /**
+     * 用户信息
+     */
+    public static final String X_USER_INFO = "X-User-Info";
 
     /**
      * 客户Token
      */
     public static final String X_CUSTOMER_TOKEN = "X-Customer-Token";
+
+    /**
+     * 客户信息
+     */
+    public static final String X_CUSTOMER_INFO = "X-Customer-Info";
 
 }

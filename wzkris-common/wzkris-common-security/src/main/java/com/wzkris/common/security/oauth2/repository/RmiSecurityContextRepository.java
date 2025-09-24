@@ -1,15 +1,12 @@
 package com.wzkris.common.security.oauth2.repository;
 
 import com.wzkris.auth.feign.domain.LoginCustomer;
+import com.wzkris.auth.feign.domain.LoginUser;
 import com.wzkris.auth.feign.token.TokenFeign;
-import com.wzkris.auth.feign.token.req.TokenReq;
-import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.constant.QueryParamConstants;
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.model.DeferredLoginCustomer;
 import com.wzkris.common.security.model.SupplierDeferredSecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,10 +19,7 @@ import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -70,59 +64,36 @@ public final class RmiSecurityContextRepository implements SecurityContextReposi
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 
-        final String userToken = getUserToken(request);
-        if (StringUtil.isNotBlank(userToken)) {
-            generateUserToken(request, userToken, ctx);
+        if (generateUser(request, ctx)) {
             return ctx;
         }
 
-        final String customerToken = getCustomerToken(request);
-        if (StringUtil.isNotBlank(customerToken)) {
-            generateCustomerToken(request, customerToken, ctx);
+        if (generateCustomer(request, ctx)) {
             return ctx;
         }
 
+        log.error("本次请求的请求头未携带用户信息");
         return ctx;
     }
 
-    private static String getUserToken(HttpServletRequest request) {
-        String token = request.getHeader(HeaderConstants.X_User_TOKEN);
-        if (StringUtil.isNotBlank(token)) {
-            return token;
+    private boolean generateUser(HttpServletRequest request, SecurityContext ctx) {
+        final String userinfo = request.getHeader(HeaderConstants.X_USER_INFO);
+        if (StringUtil.isNotBlank(userinfo)) {
+            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(userinfo, LoginUser.class), request,
+                    request.getHeader(HeaderConstants.X_USER_TOKEN)));
+            return true;
         }
-        return request.getParameter(QueryParamConstants.X_User_TOKEN);
+        return false;
     }
 
-    private static String getCustomerToken(HttpServletRequest request) {
-        String token = request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN);
-        if (StringUtil.isNotBlank(token)) {
-            return token;
+    private boolean generateCustomer(HttpServletRequest request, SecurityContext ctx) {
+        final String customerinfo = request.getHeader(HeaderConstants.X_CUSTOMER_INFO);
+        if (StringUtil.isNotBlank(customerinfo)) {
+            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(customerinfo, LoginCustomer.class), request,
+                    request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN)));
+            return true;
         }
-        return request.getParameter(QueryParamConstants.X_CUSTOMER_TOKEN);
-    }
-
-    private void generateUserToken(HttpServletRequest request, String token, SecurityContext ctx) {
-        TokenResponse tokenResponse = tokenFeign.validateUser(new TokenReq(token));
-        if (tokenResponse.isSuccess()) {
-            ctx.setAuthentication(createAuthentication(tokenResponse.getPrincipal(), request, token));
-        }
-    }
-
-    private void generateCustomerToken(HttpServletRequest request, String token, SecurityContext ctx) {
-        try {
-            Jwt jwt = jwtDecoder.decode(token);
-            String sub = jwt.getClaimAsString(JwtClaimNames.SUB);
-            Long userId = sub == null ? SecurityConstants.DEFAULT_USER_ID : Long.valueOf(sub);
-            Supplier<LoginCustomer> supplier = () -> {
-                TokenResponse tokenResponse = tokenFeign.validateUser(new TokenReq(token));
-                if (tokenResponse.isSuccess()) {
-                    return (LoginCustomer) tokenResponse.getPrincipal();
-                }
-                return null;
-            };
-            ctx.setAuthentication(createAuthentication(new DeferredLoginCustomer(userId, supplier), request, token));
-        } catch (JwtException ignored) {
-        }
+        return false;
     }
 
     private Authentication createAuthentication(CorePrincipal principal, HttpServletRequest request, String token) {
