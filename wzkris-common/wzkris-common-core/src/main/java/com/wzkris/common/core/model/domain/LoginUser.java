@@ -1,7 +1,7 @@
-package com.wzkris.common.security.model.domain;
+package com.wzkris.common.core.model.domain;
 
-import com.wzkris.common.core.domain.CorePrincipal;
-import com.wzkris.common.security.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.enums.AuthType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -1,6 +1,6 @@
 package com.wzkris.common.openfeign.handler;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.openfeign.exception.RpcException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

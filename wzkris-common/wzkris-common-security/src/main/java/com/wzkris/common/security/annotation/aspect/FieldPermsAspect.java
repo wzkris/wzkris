@@ -1,6 +1,6 @@
 package com.wzkris.common.security.annotation.aspect;
 
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.annotation.FieldPerms;

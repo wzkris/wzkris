@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.exception.user.UserException;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;

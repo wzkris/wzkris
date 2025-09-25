@@ -1,7 +1,6 @@
 package com.wzkris.auth.feign.token.resp;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -15,7 +14,7 @@ import java.io.Serializable;
  */
 @Getter
 @ToString
-public class TokenResponse implements Serializable {
+public class TokenResponse<T extends CorePrincipal> implements Serializable {
 
     static final String SUCCESS = "success";
 
@@ -29,40 +28,39 @@ public class TokenResponse implements Serializable {
 
     private String description;
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
-    private CorePrincipal principal;
+    private T principal;
 
     public TokenResponse() {
     }
 
-    public TokenResponse(String errorCode, String description, CorePrincipal principal) {
+    public TokenResponse(String errorCode, String description, T principal) {
         this.errorCode = errorCode;
         this.description = description;
         this.principal = principal;
         this.success = SUCCESS.equals(errorCode);
     }
 
-    static TokenResponse resp(String errorCode, String description, CorePrincipal principal) {
-        return new TokenResponse(errorCode, description, principal);
+    static <T extends CorePrincipal> TokenResponse<T> resp(String errorCode, String description, T principal) {
+        return new TokenResponse<>(errorCode, description, principal);
     }
 
-    public static TokenResponse ok(CorePrincipal principal) {
+    public static <T extends CorePrincipal> TokenResponse<T> ok(T principal) {
         return resp(SUCCESS, null, principal);
     }
 
-    public static TokenResponse okAnonymous() {
+    public static <T extends CorePrincipal> TokenResponse<T> okAnonymous() {
         return resp(SUCCESS, null, null);
     }
 
-    public static TokenResponse error(String errorCode, String description) {
+    public static <T extends CorePrincipal> TokenResponse<T> error(String errorCode, String description) {
         return resp(errorCode, description, null);
     }
 
-    public static TokenResponse unavailable(String description) {
+    public static <T extends CorePrincipal> TokenResponse<T> unavailable(String description) {
         return error(TEMPORARILY_UNAVAILABLE, description);
     }
 
-    public static TokenResponse fallback(String description) {
+    public static <T extends CorePrincipal> TokenResponse<T> fallback(String description) {
         return error(FALL_BACK, description);
     }
 

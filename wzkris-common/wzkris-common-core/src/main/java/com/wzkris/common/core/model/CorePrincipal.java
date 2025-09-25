@@ -1,4 +1,4 @@
-package com.wzkris.common.core.domain;
+package com.wzkris.common.core.model;
 
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import java.util.Set;
  * @author wzkris
  */
 @Getter
-public class CorePrincipal implements Principal {
+public abstract class CorePrincipal implements Principal {
 
     private final Long id;
 

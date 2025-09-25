@@ -1,6 +1,6 @@
 package com.wzkris.user.controller.customer.statistic;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.user.domain.req.customer.CustomerIncryQueryReq;
 import com.wzkris.user.domain.vo.customer.CustomerIncryVO;

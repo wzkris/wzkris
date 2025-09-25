@@ -3,7 +3,7 @@ package com.wzkris.user.controller.test;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

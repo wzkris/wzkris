@@ -1,4 +1,4 @@
-package com.wzkris.common.core.domain;
+package com.wzkris.common.core.model;
 
 import com.wzkris.common.core.enums.BizBaseCode;
 import lombok.Getter;

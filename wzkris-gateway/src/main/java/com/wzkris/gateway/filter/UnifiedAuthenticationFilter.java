@@ -4,8 +4,10 @@ import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
-import com.wzkris.common.core.domain.CorePrincipal;
 import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.domain.LoginCustomer;
+import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -40,7 +43,13 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class UnifiedAuthenticationFilter implements GlobalFilter {
 
-    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+    static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+
+    static final ParameterizedTypeReference<TokenResponse<LoginUser>> userReference = new ParameterizedTypeReference<>() {
+    };
+
+    static final ParameterizedTypeReference<TokenResponse<LoginCustomer>> customerReference = new ParameterizedTypeReference<>() {
+    };
 
     private final WebClient tokenWebClient;
 
@@ -51,21 +60,20 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
         final ServerHttpRequest request = exchange.getRequest();
         final String path = request.getPath().value();
 
-        // 1. 黑名单拦截（最高优先级）
+        // 1. 黑名单拦截
         if (isPathDenied(path)) {
-            log.warn("Access denied to blacklisted path: {}", path);
+            log.error("Access denied to blacklisted path: {}", path);
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.FORBID);
         }
 
         // 2. 白名单直接放行（添加traceID后直接放行）
         if (isPathPermitted(path)) {
-            log.debug("Path permitted, skipping authentication: {}", path);
             return chain.filter(exchange.mutate().request(addTracingHeader(exchange).build()).build());
         }
 
         // 3. 检查是否携带Token
         if (!hasAnyToken(request)) {
-            log.warn("No authentication token found for path: {}", path);
+            log.error("No authentication token found for path: {}", path);
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.UNAUTHORIZED);
         }
 
@@ -81,12 +89,12 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
                                                   ServerHttpRequest request) {
         String userToken = getUserToken(request);
         if (StringUtil.isNotBlank(userToken)) {
-            return authenticateAndProceed(exchange, chain, userToken, HeaderConstants.X_USER_INFO);
+            return authenticateAndProceed(exchange, chain, userToken, HeaderConstants.X_USER_INFO, userReference);
         }
 
         String customerToken = getCustomerToken(request);
         if (StringUtil.isNotBlank(customerToken)) {
-            return authenticateAndProceed(exchange, chain, customerToken, HeaderConstants.X_CUSTOMER_INFO);
+            return authenticateAndProceed(exchange, chain, customerToken, HeaderConstants.X_CUSTOMER_INFO, customerReference);
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
@@ -96,23 +104,24 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
     /**
      * 执行Token认证并继续过滤器链
      */
-    private Mono<Void> authenticateAndProceed(ServerWebExchange exchange,
-                                              GatewayFilterChain chain,
-                                              String token,
-                                              String userInfoHeader) {
-        return validateToken(token)
+    private <T extends CorePrincipal> Mono<Void> authenticateAndProceed(
+            ServerWebExchange exchange,
+            GatewayFilterChain chain,
+            String token,
+            String infoHeader,
+            ParameterizedTypeReference<TokenResponse<T>> typeReference) {
+        return validatePrincipal(token, typeReference)
                 .flatMap(tokenResponse -> {
                     if (tokenResponse != null && tokenResponse.isSuccess()) {
                         CorePrincipal principal = tokenResponse.getPrincipal();
 
                         // 添加用户信息和Token类型到请求头
                         ServerHttpRequest newRequest = addTracingHeader(exchange)
-                                .header(userInfoHeader, JsonUtil.toJsonString(principal))
+                                .header(infoHeader, JsonUtil.toJsonString(principal))
                                 .build();
 
                         return chain.filter(exchange.mutate().request(newRequest).build());
                     } else {
-                        log.error("token'{}' authentication failed: {}", token, tokenResponse);
                         return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.UNAUTHORIZED);
                     }
                 })
@@ -125,16 +134,18 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
     /**
      * 调用认证服务验证Token
      */
-    private Mono<TokenResponse> validateToken(String token) {
+    private <T extends CorePrincipal> Mono<TokenResponse<T>> validatePrincipal(
+            String token,
+            ParameterizedTypeReference<TokenResponse<T>> typeReference) {
         TokenReq tokenReq = new TokenReq(token);
 
         return tokenWebClient.post()
-                .uri("/feign-token/check-user")
+                .uri("/feign-token/check-principal")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(tokenReq))
                 .retrieve()
-                .bodyToMono(TokenResponse.class)
+                .bodyToMono(typeReference)
                 .doOnNext(response ->
                         log.debug("Token validation result: success={}", response.isSuccess()))
                 .doOnError(error ->

@@ -3,7 +3,7 @@ package com.wzkris.user.controller.user;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.auth.feign.captcha.CaptchaFeign;
 import com.wzkris.auth.feign.captcha.req.CaptchaCheckReq;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;

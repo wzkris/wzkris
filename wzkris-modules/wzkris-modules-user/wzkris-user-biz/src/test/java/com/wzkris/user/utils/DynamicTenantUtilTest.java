@@ -1,6 +1,6 @@
 package com.wzkris.user.utils;
 
-import com.wzkris.common.security.model.domain.LoginUser;
+import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.mapper.TenantInfoMapper;

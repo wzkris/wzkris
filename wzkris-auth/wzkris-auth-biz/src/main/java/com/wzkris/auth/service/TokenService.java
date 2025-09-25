@@ -2,7 +2,7 @@ package com.wzkris.auth.service;
 
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.security.config.TokenProperties;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import jakarta.annotation.Nullable;
 import lombok.Data;
 import org.redisson.api.*;

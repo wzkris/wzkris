@@ -4,7 +4,7 @@ import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.domain.resp.OnlineUserResp;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.wzkris.common.core.domain.Result.ok;
+import static com.wzkris.common.core.model.Result.ok;
 
 @Tag(name = "在线会话")
 @Slf4j

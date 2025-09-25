@@ -2,9 +2,9 @@ package com.wzkris.auth.listener;
 
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.enums.AuthType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

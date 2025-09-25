@@ -1,6 +1,6 @@
 package com.wzkris.auth.controller;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-import static com.wzkris.common.core.domain.Result.*;
+import static com.wzkris.common.core.model.Result.*;
 
 /**
  * 微信js签名

@@ -1,6 +1,6 @@
 package com.wzkris.common.web.handler;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.core.exception.mode.DemoModeException;
@@ -26,8 +26,8 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import static com.wzkris.common.core.domain.Result.err40000;
-import static com.wzkris.common.core.domain.Result.resp;
+import static com.wzkris.common.core.model.Result.err40000;
+import static com.wzkris.common.core.model.Result.resp;
 
 /**
  * Web异常处理器

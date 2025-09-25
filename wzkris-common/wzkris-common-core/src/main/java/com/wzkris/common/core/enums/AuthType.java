@@ -1,8 +1,8 @@
-package com.wzkris.common.security.enums;
+package com.wzkris.common.core.enums;
 
-import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
 /**
  * 认证类型

@@ -1,6 +1,6 @@
 package com.wzkris.monitor.config;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.wzkris.system.controller.notification;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.LoginUserUtil;

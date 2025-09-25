@@ -1,7 +1,7 @@
 package com.wzkris.gateway.utils;
 
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import jakarta.annotation.Nullable;
 import org.springframework.core.io.buffer.DataBuffer;

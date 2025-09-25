@@ -1,7 +1,7 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.security.oauth2.redis.repository.OAuth2RegisteredClientRepository;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.domain.Result.ok;
+import static com.wzkris.common.core.model.Result.ok;
 
 @Tag(name = "刷新OAuth2客户端缓存")
 @Slf4j

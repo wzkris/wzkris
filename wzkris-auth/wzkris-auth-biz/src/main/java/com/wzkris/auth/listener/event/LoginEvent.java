@@ -1,6 +1,6 @@
 package com.wzkris.auth.listener.event;
 
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nl.basjes.parse.useragent.UserAgent;
