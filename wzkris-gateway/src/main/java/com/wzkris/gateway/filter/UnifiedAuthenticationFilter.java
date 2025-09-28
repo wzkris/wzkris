@@ -2,27 +2,26 @@ package com.wzkris.gateway.filter;
 
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
-import com.wzkris.common.apikey.config.SignkeyProperties;
-import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.core.utils.TraceIdUtil;
+import com.wzkris.common.openfeign.exception.RpcException;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -31,8 +30,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.stream.Stream;
-
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * @author : wzkris
@@ -128,8 +125,12 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
                         return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.UNAUTHORIZED);
                     }
                 })
+                .onErrorResume(RpcException.class, rpcException -> {
+                    log.error("Auth service call failed for token: {}", token, rpcException);
+                    return WebFluxUtil.writeResponse(exchange.getResponse(), rpcException.getResult());
+                })
                 .onErrorResume(throwable -> {
-                    log.error("Authentication service call failed for token: {}", token, throwable);
+                    log.error("Auth service call failed for token: {}", token, throwable);
                     return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.INTERNAL_ERROR);
                 });
     }
@@ -146,11 +147,16 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
                 .uri("/feign-token/check-principal")
                 .bodyValue(tokenReq)
                 .retrieve()
-                .bodyToMono(typeReference)
-                .doOnNext(response ->
-                        log.debug("Token validation result: success={}", response.isSuccess()))
-                .doOnError(error ->
-                        log.error("Token validation error: {}", error.getMessage(), error));
+                .onStatus(HttpStatusCode::isError, response -> {
+                    // 处理错误状态码，获取响应体
+                    return response.bodyToMono(Result.class)
+                            .flatMap(responseBody -> {
+                                log.error("Token validation failed. Status: {}, Response body: {}",
+                                        response.statusCode(), responseBody);
+                                return Mono.error(new RpcException(response.statusCode().value(), responseBody));
+                            });
+                })
+                .bodyToMono(typeReference);
     }
 
     /**

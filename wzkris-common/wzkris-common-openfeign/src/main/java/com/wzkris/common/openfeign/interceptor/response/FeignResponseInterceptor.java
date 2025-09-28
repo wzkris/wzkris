@@ -1,20 +1,18 @@
 package com.wzkris.common.openfeign.interceptor.response;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.openfeign.enums.BizRpcCode;
 import com.wzkris.common.openfeign.exception.RpcException;
 import feign.InvocationContext;
 import feign.Response;
 import feign.ResponseInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -41,19 +39,8 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
     }
 
     private void checkSuccess(Response originalResponse) throws IOException {
-        Collection<String> ex = originalResponse.headers().get(FeignHeaderConstant.X_FEIGN_EXCEPTION);
-        if (CollectionUtils.isNotEmpty(ex)) {
-            Optional<String> first = ex.stream().findFirst();
-            String errmsg = URLDecoder.decode(first.get(), StandardCharsets.UTF_8);
-            log.error("""
-                            feign called failed => Url: {}
-                            Response: {},
-                            Error msg: {}
-                            """,
-                    originalResponse.request().url(), originalResponse, errmsg);
-            throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), errmsg);
-        }
         if (!HttpStatus.valueOf(originalResponse.status()).is2xxSuccessful()) {
+            String resultBody = new String(originalResponse.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8);
             log.error("""
                             feign called failed => Url: {}
                             Response: {}
@@ -61,8 +48,9 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
                             """,
                     originalResponse.request().url(),
                     originalResponse,
-                    new String(originalResponse.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8));
-            throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), BizRpcCode.RPC_REMOTE_ERROR.desc());
+                    resultBody
+            );
+            throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), JsonUtil.parseObject(resultBody, Result.class));
         }
     }
 

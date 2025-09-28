@@ -38,7 +38,7 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
                 exchange.getRequest().getPath(),
                 e.getMessage(), e);
 
-        return WebFluxUtil.writeResponse(response, BizBaseCode.BAD_GATEWAY, e.getMessage());
+        return WebFluxUtil.writeResponse(response, BizBaseCode.BAD_GATEWAY.value(), e.getMessage());
     }
 
 }

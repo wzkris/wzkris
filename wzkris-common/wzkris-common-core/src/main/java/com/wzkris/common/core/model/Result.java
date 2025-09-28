@@ -50,7 +50,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> ok() {
-        return resp(BizBaseCode.OK, BizBaseCode.OK.desc());
+        return resp(BizBaseCode.OK.value(), null, BizBaseCode.OK.desc());
     }
 
     public static <T> Result<T> ok(T data) {
@@ -58,23 +58,19 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> err40000(String message) {
-        return resp(BizBaseCode.BAD_REQUEST, message);
+        return resp(BizBaseCode.BAD_REQUEST.value(), null, message);
     }
 
     public static <T> Result<T> err40001(String message) {
-        return resp(BizBaseCode.UNAUTHORIZED, message);
+        return resp(BizBaseCode.UNAUTHORIZED.value(), null, message);
     }
 
     public static <T> Result<T> err40003(String message) {
-        return resp(BizBaseCode.FORBID, message);
+        return resp(BizBaseCode.FORBID.value(), null, message);
     }
 
     public static <T> Result<T> err50000(String message) {
-        return resp(BizBaseCode.INTERNAL_ERROR, message);
-    }
-
-    public static <T> Result<T> resp(BizBaseCode bizBaseCode, String message) {
-        return resp(bizBaseCode.value(), null, message);
+        return resp(BizBaseCode.INTERNAL_ERROR.value(), null, message);
     }
 
     public static <T> Result<T> resp(int code, T data, String message) {

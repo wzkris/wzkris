@@ -16,7 +16,7 @@ public class RequestSignerUtil {
 
     private static final String DELIMITER = "|"; // 分隔符
 
-    private static final long TIMESTAMP_THRESHOLD = 5 * 60 * 1000; // 5分钟有效期
+    private static final long TIMESTAMP_THRESHOLD = 30 * 1000; // 30秒有效期
 
     /**
      * 生成请求签名

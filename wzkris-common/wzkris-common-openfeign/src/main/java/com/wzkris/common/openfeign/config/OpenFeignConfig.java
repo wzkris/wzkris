@@ -1,5 +1,6 @@
 package com.wzkris.common.openfeign.config;
 
+import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.openfeign.core.TargeterDecorator;
 import com.wzkris.common.openfeign.interceptor.request.FeignRequestInterceptor;
 import com.wzkris.common.openfeign.interceptor.response.FeignResponseInterceptor;
@@ -77,8 +78,8 @@ public class OpenFeignConfig implements ApplicationContextAware, BeanPostProcess
     }
 
     @Bean
-    public RequestInterceptor requestInterceptor() {
-        return new FeignRequestInterceptor();
+    public RequestInterceptor requestInterceptor(SignkeyProperties signkeyProperties) {
+        return new FeignRequestInterceptor(signkeyProperties);
     }
 
     @Override

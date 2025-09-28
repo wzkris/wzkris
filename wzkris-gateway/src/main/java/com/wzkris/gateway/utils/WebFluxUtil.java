@@ -22,10 +22,6 @@ public class WebFluxUtil {
         return writeResponse(response, Result.resp(bizBaseCode.value(), null, bizBaseCode.desc()));
     }
 
-    public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode, String msg) {
-        return writeResponse(response, Result.resp(bizBaseCode, msg));
-    }
-
     public static Mono<Void> writeResponse(ServerHttpResponse response, int biz, String msg) {
         return writeResponse(response, Result.resp(biz, null, msg));
     }

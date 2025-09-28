@@ -101,7 +101,7 @@ public class WebExceptionHandler {
             log.debug("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         }
         response.setStatus(HttpStatus.NOT_FOUND.value());
-        return resp(BizBaseCode.NOT_FOUND, BizBaseCode.NOT_FOUND.desc());
+        return resp(BizBaseCode.NOT_FOUND.value(), null, BizBaseCode.NOT_FOUND.desc());
     }
 
     /**
@@ -114,7 +114,7 @@ public class WebExceptionHandler {
             log.debug("请求地址'{}',不支持'{}'请求，异常信息：{}", request.getRequestURI(), e.getMethod(), e.getMessage());
         }
         response.setStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
-        return resp(BizBaseCode.BAD_METHOD, e.getMessage());
+        return resp(BizBaseCode.BAD_METHOD.value(), null, e.getMessage());
     }
 
     /**
