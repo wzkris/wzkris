@@ -27,7 +27,6 @@
         <module>wzkris-common-notifier</module>
         <module>wzkris-common-openfeign</module>
         <module>wzkris-common-orm</module>
-        <module>wzkris-common-oss</module>
         <module>wzkris-common-redis</module>
         <module>wzkris-common-redis-ratelimiter</module>
         <module>wzkris-common-seata</module>
