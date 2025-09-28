@@ -61,11 +61,6 @@
             <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-openfeign</artifactId>
-        </dependency>
-
         <!-- 均衡负载-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
