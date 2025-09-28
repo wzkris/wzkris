@@ -1,9 +1,9 @@
 package com.wzkris.common.web.handler;
 
-import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.core.exception.mode.DemoModeException;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -101,7 +101,7 @@ public class WebExceptionHandler {
             log.debug("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         }
         response.setStatus(HttpStatus.NOT_FOUND.value());
-        return resp(BizBaseCode.NOT_FOUND);
+        return resp(BizBaseCode.NOT_FOUND, BizBaseCode.NOT_FOUND.desc());
     }
 
     /**

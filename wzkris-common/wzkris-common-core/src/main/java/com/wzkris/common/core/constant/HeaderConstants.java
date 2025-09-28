@@ -18,6 +18,21 @@ public class HeaderConstants {
     public static final String X_TRACING_ID = "X-Tracing-Id";
 
     /**
+     * API签名请求头
+     */
+    public static final String X_REQUEST_SIGN = "X-Request-Sign";
+
+    /**
+     * 请求来源
+     */
+    public static final String X_REQUEST_FROM = "X-Request-From";
+
+    /**
+     * 请求时间
+     */
+    public static final String X_REQUEST_TIME = "X-Request-Time";
+
+    /**
      * 用户Token
      */
     public static final String X_USER_TOKEN = "X-User-Token";

@@ -2,8 +2,8 @@ package com.wzkris.common.orm.model;
 
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
-import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.exception.service.GenericException;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.enums.BizSqlCode;
 import com.wzkris.common.orm.utils.PageUtil;
@@ -130,7 +130,7 @@ public abstract class BaseController {
      * @return 操作结果
      */
     protected <T> Result<T> toRes(boolean result) {
-        return result ? ok() : Result.err10000();
+        return result ? ok() : err40000("操作失败");
     }
 
 }

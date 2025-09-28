@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 public class WebFluxUtil {
 
     public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode) {
-        return writeResponse(response, Result.resp(bizBaseCode));
+        return writeResponse(response, Result.resp(bizBaseCode.value(), null, bizBaseCode.desc()));
     }
 
     public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode, String msg) {

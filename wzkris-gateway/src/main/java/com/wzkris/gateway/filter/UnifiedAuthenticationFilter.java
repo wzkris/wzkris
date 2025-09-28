@@ -2,6 +2,8 @@ package com.wzkris.gateway.filter;
 
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
+import com.wzkris.common.apikey.config.SignkeyProperties;
+import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.BizBaseCode;
@@ -15,21 +17,22 @@ import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.stream.Stream;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * @author : wzkris
@@ -66,9 +69,9 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.FORBID);
         }
 
-        // 2. 白名单直接放行（添加traceID后直接放行）
+        // 2. 白名单直接放行
         if (isPathPermitted(path)) {
-            return chain.filter(exchange.mutate().request(addTracingHeader(exchange).build()).build());
+            return chain.filter(exchange);
         }
 
         // 3. 检查是否携带Token
@@ -116,7 +119,7 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
                         CorePrincipal principal = tokenResponse.getPrincipal();
 
                         // 添加用户信息和Token类型到请求头
-                        ServerHttpRequest newRequest = addTracingHeader(exchange)
+                        ServerHttpRequest newRequest = exchange.getRequest().mutate()
                                 .header(infoHeader, JsonUtil.toJsonString(principal))
                                 .build();
 
@@ -141,23 +144,13 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
 
         return tokenWebClient.post()
                 .uri("/feign-token/check-principal")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(tokenReq))
+                .bodyValue(tokenReq)
                 .retrieve()
                 .bodyToMono(typeReference)
                 .doOnNext(response ->
                         log.debug("Token validation result: success={}", response.isSuccess()))
                 .doOnError(error ->
                         log.error("Token validation error: {}", error.getMessage(), error));
-    }
-
-    /**
-     * 添加追踪ID头信息
-     */
-    private ServerHttpRequest.Builder addTracingHeader(ServerWebExchange exchange) {
-        return exchange.getRequest().mutate()
-                .header(HeaderConstants.X_TRACING_ID, TraceIdUtil.get());
     }
 
     /**

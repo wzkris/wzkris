@@ -1,5 +1,6 @@
 package com.wzkris.common.openfeign.interceptor.response;
 
+import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.openfeign.constants.FeignHeaderConstant;
 import com.wzkris.common.openfeign.enums.BizRpcCode;
 import com.wzkris.common.openfeign.exception.RpcException;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -38,7 +40,7 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
         }
     }
 
-    private void checkSuccess(Response originalResponse) {
+    private void checkSuccess(Response originalResponse) throws IOException {
         Collection<String> ex = originalResponse.headers().get(FeignHeaderConstant.X_FEIGN_EXCEPTION);
         if (CollectionUtils.isNotEmpty(ex)) {
             Optional<String> first = ex.stream().findFirst();
@@ -55,8 +57,11 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
             log.error("""
                             feign called failed => Url: {}
                             Response: {}
+                            Response body: {}
                             """,
-                    originalResponse.request().url(), originalResponse);
+                    originalResponse.request().url(),
+                    originalResponse,
+                    new String(originalResponse.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8));
             throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), BizRpcCode.RPC_REMOTE_ERROR.desc());
         }
     }
@@ -66,7 +71,7 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
      */
     private void logResponseInfo(Response response, Object next) {
         try {
-            Optional<String> reqTime = response.request().headers().get(FeignHeaderConstant.X_FEIGN_REQTIME).stream().findFirst();
+            Optional<String> reqTime = response.request().headers().get(HeaderConstants.X_REQUEST_TIME).stream().findFirst();
             log.info("""
                             Feign called Success =>  Url: {}
                             Response: {}

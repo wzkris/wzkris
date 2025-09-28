@@ -22,7 +22,15 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- 核心模块 -->
+
+            <!-- api密钥模块 -->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-common-apikey</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 验证码模块 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
                 <artifactId>wzkris-common-captcha</artifactId>

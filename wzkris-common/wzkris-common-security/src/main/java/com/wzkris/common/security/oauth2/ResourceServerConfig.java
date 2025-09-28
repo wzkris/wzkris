@@ -1,7 +1,7 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.common.security.config.PermitAllProperties;
 import com.wzkris.common.security.oauth2.converter.CustomJwtAuthenticationConverter;
+import com.wzkris.common.security.oauth2.filter.RequestSignFilter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.repository.HttpHeaderSecurityContextRepository;
@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
@@ -33,7 +34,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @RequiredArgsConstructor
 public class ResourceServerConfig {
 
-    private final PermitAllProperties permitAllProperties;
+    private final RequestSignFilter requestSignFilter;
 
     @Bean
     @RefreshScope
@@ -54,11 +55,10 @@ public class ResourceServerConfig {
                         .securityContextRepository(securityContextRepository)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(permitAllProperties.getIgnores().toArray(String[]::new)).permitAll()
-                        .requestMatchers("/feign-**/**").permitAll()
                         .requestMatchers("/actuator/**").hasAuthority("SCOPE_monitor")// 保护监控端点
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
+                .addFilterAfter(requestSignFilter, SecurityContextHolderFilter.class)
                 .oauth2ResourceServer(resourceServer -> resourceServer
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(jwtDecoder)

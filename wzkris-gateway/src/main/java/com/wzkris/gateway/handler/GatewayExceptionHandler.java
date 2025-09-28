@@ -36,7 +36,7 @@ public class GatewayExceptionHandler implements WebExceptionHandler {
         log.error("[网关异常处理]请求路径:'{} {}',异常信息:{}",
                 exchange.getRequest().getMethod(),
                 exchange.getRequest().getPath(),
-                e.getMessage());
+                e.getMessage(), e);
 
         return WebFluxUtil.writeResponse(response, BizBaseCode.BAD_GATEWAY, e.getMessage());
     }

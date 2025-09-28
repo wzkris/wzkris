@@ -73,14 +73,6 @@ public class Result<T> implements Serializable {
         return resp(BizBaseCode.INTERNAL_ERROR, message);
     }
 
-    public static <T> Result<T> err10000() {
-        return resp(BizBaseCode.BAD_REQUEST);
-    }
-
-    public static <T> Result<T> resp(BizBaseCode bizBaseCode) {
-        return resp(bizBaseCode.value(), null, bizBaseCode.desc());
-    }
-
     public static <T> Result<T> resp(BizBaseCode bizBaseCode, String message) {
         return resp(bizBaseCode.value(), null, message);
     }
