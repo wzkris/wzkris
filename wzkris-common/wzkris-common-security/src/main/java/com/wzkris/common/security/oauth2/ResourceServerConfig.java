@@ -54,9 +54,7 @@ public class ResourceServerConfig {
                 .securityContext(securityContextConfigurer -> securityContextConfigurer
                         .securityContextRepository(securityContextRepository)
                 )
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/actuator/**").hasAuthority("SCOPE_monitor")// 保护监控端点
-                        .anyRequest().permitAll()
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()
                 )
                 .addFilterBefore(requestSignatureFilter, SecurityContextHolderFilter.class)
                 .oauth2ResourceServer(resourceServer -> resourceServer

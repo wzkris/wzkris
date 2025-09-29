@@ -4,7 +4,6 @@ import com.wzkris.monitor.filter.CustomCsrfFilter;
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 import jakarta.servlet.DispatcherType;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,8 +14,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import static io.netty.handler.codec.http.HttpMethod.DELETE;
 import static io.netty.handler.codec.http.HttpMethod.POST;
@@ -72,30 +69,6 @@ public class AdminServerClientConfig {
                                 new AntPathRequestMatcher(this.properties.path("/actuator/**"))));
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    @RefreshScope
-    public TokenProvider tokenProvider(OAuth2ClientProperties properties) {
-        return new TokenProvider(properties);
-    }
-
-    @Bean
-    public WebClient.Builder adminWebClientBuilder(TokenProvider tokenProvider) {
-        return WebClient.builder().filter((request, next) -> {
-            // 使用响应式方式获取token
-            return tokenProvider.getAccessToken()
-                    .flatMap(token -> {
-                        ClientRequest newRequest = ClientRequest.from(request)
-                                .headers(headers -> headers.setBearerAuth(token))
-                                .build();
-                        return next.exchange(newRequest);
-                    })
-                    .onErrorResume(e -> {
-                        log.error("失败获取oauth2_token", e);
-                        return next.exchange(request); // 继续请求，但没有token
-                    });
-        });
     }
 
 }
