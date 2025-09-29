@@ -1,11 +1,15 @@
 package com.wzkris.common.apikey.utils;
 
+import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.utils.TraceIdUtil;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.function.BiConsumer;
 
 /**
  * 请求签名工具
@@ -14,28 +18,41 @@ public class RequestSignerUtil {
 
     private static final String HMAC_ALGORITHM = "HmacSHA256";
 
-    private static final String DELIMITER = "|"; // 分隔符
+    private static final String DELIMITER = "\n"; // 分隔符
 
     private static final long TIMESTAMP_THRESHOLD = 30 * 1000; // 30秒有效期
+
+    public static void setCommonHeaders(BiConsumer<String, String> headerSetter,
+                                        String applicationName,
+                                        String secret,
+                                        String requestBody,
+                                        long timestamp) {
+        final String traceId = TraceIdUtil.get();
+        headerSetter.accept(HeaderConstants.X_TRACING_ID, traceId);
+        headerSetter.accept(HeaderConstants.X_REQUEST_TIME, String.valueOf(timestamp));
+        headerSetter.accept(HeaderConstants.X_REQUEST_FROM, applicationName);
+        headerSetter.accept(HeaderConstants.X_REQUEST_SIGN,
+                RequestSignerUtil.generateSignature(secret, traceId, requestBody, timestamp));
+    }
 
     /**
      * 生成请求签名
      *
      * @param secretKey 外部传入的密钥（需保密）
-     * @param path      请求路径（如 "/api/v1/orders"）
+     * @param traceId   请求ID
      * @param body      请求体（JSON/XML等，可为空）
      * @param timestamp 时间戳（毫秒）
      * @return Base64编码的签名字符串
      */
     public static String generateSignature(
             String secretKey,
-            String path,
+            String traceId,
             String body,
             long timestamp
     ) {
         try {
-            // 1. 构建待签名字符串：PATH + TIMESTAMP + BODY
-            String dataToSign = path + DELIMITER + timestamp + DELIMITER + (body != null ? body : "");
+            // 1. 构建待签名字符串：traceID + TIMESTAMP + BODY
+            String dataToSign = traceId + DELIMITER + timestamp + DELIMITER + (body != null ? body : "");
 
             // 2. 使用HMAC-SHA256计算签名
             Mac mac = Mac.getInstance(HMAC_ALGORITHM);

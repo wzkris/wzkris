@@ -2,6 +2,8 @@ package com.wzkris.gateway.filter;
 
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
+import com.wzkris.common.apikey.config.SignkeyProperties;
+import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.BizBaseCode;
@@ -16,6 +18,7 @@ import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -54,6 +57,11 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
     private final WebClient tokenWebClient;
 
     private final PermitAllProperties permitAllProperties;
+
+    @Value("${spring.application.name}")
+    private String applicationName;
+
+    private final SignkeyProperties signkeyProperties;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -146,6 +154,14 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
         return tokenWebClient.post()
                 .uri("/feign-token/check-principal")
                 .bodyValue(tokenReq)
+                .headers(httpHeaders -> {
+                    RequestSignerUtil.setCommonHeaders(httpHeaders::add,
+                            applicationName,
+                            signkeyProperties.getKeys().get(applicationName).getSecret(),
+                            JsonUtil.toJsonString(tokenReq),
+                            System.currentTimeMillis()
+                    );// 请求签名 -> 防止伪造请求
+                })
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response -> {
                     // 处理错误状态码，获取响应体

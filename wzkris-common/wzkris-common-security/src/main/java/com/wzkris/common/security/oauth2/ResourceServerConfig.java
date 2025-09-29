@@ -1,7 +1,7 @@
 package com.wzkris.common.security.oauth2;
 
 import com.wzkris.common.security.oauth2.converter.CustomJwtAuthenticationConverter;
-import com.wzkris.common.security.oauth2.filter.RequestSignFilter;
+import com.wzkris.common.security.oauth2.filter.RequestSignatureFilter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.repository.HttpHeaderSecurityContextRepository;
@@ -34,7 +34,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @RequiredArgsConstructor
 public class ResourceServerConfig {
 
-    private final RequestSignFilter requestSignFilter;
+    private final RequestSignatureFilter requestSignatureFilter;
 
     @Bean
     @RefreshScope
@@ -58,7 +58,7 @@ public class ResourceServerConfig {
                         .requestMatchers("/actuator/**").hasAuthority("SCOPE_monitor")// 保护监控端点
                         .anyRequest().permitAll()
                 )
-                .addFilterAfter(requestSignFilter, SecurityContextHolderFilter.class)
+                .addFilterBefore(requestSignatureFilter, SecurityContextHolderFilter.class)
                 .oauth2ResourceServer(resourceServer -> resourceServer
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(jwtDecoder)

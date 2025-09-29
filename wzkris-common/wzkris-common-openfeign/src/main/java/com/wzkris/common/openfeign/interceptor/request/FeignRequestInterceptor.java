@@ -2,8 +2,6 @@ package com.wzkris.common.openfeign.interceptor.request;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
-import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.utils.TraceIdUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.RequiredArgsConstructor;
@@ -33,25 +31,21 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        FeignClient feignClient = AnnotationUtils.getAnnotation(template.feignTarget().type(), FeignClient.class);
         // 添加请求头
-        appendRequestHeader(template, feignClient);
+        appendRequestHeader(template);
 
         // 打印请求信息
-        logRequestInfo(template, feignClient);
+        logRequestInfo(template);
     }
 
-    private void appendRequestHeader(RequestTemplate template, FeignClient feignClient) {
+    private void appendRequestHeader(RequestTemplate template) {
         long l = System.currentTimeMillis();
-        template.header(HeaderConstants.X_TRACING_ID, TraceIdUtil.get());// 添加追踪ID
-        template.header(HeaderConstants.X_REQUEST_TIME, String.valueOf(l));// 添加请求时间
-        template.header(HeaderConstants.X_REQUEST_FROM, applicationName);// 请求来源服务
-        template.header(HeaderConstants.X_REQUEST_SIGN, RequestSignerUtil.generateSignature(
+        RequestSignerUtil.setCommonHeaders(template::header,
+                applicationName,
                 signkeyProperties.getKeys().get(applicationName).getSecret(),
-                feignClient.path() + template.url(),
                 getRequestBody(template),
                 l
-        ));// 请求签名
+        );// 请求签名 -> 防止伪造请求
     }
 
     /**
@@ -59,9 +53,10 @@ public class FeignRequestInterceptor implements RequestInterceptor {
      *
      * @param template 请求模板
      */
-    private void logRequestInfo(RequestTemplate template, FeignClient feignClient) {
+    private void logRequestInfo(RequestTemplate template) {
         try {
             // 获取请求路径
+            FeignClient feignClient = AnnotationUtils.getAnnotation(template.feignTarget().type(), FeignClient.class);
             String path = feignClient.path() + template.url();
 
             // 获取请求方法

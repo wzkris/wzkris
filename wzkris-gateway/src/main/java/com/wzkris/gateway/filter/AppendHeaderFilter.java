@@ -2,8 +2,6 @@ package com.wzkris.gateway.filter;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
-import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.utils.TraceIdUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,12 +36,8 @@ public class AppendHeaderFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        long l = System.currentTimeMillis();
         ServerHttpRequest httpRequest = exchange.getRequest().mutate()
                 .headers(header -> {
-                    header.add(HeaderConstants.X_TRACING_ID, TraceIdUtil.get());// tracingID
-                    header.add(HeaderConstants.X_REQUEST_TIME, String.valueOf(l));// 请求时间 ->防重放
-                    header.add(HeaderConstants.X_REQUEST_FROM, applicationName);// 请求来源服务
                     String reqBodyStr;
                     Object bodyAttr = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
                     if (bodyAttr instanceof DataBuffer dataBuffer) {
@@ -51,12 +45,12 @@ public class AppendHeaderFilter implements GlobalFilter {
                     } else {
                         reqBodyStr = (String) bodyAttr;
                     }
-                    header.add(HeaderConstants.X_REQUEST_SIGN, RequestSignerUtil.generateSignature(
+                    RequestSignerUtil.setCommonHeaders(header::add,
+                            applicationName,
                             signkeyProperties.getKeys().get(applicationName).getSecret(),
-                            exchange.getRequest().getPath().value(),
                             reqBodyStr,
-                            l
-                    ));// 请求签名 -> 防止伪造请求
+                            System.currentTimeMillis()
+                    );// 请求签名 -> 防止伪造请求
                 }).build();
         return chain.filter(exchange.mutate().request(httpRequest).build());
     }

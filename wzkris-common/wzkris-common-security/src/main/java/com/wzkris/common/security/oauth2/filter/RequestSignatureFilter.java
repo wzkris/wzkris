@@ -7,6 +7,7 @@ import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.oauth2.request.RepeatableReadRequestWrapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,8 +21,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 请求签名过滤器
+ *
+ * @author wzkris
+ */
 @RequiredArgsConstructor
-public class RequestSignFilter extends OncePerRequestFilter {
+public class RequestSignatureFilter extends OncePerRequestFilter {
 
     private final SignkeyProperties signkeyProperties;
 
@@ -45,15 +51,27 @@ public class RequestSignFilter extends OncePerRequestFilter {
             return;
         }
 
-        RepeatableReadRequestWrapper wrappedRequest = new RepeatableReadRequestWrapper(request);
-        boolean verified = RequestSignerUtil.verifySignature(sign.getSecret(), request.getRequestURI(), wrappedRequest.getBodyAsString(), Long.parseLong(requestTime), signature);
+        try {
+            final String traceId = request.getHeader(HeaderConstants.X_TRACING_ID);
+            TraceIdUtil.set(traceId);
+            response.setHeader(HeaderConstants.X_TRACING_ID, TraceIdUtil.get());
 
-        if (!verified) {
-            sendErrorResponse(response, Result.resp(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));
-            return;
+            RepeatableReadRequestWrapper wrappedRequest = new RepeatableReadRequestWrapper(request);
+            boolean verified = RequestSignerUtil.verifySignature(sign.getSecret(),
+                    traceId,
+                    wrappedRequest.getBodyAsString(),
+                    Long.parseLong(requestTime),
+                    signature);
+
+            if (!verified) {
+                sendErrorResponse(response, Result.resp(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));
+                return;
+            }
+
+            filterChain.doFilter(wrappedRequest, response);
+        } finally {
+            TraceIdUtil.clear();
         }
-
-        filterChain.doFilter(wrappedRequest, response);
     }
 
     private void sendErrorResponse(HttpServletResponse response, Result<?> result) throws IOException {
