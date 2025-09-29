@@ -33,17 +33,18 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String requestFrom = request.getHeader(HeaderConstants.X_REQUEST_FROM);
+        RepeatableReadRequestWrapper requestWrapper = (RepeatableReadRequestWrapper) request;
 
-        SignkeyProperties.Sign sign = signkeyProperties.getKeys().get(requestFrom);
+        final String requestFrom = requestWrapper.getHeader(HeaderConstants.X_REQUEST_FROM);
+        final SignkeyProperties.Sign sign = signkeyProperties.getKeys().get(requestFrom);
         if (sign == null) {
             sendErrorResponse(response, Result.resp(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
             return;
         }
 
         // 1. 获取请求头中的签名和时间戳
-        String signature = request.getHeader(HeaderConstants.X_REQUEST_SIGN);
-        String requestTime = request.getHeader(HeaderConstants.X_REQUEST_TIME);
+        final String signature = requestWrapper.getHeader(HeaderConstants.X_REQUEST_SIGN);
+        final String requestTime = requestWrapper.getHeader(HeaderConstants.X_REQUEST_TIME);
 
         // 2. 检查必要的请求头是否存在
         if (StringUtil.isBlank(signature) || StringUtil.isBlank(requestTime)) {
@@ -51,27 +52,18 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
             return;
         }
 
-        try {
-            final String traceId = request.getHeader(HeaderConstants.X_TRACING_ID);
-            TraceIdUtil.set(traceId);
-            response.setHeader(HeaderConstants.X_TRACING_ID, TraceIdUtil.get());
+        boolean verified = RequestSignerUtil.verifySignature(sign.getSecret(),
+                TraceIdUtil.get(),
+                requestWrapper.getBodyAsString(),
+                Long.parseLong(requestTime),
+                signature);
 
-            RepeatableReadRequestWrapper wrappedRequest = new RepeatableReadRequestWrapper(request);
-            boolean verified = RequestSignerUtil.verifySignature(sign.getSecret(),
-                    traceId,
-                    wrappedRequest.getBodyAsString(),
-                    Long.parseLong(requestTime),
-                    signature);
-
-            if (!verified) {
-                sendErrorResponse(response, Result.resp(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));
-                return;
-            }
-
-            filterChain.doFilter(wrappedRequest, response);
-        } finally {
-            TraceIdUtil.clear();
+        if (!verified) {
+            sendErrorResponse(response, Result.resp(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));
+            return;
         }
+
+        filterChain.doFilter(requestWrapper, response);
     }
 
     private void sendErrorResponse(HttpServletResponse response, Result<?> result) throws IOException {

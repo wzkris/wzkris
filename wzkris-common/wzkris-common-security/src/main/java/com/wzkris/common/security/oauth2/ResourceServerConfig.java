@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.common.security.oauth2.converter.CustomJwtAuthenticationConverter;
+import com.wzkris.common.security.oauth2.filter.CommonRequestAndResponseFilter;
 import com.wzkris.common.security.oauth2.filter.RequestSignatureFilter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
@@ -8,16 +8,14 @@ import com.wzkris.common.security.oauth2.repository.HttpHeaderSecurityContextRep
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -34,36 +32,25 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @RequiredArgsConstructor
 public class ResourceServerConfig {
 
-    private final RequestSignatureFilter requestSignatureFilter;
-
     @Bean
     @RefreshScope
     public SecurityFilterChain resourceSecurityFilterChain(
             HttpSecurity http,
             SecurityContextRepository securityContextRepository,
-            JwtDecoder jwtDecoder)
+            RequestSignatureFilter requestSignatureFilter)
             throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(configurer -> configurer.configure(http))
+                .cors(Customizer.withDefaults())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .addFilterBefore(new CommonRequestAndResponseFilter(), SecurityContextHolderFilter.class)// 1
+                .addFilterBefore(requestSignatureFilter, SecurityContextHolderFilter.class)// 2
                 .securityContext(securityContextConfigurer -> securityContextConfigurer
-                        .securityContextRepository(securityContextRepository)
-                )
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()
-                )
-                .addFilterBefore(requestSignatureFilter, SecurityContextHolderFilter.class)
-                .oauth2ResourceServer(resourceServer -> resourceServer
-                        .jwt(jwtConfigurer -> jwtConfigurer
-                                .decoder(jwtDecoder)
-                                .jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
-                        )
-                        .authenticationEntryPoint(new AuthenticationEntryPointImpl())
-                        .accessDeniedHandler(new AccessDeniedHandlerImpl())
+                        .securityContextRepository(securityContextRepository) // SecurityContextHolderFilter // 3
                 )
                 .exceptionHandling(exceptionHandler -> exceptionHandler
                         .authenticationEntryPoint(new AuthenticationEntryPointImpl())
@@ -76,14 +63,6 @@ public class ResourceServerConfig {
     @Bean
     public SecurityContextRepository securityContextRepository() {
         return new HttpHeaderSecurityContextRepository();
-    }
-
-    @Bean
-    @RefreshScope
-    @ConditionalOnMissingBean(JwtDecoder.class)
-    public JwtDecoder decoder() {
-        return NimbusJwtDecoder.withJwkSetUri(
-                "http://localhost:9000/oauth2/jwks").build();
     }
 
     @Bean
