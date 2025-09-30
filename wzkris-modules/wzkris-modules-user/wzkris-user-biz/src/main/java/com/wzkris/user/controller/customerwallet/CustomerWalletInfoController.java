@@ -1,7 +1,7 @@
 package com.wzkris.user.controller.customerwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;

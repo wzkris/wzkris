@@ -1,9 +1,9 @@
 package com.wzkris.auth.security.filter;
 
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.annotation.Nullable;
@@ -36,7 +36,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        String userToken = request.getHeader(HeaderConstants.X_User_TOKEN);
+        String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
         if (StringUtil.isNotBlank(userToken)) {
             Serializable id = tokenService.logoutByAccessToken(userToken);
             if (id != null) {

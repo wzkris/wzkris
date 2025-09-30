@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

@@ -1,6 +1,6 @@
 package com.wzkris.common.security.annotation.aspect;
 
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
@@ -32,8 +32,10 @@ public class CheckPermsAspect {
 
     @Pointcut("@annotation(com.wzkris.common.security.annotation.CheckPerms)"
             + "|| @annotation(com.wzkris.common.security.annotation.CheckUserPerms)"
+            + "|| @annotation(com.wzkris.common.security.annotation.CheckClientPerms)"
             + "|| @within(com.wzkris.common.security.annotation.CheckPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckUserPerms)")
+            + "|| @within(com.wzkris.common.security.annotation.CheckUserPerms)"
+            + "|| @within(com.wzkris.common.security.annotation.CheckClientPerms)")
     public void pointcut() {
     }
 
@@ -57,7 +59,11 @@ public class CheckPermsAspect {
             throw new AccessDeniedException(
                     "Principal needs checkType :" + checkPerms.checkType().getValue() + " , but have :" + principal.getType());
         }
-        String[] perms = checkPerms.value();
+
+        String[] perms = new String[checkPerms.value().length];
+        for (int i = 0; i < checkPerms.value().length; i++) {
+            perms[i] = checkPerms.prefix() + checkPerms.value()[i];
+        }
 
         if (ArrayUtils.isEmpty(perms)) {
             return;

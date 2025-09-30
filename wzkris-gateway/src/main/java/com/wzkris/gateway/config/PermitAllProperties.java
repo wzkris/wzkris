@@ -20,6 +20,14 @@ import java.util.List;
 @ConfigurationProperties(prefix = "security")
 public class PermitAllProperties {
 
+    /**
+     * 白名单
+     */
     private List<String> ignores = new ArrayList<>();
+
+    /**
+     * 黑名单
+     */
+    private List<String> denys = new ArrayList<>();
 
 }

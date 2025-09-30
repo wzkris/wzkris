@@ -1,6 +1,6 @@
 package com.wzkris.system.websocket.handler;
 
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.system.domain.UserChatMessageDO;
 import com.wzkris.system.mapper.UserChatMessageMapper;
 import com.wzkris.system.utils.WebSocketSessionHolder;

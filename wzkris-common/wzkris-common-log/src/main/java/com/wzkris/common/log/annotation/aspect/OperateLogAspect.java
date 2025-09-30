@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.JsonUtil;

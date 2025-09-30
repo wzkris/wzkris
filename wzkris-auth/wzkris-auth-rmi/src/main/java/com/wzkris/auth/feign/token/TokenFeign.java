@@ -3,6 +3,8 @@ package com.wzkris.auth.feign.token;
 import com.wzkris.auth.feign.token.fallback.TokenFeignFallback;
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
+import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import jakarta.validation.Valid;
@@ -24,13 +26,13 @@ public interface TokenFeign extends RmiFeign {
     /**
      * 校验oauth2_token
      */
-    @PostMapping("/check-oauth2")
-    TokenResponse validateOAuth2(@Valid @RequestBody TokenReq tokenReq);
+    @PostMapping("/check-client")
+    TokenResponse<LoginClient> validateClient(@Valid @RequestBody TokenReq tokenReq);
 
     /**
-     * 校验用户token
+     * 校验token
      */
-    @PostMapping("/check-user")
-    TokenResponse validateUser(@Valid @RequestBody TokenReq tokenReq);
+    @PostMapping("/check-principal")
+    TokenResponse<CorePrincipal> validatePrincipal(@Valid @RequestBody TokenReq tokenReq);
 
 }

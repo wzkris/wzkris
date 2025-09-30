@@ -1,7 +1,7 @@
 package com.wzkris.gateway.utils;
 
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import jakarta.annotation.Nullable;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -19,11 +19,7 @@ import reactor.core.publisher.Mono;
 public class WebFluxUtil {
 
     public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode) {
-        return writeResponse(response, Result.resp(bizBaseCode));
-    }
-
-    public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode, String msg) {
-        return writeResponse(response, Result.resp(bizBaseCode, msg));
+        return writeResponse(response, Result.resp(bizBaseCode.value(), null, bizBaseCode.desc()));
     }
 
     public static Mono<Void> writeResponse(ServerHttpResponse response, int biz, String msg) {

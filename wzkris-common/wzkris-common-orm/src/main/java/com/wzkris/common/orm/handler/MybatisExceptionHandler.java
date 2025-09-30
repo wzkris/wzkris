@@ -1,6 +1,6 @@
 package com.wzkris.common.orm.handler;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
@@ -9,7 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.wzkris.common.core.domain.Result.err50000;
+import static com.wzkris.common.core.model.Result.err50000;
 
 /**
  * Mybatis异常处理器

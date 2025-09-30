@@ -6,7 +6,7 @@ import lombok.experimental.FieldNameConstants;
 import java.io.Serializable;
 
 /**
- * app用户传输层
+ * 客户传输层
  *
  * @author wzkris
  */

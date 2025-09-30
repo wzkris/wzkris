@@ -6,14 +6,12 @@ import com.wzkris.common.thread.refresh.adapter.WebServerTpAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationEvent;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.event.SmartApplicationListener;
 
 /**
  * nacos支持
  */
 @Slf4j
-@Import(TpProperties.class)
 @ConditionalOnClass(value = NacosConfigRefreshEvent.class)
 public class NacosTpRefresher extends AbstractTpRefresher implements SmartApplicationListener {
 
@@ -28,7 +26,7 @@ public class NacosTpRefresher extends AbstractTpRefresher implements SmartApplic
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        refreshTp();
+        refresh();
     }
 
 }

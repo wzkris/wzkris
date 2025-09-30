@@ -1,7 +1,7 @@
 package com.wzkris.user.controller.tenantwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;

@@ -13,16 +13,17 @@ public class TokenFeignFallback implements FallbackFactory<TokenFeign> {
     public TokenFeign create(Throwable cause) {
         return new TokenFeign() {
             @Override
-            public TokenResponse validateOAuth2(TokenReq tokenReq) {
+            public TokenResponse validateClient(TokenReq tokenReq) {
                 log.error("validateOAuth2 => req: {}", tokenReq, cause);
                 return TokenResponse.fallback(cause.getMessage());
             }
 
             @Override
-            public TokenResponse validateUser(TokenReq tokenReq) {
+            public TokenResponse validatePrincipal(TokenReq tokenReq) {
                 log.error("validateUser => req: {}", tokenReq, cause);
                 return TokenResponse.fallback(cause.getMessage());
             }
+
         };
     }
 

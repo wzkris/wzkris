@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -19,7 +20,7 @@ public final class SpringUtil implements BeanFactoryPostProcessor, ApplicationCo
      * 因此实现BeanFactoryPostProcessor注入ConfigurableListableBeanFactory实现bean的操作
      */
     @Getter
-    private static ConfigurableListableBeanFactory factory;
+    private static DefaultListableBeanFactory factory;
 
     /**
      * Spring应用上下文环境
@@ -30,7 +31,7 @@ public final class SpringUtil implements BeanFactoryPostProcessor, ApplicationCo
     @SuppressWarnings("NullableProblems")
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        SpringUtil.factory = beanFactory;
+        SpringUtil.factory = (DefaultListableBeanFactory) beanFactory;
     }
 
     @SuppressWarnings("NullableProblems")

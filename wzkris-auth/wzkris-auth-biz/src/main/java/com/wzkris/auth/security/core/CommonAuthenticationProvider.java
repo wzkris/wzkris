@@ -1,10 +1,10 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
 import jakarta.annotation.Nullable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

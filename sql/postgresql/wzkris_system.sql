@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-09-17 17:51:42
+-- Started on 2025-09-23 09:46:02
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1034,37 +1034,37 @@ ALTER TABLE ONLY biz.user_operate_log
 
 --
 -- TOC entry 3209 (class 1259 OID 16575)
--- Name: i_sys_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_user_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX i_sys_login_log_login_time ON biz.user_login_log USING brin (login_time);
+CREATE INDEX idx_user_login_log_login_time ON biz.user_login_log USING brin (login_time);
 
 
 --
 -- TOC entry 3218 (class 1259 OID 16576)
--- Name: i_sys_oper_log_oper_time; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_user_operate_log_oper_time; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX i_sys_oper_log_oper_time ON biz.user_operate_log USING brin (oper_time);
+CREATE INDEX idx_user_operate_log_oper_time ON biz.user_operate_log USING brin (oper_time);
 
 
 --
 -- TOC entry 3205 (class 1259 OID 16577)
--- Name: u_i_config_key; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_config_info_config_key; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX u_i_config_key ON biz.config_info USING btree (config_key);
+CREATE UNIQUE INDEX uk_config_info_config_key ON biz.config_info USING btree (config_key);
 
 
 --
 -- TOC entry 3208 (class 1259 OID 16578)
--- Name: u_i_dict_key; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_dictionary_info_dict_key; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX u_i_dict_key ON biz.dictionary_info USING btree (dict_key);
+CREATE UNIQUE INDEX uk_dictionary_info_dict_key ON biz.dictionary_info USING btree (dict_key);
 
 
--- Completed on 2025-09-17 17:51:42
+-- Completed on 2025-09-23 09:46:03
 
 --
 -- PostgreSQL database dump complete

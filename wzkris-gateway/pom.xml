@@ -50,10 +50,20 @@
             <artifactId>wzkris-common-sentinel</artifactId>
         </dependency>
 
-        <!-- SpringBoot Actuator -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-apikey</artifactId>
+        </dependency>
+
+        <!-- 核心包 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-auth-rmi</artifactId>
         </dependency>
 
         <!-- 均衡负载-->
@@ -69,10 +79,10 @@
             <version>${caffeine.version}</version>
         </dependency>
 
-        <!-- 核心包 -->
+        <!-- SpringBoot Actuator -->
         <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!-- knife4j网关聚合 -->
@@ -80,6 +90,7 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

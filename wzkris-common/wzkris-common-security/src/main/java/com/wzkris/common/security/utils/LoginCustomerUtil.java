@@ -1,8 +1,8 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.auth.feign.enums.AuthType;
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.exception.user.UserException;
-import com.wzkris.common.security.model.DeferredLoginCustomer;
+import com.wzkris.common.core.model.domain.LoginCustomer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +32,9 @@ public class LoginCustomerUtil extends SecurityUtil {
      *
      * @return 当前用户
      */
-    public static DeferredLoginCustomer getUser() {
+    public static LoginCustomer get() {
         try {
-            return (DeferredLoginCustomer) getAuthentication().getPrincipal();
+            return (LoginCustomer) getAuthentication().getPrincipal();
         } catch (Exception e) {
             throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }
@@ -46,7 +46,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      * @return 当前用户ID
      */
     public static Long getId() {
-        return getUser().getId();
+        return get().getId();
     }
 
     /**
@@ -55,7 +55,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      * @return 手机号
      */
     public static String getPhoneNumber() {
-        return getUser().getPhoneNumber();
+        return get().getPhoneNumber();
     }
 
 }

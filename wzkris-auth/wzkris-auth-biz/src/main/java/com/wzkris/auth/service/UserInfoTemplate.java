@@ -1,7 +1,7 @@
 package com.wzkris.auth.service;
 
-import com.wzkris.auth.feign.enums.AuthType;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
 import jakarta.annotation.Nullable;
 
 public abstract class UserInfoTemplate {

@@ -1,7 +1,7 @@
 package com.wzkris.common.security.oauth2.utils;
 
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomOAuth2Error;
@@ -94,7 +94,7 @@ public final class OAuth2ExceptionUtil {
                 default -> Result.err40000(errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
-            return Result.resp(BizBaseCode.BAD_GATEWAY, errorMsg);
+            return Result.resp(BizBaseCode.BAD_GATEWAY.value(), null, errorMsg);
         } else {
             return Result.err40001(errorMsg);
         }

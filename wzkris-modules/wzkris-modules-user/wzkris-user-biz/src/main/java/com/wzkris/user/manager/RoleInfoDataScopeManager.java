@@ -32,7 +32,7 @@ public class RoleInfoDataScopeManager {
     private final RoleInfoDscMapper roleInfoDscMapper;
 
     public List<RoleInfoDO> list(Wrapper<RoleInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.getUser().getDeptScopes());
+        DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.get().getDeptScopes());
 
         try {
             return roleInfoDscMapper.selectLists(queryWrapper);
@@ -42,7 +42,7 @@ public class RoleInfoDataScopeManager {
     }
 
     public List<Long> listInheritedIdByRoleId(Long roleId) {
-        DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.getUser().getDeptScopes());
+        DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.get().getDeptScopes());
 
         try {
             return roleInfoDscMapper.listInheritedIdByRoleId(roleId);
@@ -91,7 +91,7 @@ public class RoleInfoDataScopeManager {
      */
     public void checkDataScopes(Collection<Long> roleIds) {
         if (CollectionUtils.isNotEmpty(roleIds)) {
-            DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.getUser().getDeptScopes());
+            DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.get().getDeptScopes());
 
             try {
                 if (!roleInfoDscMapper.checkDataScopes(roleIds)) {

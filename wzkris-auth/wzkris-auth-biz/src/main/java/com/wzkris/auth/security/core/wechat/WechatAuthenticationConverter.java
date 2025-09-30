@@ -1,11 +1,11 @@
 package com.wzkris.auth.security.core.wechat;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;

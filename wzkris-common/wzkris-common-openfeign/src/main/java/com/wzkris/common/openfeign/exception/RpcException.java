@@ -1,5 +1,6 @@
 package com.wzkris.common.openfeign.exception;
 
+import com.wzkris.common.core.model.Result;
 import lombok.Getter;
 
 /**
@@ -10,11 +11,14 @@ import lombok.Getter;
 @Getter
 public class RpcException extends RuntimeException {
 
-    private final int code;
+    private final int httpStatusCode;
 
-    public RpcException(int code, String message) {
-        super(message);
-        this.code = code;
+    private final Result result;
+
+    public RpcException(int httpStatusCode, Result result) {
+        super(result.getMessage());
+        this.httpStatusCode = httpStatusCode;
+        this.result = result;
     }
 
 }

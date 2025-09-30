@@ -1,9 +1,9 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
 

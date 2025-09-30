@@ -1,6 +1,6 @@
 package com.wzkris.user.controller.tenant;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.annotation.IgnoreTenant;

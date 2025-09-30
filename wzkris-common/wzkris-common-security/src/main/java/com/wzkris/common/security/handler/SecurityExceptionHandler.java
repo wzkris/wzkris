@@ -1,6 +1,6 @@
 package com.wzkris.common.security.handler;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

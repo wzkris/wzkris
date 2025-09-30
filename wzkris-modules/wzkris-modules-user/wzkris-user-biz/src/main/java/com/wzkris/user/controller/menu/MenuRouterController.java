@@ -1,6 +1,6 @@
 package com.wzkris.user.controller.menu;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.user.domain.vo.RouterVO;

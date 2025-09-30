@@ -22,12 +22,12 @@ public class CustomerWalletInfoServiceImpl implements CustomerWalletInfoService 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean incryBalance(Long userId, BigDecimal amount) {
+    public boolean incryBalance(Long customerId, BigDecimal amount) {
         amount = amount.abs();
-        boolean suc = customerWalletInfoMapper.incryBalance(userId, amount) > 0;
+        boolean suc = customerWalletInfoMapper.incryBalance(customerId, amount) > 0;
         if (suc) {
             CustomerWalletRecordDO record = new CustomerWalletRecordDO();
-            record.setUserId(userId);
+            record.setCustomerId(customerId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_INCOME);
             record.setCreateAt(new Date());
@@ -38,12 +38,12 @@ public class CustomerWalletInfoServiceImpl implements CustomerWalletInfoService 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean decryBalance(Long userId, BigDecimal amount) {
+    public boolean decryBalance(Long customerId, BigDecimal amount) {
         amount = amount.abs();
-        boolean suc = customerWalletInfoMapper.decryBalance(userId, amount) > 0;
+        boolean suc = customerWalletInfoMapper.decryBalance(customerId, amount) > 0;
         if (suc) {
             CustomerWalletRecordDO record = new CustomerWalletRecordDO();
-            record.setUserId(userId);
+            record.setCustomerId(customerId);
             record.setAmount(amount);
             record.setRecordType(UserConstants.WALLET_OUTCOME);
             record.setCreateAt(new Date());

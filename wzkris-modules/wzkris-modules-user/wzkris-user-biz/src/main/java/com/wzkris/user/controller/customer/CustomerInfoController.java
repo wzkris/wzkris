@@ -1,6 +1,6 @@
 package com.wzkris.user.controller.customer;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.redis.annotation.GlobalCacheEvict;
@@ -54,10 +54,10 @@ public class CustomerInfoController extends BaseController {
     @Operation(summary = "修改信息")
     @PostMapping
     @GlobalCacheEvict(keyPrefix = info_prefix, key = "@cu.getId()")
-    public Result<?> editInfo(@RequestBody CustomerInfoReq profileReq) {
+    public Result<?> editInfo(@RequestBody CustomerInfoReq req) {
         CustomerInfoDO user = new CustomerInfoDO(LoginCustomerUtil.getId());
-        user.setNickname(profileReq.getNickname());
-        user.setGender(profileReq.getGender());
+        user.setNickname(req.getNickname());
+        user.setGender(req.getGender());
         return toRes(customerInfoMapper.updateById(user));
     }
 

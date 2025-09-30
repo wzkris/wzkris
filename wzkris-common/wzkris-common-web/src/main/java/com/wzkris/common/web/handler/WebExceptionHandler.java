@@ -1,9 +1,9 @@
 package com.wzkris.common.web.handler;
 
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.core.exception.mode.DemoModeException;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,8 +26,8 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import static com.wzkris.common.core.domain.Result.err40000;
-import static com.wzkris.common.core.domain.Result.resp;
+import static com.wzkris.common.core.model.Result.err40000;
+import static com.wzkris.common.core.model.Result.resp;
 
 /**
  * Web异常处理器
@@ -101,7 +101,7 @@ public class WebExceptionHandler {
             log.debug("请求地址'{} {}',404异常：{}", request.getMethod(), request.getRequestURI(), e.getMessage());
         }
         response.setStatus(HttpStatus.NOT_FOUND.value());
-        return resp(BizBaseCode.NOT_FOUND);
+        return resp(BizBaseCode.NOT_FOUND.value(), null, BizBaseCode.NOT_FOUND.desc());
     }
 
     /**
@@ -114,7 +114,7 @@ public class WebExceptionHandler {
             log.debug("请求地址'{}',不支持'{}'请求，异常信息：{}", request.getRequestURI(), e.getMethod(), e.getMessage());
         }
         response.setStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
-        return resp(BizBaseCode.BAD_METHOD, e.getMessage());
+        return resp(BizBaseCode.BAD_METHOD.value(), null, e.getMessage());
     }
 
     /**

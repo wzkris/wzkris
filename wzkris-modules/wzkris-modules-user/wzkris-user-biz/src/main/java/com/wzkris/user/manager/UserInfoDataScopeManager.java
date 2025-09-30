@@ -35,7 +35,7 @@ public class UserInfoDataScopeManager {
     private final UserToRoleMapper userToRoleMapper;
 
     public List<UserInfoDO> list(Wrapper<UserInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("dept_id", LoginUserUtil.getUser().getDeptScopes());
+        DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
 
         try {
             return userInfoDscMapper.selectLists(queryWrapper);
@@ -45,7 +45,7 @@ public class UserInfoDataScopeManager {
     }
 
     public List<UserManageVO> listVO(Wrapper<UserInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("d.dept_id", LoginUserUtil.getUser().getDeptScopes());
+        DataScopeUtil.putParameter("d.dept_id", LoginUserUtil.get().getDeptScopes());
 
         try {
             return userInfoDscMapper.selectVOList(queryWrapper);
@@ -118,7 +118,7 @@ public class UserInfoDataScopeManager {
                 throw new AccessDeniedException("userId：‘" + LoginUserUtil.getId() + "'禁止访问自身数据");
             }
 
-            DataScopeUtil.putParameter("dept_id", LoginUserUtil.getUser().getDeptScopes());
+            DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
 
             try {
                 if (!userInfoDscMapper.checkDataScopes(userIds)) {

@@ -4,6 +4,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -14,27 +15,23 @@ import reactor.core.publisher.Mono;
  *
  * @author wzkris
  */
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 @Component
-public class CacheRequestFilter implements GlobalFilter, Ordered {
+public class CacheRequestFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        // GET DELETE 不过滤
+        // GET DELETE 不缓存
         HttpMethod method = exchange.getRequest().getMethod();
         if (method == HttpMethod.GET || method == HttpMethod.DELETE) {
             return chain.filter(exchange);
         }
-        return ServerWebExchangeUtils.cacheRequestBodyAndRequest(exchange, (serverHttpRequest) -> {
+        return ServerWebExchangeUtils.cacheRequestBody(exchange, (serverHttpRequest) -> {
             if (serverHttpRequest == exchange.getRequest()) {
                 return chain.filter(exchange);
             }
             return chain.filter(exchange.mutate().request(serverHttpRequest).build());
         });
-    }
-
-    @Override
-    public int getOrder() {
-        return 1;
     }
 
 }

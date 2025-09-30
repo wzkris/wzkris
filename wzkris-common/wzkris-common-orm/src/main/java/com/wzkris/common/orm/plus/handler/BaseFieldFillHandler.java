@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;

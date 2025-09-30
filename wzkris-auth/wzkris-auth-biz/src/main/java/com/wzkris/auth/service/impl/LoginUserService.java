@@ -1,15 +1,15 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.feign.domain.LoginUser;
-import com.wzkris.auth.feign.enums.AuthType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.domain.CorePrincipal;
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;

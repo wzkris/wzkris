@@ -23,7 +23,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-core</artifactId>
+            <artifactId>wzkris-common-apikey</artifactId>
         </dependency>
 
         <!-- SpringBoot admin -->

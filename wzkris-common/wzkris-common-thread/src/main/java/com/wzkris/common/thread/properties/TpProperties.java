@@ -5,10 +5,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 线程池配置
+ * 动态线程池配置
  *
  * @author wzkris
  * @date 2025/8/8
@@ -16,10 +17,10 @@ import java.util.List;
 @Data
 @RefreshScope
 @Configuration
-@ConfigurationProperties("wzkris-tp")
+@ConfigurationProperties("dynamic-threadpool")
 public class TpProperties {
 
-    private List<ExecutorProperties> tpExecutors;
+    private List<ExecutorProperties> tpExecutors = new ArrayList<>();
 
     private ExecutorProperties tomcatExecutor;
 

@@ -1,6 +1,6 @@
 package com.wzkris.system.controller.dictionary;
 
-import com.wzkris.common.core.domain.Result;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.domain.DictionaryInfoDO;
 import com.wzkris.system.service.DictionaryInfoService;

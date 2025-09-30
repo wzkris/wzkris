@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.handler;
 
-import com.wzkris.common.core.domain.Result;
 import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;

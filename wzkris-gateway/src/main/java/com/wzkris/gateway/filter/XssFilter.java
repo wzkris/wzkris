@@ -7,7 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,9 +26,10 @@ import java.nio.charset.StandardCharsets;
  *
  * @author wzkris
  */
+@Order(-100)
 @Component
 @ConditionalOnProperty(value = "xss.enabled", havingValue = "true")
-public class XssFilter implements GlobalFilter, Ordered {
+public class XssFilter implements GlobalFilter {
 
     public static final String RE_HTML_MARK = "(<[^<]*?>)|(<[\\s]*?/[^<]*?>)|(<[^<]*?/[\\s]*?>)";
 
@@ -107,11 +108,6 @@ public class XssFilter implements GlobalFilter, Ordered {
     public boolean isJsonRequest(ServerWebExchange exchange) {
         String header = exchange.getRequest().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
         return StringUtil.equalsAnyIgnoreCase(header, MediaType.APPLICATION_JSON_VALUE);
-    }
-
-    @Override
-    public int getOrder() {
-        return -100;
     }
 
 }
