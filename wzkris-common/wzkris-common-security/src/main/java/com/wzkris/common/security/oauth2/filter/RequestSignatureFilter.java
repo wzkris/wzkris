@@ -29,14 +29,14 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class RequestSignatureFilter extends OncePerRequestFilter {
 
-    private final SignkeyProperties signkeyProperties;
+    private final SignkeyProperties signProp;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         RepeatableReadRequestWrapper requestWrapper = (RepeatableReadRequestWrapper) request;
 
         final String requestFrom = requestWrapper.getHeader(HeaderConstants.X_REQUEST_FROM);
-        final SignkeyProperties.Sign sign = signkeyProperties.getKeys().get(requestFrom);
+        final SignkeyProperties.Sign sign = signProp.getKeys().get(requestFrom);
         if (sign == null) {
             sendErrorResponse(response, Result.resp(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
             return;
@@ -56,7 +56,9 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
                 TraceIdUtil.get(),
                 requestWrapper.getBodyAsString(),
                 Long.parseLong(requestTime),
-                signature);
+                signature,
+                sign.getMaxInterval()
+        );
 
         if (!verified) {
             sendErrorResponse(response, Result.resp(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));

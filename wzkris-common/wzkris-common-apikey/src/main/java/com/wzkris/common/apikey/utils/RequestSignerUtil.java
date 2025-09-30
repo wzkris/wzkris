@@ -20,8 +20,6 @@ public class RequestSignerUtil {
 
     private static final String DELIMITER = "\n"; // 分隔符
 
-    private static final long TIMESTAMP_THRESHOLD = 30 * 1000; // 30秒有效期
-
     public static void setCommonHeaders(BiConsumer<String, String> headerSetter,
                                         String applicationName,
                                         String secret,
@@ -75,6 +73,7 @@ public class RequestSignerUtil {
      * @param body      请求体
      * @param timestamp 请求时间戳
      * @param signature 待验证的签名
+     * @param interval  调用允许的时间间隔
      * @return true=验证通过，false=验证失败
      */
     public static boolean verifySignature(
@@ -82,11 +81,12 @@ public class RequestSignerUtil {
             String path,
             String body,
             long timestamp,
-            String signature
+            String signature,
+            long interval
     ) {
         // 1. 检查时间戳是否在有效期内（防重放攻击）
         long currentTime = System.currentTimeMillis();
-        if (Math.abs(currentTime - timestamp) > TIMESTAMP_THRESHOLD) {
+        if (Math.abs(currentTime - timestamp) > interval) {
             return false;
         }
 

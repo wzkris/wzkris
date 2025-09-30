@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +28,9 @@ public class SignkeyProperties {
         private String secret;
 
         /**
-         * 过期时间
+         * 最大间隔时间 // ms
          */
-        private Date expireAt;
+        private long maxInterval = 10_000;
 
     }
 
