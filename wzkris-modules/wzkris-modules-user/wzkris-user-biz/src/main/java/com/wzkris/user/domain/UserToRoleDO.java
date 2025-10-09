@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户和角色关联 biz.tenant_wallet_withdrawal_record
+ * 用户和角色关联
  *
  * @author wzkris
  */

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * 租户钱包表 tenant_wallet_info
+ * 租户钱包表
  *
  * @author wzkris
  */

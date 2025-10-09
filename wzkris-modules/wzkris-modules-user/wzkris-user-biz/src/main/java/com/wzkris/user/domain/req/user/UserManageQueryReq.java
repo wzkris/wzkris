@@ -8,9 +8,6 @@ import lombok.Data;
 @Schema(description = "用户管理查询参数体")
 public class UserManageQueryReq extends QueryReq {
 
-    @Schema(description = "租户ID")
-    private Long tenantId;
-
     @Schema(description = "部门ID")
     private Long deptId;
 

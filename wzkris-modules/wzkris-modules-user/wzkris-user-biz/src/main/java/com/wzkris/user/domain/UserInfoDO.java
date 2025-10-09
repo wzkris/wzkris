@@ -29,9 +29,6 @@ public class UserInfoDO extends BaseEntity {
     @TableId
     private Long userId;
 
-    @Schema(description = "租户ID")
-    private Long tenantId;
-
     @Schema(description = "部门ID")
     private Long deptId;
 

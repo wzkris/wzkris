@@ -5,14 +5,17 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.user.domain.DeptInfoDO;
+import com.wzkris.user.domain.PostInfoDO;
 import com.wzkris.user.domain.RoleInfoDO;
 import com.wzkris.user.domain.UserInfoDO;
-import com.wzkris.user.feign.userinfo.resp.PermissionResp;
+import com.wzkris.user.feign.staffinfo.resp.StaffPermissionResp;
+import com.wzkris.user.feign.userinfo.resp.UserPermissionResp;
 import com.wzkris.user.manager.DeptInfoDataScopeManager;
 import com.wzkris.user.mapper.DeptInfoMapper;
 import com.wzkris.user.mapper.TenantInfoMapper;
 import com.wzkris.user.service.MenuInfoService;
 import com.wzkris.user.service.PermissionService;
+import com.wzkris.user.service.PostInfoService;
 import com.wzkris.user.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,39 +59,54 @@ public class PermissionServiceImpl implements PermissionService {
 
     private final DeptInfoMapper deptInfoMapper;
 
+    private final PostInfoService postInfoService;
+
     private final TenantInfoMapper tenantInfoMapper;
 
     private final DeptInfoDataScopeManager deptInfoDataScopeManager;
 
     @Override
-    public PermissionResp getPermission(Long userId, Long tenantId, Long deptId) {
+    public UserPermissionResp getUserPermission(Long userId, Long deptId) {
+        List<RoleInfoDO> roles;
+        List<String> grantedAuthority;
+        List<Long> deptScopes = Collections.emptyList();
+        boolean administrator = false;
+        if (UserInfoDO.isSuperAdmin(userId)) {
+            // 超级管理员查出所有角色
+            administrator = true;
+            grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
+        } else {
+            // 查询角色
+            roles = roleInfoService.listInheritedByUserId(userId);
+            // 菜单权限
+            List<Long> roleIds = roles.stream().map(RoleInfoDO::getRoleId).collect(Collectors.toList());
+            grantedAuthority = menuInfoService.listPermsByRoleIds(roleIds);
+            // 数据权限
+            deptScopes = this.listDeptScope(roles, deptId);
+        }
+        return new UserPermissionResp(administrator, grantedAuthority, deptScopes);
+    }
+
+    @Override
+    public StaffPermissionResp getStaffPermission(Long staffId, Long tenantId) {
         return DynamicTenantUtil.switcht(tenantId, () -> {
-            List<RoleInfoDO> roles;
+            List<PostInfoDO> posts;
             List<String> grantedAuthority;
-            List<Long> deptScopes = Collections.emptyList();
             boolean administrator = false;
-            if (UserInfoDO.isSuperAdmin(userId)) {
-                // 超级管理员查出所有角色
+            // 租户最高管理员特殊处理
+            Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
+            if (tenantPackageId != null) {
+                // 租户最高管理员查出所有租户角色
                 administrator = true;
-                grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
+                grantedAuthority = menuInfoService.listPermsByTenantPackageId(tenantPackageId);
             } else {
-                // 租户最高管理员特殊处理
-                Long tenantPackageId = tenantInfoMapper.selectPackageIdByUserId(userId);
-                if (tenantPackageId != null) {
-                    // 租户最高管理员查出所有租户角色
-                    administrator = true;
-                    grantedAuthority = menuInfoService.listPermsByTenantPackageId(tenantPackageId);
-                } else {
-                    // 否则为普通用户
-                    roles = roleInfoService.listInheritedByUserId(userId);
-                    // 菜单权限
-                    List<Long> roleIds = roles.stream().map(RoleInfoDO::getRoleId).collect(Collectors.toList());
-                    grantedAuthority = menuInfoService.listPermsByRoleIds(roleIds);
-                    // 数据权限
-                    deptScopes = this.listDeptScope(roles, deptId);
-                }
+                // 否则为普通用户
+                posts = postInfoService.listByStaffId(staffId);
+                // 菜单权限
+                List<Long> roleIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
+                grantedAuthority = menuInfoService.listPermsByRoleIds(roleIds);
             }
-            return new PermissionResp(administrator, grantedAuthority, deptScopes);
+            return new StaffPermissionResp(administrator, grantedAuthority);
         });
     }
 

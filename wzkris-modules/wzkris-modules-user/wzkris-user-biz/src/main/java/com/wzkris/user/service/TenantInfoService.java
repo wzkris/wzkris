@@ -24,11 +24,11 @@ public interface TenantInfoService {
     /**
      * 添加租户, 会创建租户管理员账号
      *
-     * @param tenant   参数
-     * @param username 登录账户
-     * @param password 登录密码
+     * @param tenant    参数
+     * @param staffName 登录账户
+     * @param password  登录密码
      */
-    boolean saveTenant(TenantInfoDO tenant, String username, String password);
+    boolean saveTenant(TenantInfoDO tenant, String staffName, String password);
 
     /**
      * 删除租户及相关信息(hard delete)
@@ -52,14 +52,6 @@ public interface TenantInfoService {
      * @return true通过 false不通过
      */
     boolean checkRoleLimit(Long tenantId);
-
-    /**
-     * 校验租户部门数量
-     *
-     * @param tenantId 租户ID
-     * @return true通过 false不通过
-     */
-    boolean checkDeptLimit(Long tenantId);
 
     /**
      * 校验是否租户超管

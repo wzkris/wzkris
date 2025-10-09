@@ -6,7 +6,6 @@ import com.wzkris.auth.feign.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.redis.annotation.GlobalCacheEvict;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
 @Tag(name = "用户信息")
 @RestController
 @RequestMapping("/user-info")
-@IgnoreTenant(value = false, forceTenantId = "@lu.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class UserInfoController extends BaseController {
 
@@ -69,7 +67,6 @@ public class UserInfoController extends BaseController {
         }
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setAdmin(LoginUserUtil.isAdmin());
-        userInfoVO.setSuperTenant(LoginUserUtil.isSuperTenant());
         userInfoVO.setUsername(LoginUserUtil.getUsername());
         userInfoVO.setAuthorities(LoginUserUtil.getAuthorities());
         userInfoVO.setAvatar(user.getAvatar());

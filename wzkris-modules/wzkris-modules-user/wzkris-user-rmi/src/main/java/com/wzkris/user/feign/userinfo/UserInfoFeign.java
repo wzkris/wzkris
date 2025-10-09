@@ -4,9 +4,9 @@ import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.user.feign.userinfo.fallback.UserInfoFeignFallback;
 import com.wzkris.user.feign.userinfo.req.LoginInfoReq;
-import com.wzkris.user.feign.userinfo.req.QueryPermsReq;
-import com.wzkris.user.feign.userinfo.resp.PermissionResp;
+import com.wzkris.user.feign.userinfo.req.QueryUserPermsReq;
 import com.wzkris.user.feign.userinfo.resp.UserInfoResp;
+import com.wzkris.user.feign.userinfo.resp.UserPermissionResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,7 +38,7 @@ public interface UserInfoFeign extends RmiFeign {
      * 查询管理员权限
      */
     @PostMapping("/query-permission")
-    PermissionResp getPermission(@RequestBody QueryPermsReq queryPermsReq);
+    UserPermissionResp getPermission(@RequestBody QueryUserPermsReq queryUserPermsReq);
 
     /**
      * 更新用户登录信息

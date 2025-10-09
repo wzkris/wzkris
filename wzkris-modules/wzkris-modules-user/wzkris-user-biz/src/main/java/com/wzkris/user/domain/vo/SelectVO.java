@@ -1,9 +1,6 @@
 package com.wzkris.user.domain.vo;
 
-import com.wzkris.user.domain.RoleInfoDO;
-import com.wzkris.user.domain.TenantInfoDO;
-import com.wzkris.user.domain.TenantPackageInfoDO;
-import com.wzkris.user.domain.UserInfoDO;
+import com.wzkris.user.domain.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,6 +44,11 @@ public class SelectVO implements Serializable {
     public SelectVO(TenantInfoDO tenant) {
         this.id = tenant.getTenantId();
         this.label = tenant.getTenantName();
+    }
+
+    public SelectVO(PostInfoDO post) {
+        this.id = post.getPostId();
+        this.label = post.getPostName();
     }
 
 }

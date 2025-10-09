@@ -23,7 +23,6 @@ public class DynamicTenantUtilTest {
 
     static {
         LoginUser user = new LoginUser(1L, Collections.singleton("*"));
-        user.setTenantId(0L);
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(
                 OAuth2AccessToken.TokenType.BEARER, "xxxxxx", Instant.MIN, Instant.MAX, Collections.emptySet());
         SecurityContextHolder.getContext()

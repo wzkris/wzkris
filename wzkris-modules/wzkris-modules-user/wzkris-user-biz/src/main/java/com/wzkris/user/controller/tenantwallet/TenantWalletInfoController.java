@@ -5,11 +5,10 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckUserPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginStaffUtil;
 import com.wzkris.user.domain.TenantInfoDO;
 import com.wzkris.user.domain.TenantWalletRecordDO;
 import com.wzkris.user.domain.req.tenantwallet.TenantWalletRecordQueryReq;
@@ -38,7 +37,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/tenant-wallet")
 @CheckUserPerms("user-mod:tenant-wallet-info")
-@IgnoreTenant(value = false, forceTenantId = "@lu.getTenantId()") // 忽略切换
 @RequiredArgsConstructor
 public class TenantWalletInfoController extends BaseController {
 
@@ -53,7 +51,7 @@ public class TenantWalletInfoController extends BaseController {
     @Operation(summary = "余额信息")
     @GetMapping
     public Result<TenantWalletInfoVO> walletInfo() {
-        return ok(tenantWalletInfoMapper.selectById2VO(LoginUserUtil.getTenantId(), TenantWalletInfoVO.class));
+        return ok(tenantWalletInfoMapper.selectById2VO(LoginStaffUtil.getTenantId(), TenantWalletInfoVO.class));
     }
 
     @Operation(summary = "钱包记录")
@@ -84,7 +82,7 @@ public class TenantWalletInfoController extends BaseController {
     @PostMapping("/withdrawal")
     @CheckUserPerms("user-mod:tenant-wallet-info:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
-        TenantInfoDO sysTenant = tenantInfoMapper.selectById(LoginUserUtil.getTenantId());
+        TenantInfoDO sysTenant = tenantInfoMapper.selectById(LoginStaffUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
             return err40000("密码错误");
         }

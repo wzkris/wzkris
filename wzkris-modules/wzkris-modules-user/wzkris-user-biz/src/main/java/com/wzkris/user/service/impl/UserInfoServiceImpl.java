@@ -1,7 +1,6 @@
 package com.wzkris.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.user.domain.UserInfoDO;
 import com.wzkris.user.domain.UserToRoleDO;
@@ -88,22 +87,18 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public boolean existByUsername(@Nullable Long userId, String username) {
-        return DynamicTenantUtil.ignore(() -> {
-            LambdaQueryWrapper<UserInfoDO> lqw = new LambdaQueryWrapper<>(UserInfoDO.class)
-                    .eq(UserInfoDO::getUsername, username)
-                    .ne(Objects.nonNull(userId), UserInfoDO::getUserId, userId);
-            return userInfoMapper.exists(lqw);
-        });
+        LambdaQueryWrapper<UserInfoDO> lqw = new LambdaQueryWrapper<>(UserInfoDO.class)
+                .eq(UserInfoDO::getUsername, username)
+                .ne(Objects.nonNull(userId), UserInfoDO::getUserId, userId);
+        return userInfoMapper.exists(lqw);
     }
 
     @Override
     public boolean existByPhoneNumber(@Nullable Long userId, String phonenumber) {
-        return DynamicTenantUtil.ignore(() -> {
-            LambdaQueryWrapper<UserInfoDO> lqw = new LambdaQueryWrapper<>(UserInfoDO.class)
-                    .eq(UserInfoDO::getPhoneNumber, phonenumber)
-                    .ne(Objects.nonNull(userId), UserInfoDO::getUserId, userId);
-            return userInfoMapper.exists(lqw);
-        });
+        LambdaQueryWrapper<UserInfoDO> lqw = new LambdaQueryWrapper<>(UserInfoDO.class)
+                .eq(UserInfoDO::getPhoneNumber, phonenumber)
+                .ne(Objects.nonNull(userId), UserInfoDO::getUserId, userId);
+        return userInfoMapper.exists(lqw);
     }
 
 }

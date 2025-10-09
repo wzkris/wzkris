@@ -10,10 +10,7 @@ import com.wzkris.user.domain.UserInfoDO;
 import com.wzkris.user.domain.vo.MetaVO;
 import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.domain.vo.SelectTreeVO;
-import com.wzkris.user.mapper.MenuInfoMapper;
-import com.wzkris.user.mapper.RoleToMenuMapper;
-import com.wzkris.user.mapper.TenantInfoMapper;
-import com.wzkris.user.mapper.TenantPackageInfoMapper;
+import com.wzkris.user.mapper.*;
 import com.wzkris.user.service.MenuInfoService;
 import com.wzkris.user.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +43,8 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     private final RoleInfoService roleInfoService;
 
     private final RoleToMenuMapper roleToMenuMapper;
+
+    private final PostToMenuMapper postToMenuMapper;
 
     /**
      * url query参数转map
@@ -114,6 +113,15 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
+    public List<String> listPermsByPostIds(List<Long> postIds) {
+        if (CollectionUtils.isEmpty(postIds)) {
+            return Collections.emptyList();
+        }
+        List<Long> menuIds = postToMenuMapper.listMenuIdByPostIds(postIds);
+        return this.listPermsByMenuIds(menuIds);
+    }
+
+    @Override
     public List<String> listPermsByMenuIds(@Nullable List<Long> menuIds) {
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
@@ -135,7 +143,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         List<Long> menuIds = null;
         if (!UserInfoDO.isSuperAdmin(userId)) {
             // 去关联表中查绑定的菜单ID
-            Long tenantPackageId = tenantInfoMapper.selectPackageIdByUserId(userId);
+            Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
                 menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
@@ -158,7 +166,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         List<Long> menuIds = null;
         if (!UserInfoDO.isSuperAdmin(userId)) {
             // 去关联表中查绑定的菜单ID
-            Long tenantPackageId = tenantInfoMapper.selectPackageIdByUserId(userId);
+            Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(userId);
             if (tenantPackageId != null) {
                 // 租户最高管理员，去查套餐绑定菜单
                 menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);

@@ -16,10 +16,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PermissionResp implements Serializable {
+public class UserPermissionResp implements Serializable {
 
     /**
-     * 租户管理员
+     * 系统管理员
      */
     private boolean admin;
 

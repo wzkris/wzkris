@@ -3,7 +3,6 @@ package com.wzkris.user.feign.userinfo.resp;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * sys用户信息
@@ -14,8 +13,6 @@ import java.util.Date;
 public class UserInfoResp implements Serializable {
 
     private Long userId;
-
-    private Long tenantId;
 
     private Long deptId;
 
@@ -30,11 +27,5 @@ public class UserInfoResp implements Serializable {
     private String status;
 
     private String password;
-
-    private String tenantStatus;
-
-    private Date tenantExpired;
-
-    private String packageStatus;
 
 }

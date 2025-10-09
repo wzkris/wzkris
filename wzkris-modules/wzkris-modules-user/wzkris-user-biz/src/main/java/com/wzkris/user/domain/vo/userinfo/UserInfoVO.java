@@ -12,11 +12,8 @@ import java.util.Date;
 @Schema(description = "用户信息")
 public class UserInfoVO {
 
-    @Schema(description = "是否租户管理员")
+    @Schema(description = "是否超级管理员")
     private boolean admin;
-
-    @Schema(description = "是否超级租户")
-    private boolean superTenant;
 
     @Schema(description = "用户名")
     private String username;

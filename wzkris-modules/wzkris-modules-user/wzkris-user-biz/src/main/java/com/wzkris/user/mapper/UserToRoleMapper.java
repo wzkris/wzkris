@@ -40,8 +40,9 @@ public interface UserToRoleMapper {
      * @param userId 用户ID
      * @return 结果
      */
-    @Delete("DELETE FROM biz.user_to_role WHERE user_id = #{userId}")
-    int deleteByUserId(Long userId);
+    default int deleteByUserId(Long userId) {
+        return this.deleteByUserIds(List.of(userId));
+    }
 
     /**
      * 批量删除用户和角色关联

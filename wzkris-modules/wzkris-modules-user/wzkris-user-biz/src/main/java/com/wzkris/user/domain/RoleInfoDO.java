@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 角色表 sys_role
+ * 角色表
  *
  * @author wzkris
  */
@@ -19,9 +19,6 @@ public class RoleInfoDO extends BaseEntity {
 
     @TableId
     private Long roleId;
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
 
     @Schema(description = "数据范围（1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限）")
     private String dataScope;

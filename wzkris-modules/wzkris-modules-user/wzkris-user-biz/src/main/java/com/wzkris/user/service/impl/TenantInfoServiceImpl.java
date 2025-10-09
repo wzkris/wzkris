@@ -9,9 +9,9 @@ import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.user.domain.*;
 import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.*;
-import com.wzkris.user.service.RoleInfoService;
+import com.wzkris.user.service.PostInfoService;
+import com.wzkris.user.service.StaffInfoService;
 import com.wzkris.user.service.TenantInfoService;
-import com.wzkris.user.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,15 +30,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TenantInfoServiceImpl implements TenantInfoService {
 
-    private final UserInfoMapper userInfoMapper;
+    private final StaffInfoMapper staffInfoMapper;
 
-    private final UserInfoService userInfoService;
+    private final StaffInfoService staffInfoService;
 
-    private final RoleInfoMapper roleInfoMapper;
+    private final PostInfoMapper postInfoMapper;
 
-    private final RoleInfoService roleInfoService;
-
-    private final DeptInfoMapper deptInfoMapper;
+    private final PostInfoService postInfoService;
 
     private final PasswordEncoderDelegate passwordEncoder;
 
@@ -59,23 +57,23 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveTenant(TenantInfoDO tenant, String username, String password) {
+    public boolean saveTenant(TenantInfoDO tenant, String staffName, String password) {
         if (!passwordEncoder.isEncode(tenant.getOperPwd())) {
             tenant.setOperPwd(passwordEncoder.encode(tenant.getOperPwd()));
         }
-        long userId = IdWorker.getId();
-        tenant.setAdministrator(userId);
+        long staffId = IdWorker.getId();
+        tenant.setAdministrator(staffId);
         tenantInfoMapper.insert(tenant);
 
         TenantWalletInfoDO wallet = new TenantWalletInfoDO(tenant.getTenantId());
         tenantWalletInfoMapper.insert(wallet);
 
-        UserInfoDO user = new UserInfoDO();
-        user.setUserId(userId);
-        user.setTenantId(tenant.getTenantId());
-        user.setUsername(username);
-        user.setPassword(password);
-        return userInfoService.saveUser(user, null);
+        StaffInfoDO staff = new StaffInfoDO();
+        staff.setStaffId(staffId);
+        staff.setTenantId(tenant.getTenantId());
+        staff.setStaffName(staffName);
+        staff.setPassword(password);
+        return staffInfoService.saveStaff(staff, null);
     }
 
     @Override
@@ -89,27 +87,24 @@ public class TenantInfoServiceImpl implements TenantInfoService {
                         .eq(TenantWalletRecordDO::getTenantId, tenantId);
                 tenantWalletRecordMapper.delete(recordw);
 
-                LambdaQueryWrapper<UserInfoDO> userw = Wrappers.lambdaQuery(UserInfoDO.class)
-                        .select(UserInfoDO::getUserId)
-                        .eq(UserInfoDO::getTenantId, tenantId);
-                List<Long> userIds = userInfoMapper.selectList(userw).stream()
-                        .map(UserInfoDO::getUserId)
+                LambdaQueryWrapper<StaffInfoDO> userw = Wrappers.lambdaQuery(StaffInfoDO.class)
+                        .select(StaffInfoDO::getStaffId)
+                        .eq(StaffInfoDO::getTenantId, tenantId);
+                List<Long> staffIds = staffInfoMapper.selectList(userw).stream()
+                        .map(StaffInfoDO::getStaffId)
                         .toList();
-                if (CollectionUtils.isNotEmpty(userIds)) {
-                    userInfoService.removeByIds(userIds);
+                if (CollectionUtils.isNotEmpty(staffIds)) {
+                    staffInfoService.removeByIds(staffIds);
                 }
-                LambdaQueryWrapper<RoleInfoDO> rolew = Wrappers.lambdaQuery(RoleInfoDO.class)
-                        .select(RoleInfoDO::getRoleId)
-                        .eq(RoleInfoDO::getTenantId, tenantId);
-                List<Long> roleIds = roleInfoMapper.selectList(rolew).stream()
-                        .map(RoleInfoDO::getRoleId)
+                LambdaQueryWrapper<PostInfoDO> rolew = Wrappers.lambdaQuery(PostInfoDO.class)
+                        .select(PostInfoDO::getPostId)
+                        .eq(PostInfoDO::getTenantId, tenantId);
+                List<Long> postIds = postInfoMapper.selectList(rolew).stream()
+                        .map(PostInfoDO::getPostId)
                         .toList();
-                if (CollectionUtils.isNotEmpty(roleIds)) {
-                    roleInfoService.removeByIds(roleIds);
+                if (CollectionUtils.isNotEmpty(postIds)) {
+                    postInfoService.removeByIds(postIds);
                 }
-                LambdaQueryWrapper<DeptInfoDO> deptw =
-                        Wrappers.lambdaQuery(DeptInfoDO.class).eq(DeptInfoDO::getTenantId, tenantId);
-                deptInfoMapper.delete(deptw);
             }
             return success;
         });
@@ -123,8 +118,8 @@ public class TenantInfoServiceImpl implements TenantInfoService {
             if (tenant.getAccountLimit() == -1) {
                 return true;
             }
-            Long count = userInfoMapper.selectCount(
-                    Wrappers.lambdaQuery(UserInfoDO.class).eq(UserInfoDO::getTenantId, tenantId));
+            Long count = staffInfoMapper.selectCount(
+                    Wrappers.lambdaQuery(StaffInfoDO.class).eq(StaffInfoDO::getTenantId, tenantId));
             return tenant.getAccountLimit() - count > 0;
         });
     }
@@ -137,23 +132,9 @@ public class TenantInfoServiceImpl implements TenantInfoService {
             if (tenant.getRoleLimit() == -1) {
                 return true;
             }
-            Long count = roleInfoMapper.selectCount(
-                    Wrappers.lambdaQuery(RoleInfoDO.class).eq(RoleInfoDO::getTenantId, tenantId));
+            Long count = postInfoMapper.selectCount(
+                    Wrappers.lambdaQuery(PostInfoDO.class).eq(PostInfoDO::getTenantId, tenantId));
             return tenant.getRoleLimit() - count > 0;
-        });
-    }
-
-    @Override
-    public boolean checkDeptLimit(Long tenantId) {
-        return TenantInfoDO.isSuperTenant(tenantId)
-                || DynamicTenantUtil.ignore(() -> {
-            TenantInfoDO tenant = tenantInfoMapper.selectById(tenantId);
-            if (tenant.getDeptLimit() == -1) {
-                return true;
-            }
-            Long count = deptInfoMapper.selectCount(
-                    Wrappers.lambdaQuery(DeptInfoDO.class).eq(DeptInfoDO::getTenantId, tenantId));
-            return tenant.getDeptLimit() - count > 0;
         });
     }
 

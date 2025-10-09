@@ -90,7 +90,6 @@ public class UserInfoDataScopeManager {
 
     private LambdaQueryWrapper<UserInfoDO> buildQueryWrapper(UserManageQueryReq queryReq) {
         return new LambdaQueryWrapper<UserInfoDO>()
-                .eq(ObjectUtils.isNotEmpty(queryReq.getTenantId()), UserInfoDO::getTenantId, queryReq.getTenantId())
                 .like(ObjectUtils.isNotEmpty(queryReq.getUsername()), UserInfoDO::getUsername, queryReq.getUsername())
                 .like(ObjectUtils.isNotEmpty(queryReq.getNickname()), UserInfoDO::getNickname, queryReq.getNickname())
                 .like(

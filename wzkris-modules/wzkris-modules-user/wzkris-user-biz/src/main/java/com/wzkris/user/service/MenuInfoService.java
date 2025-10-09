@@ -22,6 +22,14 @@ public interface MenuInfoService {
     List<String> listPermsByRoleIds(@Nullable List<Long> roleIds);
 
     /**
+     * 根据职位ID集合查询权限
+     *
+     * @param postIds 职位ID集合
+     * @return 权限列表
+     */
+    List<String> listPermsByPostIds(@Nullable List<Long> postIds);
+
+    /**
      * 根据菜单ID集合查询权限
      *
      * @param menuIds 菜单ID集合

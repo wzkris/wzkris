@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * 顾客 customer_info
+ * 顾客信息
  *
  * @author wzkris
  */

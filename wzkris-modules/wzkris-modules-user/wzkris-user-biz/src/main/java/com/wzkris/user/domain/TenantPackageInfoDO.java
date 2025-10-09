@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.ArrayTypeHandler;
 
 /**
- * 租户套餐表 tenant_package_info
+ * 租户套餐表
  *
  * @author wzkris
  */

@@ -32,7 +32,7 @@ public class DynamicTenantSwitchingFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!LoginUserUtil.isLogin() || !LoginUserUtil.isSuperTenant()) {
+        if (!LoginUserUtil.isLogin()) {
             filterChain.doFilter(request, response);
             return;
         }

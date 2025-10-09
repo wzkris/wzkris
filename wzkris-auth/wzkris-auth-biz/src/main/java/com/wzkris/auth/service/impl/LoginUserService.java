@@ -17,9 +17,9 @@ import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.user.feign.userinfo.UserInfoFeign;
-import com.wzkris.user.feign.userinfo.req.QueryPermsReq;
-import com.wzkris.user.feign.userinfo.resp.PermissionResp;
+import com.wzkris.user.feign.userinfo.req.QueryUserPermsReq;
 import com.wzkris.user.feign.userinfo.resp.UserInfoResp;
+import com.wzkris.user.feign.userinfo.resp.UserPermissionResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -97,13 +97,12 @@ public class LoginUserService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        PermissionResp permissions = userInfoFeign.getPermission(
-                new QueryPermsReq(userResp.getUserId(), userResp.getTenantId(), userResp.getDeptId()));
+        UserPermissionResp permissions = userInfoFeign.getPermission(
+                new QueryUserPermsReq(userResp.getUserId(), userResp.getDeptId()));
 
         LoginUser loginUser = new LoginUser(userResp.getUserId(), new HashSet<>(permissions.getGrantedAuthority()));
         loginUser.setAdmin(permissions.getAdmin());
         loginUser.setUsername(userResp.getUsername());
-        loginUser.setTenantId(userResp.getTenantId());
         loginUser.setDeptScopes(permissions.getDeptScopes());
 
         return loginUser;
@@ -116,15 +115,6 @@ public class LoginUserService extends UserInfoTemplate {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCode.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
-        } else if (StringUtil.equals(userResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.TENANT_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
-        } else if (userResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.TENANT_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
-        } else if (StringUtil.equals(userResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.TENANT_PACKAGE_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }
 
@@ -134,12 +124,11 @@ public class LoginUserService extends UserInfoTemplate {
     private void recordFailedLog(UserInfoResp userResp, String loginType, String errorMsg) {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginUser user = new LoginUser(userResp.getUserId(), null);
-        user.setUsername(userResp.getUsername());
-        user.setTenantId(userResp.getTenantId());
+        LoginUser loginUser = new LoginUser(userResp.getUserId(), null);
+        loginUser.setUsername(userResp.getUsername());
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        user,
+                        loginUser,
                         null,
                         loginType,
                         CommonConstants.FAIL,

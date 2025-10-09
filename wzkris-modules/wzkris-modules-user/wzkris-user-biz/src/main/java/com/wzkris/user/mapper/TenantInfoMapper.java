@@ -39,7 +39,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
      * @return 套餐ID
      */
     @Select("SELECT package_id FROM biz.tenant_info WHERE administrator = #{userId}")
-    Long selectPackageIdByUserId(Long userId);
+    Long selectPackageIdByStaffId(Long userId);
 
     @Select("""
              SELECT t.*, p.package_name FROM biz.tenant_info t LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id

@@ -144,9 +144,6 @@ public class RoleManageController extends BaseController {
     @PostMapping("/add")
     @CheckUserPerms("user-mod:role-mng:add")
     public Result<Void> add(@Validated @RequestBody RoleManageReq req) {
-        if (!tenantInfoService.checkRoleLimit(LoginUserUtil.getTenantId())) {
-            return err40000("角色数量已达上限，请联系管理员");
-        }
         if (CollectionUtils.isNotEmpty(req.getInheritedIds())) {
             if (req.getInherited()) {
                 roleInfoService.checkInheritedRole(null, req.getInheritedIds());

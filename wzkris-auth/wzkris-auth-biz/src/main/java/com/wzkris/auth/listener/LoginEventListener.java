@@ -93,7 +93,6 @@ public class LoginEventListener {
         final LoginLogReq loginLogReq = new LoginLogReq();
         loginLogReq.setUserId(user.getId());
         loginLogReq.setUsername(user.getUsername());
-        loginLogReq.setTenantId(user.getTenantId());
         loginLogReq.setLoginTime(new Date());
         loginLogReq.setLoginIp(ipAddr);
         loginLogReq.setLoginType(loginType);

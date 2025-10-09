@@ -185,7 +185,6 @@ public class OperateLogAspect implements ApplicationRunner {
         OperateLogReq operateLogReq = new OperateLogReq();
         operateLogReq.setUserId(LoginUserUtil.getId());
         operateLogReq.setOperName(LoginUserUtil.getUsername());
-        operateLogReq.setTenantId(LoginUserUtil.getTenantId());
         operateLogReq.setOperType(operateLog.operateType().getValue());
         operateLogReq.setStatus(OperateStatus.SUCCESS.value());
         operateLogReq.setOperTime(new Date());

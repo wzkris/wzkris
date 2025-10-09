@@ -8,7 +8,6 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckUserPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.DeptInfoDO;
@@ -17,7 +16,6 @@ import com.wzkris.user.domain.req.dept.DeptManageReq;
 import com.wzkris.user.manager.DeptInfoDataScopeManager;
 import com.wzkris.user.mapper.DeptInfoMapper;
 import com.wzkris.user.service.DeptInfoService;
-import com.wzkris.user.service.TenantInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +40,6 @@ public class DeptManageController extends BaseController {
     private final DeptInfoMapper deptInfoMapper;
 
     private final DeptInfoService deptInfoService;
-
-    private final TenantInfoService tenantInfoService;
 
     private final DeptInfoDataScopeManager deptInfoDataScopeManager;
 
@@ -85,9 +81,6 @@ public class DeptManageController extends BaseController {
     public Result<?> add(@Validated @RequestBody DeptManageReq req) {
         // 校验权限
         deptInfoDataScopeManager.checkDataScopes(req.getParentId());
-        if (!tenantInfoService.checkDeptLimit(LoginUserUtil.getTenantId())) {
-            return err40000("部门数量已达上限，请联系管理员");
-        }
         if (ObjectUtils.isNotEmpty(req.getParentId()) && req.getParentId() != 0) {
             DeptInfoDO info = deptInfoMapper.selectById(req.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点

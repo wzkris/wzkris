@@ -11,13 +11,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueryPermsReq implements Serializable {
+public class QueryUserPermsReq implements Serializable {
 
     @NonNull
     private Long userId;
-
-    @NonNull
-    private Long tenantId;
 
     @Nullable
     private Long deptId;

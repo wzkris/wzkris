@@ -25,9 +25,6 @@ public class DeptInfoDO extends BaseEntity {
     @TableId
     private Long deptId;
 
-    @Schema(description = "租户ID")
-    private Long tenantId;
-
     @Schema(description = "父部门ID")
     private Long parentId;
 

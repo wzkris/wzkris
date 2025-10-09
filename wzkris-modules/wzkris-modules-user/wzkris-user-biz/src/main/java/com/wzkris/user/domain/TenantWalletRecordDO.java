@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 租户钱包记录表 sys_tenant_wallet_record
+ * 租户钱包记录表
  *
  * @author wzkris
  */

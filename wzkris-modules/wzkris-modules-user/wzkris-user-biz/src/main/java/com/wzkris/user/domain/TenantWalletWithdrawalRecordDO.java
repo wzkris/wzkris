@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 系统提现记录 biz.tenant_wallet_withdrawal_record
+ * 系统提现记录
  *
  * @author wzkris
  */

@@ -1,7 +1,7 @@
 package com.wzkris.common.core.model.domain;
 
-import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * @author : wzkris
  * @version : V1.0.1
- * @description : 用户管理
+ * @description : 管理员
  * @date : 2024/6/14 15:30
  */
 @Getter
@@ -24,8 +24,6 @@ public class LoginUser extends CorePrincipal {
     private boolean admin;
 
     private String username;
-
-    private Long tenantId;
 
     private List<Long> deptScopes;
 

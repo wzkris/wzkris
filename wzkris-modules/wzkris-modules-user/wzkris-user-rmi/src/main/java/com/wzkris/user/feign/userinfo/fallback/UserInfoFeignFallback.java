@@ -2,9 +2,9 @@ package com.wzkris.user.feign.userinfo.fallback;
 
 import com.wzkris.user.feign.userinfo.UserInfoFeign;
 import com.wzkris.user.feign.userinfo.req.LoginInfoReq;
-import com.wzkris.user.feign.userinfo.req.QueryPermsReq;
-import com.wzkris.user.feign.userinfo.resp.PermissionResp;
+import com.wzkris.user.feign.userinfo.req.QueryUserPermsReq;
 import com.wzkris.user.feign.userinfo.resp.UserInfoResp;
+import com.wzkris.user.feign.userinfo.resp.UserPermissionResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
@@ -27,8 +27,8 @@ public class UserInfoFeignFallback implements FallbackFactory<UserInfoFeign> {
             }
 
             @Override
-            public PermissionResp getPermission(QueryPermsReq queryPermsReq) {
-                log.error("getPermission => req: {}", queryPermsReq, cause);
+            public UserPermissionResp getPermission(QueryUserPermsReq queryUserPermsReq) {
+                log.error("getPermission => req: {}", queryUserPermsReq, cause);
                 return null;
             }
 

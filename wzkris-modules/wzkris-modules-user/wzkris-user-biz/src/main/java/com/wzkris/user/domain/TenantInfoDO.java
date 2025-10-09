@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * 租户表 sys_tenant
+ * 租户表
  *
  * @author wzkris
  */

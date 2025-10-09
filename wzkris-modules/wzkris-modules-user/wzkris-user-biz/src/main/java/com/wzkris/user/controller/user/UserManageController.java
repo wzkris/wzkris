@@ -85,7 +85,6 @@ public class UserManageController extends BaseController {
 
     private QueryWrapper<UserInfoDO> buildPageWrapper(UserManageQueryReq queryReq) {
         return new QueryWrapper<UserInfoDO>()
-                .eq(ObjectUtils.isNotEmpty(queryReq.getTenantId()), "u.tenant_id", queryReq.getTenantId())
                 .like(ObjectUtils.isNotEmpty(queryReq.getUsername()), "username", queryReq.getUsername())
                 .like(ObjectUtils.isNotEmpty(queryReq.getNickname()), "nickname", queryReq.getNickname())
                 .like(ObjectUtils.isNotEmpty(queryReq.getPhoneNumber()), "phone_number", queryReq.getPhoneNumber())
@@ -135,13 +134,11 @@ public class UserManageController extends BaseController {
     @PostMapping("/add")
     @CheckUserPerms("user-mod:user-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody UserManageReq userReq) {
-        if (!tenantInfoService.checkAccountLimit(LoginUserUtil.getTenantId())) {
-            return err40000("账号数量已达上限，请联系管理员");
-        } else if (userInfoService.existByUsername(userReq.getUserId(), userReq.getUsername())) {
-            return err40000("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
+        if (userInfoService.existByUsername(userReq.getUserId(), userReq.getUsername())) {
+            return err40000("添加用户'" + userReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
                 && userInfoService.existByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
-            return err40000("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
+            return err40000("添加用户'" + userReq.getUsername() + "'失败，手机号码已存在");
         }
         UserInfoDO user = BeanUtil.convert(userReq, UserInfoDO.class);
         String password = RandomStringUtils.secure().nextAlphabetic(8);
