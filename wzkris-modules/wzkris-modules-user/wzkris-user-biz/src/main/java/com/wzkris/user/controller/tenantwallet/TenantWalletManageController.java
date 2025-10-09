@@ -3,7 +3,6 @@ package com.wzkris.user.controller.tenantwallet;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckUserPerms;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +28,7 @@ import java.util.List;
 @Tag(name = "租户钱包管理")
 @Validated
 @RestController
-@IgnoreTenant // 忽略租户隔离
 @RequestMapping("/tenant-wallet-manage")
-@PreAuthorize("@lu.isSuperTenant()") // 只允许超级租户访问
 @RequiredArgsConstructor
 public class TenantWalletManageController extends BaseController {
 

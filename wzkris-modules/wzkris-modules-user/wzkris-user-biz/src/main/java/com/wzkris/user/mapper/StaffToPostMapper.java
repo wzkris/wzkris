@@ -50,4 +50,16 @@ public interface StaffToPostMapper {
             """)
     int deleteByPostIds(List<Long> postIds);
 
+    @Select("""
+            <script>
+                SELECT EXISTS(
+                    SELECT post_id FROM biz.t_staff_to_post WHERE post_id IN
+                        <foreach collection="list" item="postId" open="(" separator="," close=")">
+                            #{postId}
+                        </foreach>
+                    )
+            </script>
+            """)
+    boolean existByPostIds(List<Long> postIds);
+
 }

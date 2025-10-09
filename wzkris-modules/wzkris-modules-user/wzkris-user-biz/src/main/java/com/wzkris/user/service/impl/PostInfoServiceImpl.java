@@ -3,8 +3,10 @@ package com.wzkris.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.user.domain.PostInfoDO;
+import com.wzkris.user.domain.PostToMenuDO;
 import com.wzkris.user.domain.vo.SelectVO;
 import com.wzkris.user.mapper.PostInfoMapper;
 import com.wzkris.user.mapper.PostToMenuMapper;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,6 +73,39 @@ public class PostInfoServiceImpl implements PostInfoService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public boolean savePost(PostInfoDO post, List<Long> menuIds) {
+        boolean success = postInfoMapper.insert(post) > 0;
+        if (success) {
+            // 新增职位菜单信息
+            this.insertPostMenu(post.getPostId(), menuIds);
+        }
+        return success;
+    }
+
+    @Override
+    public boolean modifyPost(PostInfoDO post, List<Long> menuIds) {
+        // 修改角色信息
+        boolean success = postInfoMapper.updateById(post) > 0;
+        if (success && menuIds != null) {
+            // 删除角色与菜单关联
+            postToMenuMapper.deleteByPostId(post.getPostId());
+            // 插入角色菜单信息
+            this.insertPostMenu(post.getPostId(), menuIds);
+        }
+        return success;
+    }
+
+    private void insertPostMenu(Long postId, List<Long> menuIds) {
+        if (CollectionUtils.isNotEmpty(menuIds)) {
+            List<PostToMenuDO> list = menuIds.stream()
+                    .map(menuId -> new PostToMenuDO(postId, menuId))
+                    .toList();
+            postToMenuMapper.insert(list);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean removeByIds(List<Long> postIds) {
         boolean success = postInfoMapper.deleteByIds(postIds) > 0;
         if (success) {
@@ -79,6 +115,15 @@ public class PostInfoServiceImpl implements PostInfoService {
             staffToPostMapper.deleteByPostIds(postIds);
         }
         return success;
+    }
+
+    @Override
+    public void existStaff(List<Long> postIds) {
+        postIds = postIds.stream().filter(Objects::nonNull).toList();
+        // 是否被用户使用
+        if (staffToPostMapper.existByPostIds(postIds)) {
+            throw new GenericException("当前职位已被分配给员工");
+        }
     }
 
 }

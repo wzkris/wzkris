@@ -1,9 +1,9 @@
-package com.wzkris.user.domain.req.role;
+package com.wzkris.user.domain.req.post;
 
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.group.ValidationGroups;
-import com.wzkris.user.domain.RoleInfoDO;
+import com.wzkris.user.domain.PostInfoDO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,20 +16,17 @@ import org.hibernate.validator.constraints.Range;
 import java.util.List;
 
 @Data
-@AutoMappers({@AutoMapper(target = RoleInfoDO.class)})
-@Schema(description = "角色管理添加修改参数体")
-public class RoleManageReq {
+@AutoMappers({@AutoMapper(target = PostInfoDO.class)})
+@Schema(description = "职位管理添加修改参数体")
+public class PostManageReq {
 
     @NotNull(groups = ValidationGroups.Update.class, message = "{invalidParameter.id.invalid}")
-    private Long roleId;
-
-    @Schema(description = "数据范围（1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限）")
-    private String dataScope;
+    private Long postId;
 
     @NotBlank(message = "{invalidParameter.roleName.invalid}")
     @Size(min = 2, max = 20, message = "{invalidParameter.roleName.invalid}")
-    @Schema(description = "角色名称")
-    private String roleName;
+    @Schema(description = "职位名称")
+    private String postName;
 
     @NotBlank(message = "{invalidParameter.status.invalid}")
     @EnumsCheck(values = {CommonConstants.STATUS_DISABLE, CommonConstants.STATUS_ENABLE},
@@ -37,22 +34,12 @@ public class RoleManageReq {
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;
 
-    @NotNull(message = "继承关系" + "{validate.notnull}")
-    @Schema(description = "继承关系")
-    private Boolean inherited;
-
     @NotNull(message = "{invalidParameter.sort.invalid}")
     @Range(message = "{invalidParameter.sort.invalid}")
-    @Schema(description = "角色排序")
-    private Integer roleSort;
+    @Schema(description = "职位排序")
+    private Integer postSort;
 
     @Schema(description = "菜单组")
     private List<Long> menuIds;
-
-    @Schema(description = "部门组")
-    private List<Long> deptIds;
-
-    @Schema(description = "继承角色组")
-    private List<Long> inheritedIds;
 
 }

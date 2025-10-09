@@ -1,6 +1,8 @@
 package com.wzkris.user.mapper;
 
+import com.wzkris.user.domain.PostToMenuDO;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -30,5 +32,19 @@ public interface PostToMenuMapper {
             </script>
             """)
     int deleteByPostIds(List<Long> postIds);
+
+    default int deleteByPostId(Long postId) {
+        return this.deleteByPostIds(List.of(postId));
+    }
+
+    @Insert("""
+            <script>
+                INSERT INTO biz.t_post_to_menu(post_id, menu_id) VALUES
+                    <foreach item="item" index="index" collection="list" separator=",">
+                        (#{item.postId}, #{item.menuId})
+                    </foreach>
+            </script>
+            """)
+    int insert(List<PostToMenuDO> list);
 
 }

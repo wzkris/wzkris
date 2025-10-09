@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.annotation.CheckUserPerms;
+import com.wzkris.common.security.annotation.CheckStaffPerms;
 import com.wzkris.common.security.utils.LoginStaffUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.TenantInfoDO;
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "租户信息")
 @Validated
 @RestController
-@CheckUserPerms("user-mod:tenant-info")
+@CheckStaffPerms("user-mod:tenant-info")
 @RequestMapping("/tenant-info")
 @RequiredArgsConstructor
 public class TenantInfoController extends BaseController {
@@ -55,7 +55,7 @@ public class TenantInfoController extends BaseController {
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CheckUserPerms("user-mod:tenant-info:edit")
+    @CheckStaffPerms("user-mod:tenant-info:edit")
     public Result<TenantInfoVO> tenantInfo(@RequestBody TenantInfoReq req) {
         TenantInfoDO sysTenant = BeanUtil.convert(req, new TenantInfoDO(LoginStaffUtil.getTenantId()));
         return toRes(tenantInfoMapper.updateById(sysTenant));

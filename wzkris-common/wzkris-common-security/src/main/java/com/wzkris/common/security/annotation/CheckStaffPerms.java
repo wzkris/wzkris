@@ -9,10 +9,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@CheckPerms(checkType = AuthType.USER)
+@CheckPerms(checkType = AuthType.STAFF)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
-public @interface CheckUserPerms {
+public @interface CheckStaffPerms {
 
     @AliasFor(annotation = CheckPerms.class, attribute = "value")
     String[] value() default {};

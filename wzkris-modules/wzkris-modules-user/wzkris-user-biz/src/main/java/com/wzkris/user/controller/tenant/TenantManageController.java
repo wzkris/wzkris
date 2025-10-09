@@ -6,7 +6,6 @@ import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
-import com.wzkris.common.orm.annotation.IgnoreTenant;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckUserPerms;
@@ -34,12 +33,15 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+
+
+
 
 /**
  * 租户管理
@@ -50,8 +52,6 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@PreAuthorize("@lu.isSuperTenant()") // 只允许超级租户访问
-@IgnoreTenant // 忽略租户隔离
 @RequestMapping("/tenant-manage")
 public class TenantManageController extends BaseController {
 

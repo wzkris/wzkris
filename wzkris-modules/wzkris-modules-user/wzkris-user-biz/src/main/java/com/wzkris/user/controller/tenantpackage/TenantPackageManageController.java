@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +38,6 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/tenant-package-manage")
-@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class TenantPackageManageController extends BaseController {
 
