@@ -58,7 +58,7 @@ public class AnnouncementManageController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{announcementId}")
-    @CheckUserPerms("system-mod:announcement-mng:query")
+    @CheckUserPerms("system-mod:announcement-mng:list")
     public Result<AnnouncementInfoDO> query(@PathVariable Long announcementId) {
         return ok(announcementInfoMapper.selectById(announcementId));
     }

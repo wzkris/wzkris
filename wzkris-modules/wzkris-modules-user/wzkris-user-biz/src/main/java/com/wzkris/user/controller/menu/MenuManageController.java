@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,6 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/menu-manage")
-@PreAuthorize("@lu.isSuperTenant()") // 只允许超级租户访问
 @RequiredArgsConstructor
 public class MenuManageController extends BaseController {
 
@@ -59,12 +57,13 @@ public class MenuManageController extends BaseController {
                 .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
                 .like(StringUtil.isNotEmpty(queryReq.getMenuName()), MenuInfoDO::getMenuName, queryReq.getMenuName())
                 .eq(StringUtil.isNotEmpty(queryReq.getStatus()), MenuInfoDO::getStatus, queryReq.getStatus())
+                .eq(StringUtil.isNotEmpty(queryReq.getScope()), MenuInfoDO::getScope, queryReq.getScope())
                 .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
     }
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @CheckUserPerms("user-mod:menu-mng:query")
+    @CheckUserPerms("user-mod:menu-mng:list")
     public Result<MenuInfoDO> getInfo(@PathVariable Long menuId) {
         return ok(menuInfoMapper.selectById(menuId));
     }
@@ -102,9 +101,6 @@ public class MenuManageController extends BaseController {
     public Result<Void> remove(@RequestBody Long menuId) {
         if (menuInfoService.existSubMenu(menuId)) {
             return err40000("存在子菜单,不允许删除");
-        }
-        if (menuInfoService.existRole(menuId)) {
-            return err40000("菜单已分配,不允许删除");
         }
         return toRes(menuInfoService.removeById(menuId));
     }

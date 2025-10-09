@@ -36,22 +36,14 @@ public interface RoleToMenuMapper {
     List<Long> listMenuIdByRoleIds(List<Long> roleIds);
 
     /**
-     * 查询菜单是否使用
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Select("SELECT EXISTS(SELECT * FROM biz.role_to_menu WHERE menu_id = #{menuId})")
-    boolean existByMenuId(Long menuId);
-
-    /**
      * 通过角色ID删除角色和菜单关联
      *
      * @param roleId 角色ID
      * @return 结果
      */
-    @Delete("DELETE FROM biz.role_to_menu WHERE role_id = #{roleId}")
-    int deleteByRoleId(Long roleId);
+    default int deleteByRoleId(Long roleId) {
+        return this.deleteByRoleIds(List.of(roleId));
+    }
 
     /**
      * 批量删除角色菜单关联信息

@@ -39,10 +39,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-
-
-
 /**
  * 租户管理
  *
@@ -81,6 +77,14 @@ public class TenantManageController extends BaseController {
                 .orderByDesc("t.tenant_id");
     }
 
+    @Operation(summary = "ID获取租户详细信息")
+    @GetMapping("/{tenantId}")
+    @CheckUserPerms("user-mod:tenant-mng:list")
+    public Result<TenantInfoDO> queryByid(
+            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long tenantId) {
+        return ok(tenantInfoMapper.selectById(tenantId));
+    }
+
     @Operation(summary = "租户选择列表(带分页)")
     @GetMapping("/selectlist")
     public Result<Page<SelectVO>> selectlist(String tenantName) {
@@ -97,14 +101,6 @@ public class TenantManageController extends BaseController {
     public Result<List<SelectVO>> packageSelect(String packageName) {
         List<SelectVO> selectVOS = tenantPackageInfoService.listSelect(packageName);
         return ok(selectVOS);
-    }
-
-    @Operation(summary = "ID获取租户详细信息")
-    @GetMapping("/{tenantId}")
-    @CheckUserPerms("user-mod:tenant-mng:query")
-    public Result<TenantInfoDO> queryByid(
-            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long tenantId) {
-        return ok(tenantInfoMapper.selectById(tenantId));
     }
 
     @Operation(summary = "新增租户")

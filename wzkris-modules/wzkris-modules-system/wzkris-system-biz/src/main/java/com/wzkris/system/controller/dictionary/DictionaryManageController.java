@@ -17,7 +17,6 @@ import com.wzkris.system.service.DictionaryInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping("/dictionary-manage")
-@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class DictionaryManageController extends BaseController {
 
@@ -56,7 +54,7 @@ public class DictionaryManageController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{dictId}")
-    @CheckUserPerms("system-mod:dictionary-mng:query")
+    @CheckUserPerms("system-mod:dictionary-mng:list")
     public Result<DictionaryInfoDO> getInfo(@PathVariable Long dictId) {
         return ok(dictionaryInfoMapper.selectById(dictId));
     }

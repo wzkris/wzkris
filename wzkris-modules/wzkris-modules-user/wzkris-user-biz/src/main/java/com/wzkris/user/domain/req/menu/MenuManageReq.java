@@ -72,4 +72,10 @@ public class MenuManageReq {
     @Schema(description = "菜单图标")
     private String icon;
 
+    @NotBlank(message = "{invalidParameter.menuScope.invalid}")
+    @EnumsCheck(values = {MenuConstants.SCOPE_SYSTEM, MenuConstants.SCOPE_TENANT},
+            message = "{invalidParameter.menuScope.invalid}")
+    @Schema(description = "菜单域")
+    private String scope;
+
 }

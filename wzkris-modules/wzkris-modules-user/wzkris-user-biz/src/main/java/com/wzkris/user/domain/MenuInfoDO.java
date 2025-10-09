@@ -60,6 +60,9 @@ public class MenuInfoDO extends BaseEntity {
     @Schema(description = "菜单图标")
     private String icon;
 
+    @Schema(description = "菜单域")
+    private String scope;
+
     @Schema(description = "子菜单")
     @TableField(exist = false)
     private List<MenuInfoDO> children = new ArrayList<>();

@@ -23,6 +23,16 @@ public interface PostToMenuMapper {
             """)
     List<Long> listMenuIdByPostIds(List<Long> postIds);
 
+    @Insert("""
+            <script>
+                INSERT INTO biz.t_post_to_menu(post_id, menu_id) VALUES
+                    <foreach item="item" index="index" collection="list" separator=",">
+                        (#{item.postId}, #{item.menuId})
+                    </foreach>
+            </script>
+            """)
+    int insert(List<PostToMenuDO> list);
+
     @Delete("""
             <script>
                 DELETE FROM biz.t_post_to_menu WHERE post_id IN
@@ -37,14 +47,7 @@ public interface PostToMenuMapper {
         return this.deleteByPostIds(List.of(postId));
     }
 
-    @Insert("""
-            <script>
-                INSERT INTO biz.t_post_to_menu(post_id, menu_id) VALUES
-                    <foreach item="item" index="index" collection="list" separator=",">
-                        (#{item.postId}, #{item.menuId})
-                    </foreach>
-            </script>
-            """)
-    int insert(List<PostToMenuDO> list);
+    @Delete("DELETE FROM biz.t_post_to_menu WHERE menu_id = #{menuId}")
+    int deleteByMenuId(Long menuId);
 
 }

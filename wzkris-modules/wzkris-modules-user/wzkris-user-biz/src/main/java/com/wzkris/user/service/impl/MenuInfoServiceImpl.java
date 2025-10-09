@@ -276,16 +276,12 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public boolean existRole(Long menuId) {
-        return roleToMenuMapper.existByMenuId(menuId);
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeById(Long menuId) {
         boolean success = menuInfoMapper.deleteById(menuId) > 0;
         if (success) {
             roleToMenuMapper.deleteByMenuId(menuId);
+            postToMenuMapper.deleteByMenuId(menuId);
         }
         return success;
     }

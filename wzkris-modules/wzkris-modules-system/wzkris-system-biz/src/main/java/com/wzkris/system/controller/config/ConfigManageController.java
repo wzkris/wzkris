@@ -17,7 +17,6 @@ import com.wzkris.system.service.ConfigInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,6 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/config-manage")
-@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class ConfigManageController extends BaseController {
 
@@ -65,7 +63,7 @@ public class ConfigManageController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{configId}")
-    @CheckUserPerms("system-mod:config-mng:query")
+    @CheckUserPerms("system-mod:config-mng:list")
     public Result<ConfigInfoDO> getInfo(@PathVariable Long configId) {
         return ok(configInfoMapper.selectById(configId));
     }

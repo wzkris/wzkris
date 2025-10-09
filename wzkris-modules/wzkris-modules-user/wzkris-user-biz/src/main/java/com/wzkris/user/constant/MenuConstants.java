@@ -32,4 +32,14 @@ public class MenuConstants {
      */
     public static final String TYPE_OUTLINK = "O";
 
+    /**
+     * 系统域
+     */
+    public static final String SCOPE_SYSTEM = "system";
+
+    /**
+     * 租户域
+     */
+    public static final String SCOPE_TENANT = "tenant";
+
 }

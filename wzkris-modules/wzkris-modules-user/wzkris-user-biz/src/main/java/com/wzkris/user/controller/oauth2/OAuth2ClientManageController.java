@@ -24,7 +24,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +37,6 @@ import java.util.List;
 @Tag(name = "OAuth2客户端管理")
 @RestController
 @RequestMapping("/oauth2client-manage")
-@PreAuthorize("@lu.isSuperTenant()")
 @RequiredArgsConstructor
 public class OAuth2ClientManageController extends BaseController {
 

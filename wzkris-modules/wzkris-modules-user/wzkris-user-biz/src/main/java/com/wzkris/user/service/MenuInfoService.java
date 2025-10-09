@@ -78,14 +78,6 @@ public interface MenuInfoService {
     boolean existSubMenu(Long menuId);
 
     /**
-     * 查询菜单是否存在角色
-     *
-     * @param menuId 菜单ID
-     * @return 结果 true 存在 false 不存在
-     */
-    boolean existRole(Long menuId);
-
-    /**
      * 删除菜单
      *
      * @param menuId 菜单ID

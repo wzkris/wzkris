@@ -8,6 +8,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckUserPerms;
+import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.TenantPackageInfoDO;
@@ -66,22 +67,24 @@ public class TenantPackageManageController extends BaseController {
                 .orderByDesc(TenantPackageInfoDO::getPackageId);
     }
 
+    @Operation(summary = "套餐详细信息")
+    @GetMapping("/{packageId}")
+    @CheckUserPerms("user-mod:tenantpackage-mng:list")
+    public Result<TenantPackageInfoDO> getInfo(
+            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long packageId) {
+        return ok(tenantPackageInfoMapper.selectById(packageId));
+    }
+
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/menu-checked-selecttree/", "/menu-checked-selecttree/{packageId}"})
-    @CheckUserPerms("user-mod:tenantpackage-mng:query")
+    @CheckUserPerms(
+            value = {"user-mod:tenantpackage-mng:add", "user-mod:tenantpackage-mng:edit"},
+            mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(tenantPackageInfoMapper.listMenuIdByPackageId(packageId));
         checkedSelectTreeVO.setSelectTrees(menuInfoService.listSelectTree(LoginUserUtil.getId()));
         return ok(checkedSelectTreeVO);
-    }
-
-    @Operation(summary = "套餐详细信息")
-    @GetMapping("/{packageId}")
-    @CheckUserPerms("user-mod:tenantpackage-mng:query")
-    public Result<TenantPackageInfoDO> getInfo(
-            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long packageId) {
-        return ok(tenantPackageInfoMapper.selectById(packageId));
     }
 
     @Operation(summary = "新增租户套餐")
