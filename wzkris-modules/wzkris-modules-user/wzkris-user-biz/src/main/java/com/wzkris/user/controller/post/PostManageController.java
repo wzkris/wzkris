@@ -69,7 +69,7 @@ public class PostManageController extends BaseController {
 
     @Operation(summary = "职位详细信息")
     @GetMapping("/{postId}")
-    @CheckStaffPerms("user-mod:post-mng:query")
+    @CheckStaffPerms("user-mod:post-mng:list")
     public Result<PostInfoDO> getInfo(@PathVariable Long postId) {
         return ok(postInfoMapper.selectById(postId));
     }

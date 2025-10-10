@@ -82,6 +82,13 @@ public class StaffManageController extends BaseController {
                 .orderByDesc("s.staff_id");
     }
 
+    @Operation(summary = "员工详细信息")
+    @GetMapping("/{staffId}")
+    @CheckStaffPerms("user-mod:staff-mng:list")
+    public Result<StaffInfoDO> getInfo(@PathVariable Long staffId) {
+        return ok(staffInfoMapper.selectById(staffId));
+    }
+
     @Operation(summary = "员工-职位选择列表")
     @GetMapping({"/post-checked-select/", "/post-checked-select/{staffId}"})
     @CheckStaffPerms(
@@ -92,13 +99,6 @@ public class StaffManageController extends BaseController {
         checkedSelectVO.setCheckedKeys(staffId == null ? Collections.emptyList() : postInfoService.listIdByStaffId(staffId));
         checkedSelectVO.setSelects(postInfoService.listSelect(postName));
         return ok(checkedSelectVO);
-    }
-
-    @Operation(summary = "员工详细信息")
-    @GetMapping("/{staffId}")
-    @CheckStaffPerms("user-mod:staff-mng:query")
-    public Result<StaffInfoDO> getInfo(@PathVariable Long staffId) {
-        return ok(staffInfoMapper.selectById(staffId));
     }
 
     @Operation(summary = "新增员工")
@@ -142,25 +142,6 @@ public class StaffManageController extends BaseController {
         return toRes(staffInfoService.modifyStaff(staff, staffReq.getPostIds()));
     }
 
-    @Operation(summary = "授权职位")
-    @OperateLog(title = "员工管理", subTitle = "授权员工职位", operateType = OperateType.GRANT)
-    @PostMapping("/grant-post")
-    @CheckStaffPerms("user-mod:staff-mng:grant-post")
-    public Result<Void> grantPosts(@RequestBody @Valid StaffToPostsReq req) {
-        return toRes(staffInfoService.grantPosts(req.getStaffId(), req.getPostIds()));
-    }
-
-    @Operation(summary = "删除员工")
-    @OperateLog(title = "员工管理", subTitle = "删除员工", operateType = OperateType.DELETE)
-    @PostMapping("/remove")
-    @CheckStaffPerms("user-mod:staff-mng:remove")
-    public Result<Void> remove(@RequestBody List<Long> userIds) {
-        if (tenantInfoService.checkAdministrator(userIds)) {
-            return err40000("删除失败，员工包含租户超级管理员");
-        }
-        return toRes(staffInfoService.removeByIds(userIds));
-    }
-
     @Operation(summary = "重置密码")
     @OperateLog(title = "员工管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset-password")
@@ -179,6 +160,25 @@ public class StaffManageController extends BaseController {
         StaffInfoDO update = new StaffInfoDO(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(staffInfoMapper.updateById(update));
+    }
+
+    @Operation(summary = "授权职位")
+    @OperateLog(title = "员工管理", subTitle = "授权员工职位", operateType = OperateType.GRANT)
+    @PostMapping("/grant-post")
+    @CheckStaffPerms("user-mod:staff-mng:grant-post")
+    public Result<Void> grantPosts(@RequestBody @Valid StaffToPostsReq req) {
+        return toRes(staffInfoService.grantPosts(req.getStaffId(), req.getPostIds()));
+    }
+
+    @Operation(summary = "删除员工")
+    @OperateLog(title = "员工管理", subTitle = "删除员工", operateType = OperateType.DELETE)
+    @PostMapping("/remove")
+    @CheckStaffPerms("user-mod:staff-mng:remove")
+    public Result<Void> remove(@RequestBody List<Long> userIds) {
+        if (tenantInfoService.checkAdministrator(userIds)) {
+            return err40000("删除失败，员工包含租户超级管理员");
+        }
+        return toRes(staffInfoService.removeByIds(userIds));
     }
 
 }

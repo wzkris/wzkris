@@ -197,7 +197,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
                 return Collections.emptyList();
             }
         }
-        List<MenuInfoDO> list = this.getChildNode(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_SYSTEM), 0);
+        List<MenuInfoDO> list = this.buildTree(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_SYSTEM));
         return this.buildRouter(list);
     }
 
@@ -215,7 +215,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
-        List<MenuInfoDO> list = this.getChildNode(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_TENANT), 0);
+        List<MenuInfoDO> list = this.buildTree(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_TENANT));
         return this.buildRouter(list);
     }
 
@@ -289,31 +289,48 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         return routers;
     }
 
+    private List<SelectTreeVO> buildSelectTree(List<MenuInfoDO> menus) {
+        List<MenuInfoDO> menuTrees = this.buildTree(menus);
+        return menuTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
+    }
+
     /**
      * 构建树结构
      *
      * @param menus 菜单列表
      * @return 树结构列表
      */
-    private List<MenuInfoDO> buildTree(List<MenuInfoDO> menus) {
-        List<MenuInfoDO> returnList = new ArrayList<>();
-        List<Long> tempList = menus.stream().map(MenuInfoDO::getMenuId).toList();
+    public List<MenuInfoDO> buildTree(@Nullable List<MenuInfoDO> menus) {
+        if (menus == null || menus.isEmpty()) {
+            return new ArrayList<>(1);
+        }
+
+        Set<Long> allMenuIds = new HashSet<>(menus.size());
+        Map<Long, List<MenuInfoDO>> childMap = new HashMap<>(menus.size());
+
+        // 单次遍历构建所有索引
         for (MenuInfoDO menu : menus) {
-            // 如果是顶级节点, 遍历该父节点的所有子节点
-            if (!tempList.contains(menu.getParentId())) {
-                recursionFn(menus, menu);
-                returnList.add(menu);
-            }
+            allMenuIds.add(menu.getMenuId());
+            childMap.computeIfAbsent(menu.getParentId(), k -> new ArrayList<>())
+                    .add(menu);
         }
-        if (returnList.isEmpty()) {
-            returnList = menus;
-        }
-        return returnList;
+
+        List<MenuInfoDO> rootNodes = menus.stream()
+                .filter(menu -> !allMenuIds.contains(menu.getParentId()))
+                .toList();
+
+        // 构建每个顶级节点的子树
+        rootNodes.forEach(root -> buildSubtree(childMap, root));
+
+        return rootNodes;
     }
 
-    private List<SelectTreeVO> buildSelectTree(List<MenuInfoDO> menus) {
-        List<MenuInfoDO> menuTrees = this.buildTree(menus);
-        return menuTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
+    private void buildSubtree(Map<Long, List<MenuInfoDO>> childMap, MenuInfoDO node) {
+        List<MenuInfoDO> children = childMap.get(node.getMenuId());
+        if (children != null) {
+            node.setChildren(children);
+            children.forEach(child -> buildSubtree(childMap, child));
+        }
     }
 
     @Override
@@ -331,59 +348,6 @@ public class MenuInfoServiceImpl implements MenuInfoService {
             postToMenuMapper.deleteByMenuId(menuId);
         }
         return success;
-    }
-
-    /**
-     * 根据父节点的ID获取所有子节点
-     *
-     * @param list     分类表
-     * @param parentId 传入的父节点ID
-     * @return String
-     */
-    public List<MenuInfoDO> getChildNode(List<MenuInfoDO> list, int parentId) {
-        List<MenuInfoDO> returnList = new ArrayList<>();
-        for (MenuInfoDO t : list) {
-            // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
-            if (t.getParentId() == parentId) {
-                recursionFn(list, t);
-                returnList.add(t);
-            }
-        }
-        return returnList;
-    }
-
-    /**
-     * 递归列表
-     */
-    private void recursionFn(List<MenuInfoDO> list, MenuInfoDO t) {
-        // 得到子节点列表
-        List<MenuInfoDO> childList = getChildList(list, t);
-        t.setChildren(childList);
-        for (MenuInfoDO tChild : childList) {
-            if (hasChild(list, tChild)) {
-                recursionFn(list, tChild);
-            }
-        }
-    }
-
-    /**
-     * 得到子节点列表
-     */
-    private List<MenuInfoDO> getChildList(List<MenuInfoDO> list, MenuInfoDO t) {
-        List<MenuInfoDO> tlist = new ArrayList<>();
-        for (MenuInfoDO n : list) {
-            if (n.getParentId().longValue() == t.getMenuId().longValue()) {
-                tlist.add(n);
-            }
-        }
-        return tlist;
-    }
-
-    /**
-     * 判断是否有子节点
-     */
-    private boolean hasChild(List<MenuInfoDO> list, MenuInfoDO t) {
-        return !getChildList(list, t).isEmpty();
     }
 
 }
