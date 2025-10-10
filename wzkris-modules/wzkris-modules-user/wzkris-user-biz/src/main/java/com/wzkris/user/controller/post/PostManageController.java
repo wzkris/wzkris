@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckStaffPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.LoginStaffUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.PostInfoDO;
@@ -84,7 +84,7 @@ public class PostManageController extends BaseController {
         checkedSelectTreeVO.setCheckedKeys(
                 postId == null ? Collections.emptyList()
                         : postToMenuMapper.listMenuIdByPostIds(Collections.singletonList(postId)));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listSelectTree(LoginUserUtil.getId()));
+        checkedSelectTreeVO.setSelectTrees(menuInfoService.listTenantSelectTree(LoginStaffUtil.getId()));
         return ok(checkedSelectTreeVO);
     }
 

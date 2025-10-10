@@ -103,8 +103,8 @@ public class PermissionServiceImpl implements PermissionService {
                 // 否则为普通用户
                 posts = postInfoService.listByStaffId(staffId);
                 // 菜单权限
-                List<Long> roleIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
-                grantedAuthority = menuInfoService.listPermsByRoleIds(roleIds);
+                List<Long> postIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
+                grantedAuthority = menuInfoService.listPermsByPostIds(postIds);
             }
             return new StaffPermissionResp(administrator, grantedAuthority);
         });

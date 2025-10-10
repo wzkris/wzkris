@@ -2,7 +2,6 @@ package com.wzkris.user.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
@@ -72,11 +71,6 @@ public class UserInfoDO extends BaseEntity {
 
     public static boolean isSuperAdmin(Long userId) {
         return SecurityConstants.SUPER_ADMIN_ID.equals(userId);
-    }
-
-    @JsonIgnore
-    public boolean isSuperAdmin() {
-        return isSuperAdmin(this.userId);
     }
 
 }

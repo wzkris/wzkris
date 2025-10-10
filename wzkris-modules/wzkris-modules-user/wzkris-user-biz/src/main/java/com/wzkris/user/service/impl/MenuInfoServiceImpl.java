@@ -12,6 +12,7 @@ import com.wzkris.user.domain.vo.RouterVO;
 import com.wzkris.user.domain.vo.SelectTreeVO;
 import com.wzkris.user.mapper.*;
 import com.wzkris.user.service.MenuInfoService;
+import com.wzkris.user.service.PostInfoService;
 import com.wzkris.user.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -43,6 +44,8 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     private final RoleInfoService roleInfoService;
 
     private final RoleToMenuMapper roleToMenuMapper;
+
+    private final PostInfoService postInfoService;
 
     private final PostToMenuMapper postToMenuMapper;
 
@@ -139,45 +142,80 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<SelectTreeVO> listSelectTree(Long userId) {
+    public List<SelectTreeVO> listSystemSelectTree(Long userId) {
         List<Long> menuIds = null;
         if (!UserInfoDO.isSuperAdmin(userId)) {
-            // 去关联表中查绑定的菜单ID
-            Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(userId);
-            if (tenantPackageId != null) {
-                // 租户最高管理员，去查套餐绑定菜单
-                menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
-            } else {
-                menuIds = this.listMenuIdByUserId(userId);
-            }
+            menuIds = this.listMenuIdByUserId(userId);
             if (CollectionUtils.isEmpty(menuIds)) {
                 return Collections.emptyList();
             }
         }
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .eq(MenuInfoDO::getScope, MenuConstants.SCOPE_SYSTEM)
                 .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
                 .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
         return this.buildSelectTree(menuInfoMapper.selectList(lqw));
     }
 
     @Override
-    public List<RouterVO> listRouter(Long userId) {
+    public List<SelectTreeVO> listTenantSelectTree(Long staffId) {
+        List<Long> menuIds;
+        Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
+        if (tenantPackageId != null) {
+            // 租户最高管理员，去查套餐绑定菜单
+            menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
+        } else {
+            menuIds = this.listMenuIdByStaffId(staffId);
+        }
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
+                .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .eq(MenuInfoDO::getScope, MenuConstants.SCOPE_TENANT)
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+        return this.buildSelectTree(menuInfoMapper.selectList(lqw));
+    }
+
+    @Override
+    public List<SelectTreeVO> listAllTenantSelectTree() {
+        LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
+                .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .eq(MenuInfoDO::getScope, MenuConstants.SCOPE_TENANT)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+        return this.buildSelectTree(menuInfoMapper.selectList(lqw));
+    }
+
+    @Override
+    public List<RouterVO> listSystemRoutes(Long userId) {
         List<Long> menuIds = null;
         if (!UserInfoDO.isSuperAdmin(userId)) {
-            // 去关联表中查绑定的菜单ID
-            Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(userId);
-            if (tenantPackageId != null) {
-                // 租户最高管理员，去查套餐绑定菜单
-                menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
-            } else {
-                menuIds = this.listMenuIdByUserId(userId);
-            }
+            menuIds = this.listMenuIdByUserId(userId);
             if (CollectionUtils.isEmpty(menuIds)) {
                 return Collections.emptyList();
             }
         }
-        List<MenuInfoDO> list = this.getChildNode(menuInfoMapper.listRouter(menuIds), 0);
+        List<MenuInfoDO> list = this.getChildNode(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_SYSTEM), 0);
+        return this.buildRouter(list);
+    }
+
+    @Override
+    public List<RouterVO> listTenantRoutes(Long staffId) {
+        // 去关联表中查绑定的菜单ID
+        List<Long> menuIds;
+        Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
+        if (tenantPackageId != null) {
+            // 户最高管理员，去查套餐绑定菜单租
+            menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
+        } else {
+            menuIds = this.listMenuIdByStaffId(staffId);
+        }
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
+        List<MenuInfoDO> list = this.getChildNode(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_TENANT), 0);
         return this.buildRouter(list);
     }
 
@@ -190,6 +228,15 @@ public class MenuInfoServiceImpl implements MenuInfoService {
             return Collections.emptyList();
         }
         return roleToMenuMapper.listMenuIdByRoleIds(roleIds);
+    }
+
+    @Override
+    public List<Long> listMenuIdByStaffId(Long staffId) {
+        List<Long> postIds = postInfoService.listIdByStaffId(staffId);
+        if (CollectionUtils.isEmpty(postIds)) {
+            return Collections.emptyList();
+        }
+        return postToMenuMapper.listMenuIdByPostIds(postIds);
     }
 
     /**

@@ -9,7 +9,6 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
-import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.user.domain.TenantPackageInfoDO;
 import com.wzkris.user.domain.req.EditStatusReq;
@@ -33,7 +32,7 @@ import java.util.List;
 /**
  * 租户套餐管理
  *
- * @author Michelle.Chung
+ * @author wzkris
  */
 @Tag(name = "租户套餐管理")
 @Validated
@@ -83,7 +82,7 @@ public class TenantPackageManageController extends BaseController {
     public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
         checkedSelectTreeVO.setCheckedKeys(tenantPackageInfoMapper.listMenuIdByPackageId(packageId));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listSelectTree(LoginUserUtil.getId()));
+        checkedSelectTreeVO.setSelectTrees(menuInfoService.listAllTenantSelectTree());
         return ok(checkedSelectTreeVO);
     }
 

@@ -19,11 +19,11 @@ import java.util.List;
 public interface MenuInfoMapper extends BaseMapperPlus<MenuInfoDO> {
 
     /**
-     * 查询前端可见的菜单(按钮除外)
+     * 查询前端可见的菜单路由(按钮除外)
      *
      * @return 菜单列表
      */
-    List<MenuInfoDO> listRouter(@Nullable List<Long> menuIds);
+    List<MenuInfoDO> listMenuRoutes(@Nullable List<Long> menuIds, String scope);
 
     /**
      * 根据ID集合查询权限

@@ -2,6 +2,7 @@ package com.wzkris.user.service;
 
 import com.wzkris.user.domain.PostInfoDO;
 import com.wzkris.user.domain.vo.SelectVO;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
@@ -15,9 +16,21 @@ public interface PostInfoService {
      */
     List<PostInfoDO> listByStaffId(Long staffId);
 
+    /**
+     * 根据员工ID查询关联职位ID(正常状态)
+     *
+     * @param staffId 员工ID
+     * @return 职位列表
+     */
     List<Long> listIdByStaffId(Long staffId);
 
-    List<SelectVO> listSelect(String postName);
+    /**
+     * 获取职位选择列表(正常状态)
+     *
+     * @param postName 职位名称
+     * @return 职位选择列表
+     */
+    List<SelectVO> listSelect(@Nullable String postName);
 
     /**
      * 新增职位信息

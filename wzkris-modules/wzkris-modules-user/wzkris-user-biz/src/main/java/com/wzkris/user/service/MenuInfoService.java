@@ -46,20 +46,43 @@ public interface MenuInfoService {
     List<String> listPermsByTenantPackageId(@Nullable Long tenantPackageId);
 
     /**
-     * 查询菜单选择树
+     * 查询系统菜单选择树
      *
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SelectTreeVO> listSelectTree(Long userId);
+    List<SelectTreeVO> listSystemSelectTree(Long userId);
 
     /**
-     * 根据用户ID查询前端路由
+     * 查询租户菜单选择树
+     *
+     * @param staffId 员工ID
+     * @return 菜单列表
+     */
+    List<SelectTreeVO> listTenantSelectTree(Long staffId);
+
+    /**
+     * 查询所有租户菜单选择树
+     *
+     * @return 菜单列表
+     */
+    List<SelectTreeVO> listAllTenantSelectTree();
+
+    /**
+     * 根据用户ID查询系统路由
      *
      * @param userId 用户ID
      * @return 前端路由
      */
-    List<RouterVO> listRouter(Long userId);
+    List<RouterVO> listSystemRoutes(Long userId);
+
+    /**
+     * 根据员工ID查询租户路由
+     *
+     * @param staffId 员工ID
+     * @return 前端路由
+     */
+    List<RouterVO> listTenantRoutes(Long staffId);
 
     /**
      * 查询用户对应菜单id
@@ -68,6 +91,14 @@ public interface MenuInfoService {
      * @return 菜单ID
      */
     List<Long> listMenuIdByUserId(Long userId);
+
+    /**
+     * 查询租户员工对应菜单id
+     *
+     * @param staffId 员工ID
+     * @return 菜单ID
+     */
+    List<Long> listMenuIdByStaffId(Long staffId);
 
     /**
      * 是否存在菜单子节点

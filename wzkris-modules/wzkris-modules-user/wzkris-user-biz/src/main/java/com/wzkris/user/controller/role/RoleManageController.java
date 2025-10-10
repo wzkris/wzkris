@@ -106,7 +106,7 @@ public class RoleManageController extends BaseController {
         checkedSelectTreeVO.setCheckedKeys(
                 roleId == null ? Collections.emptyList()
                         : roleToMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listSelectTree(LoginUserUtil.getId()));
+        checkedSelectTreeVO.setSelectTrees(menuInfoService.listSystemSelectTree(LoginUserUtil.getId()));
         return ok(checkedSelectTreeVO);
     }
 
