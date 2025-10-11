@@ -26,29 +26,32 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
 
     @Override
     public Object intercept(InvocationContext invocationContext, Chain chain) throws Exception {
-        try (Response originalResponse = invocationContext.response()) {
-            checkSuccess(originalResponse);
+        try (Response response = invocationContext.response()) {
+            checkSuccess(response);
 
             Object next = chain.next(invocationContext);
 
             // 打印响应信息
-            logResponseInfo(originalResponse, next);
+            logResponseInfo(response, next);
 
             return next;
         }
     }
 
-    private void checkSuccess(Response originalResponse) throws IOException {
-        if (!HttpStatus.valueOf(originalResponse.status()).is2xxSuccessful()) {
-            String resultBody = new String(originalResponse.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8);
+    private void checkSuccess(Response response) throws IOException {
+        if (!HttpStatus.valueOf(response.status()).is2xxSuccessful()) {
+            String resultBody = new String(response.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            Optional<String> reqTime = response.request().headers().get(HeaderConstants.X_REQUEST_TIME).stream().findFirst();
             log.error("""
-                            feign called failed => Url: {}
+                            Feign Called Failed => Url: {}
                             Response: {}
-                            Response body: {}
+                            Response Body: {}
+                            Taken Time: {} ms
                             """,
-                    originalResponse.request().url(),
-                    originalResponse,
-                    resultBody
+                    response.request().url(),
+                    response,
+                    resultBody,
+                    System.currentTimeMillis() - Long.parseLong(reqTime.get())
             );
             throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), JsonUtil.parseObject(resultBody, Result.class));
         }
@@ -61,10 +64,10 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
         try {
             Optional<String> reqTime = response.request().headers().get(HeaderConstants.X_REQUEST_TIME).stream().findFirst();
             log.info("""
-                            Feign called Success =>  Url: {}
+                            Feign Called Success =>  Url: {}
                             Response: {}
                             Response Body: {}
-                            Taken time: {} ms
+                            Taken Time: {} ms
                             """,
                     response.request().url(), response, next, System.currentTimeMillis() - Long.parseLong(reqTime.get()));
         } catch (Exception e) {

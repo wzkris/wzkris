@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Feign调用异常处理器
+ * Feign客户端调用异常处理器
  *
  * @author wzkris
  */
