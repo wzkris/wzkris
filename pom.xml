@@ -116,7 +116,7 @@
             <!--认证rpc服务-->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-user-rmi</artifactId>
+                <artifactId>wzkris-principal-rmi</artifactId>
                 <version>${revision}</version>
             </dependency>
 

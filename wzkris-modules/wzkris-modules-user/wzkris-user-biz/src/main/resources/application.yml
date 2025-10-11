@@ -1,9 +1,0 @@
-server:
-  port: 8000
-
-spring:
-  application:
-    name: wzkris-user
-  profiles:
-    active: @profiles.active@
-    include: feign

@@ -95,7 +95,7 @@
         <!--用户rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-user-rmi</artifactId>
+            <artifactId>wzkris-principal-rmi</artifactId>
         </dependency>
 
         <!--系统rpc服务-->

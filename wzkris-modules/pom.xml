@@ -19,8 +19,8 @@
     </description>
 
     <modules>
+        <module>wzkris-modules-principal</module>
         <module>wzkris-modules-system</module>
-        <module>wzkris-modules-user</module>
     </modules>
 
 </project>

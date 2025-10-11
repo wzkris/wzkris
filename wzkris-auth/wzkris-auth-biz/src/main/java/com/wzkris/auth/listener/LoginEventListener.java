@@ -12,9 +12,9 @@ import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.system.feign.userlog.UserLogFeign;
 import com.wzkris.system.feign.userlog.req.LoginLogReq;
-import com.wzkris.user.feign.customer.CustomerFeign;
-import com.wzkris.user.feign.userinfo.UserInfoFeign;
-import com.wzkris.user.feign.userinfo.req.LoginInfoReq;
+import com.wzkris.principal.feign.customer.CustomerInfoFeign;
+import com.wzkris.principal.feign.userinfo.UserInfoFeign;
+import com.wzkris.principal.feign.userinfo.req.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.basjes.parse.useragent.UserAgent;
@@ -41,7 +41,7 @@ public class LoginEventListener {
 
     private final UserInfoFeign userInfoFeign;
 
-    private final CustomerFeign customerFeign;
+    private final CustomerInfoFeign customerInfoFeign;
 
     @Async
     @EventListener
@@ -112,7 +112,7 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(new Date());
-            customerFeign.updateLoginInfo(loginInfoReq);
+            customerInfoFeign.updateLoginInfo(loginInfoReq);
         }
     }
 
