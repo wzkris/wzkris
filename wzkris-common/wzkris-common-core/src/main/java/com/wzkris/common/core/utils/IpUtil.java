@@ -1,6 +1,6 @@
 package com.wzkris.common.core.utils;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
@@ -44,12 +44,12 @@ public abstract class IpUtil {
             if (response.statusCode() != 200) {
                 log.error("获取地理位置异常, ip：{}, 响应体：{}", ip, response);
             }
-            ObjectNode objectNode = JsonUtil.parseNode(response.body());
-            String region = objectNode.get("pro").asText();
-            String city = objectNode.get("city").asText();
+            JsonNode nodes = JsonUtil.readTree(response.body());
+            String region = nodes.get("pro").asText();
+            String city = nodes.get("city").asText();
             String location = String.format("%s%s", region, city);
             if (StringUtil.isBlank(location)) {
-                location = objectNode.get("addr").asText();
+                location = nodes.get("addr").asText();
             }
             if (log.isDebugEnabled()) {
                 log.debug("获取到地理位置：{}", location);

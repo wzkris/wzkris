@@ -7,8 +7,6 @@ import feign.RequestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.core.annotation.AnnotationUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -56,8 +54,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     private void logRequestInfo(RequestTemplate template) {
         try {
             // 获取请求路径
-            FeignClient feignClient = AnnotationUtils.getAnnotation(template.feignTarget().type(), FeignClient.class);
-            String path = feignClient.path() + template.url();
+            String path = template.feignTarget().url() + template.url();
 
             // 获取请求方法
             String method = template.method();

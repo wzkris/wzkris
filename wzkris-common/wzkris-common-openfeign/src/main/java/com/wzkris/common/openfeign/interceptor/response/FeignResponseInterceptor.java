@@ -1,18 +1,16 @@
 package com.wzkris.common.openfeign.interceptor.response;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.openfeign.enums.BizRpcCode;
 import com.wzkris.common.openfeign.exception.RpcException;
 import feign.InvocationContext;
 import feign.Response;
 import feign.ResponseInterceptor;
+import feign.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -40,8 +38,8 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
 
     private void checkSuccess(Response response) throws IOException {
         if (!HttpStatus.valueOf(response.status()).is2xxSuccessful()) {
-            String resultBody = new String(response.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8);
             Optional<String> reqTime = response.request().headers().get(HeaderConstants.X_REQUEST_TIME).stream().findFirst();
+            String body = Util.toString(response.body().asReader(response.charset()));
             log.error("""
                             Feign Called Failed => Url: {}
                             Response: {}
@@ -50,10 +48,11 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
                             """,
                     response.request().url(),
                     response,
-                    resultBody,
+                    body,
                     System.currentTimeMillis() - Long.parseLong(reqTime.get())
             );
-            throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), JsonUtil.parseObject(resultBody, Result.class));
+            throw new RpcException(response.status(), BizRpcCode.RPC_REMOTE_ERROR.value(),
+                    body);
         }
     }
 
