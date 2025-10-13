@@ -1,0 +1,2 @@
+com.wzkris.message.feign.notification.fallback.NotificationFeignFallback
+com.wzkris.message.feign.userlog.fallback.UserLogFeignFallback

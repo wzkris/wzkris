@@ -62,7 +62,7 @@
         <!--系统rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-system-rmi</artifactId>
+            <artifactId>wzkris-message-rmi</artifactId>
         </dependency>
 
         <!-- 认证rpc服务-->

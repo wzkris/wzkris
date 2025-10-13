@@ -2,8 +2,8 @@ package com.wzkris.principal.listener;
 
 import com.wzkris.principal.listener.event.CreateTenantEvent;
 import com.wzkris.principal.listener.event.CreateUserEvent;
-import com.wzkris.system.feign.notification.NotificationInfoFeign;
-import com.wzkris.system.feign.notification.req.NotificationReq;
+import com.wzkris.message.feign.notification.NotificationInfoFeign;
+import com.wzkris.message.feign.notification.req.NotificationReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
