@@ -2,6 +2,8 @@ package com.wzkris.common.openfeign.interceptor.request;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
+import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.openfeign.event.FeignRequestEvent;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.RequiredArgsConstructor;
@@ -29,15 +31,15 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
+        long l = System.currentTimeMillis();
         // 添加请求头
-        appendRequestHeader(template);
+        appendRequestHeader(template, l);
 
         // 打印请求信息
-        logRequestInfo(template);
+        logRequestInfo(template, l);
     }
 
-    private void appendRequestHeader(RequestTemplate template) {
-        long l = System.currentTimeMillis();
+    private void appendRequestHeader(RequestTemplate template, long l) {
         RequestSignerUtil.setCommonHeaders(template::header,
                 applicationName,
                 signkeyProperties.getKeys().get(applicationName).getSecret(),
@@ -51,7 +53,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
      *
      * @param template 请求模板
      */
-    private void logRequestInfo(RequestTemplate template) {
+    private void logRequestInfo(RequestTemplate template, long l) {
         try {
             // 获取请求路径
             String path = template.feignTarget().url() + template.url();
@@ -98,6 +100,16 @@ public class FeignRequestInterceptor implements RequestInterceptor {
                             Request Body: {}
                              """,
                     path, method, headers, params, body);
+
+            FeignRequestEvent requestEvent = new FeignRequestEvent();
+            requestEvent.setUrl(path);
+            requestEvent.setMethod(method);
+            requestEvent.setHeaders(headers);
+            requestEvent.setParams(params);
+            requestEvent.setBody(body);
+            requestEvent.setRequestTime(l);
+
+            SpringUtil.getContext().publishEvent(requestEvent);
         } catch (Exception e) {
             log.warn("Feign Request => 打印请求发生异常: {}", e.getMessage(), e);
         }
