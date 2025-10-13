@@ -1,7 +1,6 @@
 package com.wzkris.principal.feign.customer;
 
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
-import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.principal.feign.customer.fallback.CustomerInfoFeignFallback;
 import com.wzkris.principal.feign.customer.req.SocialLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = ServiceIdConstant.PRINCIPAL, contextId = "CustomerFeign",
         fallbackFactory = CustomerInfoFeignFallback.class,
         path = "/feign-customer")
-public interface CustomerInfoFeign extends RmiFeign {
+public interface CustomerInfoFeign {
 
     /**
      * 根据手机号查询客户

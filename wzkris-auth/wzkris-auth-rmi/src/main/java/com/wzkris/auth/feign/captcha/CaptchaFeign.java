@@ -3,7 +3,6 @@ package com.wzkris.auth.feign.captcha;
 import com.wzkris.auth.feign.captcha.fallback.CaptchaFeignFeignFallback;
 import com.wzkris.auth.feign.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
-import com.wzkris.common.openfeign.core.RmiFeign;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = ServiceIdConstant.AUTH, contextId = "CaptchaFeign",
         fallbackFactory = CaptchaFeignFeignFallback.class,
         path = "/feign-captcha")
-public interface CaptchaFeign extends RmiFeign {
+public interface CaptchaFeign {
 
     /**
      * 校验手机号验证码

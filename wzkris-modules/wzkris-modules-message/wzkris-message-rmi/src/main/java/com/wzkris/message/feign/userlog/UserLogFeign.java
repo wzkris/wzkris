@@ -1,7 +1,6 @@
 package com.wzkris.message.feign.userlog;
 
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
-import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.message.feign.userlog.fallback.UserLogFeignFallback;
 import com.wzkris.message.feign.userlog.req.LoginLogReq;
 import com.wzkris.message.feign.userlog.req.OperateLogReq;
@@ -20,7 +19,7 @@ import java.util.List;
 @FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "UserLogFeign",
         fallbackFactory = UserLogFeignFallback.class,
         path = "/feign-user-log")
-public interface UserLogFeign extends RmiFeign {
+public interface UserLogFeign {
 
     /**
      * 新增操作日志

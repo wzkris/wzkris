@@ -1,7 +1,6 @@
 package com.wzkris.principal.feign.staffinfo;
 
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
-import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.principal.feign.staffinfo.fallback.StaffInfoFeignFallback;
 import com.wzkris.principal.feign.staffinfo.req.QueryStaffPermsReq;
 import com.wzkris.principal.feign.staffinfo.resp.StaffInfoResp;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = ServiceIdConstant.PRINCIPAL, contextId = "StaffInfoFeign",
         fallbackFactory = StaffInfoFeignFallback.class,
         path = "/feign-staff")
-public interface StaffInfoFeign extends RmiFeign {
+public interface StaffInfoFeign {
 
     /**
      * 根据用户名查询用户

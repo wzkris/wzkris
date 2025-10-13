@@ -1,7 +1,6 @@
 package com.wzkris.principal.feign.userinfo;
 
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
-import com.wzkris.common.openfeign.core.RmiFeign;
 import com.wzkris.principal.feign.userinfo.fallback.UserInfoFeignFallback;
 import com.wzkris.principal.feign.userinfo.req.LoginInfoReq;
 import com.wzkris.principal.feign.userinfo.req.QueryUserPermsReq;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = ServiceIdConstant.PRINCIPAL, contextId = "UserInfoFeign",
         fallbackFactory = UserInfoFeignFallback.class,
         path = "/feign-userinfo")
-public interface UserInfoFeign extends RmiFeign {
+public interface UserInfoFeign {
 
     /**
      * 根据用户名查询用户
