@@ -30,7 +30,9 @@ public enum BizBaseCode {
 
     BAD_GATEWAY(50_002, "网关异常"),
 
-    SERVICE_UNAVAILABLE(50_003, "服务不可用");
+    SERVICE_UNAVAILABLE(50_003, "服务不可用"),
+
+    GATEWAY_TIMEOUT(50_004, "网关超时");
 
     private final int code;
 
