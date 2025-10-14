@@ -3,8 +3,10 @@ package com.wzkris.principal.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.LoginStaffUtil;
 import com.wzkris.principal.domain.PostInfoDO;
 import com.wzkris.principal.domain.PostToMenuDO;
 import com.wzkris.principal.domain.vo.SelectVO;
@@ -69,6 +71,15 @@ public class PostInfoServiceImpl implements PostInfoService {
                 .stream()
                 .map(SelectVO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getPostGroup() {
+        if (LoginStaffUtil.isAdmin()) {
+            return SecurityConstants.SUPER_ADMIN_NAME;
+        }
+        List<PostInfoDO> posts = this.listByStaffId(LoginStaffUtil.getId());
+        return posts.stream().map(PostInfoDO::getPostName).collect(Collectors.joining(","));
     }
 
     @Override

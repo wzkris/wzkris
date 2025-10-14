@@ -45,7 +45,7 @@ public class DeptManageController extends BaseController {
 
     @Operation(summary = "部门列表(不带分页)")
     @GetMapping("/list")
-    @CheckUserPerms("user-mod:dept-mng:list")
+    @CheckUserPerms("prin-mod:dept-mng:list")
     public Result<List<DeptInfoDO>> list(DeptManageQueryReq queryReq) {
         List<DeptInfoDO> depts = deptInfoDataScopeManager.list(buildQueryWrapper(queryReq));
         return ok(depts);
@@ -67,7 +67,7 @@ public class DeptManageController extends BaseController {
 
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/{deptId}")
-    @CheckUserPerms("user-mod:dept-mng:query")
+    @CheckUserPerms("prin-mod:dept-mng:query")
     public Result<?> getInfo(@PathVariable Long deptId) {
         // 校验权限
         deptInfoDataScopeManager.checkDataScopes(deptId);
@@ -77,7 +77,7 @@ public class DeptManageController extends BaseController {
     @Operation(summary = "新增部门")
     @OperateLog(title = "部门管理", subTitle = "新增部门", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckUserPerms("user-mod:dept-mng:add")
+    @CheckUserPerms("prin-mod:dept-mng:add")
     public Result<?> add(@Validated @RequestBody DeptManageReq req) {
         // 校验权限
         deptInfoDataScopeManager.checkDataScopes(req.getParentId());
@@ -94,7 +94,7 @@ public class DeptManageController extends BaseController {
     @Operation(summary = "修改部门")
     @OperateLog(title = "部门管理", subTitle = "修改部门", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckUserPerms("user-mod:dept-mng:edit")
+    @CheckUserPerms("prin-mod:dept-mng:edit")
     public Result<?> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody DeptManageReq req) {
         // 校验权限
         deptInfoDataScopeManager.checkDataScopes(req.getDeptId());
@@ -110,7 +110,7 @@ public class DeptManageController extends BaseController {
     @Operation(summary = "删除部门")
     @OperateLog(title = "部门管理", subTitle = "删除部门", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckUserPerms("user-mod:dept-mng:remove")
+    @CheckUserPerms("prin-mod:dept-mng:remove")
     public Result<?> remove(@RequestBody Long deptId) {
         deptInfoDataScopeManager.checkDataScopes(deptId);
         if (deptInfoMapper.existSubDept(deptId)) {

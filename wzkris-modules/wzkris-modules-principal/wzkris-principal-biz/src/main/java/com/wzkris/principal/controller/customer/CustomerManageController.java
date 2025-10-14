@@ -43,7 +43,7 @@ public class CustomerManageController extends BaseController {
 
     @Operation(summary = "客户分页列表")
     @GetMapping("/list")
-    @CheckUserPerms("user-mod:customer-mng:list")
+    @CheckUserPerms("prin-mod:customer-mng:list")
     public Result<Page<CustomerInfoDO>> listPage(CustomerManageQueryReq queryReq) {
         startPage();
         List<CustomerInfoDO> list = customerInfoMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -66,7 +66,7 @@ public class CustomerManageController extends BaseController {
 
     @Operation(summary = "客户详细信息")
     @GetMapping("/{customerId}")
-    @CheckUserPerms("user-mod:customer-mng:query")
+    @CheckUserPerms("prin-mod:customer-mng:query")
     public Result<CustomerInfoDO> query(@PathVariable Long customerId) {
         return ok(customerInfoMapper.selectById(customerId));
     }
@@ -74,7 +74,7 @@ public class CustomerManageController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "客户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckUserPerms("user-mod:customer-mng:edit")
+    @CheckUserPerms("prin-mod:customer-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         CustomerInfoDO update = new CustomerInfoDO(statusReq.getId());
@@ -85,7 +85,7 @@ public class CustomerManageController extends BaseController {
     @Operation(summary = "导出")
     @OperateLog(title = "客户管理", operateType = OperateType.EXPORT)
     @GetMapping("/export")
-    @CheckUserPerms("user-mod:customer-mng:export")
+    @CheckUserPerms("prin-mod:customer-mng:export")
     public void export(HttpServletResponse response, CustomerManageQueryReq queryReq) {
         List<CustomerInfoDO> list = customerInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         List<CustomerInfoExport> convert = BeanUtil.convert(list, CustomerInfoExport.class);

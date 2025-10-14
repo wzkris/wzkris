@@ -63,7 +63,7 @@ public class StaffManageController extends BaseController {
 
     @Operation(summary = "分页列表")
     @GetMapping("/list")
-    @CheckStaffPerms("user-mod:staff-mng:list")
+    @CheckStaffPerms("prin-mod:staff-mng:list")
     public Result<Page<StaffManageVO>> listPage(StaffManageQueryReq queryReq) {
         startPage();
         List<StaffManageVO> list = staffInfoMapper.listVO(this.buildPageWrapper(queryReq));
@@ -84,7 +84,7 @@ public class StaffManageController extends BaseController {
 
     @Operation(summary = "员工详细信息")
     @GetMapping("/{staffId}")
-    @CheckStaffPerms("user-mod:staff-mng:list")
+    @CheckStaffPerms("prin-mod:staff-mng:list")
     public Result<StaffInfoDO> getInfo(@PathVariable Long staffId) {
         return ok(staffInfoMapper.selectById(staffId));
     }
@@ -92,7 +92,7 @@ public class StaffManageController extends BaseController {
     @Operation(summary = "员工-职位选择列表")
     @GetMapping({"/post-checked-select/", "/post-checked-select/{staffId}"})
     @CheckStaffPerms(
-            value = {"user-mod:staff-mng:edit", "user-mod:staff-mng:add"},
+            value = {"prin-mod:staff-mng:edit", "prin-mod:staff-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long staffId, String postName) {
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
@@ -104,7 +104,7 @@ public class StaffManageController extends BaseController {
     @Operation(summary = "新增员工")
     @OperateLog(title = "员工管理", subTitle = "新增员工", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckStaffPerms("user-mod:staff-mng:add")
+    @CheckStaffPerms("prin-mod:staff-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody StaffManageReq staffReq) {
         if (!tenantInfoService.checkAccountLimit(LoginStaffUtil.getTenantId())) {
             return err40000("账号数量已达上限，请联系管理员");
@@ -129,7 +129,7 @@ public class StaffManageController extends BaseController {
     @Operation(summary = "修改员工")
     @OperateLog(title = "员工管理", subTitle = "修改员工", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckStaffPerms("user-mod:staff-mng:edit")
+    @CheckStaffPerms("prin-mod:staff-mng:edit")
     public Result<Void> edit(@Validated @RequestBody StaffManageReq staffReq) {
         if (staffInfoService.existByStaffName(staffReq.getStaffId(), staffReq.getStaffName())) {
             return err40000("修改员工'" + staffReq.getStaffName() + "'失败，登录账号已存在");
@@ -145,7 +145,7 @@ public class StaffManageController extends BaseController {
     @Operation(summary = "重置密码")
     @OperateLog(title = "员工管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset-password")
-    @CheckStaffPerms("user-mod:staff-mng:edit")
+    @CheckStaffPerms("prin-mod:staff-mng:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
         StaffInfoDO update = new StaffInfoDO(req.getId());
         update.setPassword(passwordEncoder.encode(req.getPassword()));
@@ -155,7 +155,7 @@ public class StaffManageController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "员工管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckStaffPerms("user-mod:staff-mng:edit")
+    @CheckStaffPerms("prin-mod:staff-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         StaffInfoDO update = new StaffInfoDO(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -165,7 +165,7 @@ public class StaffManageController extends BaseController {
     @Operation(summary = "授权职位")
     @OperateLog(title = "员工管理", subTitle = "授权员工职位", operateType = OperateType.GRANT)
     @PostMapping("/grant-post")
-    @CheckStaffPerms("user-mod:staff-mng:grant-post")
+    @CheckStaffPerms("prin-mod:staff-mng:grant-post")
     public Result<Void> grantPosts(@RequestBody @Valid StaffToPostsReq req) {
         return toRes(staffInfoService.grantPosts(req.getStaffId(), req.getPostIds()));
     }
@@ -173,7 +173,7 @@ public class StaffManageController extends BaseController {
     @Operation(summary = "删除员工")
     @OperateLog(title = "员工管理", subTitle = "删除员工", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckStaffPerms("user-mod:staff-mng:remove")
+    @CheckStaffPerms("prin-mod:staff-mng:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
         if (tenantInfoService.checkAdministrator(userIds)) {
             return err40000("删除失败，员工包含租户超级管理员");

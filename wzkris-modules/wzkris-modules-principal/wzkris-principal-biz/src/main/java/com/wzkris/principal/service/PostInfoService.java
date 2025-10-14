@@ -33,6 +33,11 @@ public interface PostInfoService {
     List<SelectVO> listSelect(@Nullable String postName);
 
     /**
+     * 获取当前职位组
+     */
+    String getPostGroup();
+
+    /**
      * 新增职位信息
      *
      * @param post    职位信息

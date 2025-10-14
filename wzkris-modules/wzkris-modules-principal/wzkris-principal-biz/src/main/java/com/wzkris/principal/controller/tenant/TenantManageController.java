@@ -63,7 +63,7 @@ public class TenantManageController extends BaseController {
 
     @Operation(summary = "租户分页")
     @GetMapping("/list")
-    @CheckUserPerms("user-mod:tenant-mng:list")
+    @CheckUserPerms("prin-mod:tenant-mng:list")
     public Result<Page<TenantManageVO>> listPage(TenantManageQueryReq queryReq) {
         startPage();
         List<TenantManageVO> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(queryReq));
@@ -79,7 +79,7 @@ public class TenantManageController extends BaseController {
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/{tenantId}")
-    @CheckUserPerms("user-mod:tenant-mng:list")
+    @CheckUserPerms("prin-mod:tenant-mng:list")
     public Result<TenantInfoDO> queryByid(
             @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long tenantId) {
         return ok(tenantInfoMapper.selectById(tenantId));
@@ -96,7 +96,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "套餐选择列表")
     @GetMapping("/package-select")
     @CheckUserPerms(
-            value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
+            value = {"prin-mod:tenant-mng:add", "prin-mod:tenant-mng:edit"},
             mode = CheckMode.OR)
     public Result<List<SelectVO>> packageSelect(String packageName) {
         List<SelectVO> selectVOS = tenantPackageInfoService.listSelect(packageName);
@@ -106,7 +106,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "新增租户")
     @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckUserPerms("user-mod:tenant-mng:add")
+    @CheckUserPerms("prin-mod:tenant-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody TenantManageReq tenantReq) {
         if (userInfoService.existByUsername(null, tenantReq.getUsername())) {
             return err40000("登录账号'" + tenantReq.getUsername() + "'已存在");
@@ -133,7 +133,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckUserPerms("user-mod:tenant-mng:edit")
+    @CheckUserPerms("prin-mod:tenant-mng:edit")
     public Result<Void> edit(@Validated @RequestBody TenantManageReq tenantReq) {
         tenantInfoService.checkDataScope(tenantReq.getTenantId());
 
@@ -146,7 +146,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "修改租户状态")
     @OperateLog(title = "租户管理", subTitle = "修改租户状态", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckUserPerms("user-mod:tenant-mng:edit")
+    @CheckUserPerms("prin-mod:tenant-mng:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
         tenantInfoService.checkDataScope(statusReq.getId());
 
@@ -158,7 +158,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset-operpwd")
-    @CheckUserPerms("user-mod:tenant-mng:reset-operpwd")
+    @CheckUserPerms("prin-mod:tenant-mng:reset-operpwd")
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
         tenantInfoService.checkDataScope(req.getId());
 
@@ -173,7 +173,7 @@ public class TenantManageController extends BaseController {
     @Operation(summary = "删除租户")
     @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckUserPerms("user-mod:tenant-mng:remove")
+    @CheckUserPerms("prin-mod:tenant-mng:remove")
     public Result<Void> remove(
             @RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {
         tenantInfoService.checkDataScope(tenantId);

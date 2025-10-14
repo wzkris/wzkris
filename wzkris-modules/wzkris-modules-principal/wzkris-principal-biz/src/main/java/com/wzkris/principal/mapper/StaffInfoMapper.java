@@ -40,4 +40,10 @@ public interface StaffInfoMapper extends BaseMapperPlus<StaffInfoDO> {
     @Select("SELECT * FROM biz.t_staff_info WHERE phone_number = #{phoneNumber}")
     StaffInfoDO selectByPhoneNumber(String phoneNumber);
 
+    @Select("SELECT password FROM biz.t_staff_info WHERE staff_id = #{staffId}")
+    String selectPwdById(Long staffId);
+
+    @Select("SELECT phone_number FROM biz.t_staff_info WHERE staff_id = #{staffId}")
+    String selectPhoneNumberById(Long staffId);
+
 }

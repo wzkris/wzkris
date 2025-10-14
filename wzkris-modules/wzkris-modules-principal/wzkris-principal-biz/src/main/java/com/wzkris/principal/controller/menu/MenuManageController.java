@@ -42,7 +42,7 @@ public class MenuManageController extends BaseController {
 
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
-    @CheckUserPerms("user-mod:menu-mng:list")
+    @CheckUserPerms("prin-mod:menu-mng:list")
     public Result<List<MenuInfoDO>> list(MenuManageQueryReq queryReq) {
         List<MenuInfoDO> menus = menuInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return ok(menus);
@@ -63,7 +63,7 @@ public class MenuManageController extends BaseController {
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/{menuId}")
-    @CheckUserPerms("user-mod:menu-mng:list")
+    @CheckUserPerms("prin-mod:menu-mng:list")
     public Result<MenuInfoDO> getInfo(@PathVariable Long menuId) {
         return ok(menuInfoMapper.selectById(menuId));
     }
@@ -71,7 +71,7 @@ public class MenuManageController extends BaseController {
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckUserPerms("user-mod:menu-mng:add")
+    @CheckUserPerms("prin-mod:menu-mng:add")
     public Result<Void> add(@Validated @RequestBody MenuManageReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
                 && !StringUtil.ishttp(req.getPath())) {
@@ -83,7 +83,7 @@ public class MenuManageController extends BaseController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckUserPerms("user-mod:menu-mng:edit")
+    @CheckUserPerms("prin-mod:menu-mng:edit")
     public Result<Void> edit(@Validated @RequestBody MenuManageReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
                 && !StringUtil.ishttp(req.getPath())) {
@@ -97,7 +97,7 @@ public class MenuManageController extends BaseController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckUserPerms("user-mod:menu-mng:remove")
+    @CheckUserPerms("prin-mod:menu-mng:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
         if (menuInfoService.existSubMenu(menuId)) {
             return err40000("存在子菜单,不允许删除");

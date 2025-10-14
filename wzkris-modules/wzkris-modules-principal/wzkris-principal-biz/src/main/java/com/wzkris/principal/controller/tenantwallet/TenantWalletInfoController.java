@@ -36,7 +36,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/tenant-wallet")
-@CheckStaffPerms("user-mod:tenant-wallet-info")
+@CheckStaffPerms("prin-mod:tenant-wallet-info")
 @RequiredArgsConstructor
 public class TenantWalletInfoController extends BaseController {
 
@@ -80,7 +80,7 @@ public class TenantWalletInfoController extends BaseController {
     @Operation(summary = "提现")
     @OperateLog(title = "商户信息", subTitle = "提现", operateType = OperateType.OTHER)
     @PostMapping("/withdrawal")
-    @CheckStaffPerms("user-mod:tenant-wallet-info:withdrawal")
+    @CheckStaffPerms("prin-mod:tenant-wallet-info:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
         TenantInfoDO sysTenant = tenantInfoMapper.selectById(LoginStaffUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {

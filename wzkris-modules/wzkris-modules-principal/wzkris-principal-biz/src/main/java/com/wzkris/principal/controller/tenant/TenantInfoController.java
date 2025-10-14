@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "租户信息")
 @Validated
 @RestController
-@CheckStaffPerms("user-mod:tenant-info")
+@CheckStaffPerms("prin-mod:tenant-info")
 @RequestMapping("/tenant-info")
 @RequiredArgsConstructor
 public class TenantInfoController extends BaseController {
@@ -55,7 +55,7 @@ public class TenantInfoController extends BaseController {
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CheckStaffPerms("user-mod:tenant-info:edit")
+    @CheckStaffPerms("prin-mod:tenant-info:edit")
     public Result<TenantInfoVO> tenantInfo(@RequestBody TenantInfoReq req) {
         TenantInfoDO sysTenant = BeanUtil.convert(req, new TenantInfoDO(LoginStaffUtil.getTenantId()));
         return toRes(tenantInfoMapper.updateById(sysTenant));

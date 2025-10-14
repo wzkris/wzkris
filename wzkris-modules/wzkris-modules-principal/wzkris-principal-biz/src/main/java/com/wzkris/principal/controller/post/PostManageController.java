@@ -53,7 +53,7 @@ public class PostManageController extends BaseController {
 
     @Operation(summary = "职位分页")
     @GetMapping("/list")
-    @CheckStaffPerms("user-mod:post-mng:list")
+    @CheckStaffPerms("prin-mod:post-mng:list")
     public Result<Page<PostInfoDO>> listPage(PostManageQueryReq queryReq) {
         startPage();
         List<PostInfoDO> list = postInfoMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -69,7 +69,7 @@ public class PostManageController extends BaseController {
 
     @Operation(summary = "职位详细信息")
     @GetMapping("/{postId}")
-    @CheckStaffPerms("user-mod:post-mng:list")
+    @CheckStaffPerms("prin-mod:post-mng:list")
     public Result<PostInfoDO> getInfo(@PathVariable Long postId) {
         return ok(postInfoMapper.selectById(postId));
     }
@@ -77,7 +77,7 @@ public class PostManageController extends BaseController {
     @Operation(summary = "职位-菜单选择树")
     @GetMapping({"/menu-checked-selecttree/", "/menu-checked-selecttree/{postId}"})
     @CheckStaffPerms(
-            value = {"user-mod:post-mng:edit", "user-mod:post-mng:add"},
+            value = {"prin-mod:post-mng:edit", "prin-mod:post-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long postId) {
         CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
@@ -91,7 +91,7 @@ public class PostManageController extends BaseController {
     @Operation(summary = "新增职位")
     @OperateLog(title = "职位管理", subTitle = "新增职位", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckStaffPerms("user-mod:post-mng:add")
+    @CheckStaffPerms("prin-mod:post-mng:add")
     public Result<Void> add(@Validated @RequestBody PostManageReq req) {
         PostInfoDO post = BeanUtil.convert(req, PostInfoDO.class);
         return toRes(postInfoService.savePost(post, req.getMenuIds()));
@@ -100,7 +100,7 @@ public class PostManageController extends BaseController {
     @Operation(summary = "修改职位")
     @OperateLog(title = "职位管理", subTitle = "修改职位", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckStaffPerms("user-mod:post-mng:edit")
+    @CheckStaffPerms("prin-mod:post-mng:edit")
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody PostManageReq req) {
         PostInfoDO post = BeanUtil.convert(req, PostInfoDO.class);
         return toRes(postInfoService.modifyPost(post, req.getMenuIds()));
@@ -109,7 +109,7 @@ public class PostManageController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckStaffPerms("user-mod:post-mng:edit")
+    @CheckStaffPerms("prin-mod:post-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         PostInfoDO update = new PostInfoDO(statusReq.getId());
         update.setStatus(statusReq.getStatus());
@@ -119,7 +119,7 @@ public class PostManageController extends BaseController {
     @Operation(summary = "删除职位")
     @OperateLog(title = "职位管理", subTitle = "删除职位", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckStaffPerms("user-mod:post-mng:remove")
+    @CheckStaffPerms("prin-mod:post-mng:remove")
     public Result<Void> remove(
             @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> postIds) {
         postInfoService.existStaff(postIds);

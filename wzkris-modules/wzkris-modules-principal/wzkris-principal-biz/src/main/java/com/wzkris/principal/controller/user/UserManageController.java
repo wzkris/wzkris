@@ -30,7 +30,6 @@ import com.wzkris.principal.manager.RoleInfoDataScopeManager;
 import com.wzkris.principal.manager.UserInfoDataScopeManager;
 import com.wzkris.principal.mapper.UserInfoMapper;
 import com.wzkris.principal.service.RoleInfoService;
-import com.wzkris.principal.service.TenantInfoService;
 import com.wzkris.principal.service.UserInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -64,8 +63,6 @@ public class UserManageController extends BaseController {
 
     private final RoleInfoService roleInfoService;
 
-    private final TenantInfoService tenantInfoService;
-
     private final PasswordEncoder passwordEncoder;
 
     private final UserInfoDataScopeManager userInfoDataScopeManager;
@@ -76,7 +73,7 @@ public class UserManageController extends BaseController {
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")
-    @CheckUserPerms("user-mod:user-mng:list")
+    @CheckUserPerms("prin-mod:user-mng:list")
     public Result<Page<UserManageVO>> listPage(UserManageQueryReq queryReq) {
         startPage();
         List<UserManageVO> list = userInfoDataScopeManager.listVO(this.buildPageWrapper(queryReq));
@@ -101,7 +98,7 @@ public class UserManageController extends BaseController {
     @Operation(summary = "用户-部门选择树")
     @GetMapping("/dept-selecttree")
     @CheckUserPerms(
-            value = {"user-mod:user-mng:edit", "user-mod:user-mng:add"},
+            value = {"prin-mod:user-mng:edit", "prin-mod:user-mng:add"},
             mode = CheckMode.OR)
     public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
         return ok(deptInfoDataScopeManager.listSelectTree(deptName));
@@ -110,7 +107,7 @@ public class UserManageController extends BaseController {
     @Operation(summary = "用户-角色选择列表")
     @GetMapping({"/role-checked-select/", "/role-checked-select/{userId}"})
     @CheckUserPerms(
-            value = {"user-mod:user-mng:edit", "user-mod:user-mng:add"},
+            value = {"prin-mod:user-mng:edit", "prin-mod:user-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
         userInfoDataScopeManager.checkDataScopes(userId);
@@ -122,7 +119,7 @@ public class UserManageController extends BaseController {
 
     @Operation(summary = "用户详细信息")
     @GetMapping("/{userId}")
-    @CheckUserPerms("user-mod:user-mng:query")
+    @CheckUserPerms("prin-mod:user-mng:query")
     public Result<UserInfoDO> getInfo(@PathVariable Long userId) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(userId);
@@ -132,7 +129,7 @@ public class UserManageController extends BaseController {
     @Operation(summary = "新增用户")
     @OperateLog(title = "用户管理", subTitle = "新增用户", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckUserPerms("user-mod:user-mng:add")
+    @CheckUserPerms("prin-mod:user-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody UserManageReq userReq) {
         if (userInfoService.existByUsername(userReq.getUserId(), userReq.getUsername())) {
             return err40000("添加用户'" + userReq.getUsername() + "'失败，登录账号已存在");
@@ -155,7 +152,7 @@ public class UserManageController extends BaseController {
     @Operation(summary = "修改用户")
     @OperateLog(title = "用户管理", subTitle = "修改用户", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckUserPerms("user-mod:user-mng:edit")
+    @CheckUserPerms("prin-mod:user-mng:edit")
     public Result<Void> edit(@Validated @RequestBody UserManageReq userReq) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(userReq.getUserId());
@@ -173,7 +170,7 @@ public class UserManageController extends BaseController {
     @Operation(summary = "用户授权角色")
     @OperateLog(title = "用户管理", subTitle = "授权用户角色", operateType = OperateType.GRANT)
     @PostMapping("/grant-role")
-    @CheckUserPerms("user-mod:user-mng:grant-role")
+    @CheckUserPerms("prin-mod:user-mng:grant-role")
     public Result<Void> grantRoles(@RequestBody @Valid UserToRolesReq req) {
         // 校验用户可操作权限
         userInfoDataScopeManager.checkDataScopes(req.getUserId());
@@ -185,20 +182,17 @@ public class UserManageController extends BaseController {
     @Operation(summary = "删除用户")
     @OperateLog(title = "用户管理", subTitle = "删除用户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckUserPerms("user-mod:user-mng:remove")
+    @CheckUserPerms("prin-mod:user-mng:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(userIds);
-        if (tenantInfoService.checkAdministrator(userIds)) {
-            return err40000("删除失败，用户包含租户超级管理员");
-        }
         return toRes(userInfoService.removeByIds(userIds));
     }
 
     @Operation(summary = "重置密码")
     @OperateLog(title = "用户管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
     @PostMapping("/reset-password")
-    @CheckUserPerms("user-mod:user-mng:edit")
+    @CheckUserPerms("prin-mod:user-mng:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(req.getId());
@@ -211,7 +205,7 @@ public class UserManageController extends BaseController {
     @Operation(summary = "状态修改")
     @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
     @PostMapping("/edit-status")
-    @CheckUserPerms("user-mod:user-mng:edit")
+    @CheckUserPerms("prin-mod:user-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
         // 校验权限
         userInfoDataScopeManager.checkDataScopes(statusReq.getId());
@@ -223,7 +217,7 @@ public class UserManageController extends BaseController {
     @Operation(summary = "导出")
     @OperateLog(title = "用户管理", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
     @GetMapping("/export")
-    @CheckUserPerms("user-mod:user-mng:export")
+    @CheckUserPerms("prin-mod:user-mng:export")
     public void export(HttpServletResponse response, UserManageQueryReq queryReq) {
         List<UserManageVO> list = userInfoDataScopeManager.listVO(this.buildPageWrapper(queryReq));
         List<UserInfoExport> convert = BeanUtil.convert(list, UserInfoExport.class);

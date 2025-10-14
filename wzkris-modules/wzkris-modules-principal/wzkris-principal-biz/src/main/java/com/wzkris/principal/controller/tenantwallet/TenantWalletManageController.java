@@ -36,7 +36,7 @@ public class TenantWalletManageController extends BaseController {
 
     @Operation(summary = "钱包记录列表")
     @GetMapping("/record")
-    @CheckUserPerms("user-mod:tenant-wallet-mng:list")
+    @CheckUserPerms("prin-mod:tenant-wallet-mng:list")
     public Result<Page<TenantWalletRecordDO>> listWalletPage(TenantWalletRecordQueryReq queryReq) {
         startPage();
         List<TenantWalletRecordDO> recordList =
