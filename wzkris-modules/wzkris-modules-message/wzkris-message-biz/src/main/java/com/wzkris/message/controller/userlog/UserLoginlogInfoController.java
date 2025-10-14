@@ -3,7 +3,6 @@ package com.wzkris.message.controller.userlog;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.message.domain.UserLoginLogDO;
 import com.wzkris.message.domain.req.userlog.UserLoginLogQueryReq;
@@ -27,7 +26,6 @@ public class UserLoginlogInfoController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckUserPerms("system-mod:loginlog-mng:list")
     public Result<Page<UserLoginLogDO>> list(UserLoginLogQueryReq queryReq) {
         startPage();
         queryReq.setUserId(LoginUserUtil.getId());

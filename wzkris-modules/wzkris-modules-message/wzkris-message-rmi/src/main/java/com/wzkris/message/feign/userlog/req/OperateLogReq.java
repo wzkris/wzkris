@@ -1,25 +1,17 @@
 package com.wzkris.message.feign.userlog.req;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * 操作日志记录表 oper_log
+ * 操作日志记录
  *
  * @author wzkris
  */
 @Data
 public class OperateLogReq implements Serializable {
-
-    /**
-     * 租户ID
-     */
-    private Long tenantId;
 
     /**
      * 操作模块
@@ -32,14 +24,9 @@ public class OperateLogReq implements Serializable {
     private String subTitle;
 
     /**
-     * 操作类型（0其它 1新增 2修改 3删除）
+     * 操作类型
      */
     private String operType;
-
-    /**
-     * 操作类型数组
-     */
-    private String[] operTypes;
 
     /**
      * 请求方法
@@ -50,11 +37,6 @@ public class OperateLogReq implements Serializable {
      * 请求方式
      */
     private String requestMethod;
-
-    /**
-     * 操作类别（0其它 1后台用户 2手机端用户）
-     */
-    private String operatorType;
 
     /**
      * 操作人员ID
@@ -92,9 +74,9 @@ public class OperateLogReq implements Serializable {
     private String operLocation;
 
     /**
-     * 操作状态（0正常 1异常）
+     * 操作状态
      */
-    private String status;
+    private boolean success;
 
     /**
      * 错误消息
@@ -105,18 +87,5 @@ public class OperateLogReq implements Serializable {
      * 操作时间
      */
     private Date operTime;
-
-    /**
-     * 请求参数
-     */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Map<String, Object> params;
-
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>(2);
-        }
-        return params;
-    }
 
 }

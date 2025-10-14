@@ -18,8 +18,8 @@ import java.util.Date;
  */
 @Data
 @AutoMapper(target = OperateLogReq.class)
-@TableName(schema = "biz", value = "user_operate_log")
-public class UserOperateLogDO implements Serializable {
+@TableName(schema = "biz", value = "staff_operate_log")
+public class StaffOperateLogDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 3562067975534801419L;
@@ -43,7 +43,7 @@ public class UserOperateLogDO implements Serializable {
     private String requestMethod;
 
     @Schema(description = "操作人员ID")
-    private Long userId;
+    private Long staffId;
 
     @Schema(description = "操作人员")
     private String operName;
@@ -72,4 +72,6 @@ public class UserOperateLogDO implements Serializable {
     @Schema(description = "操作时间")
     private Date operTime;
 
+    @Schema(description = "租户ID")
+    private Long tenantId;
 }

@@ -34,14 +34,4 @@ public @interface OperateLog {
      */
     String[] excludeRequestParam() default {};
 
-    /**
-     * 是否保存请求的参数
-     */
-    boolean isSaveRequestData() default true;
-
-    /**
-     * 是否保存响应的参数
-     */
-    boolean isSaveResponseData() default true;
-
 }

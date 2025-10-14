@@ -1,55 +1,39 @@
-package com.wzkris.message.controller.userlog;
+package com.wzkris.message.controller.stafflog;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.FieldPerms;
 import com.wzkris.common.security.annotation.enums.Rw;
+import com.wzkris.common.security.utils.LoginStaffUtil;
 import com.wzkris.message.domain.UserOperateLogDO;
 import com.wzkris.message.domain.req.userlog.UserOperateLogQueryReq;
-import com.wzkris.message.mapper.UserOperateLogMapper;
 import com.wzkris.message.service.UserOperateLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * 操作日志记录
- *
- * @author wzkris
- */
-@Tag(name = "用户操作日志管理")
+@Tag(name = "员工操作日志信息")
 @RestController
-@RequestMapping("/user-operatelog-manage")
+@RequestMapping("/staff-operatelog-info")
 @RequiredArgsConstructor
-public class UserOperateLogManageController extends BaseController {
-
-    private final UserOperateLogMapper userOperateLogMapper;
+public class StaffOperateLogInfoController extends BaseController {
 
     private final UserOperateLogService userOperateLogService;
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckUserPerms("msg-mod:user-operatelog-mng:list")
     @FieldPerms(rw = Rw.READ)
     public Result<Page<UserOperateLogDO>> list(UserOperateLogQueryReq queryReq) {
         startPage();
+        queryReq.setUserId(LoginStaffUtil.getId());
         List<UserOperateLogDO> list = userOperateLogService.list(queryReq);
         return getDataTable(list);
-    }
-
-    @Operation(summary = "删除日志")
-    @OperateLog(title = "操作日志", subTitle = "删除日志", operateType = OperateType.DELETE)
-    @PostMapping("/remove")
-    @CheckUserPerms("msg-mod:user-operatelog-mng:remove")
-    public Result<?> remove(@RequestBody List<Long> operIds) {
-        return toRes(userOperateLogMapper.deleteByIds(operIds));
     }
 
 }

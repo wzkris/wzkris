@@ -40,7 +40,7 @@ public class ConfigManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckUserPerms("system-mod:config-mng:list")
+    @CheckUserPerms("msg-mod:config-mng:list")
     public Result<Page<ConfigInfoDO>> list(ConfigManageQueryReq queryReq) {
         startPage();
         List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(queryReq));
@@ -63,7 +63,7 @@ public class ConfigManageController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{configId}")
-    @CheckUserPerms("system-mod:config-mng:list")
+    @CheckUserPerms("msg-mod:config-mng:list")
     public Result<ConfigInfoDO> getInfo(@PathVariable Long configId) {
         return ok(configInfoMapper.selectById(configId));
     }
@@ -71,7 +71,7 @@ public class ConfigManageController extends BaseController {
     @Operation(summary = "添加参数")
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckUserPerms("system-mod:config-mng:add")
+    @CheckUserPerms("msg-mod:config-mng:add")
     public Result<Void> add(@RequestBody ConfigManageReq req) {
         if (configInfoService.checkUsedByConfigKey(null, req.getConfigKey())) {
             return err40000("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
@@ -82,7 +82,7 @@ public class ConfigManageController extends BaseController {
     @Operation(summary = "修改参数")
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckUserPerms("system-mod:config-mng:edit")
+    @CheckUserPerms("msg-mod:config-mng:edit")
     public Result<Void> edit(@RequestBody ConfigManageReq req) {
         if (configInfoService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
             return err40000("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
@@ -93,7 +93,7 @@ public class ConfigManageController extends BaseController {
     @Operation(summary = "删除参数")
     @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckUserPerms("system-mod:config-mng:remove")
+    @CheckUserPerms("msg-mod:config-mng:remove")
     public Result<Void> remove(@RequestBody Long configId) {
         ConfigInfoDO config = configInfoMapper.selectById(configId);
         if (config.getBuiltIn()) {
@@ -104,7 +104,7 @@ public class ConfigManageController extends BaseController {
 
     @Operation(summary = "刷新参数缓存")
     @PostMapping("/refresh-cache")
-    @CheckUserPerms("system-mod:config-mng:remove")
+    @CheckUserPerms("msg-mod:config-mng:remove")
     public Result<Void> refreshCache() {
         configInfoService.loadingConfigCache();
         return ok();

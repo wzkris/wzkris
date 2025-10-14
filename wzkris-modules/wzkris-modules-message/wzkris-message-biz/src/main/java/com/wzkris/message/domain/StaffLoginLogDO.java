@@ -19,8 +19,8 @@ import java.util.Date;
  */
 @Data
 @AutoMapper(target = LoginLogReq.class)
-@TableName(schema = "biz", value = "user_login_log")
-public class UserLoginLogDO implements Serializable {
+@TableName(schema = "biz", value = "staff_login_log")
+public class StaffLoginLogDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 5062210547731436343L;
@@ -29,10 +29,10 @@ public class UserLoginLogDO implements Serializable {
     private Long logId;
 
     @Schema(description = "用户ID")
-    private Long userId;
+    private Long staffId;
 
     @Schema(description = "用户名")
-    private String username;
+    private String staffName;
 
     @Schema(description = "登录类型")
     private String loginType;
@@ -57,5 +57,8 @@ public class UserLoginLogDO implements Serializable {
 
     @Schema(description = "登录时间")
     private Date loginTime;
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
  * @description : RPC -- 系统日志服务
  * @date : 2023/3/13 16:12
  */
-@FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "UserLogFeign",
+@FeignClient(name = ServiceIdConstant.MESSAGE, contextId = "UserLogFeign",
         fallbackFactory = UserLogFeignFallback.class,
         path = "/feign-user-log")
 public interface UserLogFeign {

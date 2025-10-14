@@ -30,11 +30,6 @@ public class LoginLogReq implements Serializable {
     private String username;
 
     /**
-     * 租户ID
-     */
-    private Long tenantId;
-
-    /**
      * 登录类型
      */
     private String loginType;

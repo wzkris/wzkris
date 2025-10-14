@@ -32,7 +32,7 @@ public class UserLoginLogServiceImpl implements UserLoginLogService {
     private LambdaQueryWrapper<UserLoginLogDO> buildQueryWrapper(UserLoginLogQueryReq queryReq) {
         return new LambdaQueryWrapper<UserLoginLogDO>()
                 .eq(ObjectUtils.isNotEmpty(queryReq.getUserId()), UserLoginLogDO::getUserId, queryReq.getUserId())
-                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), UserLoginLogDO::getStatus, queryReq.getStatus())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getSuccess()), UserLoginLogDO::getSuccess, queryReq.getSuccess())
                 .like(StringUtil.isNotEmpty(queryReq.getUsername()), UserLoginLogDO::getUsername, queryReq.getUsername())
                 .like(
                         StringUtil.isNotEmpty(queryReq.getLoginLocation()),

@@ -38,7 +38,7 @@ public class DictionaryManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckUserPerms("system-mod:dictionary-mng:list")
+    @CheckUserPerms("msg-mod:dictionary-mng:list")
     public Result<Page<DictionaryInfoDO>> list(DictionaryManageQueryReq queryReq) {
         startPage();
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(queryReq);
@@ -54,7 +54,7 @@ public class DictionaryManageController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{dictId}")
-    @CheckUserPerms("system-mod:dictionary-mng:list")
+    @CheckUserPerms("msg-mod:dictionary-mng:list")
     public Result<DictionaryInfoDO> getInfo(@PathVariable Long dictId) {
         return ok(dictionaryInfoMapper.selectById(dictId));
     }
@@ -62,7 +62,7 @@ public class DictionaryManageController extends BaseController {
     @Operation(summary = "新增")
     @OperateLog(title = "数据字典", subTitle = "添加字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
-    @CheckUserPerms("system-mod:dictionary-mng:add")
+    @CheckUserPerms("msg-mod:dictionary-mng:add")
     public Result<Void> add(@RequestBody DictionaryManageReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return err40000("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
@@ -73,7 +73,7 @@ public class DictionaryManageController extends BaseController {
     @Operation(summary = "修改")
     @OperateLog(title = "数据字典", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
-    @CheckUserPerms("system-mod:dictionary-mng:edit")
+    @CheckUserPerms("msg-mod:dictionary-mng:edit")
     public Result<Void> edit(@RequestBody DictionaryManageReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return err40000("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
@@ -84,14 +84,14 @@ public class DictionaryManageController extends BaseController {
     @Operation(summary = "删除")
     @OperateLog(title = "数据字典", subTitle = "删除字典", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckUserPerms("system-mod:dictionary-mng:remove")
+    @CheckUserPerms("msg-mod:dictionary-mng:remove")
     public Result<Void> remove(@RequestBody Long dictId) {
         return toRes(dictionaryInfoService.deleteById(dictId));
     }
 
     @Operation(summary = "刷新字典缓存")
     @PostMapping("/refresh-cache")
-    @CheckUserPerms("system-mod:dictionary-mng:remove")
+    @CheckUserPerms("msg-mod:dictionary-mng:remove")
     public Result<?> refreshCache() {
         dictionaryInfoService.loadingDictCache();
         return ok();

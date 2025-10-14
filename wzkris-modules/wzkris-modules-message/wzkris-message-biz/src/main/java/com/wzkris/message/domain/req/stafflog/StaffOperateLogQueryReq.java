@@ -1,4 +1,4 @@
-package com.wzkris.message.domain.req.userlog;
+package com.wzkris.message.domain.req.stafflog;
 
 import com.wzkris.common.web.model.QueryReq;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class UserOperateLogQueryReq extends QueryReq {
+public class StaffOperateLogQueryReq extends QueryReq {
 
     @Schema(description = "操作模块")
     private String title;
@@ -24,6 +24,6 @@ public class UserOperateLogQueryReq extends QueryReq {
     private Boolean success;
 
     @Schema(description = "用户ID")
-    private Long userId;
+    private Long staffId;
 
 }

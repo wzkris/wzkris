@@ -31,7 +31,7 @@ public class UserOperateLogServiceImpl implements UserOperateLogService {
     private LambdaQueryWrapper<UserOperateLogDO> buildQueryWrapper(UserOperateLogQueryReq queryReq) {
         return new LambdaQueryWrapper<UserOperateLogDO>()
                 .eq(ObjectUtils.isNotEmpty(queryReq.getUserId()), UserOperateLogDO::getUserId, queryReq.getUserId())
-                .eq(StringUtil.isNotBlank(queryReq.getStatus()), UserOperateLogDO::getStatus, queryReq.getStatus())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getSuccess()), UserOperateLogDO::getSuccess, queryReq.getSuccess())
                 .like(StringUtil.isNotBlank(queryReq.getTitle()), UserOperateLogDO::getTitle, queryReq.getTitle())
                 .like(StringUtil.isNotBlank(queryReq.getSubTitle()), UserOperateLogDO::getSubTitle, queryReq.getSubTitle())
                 .eq(StringUtil.isNotEmpty(queryReq.getOperType()), UserOperateLogDO::getOperType, queryReq.getOperType())

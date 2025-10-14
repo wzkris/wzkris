@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @description : RPC -- 系统通知服务
  * @since : 2024/12/16 12:55
  */
-@FeignClient(name = ServiceIdConstant.SYSTEM, contextId = "NotificationInfoFeign",
+@FeignClient(name = ServiceIdConstant.MESSAGE, contextId = "NotificationInfoFeign",
         fallbackFactory = NotificationFeignFallback.class,
         path = "/feign-notification")
 public interface NotificationInfoFeign {

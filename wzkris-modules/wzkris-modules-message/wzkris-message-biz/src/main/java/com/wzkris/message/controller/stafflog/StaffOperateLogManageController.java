@@ -1,4 +1,4 @@
-package com.wzkris.message.controller.userlog;
+package com.wzkris.message.controller.stafflog;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -24,11 +24,11 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "用户操作日志管理")
+@Tag(name = "员工操作日志管理")
 @RestController
-@RequestMapping("/user-operatelog-manage")
+@RequestMapping("/staff-operatelog-manage")
 @RequiredArgsConstructor
-public class UserOperateLogManageController extends BaseController {
+public class StaffOperateLogManageController extends BaseController {
 
     private final UserOperateLogMapper userOperateLogMapper;
 
@@ -36,7 +36,7 @@ public class UserOperateLogManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckUserPerms("msg-mod:user-operatelog-mng:list")
+    @CheckUserPerms("msg-mod:staff-operatelog-mng:list")
     @FieldPerms(rw = Rw.READ)
     public Result<Page<UserOperateLogDO>> list(UserOperateLogQueryReq queryReq) {
         startPage();
@@ -47,7 +47,7 @@ public class UserOperateLogManageController extends BaseController {
     @Operation(summary = "删除日志")
     @OperateLog(title = "操作日志", subTitle = "删除日志", operateType = OperateType.DELETE)
     @PostMapping("/remove")
-    @CheckUserPerms("msg-mod:user-operatelog-mng:remove")
+    @CheckUserPerms("msg-mod:staff-operatelog-mng:remove")
     public Result<?> remove(@RequestBody List<Long> operIds) {
         return toRes(userOperateLogMapper.deleteByIds(operIds));
     }

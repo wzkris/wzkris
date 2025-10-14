@@ -5,46 +5,35 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.threads.TracingIdRunnable;
-import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateStatus;
+import com.wzkris.common.log.event.OperateEvent;
 import com.wzkris.common.security.utils.LoginUserUtil;
-import com.wzkris.message.feign.userlog.UserLogFeign;
-import com.wzkris.message.feign.userlog.req.OperateLogReq;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.http.HttpMethod;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 /**
- * 日志切面
+ * 日志切面 - 支持Web和非Web环境
  *
  * @author wzkris
  */
 @Slf4j
 @Aspect
-public class OperateLogAspect implements ApplicationRunner {
-
-    private static final int BATCH_SIZE = 30;
+public class OperateLogAspect {
 
     private static final int MAX_PARAM_LENGTH = 1000;
 
@@ -61,89 +50,12 @@ public class OperateLogAspect implements ApplicationRunner {
 
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
-    private final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-
-    private final UserLogFeign userLogFeign;
-
-    private final BlockingQueue<OperateLogReq> bufferQ = new LinkedBlockingQueue<>();
-
-    private final List<OperateLogReq> batchQ = new ArrayList<>();
-
-    private boolean shutdown = false;
-
-    public OperateLogAspect(UserLogFeign userLogFeign) {
-        this.userLogFeign = userLogFeign;
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // 配置null不序列化, 避免大量无用参数存入DB
-        executor.setThreadNamePrefix("OperateLogAspectTask-");
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(5);
-        executor.setQueueCapacity(500);
-        executor.setKeepAliveSeconds(180);
-        // 线程池对拒绝任务的处理策略
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        executor.setThreadFactory(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                return executor.newThread(new TracingIdRunnable(r));
-            }
-        });
-        executor.setDaemon(true);
-        executor.initialize();
-    }
-
-    public void run() {
-        for (; ; ) {
-            try {
-                OperateLogReq operateLogReq = bufferQ.poll(3, TimeUnit.SECONDS);
-                if (operateLogReq == null) {
-                    flushBatchQ();
-                } else {
-                    operateLogReq.setOperLocation(IpUtil.parseIp(operateLogReq.getOperIp()));
-                    batchQ.add(operateLogReq);
-                    if (batchQ.size() >= BATCH_SIZE) {
-                        flushBatchQ();
-                    }
-                }
-            } catch (InterruptedException e) {
-                if (!batchQ.isEmpty()) {
-                    userLogFeign.saveOperlogs(batchQ);
-                }
-                if (shutdown) {
-                    break;
-                } else {
-                    log.error("操作日志的bufferQ发生异常中断：{}", e.getMessage(), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * 刷新batchQ队列
-     */
-    private synchronized void flushBatchQ() {
-        if (!batchQ.isEmpty()) {
-            ArrayList<OperateLogReq> operateLogReqs = new ArrayList<>(batchQ);
-            executor.execute(() -> {
-                userLogFeign.saveOperlogs(operateLogReqs);
-            });
-            batchQ.clear();
-        }
-    }
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        executor.execute(this::run);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("[{}] Run shutdown hook now", this.getClass().getSimpleName());
-            this.shutdown = true;
-            executor.shutdown();
-        }));
+    public OperateLogAspect() {
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     /**
      * 处理完请求后执行
-     *
-     * @param joinPoint 切点
      */
     @AfterReturning(pointcut = "@annotation(operateLog)", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, OperateLog operateLog, Object jsonResult) {
@@ -152,105 +64,113 @@ public class OperateLogAspect implements ApplicationRunner {
 
     /**
      * 拦截异常操作
-     *
-     * @param joinPoint 切点
      */
     @AfterThrowing(pointcut = "@annotation(operateLog)", throwing = "exception")
     public void doAfterThrowing(JoinPoint joinPoint, OperateLog operateLog, Exception exception) {
         handleLog(joinPoint, operateLog, null, exception);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog, Object jsonResult, final Exception exception) {
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
-                RequestContextHolder.getRequestAttributes();
-        if (requestAttributes == null) {
-            return;
-        }
+    protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog, Object jsonResult, Exception exception) {
+        OperateEvent operateEvent = buildOperateEvent(joinPoint, operateLog, jsonResult, exception);
 
-        HttpServletRequest request = requestAttributes.getRequest();
-        try {
-            OperateLogReq operateLogReq = buildOperLog(joinPoint, operateLog, request, jsonResult, exception);
-
-            bufferQ.add(operateLogReq);
-        } catch (Exception e) {
-            log.error("日志切面发生异常，异常信息:{}", e.getMessage(), e);
-        }
+        SpringUtil.getContext().publishEvent(operateEvent);
     }
 
     /**
-     * 获取注解中对方法的描述信息 用于Controller层注解
+     * 构建操作事件 - 不依赖HTTP请求
      */
-    private OperateLogReq buildOperLog(JoinPoint joinPoint, OperateLog operateLog,
-                                       HttpServletRequest request, Object jsonResult, Exception exception) throws JsonProcessingException {
-        OperateLogReq operateLogReq = new OperateLogReq();
-        operateLogReq.setUserId(LoginUserUtil.getId());
-        operateLogReq.setOperName(LoginUserUtil.getUsername());
-        operateLogReq.setOperType(operateLog.operateType().getValue());
-        operateLogReq.setStatus(OperateStatus.SUCCESS.value());
-        operateLogReq.setOperTime(new Date());
+    private OperateEvent buildOperateEvent(JoinPoint joinPoint, OperateLog operateLog,
+                                           Object jsonResult, Exception exception) {
+        OperateEvent operateEvent = new OperateEvent();
 
-        String ip = ServletUtil.getClientIP(request);
-        operateLogReq.setOperIp(ip);
-        operateLogReq.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
+        // 设置用户信息
+        operateEvent.setUserId(LoginUserUtil.getId());
+        operateEvent.setOperName(LoginUserUtil.getUsername());
 
+        // 设置操作信息
+        operateEvent.setOperType(operateLog.operateType().getValue());
+        operateEvent.setSuccess(true);
+        operateEvent.setOperTime(new Date());
+
+        // 设置方法信息
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
-        operateLogReq.setMethod(className + StringUtil.DOT + methodName + "()");
-        operateLogReq.setRequestMethod(request.getMethod());
+        operateEvent.setMethod(className + StringUtil.DOT + methodName + "()");
 
+        // 对于Web环境，尝试获取请求信息；非Web环境则为空
+        setRequestParams(operateEvent);
+
+        // 处理异常情况
         if (exception != null) {
-            operateLogReq.setStatus(OperateStatus.FAIL.value());
-            operateLogReq.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
+            operateEvent.setSuccess(false);
+            operateEvent.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
         } else if (jsonResult instanceof Result<?> result && !result.isSuccess()) {
-            operateLogReq.setStatus(OperateStatus.FAIL.value());
-            operateLogReq.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
+            operateEvent.setSuccess(false);
+            operateEvent.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
         }
 
-        operateLogReq.setOperType(operateLog.operateType().getValue());
-        operateLogReq.setTitle(operateLog.title());
-        operateLogReq.setSubTitle(operateLog.subTitle());
-        operateLogReq.setOperatorType(operateLog.operateType().getValue());
+        // 设置注解信息
+        operateEvent.setTitle(operateLog.title());
+        operateEvent.setSubTitle(operateLog.subTitle());
+        operateEvent.setOperType(operateLog.operateType().getValue());
 
-        if (operateLog.isSaveRequestData()) {
-            setRequestValue(joinPoint, request, operateLog.excludeRequestParam(), operateLogReq);
+        // 处理参数和结果
+        try {
+            setRequestValue(joinPoint, operateLog.excludeRequestParam(), operateEvent);
+
+            if (jsonResult != null) {
+                operateEvent.setJsonResult(StringUtil.substring(
+                        objectMapper.writeValueAsString(jsonResult), 0, MAX_PARAM_LENGTH));
+            }
+        } catch (JsonProcessingException e) {
+            log.error("日志参数转换发生异常：{}", e.getMessage(), e);
         }
 
-        if (operateLog.isSaveResponseData() && jsonResult != null) {
-            operateLogReq.setJsonResult(StringUtil.substring(
-                    objectMapper.writeValueAsString(jsonResult), 0, MAX_PARAM_LENGTH));
-        }
-
-        return operateLogReq;
+        return operateEvent;
     }
 
-    private void setRequestValue(JoinPoint joinPoint, HttpServletRequest request,
-                                 String[] excludeRequestParam, OperateLogReq operateLogReq)
-            throws JsonProcessingException {
-        Map<String, String> paramsMap = new HashMap<>();
-        String operParams = "";
-        final String requestMethod = operateLogReq.getRequestMethod();
+    /**
+     * 设置Web环境信息（如果存在）
+     */
+    private void setRequestParams(OperateEvent operateEvent) {
+        try {
+            ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
+                    RequestContextHolder.getRequestAttributes();
 
-        if (HttpMethod.PUT.name().equals(requestMethod) ||
-                HttpMethod.POST.name().equals(requestMethod)) {
-            String params = argsArrayToString(joinPoint.getArgs());
-            if (StringUtil.isNotBlank(params) && params.startsWith("{")) {
-                paramsMap = objectMapper.readValue(
-                        params,
+            HttpServletRequest request = requestAttributes.getRequest();
+
+            String ip = ServletUtil.getClientIP(request);
+            operateEvent.setRequestMethod(request.getMethod());
+            operateEvent.setOperIp(ip);
+            operateEvent.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
+
+        } catch (Exception e) {
+            log.info("非Web环境，跳过设置请求信息");
+        }
+    }
+
+    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperateEvent operateEvent)
+            throws JsonProcessingException {
+        String operParams = argsArrayToString(joinPoint.getArgs());
+
+        if (StringUtil.isNotBlank(operParams)) {
+            // 如果是JSON格式，尝试解析并过滤敏感字段
+            if (operParams.startsWith("{")) {
+                Map<String, String> paramsMap = objectMapper.readValue(
+                        operParams,
                         TypeFactory.defaultInstance().constructMapType(
                                 HashMap.class, String.class, Object.class));
+                if (!paramsMap.isEmpty()) {
+                    fuzzyParams(paramsMap, excludeRequestParam);
+                    operParams = StringUtil.substring(
+                            objectMapper.writeValueAsString(paramsMap), 0, MAX_PARAM_LENGTH);
+                }
             } else {
-                operParams = params;
+                operParams = StringUtil.substring(operParams, 0, MAX_PARAM_LENGTH);
             }
-        } else {
-            paramsMap = ServletUtil.getParamMap(request);
         }
 
-        if (!paramsMap.isEmpty()) {
-            fuzzyParams(paramsMap, excludeRequestParam);
-            operParams = StringUtil.substring(
-                    objectMapper.writeValueAsString(paramsMap), 0, MAX_PARAM_LENGTH);
-        }
-        operateLogReq.setOperParam(operParams);
+        operateEvent.setOperParam(operParams);
     }
 
     private void fuzzyParams(Map<String, String> paramsMap, String[] excludeRequestParam) {
@@ -276,6 +196,8 @@ public class OperateLogAspect implements ApplicationRunner {
                     String jsonObj = objectMapper.writeValueAsString(o);
                     params.append(jsonObj).append(StringUtil.SPACE);
                 } catch (Exception ignored) {
+                    // 序列化失败，使用toString方法
+                    params.append(o.toString()).append(StringUtil.SPACE);
                 }
             }
         }
@@ -284,8 +206,6 @@ public class OperateLogAspect implements ApplicationRunner {
 
     private boolean isFilterObject(final Object o) {
         if (o instanceof MultipartFile ||
-                o instanceof HttpServletRequest ||
-                o instanceof HttpServletResponse ||
                 o instanceof BindingResult) {
             return true;
         }
