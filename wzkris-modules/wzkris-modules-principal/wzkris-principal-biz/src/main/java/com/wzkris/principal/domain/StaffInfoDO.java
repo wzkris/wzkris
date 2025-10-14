@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.principal.feign.staffinfo.resp.StaffInfoResp;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +19,7 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
+@AutoMappers({@AutoMapper(target = StaffInfoResp.class)})
 @NoArgsConstructor
 @TableName(schema = "biz", value = "t_staff_info")
 public class StaffInfoDO extends BaseEntity {

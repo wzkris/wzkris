@@ -5,6 +5,7 @@ import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.utils.StringUtil;
 import jakarta.annotation.Nullable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -70,9 +71,9 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     }
 
     final OAuth2AccessTokenAuthenticationToken buildOAuth2AccessTokenAuthenticationToken(T authenticationToken) {
-        String userToken = this.generateKey(authenticationToken.getPrincipal());
+        String generatedToken = this.generateKey(authenticationToken.getPrincipal());
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
-                userToken, Instant.now(), Instant.now().plus(tokenProperties.getUserTokenTimeOut(), ChronoUnit.SECONDS));
+                generatedToken, Instant.now(), Instant.now().plus(tokenProperties.getUserTokenTimeOut(), ChronoUnit.SECONDS));
 
         String userRefreshToken;
         if (authenticationToken instanceof RefreshAuthenticationToken refreshAuthenticationToken) {
@@ -84,7 +85,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         OAuth2RefreshToken refreshToken = new OAuth2RefreshToken(
                 userRefreshToken, Instant.now(), Instant.now().plus(tokenProperties.getUserRefreshTokenTimeOut(), ChronoUnit.SECONDS));
 
-        tokenService.save(authenticationToken.getPrincipal(), userToken, userRefreshToken);
+        tokenService.save(authenticationToken.getPrincipal(), generatedToken, userRefreshToken);
 
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(
@@ -96,7 +97,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
 
     @Nullable
     private String generateKey(CorePrincipal principal) {
-        if (principal.getType().equals(AuthType.USER.getValue())) {
+        if (StringUtil.equalsAny(principal.getType(), AuthType.USER.getValue(), AuthType.STAFF.getValue())) {
             return tokenGenerator.generateKey();
         } else if (principal.getType().equals(AuthType.CUSTOMER.getValue())) {
             JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;

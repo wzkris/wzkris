@@ -54,14 +54,14 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         }
 
         // userType (REQUIRED)
-        String userType = parameters.getFirst(OAuth2ParameterConstant.USER_TYPE);
+        String userType = parameters.getFirst(OAuth2ParameterConstant.AUTH_TYPE);
         if (!StringUtils.hasText(userType)
-                || parameters.get(OAuth2ParameterConstant.USER_TYPE).size() != 1) {
+                || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCode.MISSING_PARAMETER.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
-                    OAuth2ParameterConstant.USER_TYPE);
+                    OAuth2ParameterConstant.AUTH_TYPE);
         }
     }
 
@@ -69,14 +69,14 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
     protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
         String channel = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.CHANNEL));
         String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WX_CODE));
-        String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.USER_TYPE));
+        String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
         AuthType authType = AuthType.fromValue(userType);
         if (authType == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCode.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.USER_TYPE);
+                    OAuth2ParameterConstant.AUTH_TYPE);
         }
         return new WechatAuthenticationToken(authType, channel, wxCode);
     }
