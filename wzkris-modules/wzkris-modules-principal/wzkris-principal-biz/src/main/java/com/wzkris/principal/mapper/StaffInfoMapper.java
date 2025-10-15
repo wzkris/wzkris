@@ -1,10 +1,12 @@
 package com.wzkris.principal.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.principal.domain.StaffInfoDO;
 import com.wzkris.principal.domain.vo.staff.StaffManageVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -15,12 +17,12 @@ import java.util.List;
 public interface StaffInfoMapper extends BaseMapperPlus<StaffInfoDO> {
 
     @Select("""
-            SELECT s.*, STRING_AGG(p.post_name, ',')
+            SELECT s.*, STRING_AGG(p.post_name, ',') AS post_name
                     		FROM biz.t_staff_info s LEFT JOIN biz.t_staff_to_post sp ON s.staff_id = sp.staff_id
                     		 LEFT JOIN biz.t_post_info p ON sp.post_id = p.post_id AND p.status = '0'
-                    ${ew.customSqlSegment} GROUP BY s.staff_id
+                    ${ew.customSqlSegment} GROUP BY s.staff_id ORDER BY s.staff_id DESC
             """)
-    List<StaffManageVO> listVO(QueryWrapper<StaffInfoDO> queryWrapper);
+    List<StaffManageVO> listVO(@Param(Constants.WRAPPER) QueryWrapper<StaffInfoDO> queryWrapper);
 
     /**
      * 通过用户名查询员工

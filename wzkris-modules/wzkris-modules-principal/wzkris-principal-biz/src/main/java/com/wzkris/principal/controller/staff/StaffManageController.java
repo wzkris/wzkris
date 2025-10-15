@@ -78,8 +78,7 @@ public class StaffManageController extends BaseController {
                 .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
                         "s.create_at",
                         queryReq.getParam("beginTime"),
-                        queryReq.getParam("endTime"))
-                .orderByDesc("s.staff_id");
+                        queryReq.getParam("endTime"));
     }
 
     @Operation(summary = "员工详细信息")
