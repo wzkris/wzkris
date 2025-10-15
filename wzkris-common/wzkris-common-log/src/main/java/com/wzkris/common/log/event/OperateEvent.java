@@ -40,9 +40,14 @@ public class OperateEvent {
     private String requestMethod;
 
     /**
+     * 认证类型
+     */
+    private String authType;
+
+    /**
      * 操作人员ID
      */
-    private Long userId;
+    private Long operatorId;
 
     /**
      * 操作人员
@@ -96,7 +101,7 @@ public class OperateEvent {
         userOperateLogReq.setOperType(this.getOperType());
         userOperateLogReq.setMethod(this.getMethod());
         userOperateLogReq.setRequestMethod(this.getRequestMethod());
-        userOperateLogReq.setUserId(this.getUserId());
+        userOperateLogReq.setUserId(this.getOperatorId());
         userOperateLogReq.setOperName(this.getOperName());
         userOperateLogReq.setOperUrl(this.getOperUrl());
         userOperateLogReq.setOperIp(this.getOperIp());

@@ -11,7 +11,7 @@ import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.event.OperateEvent;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -84,8 +84,9 @@ public class OperateLogAspect {
         OperateEvent operateEvent = new OperateEvent();
 
         // 设置用户信息
-        operateEvent.setUserId(LoginUserUtil.getId());
-        operateEvent.setOperName(LoginUserUtil.getUsername());
+        operateEvent.setOperatorId(SecurityUtil.getId());
+        operateEvent.setAuthType(SecurityUtil.getAuthType());
+        operateEvent.setOperName(SecurityUtil.getName());
 
         // 设置操作信息
         operateEvent.setOperType(operateLog.operateType().getValue());
@@ -197,7 +198,7 @@ public class OperateLogAspect {
                     params.append(jsonObj).append(StringUtil.SPACE);
                 } catch (Exception ignored) {
                     // 序列化失败，使用toString方法
-                    params.append(o.toString()).append(StringUtil.SPACE);
+                    params.append(o).append(StringUtil.SPACE);
                 }
             }
         }

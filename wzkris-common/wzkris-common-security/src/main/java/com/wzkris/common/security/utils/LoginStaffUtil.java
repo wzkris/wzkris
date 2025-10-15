@@ -24,7 +24,7 @@ public class LoginStaffUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthenticatedType().equals(AuthType.STAFF.getValue());
+        return isAuthenticated() && getAuthType().equals(AuthType.STAFF.getValue());
     }
 
     /**
@@ -38,6 +38,15 @@ public class LoginStaffUtil extends SecurityUtil {
         } catch (Exception e) {
             throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }
+    }
+
+    /**
+     * 获取当前ID
+     *
+     * @return 登录ID
+     */
+    public static Long getId() {
+        return get().getId();
     }
 
     /**

@@ -29,4 +29,9 @@ public class LoginClient extends CorePrincipal {
         this.clientId = clientId;
     }
 
+    @Override
+    public String getName() {
+        return this.clientId;
+    }
+
 }

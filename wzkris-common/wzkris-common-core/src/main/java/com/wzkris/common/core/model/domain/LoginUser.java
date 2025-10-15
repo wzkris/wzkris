@@ -39,4 +39,9 @@ public class LoginUser extends CorePrincipal {
         super(userId, AuthType.USER.getValue(), permissions);
     }
 
+    @Override
+    public String getName() {
+        return this.username;
+    }
+
 }

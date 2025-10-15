@@ -38,4 +38,9 @@ public class LoginStaff extends CorePrincipal {
         super(staffId, AuthType.STAFF.getValue(), permissions);
     }
 
+    @Override
+    public String getName() {
+        return this.getStaffName();
+    }
+
 }

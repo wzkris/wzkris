@@ -78,11 +78,20 @@ public abstract class SecurityUtil {
     }
 
     /**
+     * 获取当前名称
+     *
+     * @return 登录名称
+     */
+    public static String getName() {
+        return getPrincipal().getName();
+    }
+
+    /**
      * 获取当前认证类型,未登录抛出异常
      *
      * @return 登录类型
      */
-    public static String getAuthenticatedType() {
+    public static String getAuthType() {
         return getPrincipal().getType();
     }
 

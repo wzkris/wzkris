@@ -71,10 +71,6 @@ public class LoginEventListener {
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
 
-        if (log.isDebugEnabled()) {
-            log.debug("监听到用户’{}‘登录'{}'事件, 登录IP：{}", user.getName(), event.getSuccess() ? "成功" : "失败", ipAddr);
-        }
-
         // 获取客户端浏览器
         String browser = userAgent.getValue(UserAgent.AGENT_NAME);
         // 获取登录地址
@@ -116,10 +112,6 @@ public class LoginEventListener {
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
-
-        if (log.isDebugEnabled()) {
-            log.debug("监听到用户’{}‘登录'{}'事件, 登录IP：{}", staff.getName(), event.getSuccess() ? "成功" : "失败", ipAddr);
-        }
 
         // 获取客户端浏览器
         String browser = userAgent.getValue(UserAgent.AGENT_NAME);

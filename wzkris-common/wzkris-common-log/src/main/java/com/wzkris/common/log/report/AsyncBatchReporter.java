@@ -24,9 +24,6 @@ public class AsyncBatchReporter<T> implements AutoCloseable {
 
     private final List<T> batchQ = new ArrayList<>();
 
-    // 消费线程
-    private Thread consumerThread;
-
     // 上报线程池
     private final ThreadPoolExecutor reporterExecutor;
 
@@ -36,11 +33,14 @@ public class AsyncBatchReporter<T> implements AutoCloseable {
 
     private final int flushIntervalSeconds;
 
-    private volatile boolean shutdown = false;
-
     private final CountDownLatch consumerStopped = new CountDownLatch(1);
 
     private final String name;
+
+    // 消费线程
+    private Thread consumerThread;
+
+    private volatile boolean shutdown = false;
 
     public AsyncBatchReporter(int batchSize,
                               int flushIntervalSeconds,
