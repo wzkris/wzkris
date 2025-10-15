@@ -135,8 +135,6 @@ public class TenantManageController extends BaseController {
     @PostMapping("/edit")
     @CheckUserPerms("prin-mod:tenant-mng:edit")
     public Result<Void> edit(@Validated @RequestBody TenantManageReq tenantReq) {
-        tenantInfoService.checkDataScope(tenantReq.getTenantId());
-
         TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
         tenant.setAdministrator(null);
         tenant.setOperPwd(null);
@@ -148,8 +146,6 @@ public class TenantManageController extends BaseController {
     @PostMapping("/edit-status")
     @CheckUserPerms("prin-mod:tenant-mng:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
-        tenantInfoService.checkDataScope(statusReq.getId());
-
         TenantInfoDO update = new TenantInfoDO(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(tenantInfoMapper.updateById(update));
@@ -160,8 +156,6 @@ public class TenantManageController extends BaseController {
     @PostMapping("/reset-operpwd")
     @CheckUserPerms("prin-mod:tenant-mng:reset-operpwd")
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
-        tenantInfoService.checkDataScope(req.getId());
-
         if (StringUtil.length(req.getPassword()) != 6 || !NumberUtils.isCreatable(req.getPassword())) {
             return err40000("操作密码必须为6位数字");
         }
@@ -174,10 +168,7 @@ public class TenantManageController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckUserPerms("prin-mod:tenant-mng:remove")
-    public Result<Void> remove(
-            @RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {
-        tenantInfoService.checkDataScope(tenantId);
-
+    public Result<Void> remove(@RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {
         return toRes(tenantInfoService.removeById(tenantId));
     }
 

@@ -112,8 +112,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public boolean checkAccountLimit(Long tenantId) {
-        return TenantInfoDO.isSuperTenant(tenantId)
-                || SkipTenantInterceptorUtil.ignore(() -> {
+        return SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = tenantInfoMapper.selectById(tenantId);
             if (tenant.getAccountLimit() == -1) {
                 return true;
@@ -126,8 +125,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public boolean checkRoleLimit(Long tenantId) {
-        return TenantInfoDO.isSuperTenant(tenantId)
-                || SkipTenantInterceptorUtil.ignore(() -> {
+        return SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = tenantInfoMapper.selectById(tenantId);
             if (tenant.getRoleLimit() == -1) {
                 return true;
@@ -139,19 +137,14 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     }
 
     @Override
-    public boolean checkAdministrator(List<Long> userIds) {
-        return SkipTenantInterceptorUtil.ignore(() -> {
+    public void checkAdministrator(List<Long> staffIds) {
+        SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<TenantInfoDO> lqw =
-                    Wrappers.lambdaQuery(TenantInfoDO.class).in(TenantInfoDO::getAdministrator, userIds);
-            return tenantInfoMapper.exists(lqw);
+                    Wrappers.lambdaQuery(TenantInfoDO.class).in(TenantInfoDO::getAdministrator, staffIds);
+            if (tenantInfoMapper.exists(lqw)) {
+                throw new AccessDeniedException("禁止操作超级管理员");
+            }
         });
-    }
-
-    @Override
-    public void checkDataScope(Long tenantId) {
-        if (TenantInfoDO.isSuperTenant(tenantId)) {
-            throw new AccessDeniedException("不允许访问超级租户数据");
-        }
     }
 
 }

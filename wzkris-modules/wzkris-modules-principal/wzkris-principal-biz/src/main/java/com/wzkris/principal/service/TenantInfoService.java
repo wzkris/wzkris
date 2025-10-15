@@ -56,20 +56,12 @@ public interface TenantInfoService {
     /**
      * 校验是否租户超管
      *
-     * @param userIds 用户ID
-     * @return true通过 false不通过
+     * @param staffIds 用户ID
      */
-    boolean checkAdministrator(List<Long> userIds);
+    void checkAdministrator(List<Long> staffIds);
 
-    default boolean checkAdministrator(Long userId) {
-        return this.checkAdministrator(Collections.singletonList(userId));
+    default void checkAdministrator(Long userId) {
+        this.checkAdministrator(Collections.singletonList(userId));
     }
-
-    /**
-     * 校验是否有租户的数据权限
-     *
-     * @param tenantId 租户ID
-     */
-    void checkDataScope(Long tenantId);
 
 }

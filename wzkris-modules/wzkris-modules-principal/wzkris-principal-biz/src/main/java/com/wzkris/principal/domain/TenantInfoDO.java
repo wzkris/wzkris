@@ -2,9 +2,7 @@ package com.wzkris.principal.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -67,15 +65,6 @@ public class TenantInfoDO extends BaseEntity {
 
     public TenantInfoDO(Long tenantId) {
         this.tenantId = tenantId;
-    }
-
-    public static boolean isSuperTenant(Long tenantId) {
-        return SecurityConstants.SUPER_TENANT_ID.equals(tenantId);
-    }
-
-    @JsonIgnore
-    public boolean isSuperTenant() {
-        return isSuperTenant(this.tenantId);
     }
 
 }

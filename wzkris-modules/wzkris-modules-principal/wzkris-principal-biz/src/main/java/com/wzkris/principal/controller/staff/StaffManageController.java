@@ -130,6 +130,7 @@ public class StaffManageController extends BaseController {
     @PostMapping("/edit")
     @CheckStaffPerms("prin-mod:staff-mng:edit")
     public Result<Void> edit(@Validated @RequestBody StaffManageReq staffReq) {
+        tenantInfoService.checkAdministrator(staffReq.getStaffId());
         if (staffInfoService.existByStaffName(staffReq.getStaffId(), staffReq.getStaffName())) {
             return err40000("修改员工'" + staffReq.getStaffName() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(staffReq.getPhoneNumber())
@@ -146,6 +147,7 @@ public class StaffManageController extends BaseController {
     @PostMapping("/reset-password")
     @CheckStaffPerms("prin-mod:staff-mng:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
+        tenantInfoService.checkAdministrator(req.getId());
         StaffInfoDO update = new StaffInfoDO(req.getId());
         update.setPassword(passwordEncoder.encode(req.getPassword()));
         return toRes(staffInfoMapper.updateById(update));
@@ -156,6 +158,7 @@ public class StaffManageController extends BaseController {
     @PostMapping("/edit-status")
     @CheckStaffPerms("prin-mod:staff-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
+        tenantInfoService.checkAdministrator(statusReq.getId());
         StaffInfoDO update = new StaffInfoDO(statusReq.getId());
         update.setStatus(statusReq.getStatus());
         return toRes(staffInfoMapper.updateById(update));
@@ -166,6 +169,7 @@ public class StaffManageController extends BaseController {
     @PostMapping("/grant-post")
     @CheckStaffPerms("prin-mod:staff-mng:grant-post")
     public Result<Void> grantPosts(@RequestBody @Valid StaffToPostsReq req) {
+        tenantInfoService.checkAdministrator(req.getStaffId());
         return toRes(staffInfoService.grantPosts(req.getStaffId(), req.getPostIds()));
     }
 
@@ -173,11 +177,9 @@ public class StaffManageController extends BaseController {
     @OperateLog(title = "员工管理", subTitle = "删除员工", operateType = OperateType.DELETE)
     @PostMapping("/remove")
     @CheckStaffPerms("prin-mod:staff-mng:remove")
-    public Result<Void> remove(@RequestBody List<Long> userIds) {
-        if (tenantInfoService.checkAdministrator(userIds)) {
-            return err40000("删除失败，员工包含租户超级管理员");
-        }
-        return toRes(staffInfoService.removeByIds(userIds));
+    public Result<Void> remove(@RequestBody List<Long> staffIds) {
+        tenantInfoService.checkAdministrator(staffIds);
+        return toRes(staffInfoService.removeByIds(staffIds));
     }
 
 }
