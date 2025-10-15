@@ -41,15 +41,6 @@ public class LoginCustomerUtil extends SecurityUtil {
     }
 
     /**
-     * 获取当前登录用户ID,未登录抛出异常
-     *
-     * @return 当前用户ID
-     */
-    public static Long getId() {
-        return get().getId();
-    }
-
-    /**
      * 获取当前手机号,未登录抛出异常
      *
      * @return 手机号

@@ -3,6 +3,7 @@ package com.wzkris.common.security.oauth2.repository;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.model.domain.LoginCustomer;
+import com.wzkris.common.core.model.domain.LoginStaff;
 import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -56,6 +57,10 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
             return ctx;
         }
 
+        if (generateStaff(request, ctx)) {
+            return ctx;
+        }
+
         if (generateCustomer(request, ctx)) {
             return ctx;
         }
@@ -68,6 +73,16 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
         if (StringUtil.isNotBlank(userinfo)) {
             ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(userinfo, LoginUser.class), request,
                     request.getHeader(HeaderConstants.X_USER_TOKEN)));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean generateStaff(HttpServletRequest request, SecurityContext ctx) {
+        final String staffinfo = request.getHeader(HeaderConstants.X_STAFF_INFO);
+        if (StringUtil.isNotBlank(staffinfo)) {
+            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(staffinfo, LoginStaff.class), request,
+                    request.getHeader(HeaderConstants.X_STAFF_TOKEN)));
             return true;
         }
         return false;

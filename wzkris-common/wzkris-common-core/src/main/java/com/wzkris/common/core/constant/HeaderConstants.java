@@ -43,6 +43,16 @@ public class HeaderConstants {
     public static final String X_USER_INFO = "X-User-Info";
 
     /**
+     * 租户Token
+     */
+    public static final String X_STAFF_TOKEN = "X-Staff-Token";
+
+    /**
+     * 租户信息
+     */
+    public static final String X_STAFF_INFO = "X-Staff-Info";
+
+    /**
      * 客户Token
      */
     public static final String X_CUSTOMER_TOKEN = "X-Customer-Token";

@@ -10,6 +10,7 @@ import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginCustomer;
+import com.wzkris.common.core.model.domain.LoginStaff;
 import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -49,6 +50,9 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
     static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
     static final ParameterizedTypeReference<TokenResponse<LoginUser>> userReference = new ParameterizedTypeReference<>() {
+    };
+
+    static final ParameterizedTypeReference<TokenResponse<LoginStaff>> staffReference = new ParameterizedTypeReference<>() {
     };
 
     static final ParameterizedTypeReference<TokenResponse<LoginCustomer>> customerReference = new ParameterizedTypeReference<>() {
@@ -92,12 +96,18 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
     /**
      * 处理Token认证流程
      */
-    private Mono<Void> processTokenAuthentication(ServerWebExchange exchange,
-                                                  GatewayFilterChain chain,
-                                                  ServerHttpRequest request) {
+    private Mono<Void> processTokenAuthentication(
+            ServerWebExchange exchange,
+            GatewayFilterChain chain,
+            ServerHttpRequest request) {
         String userToken = getUserToken(request);
         if (StringUtil.isNotBlank(userToken)) {
             return authenticateAndProceed(exchange, chain, userToken, HeaderConstants.X_USER_INFO, userReference);
+        }
+
+        String staffToken = getStaffToken(request);
+        if (StringUtil.isNotBlank(staffToken)) {
+            return authenticateAndProceed(exchange, chain, staffToken, HeaderConstants.X_STAFF_INFO, staffReference);
         }
 
         String customerToken = getCustomerToken(request);
@@ -180,10 +190,12 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
      */
     private boolean hasAnyToken(ServerHttpRequest request) {
         return Stream.of(
-                        request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN),
                         request.getHeaders().getFirst(HeaderConstants.X_USER_TOKEN),
-                        request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN),
-                        request.getQueryParams().getFirst(QueryParamConstants.X_USER_TOKEN)
+                        request.getHeaders().getFirst(HeaderConstants.X_STAFF_TOKEN),
+                        request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_USER_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_STAFF_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN)
                 )
                 .anyMatch(StringUtil::isNotBlank);
     }
@@ -197,6 +209,14 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
             return token;
         }
         return request.getQueryParams().getFirst(QueryParamConstants.X_USER_TOKEN);
+    }
+
+    private String getStaffToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(HeaderConstants.X_STAFF_TOKEN);
+        if (StringUtil.isNotBlank(token)) {
+            return token;
+        }
+        return request.getQueryParams().getFirst(QueryParamConstants.X_STAFF_TOKEN);
     }
 
     /**

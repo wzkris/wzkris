@@ -85,7 +85,7 @@ public class TokenService {
         RBucket<TokenBody> refreshTokenBucket = redissonClient.getBucket(buildRefreshTokenKey(refreshToken));
         TokenBody tokenBody = refreshTokenBucket.get();
         if (tokenBody != null) {
-            redissonClient.getBucket(buildAccessTokenKey(tokenBody.getOtherToken())).deleteAsync();
+            redissonClient.getBucket(buildAccessTokenKey(tokenBody.getToken())).deleteAsync();
         }
 
         refreshTokenBucket.setAsync(new TokenBody(principal.getId(), accessToken),
@@ -125,7 +125,7 @@ public class TokenService {
      */
     public final String loadRefreshTokenByAccessToken(String accessToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
-        return tokenBody.getOtherToken();
+        return tokenBody.getToken();
     }
 
     /**
@@ -135,7 +135,7 @@ public class TokenService {
      */
     public final String loadAccessTokenByRefreshToken(String refreshToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
-        return tokenBody.getOtherToken();
+        return tokenBody.getToken();
     }
 
     /**
@@ -148,7 +148,7 @@ public class TokenService {
         if (tokenBody == null) return null;
 
         Serializable id = tokenBody.getId();
-        String refreshToken = tokenBody.getOtherToken();
+        String refreshToken = tokenBody.getToken();
 
         // 删除Token（独立键）
         redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
@@ -182,7 +182,7 @@ public class TokenService {
         if (tokenBody == null) return;
 
         Serializable id = tokenBody.getId();
-        String accessToken = tokenBody.getOtherToken();
+        String accessToken = tokenBody.getToken();
 
         // 删除Token（独立键）
         redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
@@ -236,14 +236,14 @@ public class TokenService {
         /**
          * 另外的TOKEN
          */
-        private String otherToken;
+        private String token;
 
         public TokenBody() {
         }
 
-        private TokenBody(Serializable id, String otherToken) {
+        private TokenBody(Serializable id, String token) {
             this.id = id;
-            this.otherToken = otherToken;
+            this.token = token;
         }
 
     }

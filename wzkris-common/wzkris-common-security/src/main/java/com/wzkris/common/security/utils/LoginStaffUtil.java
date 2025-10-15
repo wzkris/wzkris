@@ -41,15 +41,6 @@ public class LoginStaffUtil extends SecurityUtil {
     }
 
     /**
-     * 获取当前登录用户ID,未登录抛出异常
-     *
-     * @return 当前用户ID
-     */
-    public static Long getId() {
-        return get().getId();
-    }
-
-    /**
      * 获取当前登录用户名,未登录抛出异常
      *
      * @return 当前用户名

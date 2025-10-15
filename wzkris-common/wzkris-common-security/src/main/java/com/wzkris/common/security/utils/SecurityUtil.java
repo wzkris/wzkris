@@ -69,6 +69,15 @@ public abstract class SecurityUtil {
     }
 
     /**
+     * 获取当前ID
+     *
+     * @return 登录ID
+     */
+    public static Long getId() {
+        return getPrincipal().getId();
+    }
+
+    /**
      * 获取当前认证类型,未登录抛出异常
      *
      * @return 登录类型
