@@ -17,11 +17,13 @@ public class LogoutEventListener {
     @Async
     @EventListener
     public void logoutEvent(LogoutEvent event) {
-        log.info("id '{}'的{}用户退出登录", event.getId(), event.getUserType());
+        log.info("id '{}'的{}用户退出登录", event.getId(), event.getAuthType());
 
-        if (StringUtil.equals(event.getUserType(), AuthType.USER.getValue())) {
+        if (StringUtil.equals(event.getAuthType(), AuthType.USER.getValue())) {
 
-        } else if (StringUtil.equals(event.getUserType(), AuthType.CUSTOMER.getValue())) {
+        } else if (StringUtil.equals(event.getAuthType(), AuthType.STAFF.getValue())) {
+
+        } else if (StringUtil.equals(event.getAuthType(), AuthType.CUSTOMER.getValue())) {
 
         }
     }

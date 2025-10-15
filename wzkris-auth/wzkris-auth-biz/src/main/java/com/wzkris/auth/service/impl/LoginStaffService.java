@@ -141,7 +141,7 @@ public class LoginStaffService extends UserInfoTemplate {
                         loginStaff,
                         null,
                         loginType,
-                        CommonConstants.FAIL,
+                        false,
                         errorMsg,
                         ServletUtil.getClientIP(request),
                         UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));

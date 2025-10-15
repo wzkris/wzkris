@@ -2,7 +2,7 @@ package com.wzkris.message.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.message.feign.userlog.req.OperateLogReq;
+import com.wzkris.message.feign.stafflog.req.StaffOperateLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-@AutoMapper(target = OperateLogReq.class)
+@AutoMapper(target = StaffOperateLogReq.class)
 @TableName(schema = "biz", value = "staff_operate_log")
 public class StaffOperateLogDO implements Serializable {
 
@@ -74,4 +74,5 @@ public class StaffOperateLogDO implements Serializable {
 
     @Schema(description = "租户ID")
     private Long tenantId;
+
 }

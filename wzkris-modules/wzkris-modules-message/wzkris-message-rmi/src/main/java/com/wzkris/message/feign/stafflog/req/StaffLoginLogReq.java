@@ -1,18 +1,12 @@
-package com.wzkris.message.feign.userlog.req;
+package com.wzkris.message.feign.stafflog.req;
 
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 登录日志
- * @date : 2023/8/26 14:35
- */
 @Data
-public class LoginLogReq implements Serializable {
+public class StaffLoginLogReq implements Serializable {
 
     /**
      * ID
@@ -22,12 +16,17 @@ public class LoginLogReq implements Serializable {
     /**
      * 用户ID
      */
-    private Long userId;
+    private Long staffId;
 
     /**
      * 用户名
      */
-    private String username;
+    private String staffName;
+
+    /**
+     * 租户ID
+     */
+    private Long tenantId;
 
     /**
      * 登录类型
@@ -35,9 +34,9 @@ public class LoginLogReq implements Serializable {
     private String loginType;
 
     /**
-     * 登录状态（0正常 1异常）
+     * 登录状态
      */
-    private String status;
+    private Boolean success;
 
     /**
      * 失败信息

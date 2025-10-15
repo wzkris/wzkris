@@ -3,8 +3,8 @@ package com.wzkris.message.feign.userlog;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.message.domain.UserLoginLogDO;
 import com.wzkris.message.domain.UserOperateLogDO;
-import com.wzkris.message.feign.userlog.req.LoginLogReq;
-import com.wzkris.message.feign.userlog.req.OperateLogReq;
+import com.wzkris.message.feign.userlog.req.UserLoginLogReq;
+import com.wzkris.message.feign.userlog.req.UserOperateLogReq;
 import com.wzkris.message.mapper.UserLoginLogMapper;
 import com.wzkris.message.mapper.UserOperateLogMapper;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -26,14 +26,14 @@ public class UserLogFeignImpl implements UserLogFeign {
     private final UserLoginLogMapper userLoginLogMapper;
 
     @Override
-    public void saveOperlogs(@RequestBody List<OperateLogReq> operateLogReqs) {
-        List<UserOperateLogDO> operLogs = BeanUtil.convert(operateLogReqs, UserOperateLogDO.class);
+    public void saveOperlogs(@RequestBody List<UserOperateLogReq> userOperateLogReqs) {
+        List<UserOperateLogDO> operLogs = BeanUtil.convert(userOperateLogReqs, UserOperateLogDO.class);
         userOperateLogMapper.insert(operLogs, 1000);
     }
 
     @Override
-    public void saveLoginlog(@RequestBody LoginLogReq loginLogReq) {
-        UserLoginLogDO userLoginLogDO = BeanUtil.convert(loginLogReq, UserLoginLogDO.class);
+    public void saveLoginlog(@RequestBody UserLoginLogReq userLoginLogReq) {
+        UserLoginLogDO userLoginLogDO = BeanUtil.convert(userLoginLogReq, UserLoginLogDO.class);
         userLoginLogMapper.insert(userLoginLogDO);
     }
 

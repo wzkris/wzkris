@@ -5,7 +5,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.event.OperateEvent;
 import com.wzkris.common.log.report.AsyncBatchReporter;
 import com.wzkris.message.feign.userlog.UserLogFeign;
-import com.wzkris.message.feign.userlog.req.OperateLogReq;
+import com.wzkris.message.feign.userlog.req.UserOperateLogReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 
@@ -15,7 +15,7 @@ import org.springframework.context.event.EventListener;
 @Slf4j
 public class OperateEventListener {
 
-    private final AsyncBatchReporter<OperateLogReq> reporter;
+    private final AsyncBatchReporter<UserOperateLogReq> reporter;
 
     public OperateEventListener(UserLogFeign userLogFeign) {
         reporter = new AsyncBatchReporter<>(

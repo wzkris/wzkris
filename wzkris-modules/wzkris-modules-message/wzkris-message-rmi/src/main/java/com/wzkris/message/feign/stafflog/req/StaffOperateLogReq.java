@@ -1,4 +1,4 @@
-package com.wzkris.message.feign.userlog.req;
+package com.wzkris.message.feign.stafflog.req;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-public class OperateLogReq implements Serializable {
+public class StaffOperateLogReq implements Serializable {
 
     /**
      * 操作模块
@@ -41,7 +41,7 @@ public class OperateLogReq implements Serializable {
     /**
      * 操作人员ID
      */
-    private Long userId;
+    private Long staffId;
 
     /**
      * 操作人员

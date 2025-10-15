@@ -1,6 +1,6 @@
 package com.wzkris.common.log.event;
 
-import com.wzkris.message.feign.userlog.req.OperateLogReq;
+import com.wzkris.message.feign.userlog.req.UserOperateLogReq;
 import lombok.Data;
 
 import java.util.Date;
@@ -89,24 +89,24 @@ public class OperateEvent {
      */
     private Date operTime;
 
-    public OperateLogReq toOperateLogReq() {
-        OperateLogReq operateLogReq = new OperateLogReq();
-        operateLogReq.setTitle(this.getTitle());
-        operateLogReq.setSubTitle(this.getSubTitle());
-        operateLogReq.setOperType(this.getOperType());
-        operateLogReq.setMethod(this.getMethod());
-        operateLogReq.setRequestMethod(this.getRequestMethod());
-        operateLogReq.setUserId(this.getUserId());
-        operateLogReq.setOperName(this.getOperName());
-        operateLogReq.setOperUrl(this.getOperUrl());
-        operateLogReq.setOperIp(this.getOperIp());
-        operateLogReq.setOperParam(this.getOperParam());
-        operateLogReq.setJsonResult(this.getJsonResult());
-        operateLogReq.setOperLocation(this.getOperLocation());
-        operateLogReq.setSuccess(this.isSuccess());
-        operateLogReq.setErrorMsg(this.getErrorMsg());
-        operateLogReq.setOperTime(this.getOperTime());
-        return operateLogReq;
+    public UserOperateLogReq toOperateLogReq() {
+        UserOperateLogReq userOperateLogReq = new UserOperateLogReq();
+        userOperateLogReq.setTitle(this.getTitle());
+        userOperateLogReq.setSubTitle(this.getSubTitle());
+        userOperateLogReq.setOperType(this.getOperType());
+        userOperateLogReq.setMethod(this.getMethod());
+        userOperateLogReq.setRequestMethod(this.getRequestMethod());
+        userOperateLogReq.setUserId(this.getUserId());
+        userOperateLogReq.setOperName(this.getOperName());
+        userOperateLogReq.setOperUrl(this.getOperUrl());
+        userOperateLogReq.setOperIp(this.getOperIp());
+        userOperateLogReq.setOperParam(this.getOperParam());
+        userOperateLogReq.setJsonResult(this.getJsonResult());
+        userOperateLogReq.setOperLocation(this.getOperLocation());
+        userOperateLogReq.setSuccess(this.isSuccess());
+        userOperateLogReq.setErrorMsg(this.getErrorMsg());
+        userOperateLogReq.setOperTime(this.getOperTime());
+        return userOperateLogReq;
     }
 
 }

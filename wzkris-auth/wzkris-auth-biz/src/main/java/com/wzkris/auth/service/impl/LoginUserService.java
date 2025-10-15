@@ -131,7 +131,7 @@ public class LoginUserService extends UserInfoTemplate {
                         loginUser,
                         null,
                         loginType,
-                        CommonConstants.FAIL,
+                        false,
                         errorMsg,
                         ServletUtil.getClientIP(request),
                         UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
