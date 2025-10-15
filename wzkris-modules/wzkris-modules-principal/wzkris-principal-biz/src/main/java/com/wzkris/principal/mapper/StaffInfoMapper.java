@@ -3,7 +3,7 @@ package com.wzkris.principal.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.principal.domain.StaffInfoDO;
-import com.wzkris.principal.domain.vo.staffinfo.StaffManageVO;
+import com.wzkris.principal.domain.vo.staff.StaffManageVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;

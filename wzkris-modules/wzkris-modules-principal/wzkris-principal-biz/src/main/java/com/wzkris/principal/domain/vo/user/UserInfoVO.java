@@ -1,4 +1,4 @@
-package com.wzkris.principal.domain.vo.userinfo;
+package com.wzkris.principal.domain.vo.user;
 
 import com.wzkris.common.validator.annotation.Sensitive;
 import com.wzkris.common.validator.impl.SensitiveStrategy;

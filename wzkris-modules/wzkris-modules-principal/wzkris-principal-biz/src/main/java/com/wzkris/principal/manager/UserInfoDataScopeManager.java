@@ -8,7 +8,7 @@ import com.wzkris.common.security.utils.LoginUserUtil;
 import com.wzkris.principal.domain.UserInfoDO;
 import com.wzkris.principal.domain.req.user.UserManageQueryReq;
 import com.wzkris.principal.domain.vo.SelectVO;
-import com.wzkris.principal.domain.vo.userinfo.UserManageVO;
+import com.wzkris.principal.domain.vo.user.UserManageVO;
 import com.wzkris.principal.mapper.UserToRoleMapper;
 import com.wzkris.principal.mapper.datascope.UserInfoDscMapper;
 import lombok.RequiredArgsConstructor;

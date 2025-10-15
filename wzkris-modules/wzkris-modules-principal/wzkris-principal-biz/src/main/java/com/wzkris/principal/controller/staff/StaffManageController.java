@@ -20,7 +20,7 @@ import com.wzkris.principal.domain.req.staff.StaffManageQueryReq;
 import com.wzkris.principal.domain.req.staff.StaffManageReq;
 import com.wzkris.principal.domain.req.staff.StaffToPostsReq;
 import com.wzkris.principal.domain.vo.CheckedSelectVO;
-import com.wzkris.principal.domain.vo.staffinfo.StaffManageVO;
+import com.wzkris.principal.domain.vo.staff.StaffManageVO;
 import com.wzkris.principal.listener.event.CreateUserEvent;
 import com.wzkris.principal.mapper.StaffInfoMapper;
 import com.wzkris.principal.service.PostInfoService;

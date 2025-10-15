@@ -1,10 +1,10 @@
-package com.wzkris.principal.domain.export.userinfo;
+package com.wzkris.principal.domain.export.user;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
 import com.wzkris.common.excel.convert.ExcelDictConvert;
 import com.wzkris.common.validator.annotation.PhoneNumber;
-import com.wzkris.principal.domain.vo.userinfo.UserManageVO;
+import com.wzkris.principal.domain.vo.user.UserManageVO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import lombok.Data;

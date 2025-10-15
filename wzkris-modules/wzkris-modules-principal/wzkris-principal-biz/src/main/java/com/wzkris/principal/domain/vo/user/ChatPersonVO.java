@@ -1,4 +1,4 @@
-package com.wzkris.principal.domain.vo.userinfo;
+package com.wzkris.principal.domain.vo.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.wzkris.principal.domain.vo.staffinfo;
+package com.wzkris.principal.domain.vo.staff;
 
 import com.wzkris.common.validator.annotation.Sensitive;
 import com.wzkris.common.validator.impl.SensitiveStrategy;

@@ -1,4 +1,4 @@
-package com.wzkris.principal.domain.vo.userinfo;
+package com.wzkris.principal.domain.vo.user;
 
 import com.wzkris.principal.domain.UserInfoDO;
 import io.github.linpeilie.annotations.AutoMapper;

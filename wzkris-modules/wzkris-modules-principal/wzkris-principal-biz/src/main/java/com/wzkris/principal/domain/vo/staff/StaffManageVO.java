@@ -1,4 +1,4 @@
-package com.wzkris.principal.domain.vo.staffinfo;
+package com.wzkris.principal.domain.vo.staff;
 
 import com.wzkris.principal.domain.StaffInfoDO;
 import io.github.linpeilie.annotations.AutoMapper;

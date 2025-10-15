@@ -6,7 +6,7 @@ import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.principal.domain.UserInfoDO;
-import com.wzkris.principal.domain.vo.userinfo.UserManageVO;
+import com.wzkris.principal.domain.vo.user.UserManageVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

@@ -10,7 +10,7 @@ import com.wzkris.common.security.utils.LoginStaffUtil;
 import com.wzkris.principal.domain.StaffInfoDO;
 import com.wzkris.principal.domain.req.EditPhoneReq;
 import com.wzkris.principal.domain.req.EditPwdReq;
-import com.wzkris.principal.domain.vo.staffinfo.StaffInfoVO;
+import com.wzkris.principal.domain.vo.staff.StaffInfoVO;
 import com.wzkris.principal.mapper.StaffInfoMapper;
 import com.wzkris.principal.service.PostInfoService;
 import com.wzkris.principal.service.StaffInfoService;
