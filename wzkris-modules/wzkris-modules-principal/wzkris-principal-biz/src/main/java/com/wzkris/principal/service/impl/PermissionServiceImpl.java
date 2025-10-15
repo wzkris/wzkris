@@ -3,7 +3,6 @@ package com.wzkris.principal.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.utils.DynamicTenantUtil;
 import com.wzkris.principal.domain.DeptInfoDO;
 import com.wzkris.principal.domain.PostInfoDO;
 import com.wzkris.principal.domain.RoleInfoDO;
@@ -89,25 +88,23 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public StaffPermissionResp getStaffPermission(Long staffId, Long tenantId) {
-        return DynamicTenantUtil.switcht(tenantId, () -> {
-            List<PostInfoDO> posts;
-            List<String> grantedAuthority;
-            boolean administrator = false;
-            // 租户最高管理员特殊处理
-            Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
-            if (tenantPackageId != null) {
-                // 租户最高管理员查出所有租户角色
-                administrator = true;
-                grantedAuthority = menuInfoService.listPermsByTenantPackageId(tenantPackageId);
-            } else {
-                // 否则为普通用户
-                posts = postInfoService.listByStaffId(staffId);
-                // 菜单权限
-                List<Long> postIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
-                grantedAuthority = menuInfoService.listPermsByPostIds(postIds);
-            }
-            return new StaffPermissionResp(administrator, grantedAuthority);
-        });
+        List<PostInfoDO> posts;
+        List<String> grantedAuthority;
+        boolean administrator = false;
+        // 租户最高管理员特殊处理
+        Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
+        if (tenantPackageId != null) {
+            // 租户最高管理员查出所有租户角色
+            administrator = true;
+            grantedAuthority = menuInfoService.listPermsByTenantPackageId(tenantPackageId);
+        } else {
+            // 否则为普通用户
+            posts = postInfoService.listByStaffId(staffId);
+            // 菜单权限
+            List<Long> postIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
+            grantedAuthority = menuInfoService.listPermsByPostIds(postIds);
+        }
+        return new StaffPermissionResp(administrator, grantedAuthority);
     }
 
     /**

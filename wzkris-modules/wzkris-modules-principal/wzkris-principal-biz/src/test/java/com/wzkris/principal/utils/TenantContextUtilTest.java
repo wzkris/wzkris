@@ -2,7 +2,7 @@ package com.wzkris.principal.utils;
 
 import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.orm.plus.config.TenantProperties;
-import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.principal.mapper.TenantInfoMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.util.Collections;
 
 @DisplayName("租户工具测试用例")
 @SpringBootTest
-public class DynamicTenantUtilTest {
+public class TenantContextUtilTest {
 
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
@@ -42,14 +42,14 @@ public class DynamicTenantUtilTest {
 
     @Test
     public void test() {
-        DynamicTenantUtil.ignore(() -> {
+        SkipTenantInterceptorUtil.ignore(() -> {
             listIgnore();
             list(); // 应该不带租户ID
         });
     }
 
     void listIgnore() {
-        DynamicTenantUtil.ignore(this::list);
+        SkipTenantInterceptorUtil.ignore(this::list);
     }
 
     void list() {

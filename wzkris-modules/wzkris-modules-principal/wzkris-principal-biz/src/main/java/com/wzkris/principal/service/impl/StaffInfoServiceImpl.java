@@ -1,7 +1,7 @@
 package com.wzkris.principal.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.principal.domain.StaffInfoDO;
 import com.wzkris.principal.domain.StaffToPostDO;
@@ -73,7 +73,7 @@ public class StaffInfoServiceImpl implements StaffInfoService {
 
     @Override
     public boolean existByStaffName(Long staffId, String staffName) {
-        return DynamicTenantUtil.ignore(() -> {
+        return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<StaffInfoDO> lqw = new LambdaQueryWrapper<>(StaffInfoDO.class)
                     .eq(StaffInfoDO::getStaffName, staffName)
                     .ne(Objects.nonNull(staffId), StaffInfoDO::getStaffId, staffId);
@@ -83,7 +83,7 @@ public class StaffInfoServiceImpl implements StaffInfoService {
 
     @Override
     public boolean existByPhoneNumber(Long staffId, String phoneNumber) {
-        return DynamicTenantUtil.ignore(() -> {
+        return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<StaffInfoDO> lqw = new LambdaQueryWrapper<>(StaffInfoDO.class)
                     .eq(StaffInfoDO::getPhoneNumber, phoneNumber)
                     .ne(Objects.nonNull(staffId), StaffInfoDO::getStaffId, staffId);

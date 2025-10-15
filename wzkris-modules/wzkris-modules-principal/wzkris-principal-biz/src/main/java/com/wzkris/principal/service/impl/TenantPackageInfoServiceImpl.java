@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.principal.domain.TenantInfoDO;
 import com.wzkris.principal.domain.TenantPackageInfoDO;
 import com.wzkris.principal.domain.vo.SelectVO;
@@ -36,7 +36,7 @@ public class TenantPackageInfoServiceImpl implements TenantPackageInfoService {
 
     @Override
     public boolean checkPackageUsed(List<Long> packageIds) {
-        return DynamicTenantUtil.ignore(() -> {
+        return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<TenantInfoDO> lqw =
                     Wrappers.lambdaQuery(TenantInfoDO.class).in(TenantInfoDO::getPackageId, packageIds);
             return tenantInfoMapper.exists(lqw);

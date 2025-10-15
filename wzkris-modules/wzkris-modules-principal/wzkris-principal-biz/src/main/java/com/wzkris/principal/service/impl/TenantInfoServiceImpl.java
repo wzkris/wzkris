@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.utils.DynamicTenantUtil;
+import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
 import com.wzkris.principal.domain.*;
 import com.wzkris.principal.domain.vo.SelectVO;
@@ -79,7 +79,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeById(Long tenantId) {
-        return DynamicTenantUtil.ignore(() -> {
+        return SkipTenantInterceptorUtil.ignore(() -> {
             boolean success = tenantInfoMapper.deleteById(tenantId) > 0;
             if (success) {
                 tenantWalletInfoMapper.deleteById(tenantId);
@@ -113,7 +113,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     @Override
     public boolean checkAccountLimit(Long tenantId) {
         return TenantInfoDO.isSuperTenant(tenantId)
-                || DynamicTenantUtil.ignore(() -> {
+                || SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = tenantInfoMapper.selectById(tenantId);
             if (tenant.getAccountLimit() == -1) {
                 return true;
@@ -127,7 +127,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     @Override
     public boolean checkRoleLimit(Long tenantId) {
         return TenantInfoDO.isSuperTenant(tenantId)
-                || DynamicTenantUtil.ignore(() -> {
+                || SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = tenantInfoMapper.selectById(tenantId);
             if (tenant.getRoleLimit() == -1) {
                 return true;
@@ -140,7 +140,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     public boolean checkAdministrator(List<Long> userIds) {
-        return DynamicTenantUtil.ignore(() -> {
+        return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<TenantInfoDO> lqw =
                     Wrappers.lambdaQuery(TenantInfoDO.class).in(TenantInfoDO::getAdministrator, userIds);
             return tenantInfoMapper.exists(lqw);

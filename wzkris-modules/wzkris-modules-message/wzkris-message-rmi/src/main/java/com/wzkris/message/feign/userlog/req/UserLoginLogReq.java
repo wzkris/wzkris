@@ -27,7 +27,7 @@ public class UserLoginLogReq implements Serializable {
     /**
      * 用户名
      */
-    private String staffName;
+    private String username;
 
     /**
      * 登录类型

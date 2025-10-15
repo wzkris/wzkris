@@ -95,7 +95,7 @@ public class LoginEventListener {
         // 插入后台登陆日志
         final UserLoginLogReq loginLogReq = new UserLoginLogReq();
         loginLogReq.setUserId(user.getId());
-        loginLogReq.setStaffName(user.getUsername());
+        loginLogReq.setUsername(user.getUsername());
         loginLogReq.setLoginTime(new Date());
         loginLogReq.setLoginIp(ipAddr);
         loginLogReq.setLoginType(loginType);
@@ -150,9 +150,9 @@ public class LoginEventListener {
         staffLogFeign.saveLoginlog(loginLogReq);
     }
 
-    private void handleLoginCustomer(LoginEvent event, LoginCustomer user) {
+    private void handleLoginCustomer(LoginEvent event, LoginCustomer customer) {
         if (event.getSuccess()) { // 更新用户登录信息
-            LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(customer.getId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(new Date());
             customerInfoFeign.updateLoginInfo(loginInfoReq);
