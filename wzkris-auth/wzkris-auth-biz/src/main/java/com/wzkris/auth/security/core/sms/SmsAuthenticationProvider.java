@@ -60,7 +60,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         try {
             // 校验是否被冻结
-            captchaService.validateAccount(authenticationToken.getPhoneNumber());
+            captchaService.validateAccount(authenticationToken.getAuthType().getValue() + ":" + authenticationToken.getPhoneNumber());
             // 校验验证码
             captchaService.validateCaptcha(
                     authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());

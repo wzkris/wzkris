@@ -60,7 +60,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         try {
             // 校验是否被冻结
-            captchaService.validateAccount(authenticationToken.getUsername());
+            captchaService.validateAccount(authenticationToken.getAuthType().getValue() + ":" + authenticationToken.getUsername());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
         }
