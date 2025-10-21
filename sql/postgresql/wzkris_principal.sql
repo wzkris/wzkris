@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-10-15 17:11:34
+-- Started on 2025-10-21 20:16:22
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2054,7 +2054,6 @@ COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort,
 --
 
 COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at) FROM stdin;
-1906263415450001062	操作日志敏感字段	1906263415450000150	10	#	\N	\N	B	0	msg-mod:user-operatelog-mng:field	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:44:14.131+08
 1906263415450001129	重置租户操作密码	1906263415450000601	11	#	\N	\N	B	0	prin-mod:tenant-mng:reset-operpwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:23.785+08
 1906263415450001215	修改密钥	1906263415450000700	5	#	\N	\N	B	0	prin-mod:oauth2client-mng:edit-secret	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:16:07.901+08
 1906263415450000304	服务监控	1906263415450000101	5	http://localhost:9100/	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:53:37.79+08
@@ -2070,7 +2069,6 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1906263415450000002	组织管理	0	50	user-mng	\N	\N	D	0	\N	carbon:user	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 16:01:38.965+08
 1906263415450000001	消息管理	0	100	system-mng	\N	\N	D	0	\N	carbon:z-systems	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 16:01:50.244+08
 1906263415450002062	重置密码	1906263415450000203	7	#	\N	\N	B	0	prin-mod:user-mng:resetPwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 15:31:48.181+08
-1906263415450001061	操作删除	1906263415450000150	2	#	\N	\N	B	0	msg-mod:user-operatelog-mng:remove	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:44:25.063+08
 1906263415450000207	菜单管理	1906263415450000003	50	menu	platform-mng/menu/index	\N	M	0	prin-mod:menu-mng:list	carbon:menu	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:36:05.116+08
 1906263415450002207	权限授予	1906263415450000206	6	#	\N	\N	B	0	prin-mod:role-mng:grant-user	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 15:40:20.269+08
 1906263415450000700	终端管理	1906263415450000003	3	oauth2client	platform-mng/oauth2client/index	\N	M	0	prin-mod:oauth2client-mng:list	carbon:application	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:48.237+08
@@ -2082,7 +2080,6 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1906263415450000100	公告管理	1906263415450000001	15	announcement	message-mng/announcement/index	\N	M	0	msg-mod:announcement-mng:list	carbon:message-queue	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:06:06.315+08
 1906263415450000103	配置管理	1963871785836048386	7	config	platform-config/config/index	\N	M	0	msg-mod:config-mng:list	carbon:parameter	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:25.438+08
 1906263415450000102	字典管理	1963871785836048386	6	dictionary	platform-config/dictionary/index	\N	M	0	msg-mod:dictionary-mng:list	carbon:text-vertical-alignment	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:30.223+08
-1906263415450001064	删除记录	1906263415450000151	2	#	\N	\N	B	0	msg-mod:user-loginlog-mng:remove	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:44:38.699+08
 1906263415450000151	登录日志	1906263415450000104	2	login	audit-log/userlog/login/index	\N	M	0	msg-mod:user-loginlog-mng:list	carbon:login	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 11:38:04.379+08
 1976455457936171010	修改参数	1906263415450000103	4	#	\N	\N	B	0	msg-mod:config-mng:edit	#	f	t	system	1	1	2025-10-10 09:11:16.596+08	2025-10-10 09:11:16.596+08
 1976455537858633730	删除参数	1906263415450000103	5	#	\N	\N	B	0	msg-mod:config-mng:remove	#	f	t	system	1	1	2025-10-10 09:11:35.655+08	2025-10-10 09:11:35.655+08
@@ -2228,7 +2225,7 @@ COPY biz.t_post_to_menu (post_id, menu_id) FROM stdin;
 --
 
 COPY biz.t_staff_info (staff_id, tenant_id, staff_name, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1910557183820165120	1910557183820165122	testadmin	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2025-10-15 16:44:37+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
+1910557183820165120	1910557183820165122	testadmin	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.9.86	2025-10-21 16:38:16+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
 \.
 
 
@@ -2302,7 +2299,7 @@ COPY biz.tenant_wallet_withdrawal_record (withdrawal_id, order_no, status, tenan
 --
 
 COPY biz.user_info (user_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	\N	admin	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2025-10-15 14:56:53+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+1	\N	admin	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.9.86	2025-10-21 09:07:26+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -2626,7 +2623,7 @@ CREATE UNIQUE INDEX uk_user_info_phone_number ON biz.user_info USING btree (phon
 CREATE UNIQUE INDEX uk_user_info_username ON biz.user_info USING btree (username);
 
 
--- Completed on 2025-10-15 17:11:34
+-- Completed on 2025-10-21 20:16:22
 
 --
 -- PostgreSQL database dump complete
