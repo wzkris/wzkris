@@ -7,9 +7,9 @@ import com.wzkris.principal.domain.DeptInfoDO;
 import com.wzkris.principal.domain.PostInfoDO;
 import com.wzkris.principal.domain.RoleInfoDO;
 import com.wzkris.principal.domain.UserInfoDO;
-import com.wzkris.principal.feign.staffinfo.resp.StaffPermissionResp;
-import com.wzkris.principal.feign.userinfo.resp.UserPermissionResp;
-import com.wzkris.principal.manager.DeptInfoDataScopeManager;
+import com.wzkris.principal.feign.staff.resp.StaffPermissionResp;
+import com.wzkris.principal.feign.user.resp.UserPermissionResp;
+import com.wzkris.principal.manager.DeptInfoDscManager;
 import com.wzkris.principal.mapper.DeptInfoMapper;
 import com.wzkris.principal.mapper.TenantInfoMapper;
 import com.wzkris.principal.service.MenuInfoService;
@@ -62,7 +62,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     private final TenantInfoMapper tenantInfoMapper;
 
-    private final DeptInfoDataScopeManager deptInfoDataScopeManager;
+    private final DeptInfoDscManager deptInfoDscManager;
 
     @Override
     public UserPermissionResp getUserPermission(Long userId, Long deptId) {
@@ -135,7 +135,7 @@ public class PermissionServiceImpl implements PermissionService {
                 break;
             } else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
-                deptIds.addAll(deptInfoDataScopeManager.listDeptIdByRoleIds(entry.getValue()));
+                deptIds.addAll(deptInfoDscManager.listDeptIdByRoleIds(entry.getValue()));
             } else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
                 // 部门自身数据权限
                 deptIds.add(deptId);

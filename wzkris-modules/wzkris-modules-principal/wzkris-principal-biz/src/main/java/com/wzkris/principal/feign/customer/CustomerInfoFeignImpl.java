@@ -5,7 +5,7 @@ import com.wzkris.principal.domain.CustomerInfoDO;
 import com.wzkris.principal.domain.CustomerSocialInfoDO;
 import com.wzkris.principal.feign.customer.req.SocialLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
-import com.wzkris.principal.feign.userinfo.req.LoginInfoReq;
+import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import com.wzkris.principal.mapper.CustomerInfoMapper;
 import com.wzkris.principal.mapper.CustomerSocialInfoMapper;
 import com.wzkris.principal.service.CustomerInfoService;

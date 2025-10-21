@@ -3,7 +3,7 @@ package com.wzkris.principal.feign.customer.fallback;
 import com.wzkris.principal.feign.customer.CustomerInfoFeign;
 import com.wzkris.principal.feign.customer.req.SocialLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
-import com.wzkris.principal.feign.userinfo.req.LoginInfoReq;
+import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 

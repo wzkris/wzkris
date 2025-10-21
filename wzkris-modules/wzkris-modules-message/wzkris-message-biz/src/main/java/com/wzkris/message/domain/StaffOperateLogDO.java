@@ -51,7 +51,7 @@ public class StaffOperateLogDO implements Serializable {
     @Schema(description = "请求url")
     private String operUrl;
 
-    @Schema(description = "操作地址")
+    @Schema(description = "操作ip地址")
     private String operIp;
 
     @Schema(description = "请求参数")

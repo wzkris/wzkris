@@ -52,10 +52,10 @@ wzkris
 │       └── wzkris-common-weixin-sdk                   // 微信接口支持
 ├── wzkris-extends         // 扩展模块
 │       └── wzkris-monitor-admin                               // 监控中心 
-├── wzkris-gateway         // 网关模块 
+├── wzkris-gateway         // 网关 
 ├── wzkris-modules         // 业务模块
-│       └── wzkris-modules-system                              // 系统服务 
-│       └── wzkris-modules-user                                // 用户服务 
+│       └── wzkris-modules-message                             // 消息服务 
+│       └── wzkris-modules-principal                           // 主体信息服务 
 ├──pom.xml                 // 依赖管理
 ~~~
 

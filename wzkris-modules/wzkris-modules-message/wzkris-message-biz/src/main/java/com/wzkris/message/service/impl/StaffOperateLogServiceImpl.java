@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.message.domain.StaffOperateLogDO;
 import com.wzkris.message.domain.req.stafflog.StaffOperateLogQueryReq;
+import com.wzkris.message.domain.vo.stafflog.StaffOperateLogInfoVO;
 import com.wzkris.message.mapper.StaffOperateLogMapper;
 import com.wzkris.message.service.StaffOperateLogService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,11 @@ public class StaffOperateLogServiceImpl implements StaffOperateLogService {
     @Override
     public List<StaffOperateLogDO> list(StaffOperateLogQueryReq queryReq) {
         return staffOperateLogMapper.selectList(this.buildQueryWrapper(queryReq));
+    }
+
+    @Override
+    public List<StaffOperateLogInfoVO> listInfoVO(StaffOperateLogQueryReq queryReq) {
+        return staffOperateLogMapper.selectListInfoVO(this.buildQueryWrapper(queryReq));
     }
 
     private LambdaQueryWrapper<StaffOperateLogDO> buildQueryWrapper(StaffOperateLogQueryReq queryReq) {

@@ -1,0 +1,227 @@
+package com.wzkris.principal.controller.user;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.excel.utils.ExcelUtil;
+import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.annotation.CheckUserPerms;
+import com.wzkris.common.security.annotation.enums.CheckMode;
+import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.validator.group.ValidationGroups;
+import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.principal.domain.UserInfoDO;
+import com.wzkris.principal.domain.export.user.UserInfoExport;
+import com.wzkris.principal.domain.req.EditStatusReq;
+import com.wzkris.principal.domain.req.ResetPwdReq;
+import com.wzkris.principal.domain.req.user.UserManageQueryReq;
+import com.wzkris.principal.domain.req.user.UserManageReq;
+import com.wzkris.principal.domain.req.user.UserToRolesReq;
+import com.wzkris.principal.domain.vo.CheckedSelectVO;
+import com.wzkris.principal.domain.vo.SelectTreeVO;
+import com.wzkris.principal.domain.vo.user.UserManageVO;
+import com.wzkris.principal.listener.event.CreateUserEvent;
+import com.wzkris.principal.manager.DeptInfoDscManager;
+import com.wzkris.principal.manager.RoleInfoDscManager;
+import com.wzkris.principal.manager.UserInfoDscManager;
+import com.wzkris.principal.mapper.UserInfoMapper;
+import com.wzkris.principal.service.RoleInfoService;
+import com.wzkris.principal.service.UserInfoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * 用户管理
+ *
+ * @author wzkris
+ */
+@Tag(name = "用户管理")
+@Validated
+@RestController
+@RequestMapping("/user-manage")
+@RequiredArgsConstructor
+public class UserInfoManageController extends BaseController {
+
+    private final UserInfoMapper userInfoMapper;
+
+    private final UserInfoService userInfoService;
+
+    private final RoleInfoService roleInfoService;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserInfoDscManager userInfoDscManager;
+
+    private final DeptInfoDscManager deptInfoDscManager;
+
+    private final RoleInfoDscManager roleInfoDscManager;
+
+    @Operation(summary = "用户分页列表")
+    @GetMapping("/list")
+    @CheckUserPerms("prin-mod:user-mng:list")
+    public Result<Page<UserManageVO>> listPage(UserManageQueryReq queryReq) {
+        startPage();
+        List<UserManageVO> list = userInfoDscManager.listVO(this.buildPageWrapper(queryReq));
+        return getDataTable(list);
+    }
+
+    private QueryWrapper<UserInfoDO> buildPageWrapper(UserManageQueryReq queryReq) {
+        return new QueryWrapper<UserInfoDO>()
+                .like(ObjectUtils.isNotEmpty(queryReq.getUsername()), "username", queryReq.getUsername())
+                .like(ObjectUtils.isNotEmpty(queryReq.getNickname()), "nickname", queryReq.getNickname())
+                .like(ObjectUtils.isNotEmpty(queryReq.getPhoneNumber()), "phone_number", queryReq.getPhoneNumber())
+                .like(ObjectUtils.isNotEmpty(queryReq.getEmail()), "u.email", queryReq.getEmail())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), "u.status", queryReq.getStatus())
+                .eq(ObjectUtils.isNotEmpty(queryReq.getDeptId()), "u.dept_id", queryReq.getDeptId())
+                .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
+                        "u.create_at",
+                        queryReq.getParam("beginTime"),
+                        queryReq.getParam("endTime"))
+                .orderByDesc("u.user_id");
+    }
+
+    @Operation(summary = "用户-部门选择树")
+    @GetMapping("/dept-selecttree")
+    @CheckUserPerms(
+            value = {"prin-mod:user-mng:edit", "prin-mod:user-mng:add"},
+            mode = CheckMode.OR)
+    public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
+        return ok(deptInfoDscManager.listSelectTree(deptName));
+    }
+
+    @Operation(summary = "用户-角色选择列表")
+    @GetMapping({"/role-checked-select/", "/role-checked-select/{userId}"})
+    @CheckUserPerms(
+            value = {"prin-mod:user-mng:edit", "prin-mod:user-mng:add"},
+            mode = CheckMode.OR)
+    public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long userId, String roleName) {
+        userInfoDscManager.checkDataScopes(userId);
+        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
+        checkedSelectVO.setCheckedKeys(userId == null ? Collections.emptyList() : roleInfoService.listIdByUserId(userId));
+        checkedSelectVO.setSelects(roleInfoDscManager.listSelect(roleName));
+        return ok(checkedSelectVO);
+    }
+
+    @Operation(summary = "用户详细信息")
+    @GetMapping("/{userId}")
+    @CheckUserPerms("prin-mod:user-mng:query")
+    public Result<UserInfoDO> getInfo(@PathVariable Long userId) {
+        // 校验权限
+        userInfoDscManager.checkDataScopes(userId);
+        return ok(userInfoMapper.selectById(userId));
+    }
+
+    @Operation(summary = "新增用户")
+    @OperateLog(title = "用户管理", subTitle = "新增用户", operateType = OperateType.INSERT)
+    @PostMapping("/add")
+    @CheckUserPerms("prin-mod:user-mng:add")
+    public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody UserManageReq userReq) {
+        if (userInfoService.existByUsername(userReq.getUserId(), userReq.getUsername())) {
+            return err40000("添加用户'" + userReq.getUsername() + "'失败，登录账号已存在");
+        } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
+                && userInfoService.existByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
+            return err40000("添加用户'" + userReq.getUsername() + "'失败，手机号码已存在");
+        }
+        UserInfoDO user = BeanUtil.convert(userReq, UserInfoDO.class);
+        String password = RandomStringUtils.secure().nextAlphabetic(8);
+        user.setPassword(password);
+
+        boolean success = userInfoService.saveUser(user, userReq.getRoleIds());
+        if (success) {
+            SpringUtil.getContext()
+                    .publishEvent(new CreateUserEvent(LoginUserUtil.getId(), userReq.getUsername(), password));
+        }
+        return toRes(success);
+    }
+
+    @Operation(summary = "修改用户")
+    @OperateLog(title = "用户管理", subTitle = "修改用户", operateType = OperateType.UPDATE)
+    @PostMapping("/edit")
+    @CheckUserPerms("prin-mod:user-mng:edit")
+    public Result<Void> edit(@Validated @RequestBody UserManageReq userReq) {
+        // 校验权限
+        userInfoDscManager.checkDataScopes(userReq.getUserId());
+        if (userInfoService.existByUsername(userReq.getUserId(), userReq.getUsername())) {
+            return err40000("修改用户'" + userReq.getUsername() + "'失败，登录账号已存在");
+        } else if (StringUtil.isNotEmpty(userReq.getPhoneNumber())
+                && userInfoService.existByPhoneNumber(userReq.getUserId(), userReq.getPhoneNumber())) {
+            return err40000("修改用户'" + userReq.getUsername() + "'失败，手机号码已存在");
+        }
+        UserInfoDO user = BeanUtil.convert(userReq, UserInfoDO.class);
+
+        return toRes(userInfoService.modifyUser(user, userReq.getRoleIds()));
+    }
+
+    @Operation(summary = "用户授权角色")
+    @OperateLog(title = "用户管理", subTitle = "授权用户角色", operateType = OperateType.GRANT)
+    @PostMapping("/grant-role")
+    @CheckUserPerms("prin-mod:user-mng:grant-role")
+    public Result<Void> grantRoles(@RequestBody @Valid UserToRolesReq req) {
+        // 校验用户可操作权限
+        userInfoDscManager.checkDataScopes(req.getUserId());
+        // 校验角色可操作权限
+        roleInfoDscManager.checkDataScopes(req.getRoleIds());
+        return toRes(userInfoService.grantRoles(req.getUserId(), req.getRoleIds()));
+    }
+
+    @Operation(summary = "删除用户")
+    @OperateLog(title = "用户管理", subTitle = "删除用户", operateType = OperateType.DELETE)
+    @PostMapping("/remove")
+    @CheckUserPerms("prin-mod:user-mng:remove")
+    public Result<Void> remove(@RequestBody List<Long> userIds) {
+        // 校验权限
+        userInfoDscManager.checkDataScopes(userIds);
+        return toRes(userInfoService.removeByIds(userIds));
+    }
+
+    @Operation(summary = "重置密码")
+    @OperateLog(title = "用户管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
+    @PostMapping("/reset-password")
+    @CheckUserPerms("prin-mod:user-mng:edit")
+    public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
+        // 校验权限
+        userInfoDscManager.checkDataScopes(req.getId());
+
+        UserInfoDO update = new UserInfoDO(req.getId());
+        update.setPassword(passwordEncoder.encode(req.getPassword()));
+        return toRes(userInfoMapper.updateById(update));
+    }
+
+    @Operation(summary = "状态修改")
+    @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @PostMapping("/edit-status")
+    @CheckUserPerms("prin-mod:user-mng:edit")
+    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
+        // 校验权限
+        userInfoDscManager.checkDataScopes(statusReq.getId());
+        UserInfoDO update = new UserInfoDO(statusReq.getId());
+        update.setStatus(statusReq.getStatus());
+        return toRes(userInfoMapper.updateById(update));
+    }
+
+    @Operation(summary = "导出")
+    @OperateLog(title = "用户管理", subTitle = "导出用户数据", operateType = OperateType.EXPORT)
+    @GetMapping("/export")
+    @CheckUserPerms("prin-mod:user-mng:export")
+    public void export(HttpServletResponse response, UserManageQueryReq queryReq) {
+        List<UserManageVO> list = userInfoDscManager.listVO(this.buildPageWrapper(queryReq));
+        List<UserInfoExport> convert = BeanUtil.convert(list, UserInfoExport.class);
+        ExcelUtil.exportExcel(convert, "后台用户数据", UserInfoExport.class, response);
+    }
+
+}

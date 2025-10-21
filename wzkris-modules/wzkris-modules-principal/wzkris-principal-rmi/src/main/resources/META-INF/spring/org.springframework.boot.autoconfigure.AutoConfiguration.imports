@@ -1,4 +1,4 @@
 com.wzkris.principal.feign.customer.fallback.CustomerInfoFeignFallback
 com.wzkris.principal.feign.oauth2.fallback.OAuth2ClientFeignFallback
-com.wzkris.principal.feign.staffinfo.fallback.StaffInfoFeignFallback
-com.wzkris.principal.feign.userinfo.fallback.UserInfoFeignFallback
+com.wzkris.principal.feign.staff.fallback.StaffInfoFeignFallback
+com.wzkris.principal.feign.user.fallback.UserInfoFeignFallback

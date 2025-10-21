@@ -2,7 +2,7 @@ package com.wzkris.message.service;
 
 import com.wzkris.message.domain.StaffOperateLogDO;
 import com.wzkris.message.domain.req.stafflog.StaffOperateLogQueryReq;
-import com.wzkris.message.domain.req.userlog.UserOperateLogQueryReq;
+import com.wzkris.message.domain.vo.stafflog.StaffOperateLogInfoVO;
 
 import java.util.List;
 
@@ -14,5 +14,7 @@ import java.util.List;
 public interface StaffOperateLogService {
 
     List<StaffOperateLogDO> list(StaffOperateLogQueryReq queryReq);
+
+    List<StaffOperateLogInfoVO> listInfoVO(StaffOperateLogQueryReq queryReq);
 
 }
