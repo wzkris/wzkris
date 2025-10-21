@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ServletUtil;
@@ -11,6 +12,7 @@ import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.event.OperateEvent;
+import com.wzkris.common.security.utils.LoginStaffUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -87,6 +89,9 @@ public class OperateLogAspect {
         operateEvent.setOperatorId(SecurityUtil.getId());
         operateEvent.setAuthType(SecurityUtil.getAuthType());
         operateEvent.setOperName(SecurityUtil.getName());
+
+        // 设置租户ID
+        setTenantId(operateEvent);
 
         // 设置操作信息
         operateEvent.setOperType(operateLog.operateType().getValue());
@@ -223,6 +228,26 @@ public class OperateLogAspect {
         }
 
         return false;
+    }
+
+    /**
+     * 设置租户ID
+     */
+    private void setTenantId(OperateEvent operateEvent) {
+        try {
+            String authType = operateEvent.getAuthType();
+            if (StringUtil.equals(authType, AuthType.STAFF.getValue())) {
+                // 对于员工认证，获取租户ID
+                operateEvent.setTenantId(LoginStaffUtil.getTenantId());
+            } else {
+                // 对于其他认证类型，暂时设置为null
+                operateEvent.setTenantId(null);
+            }
+        } catch (Exception e) {
+            // 在非认证环境或获取租户ID失败时，设置为null
+            log.debug("获取租户ID失败，设置为null: {}", e.getMessage());
+            operateEvent.setTenantId(null);
+        }
     }
 
 }

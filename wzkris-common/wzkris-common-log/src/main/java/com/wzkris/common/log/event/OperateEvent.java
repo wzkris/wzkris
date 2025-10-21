@@ -1,5 +1,6 @@
 package com.wzkris.common.log.event;
 
+import com.wzkris.message.feign.stafflog.req.StaffOperateLogReq;
 import com.wzkris.message.feign.userlog.req.UserOperateLogReq;
 import lombok.Data;
 
@@ -94,7 +95,12 @@ public class OperateEvent {
      */
     private Date operTime;
 
-    public UserOperateLogReq toOperateLogReq() {
+    /**
+     * 租户ID
+     */
+    private Long tenantId;
+
+    public UserOperateLogReq toUserOperateLogReq() {
         UserOperateLogReq userOperateLogReq = new UserOperateLogReq();
         userOperateLogReq.setTitle(this.getTitle());
         userOperateLogReq.setSubTitle(this.getSubTitle());
@@ -112,6 +118,27 @@ public class OperateEvent {
         userOperateLogReq.setErrorMsg(this.getErrorMsg());
         userOperateLogReq.setOperTime(this.getOperTime());
         return userOperateLogReq;
+    }
+
+    public StaffOperateLogReq toStaffOperateLogReq() {
+        StaffOperateLogReq staffOperateLogReq = new StaffOperateLogReq();
+        staffOperateLogReq.setTitle(this.getTitle());
+        staffOperateLogReq.setSubTitle(this.getSubTitle());
+        staffOperateLogReq.setOperType(this.getOperType());
+        staffOperateLogReq.setMethod(this.getMethod());
+        staffOperateLogReq.setRequestMethod(this.getRequestMethod());
+        staffOperateLogReq.setStaffId(this.getOperatorId());
+        staffOperateLogReq.setOperName(this.getOperName());
+        staffOperateLogReq.setOperUrl(this.getOperUrl());
+        staffOperateLogReq.setOperIp(this.getOperIp());
+        staffOperateLogReq.setOperParam(this.getOperParam());
+        staffOperateLogReq.setJsonResult(this.getJsonResult());
+        staffOperateLogReq.setOperLocation(this.getOperLocation());
+        staffOperateLogReq.setSuccess(this.isSuccess());
+        staffOperateLogReq.setErrorMsg(this.getErrorMsg());
+        staffOperateLogReq.setOperTime(this.getOperTime());
+        staffOperateLogReq.setTenantId(this.getTenantId());
+        return staffOperateLogReq;
     }
 
 }

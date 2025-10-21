@@ -88,4 +88,9 @@ public class StaffOperateLogReq implements Serializable {
      */
     private Date operTime;
 
+    /**
+     * 租户ID
+     */
+    private Long tenantId;
+
 }
