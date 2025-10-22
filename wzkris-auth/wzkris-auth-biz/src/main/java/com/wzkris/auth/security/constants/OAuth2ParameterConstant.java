@@ -18,9 +18,9 @@ public interface OAuth2ParameterConstant {
     String SMS_CODE = "sms_code";
 
     /**
-     * 用户类型
+     * 认证类型
      */
-    String USER_TYPE = "user_type";
+    String AUTH_TYPE = "auth_type";
 
     /**
      * 微信平台的码

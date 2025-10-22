@@ -59,37 +59,46 @@ public class TokenService {
      * @param refreshToken token
      */
     public final void save(CorePrincipal principal, String accessToken, String refreshToken) {
+        Serializable id = principal.getId();
+        long refreshTTL = tokenProperties.getUserRefreshTokenTimeOut();
+        long accessTTL = tokenProperties.getUserTokenTimeOut();
+
+        // ========== 1️⃣ 批量写入用户信息 + 在线会话 ==========
         RBatch batch = redissonClient.createBatch();
 
-        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildInfoKey(principal.getId()));
-        userinfo.setAsync(principal, Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
+        // 保存用户主信息（带过期）
+        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildInfoKey(id));
+        userinfo.setAsync(principal, Duration.ofSeconds(refreshTTL));
 
-        RMapCacheAsync<String, OnlineUser> mapCache = batch.getMapCache(buildOnlineKey(principal.getId()));
-        mapCache.getAsync(refreshToken).thenAccept(onlineUser -> {
-            if (onlineUser == null) {
-                mapCache.putAsync(refreshToken, new OnlineUser(),
-                        tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
-            } else {
-                mapCache.expireEntryAsync(refreshToken, Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()),
-                        Duration.ofSeconds(0));
-            }
-        });
+        // 处理在线会话（必须用同步 get，否则批量不会执行）
+        RMapCache<String, OnlineUser> onlineCache = redissonClient.getMapCache(buildOnlineKey(id));
+        OnlineUser existing = onlineCache.get(refreshToken);
 
-        batch.execute();
-
-        RBucket<TokenBody> accessTokenBucket = redissonClient.getBucket(buildAccessTokenKey(accessToken));
-        accessTokenBucket.setAsync(new TokenBody(principal.getId(), refreshToken),
-                Duration.ofSeconds(tokenProperties.getUserTokenTimeOut()));
-
-        // 立刻失效以前的access_token
-        RBucket<TokenBody> refreshTokenBucket = redissonClient.getBucket(buildRefreshTokenKey(refreshToken));
-        TokenBody tokenBody = refreshTokenBucket.get();
-        if (tokenBody != null) {
-            redissonClient.getBucket(buildAccessTokenKey(tokenBody.getOtherToken())).deleteAsync();
+        RMapCacheAsync<String, OnlineUser> onlineCacheAsync = batch.getMapCache(buildOnlineKey(id));
+        if (existing == null) {
+            // 新建会话
+            onlineCacheAsync.putAsync(refreshToken, new OnlineUser(), refreshTTL, TimeUnit.SECONDS);
+        } else {
+            // 已存在则仅刷新过期时间
+            onlineCacheAsync.expireEntryAsync(refreshToken, Duration.ofSeconds(refreshTTL), Duration.ZERO);
         }
 
-        refreshTokenBucket.setAsync(new TokenBody(principal.getId(), accessToken),
-                Duration.ofSeconds(tokenProperties.getUserRefreshTokenTimeOut()));
+        // 执行批处理（此时所有命令都被加入 batch）
+        batch.execute();
+
+        // ========== 2️⃣ 写入 AccessToken 与 RefreshToken 映射 ==========
+        RBucket<TokenBody> accessTokenBucket = redissonClient.getBucket(buildAccessTokenKey(accessToken));
+        accessTokenBucket.setAsync(new TokenBody(id, refreshToken), Duration.ofSeconds(accessTTL));
+
+        // 立刻失效旧 access_token（若存在）
+        RBucket<TokenBody> refreshTokenBucket = redissonClient.getBucket(buildRefreshTokenKey(refreshToken));
+        TokenBody oldToken = refreshTokenBucket.get();
+        if (oldToken != null) {
+            redissonClient.getBucket(buildAccessTokenKey(oldToken.getToken())).deleteAsync();
+        }
+
+        // 更新 refresh_token 关联的 access_token
+        refreshTokenBucket.setAsync(new TokenBody(id, accessToken), Duration.ofSeconds(refreshTTL));
     }
 
     /**
@@ -125,7 +134,7 @@ public class TokenService {
      */
     public final String loadRefreshTokenByAccessToken(String accessToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
-        return tokenBody.getOtherToken();
+        return tokenBody.getToken();
     }
 
     /**
@@ -135,7 +144,7 @@ public class TokenService {
      */
     public final String loadAccessTokenByRefreshToken(String refreshToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
-        return tokenBody.getOtherToken();
+        return tokenBody.getToken();
     }
 
     /**
@@ -148,7 +157,7 @@ public class TokenService {
         if (tokenBody == null) return null;
 
         Serializable id = tokenBody.getId();
-        String refreshToken = tokenBody.getOtherToken();
+        String refreshToken = tokenBody.getToken();
 
         // 删除Token（独立键）
         redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
@@ -182,7 +191,7 @@ public class TokenService {
         if (tokenBody == null) return;
 
         Serializable id = tokenBody.getId();
-        String accessToken = tokenBody.getOtherToken();
+        String accessToken = tokenBody.getToken();
 
         // 删除Token（独立键）
         redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
@@ -236,14 +245,14 @@ public class TokenService {
         /**
          * 另外的TOKEN
          */
-        private String otherToken;
+        private String token;
 
         public TokenBody() {
         }
 
-        private TokenBody(Serializable id, String otherToken) {
+        private TokenBody(Serializable id, String token) {
             this.id = id;
-            this.otherToken = otherToken;
+            this.token = token;
         }
 
     }

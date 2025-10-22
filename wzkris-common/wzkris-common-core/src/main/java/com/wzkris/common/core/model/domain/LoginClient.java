@@ -1,7 +1,7 @@
 package com.wzkris.common.core.model.domain;
 
-import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -27,6 +27,11 @@ public class LoginClient extends CorePrincipal {
     public LoginClient(String clientId, Set<String> scopes) {
         super(System.currentTimeMillis(), AuthType.CLIENT.getValue(), scopes);
         this.clientId = clientId;
+    }
+
+    @Override
+    public String getName() {
+        return this.clientId;
     }
 
 }

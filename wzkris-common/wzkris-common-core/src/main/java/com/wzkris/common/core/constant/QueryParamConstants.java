@@ -13,6 +13,11 @@ public class QueryParamConstants {
     public static final String X_USER_TOKEN = "X_User_Token";
 
     /**
+     * 租户Token
+     */
+    public static final String X_STAFF_TOKEN = "X_Staff_Token";
+
+    /**
      * 客户Token
      */
     public static final String X_CUSTOMER_TOKEN = "X_Customer_Token";

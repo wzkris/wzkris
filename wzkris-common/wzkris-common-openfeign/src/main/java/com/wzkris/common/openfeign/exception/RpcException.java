@@ -21,4 +21,10 @@ public class RpcException extends RuntimeException {
         this.result = result;
     }
 
+    public RpcException(int httpStatusCode, int biz, String msg) {
+        super(msg);
+        this.httpStatusCode = httpStatusCode;
+        this.result = Result.resp(biz, null, msg);
+    }
+
 }

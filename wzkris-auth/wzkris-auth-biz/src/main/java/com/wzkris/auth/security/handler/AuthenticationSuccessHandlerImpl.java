@@ -20,7 +20,6 @@ import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -115,7 +114,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                                 commonAuthenticationToken.getPrincipal(),
                                 authenticationToken.getRefreshToken().getTokenValue(),
                                 commonAuthenticationToken.getLoginType(),
-                                CommonConstants.SUCCESS,
+                                true,
                                 "",
                                 ServletUtil.getClientIP(request),
                                 UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));

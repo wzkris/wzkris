@@ -14,6 +14,6 @@ public class LogoutEvent {
 
     private Serializable id;
 
-    private String userType;
+    private String authType;
 
 }

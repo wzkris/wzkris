@@ -48,7 +48,7 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
                     BizLoginCode.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.USER_TYPE);
+                    OAuth2ParameterConstant.AUTH_TYPE);
             return null; // never run this line
         }
 

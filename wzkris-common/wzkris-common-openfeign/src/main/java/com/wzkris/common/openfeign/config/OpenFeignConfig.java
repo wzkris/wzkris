@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : restTemplate配置类
+ * @description : openfeign配置类
  * @date : 2022/12/1 10:02
  */
 @EnableFeignClients(basePackages = "com.wzkris.*.feign")

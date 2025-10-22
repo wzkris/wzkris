@@ -25,9 +25,4 @@ public abstract class CorePrincipal implements Principal {
         this.permissions = permissions;
     }
 
-    @Override
-    public final String getName() {
-        return this.type + ":" + this.id;
-    }
-
 }

@@ -32,6 +32,8 @@ public class RefreshTokenEventListener {
 
         if (StringUtil.equals(principal.getType(), AuthType.USER.getValue())) {
 
+        } else if (StringUtil.equals(principal.getType(), AuthType.STAFF.getValue())) {
+
         } else if (StringUtil.equals(principal.getType(), AuthType.CUSTOMER.getValue())) {
             // empty
         }

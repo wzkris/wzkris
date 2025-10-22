@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -88,25 +89,19 @@ public abstract class JsonUtil {
     }
 
     /**
-     * obj 转 Java Bean
-     *
-     * @param obj   对象
-     * @param clazz 对象类型
-     * @return bean
+     * String转换成Map
      */
-    public static <T> T parseObject(String obj, Class<T> clazz) {
+    public static <T> T toMap(String content, Class<? extends Map> mapClass, Class<?> keyClass, Class<?> valueClass) {
         try {
-            return objectMapper.readValue(obj, clazz);
+            return objectMapper.readValue(
+                    content, TypeFactory.defaultInstance().constructMapType(mapClass, keyClass, valueClass));
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("utilError.jsonSerialize.error");
         }
     }
 
-    /**
-     * String转换成Map
-     */
-    public static <T> T toMap(String content, Class<? extends Map> mapClass, Class<?> keyClass, Class<?> valueClass) {
+    public static <T> T toMap(byte[] content, Class<? extends Map> mapClass, Class<?> keyClass, Class<?> valueClass) {
         try {
             return objectMapper.readValue(
                     content, TypeFactory.defaultInstance().constructMapType(mapClass, keyClass, valueClass));
@@ -129,7 +124,7 @@ public abstract class JsonUtil {
         }
     }
 
-    public static <T> T toColl(JsonParser parser, Class<? extends Collection> collectionClass, Class<?> elementClass) {
+    public static <T> T toColl(byte[] parser, Class<? extends Collection> collectionClass, Class<?> elementClass) {
         try {
             return objectMapper.readValue(
                     parser, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
@@ -145,6 +140,18 @@ public abstract class JsonUtil {
     public static <T> T parseObject(Reader reader, Class<T> clazz) {
         try {
             return objectMapper.readValue(reader, clazz);
+        } catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
+    }
+
+    /**
+     * string 转 Java Bean
+     */
+    public static <T> T parseObject(String obj, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(obj, clazz);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("utilError.jsonSerialize.error");
@@ -176,7 +183,7 @@ public abstract class JsonUtil {
      * @param text json字符串
      * @return 转为ObjectNode
      */
-    public static ObjectNode parseNode(String text) {
+    public static ObjectNode readTree(String text) {
         try {
             return objectMapper.readValue(text, ObjectNode.class);
         } catch (IOException e) {
@@ -185,7 +192,16 @@ public abstract class JsonUtil {
         }
     }
 
-    public static ObjectNode parseNode(JsonParser jsonParser) {
+    public static JsonNode readTree(byte[] bytes) {
+        try {
+            return objectMapper.readTree(bytes);
+        } catch (IOException e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
+    }
+
+    public static JsonNode readTree(JsonParser jsonParser) {
         try {
             return objectMapper.readTree(jsonParser);
         } catch (IOException e) {

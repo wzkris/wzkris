@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@CheckPerms(checkType = AuthType.USER) // 将原注解作为元注解
+@CheckPerms(checkType = AuthType.USER)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
 public @interface CheckUserPerms {

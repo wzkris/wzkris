@@ -3,10 +3,9 @@ package com.wzkris.auth.controller;
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.domain.resp.OnlineUserResp;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +31,11 @@ public class OnlineSessionController {
 
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineUserResp>> onlineSession(@RequestHeader(HeaderConstants.X_USER_TOKEN) String accessToken) {
+    public Result<Collection<OnlineUserResp>> onlineSession() {
+        String accessToken = SecurityUtil.getTokenValue();
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
 
-        RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(LoginUserUtil.getId());
+        RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(SecurityUtil.getId());
 
         List<OnlineUserResp> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineUser> entry : onlineCache.entrySet()) {

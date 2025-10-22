@@ -1,18 +1,19 @@
 package com.wzkris.common.openfeign.interceptor.response;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.openfeign.enums.BizRpcCode;
+import com.wzkris.common.openfeign.event.FeignResponseEvent;
 import com.wzkris.common.openfeign.exception.RpcException;
 import feign.InvocationContext;
 import feign.Response;
 import feign.ResponseInterceptor;
+import feign.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -26,47 +27,73 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
 
     @Override
     public Object intercept(InvocationContext invocationContext, Chain chain) throws Exception {
-        try (Response originalResponse = invocationContext.response()) {
-            checkSuccess(originalResponse);
+        try (Response response = invocationContext.response()) {
+            Optional<String> reqTime = response.request().headers().get(HeaderConstants.X_REQUEST_TIME).stream().findFirst();
+            long costTime = System.currentTimeMillis() - Long.parseLong(reqTime.get());
+
+            checkSuccess(response, costTime);
 
             Object next = chain.next(invocationContext);
 
             // 打印响应信息
-            logResponseInfo(originalResponse, next);
+            logResponseInfo(response, next, costTime);
 
             return next;
         }
     }
 
-    private void checkSuccess(Response originalResponse) throws IOException {
-        if (!HttpStatus.valueOf(originalResponse.status()).is2xxSuccessful()) {
-            String resultBody = new String(originalResponse.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8);
+    private void checkSuccess(Response response, long costTime) throws IOException {
+        if (!HttpStatus.valueOf(response.status()).is2xxSuccessful()) {
+            String body = Util.toString(response.body().asReader(response.charset()));
             log.error("""
-                            feign called failed => Url: {}
+                            Feign Called Failed => Url: {}
                             Response: {}
-                            Response body: {}
+                            Response Body: {}
+                            Taken Time: {} ms
                             """,
-                    originalResponse.request().url(),
-                    originalResponse,
-                    resultBody
+                    response.request().url(),
+                    response,
+                    body,
+                    costTime
             );
-            throw new RpcException(BizRpcCode.RPC_REMOTE_ERROR.value(), JsonUtil.parseObject(resultBody, Result.class));
+
+            FeignResponseEvent responseEvent = new FeignResponseEvent();
+            responseEvent.setSuccess(false);
+            responseEvent.setHttpStatusCode(response.status());
+            responseEvent.setBody(body);
+            responseEvent.setCostTime((int) costTime);
+
+            SpringUtil.getContext().publishEvent(responseEvent);
+
+            throw new RpcException(response.status(), BizRpcCode.RPC_REMOTE_ERROR.value(),
+                    body);
         }
     }
 
     /**
      * 打印Feign响应信息
      */
-    private void logResponseInfo(Response response, Object next) {
+    private void logResponseInfo(Response response, Object next, long costTime) {
         try {
-            Optional<String> reqTime = response.request().headers().get(HeaderConstants.X_REQUEST_TIME).stream().findFirst();
             log.info("""
-                            Feign called Success =>  Url: {}
+                            Feign Called Success =>  Url: {}
                             Response: {}
                             Response Body: {}
-                            Taken time: {} ms
+                            Taken Time: {} ms
                             """,
-                    response.request().url(), response, next, System.currentTimeMillis() - Long.parseLong(reqTime.get()));
+                    response.request().url(),
+                    response,
+                    next,
+                    costTime
+            );
+
+            FeignResponseEvent responseEvent = new FeignResponseEvent();
+            responseEvent.setSuccess(false);
+            responseEvent.setHttpStatusCode(response.status());
+            responseEvent.setBody(JsonUtil.toJsonString(next));
+            responseEvent.setCostTime((int) costTime);
+
+            SpringUtil.getContext().publishEvent(responseEvent);
         } catch (Exception e) {
             log.warn("Feign Response => 打印响应发生异常: {}", e.getMessage(), e);
         }

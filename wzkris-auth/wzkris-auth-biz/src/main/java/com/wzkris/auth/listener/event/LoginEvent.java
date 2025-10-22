@@ -21,7 +21,7 @@ public class LoginEvent {
 
     private String loginType;
 
-    private String status;
+    private Boolean success;
 
     private String errorMsg;
 

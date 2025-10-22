@@ -55,12 +55,12 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     BizLoginCode.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.USER_TYPE);
+                    OAuth2ParameterConstant.AUTH_TYPE);
         }
 
         try {
             // 校验是否被冻结
-            captchaService.validateAccount(authenticationToken.getPhoneNumber());
+            captchaService.validateAccount(authenticationToken.getAuthType().getValue() + ":" + authenticationToken.getPhoneNumber());
             // 校验验证码
             captchaService.validateCaptcha(
                     authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());

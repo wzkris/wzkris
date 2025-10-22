@@ -13,6 +13,8 @@ public enum AuthType {
 
     USER("user"),
 
+    STAFF("staff"),
+
     CUSTOMER("customer"),
 
     CLIENT("oauth2_client");

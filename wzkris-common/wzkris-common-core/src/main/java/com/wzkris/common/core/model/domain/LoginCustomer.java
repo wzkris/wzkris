@@ -1,7 +1,7 @@
 package com.wzkris.common.core.model.domain;
 
-import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.model.CorePrincipal;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -35,6 +35,11 @@ public class LoginCustomer extends CorePrincipal {
 
     public LoginCustomer(Long customerId, Set<String> permissions) {
         super(customerId, AuthType.CUSTOMER.getValue(), permissions);
+    }
+
+    @Override
+    public String getName() {
+        return this.phoneNumber;
     }
 
 }

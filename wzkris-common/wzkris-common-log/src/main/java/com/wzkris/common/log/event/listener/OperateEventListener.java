@@ -1,0 +1,62 @@
+package com.wzkris.common.log.event.listener;
+
+import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.utils.IpUtil;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.log.event.OperateEvent;
+import com.wzkris.common.log.report.AsyncBatchReporter;
+import com.wzkris.message.feign.stafflog.StaffLogFeign;
+import com.wzkris.message.feign.stafflog.req.StaffOperateLogReq;
+import com.wzkris.message.feign.userlog.UserLogFeign;
+import com.wzkris.message.feign.userlog.req.UserOperateLogReq;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.context.event.EventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 操作事件监听：单线程消费 + 多线程上报
+ */
+@Slf4j
+public class OperateEventListener {
+
+    private final AsyncBatchReporter<OperateEvent> reporter;
+
+    public OperateEventListener(UserLogFeign userLogFeign, StaffLogFeign staffLogFeign) {
+        reporter = new AsyncBatchReporter<>(
+                30, // 批量大小
+                3,  // 定时刷出间隔（秒）
+                1000, // 队列容量
+                2, 5, 1000,
+                "OperateEventListener-Reporter",
+                events -> {
+                    List<UserOperateLogReq> userOperateLogReqs = new ArrayList<>();
+                    List<StaffOperateLogReq> staffOperateLogReqs = new ArrayList<>();
+                    events.forEach(event -> {
+                        if (StringUtil.isNotBlank(event.getOperIp())) {
+                            event.setOperLocation(IpUtil.parseIp(event.getOperIp()));
+                        }
+                        if (StringUtil.equals(event.getAuthType(), AuthType.USER.getValue())) {
+                            userOperateLogReqs.add(event.toUserOperateLogReq());
+                        } else if (StringUtil.equals(event.getAuthType(), AuthType.STAFF.getValue())) {
+                            staffOperateLogReqs.add(event.toStaffOperateLogReq());
+                        }
+                    });
+                    if (CollectionUtils.isNotEmpty(userOperateLogReqs)) {
+                        userLogFeign.saveOperlogs(userOperateLogReqs);
+                    }
+                    if (CollectionUtils.isNotEmpty(staffOperateLogReqs)) {
+                        staffLogFeign.saveOperlogs(staffOperateLogReqs);
+                    }
+                }
+        );
+    }
+
+    @EventListener
+    public void onOperateEvent(OperateEvent event) {
+        reporter.submit(event);
+    }
+
+}

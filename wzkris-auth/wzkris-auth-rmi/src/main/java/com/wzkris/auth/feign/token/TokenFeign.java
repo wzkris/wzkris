@@ -6,7 +6,6 @@ import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.common.core.model.CorePrincipal;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
-import com.wzkris.common.openfeign.core.RmiFeign;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = ServiceIdConstant.AUTH, contextId = "TokenFeign",
         fallbackFactory = TokenFeignFallback.class,
         path = "/feign-token")
-public interface TokenFeign extends RmiFeign {
+public interface TokenFeign {
 
     /**
      * 校验oauth2_token

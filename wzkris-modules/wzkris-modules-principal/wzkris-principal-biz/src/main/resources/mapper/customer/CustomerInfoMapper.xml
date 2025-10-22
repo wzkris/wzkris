@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzkris.principal.mapper.CustomerInfoMapper">
+
+    <select id="listIncryVO" resultType="CustomerIncryVO">
+        WITH daily_user_count AS (
+            SELECT
+                FROM_UNIXTIME(create_at / 1000, #{dateType}) AS date_str,
+                COUNT(customer_id) AS quantity
+            FROM
+                biz.customer_info
+                    <where>
+                        <if test="beginTime != null and endTime != null">
+                            create_at between #{beginTime} AND #{endTime}
+                        </if>
+                    </where>
+            GROUP BY
+                date_str
+        ),
+             daily_growth AS (
+                 SELECT
+                     date_str,
+                     quantity,
+                     LAG(quantity) OVER (ORDER BY date_str) AS previous_quantity
+                 FROM
+                     daily_user_count
+             )
+        SELECT
+            date_str,
+            quantity,
+            CASE
+                WHEN previous_quantity IS NULL OR previous_quantity = 0 THEN NULL
+                ELSE ROUND((quantity - previous_quantity) / previous_quantity, 2)
+                END AS growth_rate
+        FROM
+            daily_growth
+        ORDER BY
+            date_str;
+    </select>
+
+</mapper>

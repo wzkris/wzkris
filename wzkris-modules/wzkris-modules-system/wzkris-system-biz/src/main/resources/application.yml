@@ -1,9 +1,0 @@
-server:
-  port: 5555
-
-spring:
-  application:
-    name: wzkris-system
-  profiles:
-    active: @profiles.active@
-    include: feign

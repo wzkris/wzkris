@@ -24,7 +24,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthenticatedType().equals(AuthType.CUSTOMER.getValue());
+        return isAuthenticated() && getAuthType().equals(AuthType.CUSTOMER.getValue());
     }
 
     /**
@@ -41,9 +41,9 @@ public class LoginCustomerUtil extends SecurityUtil {
     }
 
     /**
-     * 获取当前登录用户ID,未登录抛出异常
+     * 获取当前ID
      *
-     * @return 当前用户ID
+     * @return 登录ID
      */
     public static Long getId() {
         return get().getId();

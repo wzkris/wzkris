@@ -38,9 +38,4 @@ public interface SecurityConstants {
      */
     String SUPER_PERMISSION = "*";
 
-    /**
-     * 超级租户ID
-     */
-    Long SUPER_TENANT_ID = 1L;
-
 }
