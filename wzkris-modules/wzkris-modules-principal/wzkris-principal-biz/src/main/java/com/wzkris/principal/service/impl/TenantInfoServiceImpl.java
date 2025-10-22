@@ -124,15 +124,15 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     }
 
     @Override
-    public boolean checkRoleLimit(Long tenantId) {
+    public boolean checkPostLimit(Long tenantId) {
         return SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = tenantInfoMapper.selectById(tenantId);
-            if (tenant.getRoleLimit() == -1) {
+            if (tenant.getPostLimit() == -1) {
                 return true;
             }
             Long count = postInfoMapper.selectCount(
                     Wrappers.lambdaQuery(PostInfoDO.class).eq(PostInfoDO::getTenantId, tenantId));
-            return tenant.getRoleLimit() - count > 0;
+            return tenant.getPostLimit() - count > 0;
         });
     }
 

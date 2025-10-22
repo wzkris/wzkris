@@ -14,10 +14,7 @@ public class TenantUsedQuotaVO {
     @Schema(description = "已有账号数量")
     private Integer accountHas;
 
-    @Schema(description = "已有角色数量")
-    private Integer roleHas;
-
-    @Schema(description = "已有部门数量")
-    private Integer deptHas;
+    @Schema(description = "已有职位数量")
+    private Integer postHas;
 
 }

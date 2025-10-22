@@ -12,8 +12,7 @@ import com.wzkris.principal.domain.req.EditPwdReq;
 import com.wzkris.principal.domain.req.tenant.TenantInfoReq;
 import com.wzkris.principal.domain.vo.tenant.TenantInfoVO;
 import com.wzkris.principal.domain.vo.tenant.TenantUsedQuotaVO;
-import com.wzkris.principal.mapper.DeptInfoMapper;
-import com.wzkris.principal.mapper.RoleInfoMapper;
+import com.wzkris.principal.mapper.PostInfoMapper;
 import com.wzkris.principal.mapper.TenantInfoMapper;
 import com.wzkris.principal.mapper.UserInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,9 +38,7 @@ public class TenantInfoController extends BaseController {
 
     private final UserInfoMapper userInfoMapper;
 
-    private final RoleInfoMapper roleInfoMapper;
-
-    private final DeptInfoMapper deptInfoMapper;
+    private final PostInfoMapper postInfoMapper;
 
     private final TenantInfoMapper tenantInfoMapper;
 
@@ -66,8 +63,7 @@ public class TenantInfoController extends BaseController {
     public Result<TenantUsedQuotaVO> limitInfo() {
         TenantUsedQuotaVO usedQuotaVO = new TenantUsedQuotaVO();
         usedQuotaVO.setAccountHas(Math.toIntExact(userInfoMapper.selectCount(null)));
-        usedQuotaVO.setRoleHas(Math.toIntExact(roleInfoMapper.selectCount(null)));
-        usedQuotaVO.setDeptHas(Math.toIntExact(deptInfoMapper.selectCount(null)));
+        usedQuotaVO.setPostHas(Math.toIntExact(postInfoMapper.selectCount(null)));
         return ok(usedQuotaVO);
     }
 

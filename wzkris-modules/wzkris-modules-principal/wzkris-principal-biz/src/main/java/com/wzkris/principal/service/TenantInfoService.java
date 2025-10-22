@@ -46,12 +46,12 @@ public interface TenantInfoService {
     boolean checkAccountLimit(Long tenantId);
 
     /**
-     * 校验租户角色数量
+     * 校验租户职位数量
      *
      * @param tenantId 租户ID
      * @return true通过 false不通过
      */
-    boolean checkRoleLimit(Long tenantId);
+    boolean checkPostLimit(Long tenantId);
 
     /**
      * 校验是否租户超管
