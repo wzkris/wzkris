@@ -42,11 +42,11 @@ public class StaffOperateLogDO implements Serializable {
     @Schema(description = "请求方式")
     private String requestMethod;
 
-    @Schema(description = "操作人员ID")
+    @Schema(description = "职工ID")
     private Long staffId;
 
-    @Schema(description = "操作人员")
-    private String operName;
+    @Schema(description = "用户名")
+    private String staffName;
 
     @Schema(description = "请求url")
     private String operUrl;

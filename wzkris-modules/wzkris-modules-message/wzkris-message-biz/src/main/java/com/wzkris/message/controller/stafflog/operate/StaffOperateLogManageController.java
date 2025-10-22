@@ -3,7 +3,7 @@ package com.wzkris.message.controller.stafflog.operate;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckUserPerms;
+import com.wzkris.common.security.annotation.CheckStaffPerms;
 import com.wzkris.message.domain.req.stafflog.StaffOperateLogQueryReq;
 import com.wzkris.message.domain.vo.stafflog.StaffOperateLogInfoVO;
 import com.wzkris.message.mapper.StaffOperateLogMapper;
@@ -34,7 +34,7 @@ public class StaffOperateLogManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckUserPerms("msg-mod:staff-operatelog-mng:list")
+    @CheckStaffPerms("msg-mod:staff-operatelog-mng:list")
     public Result<Page<StaffOperateLogInfoVO>> list(StaffOperateLogQueryReq queryReq) {
         startPage();
         List<StaffOperateLogInfoVO> list = staffOperateLogService.listInfoVO(queryReq);

@@ -39,14 +39,14 @@ public class UserOperateLogReq implements Serializable {
     private String requestMethod;
 
     /**
-     * 操作人员ID
+     * 用户ID
      */
     private Long userId;
 
     /**
-     * 操作人员
+     * 用户名
      */
-    private String operName;
+    private String username;
 
     /**
      * 请求url

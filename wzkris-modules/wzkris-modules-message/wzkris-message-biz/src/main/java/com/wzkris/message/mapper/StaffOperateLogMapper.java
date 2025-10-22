@@ -17,7 +17,7 @@ import java.util.List;
 public interface StaffOperateLogMapper extends BaseMapperPlus<StaffOperateLogDO> {
 
     @Select("""
-                SELECT oper_id, title, sub_title, oper_type, oper_ip, oper_location, success, error_msg, oper_time
+                SELECT oper_id, title, sub_title, oper_type, staff_name, oper_ip, oper_location, success, error_msg, oper_time
                 FROM biz.staff_operate_log
                         ${ew.customSqlSegment}
             """)

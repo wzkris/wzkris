@@ -20,6 +20,9 @@ public class StaffOperateLogInfoVO {
     @Schema(description = "操作类型（0其它 1新增 2修改 3删除）")
     private String operType;
 
+    @Schema(description = "用户名")
+    private String staffName;
+
     @Schema(description = "操作ip地址")
     private String operIp;
 

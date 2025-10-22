@@ -108,7 +108,7 @@ public class OperateEvent {
         userOperateLogReq.setMethod(this.getMethod());
         userOperateLogReq.setRequestMethod(this.getRequestMethod());
         userOperateLogReq.setUserId(this.getOperatorId());
-        userOperateLogReq.setOperName(this.getOperName());
+        userOperateLogReq.setUsername(this.getOperName());
         userOperateLogReq.setOperUrl(this.getOperUrl());
         userOperateLogReq.setOperIp(this.getOperIp());
         userOperateLogReq.setOperParam(this.getOperParam());
@@ -128,7 +128,7 @@ public class OperateEvent {
         staffOperateLogReq.setMethod(this.getMethod());
         staffOperateLogReq.setRequestMethod(this.getRequestMethod());
         staffOperateLogReq.setStaffId(this.getOperatorId());
-        staffOperateLogReq.setOperName(this.getOperName());
+        staffOperateLogReq.setStaffName(this.getOperName());
         staffOperateLogReq.setOperUrl(this.getOperUrl());
         staffOperateLogReq.setOperIp(this.getOperIp());
         staffOperateLogReq.setOperParam(this.getOperParam());

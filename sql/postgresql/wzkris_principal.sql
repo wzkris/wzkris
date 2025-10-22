@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-10-22 11:20:50
+-- Started on 2025-10-22 16:45:09
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2044,33 +2044,36 @@ COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort,
 --
 
 COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at) FROM stdin;
+1980906033277222913	日志审计	0	0	audit-log	\N	\N	D	0	\N	carbon:catalog-publish	f	t	tenant	1	1	2025-10-22 15:56:16.449+08	2025-10-22 15:58:02.486+08
+1980906374936838146	登录日志	1980906033277222913	10	login	loginlog-staff/mng/index	\N	M	0	msg-mod:staff-loginlog-mng:list	carbon:login	f	t	tenant	1	1	2025-10-22 15:57:37.907+08	2025-10-22 16:00:07.632+08
 1906263415450001129	重置租户操作密码	1906263415450000601	11	#	\N	\N	B	0	prin-mod:tenant-mng:reset-operpwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:23.785+08
 1906263415450001215	修改密钥	1906263415450000700	5	#	\N	\N	B	0	prin-mod:oauth2client-mng:edit-secret	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:16:07.901+08
 1906263415450000304	服务监控	1906263415450000101	5	http://localhost:9100/	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:53:37.79+08
 1906263415450000101	控制台入口	1963871785836048386	0	controller	\N	\N	D	0	\N	carbon:dashboard	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 15:53:53.291+08
 1906263415450000300	定时任务	1906263415450000101	20	http://localhost:9200/xxl-job-admin	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 16:16:21.958+08
 1906263415450000303	Nacos控制台	1906263415450000101	4	http://localhost:8848/nacos	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 16:16:29.014+08
+1906263415450000207	菜单管理	1906263415450000003	50	menu	menu/mng/index	\N	M	0	prin-mod:menu-mng:list	carbon:menu	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:36:05.116+08
+1906263415450000700	终端管理	1906263415450000003	3	oauth2client	oauth2client/mng/index	\N	M	0	prin-mod:oauth2client-mng:list	carbon:application	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:48.237+08
+1906263415450000002	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:09:40.54+08
+1906263415450000104	日志审计	0	1	audit-log	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:59:16.035+08
+1980906706949554177	操作日志	1980906033277222913	0	operate	operatelog-staff/mng/index	\N	M	0	msg-mod:staff-operatelog-mng:list	carbon:touch-interaction	f	t	tenant	1	1	2025-10-22 15:58:57.063+08	2025-10-22 16:00:21.933+08
 1906263415450000302	Sentinel控制台	1906263415450000101	3	http://localhost:8718	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:06.192+08
 1906263415450000301	系统接口	1906263415450000101	2	http://localhost:8080/doc.html	\N	\N	I	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:14.675+08
-1906263415450000104	日志审计	0	1	user-log	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 10:31:45.317+08
 1963871785836048386	平台配置	0	0	develop	\N	\N	D	0	\N	carbon:tool-kit	f	t	system	1	1	2025-09-05 15:48:15.373+08	2025-10-11 09:28:34.482+08
 1906263415450000003	平台管理	0	80	platform-mng	\N	\N	D	0	\N	carbon:platforms	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 10:32:59.558+08
 1906263415450001052	新增参数	1906263415450000103	2	#	\N	\N	B	0	msg-mod:config-mng:add	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-10 09:11:56.276+08
-1906263415450000002	组织管理	0	50	user-mng	\N	\N	D	0	\N	carbon:user	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 16:01:38.965+08
 1906263415450000001	消息管理	0	100	system-mng	\N	\N	D	0	\N	carbon:z-systems	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 16:01:50.244+08
 1906263415450002062	重置密码	1906263415450000203	7	#	\N	\N	B	0	prin-mod:user-mng:resetPwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 15:31:48.181+08
-1906263415450000207	菜单管理	1906263415450000003	50	menu	platform-mng/menu/index	\N	M	0	prin-mod:menu-mng:list	carbon:menu	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:36:05.116+08
 1906263415450002207	权限授予	1906263415450000206	6	#	\N	\N	B	0	prin-mod:role-mng:grant-user	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 15:40:20.269+08
-1906263415450000700	终端管理	1906263415450000003	3	oauth2client	platform-mng/oauth2client/index	\N	M	0	prin-mod:oauth2client-mng:list	carbon:application	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:48.237+08
 1910569625749024770	授权角色	1906263415450000203	0	#	\N	\N	B	0	prin-mod:user-mng:grant-role	#	f	t	system	1	1	2025-04-11 13:44:30.104+08	2025-09-03 15:40:54.248+08
-1976585906620653569	职位管理	1976565556872667137	0	post	organization-mng/post/index	\N	M	0	prin-mod:post-mng:list	carbon:load-balancer-classic	f	t	tenant	1	1	2025-10-10 17:49:37.998+08	2025-10-15 14:55:01.703+08
+1906263415450000100	公告管理	1906263415450000001	15	announcement	announcement/mng/index	\N	M	0	msg-mod:announcement-mng:list	carbon:message-queue	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:06:06.315+08
+1906263415450000103	配置管理	1963871785836048386	7	config	config/mng/index	\N	M	0	msg-mod:config-mng:list	carbon:parameter	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:25.438+08
+1906263415450000102	字典管理	1963871785836048386	6	dictionary	dictionary/mng/index	\N	M	0	msg-mod:dictionary-mng:list	carbon:text-vertical-alignment	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:30.223+08
 1976223833424326657	修改角色	1906263415450000206	4	#	\N	\N	B	0	prin-mod:role-mng:edit	#	f	t	system	1	1	2025-10-09 17:50:53.008+08	2025-10-09 17:50:53.008+08
-1976565556872667137	组织管理	0	0	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	tenant	1	1	2025-10-10 16:28:46.235+08	2025-10-15 15:00:51.25+08
-1976570103963770881	员工管理	1976565556872667137	8	staff	organization-mng/staff/index	\N	M	0	prin-mod:staff-mng:list	carbon:user-identification	f	t	tenant	1	1	2025-10-10 16:46:50.34+08	2025-10-15 16:17:39.442+08
-1906263415450000100	公告管理	1906263415450000001	15	announcement	message-mng/announcement/index	\N	M	0	msg-mod:announcement-mng:list	carbon:message-queue	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:06:06.315+08
-1906263415450000103	配置管理	1963871785836048386	7	config	platform-config/config/index	\N	M	0	msg-mod:config-mng:list	carbon:parameter	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:25.438+08
-1906263415450000102	字典管理	1963871785836048386	6	dictionary	platform-config/dictionary/index	\N	M	0	msg-mod:dictionary-mng:list	carbon:text-vertical-alignment	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:30.223+08
-1906263415450000151	登录日志	1906263415450000104	2	login	audit-log/userlog/login/index	\N	M	0	msg-mod:user-loginlog-mng:list	carbon:login	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 11:38:04.379+08
+1906263415450000151	登录日志	1906263415450000104	2	login	loginlog-user/mng/index	\N	M	0	msg-mod:user-loginlog-mng:list	carbon:login	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:43:49.017+08
+1976565556872667137	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	tenant	1	1	2025-10-10 16:28:46.235+08	2025-10-22 15:56:22.969+08
+1976585906620653569	职位管理	1976565556872667137	0	post	post/mng/index	\N	M	0	prin-mod:post-mng:list	carbon:load-balancer-classic	f	t	tenant	1	1	2025-10-10 17:49:37.998+08	2025-10-15 14:55:01.703+08
+1976570103963770881	员工管理	1976565556872667137	8	staff	staff/mng/index	\N	M	0	prin-mod:staff-mng:list	carbon:user-identification	f	t	tenant	1	1	2025-10-10 16:46:50.34+08	2025-10-15 16:17:39.442+08
 1976455457936171010	修改参数	1906263415450000103	4	#	\N	\N	B	0	msg-mod:config-mng:edit	#	f	t	system	1	1	2025-10-10 09:11:16.596+08	2025-10-10 09:11:16.596+08
 1976455537858633730	删除参数	1906263415450000103	5	#	\N	\N	B	0	msg-mod:config-mng:remove	#	f	t	system	1	1	2025-10-10 09:11:35.655+08	2025-10-10 09:11:35.655+08
 1976455824778387458	添加字典	1906263415450000102	0	#	\N	\N	B	0	msg-mod:dictionary-mng:add	#	f	t	system	1	1	2025-10-10 09:12:44.068+08	2025-10-10 09:12:44.068+08
@@ -2092,35 +2095,35 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1976226385717030913	删除租户	1906263415450000601	8	#	\N	\N	B	0	prin-mod:tenant-mng:remove	#	f	t	system	1	1	2025-10-09 18:01:01.527+08	2025-10-09 18:01:01.527+08
 1976586082013863937	新增职位	1976585906620653569	0	#	\N	\N	B	0	prin-mod:post-mng:add	#	f	t	tenant	1	1	2025-10-10 17:50:19.807+08	2025-10-10 17:50:19.807+08
 1976456851288154113	删除公告	1906263415450000100	0	#	\N	\N	B	0	msg-mod:announcement-mng:remove	#	f	t	system	1	1	2025-10-10 09:16:48.797+08	2025-10-10 09:16:48.797+08
-1906263415450000150	操作日志	1906263415450000104	1	operate	audit-log/userlog/operate/index	\N	M	0	msg-mod:user-operatelog-mng:list	carbon:touch-interaction	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 11:38:09.691+08
-1906263415450000201	顾客管理	1906263415450000003	1	customer	platform-mng/customer/index	\N	M	0	prin-mod:customer-mng:list	carbon:customer	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:53.092+08
 1906263415450002064	用户修改	1906263415450000203	3	#	\N	\N	B	0	prin-mod:user-mng:edit	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 11:45:30.193+08
 1906263415450001210	终端详情	1906263415450000700	1	#	\N	\N	B	0	prin-mod:oauth2client-mng:query	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 12:42:06.554+08
 1906263415450002077	用户导出	1906263415450000203	1	#	\N	\N	B	0	prin-mod:user-mng:export	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 11:45:37.592+08
 1906263415450002072	用户添加	1906263415450000203	1	#	\N	\N	B	0	prin-mod:user-mng:add	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 11:45:46.262+08
 1906263415450002071	用户查询	1906263415450000203	0	#	\N	\N	B	0	prin-mod:user-mng:query	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 11:44:36.097+08
-1906263415450000601	租户管理	1906263415450000003	100	tenant	platform-mng/tenant/index	\N	M	0	prin-mod:tenant-mng:list	carbon:id-management	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:30.704+08
 1906263415450001125	钱包记录	1906263415450000601	3	#	\N	\N	B	0	prin-mod:tenant-wallet-mng:list	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:56.038+08
-1906263415450000602	租户套餐管理	1906263415450000003	50	tenant-package	platform-mng/tenant-package/index	\N	M	0	prin-mod:tenantpackage-mng:list	carbon:package	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:37.386+08
 1976220001646616577	新增租户套餐	1906263415450000602	1	#	\N	\N	B	0	prin-mod:tenantpackage-mng:add	#	f	t	system	1	1	2025-10-09 17:35:39.449+08	2025-10-09 17:35:39.449+08
 1976220107171110913	修改租户套餐	1906263415450000602	3	#	\N	\N	B	0	prin-mod:tenantpackage-mng:edit	#	f	t	system	1	1	2025-10-09 17:36:04.605+08	2025-10-09 17:36:04.605+08
 1976220234040418306	删除租户套餐	1906263415450000602	0	#	\N	\N	B	0	prin-mod:tenantpackage-mng:remove	#	f	t	system	1	1	2025-10-09 17:36:34.853+08	2025-10-09 17:36:34.853+08
-1906272182215585793	租户信息	0	100	tenant-info	tenant-info/index	\N	M	0	prin-mod:tenant-info	carbon:information-filled	f	t	tenant	1	1	2025-03-30 17:07:59.723+08	2025-10-09 17:37:51.826+08
 1915322746249367554	修改信息	1906272182215585793	0	#	\N	\N	B	0	prin-mod:tenant-info:edit	#	f	t	tenant	1	1	2025-04-24 16:31:42.342+08	2025-10-09 17:38:05.31+08
 1906263415450001127	商户钱包	1906272182215585793	0	#	\N	\N	M	0	prin-mod:tenant-wallet-info	carbon:wallet	f	t	tenant	1	1	2024-05-26 12:30:16+08	2025-10-09 17:38:18.649+08
 1906263415450001126	商户提现	1906263415450001127	1	#	\N	\N	B	0	prin-mod:tenant-wallet-info:withdrawal	#	f	t	tenant	1	1	2024-05-26 12:30:16+08	2025-10-09 17:38:23.095+08
 1976223757310291969	新增角色	1906263415450000206	0	#	\N	\N	B	0	prin-mod:role-mng:add	#	f	t	system	1	1	2025-10-09 17:50:34.861+08	2025-10-09 17:50:34.861+08
 1906263415450002016	删除菜单	1906263415450000207	4	#	\N	\N	B	0	prin-mod:menu-mng:remove	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 17:59:19.71+08
 1906263415450001133	修改租户	1906263415450000601	2	#	\N	\N	B	0	prin-mod:tenant-mng:edit	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 18:00:31.48+08
-1906263415450000206	角色管理	1906263415450000002	99	role	organization-mng/role/index	\N	M	0	prin-mod:role-mng:list	carbon:user-role	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:10.108+08
-1906263415450000203	用户管理	1906263415450000002	100	user	organization-mng/user/index	\N	M	0	prin-mod:user-mng:list	carbon:user-admin	t	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:04.583+08
-1906263415450000205	部门管理	1906263415450000002	70	dept	organization-mng/dept/index	\N	M	0	prin-mod:dept-mng:list	carbon:departure	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:19.213+08
 1976586292211408897	删除职位	1976585906620653569	5	#	\N	\N	B	0	prin-mod:post-mng:remove	#	f	t	tenant	1	1	2025-10-10 17:51:09.924+08	2025-10-10 17:51:09.924+08
 1976586196090544129	修改职位	1976585906620653569	3	#	\N	\N	B	0	prin-mod:post-mng:edit	#	f	t	tenant	1	1	2025-10-10 17:50:47.01+08	2025-10-10 17:51:16.27+08
 1976586554187636737	新增员工	1976570103963770881	0	#	\N	\N	B	0	prin-mod:staff-mng:add	#	f	t	tenant	1	1	2025-10-10 17:52:12.388+08	2025-10-10 17:52:12.388+08
 1976586698882736130	授权员工职位	1976570103963770881	5	#	\N	\N	B	0	prin-mod:staff-mng:grant-post	#	f	t	tenant	1	1	2025-10-10 17:52:46.886+08	2025-10-10 17:52:46.886+08
 1976586772002037762	删除员工	1976570103963770881	7	#	\N	\N	B	0	prin-mod:staff-mng:remove	#	f	t	tenant	1	1	2025-10-10 17:53:04.318+08	2025-10-10 17:53:04.318+08
 1976586612681400321	修改员工	1976570103963770881	3	#	\N	\N	B	0	prin-mod:staff-mng:edit	#	f	t	tenant	1	1	2025-10-10 17:52:26.329+08	2025-10-10 17:53:11.135+08
+1906272182215585793	租户信息	0	100	tenant-info	tenant/info/index	\N	M	0	prin-mod:tenant-info	carbon:information-filled	f	t	tenant	1	1	2025-03-30 17:07:59.723+08	2025-10-22 15:11:16.513+08
+1906263415450000150	操作日志	1906263415450000104	1	operate	operatelog-user/mng/index	\N	M	0	msg-mod:user-operatelog-mng:list	carbon:touch-interaction	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:43:28.036+08
+1906263415450000201	顾客管理	1906263415450000003	1	customer	customer/mng/index	\N	M	0	prin-mod:customer-mng:list	carbon:customer	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:53.092+08
+1906263415450000601	租户管理	1906263415450000003	100	tenant	tenant/mng/index	\N	M	0	prin-mod:tenant-mng:list	carbon:id-management	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:30.704+08
+1906263415450000602	租户套餐管理	1906263415450000003	50	tenant-package	tenant-package/mng/index	\N	M	0	prin-mod:tenantpackage-mng:list	carbon:package	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:37.386+08
+1906263415450000206	角色管理	1906263415450000002	99	role	role/mng/index	\N	M	0	prin-mod:role-mng:list	carbon:user-role	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:10.108+08
+1906263415450000203	用户管理	1906263415450000002	100	user	user/mng/index	\N	M	0	prin-mod:user-mng:list	carbon:user-admin	t	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:04.583+08
+1906263415450000205	部门管理	1906263415450000002	70	dept	dept/mng/index	\N	M	0	prin-mod:dept-mng:list	carbon:departure	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:19.213+08
 \.
 
 
@@ -2215,7 +2218,7 @@ COPY biz.t_post_to_menu (post_id, menu_id) FROM stdin;
 --
 
 COPY biz.t_staff_info (staff_id, tenant_id, staff_name, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1910557183820165120	1910557183820165122	testadmin	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.9.86	2025-10-22 09:54:09+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
+1910557183820165120	1910557183820165122	testadmin	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.9.86	2025-10-22 16:00:43+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
 \.
 
 
@@ -2247,7 +2250,7 @@ COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tena
 --
 
 COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at) FROM stdin;
-1773625804122202113	默认套餐	0	{1906272182215585793,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737}	通用租户套餐	1	2024-04-17 14:08:54+08	1	2025-10-14 11:34:40.425+08
+1773625804122202113	默认套餐	0	{1906272182215585793,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1980906033277222913,1980906374936838146,1980906706949554177}	通用租户套餐	1	2024-04-17 14:08:54+08	1	2025-10-22 15:59:39.192+08
 \.
 
 
@@ -2613,7 +2616,7 @@ CREATE UNIQUE INDEX uk_user_info_phone_number ON biz.user_info USING btree (phon
 CREATE UNIQUE INDEX uk_user_info_username ON biz.user_info USING btree (username);
 
 
--- Completed on 2025-10-22 11:20:50
+-- Completed on 2025-10-22 16:45:09
 
 --
 -- PostgreSQL database dump complete

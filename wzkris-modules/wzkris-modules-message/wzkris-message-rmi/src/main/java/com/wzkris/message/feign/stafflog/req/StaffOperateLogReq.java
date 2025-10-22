@@ -39,14 +39,14 @@ public class StaffOperateLogReq implements Serializable {
     private String requestMethod;
 
     /**
-     * 操作人员ID
+     * 用户ID
      */
     private Long staffId;
 
     /**
-     * 操作人员
+     * 用户名
      */
-    private String operName;
+    private String staffName;
 
     /**
      * 请求url

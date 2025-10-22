@@ -35,7 +35,7 @@ public class UserOperateLogServiceImpl implements UserOperateLogService {
                 .like(StringUtil.isNotBlank(queryReq.getTitle()), UserOperateLogDO::getTitle, queryReq.getTitle())
                 .like(StringUtil.isNotBlank(queryReq.getSubTitle()), UserOperateLogDO::getSubTitle, queryReq.getSubTitle())
                 .eq(StringUtil.isNotEmpty(queryReq.getOperType()), UserOperateLogDO::getOperType, queryReq.getOperType())
-                .like(StringUtil.isNotBlank(queryReq.getOperName()), UserOperateLogDO::getOperName, queryReq.getOperName())
+                .like(StringUtil.isNotBlank(queryReq.getOperName()), UserOperateLogDO::getUsername, queryReq.getOperName())
                 .between(
                         queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
                         UserOperateLogDO::getOperTime,

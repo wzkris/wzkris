@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-10-15 17:11:15
+-- Started on 2025-10-22 16:45:21
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -582,7 +582,7 @@ CREATE TABLE biz.staff_operate_log (
     method character varying(100),
     request_method character varying(10),
     staff_id bigint NOT NULL,
-    oper_name character varying(50) NOT NULL,
+    staff_name character varying(50) NOT NULL,
     oper_url character varying(200) NOT NULL,
     oper_ip inet NOT NULL,
     oper_location character varying(100),
@@ -666,16 +666,16 @@ COMMENT ON COLUMN biz.staff_operate_log.request_method IS '请求方式';
 -- Name: COLUMN staff_operate_log.staff_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.staff_operate_log.staff_id IS '操作人员ID';
+COMMENT ON COLUMN biz.staff_operate_log.staff_id IS '职工ID';
 
 
 --
 -- TOC entry 3449 (class 0 OID 0)
 -- Dependencies: 224
--- Name: COLUMN staff_operate_log.oper_name; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN staff_operate_log.staff_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.staff_operate_log.oper_name IS '操作人员';
+COMMENT ON COLUMN biz.staff_operate_log.staff_name IS '用户名';
 
 
 --
@@ -994,7 +994,7 @@ CREATE TABLE biz.user_operate_log (
     method character varying(100),
     request_method character varying(10),
     user_id bigint NOT NULL,
-    oper_name character varying(50) NOT NULL,
+    username character varying(50) NOT NULL,
     oper_url character varying(200) NOT NULL,
     oper_ip inet NOT NULL,
     oper_location character varying(100),
@@ -1077,16 +1077,16 @@ COMMENT ON COLUMN biz.user_operate_log.request_method IS '请求方式';
 -- Name: COLUMN user_operate_log.user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.user_operate_log.user_id IS '操作人员ID';
+COMMENT ON COLUMN biz.user_operate_log.user_id IS '用户ID';
 
 
 --
 -- TOC entry 3487 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN user_operate_log.oper_name; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN user_operate_log.username; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.user_operate_log.oper_name IS '操作人员';
+COMMENT ON COLUMN biz.user_operate_log.username IS '用户名';
 
 
 --
@@ -1228,8 +1228,6 @@ COPY biz.notification_info (notification_id, notification_type, title, content, 
 --
 
 COPY biz.notification_to_user (notification_id, user_id, read) FROM stdin;
-1968228585309929473	1	f
-1978377607840497666	1910557183820165120	f
 \.
 
 
@@ -1249,7 +1247,7 @@ COPY biz.staff_login_log (log_id, staff_id, staff_name, login_type, success, err
 -- Data for Name: staff_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.staff_operate_log (oper_id, title, sub_title, oper_type, method, request_method, staff_id, oper_name, oper_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, tenant_id) FROM stdin;
+COPY biz.staff_operate_log (oper_id, title, sub_title, oper_type, method, request_method, staff_id, staff_name, oper_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, tenant_id) FROM stdin;
 \.
 
 
@@ -1260,13 +1258,6 @@ COPY biz.staff_operate_log (oper_id, title, sub_title, oper_type, method, reques
 --
 
 COPY biz.user_chat_message (chat_id, receiver_id, sender_id, send_time, receive_time, read, message_type, content, media_format) FROM stdin;
-1968241396543090690	1968228585288978433	1	2025-09-17 17:11:31.734+08	\N	f	text	\\x3131	text
-1968251927446396930	1968228585288978433	1	2025-09-17 17:53:22.504+08	\N	f	text	\\x31	text
-1968251936606756866	1968228585288978433	1	2025-09-17 17:53:24.701+08	\N	f	text	\\x3232	text
-1968251959142752258	1968228585288978433	1	2025-09-17 17:53:30.073+08	\N	f	text	\\x3333	text
-1968861825020395522	1968228585288978433	1	2025-09-19 10:16:53.409+08	\N	f	text	\\x3131	text
-1970062610391605250	1968228585288978433	1	2025-09-22 17:48:22.96+08	\N	f	text	\\x31	text
-1970062617756803073	1968228585288978433	1	2025-09-22 17:48:24.734+08	\N	f	text	\\x31	text
 \.
 
 
@@ -1286,7 +1277,7 @@ COPY biz.user_login_log (log_id, user_id, username, login_type, success, error_m
 -- Data for Name: user_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.user_operate_log (oper_id, title, sub_title, oper_type, method, request_method, user_id, oper_name, oper_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
+COPY biz.user_operate_log (oper_id, title, sub_title, oper_type, method, request_method, user_id, username, oper_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
 \.
 
 
@@ -1428,7 +1419,7 @@ CREATE UNIQUE INDEX uk_config_info_config_key ON biz.config_info USING btree (co
 CREATE UNIQUE INDEX uk_dictionary_info_dict_key ON biz.dictionary_info USING btree (dict_key);
 
 
--- Completed on 2025-10-15 17:11:15
+-- Completed on 2025-10-22 16:45:21
 
 --
 -- PostgreSQL database dump complete

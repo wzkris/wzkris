@@ -3,7 +3,7 @@ package com.wzkris.message.controller.stafflog.login;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckUserPerms;
+import com.wzkris.common.security.annotation.CheckStaffPerms;
 import com.wzkris.message.domain.StaffLoginLogDO;
 import com.wzkris.message.domain.req.stafflog.StaffLoginLogQueryReq;
 import com.wzkris.message.mapper.StaffLoginLogMapper;
@@ -29,7 +29,7 @@ public class StaffLoginlogManageController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/list")
-    @CheckUserPerms("msg-mod:staff-loginlog-mng:list")
+    @CheckStaffPerms("msg-mod:staff-loginlog-mng:list")
     public Result<Page<StaffLoginLogDO>> list(StaffLoginLogQueryReq queryReq) {
         startPage();
         List<StaffLoginLogDO> list = staffLoginLogService.list(queryReq);
