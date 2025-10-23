@@ -1,6 +1,5 @@
 package com.wzkris.common.weixin.config;
 
-import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.weixin.properties.WxMpProperties;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxRuntimeException;
@@ -8,6 +7,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedissonConfigImpl;
+import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
@@ -30,7 +30,7 @@ public class WxMpConfiguration {
     }
 
     @Bean
-    public WxMpService wxMpService() {
+    public WxMpService wxMpService(RedissonClient redissonClient) {
         // 代码里 getConfigs()处报错的同学，请注意仔细阅读项目说明，你的IDE需要引入lombok插件！！！！
         final List<WxMpProperties.MpConfig> configs = this.properties.getConfigs();
         if (configs == null) {
@@ -42,7 +42,7 @@ public class WxMpConfiguration {
                 .map(a -> {
                     WxMpDefaultConfigImpl configStorage;
                     if (this.properties.isUseRedis()) {
-                        configStorage = new WxMpRedissonConfigImpl(RedisUtil.getClient(), a.getAppId());
+                        configStorage = new WxMpRedissonConfigImpl(redissonClient, a.getAppId());
                     } else {
                         configStorage = new WxMpDefaultConfigImpl();
                     }
