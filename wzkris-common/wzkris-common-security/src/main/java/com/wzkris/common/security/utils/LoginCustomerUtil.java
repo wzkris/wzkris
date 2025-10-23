@@ -34,7 +34,7 @@ public class LoginCustomerUtil extends SecurityUtil {
      */
     public static LoginCustomer get() {
         try {
-            return (LoginCustomer) getAuthentication().getPrincipal();
+            return (LoginCustomer) getPrincipal();
         } catch (Exception e) {
             throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }

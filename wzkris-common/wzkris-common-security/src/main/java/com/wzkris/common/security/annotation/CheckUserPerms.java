@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @CheckPerms(checkType = AuthType.USER)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface CheckUserPerms {
 
     @AliasFor(annotation = CheckPerms.class, attribute = "value")

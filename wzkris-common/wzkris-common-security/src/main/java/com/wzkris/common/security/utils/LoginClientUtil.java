@@ -33,7 +33,7 @@ public class LoginClientUtil extends SecurityUtil {
      */
     public static LoginClient get() {
         try {
-            return (LoginClient) getAuthentication().getPrincipal();
+            return (LoginClient) getPrincipal();
         } catch (Exception e) {
             throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }

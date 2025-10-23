@@ -34,7 +34,7 @@ public class LoginStaffUtil extends SecurityUtil {
      */
     public static LoginStaff get() {
         try {
-            return (LoginStaff) getAuthentication().getPrincipal();
+            return (LoginStaff) getPrincipal();
         } catch (Exception e) {
             throw new UserException(401, "forbidden.accessDenied.tokenExpired");
         }

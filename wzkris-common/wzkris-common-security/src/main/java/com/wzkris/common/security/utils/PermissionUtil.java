@@ -1,7 +1,6 @@
-package com.wzkris.common.security.oauth2.utils;
+package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.model.CorePrincipal;
-import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.annotation.Nullable;
 
 import java.util.Collection;

@@ -6,7 +6,7 @@ import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.annotation.FieldPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 import com.wzkris.common.security.annotation.enums.Rw;
-import com.wzkris.common.security.oauth2.utils.PermissionUtil;
+import com.wzkris.common.security.utils.PermissionUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -17,17 +17,17 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 字段权限注解
+ * @description : 字段权限注解切面（优化版）
  * @since 2024/12/26 16：20
  */
 @Slf4j
@@ -35,164 +35,85 @@ import java.util.Map;
 @Order(1)
 public class FieldPermsAspect {
 
-    // 判断是否是基本类型或包装类（如 int, Integer, boolean, Boolean 等）
-    public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
-        return clazz.isPrimitive()
-                || clazz == Integer.class
-                || clazz == Long.class
-                || clazz == Short.class
-                || clazz == Double.class
-                || clazz == Float.class
-                || clazz == Boolean.class
-                || clazz == Character.class
-                || clazz == Byte.class
-                || clazz == String.class;
-    }
-
     @Around("@annotation(fieldPerms) || @within(fieldPerms)")
     public Object around(ProceedingJoinPoint point, FieldPerms fieldPerms) throws Throwable {
-        if (fieldPerms == null) {
-            fieldPerms = AnnotationUtils.findAnnotation(
-                    ((MethodSignature) point.getSignature()).getMethod(), FieldPerms.class);
-        }
+        fieldPerms = fieldPerms != null ? fieldPerms : getAnnotation(point);
 
-        boolean write = false, read = false;
+        boolean hasWrite = hasPermission(fieldPerms, Rw.WRITE);
+        boolean hasRead = hasPermission(fieldPerms, Rw.READ);
 
-        for (Rw perms : fieldPerms.rw()) {
-            if (perms == Rw.WRITE) {
-                write = true;
-            }
-            if (perms == Rw.READ) {
-                read = true;
-            }
-        }
+        if (hasWrite) processArgs(point.getArgs());
+        Object result = point.proceed();
+        if (hasRead) processResult(result);
 
-        if (write) {
-            this.handleWritePerms(point.getArgs());
-        }
-
-        Object proceed = point.proceed();
-
-        if (read) {
-            this.handleReadPerms(proceed);
-        }
-
-        return proceed;
+        return result;
     }
 
-    private void handleWritePerms(Object[] objs) throws IllegalAccessException {
-        for (Object obj : objs) {
-            if (obj == null) {
-                continue;
-            }
+    private FieldPerms getAnnotation(ProceedingJoinPoint point) {
+        return AnnotationUtils.findAnnotation(
+                ((MethodSignature) point.getSignature()).getMethod(), FieldPerms.class);
+    }
 
-            if (isPrimitiveOrWrapper(obj.getClass())) { // 只处理方法返回对象类型数据
-                continue;
-            }
+    private boolean hasPermission(FieldPerms fieldPerms, Rw permission) {
+        return Arrays.asList(fieldPerms.rw()).contains(permission);
+    }
 
-            this.doHandleWritePerms(obj);
+    private void processArgs(Object[] args) {
+        Arrays.stream(args)
+                .filter(arg -> arg != null && !isPrimitive(arg.getClass()))
+                .forEach(this::processObject);
+    }
+
+    private void processResult(Object result) {
+        if (result != null && !isPrimitive(result.getClass())) {
+            processObject(result);
         }
     }
 
-    /**
-     * 处理写权限
-     *
-     * @param obj 对象
-     */
-    private void doHandleWritePerms(Object obj) throws IllegalAccessException {
-        if (obj == null) {
-            return;
-        }
+    private void processObject(Object obj) {
+        if (obj == null) return;
 
-        Field[] fields = obj.getClass().getDeclaredFields();
-        for (Field field : fields) {
+        if (obj instanceof Collection) ((Collection<?>) obj).forEach(this::processObject);
+        else if (obj instanceof Map) ((Map<?, ?>) obj).values().forEach(this::processObject);
+        else processFields(obj);
+    }
+
+    private void processFields(Object obj) {
+        for (Field field : obj.getClass().getDeclaredFields()) {
+            if (isSkipField(field)) continue;
+
             CheckPerms checkPerms = AnnotatedElementUtils.findMergedAnnotation(field, CheckPerms.class);
-            if (checkPerms != null) {
-                evaluatePerms(obj, field, checkPerms);
-            } else {
-                if (!isPrimitiveOrWrapper(field.getType())) { // 若是对象则递归其内部属性
-                    this.doHandleWritePerms(FieldUtils.readField(obj, field.getName(), true));
-                }
-            }
+            checkPermission(obj, field, checkPerms);
         }
     }
 
-    private void handleReadPerms(Object proceed) throws IllegalAccessException {
-        if (isPrimitiveOrWrapper(proceed.getClass())) { // 只处理方法返回对象类型数据
-            return;
-        }
-
-        this.doHandleReadPerms(proceed);
-    }
-
-    /**
-     * 处理读权限
-     *
-     * @param obj 对象
-     */
-    private void doHandleReadPerms(Object obj) throws IllegalAccessException {
-        if (obj == null) {
-            return;
-        }
-
-        if (obj instanceof Collection<?> collection) {
-            for (Object o : collection) {
-                if (isPrimitiveOrWrapper(o.getClass())) {
-                    break;
-                }
-                this.doHandleReadPerms(o);
+    private void checkPermission(Object obj, Field field, CheckPerms checkPerms) {
+        try {
+            CorePrincipal principal = SecurityUtil.getPrincipal();
+            if (principal == null || !StringUtil.equals(principal.getType(), checkPerms.checkType().getValue())) {
+                return;
             }
-        } else if (obj instanceof Map<?, ?>) {
-            log.warn("不支持返回值为Map类型的字段权限");
-        } else { // 获取对象的类信息
-            Class<?> clazz = obj.getClass();
 
-            for (Field field : clazz.getDeclaredFields()) {
-                // static 或 final 或 transient 跳过
-                if (Modifier.isStatic(field.getModifiers())
-                        || Modifier.isFinal(field.getModifiers())
-                        || Modifier.isTransient(field.getModifiers())) {
-                    continue;
-                }
-                CheckPerms checkPerms = AnnotatedElementUtils.findMergedAnnotation(field, CheckPerms.class);
-                if (checkPerms != null) {
-                    evaluatePerms(obj, field, checkPerms);
-                } else {
-                    // 为空则需要判断是否是基本类型
-                    if (!isPrimitiveOrWrapper(field.getType())) {
-                        this.doHandleReadPerms(FieldUtils.readField(obj, field.getName(), true));
-                    }
-                }
-            }
-        }
-    }
+            boolean hasPerm = checkPerms.mode() == CheckMode.AND ?
+                    PermissionUtil.hasPerms(checkPerms.value()) :
+                    PermissionUtil.hasPermsOr(checkPerms.value());
 
-    /**
-     * 权限评估
-     *
-     * @param obj        对象
-     * @param field      字段
-     * @param checkPerms 权限注解
-     */
-    private void evaluatePerms(Object obj, Field field, CheckPerms checkPerms) throws IllegalAccessException {
-        CorePrincipal principal = SecurityUtil.getPrincipal();
-
-        if (!StringUtil.equals(principal.getType(), checkPerms.checkType().getValue())) {
-            throw new AccessDeniedException(
-                    "Principal needs checkType :" + checkPerms.checkType().getValue() + " , but have :" + principal.getType());
-        }
-
-        if (checkPerms.mode() == CheckMode.AND) {
-            if (!PermissionUtil.hasPerms(checkPerms.value())) {
+            if (!hasPerm) {
                 FieldUtils.writeField(field, obj, null, true);
             }
+        } catch (IllegalAccessException e) {
+            log.warn("字段权限反射失败", e);
         }
+    }
 
-        if (checkPerms.mode() == CheckMode.OR) {
-            if (!PermissionUtil.hasPermsOr(checkPerms.value())) {
-                FieldUtils.writeField(field, obj, null, true);
-            }
-        }
+    private boolean isPrimitive(Class<?> clazz) {
+        return clazz.isPrimitive() || clazz == String.class ||
+                Number.class.isAssignableFrom(clazz) || clazz == Boolean.class;
+    }
+
+    private boolean isSkipField(Field field) {
+        int mod = field.getModifiers();
+        return Modifier.isStatic(mod) || Modifier.isFinal(mod);
     }
 
 }

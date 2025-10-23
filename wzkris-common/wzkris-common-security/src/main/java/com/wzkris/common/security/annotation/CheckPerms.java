@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * @author wzkris
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface CheckPerms {
 
     /**
