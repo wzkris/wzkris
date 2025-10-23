@@ -14,6 +14,8 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 @Slf4j
 @Aspect
 public class GlobalCacheEvictAspect {
@@ -22,19 +24,39 @@ public class GlobalCacheEvictAspect {
 
     private final ExpressionParser spel = new SpelExpressionParser();
 
+    private final ConcurrentHashMap<String, org.springframework.expression.Expression> EXPRESSION_CACHE = new ConcurrentHashMap<>();
+
     @Autowired
     private RedissonClient redissonClient;
 
     @After("@annotation(globalCacheEvict)")
     public void after(JoinPoint point, GlobalCacheEvict globalCacheEvict) {
-        // 拼接key并获取数据
-        String globalKey = globalCacheEvict.keyPrefix();
-        if (StringUtils.isNotBlank(globalCacheEvict.key())) {
-            String key = spel.parseExpression(globalCacheEvict.key()).getValue(this.createContext(), String.class);
-            globalKey = globalKey + ":" + key;
-        }
+        String methodName = point.getSignature().getName();
 
-        redissonClient.getBucket(globalKey).delete();
+        try {
+            // 拼接key并获取数据
+            String globalKey = globalCacheEvict.keyPrefix();
+            if (StringUtils.isNotBlank(globalCacheEvict.key())) {
+                String key = evaluateExpression(globalCacheEvict.key());
+                globalKey = globalKey + ":" + key;
+            }
+
+            redissonClient.getBucket(globalKey).delete();
+        } catch (Exception e) {
+            log.error("缓存驱逐切面执行异常，方法: {}", methodName, e);
+        }
+    }
+
+    /**
+     * 评估SpEL表达式，使用缓存避免重复解析
+     */
+    private String evaluateExpression(String expression) {
+        org.springframework.expression.Expression cachedExpression = EXPRESSION_CACHE.get(expression);
+        if (cachedExpression == null) {
+            cachedExpression = spel.parseExpression(expression);
+            EXPRESSION_CACHE.put(expression, cachedExpression);
+        }
+        return cachedExpression.getValue(this.createContext(), String.class);
     }
 
     private StandardEvaluationContext createContext() {

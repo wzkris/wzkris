@@ -18,6 +18,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 全局缓存切面
@@ -32,6 +33,8 @@ public class GlobalCacheAspect {
     private static volatile StandardEvaluationContext context;
 
     private final ExpressionParser spel = new SpelExpressionParser();
+
+    private final ConcurrentHashMap<String, org.springframework.expression.Expression> EXPRESSION_CACHE = new ConcurrentHashMap<>();
 
     @Autowired
     private RedissonClient redissonClient;
@@ -49,39 +52,60 @@ public class GlobalCacheAspect {
                 bucket.set(proceedResult);
             }
         } else {
-            bucket.set(null, Duration.ofSeconds(15));// null值缓存15s
+            // null值缓存15s，避免缓存穿透
+            bucket.set(null, Duration.ofSeconds(15));
         }
         return proceedResult;
     }
 
     @Around("@annotation(globalCache)")
     public Object around(ProceedingJoinPoint point, GlobalCache globalCache) throws Throwable {
-        // 拼接key并获取数据
-        String globalKey = globalCache.keyPrefix();
-        if (StringUtils.isNotBlank(globalCache.key())) {
-            String key = spel.parseExpression(globalCache.key()).getValue(this.createContext(), String.class);
-            globalKey = globalKey + ":" + key;
-        }
+        String methodName = point.getSignature().getName();
 
-        RBucket<Object> bucket = redissonClient.getBucket(globalKey);
-        if (bucket.isExists()) {
-            return bucket.get();
-        }
+        try {
+            // 拼接key并获取数据
+            String globalKey = globalCache.keyPrefix();
+            if (StringUtils.isNotBlank(globalCache.key())) {
+                String key = evaluateExpression(globalCache.key());
+                globalKey = globalKey + ":" + key;
+            }
 
-        // 数据不存在需要执行方法并回写缓存
-        Object o;
-        if (globalCache.sync()) {
-            o = DistLockTemplate.lockAndExecute(globalKey, 1_500, (ThrowableSupplier<Object, Throwable>) () -> {
-                if (bucket.isExists()) {
-                    return bucket.get();
-                }
-                return proceedAndRewrite(point, globalCache.ttl(), bucket);
-            });
-        } else {
-            o = proceedAndRewrite(point, globalCache.ttl(), bucket);
-        }
+            RBucket<Object> bucket = redissonClient.getBucket(globalKey);
+            if (bucket.isExists()) {
+                return bucket.get();
+            }
 
-        return o;
+            // 数据不存在需要执行方法并回写缓存
+            Object result;
+            if (globalCache.sync()) {
+                result = DistLockTemplate.lockAndExecute(globalKey, 1_500, (ThrowableSupplier<Object, Throwable>) () -> {
+                    if (bucket.isExists()) {
+                        return bucket.get();
+                    }
+                    return proceedAndRewrite(point, globalCache.ttl(), bucket);
+                });
+            } else {
+                result = proceedAndRewrite(point, globalCache.ttl(), bucket);
+            }
+
+            return result;
+        } catch (Exception e) {
+            log.error("缓存切面执行异常，方法: {}", methodName, e);
+            throw e;
+        }
+    }
+
+    /**
+     * 评估SpEL表达式，使用缓存避免重复解析
+     */
+    private String evaluateExpression(String expression) {
+        // 先从缓存中获取已解析的表达式
+        org.springframework.expression.Expression cachedExpression = EXPRESSION_CACHE.get(expression);
+        if (cachedExpression == null) {
+            cachedExpression = spel.parseExpression(expression);
+            EXPRESSION_CACHE.put(expression, cachedExpression);
+        }
+        return cachedExpression.getValue(this.createContext(), String.class);
     }
 
     private StandardEvaluationContext createContext() {
