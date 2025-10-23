@@ -1,11 +1,9 @@
 package com.wzkris.common.redis.util;
 
 import com.wzkris.common.core.function.ThrowableSupplier;
-import com.wzkris.common.core.utils.SpringUtil;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -19,9 +17,6 @@ import java.util.function.Supplier;
 public abstract class DistLockTemplate {
 
     private static final String LOCK_KEY_PREFIX = "distlock:";
-
-    private static final RedissonClient redissonclient
-            = SpringUtil.getFactory().getBean(RedissonClient.class);
 
     public static boolean lockAndExecute(final String lockKey, Runnable runnable) {
         return lockAndExecute(lockKey, -1, -1, runnable);
@@ -41,7 +36,7 @@ public abstract class DistLockTemplate {
     public static boolean lockAndExecute(final String lockKey, final long waitLockTime,
                                          final long lockTimeout, Runnable runnable) {
         try {
-            RLock lock = redissonclient.getLock(getLockKey(lockKey));
+            RLock lock = RedisUtil.getLock(getLockKey(lockKey));
             boolean res = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
             if (!res) {
                 return false;
@@ -54,6 +49,7 @@ public abstract class DistLockTemplate {
             }
         } catch (InterruptedException e) {
             log.error("线程发生中断", e);
+            Thread.currentThread().interrupt();
             return false;
         }
     }
@@ -84,7 +80,7 @@ public abstract class DistLockTemplate {
     public static <T> T lockAndExecute(final String lockKey, final long waitLockTime,
                                        final long lockTimeout, Supplier<T> supplier) {
         try {
-            RLock lock = redissonclient.getLock(getLockKey(lockKey));
+            RLock lock = RedisUtil.getLock(getLockKey(lockKey));
             boolean res = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
             if (!res) {
                 return null;
@@ -96,6 +92,7 @@ public abstract class DistLockTemplate {
             }
         } catch (InterruptedException e) {
             log.error("线程发生中断", e);
+            Thread.currentThread().interrupt();
             return null;
         }
     }
@@ -119,7 +116,7 @@ public abstract class DistLockTemplate {
     public static <T> T lockAndExecute(final String lockKey, final long waitLockTime,
                                        final long lockTimeout, ThrowableSupplier<T, Throwable> throwableSupplier) throws Throwable {
         try {
-            RLock lock = redissonclient.getLock(getLockKey(lockKey));
+            RLock lock = RedisUtil.getLock(getLockKey(lockKey));
             boolean res = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
             if (!res) {
                 return null;
@@ -131,6 +128,7 @@ public abstract class DistLockTemplate {
             }
         } catch (InterruptedException e) {
             log.error("线程发生中断", e);
+            Thread.currentThread().interrupt();
             return null;
         }
     }
