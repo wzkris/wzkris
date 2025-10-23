@@ -70,23 +70,23 @@ public class TokenService {
         RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildInfoKey(id));
         userinfo.setAsync(principal, Duration.ofSeconds(refreshTTL));
 
-        // 处理在线会话（必须用同步 get，否则批量不会执行）
-        RMapCache<String, OnlineUser> onlineCache = redissonClient.getMapCache(buildOnlineKey(id));
-        OnlineUser existing = onlineCache.get(refreshToken);
-
+        // 处理在线会话 - 使用批量操作检查是否存在
         RMapCacheAsync<String, OnlineUser> onlineCacheAsync = batch.getMapCache(buildOnlineKey(id));
-        if (existing == null) {
-            // 新建会话
-            onlineCacheAsync.putAsync(refreshToken, new OnlineUser(), refreshTTL, TimeUnit.SECONDS);
-        } else {
-            // 已存在则仅刷新过期时间
-            onlineCacheAsync.expireEntryAsync(refreshToken, Duration.ofSeconds(refreshTTL), Duration.ZERO);
-        }
+        // 先检查是否存在，如果存在则刷新过期时间，否则新建
+        onlineCacheAsync.containsKeyAsync(refreshToken).thenAccept(exists -> {
+            if (exists) {
+                // 已存在则仅刷新过期时间
+                onlineCacheAsync.expireEntryAsync(refreshToken, Duration.ofSeconds(refreshTTL), Duration.ZERO);
+            } else {
+                // 新建会话
+                onlineCacheAsync.putAsync(refreshToken, new OnlineUser(), refreshTTL, TimeUnit.SECONDS);
+            }
+        });
 
-        // 执行批处理（此时所有命令都被加入 batch）
-        batch.execute();
+        // 执行用户相关数据的批量操作（同一分片）
+        batch.executeAsync();
 
-        // ========== 2️⃣ 写入 AccessToken 与 RefreshToken 映射 ==========
+        // ========== 2️⃣ 处理Token映射（不同分片，单独操作） ==========
         RBucket<TokenBody> accessTokenBucket = redissonClient.getBucket(buildAccessTokenKey(accessToken));
         accessTokenBucket.setAsync(new TokenBody(id, refreshToken), Duration.ofSeconds(accessTTL));
 
@@ -159,25 +159,26 @@ public class TokenService {
         Serializable id = tokenBody.getId();
         String refreshToken = tokenBody.getToken();
 
-        // 删除Token（独立键）
+        // 删除Token映射（不同分片，单独操作）
         redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
         redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).delete();
 
-        // 创建批量操作对象
+        // ========== 批量操作删除用户相关数据（同一分片） ==========
         RBatch batch = redissonClient.createBatch();
 
-        // 删除会话
-        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineKey(id));
+        // 删除在线会话
+        RMapCacheAsync<String, Object> onlineCacheAsync = batch.getMapCache(buildOnlineKey(id));
+        onlineCacheAsync.removeAsync(refreshToken);
 
-        mapCacheAsync.removeAsync(refreshToken);
-
-        mapCacheAsync.sizeAsync().thenAccept(size -> {
+        // 检查是否还有其他会话，如果没有则删除用户信息
+        onlineCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                redissonClient.getBucket(buildInfoKey(tokenBody.getId())).delete();
+                batch.getBucket(buildInfoKey(id)).deleteAsync();
             }
         });
 
-        batch.execute();
+        // 执行批量删除操作
+        batch.executeAsync();
         return id;
     }
 
@@ -193,25 +194,26 @@ public class TokenService {
         Serializable id = tokenBody.getId();
         String accessToken = tokenBody.getToken();
 
-        // 删除Token（独立键）
+        // 删除Token映射（不同分片，单独操作）
         redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
         redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).delete();
 
-        // 创建批量操作对象
+        // ========== 批量操作删除用户相关数据（同一分片） ==========
         RBatch batch = redissonClient.createBatch();
 
-        // 删除会话
-        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineKey(id));
+        // 删除在线会话
+        RMapCacheAsync<String, Object> onlineCacheAsync = batch.getMapCache(buildOnlineKey(id));
+        onlineCacheAsync.removeAsync(refreshToken);
 
-        mapCacheAsync.removeAsync(refreshToken);
-
-        mapCacheAsync.sizeAsync().thenAccept(size -> {
+        // 检查是否还有其他会话，如果没有则删除用户信息
+        onlineCacheAsync.sizeAsync().thenAccept(size -> {
             if (size == 0) {
-                redissonClient.getBucket(buildInfoKey(tokenBody.getId())).delete();
+                batch.getBucket(buildInfoKey(id)).deleteAsync();
             }
         });
 
-        batch.execute();
+        // 执行批量删除操作
+        batch.executeAsync();
     }
 
     /**
