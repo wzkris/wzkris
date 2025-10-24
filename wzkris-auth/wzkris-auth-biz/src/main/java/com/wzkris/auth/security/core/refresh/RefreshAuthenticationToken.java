@@ -2,7 +2,7 @@ package com.wzkris.auth.security.core.refresh;
 
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
 
@@ -21,7 +21,7 @@ public final class RefreshAuthenticationToken extends CommonAuthenticationToken 
         this(refreshToken, null);
     }
 
-    public RefreshAuthenticationToken(String refreshToken, CorePrincipal principal) {
+    public RefreshAuthenticationToken(String refreshToken, MyPrincipal principal) {
         super(null, principal);
         this.refreshToken = refreshToken;
     }

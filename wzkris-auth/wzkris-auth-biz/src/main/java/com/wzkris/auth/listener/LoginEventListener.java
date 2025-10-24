@@ -4,7 +4,7 @@ import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
 import com.wzkris.common.core.model.domain.LoginUser;
@@ -53,7 +53,7 @@ public class LoginEventListener {
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final CorePrincipal principal = event.getPrincipal();
+        final MyPrincipal principal = event.getPrincipal();
         log.info("'{}' 发生登录事件", principal);
 
         if (StringUtil.equals(principal.getType(), AuthType.USER.getValue())) {

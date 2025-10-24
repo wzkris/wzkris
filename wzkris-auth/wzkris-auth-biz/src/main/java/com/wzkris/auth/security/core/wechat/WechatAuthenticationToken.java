@@ -3,7 +3,7 @@ package com.wzkris.auth.security.core.wechat;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
 
@@ -35,7 +35,7 @@ public final class WechatAuthenticationToken extends CommonAuthenticationToken {
     public WechatAuthenticationToken(
             AuthType authType,
             String identifierType,
-            CorePrincipal principal) {
+            MyPrincipal principal) {
         super(null, principal);
         this.authType = authType;
         this.identifierType = identifierType;

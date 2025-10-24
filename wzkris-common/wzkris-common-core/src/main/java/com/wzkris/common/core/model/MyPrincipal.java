@@ -6,12 +6,12 @@ import java.security.Principal;
 import java.util.Set;
 
 /**
- * 用户核心信息
+ * 核心信息
  *
  * @author wzkris
  */
 @Getter
-public abstract class CorePrincipal implements Principal {
+public abstract class MyPrincipal implements Principal {
 
     private final Long id;
 
@@ -19,7 +19,7 @@ public abstract class CorePrincipal implements Principal {
 
     private final Set<String> permissions;
 
-    public CorePrincipal(Long id, String type, Set<String> permissions) {
+    public MyPrincipal(Long id, String type, Set<String> permissions) {
         this.id = id;
         this.type = type;
         this.permissions = permissions;

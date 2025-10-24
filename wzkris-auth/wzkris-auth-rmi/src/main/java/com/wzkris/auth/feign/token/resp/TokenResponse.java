@@ -1,6 +1,6 @@
 package com.wzkris.auth.feign.token.resp;
 
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Getter
 @ToString
-public class TokenResponse<T extends CorePrincipal> implements Serializable {
+public class TokenResponse<T extends MyPrincipal> implements Serializable {
 
     static final String SUCCESS = "success";
 
@@ -40,27 +40,27 @@ public class TokenResponse<T extends CorePrincipal> implements Serializable {
         this.success = SUCCESS.equals(errorCode);
     }
 
-    static <T extends CorePrincipal> TokenResponse<T> resp(String errorCode, String description, T principal) {
+    static <T extends MyPrincipal> TokenResponse<T> resp(String errorCode, String description, T principal) {
         return new TokenResponse<>(errorCode, description, principal);
     }
 
-    public static <T extends CorePrincipal> TokenResponse<T> ok(T principal) {
+    public static <T extends MyPrincipal> TokenResponse<T> ok(T principal) {
         return resp(SUCCESS, null, principal);
     }
 
-    public static <T extends CorePrincipal> TokenResponse<T> okAnonymous() {
+    public static <T extends MyPrincipal> TokenResponse<T> okAnonymous() {
         return resp(SUCCESS, null, null);
     }
 
-    public static <T extends CorePrincipal> TokenResponse<T> error(String errorCode, String description) {
+    public static <T extends MyPrincipal> TokenResponse<T> error(String errorCode, String description) {
         return resp(errorCode, description, null);
     }
 
-    public static <T extends CorePrincipal> TokenResponse<T> unavailable(String description) {
+    public static <T extends MyPrincipal> TokenResponse<T> unavailable(String description) {
         return error(TEMPORARILY_UNAVAILABLE, description);
     }
 
-    public static <T extends CorePrincipal> TokenResponse<T> fallback(String description) {
+    public static <T extends MyPrincipal> TokenResponse<T> fallback(String description) {
         return error(FALL_BACK, description);
     }
 

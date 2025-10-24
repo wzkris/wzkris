@@ -1,7 +1,7 @@
 package com.wzkris.common.core.model.domain;
 
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,7 +18,7 @@ import java.util.Set;
 @Setter
 @Getter
 @ToString
-public class LoginCustomer extends CorePrincipal {
+public class LoginCustomer extends MyPrincipal {
 
     /**
      * 手机号

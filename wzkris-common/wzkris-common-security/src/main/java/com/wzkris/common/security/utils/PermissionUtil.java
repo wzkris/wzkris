@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import jakarta.annotation.Nullable;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Collection;
 public class PermissionUtil {
 
     public static boolean hasPerms(String... permissions) {
-        CorePrincipal principal = SecurityUtil.getPrincipal();
+        MyPrincipal principal = SecurityUtil.getPrincipal();
 
         if (principal == null) {
             return false;
@@ -48,7 +48,7 @@ public class PermissionUtil {
     }
 
     public static boolean hasPermsOr(String... permissions) {
-        CorePrincipal principal = SecurityUtil.getPrincipal();
+        MyPrincipal principal = SecurityUtil.getPrincipal();
 
         if (principal == null) {
             return false;

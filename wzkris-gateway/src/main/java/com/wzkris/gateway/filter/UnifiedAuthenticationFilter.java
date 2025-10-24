@@ -7,7 +7,7 @@ import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.BizBaseCode;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
@@ -122,7 +122,7 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
     /**
      * 执行Token认证并继续过滤器链
      */
-    private <T extends CorePrincipal> Mono<Void> authenticateAndProceed(
+    private <T extends MyPrincipal> Mono<Void> authenticateAndProceed(
             ServerWebExchange exchange,
             GatewayFilterChain chain,
             String token,
@@ -131,7 +131,7 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
         return validatePrincipal(token, typeReference)
                 .flatMap(tokenResponse -> {
                     if (tokenResponse != null && tokenResponse.isSuccess()) {
-                        CorePrincipal principal = tokenResponse.getPrincipal();
+                        MyPrincipal principal = tokenResponse.getPrincipal();
 
                         // 添加用户信息和Token类型到请求头
                         ServerHttpRequest newRequest = exchange.getRequest().mutate()
@@ -156,7 +156,7 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
     /**
      * 调用认证服务验证Token
      */
-    private <T extends CorePrincipal> Mono<TokenResponse<T>> validatePrincipal(
+    private <T extends MyPrincipal> Mono<TokenResponse<T>> validatePrincipal(
             String token,
             ParameterizedTypeReference<TokenResponse<T>> typeReference) {
         TokenReq tokenReq = new TokenReq(token);

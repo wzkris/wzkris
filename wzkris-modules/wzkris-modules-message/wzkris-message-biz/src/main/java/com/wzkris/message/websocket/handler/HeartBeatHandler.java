@@ -1,6 +1,6 @@
 package com.wzkris.message.websocket.handler;
 
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.message.utils.WebSocketSessionHolder;
 import com.wzkris.message.websocket.BaseWebSocketHandler;
 import com.wzkris.message.websocket.protocol.WsMessage;
@@ -25,7 +25,7 @@ public class HeartBeatHandler extends BaseWebSocketHandler {
         log.info("收到客户端心跳，数据长度: {}", message.getLength());
 
         // 处理多连接检测
-        CorePrincipal principal = getLoginInfo(session);
+        MyPrincipal principal = getLoginInfo(session);
         WebSocketSession current = WebSocketSessionHolder.getSession(principal.getId());
 
         if (current != null && !current.getId().equals(session.getId())) {

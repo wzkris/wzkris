@@ -8,7 +8,7 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.enums.BizBaseCode;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginStaff;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -45,7 +45,7 @@ public class LoginStaffService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public CorePrincipal loadUserByPhoneNumber(String phoneNumber) {
+    public MyPrincipal loadUserByPhoneNumber(String phoneNumber) {
         StaffInfoResp staffResp = staffInfoFeign.getByPhoneNumber(phoneNumber);
 
         if (staffResp == null) {
@@ -63,7 +63,7 @@ public class LoginStaffService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public CorePrincipal loadByUsernameAndPassword(String staffName, String password) throws UsernameNotFoundException {
+    public MyPrincipal loadByUsernameAndPassword(String staffName, String password) throws UsernameNotFoundException {
         StaffInfoResp staffResp = staffInfoFeign.getByStaffName(staffName);
 
         if (staffResp == null) {

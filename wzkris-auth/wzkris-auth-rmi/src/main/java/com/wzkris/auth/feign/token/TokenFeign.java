@@ -3,7 +3,7 @@ package com.wzkris.auth.feign.token;
 import com.wzkris.auth.feign.token.fallback.TokenFeignFallback;
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import jakarta.validation.Valid;
@@ -32,6 +32,6 @@ public interface TokenFeign {
      * 校验token
      */
     @PostMapping("/check-principal")
-    TokenResponse<CorePrincipal> validatePrincipal(@Valid @RequestBody TokenReq tokenReq);
+    TokenResponse<MyPrincipal> validatePrincipal(@Valid @RequestBody TokenReq tokenReq);
 
 }

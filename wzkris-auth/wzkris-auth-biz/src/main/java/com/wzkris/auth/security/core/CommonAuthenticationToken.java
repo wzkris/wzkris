@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -14,13 +14,13 @@ import java.util.Collection;
  */
 public abstract class CommonAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final CorePrincipal principal;
+    private final MyPrincipal principal;
 
     protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
         this(authorities, null);
     }
 
-    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities, CorePrincipal principal) {
+    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities, MyPrincipal principal) {
         super(authorities);
         this.principal = principal;
         if (principal != null) {
@@ -31,7 +31,7 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
     public abstract String getLoginType();
 
     @Override
-    public final CorePrincipal getPrincipal() {
+    public final MyPrincipal getPrincipal() {
         return this.principal;
     }
 

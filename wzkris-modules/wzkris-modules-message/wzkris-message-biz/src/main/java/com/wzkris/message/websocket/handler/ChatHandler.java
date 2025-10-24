@@ -1,6 +1,6 @@
 package com.wzkris.message.websocket.handler;
 
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.message.domain.UserChatMessageDO;
 import com.wzkris.message.mapper.UserChatMessageMapper;
 import com.wzkris.message.utils.WebSocketSessionHolder;
@@ -28,7 +28,7 @@ public class ChatHandler extends BaseWebSocketHandler {
 
     public void handle(WebSocketSession session, WsMessage wsMessage, BiConsumer<WebSocketSession, CloseStatus> closeSession) {
         try {
-            CorePrincipal senderInfo = getLoginInfo(session);
+            MyPrincipal senderInfo = getLoginInfo(session);
 
             // 解析聊天消息
             ChatMessage chatMessage = ChatMessage.fromWsMessage(wsMessage);

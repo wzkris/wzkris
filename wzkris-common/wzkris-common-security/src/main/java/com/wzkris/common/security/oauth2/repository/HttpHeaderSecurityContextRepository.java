@@ -1,7 +1,7 @@
 package com.wzkris.common.security.oauth2.repository;
 
 import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
 import com.wzkris.common.core.model.domain.LoginUser;
@@ -98,7 +98,7 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
         return false;
     }
 
-    private Authentication createAuthentication(CorePrincipal principal, HttpServletRequest request, String token) {
+    private Authentication createAuthentication(MyPrincipal principal, HttpServletRequest request, String token) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, token,
                 AuthorityUtils.createAuthorityList((principal).getPermissions()));
         authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));

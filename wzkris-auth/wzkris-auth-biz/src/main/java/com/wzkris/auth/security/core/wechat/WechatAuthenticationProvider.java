@@ -6,7 +6,7 @@ import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -52,7 +52,7 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
             return null; // never run this line
         }
 
-        CorePrincipal principal = templateOptional
+        MyPrincipal principal = templateOptional
                 .get()
                 .loadUserByWechat(authenticationToken.getIdentifierType(), authenticationToken.getWxCode());
 

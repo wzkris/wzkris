@@ -2,7 +2,7 @@ package com.wzkris.auth.service;
 
 import com.wzkris.auth.domain.OnlineUser;
 import com.wzkris.auth.security.config.TokenProperties;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import jakarta.annotation.Nullable;
 import lombok.Data;
 import org.redisson.api.*;
@@ -58,7 +58,7 @@ public class TokenService {
      * @param accessToken  token
      * @param refreshToken token
      */
-    public final void save(CorePrincipal principal, String accessToken, String refreshToken) {
+    public final void save(MyPrincipal principal, String accessToken, String refreshToken) {
         Serializable id = principal.getId();
         long refreshTTL = tokenProperties.getUserRefreshTokenTimeOut();
         long accessTTL = tokenProperties.getUserTokenTimeOut();
@@ -67,7 +67,7 @@ public class TokenService {
         RBatch batch = redissonClient.createBatch();
 
         // 保存用户主信息（带过期）
-        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildInfoKey(id));
+        RBucketAsync<MyPrincipal> userinfo = batch.getBucket(buildInfoKey(id));
         userinfo.setAsync(principal, Duration.ofSeconds(refreshTTL));
 
         // 处理在线会话 - 使用批量操作检查是否存在
@@ -107,11 +107,11 @@ public class TokenService {
      * @param accessToken token
      */
     @Nullable
-    public final CorePrincipal loadByAccessToken(String accessToken) {
+    public final MyPrincipal loadByAccessToken(String accessToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
         if (tokenBody == null) return null;
 
-        return (CorePrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
+        return (MyPrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
     }
 
     /**
@@ -120,11 +120,11 @@ public class TokenService {
      * @param refreshToken token
      */
     @Nullable
-    public final CorePrincipal loadByRefreshToken(String refreshToken) {
+    public final MyPrincipal loadByRefreshToken(String refreshToken) {
         TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
         if (tokenBody == null) return null;
 
-        return (CorePrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
+        return (MyPrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
     }
 
     /**

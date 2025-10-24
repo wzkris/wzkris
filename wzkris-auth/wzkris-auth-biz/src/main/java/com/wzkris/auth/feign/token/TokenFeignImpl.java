@@ -3,7 +3,7 @@ package com.wzkris.auth.feign.token;
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginClient;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +53,8 @@ public class TokenFeignImpl implements TokenFeign {
     }
 
     @Override
-    public TokenResponse<CorePrincipal> validatePrincipal(TokenReq tokenReq) {
-        CorePrincipal principal = tokenService.loadByAccessToken(tokenReq.getToken());
+    public TokenResponse<MyPrincipal> validatePrincipal(TokenReq tokenReq) {
+        MyPrincipal principal = tokenService.loadByAccessToken(tokenReq.getToken());
 
         if (principal == null) {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check failed");

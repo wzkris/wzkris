@@ -1,6 +1,6 @@
 package com.wzkris.common.security.annotation.aspect;
 
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
@@ -64,7 +64,7 @@ public class CheckPermsAspect {
      * 验证权限
      */
     private void validatePermission(CheckPerms checkPerms) {
-        CorePrincipal principal = SecurityUtil.getPrincipal();
+        MyPrincipal principal = SecurityUtil.getPrincipal();
         validatePrincipalType(principal, checkPerms);
 
         String[] fullPerms = buildFullPermissions(checkPerms);
@@ -81,7 +81,7 @@ public class CheckPermsAspect {
     /**
      * 验证主体类型
      */
-    private void validatePrincipalType(CorePrincipal principal, CheckPerms checkPerms) {
+    private void validatePrincipalType(MyPrincipal principal, CheckPerms checkPerms) {
         if (principal == null) {
             throw new AccessDeniedException("未找到认证信息，请先登录");
         }
@@ -124,7 +124,7 @@ public class CheckPermsAspect {
     /**
      * 创建权限拒绝异常
      */
-    private AccessDeniedException createAccessDeniedException(CorePrincipal principal, String[] perms, CheckMode mode) {
+    private AccessDeniedException createAccessDeniedException(MyPrincipal principal, String[] perms, CheckMode mode) {
         String name = principal.getName();
         String type = principal.getType();
 

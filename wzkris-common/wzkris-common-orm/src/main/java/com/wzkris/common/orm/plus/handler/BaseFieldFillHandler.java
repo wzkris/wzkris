@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
-            CorePrincipal principal = SecurityUtil.getPrincipal();
+            MyPrincipal principal = SecurityUtil.getPrincipal();
             fillInsert(principal.getId(), metaObject);
         }
     }
@@ -43,7 +43,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity
                 && SecurityUtil.isAuthenticated()) {
-            CorePrincipal principal = SecurityUtil.getPrincipal();
+            MyPrincipal principal = SecurityUtil.getPrincipal();
             fillUpdate(principal.getId(), metaObject);
         }
     }

@@ -1,7 +1,7 @@
 package com.wzkris.common.core.model.domain;
 
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -16,7 +16,7 @@ import java.util.Set;
  */
 @Getter
 @ToString
-public class LoginClient extends CorePrincipal {
+public class LoginClient extends MyPrincipal {
 
     private final String clientId;
 

@@ -4,7 +4,7 @@ import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.annotation.Nullable;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -95,7 +95,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     }
 
     @Nullable
-    private String generateKey(CorePrincipal principal) {
+    private String generateKey(MyPrincipal principal) {
         if (StringUtil.equalsAny(principal.getType(), AuthType.USER.getValue(), AuthType.STAFF.getValue())) {
             return tokenGenerator.generateKey();
         } else if (principal.getType().equals(AuthType.CUSTOMER.getValue())) {

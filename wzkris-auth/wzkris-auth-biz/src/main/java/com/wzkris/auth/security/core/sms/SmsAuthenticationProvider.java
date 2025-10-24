@@ -8,7 +8,7 @@ import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
@@ -68,7 +68,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
             OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
         }
 
-        CorePrincipal principal = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        MyPrincipal principal = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
         if (principal == null) {
             OAuth2ExceptionUtil.throwErrorI18n(

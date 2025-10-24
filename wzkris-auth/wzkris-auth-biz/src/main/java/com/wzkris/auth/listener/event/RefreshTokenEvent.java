@@ -1,6 +1,6 @@
 package com.wzkris.auth.listener.event;
 
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class RefreshTokenEvent {
 
-    private CorePrincipal principal;
+    private MyPrincipal principal;
 
     private String accessToken;
 
