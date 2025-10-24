@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Collections;
 import java.util.HashSet;
 
 @Service
@@ -100,12 +101,11 @@ public class LoginUserService extends UserInfoTemplate {
         UserPermissionResp permissions = userInfoFeign.getPermission(
                 new QueryUserPermsReq(userResp.getUserId(), userResp.getDeptId()));
 
-        LoginUser loginUser = new LoginUser(userResp.getUserId(), new HashSet<>(permissions.getGrantedAuthority()));
-        loginUser.setAdmin(permissions.getAdmin());
-        loginUser.setUsername(userResp.getUsername());
-        loginUser.setDeptScopes(permissions.getDeptScopes());
-
-        return loginUser;
+        return new LoginUser(userResp.getUserId(),
+                new HashSet<>(permissions.getGrantedAuthority()),
+                permissions.getAdmin(),
+                userResp.getUsername(),
+                permissions.getDeptScopes());
     }
 
     /**
@@ -124,8 +124,12 @@ public class LoginUserService extends UserInfoTemplate {
     private void recordFailedLog(UserInfoResp userResp, String loginType, String errorMsg) {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginUser loginUser = new LoginUser(userResp.getUserId(), null);
-        loginUser.setUsername(userResp.getUsername());
+        LoginUser loginUser = new LoginUser(userResp.getUserId(),
+                Collections.emptySet(),
+                false,
+                userResp.getUsername(),
+                null);
+
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         loginUser,

@@ -12,6 +12,8 @@ import java.io.Serializable;
 @Data
 public class OAuth2ClientResp implements Serializable {
 
+    private Long id;
+
     // 客户端id 等价于app_id
     private String clientId;
 

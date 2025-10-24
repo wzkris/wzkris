@@ -1,12 +1,12 @@
 package com.wzkris.common.core.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -16,31 +16,30 @@ import java.util.Set;
  * @date : 2025/10/9 13:30
  */
 @Getter
-@Setter
 @ToString
 public class LoginStaff extends MyPrincipal {
 
-    private boolean admin;
+    private final boolean admin;
 
-    private String staffName;
+    private final String staffName;
 
-    private Long tenantId;
+    private final Long tenantId;
 
-    public LoginStaff() {
-        this(null);
-    }
-
-    public LoginStaff(Long staffId) {
-        this(staffId, Collections.emptySet());
-    }
-
-    public LoginStaff(Long staffId, Set<String> permissions) {
-        super(staffId, AuthType.STAFF.getValue(), permissions);
+    @JsonCreator
+    public LoginStaff(@JsonProperty("id") Long id,
+                      @JsonProperty("permissions") Set<String> permissions,
+                      @JsonProperty("admin") boolean admin,
+                      @JsonProperty("staffName") String staffName,
+                      @JsonProperty("tenantId") Long tenantId) {
+        super(id, AuthType.STAFF.getValue(), permissions);
+        this.admin = admin;
+        this.staffName = staffName;
+        this.tenantId = tenantId;
     }
 
     @Override
     public String getName() {
-        return this.getStaffName();
+        return this.staffName;
     }
 
 }

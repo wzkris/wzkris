@@ -1,12 +1,12 @@
 package com.wzkris.common.core.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -17,26 +17,25 @@ import java.util.Set;
  * @date : 2024/6/14 15:30
  */
 @Getter
-@Setter
 @ToString
 public class LoginUser extends MyPrincipal {
 
-    private boolean admin;
+    private final boolean admin;
 
-    private String username;
+    private final String username;
 
-    private List<Long> deptScopes;
+    private final List<Long> deptScopes;
 
-    public LoginUser() {
-        this(null);
-    }
-
-    public LoginUser(Long userId) {
-        this(userId, Collections.emptySet());
-    }
-
-    public LoginUser(Long userId, Set<String> permissions) {
-        super(userId, AuthType.USER.getValue(), permissions);
+    @JsonCreator
+    public LoginUser(@JsonProperty("id") Long id,
+                     @JsonProperty("permissions") Set<String> permissions,
+                     @JsonProperty("admin") boolean admin,
+                     @JsonProperty("username") String username,
+                     @JsonProperty("deptScopes") List<Long> deptScopes) {
+        super(id, AuthType.USER.getValue(), permissions);
+        this.admin = admin;
+        this.username = username;
+        this.deptScopes = deptScopes;
     }
 
     @Override

@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +31,8 @@ public class TokenFeignImpl implements TokenFeign {
 
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
 
+    private final RegisteredClientRepository registeredClientRepository;
+
     @Override
     public TokenResponse<LoginClient> validateClient(TokenReq tokenReq) {
         OAuth2Authorization oAuth2Authorization =
@@ -43,8 +47,11 @@ public class TokenFeignImpl implements TokenFeign {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check expired");
         }
 
-        LoginClient loginClient = new LoginClient(oAuth2Authorization.getRegisteredClientId(),
-                this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
+        RegisteredClient registeredClient = registeredClientRepository
+                .findByClientId(oAuth2Authorization.getRegisteredClientId());
+
+        LoginClient loginClient = new LoginClient(Long.valueOf(registeredClient.getId()),
+                this.buildScopes(oAuth2Authorization.getAuthorizedScopes()), registeredClient.getClientId());
         return TokenResponse.ok(loginClient);
     }
 

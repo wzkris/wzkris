@@ -92,7 +92,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
     }
 
     private RegisteredClient buildRegisteredClient(OAuth2ClientResp oauth2Client) {
-        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2Client.getClientId())
+        RegisteredClient.Builder builder = RegisteredClient.withId(String.valueOf(oauth2Client.getId()))
                 .clientId(oauth2Client.getClientId())
                 .clientSecret(oauth2Client.getClientSecret())
                 .clientAuthenticationMethods(clientAuthenticationMethods -> {

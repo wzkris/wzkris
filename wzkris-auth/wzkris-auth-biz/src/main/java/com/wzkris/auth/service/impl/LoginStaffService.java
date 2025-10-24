@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Collections;
 import java.util.HashSet;
 
 @Service
@@ -100,12 +101,11 @@ public class LoginStaffService extends UserInfoTemplate {
         StaffPermissionResp permissions = staffInfoFeign.getPermission(
                 new QueryStaffPermsReq(staffResp.getStaffId(), staffResp.getTenantId()));
 
-        LoginStaff loginStaff = new LoginStaff(staffResp.getStaffId(), new HashSet<>(permissions.getGrantedAuthority()));
-        loginStaff.setAdmin(permissions.getAdmin());
-        loginStaff.setStaffName(staffResp.getStaffName());
-        loginStaff.setTenantId(staffResp.getTenantId());
-
-        return loginStaff;
+        return new LoginStaff(staffResp.getStaffId(),
+                new HashSet<>(permissions.getGrantedAuthority()),
+                permissions.getAdmin(),
+                staffResp.getStaffName(),
+                staffResp.getTenantId());
     }
 
     /**
@@ -133,9 +133,12 @@ public class LoginStaffService extends UserInfoTemplate {
     private void recordFailedLog(StaffInfoResp staffResp, String loginType, String errorMsg) {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginStaff loginStaff = new LoginStaff(staffResp.getStaffId(), null);
-        loginStaff.setStaffName(staffResp.getStaffName());
-        loginStaff.setTenantId(staffResp.getTenantId());
+        LoginStaff loginStaff = new LoginStaff(staffResp.getStaffId(),
+                Collections.emptySet(),
+                false,
+                staffResp.getStaffName(),
+                staffResp.getTenantId());
+
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         loginStaff,

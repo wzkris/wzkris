@@ -34,6 +34,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Collections;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -126,10 +128,9 @@ public class LoginCustomerService extends UserInfoTemplate {
         // 校验用户状态
         this.checkAccount(customerResp);
 
-        LoginCustomer loginCustomer = new LoginCustomer(customerResp.getCustomerId());
-        loginCustomer.setPhoneNumber(customerResp.getPhoneNumber());
-
-        return loginCustomer;
+        return new LoginCustomer(customerResp.getCustomerId(),
+                Collections.emptySet(),
+                customerResp.getPhoneNumber());
     }
 
     /**
@@ -145,7 +146,10 @@ public class LoginCustomerService extends UserInfoTemplate {
     private void recordFailedLog(CustomerResp customerResp, String loginType, String errorMsg) {
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginCustomer customer = new LoginCustomer(customerResp.getCustomerId());
+        LoginCustomer customer = new LoginCustomer(customerResp.getCustomerId(),
+                Collections.emptySet(),
+                customerResp.getPhoneNumber());
+
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         customer,
