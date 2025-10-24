@@ -61,6 +61,12 @@
             <artifactId>wzkris-common-core</artifactId>
         </dependency>
 
+        <!-- Redis支持 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-auth-rmi</artifactId>

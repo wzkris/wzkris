@@ -62,10 +62,10 @@ public class UnifiedAuthenticationFilter implements GlobalFilter {
 
     private final PermitAllProperties permitAllProperties;
 
+    private final SignkeyProperties signkeyProperties;
+
     @Value("${spring.application.name}")
     private String applicationName;
-
-    private final SignkeyProperties signkeyProperties;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
