@@ -53,9 +53,9 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
                     OAuth2ParameterConstant.SMS_CODE);
         }
 
-        // userType (REQUIRED)
-        String userType = parameters.getFirst(OAuth2ParameterConstant.AUTH_TYPE);
-        if (!StringUtils.hasText(userType)
+        // authType (REQUIRED)
+        String authType = parameters.getFirst(OAuth2ParameterConstant.AUTH_TYPE);
+        if (!StringUtils.hasText(authType)
                 || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCode.MISSING_PARAMETER.value(),

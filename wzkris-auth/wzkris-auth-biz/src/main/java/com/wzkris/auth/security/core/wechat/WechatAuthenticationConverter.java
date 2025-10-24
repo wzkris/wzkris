@@ -53,9 +53,9 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
                     OAuth2ParameterConstant.WX_CODE);
         }
 
-        // userType (REQUIRED)
-        String userType = parameters.getFirst(OAuth2ParameterConstant.AUTH_TYPE);
-        if (!StringUtils.hasText(userType)
+        // authType (REQUIRED)
+        String authType = parameters.getFirst(OAuth2ParameterConstant.AUTH_TYPE);
+        if (!StringUtils.hasText(authType)
                 || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCode.MISSING_PARAMETER.value(),
@@ -67,10 +67,8 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
 
     @Override
     protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
-        String channel = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.CHANNEL));
-        String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WX_CODE));
-        String userType = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthType authType = AuthType.fromValue(userType);
+        String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
+        AuthType authType = AuthType.fromValue(type);
         if (authType == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCode.PARAMETER_ERROR.value(),
@@ -78,6 +76,8 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
+        String channel = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.CHANNEL));
+        String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WX_CODE));
         return new WechatAuthenticationToken(authType, channel, wxCode);
     }
 
