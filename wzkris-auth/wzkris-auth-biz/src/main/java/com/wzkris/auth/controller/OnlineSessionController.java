@@ -1,7 +1,7 @@
 package com.wzkris.auth.controller;
 
-import com.wzkris.auth.domain.OnlineUser;
-import com.wzkris.auth.domain.resp.OnlineUserResp;
+import com.wzkris.auth.domain.OnlineSession;
+import com.wzkris.auth.domain.resp.OnlineSessionResp;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
@@ -31,15 +31,15 @@ public class OnlineSessionController {
 
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineUserResp>> onlineSession() {
+    public Result<Collection<OnlineSessionResp>> onlineSession() {
         String accessToken = SecurityUtil.getTokenValue();
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
 
-        RMapCache<String, OnlineUser> onlineCache = tokenService.getOnlineCache(SecurityUtil.getId());
+        RMapCache<String, OnlineSession> onlineCache = tokenService.getOnlineCache(SecurityUtil.getId());
 
-        List<OnlineUserResp> resps = new ArrayList<>();
-        for (Map.Entry<String, OnlineUser> entry : onlineCache.entrySet()) {
-            OnlineUserResp userResp = new OnlineUserResp(entry.getValue());
+        List<OnlineSessionResp> resps = new ArrayList<>();
+        for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
+            OnlineSessionResp userResp = new OnlineSessionResp(entry.getValue());
             userResp.setRefreshToken(entry.getKey());
             if (StringUtil.equals(refreshToken, entry.getKey())) {
                 userResp.setCurrent(true);

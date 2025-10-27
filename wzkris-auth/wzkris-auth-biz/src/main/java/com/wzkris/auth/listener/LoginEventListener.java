@@ -1,6 +1,6 @@
 package com.wzkris.auth.listener;
 
-import com.wzkris.auth.domain.OnlineUser;
+import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthType;
@@ -9,7 +9,6 @@ import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
 import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.IpUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.message.feign.stafflog.StaffLogFeign;
 import com.wzkris.message.feign.stafflog.req.StaffLoginLogReq;
 import com.wzkris.message.feign.userlog.UserLogFeign;
@@ -26,6 +25,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author : wzkris
@@ -56,11 +56,11 @@ public class LoginEventListener {
         final MyPrincipal principal = event.getPrincipal();
         log.info("'{}' 发生登录事件", principal);
 
-        if (StringUtil.equals(principal.getType(), AuthType.USER.getValue())) {
+        if (Objects.equals(principal.getType(), AuthType.USER)) {
             this.handleLoginUser(event, (LoginUser) principal);
-        } else if (StringUtil.equals(principal.getType(), AuthType.STAFF.getValue())) {
+        } else if (Objects.equals(principal.getType(), AuthType.STAFF)) {
             this.handleLoginStaff(event, (LoginStaff) principal);
-        } else if (StringUtil.equals(principal.getType(), AuthType.CUSTOMER.getValue())) {
+        } else if (Objects.equals(principal.getType(), AuthType.CUSTOMER)) {
             this.handleLoginCustomer(event, (LoginCustomer) principal);
         }
     }
@@ -77,15 +77,15 @@ public class LoginEventListener {
         String loginLocation = IpUtil.parseIp(ipAddr);
 
         if (event.getSuccess()) { // 更新用户登录信息、在线会话信息
-            OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setDeviceType(userAgent.getValue(UserAgent.DEVICE_NAME));
-            onlineUser.setLoginIp(ipAddr);
-            onlineUser.setLoginLocation(loginLocation);
-            onlineUser.setBrowser(browser);
-            onlineUser.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-            onlineUser.setLoginTime(new Date());
+            OnlineSession onlineSession = new OnlineSession();
+            onlineSession.setDeviceType(userAgent.getValue(UserAgent.DEVICE_NAME));
+            onlineSession.setLoginIp(ipAddr);
+            onlineSession.setLoginLocation(loginLocation);
+            onlineSession.setBrowser(browser);
+            onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
+            onlineSession.setLoginTime(new Date());
 
-            tokenService.putOnlineSession(user.getId(), event.getRefreshToken(), onlineUser);
+            tokenService.putOnlineSession(user.getId(), event.getRefreshToken(), onlineSession);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());
             loginInfoReq.setLoginIp(ipAddr);
@@ -119,15 +119,15 @@ public class LoginEventListener {
         String loginLocation = IpUtil.parseIp(ipAddr);
 
         if (event.getSuccess()) { // 更新用户登录信息、在线会话信息
-            OnlineUser onlineUser = new OnlineUser();
-            onlineUser.setDeviceType(userAgent.getValue(UserAgent.DEVICE_NAME));
-            onlineUser.setLoginIp(ipAddr);
-            onlineUser.setLoginLocation(loginLocation);
-            onlineUser.setBrowser(browser);
-            onlineUser.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-            onlineUser.setLoginTime(new Date());
+            OnlineSession onlineSession = new OnlineSession();
+            onlineSession.setDeviceType(userAgent.getValue(UserAgent.DEVICE_NAME));
+            onlineSession.setLoginIp(ipAddr);
+            onlineSession.setLoginLocation(loginLocation);
+            onlineSession.setBrowser(browser);
+            onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
+            onlineSession.setLoginTime(new Date());
 
-            tokenService.putOnlineSession(staff.getId(), event.getRefreshToken(), onlineUser);
+            tokenService.putOnlineSession(staff.getId(), event.getRefreshToken(), onlineSession);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(staff.getId());
             loginInfoReq.setLoginIp(ipAddr);

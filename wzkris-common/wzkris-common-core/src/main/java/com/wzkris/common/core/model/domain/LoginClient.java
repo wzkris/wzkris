@@ -25,7 +25,7 @@ public class LoginClient extends MyPrincipal {
     public LoginClient(@JsonProperty("id") Long id,
                        @JsonProperty("permissions") Set<String> permissions,
                        @JsonProperty("clientId") String clientId) {
-        super(id, AuthType.CLIENT.getValue(), permissions);
+        super(id, AuthType.CLIENT, permissions);
         this.clientId = clientId;
     }
 

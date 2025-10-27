@@ -6,6 +6,7 @@ import com.wzkris.common.captcha.properties.StoreType;
 import com.wzkris.common.captcha.store.CapStore;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
+import org.redisson.codec.TypedJsonJacksonCodec;
 
 import java.time.Duration;
 import java.util.Date;
@@ -31,7 +32,8 @@ public class RedisStore implements CapStore {
     @Override
     public boolean putChallenge(final String token, final ChallengeData challengeData) {
         redissonClient.getBucket(
-                        this.makeupChallengeKey(token)
+                        this.makeupChallengeKey(token),
+                        new TypedJsonJacksonCodec(ChallengeData.class)
                 )
                 .set(
                         challengeData,
@@ -43,7 +45,8 @@ public class RedisStore implements CapStore {
     @Override
     public ChallengeData removeChallenge(final String token) {
         return (ChallengeData) redissonClient.getBucket(
-                        this.makeupChallengeKey(token)
+                        this.makeupChallengeKey(token),
+                        new TypedJsonJacksonCodec(ChallengeData.class)
                 )
                 .getAndDelete();
     }
@@ -51,7 +54,8 @@ public class RedisStore implements CapStore {
     @Override
     public ChallengeData getChallenge(final String token) {
         return (ChallengeData) redissonClient.getBucket(
-                        this.makeupChallengeKey(token)
+                        this.makeupChallengeKey(token),
+                        new TypedJsonJacksonCodec(ChallengeData.class)
                 )
                 .get();
     }
@@ -59,7 +63,8 @@ public class RedisStore implements CapStore {
     @Override
     public boolean putToken(final String token, final Date expires) {
         redissonClient.getBucket(
-                        this.makeupTokenKey(token)
+                        this.makeupTokenKey(token),
+                        new TypedJsonJacksonCodec(Date.class)
                 )
                 .set(
                         expires,
@@ -71,7 +76,8 @@ public class RedisStore implements CapStore {
     @Override
     public Date removeToken(final String token) {
         return (Date) redissonClient.getBucket(
-                        this.makeupTokenKey(token)
+                        this.makeupTokenKey(token),
+                        new TypedJsonJacksonCodec(Date.class)
                 )
                 .getAndDelete();
     }
@@ -79,7 +85,8 @@ public class RedisStore implements CapStore {
     @Override
     public Date getToken(final String token) {
         return (Date) redissonClient.getBucket(
-                        this.makeupTokenKey(token)
+                        this.makeupTokenKey(token),
+                        new TypedJsonJacksonCodec(Date.class)
                 )
                 .get();
     }

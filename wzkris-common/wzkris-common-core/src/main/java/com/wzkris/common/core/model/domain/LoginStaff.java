@@ -31,7 +31,7 @@ public class LoginStaff extends MyPrincipal {
                       @JsonProperty("admin") boolean admin,
                       @JsonProperty("staffName") String staffName,
                       @JsonProperty("tenantId") Long tenantId) {
-        super(id, AuthType.STAFF.getValue(), permissions);
+        super(id, AuthType.STAFF, permissions);
         this.admin = admin;
         this.staffName = staffName;
         this.tenantId = tenantId;

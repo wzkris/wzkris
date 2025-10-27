@@ -28,7 +28,7 @@ public class LoginCustomer extends MyPrincipal {
     public LoginCustomer(@JsonProperty("id") Long id,
                          @JsonProperty("permissions") Set<String> permissions,
                          @JsonProperty("phoneNumber") String phoneNumber) {
-        super(id, AuthType.CUSTOMER.getValue(), permissions);
+        super(id, AuthType.CUSTOMER, permissions);
         this.phoneNumber = phoneNumber;
     }
 

@@ -56,7 +56,7 @@ public class StatisticsService {
      */
     private void recordPV(StatisticsKey key, boolean success) {
         String date = key.getDate();
-        String authType = key.getAuthType();
+        String authType = key.getAuthType().getValue();
         String path = key.getPath();
 
         // 按用户类型和路径统计PV
@@ -93,7 +93,7 @@ public class StatisticsService {
         }
 
         String date = key.getDate();
-        String authType = key.getAuthType();
+        String authType = key.getAuthType().getValue();
         String path = key.getPath();
         Long userId = key.getUserId();
 
@@ -125,7 +125,7 @@ public class StatisticsService {
      */
     private void recordDailyStatistics(StatisticsKey key, boolean success) {
         String date = key.getDate();
-        String authType = key.getAuthType();
+        String authType = key.getAuthType().getValue();
 
         // 日PV统计
         String dailyPvKey = String.format("%s:%s:%s", DAILY_PREFIX, authType, date);
@@ -149,7 +149,7 @@ public class StatisticsService {
      */
     private void recordHourlyStatistics(StatisticsKey key, boolean success) {
         String hour = key.getHour();
-        String authType = key.getAuthType();
+        String authType = key.getAuthType().getValue();
 
         // 小时PV统计
         String hourlyPvKey = String.format("%s:%s:%s", HOURLY_PREFIX, authType, hour);

@@ -5,11 +5,14 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
+import org.redisson.codec.TypedJsonJacksonCodec;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * spring redis 工具类
@@ -21,8 +24,29 @@ public abstract class RedisUtil {
 
     private static final RedissonClient client;
 
+    /**
+     * Codec缓存，避免重复创建TypedJsonJacksonCodec实例
+     */
+    private static final ConcurrentMap<String, TypedJsonJacksonCodec> CODEC_CACHE = new ConcurrentHashMap<>(64);
+
     static {
         client = SpringUtil.getFactory().getBean(RedissonClient.class);
+    }
+
+    /**
+     * 获取或创建TypedJsonJacksonCodec实例（单类型）
+     */
+    private static TypedJsonJacksonCodec getCodec(Class<?> clazz) {
+        String key = clazz.getName();
+        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(clazz));
+    }
+
+    /**
+     * 获取或创建TypedJsonJacksonCodec实例（键值类型）
+     */
+    private static TypedJsonJacksonCodec getCodec(Class<?> keyClass, Class<?> valueClass) {
+        String key = keyClass.getName() + ":" + valueClass.getName();
+        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(keyClass, valueClass));
     }
 
     // ==================== 基础操作 ====================
@@ -33,17 +57,18 @@ public abstract class RedisUtil {
      * @param key 缓存键值
      * @return 缓存键值对应的数据，如果键不存在返回null
      */
-    @SuppressWarnings("unchecked")
     public static <T> T getObj(final String key) {
         if (key == null || key.trim().isEmpty()) {
             return null;
         }
-        try {
-            return (T) client.getBucket(key).get();
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回null
+        return (T) getBucket(key).get();
+    }
+
+    public static <T> T getObj(final String key, Class<T> clazz) {
+        if (key == null || key.trim().isEmpty()) {
             return null;
         }
+        return getBucket(key, clazz).get();
     }
 
     /**
@@ -71,7 +96,7 @@ public abstract class RedisUtil {
         if (duration == null || duration.isNegative() || duration.isZero()) {
             return;
         }
-        client.getBucket(key).set(value, duration);
+        client.getBucket(key, getCodec(value.getClass())).set(value, duration);
     }
 
     /**
@@ -143,10 +168,34 @@ public abstract class RedisUtil {
     }
 
     /**
+     * 获取桶（带类型化编解码器）
+     *
+     * @param key   缓存的键值
+     * @param clazz 类型
+     */
+    public static <T> RBucket<T> getBucket(final String key, final Class<T> clazz) {
+        return client.getBucket(key, getCodec(clazz));
+    }
+
+    /**
      * 获取脚本
      */
     public static RScript getScript() {
         return client.getScript();
+    }
+
+    /**
+     * 创建批量操作
+     */
+    public static RBatch createBatch() {
+        return client.createBatch();
+    }
+
+    /**
+     * 创建批量操作（有序）
+     */
+    public static RBatch createBatch(BatchOptions options) {
+        return client.createBatch(options);
     }
 
     // ==================== 过期时间操作 ====================
@@ -405,6 +454,29 @@ public abstract class RedisUtil {
     }
 
     /**
+     * 获得缓存Map（带类型化编解码器）
+     *
+     * @param key   缓存的键值
+     * @param clazz 类型
+     * @return map对象
+     */
+    public static <T> RMap<String, T> getRMap(final String key, final Class<T> clazz) {
+        return client.getMap(key, getCodec(clazz));
+    }
+
+    /**
+     * 获得缓存Map（带键值类型化编解码器）
+     *
+     * @param key           缓存的键值
+     * @param mapKeyClass   键类型
+     * @param mapValueClass 值类型
+     * @return map对象
+     */
+    public static <T> RMap<String, T> getRMap(final String key, final Class<?> mapKeyClass, final Class<?> mapValueClass) {
+        return client.getMap(key, getCodec(mapKeyClass, mapValueClass));
+    }
+
+    /**
      * 获得具有单个key过期时间的缓存Map
      *
      * @param key 缓存的键值
@@ -412,6 +484,29 @@ public abstract class RedisUtil {
      */
     public static <T> RMapCache<String, T> getRMapCache(final String key) {
         return client.getMapCache(key);
+    }
+
+    /**
+     * 获得具有单个key过期时间的缓存Map（带类型化编解码器）
+     *
+     * @param key   缓存的键值
+     * @param clazz 类型
+     * @return map对象
+     */
+    public static <T> RMapCache<String, T> getRMapCache(final String key, final Class<T> clazz) {
+        return client.getMapCache(key, getCodec(clazz));
+    }
+
+    /**
+     * 获得具有单个key过期时间的缓存Map（带键值类型化编解码器）
+     *
+     * @param key           缓存的键值
+     * @param mapKeyClass   键类型
+     * @param mapValueClass 值类型
+     * @return map对象
+     */
+    public static <K, V> RMapCache<K, V> getRMapCache(final String key, final Class<?> mapKeyClass, final Class<?> mapValueClass) {
+        return client.getMapCache(key, getCodec(mapKeyClass, mapValueClass));
     }
 
     // ==================== 列表(List)操作 ====================
@@ -424,6 +519,17 @@ public abstract class RedisUtil {
      */
     public static <T> RList<T> getRList(final String key) {
         return client.getList(key);
+    }
+
+    /**
+     * 获取列表（带类型化编解码器）
+     *
+     * @param key   缓存的键值
+     * @param clazz 类型
+     * @return 列表对象
+     */
+    public static <T> RList<T> getRList(final String key, final Class<T> clazz) {
+        return client.getList(key, getCodec(clazz));
     }
 
     /**
@@ -516,6 +622,17 @@ public abstract class RedisUtil {
     }
 
     /**
+     * 获取集合（带类型化编解码器）
+     *
+     * @param key   缓存的键值
+     * @param clazz 类型
+     * @return 集合对象
+     */
+    public static <T> RSet<T> getRSet(final String key, final Class<T> clazz) {
+        return client.getSet(key, getCodec(clazz));
+    }
+
+    /**
      * 向集合添加元素
      *
      * @param key   缓存的键值
@@ -579,6 +696,17 @@ public abstract class RedisUtil {
      */
     public static <T> RSortedSet<T> getRSortedSet(final String key) {
         return client.getSortedSet(key);
+    }
+
+    /**
+     * 获取有序集合（带类型化编解码器）
+     *
+     * @param key   缓存的键值
+     * @param clazz 类型
+     * @return 有序集合对象
+     */
+    public static <T> RSortedSet<T> getRSortedSet(final String key, final Class<T> clazz) {
+        return client.getSortedSet(key, getCodec(clazz));
     }
 
     /**

@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
-public class OnlineUser implements Serializable {
+public class OnlineSession implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -1,5 +1,6 @@
 package com.wzkris.common.security.annotation.aspect;
 
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
@@ -87,11 +88,11 @@ public class CheckPermsAspect {
         }
 
         String expectedType = checkPerms.checkType().getValue();
-        String actualType = principal.getType();
+        AuthType actualType = principal.getType();
 
-        if (!StringUtil.equals(actualType, expectedType)) {
+        if (!StringUtil.equals(actualType.getValue(), expectedType)) {
             throw new AccessDeniedException(
-                    String.format("认证类型不匹配: 需要[%s]，实际[%s]", expectedType, actualType));
+                    String.format("认证类型不匹配: 需要[%s]，实际[%s]", expectedType, actualType.getValue()));
         }
     }
 
@@ -126,14 +127,14 @@ public class CheckPermsAspect {
      */
     private AccessDeniedException createAccessDeniedException(MyPrincipal principal, String[] perms, CheckMode mode) {
         String name = principal.getName();
-        String type = principal.getType();
+        AuthType type = principal.getType();
 
         if (mode == CheckMode.AND) {
             return new AccessDeniedException(
-                    String.format("[%s][%s]缺少以下权限之一: %s", type, name, Arrays.toString(perms)));
+                    String.format("[%s][%s]缺少以下权限之一: %s", type.getValue(), name, Arrays.toString(perms)));
         } else {
             return new AccessDeniedException(
-                    String.format("[%s][%s]缺少所有权限: %s", type, name, Arrays.toString(perms)));
+                    String.format("[%s][%s]缺少所有权限: %s", type.getValue(), name, Arrays.toString(perms)));
         }
     }
 

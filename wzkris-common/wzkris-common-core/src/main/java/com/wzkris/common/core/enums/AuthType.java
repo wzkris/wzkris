@@ -1,5 +1,7 @@
 package com.wzkris.common.core.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.lang.Nullable;
@@ -21,6 +23,12 @@ public enum AuthType {
 
     private final String value;
 
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @JsonCreator
     @Nullable
     public static AuthType fromValue(String value) {
         for (AuthType authType : values()) {

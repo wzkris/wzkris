@@ -4,12 +4,13 @@ import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
-import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 /**
  * @author : wzkris
@@ -30,11 +31,11 @@ public class RefreshTokenEventListener {
         MyPrincipal principal = event.getPrincipal();
         log.info("'{}' 发生刷新TOKEN事件", principal);
 
-        if (StringUtil.equals(principal.getType(), AuthType.USER.getValue())) {
+        if (Objects.equals(principal.getType(), AuthType.USER)) {
 
-        } else if (StringUtil.equals(principal.getType(), AuthType.STAFF.getValue())) {
+        } else if (Objects.equals(principal.getType(), AuthType.STAFF)) {
 
-        } else if (StringUtil.equals(principal.getType(), AuthType.CUSTOMER.getValue())) {
+        } else if (Objects.equals(principal.getType(), AuthType.CUSTOMER)) {
             // empty
         }
     }

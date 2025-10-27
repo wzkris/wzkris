@@ -1,6 +1,7 @@
 package com.wzkris.gateway.filter;
 
 import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
@@ -150,7 +151,7 @@ public class StatisticsFilter implements GlobalFilter {
     @lombok.Builder
     public static class StatisticsKey {
 
-        private String authType;
+        private AuthType authType;
 
         private Long userId;
 

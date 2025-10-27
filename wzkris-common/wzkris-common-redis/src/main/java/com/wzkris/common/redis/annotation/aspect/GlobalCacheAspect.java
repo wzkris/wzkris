@@ -2,16 +2,16 @@ package com.wzkris.common.redis.annotation.aspect;
 
 import com.wzkris.common.core.function.ThrowableSupplier;
 import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.redis.util.DistLockTemplate;
+import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.redisson.api.RBucket;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -36,31 +36,28 @@ public class GlobalCacheAspect {
 
     private final ConcurrentHashMap<String, org.springframework.expression.Expression> EXPRESSION_CACHE = new ConcurrentHashMap<>();
 
-    @Autowired
-    private RedissonClient redissonClient;
-
     /**
      * 执行原方法并回写缓存
      */
-    private static Object proceedAndRewrite(ProceedingJoinPoint point, long ttl, RBucket<Object> bucket) throws Throwable {
+    private static <T> T proceedAndRewrite(ProceedingJoinPoint point, long ttl, String key) throws Throwable {
         Object proceedResult = point.proceed();
         // 回写缓存
         if (proceedResult != null) {
             if (ttl > 0) {
-                bucket.set(proceedResult, Duration.ofMillis(ttl));
+                RedisUtil.setObj(key, proceedResult, Duration.ofMillis(ttl));
             } else {
-                bucket.set(proceedResult);
+                RedisUtil.setObj(key, proceedResult);
             }
         } else {
             // null值缓存15s，避免缓存穿透
-            bucket.set(null, Duration.ofSeconds(15));
+            RedisUtil.setObj(key, null, Duration.ofSeconds(15));
         }
-        return proceedResult;
+        return (T) proceedResult;
     }
 
     @Around("@annotation(globalCache)")
     public Object around(ProceedingJoinPoint point, GlobalCache globalCache) throws Throwable {
-        String methodName = point.getSignature().getName();
+        MethodSignature methodSignature = (MethodSignature) point.getSignature();
 
         try {
             // 拼接key并获取数据
@@ -70,27 +67,34 @@ public class GlobalCacheAspect {
                 globalKey = globalKey + ":" + key;
             }
 
-            RBucket<Object> bucket = redissonClient.getBucket(globalKey);
-            if (bucket.isExists()) {
-                return bucket.get();
+            // 创建final变量供lambda使用
+            final String finalGlobalKey = globalKey;
+
+            // 尝试从缓存获取数据
+            Object cachedValue = RedisUtil.getObj(finalGlobalKey, methodSignature.getReturnType());
+            if (cachedValue != null) {
+                return cachedValue;
             }
 
             // 数据不存在需要执行方法并回写缓存
             Object result;
             if (globalCache.sync()) {
-                result = DistLockTemplate.lockAndExecute(globalKey, 1_500, (ThrowableSupplier<Object, Throwable>) () -> {
-                    if (bucket.isExists()) {
-                        return bucket.get();
+                result = DistLockTemplate.lockAndExecute(finalGlobalKey, 1_500, (ThrowableSupplier<Object, Throwable>) () -> {
+                    // 双重检查缓存
+                    Object doubleCheckValue = RedisUtil.getObj(finalGlobalKey, methodSignature.getReturnType());
+                    if (doubleCheckValue != null) {
+                        return doubleCheckValue;
                     }
-                    return proceedAndRewrite(point, globalCache.ttl(), bucket);
+                    return proceedAndRewrite(point, globalCache.ttl(), finalGlobalKey);
                 });
             } else {
-                result = proceedAndRewrite(point, globalCache.ttl(), bucket);
+                result = proceedAndRewrite(point, globalCache.ttl(), finalGlobalKey);
             }
 
             return result;
         } catch (Exception e) {
-            log.error("缓存切面执行异常，方法: {}", methodName, e);
+            log.error("缓存切面执行异常，方法: {}", point.getTarget().getClass().getName() + StringUtil.DOT + methodSignature.getName(),
+                    e);
             throw e;
         }
     }

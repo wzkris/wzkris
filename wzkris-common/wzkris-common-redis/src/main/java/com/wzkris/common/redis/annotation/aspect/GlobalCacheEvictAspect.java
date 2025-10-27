@@ -2,13 +2,12 @@ package com.wzkris.common.redis.annotation.aspect;
 
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.redis.annotation.GlobalCacheEvict;
+import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -26,9 +25,6 @@ public class GlobalCacheEvictAspect {
 
     private final ConcurrentHashMap<String, org.springframework.expression.Expression> EXPRESSION_CACHE = new ConcurrentHashMap<>();
 
-    @Autowired
-    private RedissonClient redissonClient;
-
     @After("@annotation(globalCacheEvict)")
     public void after(JoinPoint point, GlobalCacheEvict globalCacheEvict) {
         String methodName = point.getSignature().getName();
@@ -41,7 +37,7 @@ public class GlobalCacheEvictAspect {
                 globalKey = globalKey + ":" + key;
             }
 
-            redissonClient.getBucket(globalKey).delete();
+            RedisUtil.delObj(globalKey);
         } catch (Exception e) {
             log.error("缓存驱逐切面执行异常，方法: {}", methodName, e);
         }

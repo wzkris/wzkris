@@ -23,7 +23,7 @@ public class DictionaryInfoServiceImpl implements DictionaryInfoService {
     private final DictionaryInfoMapper dictionaryInfoMapper;
 
     private RMap<String, DictionaryInfoDO.DictData[]> cache() {
-        return RedisUtil.getRMap(DICT_KEY);
+        return RedisUtil.getRMap(DICT_KEY, String.class, DictionaryInfoDO.DictData[].class);
     }
 
     @PostConstruct
@@ -38,13 +38,13 @@ public class DictionaryInfoServiceImpl implements DictionaryInfoService {
 
     @Override
     public DictionaryInfoDO.DictData[] getValueByKey(String dictKey) {
-        DictionaryInfoDO.DictData[] dictData = cache().get(dictKey);
-        if (dictData != null) {
-            return dictData;
+        DictionaryInfoDO.DictData[] dictDataArray = cache().get(dictKey);
+        if (dictDataArray != null) {
+            return dictDataArray;
         }
         DictionaryInfoDO dict = dictionaryInfoMapper.selectByDictKey(dictKey);
         if (dict == null) {
-            return new DictionaryInfoDO.DictData[]{};
+            return new DictionaryInfoDO.DictData[0];
         }
         cache().put(dictKey, dict.getDictValue());
         return dict.getDictValue();
