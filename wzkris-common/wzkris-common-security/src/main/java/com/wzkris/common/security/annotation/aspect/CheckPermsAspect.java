@@ -34,31 +34,34 @@ public class CheckPermsAspect {
     @Pointcut("@annotation(com.wzkris.common.security.annotation.CheckPerms)"
             + "|| @annotation(com.wzkris.common.security.annotation.CheckUserPerms)"
             + "|| @annotation(com.wzkris.common.security.annotation.CheckClientPerms)"
-            + "|| @annotation(com.wzkris.common.security.annotation.CheckStaffPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckPerms)"
+            + "|| @annotation(com.wzkris.common.security.annotation.CheckStaffPerms)")
+    public void pointCutMethod() {
+    }
+
+    @Pointcut("@within(com.wzkris.common.security.annotation.CheckPerms)"
             + "|| @within(com.wzkris.common.security.annotation.CheckUserPerms)"
             + "|| @within(com.wzkris.common.security.annotation.CheckClientPerms)"
             + "|| @within(com.wzkris.common.security.annotation.CheckStaffPerms)")
-    public void pointcut() {
+    public void pointCutClass() {
     }
 
-    /**
-     * 方法执行前执行
-     */
-    @Before("pointcut()")
-    public void before(JoinPoint point) {
-        CheckPerms checkPerms = findCheckPermsAnnotation(point);
+    @Before("pointCutClass()")
+    public void beforeClass(JoinPoint point) {
+        CheckPerms checkPerms = AnnotatedElementUtils.findMergedAnnotation(point.getTarget().getClass(), CheckPerms.class);
 
         validatePermission(checkPerms);
     }
 
     /**
-     * 查找权限注解（支持多种注解类型）
+     * 方法执行前执行
      */
-    private CheckPerms findCheckPermsAnnotation(JoinPoint point) {
+    @Before("pointCutMethod()")
+    public void beforeMethod(JoinPoint point) {
         MethodSignature signature = (MethodSignature) point.getSignature();
 
-        return AnnotatedElementUtils.findMergedAnnotation(signature.getMethod(), CheckPerms.class);
+        CheckPerms checkPerms = AnnotatedElementUtils.findMergedAnnotation(signature.getMethod(), CheckPerms.class);
+
+        validatePermission(checkPerms);
     }
 
     /**
