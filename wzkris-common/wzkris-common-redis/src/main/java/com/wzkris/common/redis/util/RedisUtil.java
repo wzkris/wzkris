@@ -49,7 +49,7 @@ public abstract class RedisUtil {
         return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(keyClass, valueClass));
     }
 
-    // ==================== 基础操作 ====================
+    // ==================== 基础对象操作 ====================
 
     /**
      * 获得缓存的基本对象。
@@ -64,11 +64,18 @@ public abstract class RedisUtil {
         return (T) getBucket(key).get();
     }
 
+    /**
+     * 获得缓存的基本对象（带类型）
+     *
+     * @param key   缓存键值
+     * @param clazz 类型
+     * @return 缓存键值对应的数据，如果键不存在返回null
+     */
     public static <T> T getObj(final String key, Class<T> clazz) {
         if (key == null || key.trim().isEmpty()) {
             return null;
         }
-        return getBucket(key, clazz).get();
+        return (T) getBucket(key, clazz).get();
     }
 
     /**
@@ -76,10 +83,10 @@ public abstract class RedisUtil {
      *
      * @param key     缓存的键值
      * @param value   缓存的值
-     * @param timeout 时间，单位秒
+     * @param seconds 时间，单位秒
      */
-    public static <T> void setObj(final String key, final T value, final long timeout) {
-        setObj(key, value, Duration.ofSeconds(timeout));
+    public static <T> void setObj(final String key, final T value, final long seconds) {
+        setObj(key, value, Duration.ofSeconds(seconds));
     }
 
     /**
@@ -96,7 +103,7 @@ public abstract class RedisUtil {
         if (duration == null || duration.isNegative() || duration.isZero()) {
             return;
         }
-        client.getBucket(key, getCodec(value.getClass())).set(value, duration);
+        getBucket(key, value.getClass()).set(value, duration);
     }
 
     /**
@@ -106,8 +113,68 @@ public abstract class RedisUtil {
      * @param value 缓存的值
      */
     public static <T> void setObj(final String key, final T value) {
-        setObj(key, value, Duration.ofSeconds(Long.MAX_VALUE));
+        setObj(key, value, -1);
     }
+
+    /**
+     * 如果键不存在则设置值
+     *
+     * @param key   键名
+     * @param value 值
+     * @return true=设置成功，false=键已存在
+     */
+    public static <T> boolean setObjIfAbsent(final String key, final T value) {
+        if (key == null || key.trim().isEmpty()) {
+            return false;
+        }
+        return getBucket(key, value.getClass()).setIfAbsent(value);
+    }
+
+    /**
+     * 如果键不存在则设置值（带过期时间）
+     *
+     * @param key     键名
+     * @param value   值
+     * @param seconds 过期时间（秒）
+     * @return true=设置成功，false=键已存在
+     */
+    public static <T> boolean setObjIfAbsent(final String key, final T value, final long seconds) {
+        if (key == null || key.trim().isEmpty()) {
+            return false;
+        }
+        return getBucket(key, value.getClass()).setIfAbsent(value, Duration.ofSeconds(seconds));
+    }
+
+    /**
+     * 如果键存在则设置值
+     *
+     * @param key   键名
+     * @param value 值
+     * @return true=设置成功，false=键不存在
+     */
+    public static <T> boolean setObjIfPresent(final String key, final T value) {
+        if (key == null || key.trim().isEmpty()) {
+            return false;
+        }
+        return getBucket(key, value.getClass()).setIfExists(value);
+    }
+
+    /**
+     * 如果键存在则设置值（带过期时间）
+     *
+     * @param key     键名
+     * @param value   值
+     * @param seconds 过期时间（秒）
+     * @return true=设置成功，false=键不存在
+     */
+    public static <T> boolean setObjIfPresent(final String key, final T value, final long seconds) {
+        if (key == null || key.trim().isEmpty()) {
+            return false;
+        }
+        return getBucket(key, value.getClass()).setIfExists(value, Duration.ofSeconds(seconds));
+    }
+
+    // ==================== 键操作 ====================
 
     /**
      * 删除单个对象
@@ -119,12 +186,7 @@ public abstract class RedisUtil {
         if (key == null || key.trim().isEmpty()) {
             return false;
         }
-        try {
-            return client.getBucket(key).delete();
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回false
-            return false;
-        }
+        return getBucket(key).delete();
     }
 
     /**
@@ -134,15 +196,7 @@ public abstract class RedisUtil {
      * @return 删除个数
      */
     public static long delObjs(final List<String> keys) {
-        if (keys == null || keys.isEmpty()) {
-            return 0;
-        }
-        try {
-            return client.getKeys().delete(keys.toArray(new String[0]));
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回0
-            return 0;
-        }
+        return delObjs(keys.toArray(new String[0]));
     }
 
     /**
@@ -159,134 +213,6 @@ public abstract class RedisUtil {
     }
 
     /**
-     * 获取桶
-     *
-     * @param key 缓存的键值
-     */
-    public static <T> RBucket<T> getBucket(final String key) {
-        return client.getBucket(key);
-    }
-
-    /**
-     * 获取桶（带类型化编解码器）
-     *
-     * @param key   缓存的键值
-     * @param clazz 类型
-     */
-    public static <T> RBucket<T> getBucket(final String key, final Class<T> clazz) {
-        return client.getBucket(key, getCodec(clazz));
-    }
-
-    /**
-     * 获取脚本
-     */
-    public static RScript getScript() {
-        return client.getScript();
-    }
-
-    /**
-     * 创建批量操作
-     */
-    public static RBatch createBatch() {
-        return client.createBatch();
-    }
-
-    /**
-     * 创建批量操作（有序）
-     */
-    public static RBatch createBatch(BatchOptions options) {
-        return client.createBatch(options);
-    }
-
-    // ==================== 过期时间操作 ====================
-
-    /**
-     * 获取过期时间
-     *
-     * @param key Redis键
-     * @return 有效时间（毫秒），-1表示永不过期，-2表示键不存在
-     */
-    public static long getExpire(final String key) {
-        if (key == null || key.trim().isEmpty()) {
-            return -2;
-        }
-        try {
-            return client.getBucket(key).remainTimeToLive();
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回-2表示键不存在
-            return -2;
-        }
-    }
-
-    /**
-     * 设置有效时间
-     *
-     * @param key      Redis键
-     * @param duration 过期时间
-     * @return true=设置成功；false=设置失败
-     */
-    public static boolean expire(final String key, final Duration duration) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        if (duration == null || duration.isNegative() || duration.isZero()) {
-            return false;
-        }
-        try {
-            return client.getBucket(key).expire(duration);
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回false
-            return false;
-        }
-    }
-
-    /**
-     * 设置有效时间（秒）
-     *
-     * @param key     Redis键
-     * @param seconds 过期时间（秒）
-     * @return true=设置成功；false=设置失败
-     */
-    public static boolean expire(final String key, final long seconds) {
-        return expire(key, Duration.ofSeconds(seconds));
-    }
-
-    /**
-     * 值存在才设置有效时间，否则不做任何操作
-     *
-     * @param key      Redis键
-     * @param duration 过期时间
-     * @return true=设置成功；false=设置失败
-     */
-    public static boolean expireIfSet(final String key, final Duration duration) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        if (duration == null || duration.isNegative() || duration.isZero()) {
-            return false;
-        }
-        try {
-            return client.getBucket(key).expireIfSet(duration);
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回false
-            return false;
-        }
-    }
-
-    /**
-     * 值存在才设置有效时间，否则不做任何操作（秒）
-     *
-     * @param key     Redis键
-     * @param seconds 过期时间（秒）
-     * @return true=设置成功；false=设置失败
-     */
-    public static boolean expireIfSet(final String key, final long seconds) {
-        return expireIfSet(key, Duration.ofSeconds(seconds));
-    }
-
-    // ==================== 键操作 ====================
-
-    /**
      * 判断 key是否存在
      *
      * @param key 键
@@ -296,12 +222,7 @@ public abstract class RedisUtil {
         if (key == null || key.trim().isEmpty()) {
             return false;
         }
-        try {
-            return client.getBucket(key).isExists();
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回false
-            return false;
-        }
+        return getBucket(key).isExists();
     }
 
     /**
@@ -314,12 +235,7 @@ public abstract class RedisUtil {
         if (keys == null || keys.isEmpty()) {
             return 0;
         }
-        try {
-            return client.getKeys().countExists(keys.toArray(new String[0]));
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回0
-            return 0;
-        }
+        return client.getKeys().countExists(keys.toArray(new String[0]));
     }
 
     /**
@@ -347,17 +263,11 @@ public abstract class RedisUtil {
             return new ArrayList<>();
         }
         int limit = count <= 0 ? 100 : count; // 默认限制100个
-        try {
-            List<String> keys = new ArrayList<>();
-            client
-                    .getKeys()
-                    .getKeys(KeysScanOptions.defaults().pattern(keyPattern).limit(limit))
-                    .forEach(keys::add);
-            return keys;
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回空列表
-            return new ArrayList<>();
-        }
+        List<String> keys = new ArrayList<>();
+        client.getKeys()
+                .getKeys(KeysScanOptions.defaults().pattern(keyPattern).limit(limit))
+                .forEach(keys::add);
+        return keys;
     }
 
     /**
@@ -382,24 +292,6 @@ public abstract class RedisUtil {
     }
 
     /**
-     * 获取键的数量
-     *
-     * @return 键的数量
-     */
-    public static long getKeysCount() {
-        return client.getKeys().count();
-    }
-
-    /**
-     * 随机获取一个键
-     *
-     * @return 随机键
-     */
-    public static String getRandomKey() {
-        return client.getKeys().randomKey();
-    }
-
-    /**
      * 重命名键
      *
      * @param oldKey 旧键名
@@ -409,36 +301,62 @@ public abstract class RedisUtil {
         client.getKeys().rename(oldKey, newKey);
     }
 
+    // ==================== 过期时间操作 ====================
+
     /**
-     * 获取键的类型
+     * 设置有效时间
      *
-     * @param key 键名
-     * @return 键的类型
+     * @param key      Redis键
+     * @param duration 过期时间
+     * @return true=设置成功；false=设置失败
      */
-    public static String getType(final String key) {
+    public static boolean expire(final String key, final Duration duration) {
         if (key == null || key.trim().isEmpty()) {
-            return "none";
+            return false;
         }
-        try {
-            return client.getKeys().getType(key).toString();
-        } catch (Exception e) {
-            // 记录日志但不抛出异常，返回none
-            return "none";
+        if (duration == null || duration.isNegative() || duration.isZero()) {
+            return false;
         }
+        return getBucket(key).expire(duration);
     }
 
     /**
-     * 清空所有键
+     * 设置有效时间（秒）
+     *
+     * @param key     Redis键
+     * @param seconds 过期时间（秒）
+     * @return true=设置成功；false=设置失败
      */
-    public static void flushAll() {
-        client.getKeys().flushall();
+    public static boolean expire(final String key, final long seconds) {
+        return expire(key, Duration.ofSeconds(seconds));
     }
 
     /**
-     * 清空当前数据库的所有键
+     * 值存在才设置有效时间，否则不做任何操作
+     *
+     * @param key      Redis键
+     * @param duration 过期时间
+     * @return true=设置成功；false=设置失败
      */
-    public static void flushDb() {
-        client.getKeys().flushdb();
+    public static boolean expireIfSet(final String key, final Duration duration) {
+        if (key == null || key.trim().isEmpty()) {
+            return false;
+        }
+        if (duration == null || duration.isNegative() || duration.isZero()) {
+            return false;
+        }
+        return getBucket(key).expireIfSet(duration);
+    }
+
+    /**
+     * 值存在才设置有效时间，否则不做任何操作（秒）
+     *
+     * @param key     Redis键
+     * @param seconds 过期时间（秒）
+     * @return true=设置成功；false=设置失败
+     */
+    public static boolean expireIfSet(final String key, final long seconds) {
+        return expireIfSet(key, Duration.ofSeconds(seconds));
     }
 
     // ==================== 哈希表(Map)操作 ====================
@@ -583,7 +501,7 @@ public abstract class RedisUtil {
         if (list.isEmpty()) {
             return null;
         }
-        return (T) list.remove(list.size() - 1);
+        return list.remove(list.size() - 1);
     }
 
     /**
@@ -604,7 +522,6 @@ public abstract class RedisUtil {
      * @param end   结束位置
      * @return 指定范围的元素列表
      */
-    @SuppressWarnings("unchecked")
     public static <T> List<T> lrange(final String key, final int start, final int end) {
         return (List<T>) client.getList(key).range(start, end);
     }
@@ -681,7 +598,6 @@ public abstract class RedisUtil {
      * @param key 缓存的键值
      * @return 所有成员
      */
-    @SuppressWarnings("unchecked")
     public static <T> Set<T> smembers(final String key) {
         return (Set<T>) client.getSet(key).readAll();
     }
@@ -818,26 +734,6 @@ public abstract class RedisUtil {
     }
 
     /**
-     * 获取原子整型
-     *
-     * @param key 缓存的键值
-     * @return 原子整型对象
-     */
-    public static RAtomicLong getAtomicInteger(final String key) {
-        return client.getAtomicLong(key);
-    }
-
-    /**
-     * 获取原子双精度浮点型
-     *
-     * @param key 缓存的键值
-     * @return 原子双精度浮点型对象
-     */
-    public static RAtomicDouble getAtomicDouble(final String key) {
-        return client.getAtomicDouble(key);
-    }
-
-    /**
      * 原子递增
      *
      * @param key 缓存的键值
@@ -879,197 +775,46 @@ public abstract class RedisUtil {
         return client.getAtomicLong(key).addAndGet(-delta);
     }
 
-    // ==================== 实用工具方法 ====================
+    // ==================== 核心工具方法 ====================
 
     /**
-     * 获取键的值，如果不存在返回默认值
+     * 获取桶
      *
-     * @param key          键名
-     * @param defaultValue 默认值
-     * @return 键的值或默认值
+     * @param key 缓存的键值
      */
-    public static <T> T getObjOrDefault(final String key, final T defaultValue) {
-        if (key == null || key.trim().isEmpty()) {
-            return defaultValue;
-        }
-        try {
-            T value = getObj(key);
-            return value != null ? value : defaultValue;
-        } catch (Exception e) {
-            return defaultValue;
-        }
+    public static <T> RBucket<T> getBucket(final String key) {
+        return client.getBucket(key);
     }
 
     /**
-     * 如果键不存在则设置值
+     * 获取桶（带类型化编解码器）
      *
-     * @param key   键名
-     * @param value 值
-     * @return true=设置成功，false=键已存在
+     * @param key   缓存的键值
+     * @param clazz 类型
      */
-    public static <T> boolean setIfAbsent(final String key, final T value) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            return client.getBucket(key).setIfAbsent(value);
-        } catch (Exception e) {
-            return false;
-        }
+    public static <T> RBucket<T> getBucket(final String key, final Class<?> clazz) {
+        return client.getBucket(key, getCodec(clazz));
     }
 
     /**
-     * 如果键不存在则设置值（带过期时间）
-     *
-     * @param key     键名
-     * @param value   值
-     * @param timeout 过期时间（秒）
-     * @return true=设置成功，false=键已存在
+     * 获取脚本
      */
-    public static <T> boolean setIfAbsent(final String key, final T value, final long timeout) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            return client.getBucket(key).setIfAbsent(value, Duration.ofSeconds(timeout));
-        } catch (Exception e) {
-            return false;
-        }
+    public static RScript getScript() {
+        return client.getScript();
     }
 
     /**
-     * 如果键存在则设置值
-     *
-     * @param key   键名
-     * @param value 值
-     * @return true=设置成功，false=键不存在
+     * 创建批量操作
      */
-    public static <T> boolean setIfPresent(final String key, final T value) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            // 检查键是否存在，如果存在则设置值
-            if (client.getBucket(key).isExists()) {
-                client.getBucket(key).set(value);
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
+    public static RBatch createBatch() {
+        return client.createBatch();
     }
 
     /**
-     * 如果键存在则设置值（带过期时间）
-     *
-     * @param key     键名
-     * @param value   值
-     * @param timeout 过期时间（秒）
-     * @return true=设置成功，false=键不存在
+     * 创建批量操作（有序）
      */
-    public static <T> boolean setIfPresent(final String key, final T value, final long timeout) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            // 检查键是否存在，如果存在则设置值
-            if (client.getBucket(key).isExists()) {
-                client.getBucket(key).set(value, Duration.ofSeconds(timeout));
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * 原子递增并返回新值
-     *
-     * @param key 键名
-     * @return 递增后的值
-     */
-    public static long incrementAndGet(final String key) {
-        if (key == null || key.trim().isEmpty()) {
-            return 0;
-        }
-        try {
-            return client.getAtomicLong(key).incrementAndGet();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    /**
-     * 原子递减并返回新值
-     *
-     * @param key 键名
-     * @return 递减后的值
-     */
-    public static long decrementAndGet(final String key) {
-        if (key == null || key.trim().isEmpty()) {
-            return 0;
-        }
-        try {
-            return client.getAtomicLong(key).decrementAndGet();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    /**
-     * 原子递增指定值并返回新值
-     *
-     * @param key   键名
-     * @param delta 递增值
-     * @return 递增后的值
-     */
-    public static long addAndGet(final String key, final long delta) {
-        if (key == null || key.trim().isEmpty()) {
-            return 0;
-        }
-        try {
-            return client.getAtomicLong(key).addAndGet(delta);
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    /**
-     * 获取原子长整型的当前值
-     *
-     * @param key 键名
-     * @return 当前值
-     */
-    public static long getAtomicValue(final String key) {
-        if (key == null || key.trim().isEmpty()) {
-            return 0;
-        }
-        try {
-            return client.getAtomicLong(key).get();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    /**
-     * 设置原子长整型的值
-     *
-     * @param key   键名
-     * @param value 值
-     * @return 是否设置成功
-     */
-    public static boolean setAtomicValue(final String key, final long value) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            client.getAtomicLong(key).set(value);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public static RBatch createBatch(BatchOptions options) {
+        return client.createBatch(options);
     }
 
 }
