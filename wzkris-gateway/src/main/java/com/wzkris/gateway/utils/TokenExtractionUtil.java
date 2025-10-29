@@ -1,0 +1,190 @@
+package com.wzkris.gateway.utils;
+
+import com.wzkris.auth.feign.token.req.TokenReq;
+import com.wzkris.auth.feign.token.resp.TokenResponse;
+import com.wzkris.common.apikey.config.SignkeyProperties;
+import com.wzkris.common.apikey.utils.RequestSignerUtil;
+import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.QueryParamConstants;
+import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.domain.LoginCustomer;
+import com.wzkris.common.core.model.domain.LoginStaff;
+import com.wzkris.common.core.model.domain.LoginUser;
+import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.openfeign.exception.RpcException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.stream.Stream;
+
+/**
+ * @author : wzkris
+ * @version : V1.0.0
+ * @description : 用户信息提取工具类 - 从UnifiedAuthenticationFilter中抽取的公共方法
+ * @date : 2025/01/29
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class TokenExtractionUtil {
+
+    private static final ParameterizedTypeReference<TokenResponse<LoginUser>> userReference =
+            new ParameterizedTypeReference<>() {
+            };
+
+    private static final ParameterizedTypeReference<TokenResponse<LoginStaff>> staffReference =
+            new ParameterizedTypeReference<>() {
+            };
+
+    private static final ParameterizedTypeReference<TokenResponse<LoginCustomer>> customerReference =
+            new ParameterizedTypeReference<>() {
+            };
+
+    private final WebClient tokenWebClient;
+
+    private final SignkeyProperties signkeyProperties;
+
+    @Value("${spring.application.name}")
+    private String applicationName;
+
+    /**
+     * 获取当前请求的用户信息
+     *
+     * @param request 请求对象
+     * @return 用户信息
+     */
+    public <T extends MyPrincipal> Mono<T> getCurrentPrincipal(ServerHttpRequest request) {
+        if (!hasAnyToken(request)) {
+            return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.err40001("Authorization token not found!!")));
+        }
+
+        String userToken = getUserToken(request);
+        if (StringUtil.isNotBlank(userToken)) {
+            return (Mono<T>) validatePrincipal(userToken, userReference);
+        }
+
+        String staffToken = getStaffToken(request);
+        if (StringUtil.isNotBlank(staffToken)) {
+            return (Mono<T>) validatePrincipal(staffToken, staffReference);
+        }
+
+        String customerToken = getCustomerToken(request);
+        if (StringUtil.isNotBlank(customerToken)) {
+            return (Mono<T>) validatePrincipal(customerToken, customerReference);
+        }
+
+        // 理论上不会执行到这里，因为hasAnyToken已经检查过
+        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.err40001("Authorization token type not found!!")));
+    }
+
+    /**
+     * 调用认证服务验证Token
+     */
+    private <T extends MyPrincipal> Mono<T> validatePrincipal(
+            String token,
+            ParameterizedTypeReference<TokenResponse<T>> typeReference) {
+        TokenReq tokenReq = new TokenReq(token);
+
+        return tokenWebClient.post()
+                .uri("/feign-token/check-principal")
+                .bodyValue(tokenReq)
+                .headers(httpHeaders -> {
+                    RequestSignerUtil.setCommonHeaders(httpHeaders::add,
+                            applicationName,
+                            signkeyProperties.getKeys().get(applicationName).getSecret(),
+                            JsonUtil.toJsonString(tokenReq),
+                            System.currentTimeMillis()
+                    );// 请求签名 -> 防止伪造请求
+                })
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, response -> {
+                    // 处理错误状态码，获取响应体
+                    return response.bodyToMono(String.class)
+                            .doOnNext(responseStr -> {
+                                log.error("Authentication called failed. Status: {}, Response body: {}",
+                                        response.statusCode(), responseStr);
+                            })
+                            .map(responseStr -> {
+                                try {
+                                    return JsonUtil.parseObject(responseStr, Result.class);
+                                } catch (Exception e) {
+                                    log.error("Failed to parse error response body: {}", responseStr, e);
+                                    return Result.resp(BizBaseCode.UNAUTHORIZED.value(), null, "Unauthorized");
+                                }
+                            })
+                            .flatMap(responseBody -> Mono.error(new RpcException(response.statusCode().value(), responseBody)));
+                })
+                .bodyToMono(typeReference)
+                .flatMap(tokenResponse -> {
+                    if (tokenResponse == null || !tokenResponse.isSuccess()) {
+                        log.error("Token validation failed. {}", tokenResponse);
+                        String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
+                        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.err40001(errMsg)));
+                    } else {
+                        T principal = tokenResponse.getPrincipal();
+
+                        return Mono.just(principal);
+                    }
+                });
+    }
+
+    /**
+     * 检查是否携带任一认证Token
+     */
+    private boolean hasAnyToken(ServerHttpRequest request) {
+        return Stream.of(
+                        request.getHeaders().getFirst(HeaderConstants.X_USER_TOKEN),
+                        request.getHeaders().getFirst(HeaderConstants.X_STAFF_TOKEN),
+                        request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_USER_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_STAFF_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN)
+                )
+                .anyMatch(StringUtil::isNotBlank);
+    }
+
+    /**
+     * 获取用户Token（优先Header，其次Query参数）
+     */
+    private String getUserToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(HeaderConstants.X_USER_TOKEN);
+        if (StringUtil.isNotBlank(token)) {
+            return token;
+        }
+        return request.getQueryParams().getFirst(QueryParamConstants.X_USER_TOKEN);
+    }
+
+    /**
+     * 获取员工Token（优先Header，其次Query参数）
+     */
+    private String getStaffToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(HeaderConstants.X_STAFF_TOKEN);
+        if (StringUtil.isNotBlank(token)) {
+            return token;
+        }
+        return request.getQueryParams().getFirst(QueryParamConstants.X_STAFF_TOKEN);
+    }
+
+    /**
+     * 获取客户Token（优先Header，其次Query参数）
+     */
+    private String getCustomerToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN);
+        if (StringUtil.isNotBlank(token)) {
+            return token;
+        }
+        return request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN);
+    }
+
+}

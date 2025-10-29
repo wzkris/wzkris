@@ -2,6 +2,11 @@ package com.wzkris.gateway.filter;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
+import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.model.domain.LoginCustomer;
+import com.wzkris.common.core.model.domain.LoginStaff;
+import com.wzkris.common.core.model.domain.LoginUser;
+import com.wzkris.common.core.utils.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,23 +41,57 @@ public class AppendHeaderFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest httpRequest = exchange.getRequest().mutate()
-                .headers(header -> {
-                    String reqBodyStr;
-                    Object bodyAttr = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
-                    if (bodyAttr instanceof DataBuffer dataBuffer) {
-                        reqBodyStr = dataBuffer.toString(StandardCharsets.UTF_8);
+        ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
+
+        return exchange.getPrincipal()
+                .flatMap(principal -> {
+                    String infoHeader;
+                    if (principal instanceof LoginUser) {
+                        infoHeader = HeaderConstants.X_USER_INFO;
+                    } else if (principal instanceof LoginStaff) {
+                        infoHeader = HeaderConstants.X_STAFF_INFO;
+                    } else if (principal instanceof LoginCustomer) {
+                        infoHeader = HeaderConstants.X_CUSTOMER_INFO;
                     } else {
-                        reqBodyStr = (String) bodyAttr;
+                        return Mono.empty();
                     }
-                    RequestSignerUtil.setCommonHeaders(header::add,
-                            applicationName,
-                            signkeyProperties.getKeys().get(applicationName).getSecret(),
-                            reqBodyStr,
-                            System.currentTimeMillis()
-                    );// 请求签名 -> 防止伪造请求
-                }).build();
-        return chain.filter(exchange.mutate().request(httpRequest).build());
+
+                    // 追加身份信息头
+                    requestBuilder.header(infoHeader, JsonUtil.toJsonString(principal));
+                    return Mono.just(principal);
+                })
+                .then(Mono.defer(() -> {
+                    // 无论是否有身份信息，都继续处理请求签名
+                    return appendSignatureHeaders(exchange, chain, requestBuilder);
+                }));
+    }
+
+    /**
+     * 追加请求签名头
+     */
+    private Mono<Void> appendSignatureHeaders(ServerWebExchange exchange,
+                                              GatewayFilterChain chain,
+                                              ServerHttpRequest.Builder requestBuilder) {
+        // 追加请求签名头
+        requestBuilder.headers(header -> {
+            String reqBodyStr;
+            Object bodyAttr = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
+            if (bodyAttr instanceof DataBuffer dataBuffer) {
+                reqBodyStr = dataBuffer.toString(StandardCharsets.UTF_8);
+            } else {
+                reqBodyStr = (String) bodyAttr;
+            }
+
+            RequestSignerUtil.setCommonHeaders(header::add,
+                    applicationName,
+                    signkeyProperties.getKeys().get(applicationName).getSecret(),
+                    reqBodyStr,
+                    System.currentTimeMillis()
+            );// 请求签名 -> 防止伪造请求
+        });
+
+        ServerHttpRequest newRequest = requestBuilder.build();
+        return chain.filter(exchange.mutate().request(newRequest).build());
     }
 
 }
