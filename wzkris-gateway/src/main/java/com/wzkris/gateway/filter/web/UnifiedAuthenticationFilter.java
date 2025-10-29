@@ -4,7 +4,7 @@ import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.openfeign.exception.RpcException;
 import com.wzkris.gateway.config.PermitAllProperties;
-import com.wzkris.gateway.utils.TokenExtractionUtil;
+import com.wzkris.gateway.service.TokenExtractionService;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class UnifiedAuthenticationFilter implements WebFilter {
 
     static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
-    private final TokenExtractionUtil tokenExtractionUtil;
+    private final TokenExtractionService tokenExtractionService;
 
     private final PermitAllProperties permitAllProperties;
 
@@ -59,7 +59,7 @@ public class UnifiedAuthenticationFilter implements WebFilter {
         }
 
         // 3) Token认证流程
-        return tokenExtractionUtil.getCurrentPrincipal(exchange.getRequest())
+        return tokenExtractionService.getCurrentPrincipal(exchange.getRequest())
                 .flatMap(principal ->
                         chain.filter(
                                         exchange.mutate()

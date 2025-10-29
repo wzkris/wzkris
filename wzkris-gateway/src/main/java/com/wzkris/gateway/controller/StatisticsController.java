@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -38,8 +37,8 @@ public class StatisticsController {
      * 获取日统计汇总
      */
     @GetMapping("/daily")
-    public Mono<Result<PvUvSummary>> getDailyStatistics(ServerWebExchange exchange,
-                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public Mono<Result<PvUvSummary>> getDailyStatistics(
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 
         if (date == null) {
             date = LocalDate.now();

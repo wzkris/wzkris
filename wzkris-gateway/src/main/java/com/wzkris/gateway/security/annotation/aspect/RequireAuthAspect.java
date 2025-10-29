@@ -101,6 +101,7 @@ public class RequireAuthAspect {
                 }
                 return Mono.justOrEmpty(result);
             } catch (Throwable e) {
+                log.error("切面发生异常: ", e);
                 return Mono.error(e);
             }
         });

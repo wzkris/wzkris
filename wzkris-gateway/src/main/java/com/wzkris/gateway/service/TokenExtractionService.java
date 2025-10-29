@@ -1,4 +1,4 @@
-package com.wzkris.gateway.utils;
+package com.wzkris.gateway.service;
 
 import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TokenExtractionUtil {
+public class TokenExtractionService {
 
     private static final ParameterizedTypeReference<TokenResponse<LoginUser>> userReference =
             new ParameterizedTypeReference<>() {
