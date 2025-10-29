@@ -1,11 +1,12 @@
 package com.wzkris.common.openfeign.config;
 
-import com.wzkris.common.openfeign.handler.RpcExceptionHandler;
+import com.wzkris.common.openfeign.handler.RpcExceptionMvcHandler;
+import com.wzkris.common.openfeign.handler.RpcExceptionWebfluxHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 @Import({FeignClientProperties.class, OpenFeignConfig.class,
-        RpcExceptionHandler.class})
+        RpcExceptionMvcHandler.class, RpcExceptionWebfluxHandler.class})
 @AutoConfiguration
 public class FeignAutoConfiguration {
 
