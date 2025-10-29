@@ -1,4 +1,4 @@
-package com.wzkris.gateway.filter;
+package com.wzkris.gateway.filter.route;
 
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.enums.AuthType;

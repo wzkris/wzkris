@@ -1,4 +1,4 @@
-package com.wzkris.gateway.filter;
+package com.wzkris.gateway.filter.route;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.XssProperties;

@@ -52,6 +52,7 @@ public class UnifiedAuthenticationFilter implements WebFilter {
         if (isPathDenied(path)) {
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.FORBID);
         }
+
         // 2) 白名单放行
         if (isPathPermitted(path)) {
             return chain.filter(exchange);

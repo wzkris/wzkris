@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 @RestController
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
-//@RequireAuth(authType = AuthType.USER, permissions = {"gateway:statistics:query"})
+@RequireAuth(authType = AuthType.USER, permissions = {"gateway:statistics:query"})
 public class StatisticsController {
 
     private final StatisticsService statisticsService;

@@ -1,4 +1,4 @@
-package com.wzkris.gateway.filter;
+package com.wzkris.gateway.filter.route;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;

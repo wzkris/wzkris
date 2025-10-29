@@ -7,7 +7,7 @@ import com.wzkris.gateway.domain.vo.DailyStatisticsVO;
 import com.wzkris.gateway.domain.vo.HourlyStatisticsVO;
 import com.wzkris.gateway.domain.vo.PathStatisticsVO;
 import com.wzkris.gateway.domain.vo.RealtimeStatisticsVO;
-import com.wzkris.gateway.filter.StatisticsFilter.StatisticsKey;
+import com.wzkris.gateway.filter.route.StatisticsFilter.StatisticsKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBatch;

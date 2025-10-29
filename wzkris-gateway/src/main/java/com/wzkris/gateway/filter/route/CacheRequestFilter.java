@@ -1,4 +1,4 @@
-package com.wzkris.gateway.filter;
+package com.wzkris.gateway.filter.route;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
