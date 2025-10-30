@@ -2,17 +2,17 @@ package com.wzkris.gateway.controller;
 
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.gateway.domain.PvUvSummary;
-import com.wzkris.gateway.domain.vo.DailyStatisticsVO;
-import com.wzkris.gateway.domain.vo.HourlyStatisticsVO;
-import com.wzkris.gateway.domain.vo.PathStatisticsVO;
-import com.wzkris.gateway.domain.vo.RealtimeStatisticsVO;
+import com.wzkris.gateway.domain.vo.ApiCallDailySeriesVO;
+import com.wzkris.gateway.domain.vo.PageViewDailySeriesVO;
 import com.wzkris.gateway.security.annotation.RequireAuth;
 import com.wzkris.gateway.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -28,80 +28,33 @@ import java.time.format.DateTimeFormatter;
 @RestController
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
-@RequireAuth(authType = AuthType.USER, permissions = {"gateway:statistics:query"})
+@RequireAuth(authType = AuthType.USER, permissions = {"gateway-mod:statistics:pvuv"})
 public class StatisticsController {
 
     private final StatisticsService statisticsService;
 
     /**
-     * 获取日统计汇总
+     * 获取页面PV及UV统计（日）
      */
-    @GetMapping("/daily")
-    public Mono<Result<PvUvSummary>> getDailyStatistics(
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-
-        if (date == null) {
-            date = LocalDate.now();
-        }
-
-        String dateStr = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        return Mono.just(Result.ok(statisticsService.getDailySummary(dateStr)));
-    }
-
-    /**
-     * 获取指定用户类型的统计
-     */
-    @GetMapping("/daily/{authType}")
-    public Mono<Result<DailyStatisticsVO>> getDailyStatisticsByAuthType(
-            @PathVariable String authType,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-
-        if (date == null) {
-            date = LocalDate.now();
-        }
-
-        String dateStr = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        return Mono.just(Result.ok(statisticsService.getDailyByAuthType(authType, dateStr)));
-    }
-
-    /**
-     * 获取指定路径的统计
-     */
-    @GetMapping("/path")
-    public Mono<Result<PathStatisticsVO>> getPathStatistics(
-            @RequestParam String path,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-
-        if (date == null) {
-            date = LocalDate.now();
-        }
-
-        String dateStr = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        return Mono.just(Result.ok(statisticsService.getPathStatistics(path, dateStr)));
-    }
-
-    /**
-     * 获取小时统计
-     */
-    @GetMapping("/hourly")
-    public Mono<Result<HourlyStatisticsVO>> getHourlyStatistics(
+    @GetMapping("/pageview/daily")
+    public Mono<Result<PageViewDailySeriesVO>> getPageViewDaily(
             @RequestParam String authType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-
-        if (date == null) {
-            date = LocalDate.now();
-        }
-
-        String dateStr = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        return Mono.just(Result.ok(statisticsService.getHourlyStatistics(authType, dateStr)));
+        String dateStr = date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return Mono.just(Result.ok(statisticsService.getDailyPageViewSeries(authType, dateStr)));
     }
 
     /**
-     * 获取实时统计（优化：使用批量查询）
+     * 获取 API 调用次数统计（日）
      */
-    @GetMapping("/realtime")
-    public Mono<Result<RealtimeStatisticsVO>> getRealtimeStatistics() {
-        return Mono.just(Result.ok(statisticsService.getRealtimeStatistics()));
+    @GetMapping("/apicall/daily")
+    public Mono<Result<ApiCallDailySeriesVO>> getApiCallDaily(
+            @RequestParam String authType,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        String dateStr = date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return Mono.just(Result.ok(statisticsService.getDailyApiCallSeries(authType, dateStr)));
     }
 
 }

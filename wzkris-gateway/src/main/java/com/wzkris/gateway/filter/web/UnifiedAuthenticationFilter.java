@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
@@ -68,8 +70,16 @@ public class UnifiedAuthenticationFilter implements WebFilter {
                                 )
                                 .contextWrite(context -> context.put(GATEWAY_PRINCIPAL, principal))
                 )
-                .onErrorResume(RpcException.class, rpcException -> WebFluxUtil.writeResponse(exchange.getResponse(), rpcException.getResult()))
-                .onErrorResume(throwable -> WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.INTERNAL_ERROR));
+                .onErrorResume(RpcException.class, rpcException -> {
+                    ServerHttpResponse exchangeResponse = exchange.getResponse();
+                    exchangeResponse.setRawStatusCode(rpcException.getHttpStatusCode());
+                    return WebFluxUtil.writeResponse(exchangeResponse, rpcException.getResult());
+                })
+                .onErrorResume(throwable -> {
+                    ServerHttpResponse exchangeResponse = exchange.getResponse();
+                    exchangeResponse.setRawStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return WebFluxUtil.writeResponse(exchangeResponse, BizBaseCode.INTERNAL_ERROR);
+                });
     }
 
     private boolean isPathPermitted(String url) {

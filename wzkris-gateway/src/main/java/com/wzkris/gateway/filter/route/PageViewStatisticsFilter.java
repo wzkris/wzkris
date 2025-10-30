@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter.route;
 
-import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +18,14 @@ import java.time.format.DateTimeFormatter;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : 统计过滤器（PV/UV统计）
+ * @description : API调用量统计过滤器（原PV/UV统计实际为api调用量统计）
  * @date : 2025/1/15
  */
 @Slf4j
 @Order(0)
 @Component
 @RequiredArgsConstructor
-public class PvUvStatisticsFilter implements GlobalFilter {
+public class PageViewStatisticsFilter implements GlobalFilter {
 
     private final StatisticsService statisticsService;
 
@@ -37,7 +37,7 @@ public class PvUvStatisticsFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
 
-        // 先获取认证主体并缓存，然后执行过滤链，最后处理统计
+        // 先获取认证主体并缓存，然后执行过滤链，最后处理统计（*本统计为API调用量*）
         return exchange.getPrincipal()
                 .map(p -> (MyPrincipal) p)
                 .doOnNext(principal -> exchange.getAttributes().put("STAT_PRINCIPAL", principal))
@@ -49,9 +49,9 @@ public class PvUvStatisticsFilter implements GlobalFilter {
                         try {
                             // 判断请求是否成功（根据响应状态码）
                             boolean success = exchange.getResponse().getStatusCode().is2xxSuccessful();
-                            recordStatistics(path, success, userInfo);
+                            recordApiCallStatistics(path, success, userInfo);
                         } catch (Exception e) {
-                            log.warn("统计记录失败: {}", e.getMessage());
+                            log.warn("接口调用量统计失败: {}", e.getMessage());
                         }
                     }
                     return Mono.empty();
@@ -59,9 +59,9 @@ public class PvUvStatisticsFilter implements GlobalFilter {
     }
 
     /**
-     * 记录统计数据
+     * 记录接口调用量统计
      */
-    private void recordStatistics(String path, boolean success, MyPrincipal userInfo) {
+    private void recordApiCallStatistics(String path, boolean success, MyPrincipal userInfo) {
         // 获取时间信息
         LocalDateTime now = LocalDateTime.now();
         String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -75,8 +75,8 @@ public class PvUvStatisticsFilter implements GlobalFilter {
                 .hour(hourStr)
                 .build();
 
-        // 异步记录统计
-        statisticsService.recordStatistics(key, success);
+        // 异步记录接口调用量统计
+        statisticsService.recordApiCallStatistics(key, success);
     }
 
     /**
@@ -92,23 +92,5 @@ public class PvUvStatisticsFilter implements GlobalFilter {
                 path.startsWith("/webjars");
     }
 
-    /**
-     * 统计键
-     */
-    @lombok.Data
-    @lombok.Builder
-    public static class StatisticsKey {
-
-        private AuthType authType;
-
-        private Long userId;
-
-        private String path;
-
-        private String date;
-
-        private String hour;
-
-    }
-
 }
+

@@ -625,6 +625,14 @@ public abstract class RedisUtil {
         return client.getSortedSet(key, getCodec(clazz));
     }
 
+    public static <T> RScoredSortedSet<T> getScoredSortedSet(String zsetKey) {
+        return client.getScoredSortedSet(zsetKey);
+    }
+
+    public static <T> RScoredSortedSet<T> getScoredSortedSet(String zsetKey, final Class<T> clazz) {
+        return client.getScoredSortedSet(zsetKey, getCodec(clazz));
+    }
+
     /**
      * 从有序集合移除元素
      *
