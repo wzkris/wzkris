@@ -1,7 +1,7 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.exception.user.UserException;
+import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.MyPrincipal;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
@@ -65,7 +65,7 @@ public abstract class SecurityUtil {
         try {
             return (MyPrincipal) getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new UserException(401, "forbidden.accessDenied.tokenExpired");
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
     }
 

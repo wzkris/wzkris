@@ -66,7 +66,7 @@ public class TokenExtractionService {
      */
     public <T extends MyPrincipal> Mono<T> getCurrentPrincipal(ServerHttpRequest request) {
         if (!hasAnyToken(request)) {
-            return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.err40001("Authorization token not found!!")));
+            return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
         }
 
         String userToken = getUserToken(request);
@@ -85,7 +85,7 @@ public class TokenExtractionService {
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
-        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.err40001("Authorization token type not found!!")));
+        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token type not found!!")));
     }
 
     /**
@@ -120,7 +120,7 @@ public class TokenExtractionService {
                                     return JsonUtil.parseObject(responseStr, Result.class);
                                 } catch (Exception e) {
                                     log.error("Failed to parse error response body: {}", responseStr, e);
-                                    return Result.resp(BizBaseCode.UNAUTHORIZED.value(), null, "Unauthorized");
+                                    return Result.init(BizBaseCode.AUTHENTICATION_ERROR.value(), null, "Unauthorized");
                                 }
                             })
                             .flatMap(responseBody -> Mono.error(new RpcException(response.statusCode().value(), responseBody)));
@@ -130,7 +130,7 @@ public class TokenExtractionService {
                     if (tokenResponse == null || !tokenResponse.isSuccess()) {
                         log.error("Token validation failed. {}", tokenResponse);
                         String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
-                        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.err40001(errMsg)));
+                        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
                     } else {
                         T principal = tokenResponse.getPrincipal();
 

@@ -16,7 +16,7 @@ public final class TooManyRequestException extends BaseException {
     }
 
     public TooManyRequestException(int biz, String code, Object... args) {
-        super("限流异常", biz, code, args, null);
+        super("限流异常", 429, biz, code, args, null);
     }
 
 }

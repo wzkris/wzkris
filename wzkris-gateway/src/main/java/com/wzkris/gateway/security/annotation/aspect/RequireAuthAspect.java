@@ -70,7 +70,7 @@ public class RequireAuthAspect {
                     .orElse(null);
 
             if (principal == null) {
-                return Mono.error(new RpcException(401, BizBaseCode.UNAUTHORIZED.value(), BizBaseCode.UNAUTHORIZED.desc()));
+                return Mono.error(new RpcException(401, BizBaseCode.AUTHENTICATION_ERROR.value(), BizBaseCode.AUTHENTICATION_ERROR.desc()));
             }
 
             boolean passed = AuthChecker.check(principal, requireAuth);
@@ -84,7 +84,7 @@ public class RequireAuthAspect {
                         authType,
                         Arrays.toString(permissions));
 
-                return Mono.error(new RpcException(403, BizBaseCode.FORBID.value(), BizBaseCode.FORBID.desc()));
+                return Mono.error(new RpcException(403, BizBaseCode.ACCESS_DENIED.value(), BizBaseCode.ACCESS_DENIED.desc()));
             }
 
             try {

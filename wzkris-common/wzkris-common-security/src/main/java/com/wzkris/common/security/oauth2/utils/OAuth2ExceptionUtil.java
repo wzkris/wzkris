@@ -47,7 +47,7 @@ public final class OAuth2ExceptionUtil {
     public static Result<?> translate(OAuth2Error oAuth2Error) {
         // Bearer Token异常
         if (oAuth2Error instanceof BearerTokenError bearerTokenError) {
-            return Result.resp(
+            return Result.init(
                     bearerTokenError.getHttpStatus().value(),
                     bearerTokenError.getErrorCode(),
                     bearerTokenError.getDescription());
@@ -55,7 +55,7 @@ public final class OAuth2ExceptionUtil {
 
         // 自定义OAuth2异常
         if (oAuth2Error instanceof CustomOAuth2Error customOAuth2Error) {
-            return Result.resp(
+            return Result.init(
                     customOAuth2Error.getCode(), customOAuth2Error.getErrorCode(), customOAuth2Error.getDescription());
         }
 
@@ -64,39 +64,39 @@ public final class OAuth2ExceptionUtil {
 
         // OAuth2异常
         if (errorCode.equals(OAuth2ErrorCodes.SERVER_ERROR)) {
-            return Result.err50000(I18nUtil.message("service.internalError.error"));
+            return Result.systemError(I18nUtil.message("service.internalError.error"));
         } else if (errorCode.equals(OAuth2ErrorCodes.ACCESS_DENIED)
                 || errorCode.equals(OAuth2ErrorCodes.INSUFFICIENT_SCOPE)) {
-            return Result.err40003(I18nUtil.message("forbidden.accessDenied.permissionDenied"));
+            return Result.accessDenied(I18nUtil.message("forbidden.accessDenied.permissionDenied"));
         } else if (errorCode.startsWith("unsupported_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE ->
-                        Result.err40000(I18nUtil.message("oauth2.unsupport.granttype"));
+                        Result.requestFail(I18nUtil.message("oauth2.unsupport.granttype"));
                 case OAuth2ErrorCodes.UNSUPPORTED_TOKEN_TYPE ->
-                        Result.err40000(I18nUtil.message("oauth2.unsupport.tokentype"));
+                        Result.requestFail(I18nUtil.message("oauth2.unsupport.tokentype"));
                 case OAuth2ErrorCodes.UNSUPPORTED_RESPONSE_TYPE ->
-                        Result.err40000(I18nUtil.message("oauth2.unsupport.responsetype"));
-                default -> Result.err40000(errorMsg);
+                        Result.requestFail(I18nUtil.message("oauth2.unsupport.responsetype"));
+                default -> Result.requestFail(errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT)) {
-            return Result.err40000(
+            return Result.requestFail(
                     StringUtil.defaultIfBlank(errorMsg, I18nUtil.message("oauth2.unsupport.granttype")));
         } else if (errorCode.startsWith("invalid_")) {
             return switch (errorCode) {
                 case OAuth2ErrorCodes.INVALID_TOKEN -> // token不合法
-                        Result.err40001(I18nUtil.message("forbidden.accessDenied.tokenExpired"));
+                        Result.unauth(I18nUtil.message("forbidden.accessDenied.tokenExpired"));
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
-                        Result.err40001(StringUtil.defaultIfBlank(errorMsg, I18nUtil.message("forbidden.accessDenied.tokenExpired")));
+                        Result.unauth(StringUtil.defaultIfBlank(errorMsg, I18nUtil.message("forbidden.accessDenied.tokenExpired")));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
-                        Result.err40000(I18nUtil.message("oauth2.scope.invalid"));
+                        Result.requestFail(I18nUtil.message("oauth2.scope.invalid"));
                 case OAuth2ErrorCodes.INVALID_CLIENT -> // 客户端不合法
-                        Result.err40000(I18nUtil.message("oauth2.client.invalid"));
-                default -> Result.err40000(errorMsg);
+                        Result.requestFail(I18nUtil.message("oauth2.client.invalid"));
+                default -> Result.requestFail(errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
-            return Result.resp(BizBaseCode.BAD_GATEWAY.value(), null, errorMsg);
+            return Result.init(BizBaseCode.SYSTEM_ERROR.value(), null, errorMsg);
         } else {
-            return Result.err40001(errorMsg);
+            return Result.unauth(errorMsg);
         }
     }
 

@@ -11,11 +11,11 @@ import com.wzkris.common.core.exception.BaseException;
 public final class GenericException extends BaseException {
 
     public GenericException(int biz, String message) {
-        super("通用异常", biz, null, null, message);
+        super("通用异常", 500, biz, null, null, message);
     }
 
     public GenericException(String message) {
-        this(BizBaseCode.BAD_REQUEST.value(), message);
+        this(BizBaseCode.REQUEST_ERROR.value(), message);
     }
 
     /**

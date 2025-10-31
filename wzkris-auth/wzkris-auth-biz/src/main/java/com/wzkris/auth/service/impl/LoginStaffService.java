@@ -75,7 +75,7 @@ public class LoginStaffService extends UserInfoTemplate {
         try {
             if (!passwordEncoder.matches(password, staffResp.getPassword())) {
                 OAuth2ExceptionUtil.throwErrorI18n(
-                        BizBaseCode.BAD_REQUEST.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
+                        BizBaseCode.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
             return this.buildLoginStaff(staffResp);

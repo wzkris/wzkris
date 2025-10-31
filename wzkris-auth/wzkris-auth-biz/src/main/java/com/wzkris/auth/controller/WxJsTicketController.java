@@ -47,10 +47,10 @@ public class WxJsTicketController {
             return ok(jsapiKey);
         } catch (WxErrorException e) {
             log.error("获取js_ticket发生异常，errmsg：{}", e.getError());
-            return resp(e.getError().getErrorCode(), null, e.getError().getErrorMsg());
+            return init(e.getError().getErrorCode(), null, e.getError().getErrorMsg());
         } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
-            return err40000("暂时无法使用微信jsticket");
+            return requestFail("暂时无法使用微信jsticket");
         }
     }
 
@@ -58,7 +58,7 @@ public class WxJsTicketController {
     @GetMapping("/js-ticket-sign")
     public Result<?> JsapiSignature(String url) {
         if (!StringUtil.ishttp(url)) {
-            return err40000("url格式不正确");
+            return requestFail("url格式不正确");
         }
         try {
             long timestamp = System.currentTimeMillis() / 1000;
@@ -75,10 +75,10 @@ public class WxJsTicketController {
             return ok(jsapiSignature);
         } catch (WxErrorException e) {
             log.error("获取js_ticket发生异常，errmsg：{}", e.getError());
-            return resp(e.getError().getErrorCode(), null, e.getError().getErrorMsg());
+            return init(e.getError().getErrorCode(), null, e.getError().getErrorMsg());
         } catch (Exception e) {
             log.error("发生异常，errmsg：{}", e.getMessage());
-            return err40000("暂时无法使用微信js签名");
+            return requestFail("暂时无法使用微信js签名");
         }
     }
 

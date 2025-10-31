@@ -64,7 +64,7 @@ public abstract class BaseController {
      * 自定义失败消息
      */
     public static <T> Result<T> resp(int biz, String errMsg) {
-        return Result.resp(biz, null, errMsg);
+        return Result.init(biz, null, errMsg);
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class BaseController {
      * 返回失败消息
      */
     public <T> Result<T> err40000(String errMsg) {
-        return Result.err40000(errMsg);
+        return Result.requestFail(errMsg);
     }
 
     /**

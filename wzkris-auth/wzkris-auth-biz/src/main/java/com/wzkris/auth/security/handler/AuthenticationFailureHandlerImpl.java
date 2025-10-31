@@ -42,7 +42,7 @@ public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHa
             JsonUtil.writeValue(response.getWriter(), result);
         } else {
             JsonUtil.writeValue(
-                    response.getWriter(), Result.resp(BizBaseCode.UNAUTHORIZED.value(), null,
+                    response.getWriter(), Result.init(BizBaseCode.AUTHENTICATION_ERROR.value(), null,
                             I18nUtil.message("forbidden.accessDenied.tokenExpired")));
         }
     }

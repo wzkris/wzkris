@@ -52,7 +52,7 @@ public class UnifiedAuthenticationFilter implements WebFilter {
 
         // 1) 黑名单拦截
         if (isPathDenied(path)) {
-            return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.FORBID);
+            return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.ACCESS_DENIED);
         }
 
         // 2) 白名单放行
@@ -78,7 +78,7 @@ public class UnifiedAuthenticationFilter implements WebFilter {
                 .onErrorResume(throwable -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();
                     exchangeResponse.setRawStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                    return WebFluxUtil.writeResponse(exchangeResponse, BizBaseCode.INTERNAL_ERROR);
+                    return WebFluxUtil.writeResponse(exchangeResponse, BizBaseCode.SYSTEM_ERROR);
                 });
     }
 

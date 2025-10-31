@@ -36,7 +36,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(phoneNumber)
                 || parameters.get(OAuth2ParameterConstant.PHONE_NUMBER).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.PHONE_NUMBER);
@@ -47,7 +47,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(smsCode)
                 || parameters.get(OAuth2ParameterConstant.SMS_CODE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.SMS_CODE);
@@ -58,7 +58,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(authType)
                 || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.AUTH_TYPE);

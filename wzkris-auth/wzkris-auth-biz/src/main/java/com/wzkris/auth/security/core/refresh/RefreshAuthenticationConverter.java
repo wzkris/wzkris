@@ -34,7 +34,7 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
         if (!StringUtils.hasText(refreshToken)
                 || parameters.get(OAuth2ParameterNames.REFRESH_TOKEN).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.refresh.fail",
                     OAuth2ParameterNames.REFRESH_TOKEN);

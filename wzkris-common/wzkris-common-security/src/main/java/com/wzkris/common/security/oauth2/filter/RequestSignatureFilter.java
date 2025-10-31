@@ -38,7 +38,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
         final String requestFrom = requestWrapper.getHeader(HeaderConstants.X_REQUEST_FROM);
         final SignkeyProperties.Sign sign = signProp.getKeys().get(requestFrom);
         if (sign == null) {
-            sendErrorResponse(response, Result.resp(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
+            sendErrorResponse(response, Result.init(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
             return;
         }
 
@@ -48,7 +48,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
 
         // 2. 检查必要的请求头是否存在
         if (StringUtil.isBlank(signature) || StringUtil.isBlank(requestTime)) {
-            sendErrorResponse(response, Result.resp(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
+            sendErrorResponse(response, Result.init(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
             return;
         }
 
@@ -61,7 +61,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
         );
 
         if (!verified) {
-            sendErrorResponse(response, Result.resp(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));
+            sendErrorResponse(response, Result.init(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));
             return;
         }
 

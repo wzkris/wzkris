@@ -36,7 +36,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         if (!StringUtils.hasText(channel)
                 || parameters.get(OAuth2ParameterConstant.CHANNEL).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
                     OAuth2ParameterConstant.CHANNEL);
@@ -47,7 +47,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         if (!StringUtils.hasText(wxCode)
                 || parameters.get(OAuth2ParameterConstant.WX_CODE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
                     OAuth2ParameterConstant.WX_CODE);
@@ -58,7 +58,7 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
         if (!StringUtils.hasText(authType)
                 || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
                     OAuth2ParameterConstant.AUTH_TYPE);

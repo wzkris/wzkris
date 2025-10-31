@@ -11,28 +11,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum BizBaseCode {
     OK(0, "ok"),
-
-    BAD_REQUEST(40_000, "请求失败"),
-
-    UNAUTHORIZED(40_001, "请求未认证"),
-
-    FORBID(40_003, "拒绝请求"),
-
-    NOT_FOUND(40_004, "请求地址不存在"),
-
-    BAD_METHOD(40_005, "不支持此方法"),
-
-    TOO_MANY_REQUESTS(40_029, "请求频率过多"),
-
-    MISSING_PARAMETER(40_099, "参数缺失"),
-
-    INTERNAL_ERROR(50_000, "服务异常"),
-
-    BAD_GATEWAY(50_002, "网关异常"),
-
-    SERVICE_UNAVAILABLE(50_003, "服务不可用"),
-
-    GATEWAY_TIMEOUT(50_004, "网关超时");
+    ACCESS_DENIED(99_900, "禁止访问"),
+    AUTHENTICATION_ERROR(99_901, "凭证异常"),
+    REQUEST_ERROR(99_902, "请求异常"),
+    API_REQUEST_ERROR(99_910, "api请求异常"),
+    TOO_MANY_REQUESTS(99_998, "请求频率过多"),
+    SYSTEM_ERROR(99_999, "系统异常");
 
     private final int code;
 

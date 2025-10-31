@@ -15,7 +15,7 @@ public class CaptchaException extends BaseException {
     }
 
     public CaptchaException(int biz, String code, Object... args) {
-        super("验证码异常", biz, code, args, null);
+        super("验证码异常", 412, biz, code, args, null);
     }
 
 }

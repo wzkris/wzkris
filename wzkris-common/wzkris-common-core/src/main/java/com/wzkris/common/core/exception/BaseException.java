@@ -16,6 +16,11 @@ public class BaseException extends RuntimeException {
     private final String modules;
 
     /**
+     * http状态码
+     */
+    private final int httpStatusCode;
+
+    /**
      * 状态码
      */
     private final int biz;
@@ -35,8 +40,9 @@ public class BaseException extends RuntimeException {
      */
     private final String defaultMessage;
 
-    public BaseException(String modules, int biz, String code, Object[] args, String defaultMessage) {
+    public BaseException(String modules, int httpStatusCode, int biz, String code, Object[] args, String defaultMessage) {
         this.modules = modules;
+        this.httpStatusCode = httpStatusCode;
         this.biz = biz;
         this.code = code;
         this.args = args;
@@ -57,6 +63,10 @@ public class BaseException extends RuntimeException {
 
     public final String getModules() {
         return this.modules;
+    }
+
+    public final int getHttpStatusCode() {
+        return this.httpStatusCode;
     }
 
     public final int getBiz() {

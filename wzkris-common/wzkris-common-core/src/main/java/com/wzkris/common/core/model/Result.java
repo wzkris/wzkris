@@ -50,30 +50,30 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> ok() {
-        return resp(BizBaseCode.OK.value(), null, BizBaseCode.OK.desc());
+        return init(BizBaseCode.OK.value(), null, BizBaseCode.OK.desc());
     }
 
     public static <T> Result<T> ok(T data) {
-        return resp(BizBaseCode.OK.value(), data, BizBaseCode.OK.desc());
+        return init(BizBaseCode.OK.value(), data, BizBaseCode.OK.desc());
     }
 
-    public static <T> Result<T> err40000(String message) {
-        return resp(BizBaseCode.BAD_REQUEST.value(), null, message);
+    public static <T> Result<T> requestFail(String message) {
+        return init(BizBaseCode.REQUEST_ERROR.value(), null, message);
     }
 
-    public static <T> Result<T> err40001(String message) {
-        return resp(BizBaseCode.UNAUTHORIZED.value(), null, message);
+    public static <T> Result<T> unauth(String message) {
+        return init(BizBaseCode.AUTHENTICATION_ERROR.value(), null, message);
     }
 
-    public static <T> Result<T> err40003(String message) {
-        return resp(BizBaseCode.FORBID.value(), null, message);
+    public static <T> Result<T> accessDenied(String message) {
+        return init(BizBaseCode.ACCESS_DENIED.value(), null, message);
     }
 
-    public static <T> Result<T> err50000(String message) {
-        return resp(BizBaseCode.INTERNAL_ERROR.value(), null, message);
+    public static <T> Result<T> systemError(String message) {
+        return init(BizBaseCode.SYSTEM_ERROR.value(), null, message);
     }
 
-    public static <T> Result<T> resp(int code, T data, String message) {
+    public static <T> Result<T> init(int code, T data, String message) {
         return new Result<>(code, data, message);
     }
 

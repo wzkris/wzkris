@@ -1,7 +1,7 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.exception.user.UserException;
+import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.domain.LoginUser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -36,7 +36,7 @@ public class LoginUserUtil extends SecurityUtil {
         try {
             return (LoginUser) getPrincipal();
         } catch (Exception e) {
-            throw new UserException(401, "forbidden.accessDenied.tokenExpired");
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
     }
 
