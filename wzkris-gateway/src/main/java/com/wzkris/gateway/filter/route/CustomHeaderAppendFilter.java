@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
- * 请求头追加
+ * 自定义请求头追加
  *
  * @author wzkris
  */
@@ -32,7 +32,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.C
 @Order(100)
 @Component
 @RequiredArgsConstructor
-public class AppendHeaderFilter implements GlobalFilter {
+public class CustomHeaderAppendFilter implements GlobalFilter {
 
     private final SignkeyProperties signkeyProperties;
 

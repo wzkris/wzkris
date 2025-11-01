@@ -18,14 +18,14 @@ import java.time.format.DateTimeFormatter;
 /**
  * @author : wzkris
  * @version : V1.0.0
- * @description : API调用量统计过滤器（原PV/UV统计实际为api调用量统计）
+ * @description : API调用量统计过滤器
  * @date : 2025/1/15
  */
 @Slf4j
 @Order(0)
 @Component
 @RequiredArgsConstructor
-public class PageViewStatisticsFilter implements GlobalFilter {
+public class ApicallStatisticsFilter implements GlobalFilter {
 
     private final StatisticsService statisticsService;
 
