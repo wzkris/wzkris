@@ -1,5 +1,6 @@
 package com.wzkris.gateway.controller;
 
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.gateway.domain.StatisticsKey;
@@ -33,34 +34,39 @@ public class TrackController {
      * pageview 上报
      */
     @PostMapping("/pageview")
-    public Mono<ResponseEntity<Void>> reportPageview(
+    public Mono<ResponseEntity<Object>> recordPageview(
             @RequestBody PageViewReq request,
             ServerWebExchange exchange) {
 
         return exchange.getPrincipal()
                 .map(p -> (MyPrincipal) p)
                 .flatMap(principal -> {
-                    String path = request.getView();
-
                     AuthType authType = principal.getType();
-
                     Long userId = principal.getId();
 
-                    LocalDateTime now = LocalDateTime.now();
-                    String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    String hourStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
-
-                    StatisticsKey key = StatisticsKey.builder()
-                            .authType(authType)
-                            .userId(userId)
-                            .path(path)
-                            .date(dateStr)
-                            .hour(hourStr)
-                            .build();
-
-                    statisticsService.recordUvPv(key);
+                    recordPageview(authType, userId, request);
                     return Mono.just(ResponseEntity.noContent().build());
-                });
+                })
+                .switchIfEmpty(Mono.defer(() -> {
+                    recordPageview(AuthType.ANONYMOUS, SecurityConstants.DEFAULT_USER_ID, request);
+                    return Mono.just(ResponseEntity.noContent().build());
+                }));
+    }
+
+    private void recordPageview(AuthType authType, Long userId, PageViewReq request) {
+        LocalDateTime now = LocalDateTime.now();
+        String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String hourStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
+
+        StatisticsKey key = StatisticsKey.builder()
+                .authType(authType)
+                .userId(userId)
+                .path(request.getView())
+                .date(dateStr)
+                .hour(hourStr)
+                .build();
+
+        statisticsService.recordUvPv(key);
     }
 
 }

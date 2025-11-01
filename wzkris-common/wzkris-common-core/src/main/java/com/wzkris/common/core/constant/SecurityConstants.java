@@ -26,7 +26,7 @@ public interface SecurityConstants {
     /**
      * 超级管理员ID
      */
-    Long SUPER_ADMIN_ID = 1L;
+    Long SUPER_ADMIN_ID = 100L;
 
     /**
      * 超级管理员名称

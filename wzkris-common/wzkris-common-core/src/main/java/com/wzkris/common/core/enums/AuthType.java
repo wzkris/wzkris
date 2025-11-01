@@ -13,6 +13,8 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 public enum AuthType {
 
+    ANONYMOUS("anonymous"),
+
     USER("user"),
 
     STAFF("staff"),
