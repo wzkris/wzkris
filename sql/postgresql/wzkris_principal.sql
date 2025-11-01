@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-10-31 14:25:07
+-- Started on 2025-11-01 14:32:12
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2342,7 +2342,7 @@ COPY biz.tenant_wallet_withdrawal_record (withdrawal_id, order_no, status, tenan
 --
 
 COPY biz.user_info (user_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1	\N	admin	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.131	2025-10-27 11:55:09+08	\N	1	1	2024-04-17 14:08:54.616+08	2025-10-28 16:04:02.441+08
+100	\N	admin	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.131	2025-10-27 11:55:09+08	\N	1	1	2024-04-17 14:08:54.616+08	2025-10-28 16:04:02.441+08
 \.
 
 
@@ -2666,7 +2666,7 @@ CREATE UNIQUE INDEX uk_user_info_phone_number ON biz.user_info USING btree (phon
 CREATE UNIQUE INDEX uk_user_info_username ON biz.user_info USING btree (username);
 
 
--- Completed on 2025-10-31 14:25:07
+-- Completed on 2025-11-01 14:32:13
 
 --
 -- PostgreSQL database dump complete
