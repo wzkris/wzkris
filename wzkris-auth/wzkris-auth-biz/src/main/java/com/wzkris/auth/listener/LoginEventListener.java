@@ -85,7 +85,7 @@ public class LoginEventListener {
             onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
             onlineSession.setLoginTime(new Date());
 
-            tokenService.putOnlineSession(user.getId(), event.getRefreshToken(), onlineSession);
+            tokenService.putSession(user.getId(), event.getRefreshToken(), onlineSession);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());
             loginInfoReq.setLoginIp(ipAddr);
@@ -127,7 +127,7 @@ public class LoginEventListener {
             onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
             onlineSession.setLoginTime(new Date());
 
-            tokenService.putOnlineSession(staff.getId(), event.getRefreshToken(), onlineSession);
+            tokenService.putSession(staff.getId(), event.getRefreshToken(), onlineSession);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(staff.getId());
             loginInfoReq.setLoginIp(ipAddr);

@@ -35,7 +35,7 @@ public class OnlineSessionController {
         String accessToken = SecurityUtil.getTokenValue();
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
 
-        RMapCache<String, OnlineSession> onlineCache = tokenService.getOnlineCache(SecurityUtil.getId());
+        RMapCache<String, OnlineSession> onlineCache = tokenService.loadSessionCache(SecurityUtil.getId());
 
         List<OnlineSessionResp> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
