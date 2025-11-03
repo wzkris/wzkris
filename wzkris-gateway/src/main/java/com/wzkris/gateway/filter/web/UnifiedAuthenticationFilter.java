@@ -5,9 +5,13 @@ import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.openfeign.exception.RpcException;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.service.TokenExtractionService;
+import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
 import com.wzkris.gateway.utils.WebFluxUtil;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -20,7 +24,9 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author : wzkris
@@ -32,7 +38,7 @@ import java.util.Optional;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 @RequiredArgsConstructor
-public class UnifiedAuthenticationFilter implements WebFilter {
+public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner {
 
     public static final String GATEWAY_PRINCIPAL = "GATEWAY_PRINCIPAL";
 
@@ -41,6 +47,8 @@ public class UnifiedAuthenticationFilter implements WebFilter {
     private final TokenExtractionService tokenExtractionService;
 
     private final PermitAllProperties permitAllProperties;
+
+    private final Set<String> permitAllAnnotations;
 
     public static Optional<MyPrincipal> getPrincipal(ContextView contextView) {
         return contextView.getOrEmpty(GATEWAY_PRINCIPAL);
@@ -56,11 +64,16 @@ public class UnifiedAuthenticationFilter implements WebFilter {
         }
 
         // 2) 白名单放行
-        if (isPathPermitted(path)) {
+        if (isPathPermitted(permitAllProperties.getIgnores(), path)
+                || isPathPermitted(permitAllAnnotations, path)) {
             return chain.filter(exchange);
         }
 
         // 3) Token认证流程
+        return checkToken(exchange, chain);
+    }
+
+    private Mono<Void> checkToken(ServerWebExchange exchange, WebFilterChain chain) {
         return tokenExtractionService.getCurrentPrincipal(exchange.getRequest())
                 .flatMap(principal ->
                         chain.filter(
@@ -82,14 +95,20 @@ public class UnifiedAuthenticationFilter implements WebFilter {
                 });
     }
 
-    private boolean isPathPermitted(String url) {
-        return permitAllProperties.getIgnores().stream()
+    private boolean isPathPermitted(Collection<String> collections, String url) {
+        return collections.stream()
                 .anyMatch(pattern -> PATH_MATCHER.match(pattern, url));
     }
 
     private boolean isPathDenied(String url) {
         return permitAllProperties.getDenys().stream()
                 .anyMatch(pattern -> PATH_MATCHER.match(pattern, url));
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        Set<String> permitAll = ScanAnnotationUrlUtil.scanUrls(PermitAll.class);
+        permitAllAnnotations.addAll(permitAll);
     }
 
 }

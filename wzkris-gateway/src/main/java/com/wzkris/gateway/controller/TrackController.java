@@ -1,14 +1,17 @@
 package com.wzkris.gateway.controller;
 
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.openfeign.exception.RpcException;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.domain.req.PageViewReq;
 import com.wzkris.gateway.service.StatisticsService;
+import com.wzkris.gateway.service.TokenExtractionService;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +29,12 @@ import java.time.format.DateTimeFormatter;
 @RestController
 @RequestMapping("/track")
 @RequiredArgsConstructor
+@PermitAll
 public class TrackController {
 
     private final StatisticsService statisticsService;
+
+    private final TokenExtractionService tokenExtractionService;
 
     /**
      * pageview 上报
@@ -38,19 +44,21 @@ public class TrackController {
             @RequestBody PageViewReq request,
             ServerWebExchange exchange) {
 
-        return exchange.getPrincipal()
-                .map(p -> (MyPrincipal) p)
+        return tokenExtractionService.getCurrentPrincipal(exchange.getRequest())
                 .flatMap(principal -> {
-                    AuthType authType = principal.getType();
-                    Long userId = principal.getId();
-
-                    recordPageview(authType, userId, request);
+                    recordPageview(principal.getType(), principal.getId(), request);
                     return Mono.just(ResponseEntity.noContent().build());
                 })
-                .switchIfEmpty(Mono.defer(() -> {
-                    recordPageview(AuthType.ANONYMOUS, SecurityConstants.DEFAULT_USER_ID, request);
+                .onErrorResume(RpcException.class, rpcException -> {
+                    ServerHttpResponse exchangeResponse = exchange.getResponse();
+                    exchangeResponse.setRawStatusCode(rpcException.getHttpStatusCode());
                     return Mono.just(ResponseEntity.noContent().build());
-                }));
+                })
+                .onErrorResume(throwable -> {
+                    ServerHttpResponse exchangeResponse = exchange.getResponse();
+                    exchangeResponse.setRawStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return Mono.just(ResponseEntity.noContent().build());
+                });
     }
 
     private void recordPageview(AuthType authType, Long userId, PageViewReq request) {
