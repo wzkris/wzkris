@@ -8,9 +8,9 @@ import com.wzkris.message.mapper.ConfigInfoMapper;
 import com.wzkris.message.service.ConfigInfoService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class ConfigInfoServiceImpl implements ConfigInfoService {
+public class ConfigInfoServiceImpl implements ConfigInfoService, SmartInitializingSingleton {
 
     private static final String DICT_KEY = "system-config";
 
@@ -34,7 +34,11 @@ public class ConfigInfoServiceImpl implements ConfigInfoService {
         return RedisUtil.getRMap(DICT_KEY);
     }
 
-    @PostConstruct
+    @Override
+    public void afterSingletonsInstantiated() {
+        loadingConfigCache();
+    }
+
     @Override
     public void loadingConfigCache() {
         RMap<String, String> rMap = cache();

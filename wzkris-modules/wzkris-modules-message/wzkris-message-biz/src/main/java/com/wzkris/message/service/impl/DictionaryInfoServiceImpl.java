@@ -5,9 +5,9 @@ import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.message.domain.DictionaryInfoDO;
 import com.wzkris.message.mapper.DictionaryInfoMapper;
 import com.wzkris.message.service.DictionaryInfoService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DictionaryInfoServiceImpl implements DictionaryInfoService {
+public class DictionaryInfoServiceImpl implements DictionaryInfoService, SmartInitializingSingleton {
 
     private static final String DICT_KEY = "system-dictionary";
 
@@ -26,7 +26,11 @@ public class DictionaryInfoServiceImpl implements DictionaryInfoService {
         return RedisUtil.getRMap(DICT_KEY, String.class, DictionaryInfoDO.DictData[].class);
     }
 
-    @PostConstruct
+    @Override
+    public void afterSingletonsInstantiated() {
+        loadingDictCache();
+    }
+
     @Override
     public void loadingDictCache() {
         RMap<String, DictionaryInfoDO.DictData[]> rMap = cache();

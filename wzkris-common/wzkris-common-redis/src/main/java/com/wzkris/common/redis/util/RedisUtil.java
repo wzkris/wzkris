@@ -1,8 +1,5 @@
 package com.wzkris.common.redis.util;
 
-import com.wzkris.common.core.utils.SpringUtil;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
 import org.redisson.codec.TypedJsonJacksonCodec;
@@ -19,18 +16,17 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author wzkris
  **/
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public abstract class RedisUtil {
+public class RedisUtil {
 
-    private static final RedissonClient client;
+    private static RedissonClient client;
 
     /**
      * Codec缓存，避免重复创建TypedJsonJacksonCodec实例
      */
     private static final ConcurrentMap<String, TypedJsonJacksonCodec> CODEC_CACHE = new ConcurrentHashMap<>(64);
 
-    static {
-        client = SpringUtil.getFactory().getBean(RedissonClient.class);
+    protected RedisUtil(RedissonClient client) {
+        RedisUtil.client = client;
     }
 
     /**
@@ -458,7 +454,7 @@ public abstract class RedisUtil {
      * @return 添加后列表的长度
      */
     public static <T> int lpush(final String key, final T value) {
-        RList<T> list = client.getList(key);
+        RList<T> list = client.getList(key, getCodec(value.getClass()));
         list.add(0, value);
         return list.size();
     }
@@ -471,7 +467,7 @@ public abstract class RedisUtil {
      * @return 添加后列表的长度
      */
     public static <T> int rpush(final String key, final T value) {
-        RList<T> list = client.getList(key);
+        RList<T> list = client.getList(key, getCodec(value.getClass()));
         list.add(value);
         return list.size();
     }
@@ -557,7 +553,7 @@ public abstract class RedisUtil {
      * @return 是否添加成功
      */
     public static <T> boolean sadd(final String key, final T value) {
-        return client.getSet(key).add(value);
+        return client.getSet(key, getCodec(value.getClass())).add(value);
     }
 
     /**
@@ -568,7 +564,7 @@ public abstract class RedisUtil {
      * @return 是否移除成功
      */
     public static <T> boolean srem(final String key, final T value) {
-        return client.getSet(key).remove(value);
+        return client.getSet(key, getCodec(value.getClass())).remove(value);
     }
 
     /**
@@ -579,7 +575,7 @@ public abstract class RedisUtil {
      * @return 是否存在
      */
     public static <T> boolean sismember(final String key, final T value) {
-        return client.getSet(key).contains(value);
+        return client.getSet(key, getCodec(value.getClass())).contains(value);
     }
 
     /**
@@ -641,7 +637,7 @@ public abstract class RedisUtil {
      * @return 是否移除成功
      */
     public static <T> boolean zrem(final String key, final T value) {
-        return client.getSortedSet(key).remove(value);
+        return client.getSortedSet(key, getCodec(value.getClass())).remove(value);
     }
 
     /**
