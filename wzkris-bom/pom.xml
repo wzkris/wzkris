@@ -135,13 +135,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!--mq服务 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-stream</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- 接口模块 -->
             <dependency>
                 <groupId>com.wzkris</groupId>

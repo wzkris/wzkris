@@ -5,22 +5,27 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>wzkris-common</artifactId>
         <groupId>com.wzkris</groupId>
+        <artifactId>wzkris</artifactId>
         <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>wzkris-common-stream</artifactId>
+    <artifactId>wzkris-mq-demo</artifactId>
 
     <description>消息队列服务，提供基础消息能力</description>
 
-
     <dependencies>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
+        </dependency>
 
         <!-- 消息队列 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
         </dependency>
 
     </dependencies>

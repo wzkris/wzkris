@@ -34,7 +34,6 @@
         <module>wzkris-common-security</module>
         <module>wzkris-common-sentinel</module>
         <module>wzkris-common-statemachine</module>
-        <module>wzkris-common-stream</module>
         <module>wzkris-common-swagger</module>
         <module>wzkris-common-thread</module>
         <module>wzkris-common-validator</module>
