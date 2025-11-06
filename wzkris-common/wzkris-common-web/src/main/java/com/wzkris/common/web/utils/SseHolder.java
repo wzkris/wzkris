@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * sse连接持有工具
  */
 @Slf4j
-public abstract class SseConnectHolder {
+public abstract class SseHolder {
 
     private static final Map<Serializable, SseEmitter> HOLDER = new ConcurrentHashMap<>(256);
 
