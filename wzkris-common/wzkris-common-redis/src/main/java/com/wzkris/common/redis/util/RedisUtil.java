@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author wzkris
  **/
-public class RedisUtil {
+public final class RedisUtil {
 
     private static RedissonClient client;
 
@@ -25,7 +25,7 @@ public class RedisUtil {
      */
     private static final ConcurrentMap<String, TypedJsonJacksonCodec> CODEC_CACHE = new ConcurrentHashMap<>(64);
 
-    protected RedisUtil(RedissonClient client) {
+    private RedisUtil(RedissonClient client) {
         RedisUtil.client = client;
     }
 

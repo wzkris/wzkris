@@ -79,14 +79,15 @@ public class GlobalCacheAspect {
             // 数据不存在需要执行方法并回写缓存
             Object result;
             if (globalCache.sync()) {
-                result = DistLockTemplate.lockAndExecute(finalGlobalKey, 1_500, (ThrowableSupplier<Object, Throwable>) () -> {
-                    // 双重检查缓存
-                    Object doubleCheckValue = RedisUtil.getObj(finalGlobalKey, methodSignature.getReturnType());
-                    if (doubleCheckValue != null) {
-                        return doubleCheckValue;
-                    }
-                    return proceedAndRewrite(point, globalCache.ttl(), finalGlobalKey);
-                });
+                result = DistLockTemplate.lockAndExecute(finalGlobalKey, 1_500,
+                        (ThrowableSupplier<Object, Throwable>) () -> {
+                            // 双重检查缓存
+                            Object doubleCheckValue = RedisUtil.getObj(finalGlobalKey, methodSignature.getReturnType());
+                            if (doubleCheckValue != null) {
+                                return doubleCheckValue;
+                            }
+                            return proceedAndRewrite(point, globalCache.ttl(), finalGlobalKey);
+                        });
             } else {
                 result = proceedAndRewrite(point, globalCache.ttl(), finalGlobalKey);
             }
