@@ -1,12 +1,12 @@
 package com.wzkris.auth.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.wzkris.auth.domain.req.SmsCodeReq;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.redis.ratelimiter.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.model.Result.requestFail;
 import static com.wzkris.common.core.model.Result.ok;
+import static com.wzkris.common.core.model.Result.requestFail;
 
 /**
  * @author : wzkris
@@ -38,7 +38,7 @@ public class CaptchaController {
 
     private final CaptchaService captchaService;
 
-    @RateLimit
+    @SentinelResource(value = "challenge")
     @Operation(summary = "获取挑战")
     @PostMapping("/challenge")
     public ChallengeData challenge() {

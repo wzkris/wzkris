@@ -29,7 +29,6 @@
         <module>wzkris-common-openfeign</module>
         <module>wzkris-common-orm</module>
         <module>wzkris-common-redis</module>
-        <module>wzkris-common-redis-ratelimiter</module>
         <module>wzkris-common-seata</module>
         <module>wzkris-common-security</module>
         <module>wzkris-common-sentinel</module>

@@ -100,13 +100,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 缓存限流服务 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-redis-ratelimiter</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- 分布式事务 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
