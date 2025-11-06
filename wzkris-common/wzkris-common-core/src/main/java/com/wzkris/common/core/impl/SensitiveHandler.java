@@ -1,4 +1,4 @@
-package com.wzkris.common.validator.impl;
+package com.wzkris.common.core.impl;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import com.wzkris.common.validator.annotation.Sensitive;
+import com.wzkris.common.core.annotation.Sensitive;
+import com.wzkris.common.core.enums.SensitiveStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 

@@ -1,9 +1,9 @@
-package com.wzkris.common.validator.annotation;
+package com.wzkris.common.core.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.wzkris.common.validator.impl.SensitiveHandler;
-import com.wzkris.common.validator.impl.SensitiveStrategy;
+import com.wzkris.common.core.enums.SensitiveStrategy;
+import com.wzkris.common.core.impl.SensitiveHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

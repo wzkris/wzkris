@@ -1,7 +1,7 @@
 package com.wzkris.principal.domain.vo.staff;
 
-import com.wzkris.common.validator.annotation.Sensitive;
-import com.wzkris.common.validator.impl.SensitiveStrategy;
+import com.wzkris.common.core.annotation.Sensitive;
+import com.wzkris.common.core.enums.SensitiveStrategy;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

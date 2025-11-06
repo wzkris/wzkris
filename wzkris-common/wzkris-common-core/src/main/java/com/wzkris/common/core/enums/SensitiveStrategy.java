@@ -1,4 +1,4 @@
-package com.wzkris.common.validator.impl;
+package com.wzkris.common.core.enums;
 
 import com.wzkris.common.core.utils.DesensitizedUtil;
 import lombok.AllArgsConstructor;

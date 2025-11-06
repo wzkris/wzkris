@@ -1,9 +1,9 @@
 package com.wzkris.common.validator.domain;
 
+import com.wzkris.common.core.annotation.Sensitive;
+import com.wzkris.common.core.enums.SensitiveStrategy;
 import com.wzkris.common.validator.annotation.IdCard;
 import com.wzkris.common.validator.annotation.PhoneNumber;
-import com.wzkris.common.validator.annotation.Sensitive;
-import com.wzkris.common.validator.impl.SensitiveStrategy;
 import lombok.Data;
 
 @Data

@@ -25,11 +25,6 @@ public enum AuthType {
 
     private final String value;
 
-    @JsonValue
-    public String getValue() {
-        return value;
-    }
-
     @JsonCreator
     @Nullable
     public static AuthType fromValue(String value) {
@@ -39,6 +34,11 @@ public enum AuthType {
             }
         }
         return null;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value;
     }
 
 }
