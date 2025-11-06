@@ -45,12 +45,6 @@
             <artifactId>wzkris-message-rmi</artifactId>
         </dependency>
 
-        <!-- wzkris Common DataSource -->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-datasource</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-web</artifactId>

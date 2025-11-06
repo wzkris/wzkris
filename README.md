@@ -31,7 +31,6 @@ wzkris
 ├── wzkris-common          // 模块控制
 │       └── wzkris-common-captcha                      // 验证码模块
 │       └── wzkris-common-core                         // 核心模块(工具包)
-│       └── wzkris-common-datasource                   // 多数据源
 │       └── wzkris-common-excel                        // excel处理
 │       └── wzkris-common-loadbanlancer                // rpc均衡负载
 │       └── wzkris-common-log                          // 日志记录
@@ -44,7 +43,6 @@ wzkris
 │       └── wzkris-common-security                     // 安全模块 OAuth2.1
 │       └── wzkris-common-sentinel                     // 限流模块
 │       └── wzkris-common-statemachine                 // spring状态机
-│       └── wzkris-common-stream                       // spring-stream
 │       └── wzkris-common-swagger                      // openAPI3规范
 │       └── wzkris-common-thread                       // 动态线程池
 │       └── wzkris-common-validator                    // 集成hibernate-validator

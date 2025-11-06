@@ -44,13 +44,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 多数据源 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-datasource</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- excel导入导出-->
             <dependency>
                 <groupId>com.wzkris</groupId>
