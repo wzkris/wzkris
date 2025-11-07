@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter;
 @RestController
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
-@RequireAuth(authType = AuthType.USER, permissions = {"gateway-mod:statistics:pvuv"})
+@RequireAuth(authType = AuthType.ADMIN, permissions = {"gateway-mod:statistics:pvuv"})
 public class StatisticsController {
 
     private final StatisticsService statisticsService;

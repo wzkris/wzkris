@@ -87,7 +87,7 @@ public class LoginAdminService extends UserInfoTemplate {
 
     @Override
     public boolean checkAuthType(AuthType authType) {
-        return AuthType.USER.equals(authType);
+        return AuthType.ADMIN.equals(authType);
     }
 
     /**

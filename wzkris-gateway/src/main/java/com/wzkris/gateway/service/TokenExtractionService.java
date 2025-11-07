@@ -6,12 +6,13 @@ import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
-import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.exception.RpcException;
@@ -69,19 +70,19 @@ public class TokenExtractionService {
             return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
         }
 
-        String userToken = getUserToken(request);
-        if (StringUtil.isNotBlank(userToken)) {
-            return (Mono<T>) validatePrincipal(userToken, userReference);
+        String adminToken = getAdminToken(request);
+        if (StringUtil.isNotBlank(adminToken)) {
+            return (Mono<T>) validatePrincipal(AuthType.ADMIN.getValue(), adminToken, userReference);
         }
 
         String staffToken = getStaffToken(request);
         if (StringUtil.isNotBlank(staffToken)) {
-            return (Mono<T>) validatePrincipal(staffToken, staffReference);
+            return (Mono<T>) validatePrincipal(AuthType.STAFF.getValue(), staffToken, staffReference);
         }
 
         String customerToken = getCustomerToken(request);
         if (StringUtil.isNotBlank(customerToken)) {
-            return (Mono<T>) validatePrincipal(customerToken, customerReference);
+            return (Mono<T>) validatePrincipal(AuthType.CUSTOMER.getValue(), customerToken, customerReference);
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
@@ -92,9 +93,10 @@ public class TokenExtractionService {
      * 调用认证服务验证Token
      */
     private <T extends MyPrincipal> Mono<T> validatePrincipal(
+            String authType,
             String token,
             ParameterizedTypeReference<TokenResponse<T>> typeReference) {
-        TokenReq tokenReq = new TokenReq(token);
+        TokenReq tokenReq = new TokenReq(authType, token);
 
         return tokenWebClient.post()
                 .uri("/feign-token/check-principal")
@@ -144,10 +146,10 @@ public class TokenExtractionService {
      */
     private boolean hasAnyToken(ServerHttpRequest request) {
         return Stream.of(
-                        request.getHeaders().getFirst(HeaderConstants.X_USER_TOKEN),
+                        request.getHeaders().getFirst(HeaderConstants.X_ADMIN_TOKEN),
                         request.getHeaders().getFirst(HeaderConstants.X_STAFF_TOKEN),
                         request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN),
-                        request.getQueryParams().getFirst(QueryParamConstants.X_USER_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_ADMIN_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_STAFF_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN)
                 )
@@ -155,14 +157,14 @@ public class TokenExtractionService {
     }
 
     /**
-     * 获取用户Token（优先Header，其次Query参数）
+     * 获取管理员Token（优先Header，其次Query参数）
      */
-    private String getUserToken(ServerHttpRequest request) {
-        String token = request.getHeaders().getFirst(HeaderConstants.X_USER_TOKEN);
+    private String getAdminToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(HeaderConstants.X_ADMIN_TOKEN);
         if (StringUtil.isNotBlank(token)) {
             return token;
         }
-        return request.getQueryParams().getFirst(QueryParamConstants.X_USER_TOKEN);
+        return request.getQueryParams().getFirst(QueryParamConstants.X_ADMIN_TOKEN);
     }
 
     /**

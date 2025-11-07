@@ -61,7 +61,7 @@ public class TokenFeignImpl implements TokenFeign {
 
     @Override
     public TokenResponse<MyPrincipal> validatePrincipal(TokenReq tokenReq) {
-        MyPrincipal principal = tokenService.loadByAccessToken(tokenReq.getToken());
+        MyPrincipal principal = tokenService.loadByAccessToken(tokenReq.getAuthType(), tokenReq.getToken());
 
         if (principal == null) {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check failed");

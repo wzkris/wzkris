@@ -37,7 +37,7 @@ public class OperateEventListener {
                         if (StringUtil.isNotBlank(event.getOperIp())) {
                             event.setOperLocation(IpUtil.parseIp(event.getOperIp()));
                         }
-                        if (StringUtil.equals(event.getAuthType(), AuthType.USER.getValue())) {
+                        if (StringUtil.equals(event.getAuthType(), AuthType.ADMIN.getValue())) {
                             operateLogReqs.add(event.toUserOperateLogReq());
                         } else if (StringUtil.equals(event.getAuthType(), AuthType.STAFF.getValue())) {
                             staffOperateLogReqs.add(event.toStaffOperateLogReq());

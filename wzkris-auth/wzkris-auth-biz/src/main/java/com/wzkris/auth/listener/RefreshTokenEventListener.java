@@ -31,7 +31,7 @@ public class RefreshTokenEventListener {
         MyPrincipal principal = event.getPrincipal();
         log.info("'{}' 发生刷新TOKEN事件", principal);
 
-        if (Objects.equals(principal.getType(), AuthType.USER)) {
+        if (Objects.equals(principal.getType(), AuthType.ADMIN)) {
 
         } else if (Objects.equals(principal.getType(), AuthType.STAFF)) {
 

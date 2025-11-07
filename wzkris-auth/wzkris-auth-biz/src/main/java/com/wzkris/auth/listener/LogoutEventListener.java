@@ -19,7 +19,7 @@ public class LogoutEventListener {
     public void logoutEvent(LogoutEvent event) {
         log.info("id '{}'的{}用户退出登录", event.getId(), event.getAuthType());
 
-        if (StringUtil.equals(event.getAuthType(), AuthType.USER.getValue())) {
+        if (StringUtil.equals(event.getAuthType(), AuthType.ADMIN.getValue())) {
 
         } else if (StringUtil.equals(event.getAuthType(), AuthType.STAFF.getValue())) {
 

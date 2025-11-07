@@ -96,7 +96,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
 
     @Nullable
     private String generateKey(MyPrincipal principal) {
-        if (StringUtil.equalsAny(principal.getType().getValue(), AuthType.USER.getValue(), AuthType.STAFF.getValue())) {
+        if (StringUtil.equalsAny(principal.getType().getValue(), AuthType.ADMIN.getValue(), AuthType.STAFF.getValue())) {
             return tokenGenerator.generateKey();
         } else if (principal.getType().equals(AuthType.CUSTOMER)) {
             JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;

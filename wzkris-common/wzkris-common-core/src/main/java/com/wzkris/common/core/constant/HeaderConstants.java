@@ -33,14 +33,14 @@ public class HeaderConstants {
     public static final String X_REQUEST_TIME = "X-Request-Time";
 
     /**
-     * 用户Token
+     * 管理员Token
      */
-    public static final String X_USER_TOKEN = "X-User-Token";
+    public static final String X_ADMIN_TOKEN = "X-Admin-Token";
 
     /**
-     * 用户信息
+     * 管理员信息
      */
-    public static final String X_USER_INFO = "X-User-Info";
+    public static final String X_Admin_INFO = "X-Admin-Info";
 
     /**
      * 租户Token

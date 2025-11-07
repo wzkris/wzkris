@@ -33,9 +33,9 @@ public class OnlineSessionController {
     @GetMapping
     public Result<Collection<OnlineSessionResp>> onlineSession() {
         String accessToken = SecurityUtil.getTokenValue();
-        String refreshToken = tokenService.loadRefreshTokenByAccessToken(accessToken);
+        String refreshToken = tokenService.loadRefreshTokenByAccessToken(SecurityUtil.getAuthType().getValue(), accessToken);
 
-        RMapCache<String, OnlineSession> onlineCache = tokenService.loadSessionCache(SecurityUtil.getId());
+        RMapCache<String, OnlineSession> onlineCache = tokenService.loadSessionCache(SecurityUtil.getAuthType().getValue(), SecurityUtil.getId());
 
         List<OnlineSessionResp> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
@@ -53,7 +53,7 @@ public class OnlineSessionController {
     @Operation(summary = "踢出会话")
     @PostMapping("/kickout")
     public Result<Void> kickoutSession(@RequestBody String refreshToken) {
-        tokenService.logoutByRefreshToken(refreshToken);
+        tokenService.logoutByRefreshToken(SecurityUtil.getAuthType().getValue(), refreshToken);
         return ok();
     }
 

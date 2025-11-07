@@ -55,7 +55,7 @@ public class LoginEventListener {
         final MyPrincipal principal = event.getPrincipal();
         log.info("'{}' 发生登录事件", principal);
 
-        if (Objects.equals(principal.getType(), AuthType.USER)) {
+        if (Objects.equals(principal.getType(), AuthType.ADMIN)) {
             this.handleLoginAdmin(event, (LoginAdmin) principal);
         } else if (Objects.equals(principal.getType(), AuthType.STAFF)) {
             this.handleLoginStaff(event, (LoginStaff) principal);
@@ -84,7 +84,7 @@ public class LoginEventListener {
             onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
             onlineSession.setLoginTime(new Date());
 
-            tokenService.putSession(user.getId(), event.getRefreshToken(), onlineSession);
+            tokenService.putSession(user.getType().getValue(), user.getId(), event.getRefreshToken(), onlineSession);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());
             loginInfoReq.setLoginIp(ipAddr);
@@ -126,7 +126,7 @@ public class LoginEventListener {
             onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
             onlineSession.setLoginTime(new Date());
 
-            tokenService.putSession(staff.getId(), event.getRefreshToken(), onlineSession);
+            tokenService.putSession(staff.getType().getValue(), staff.getId(), event.getRefreshToken(), onlineSession);
 
             LoginInfoReq loginInfoReq = new LoginInfoReq(staff.getId());
             loginInfoReq.setLoginIp(ipAddr);

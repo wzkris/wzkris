@@ -32,7 +32,7 @@ public class LoginAdmin extends MyPrincipal {
                       @JsonProperty("admin") boolean admin,
                       @JsonProperty("username") String username,
                       @JsonProperty("deptScopes") List<Long> deptScopes) {
-        super(id, AuthType.USER, permissions);
+        super(id, AuthType.ADMIN, permissions);
         this.admin = admin;
         this.username = username;
         this.deptScopes = deptScopes;

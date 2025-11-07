@@ -33,14 +33,14 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
     public RefreshAuthenticationToken doAuthenticate(Authentication authentication) {
         RefreshAuthenticationToken authenticationToken = (RefreshAuthenticationToken) authentication;
 
-        MyPrincipal principal = tokenService.loadByRefreshToken(authenticationToken.getRefreshToken());
+        MyPrincipal principal = tokenService.loadByRefreshToken(authenticationToken.getAuthType().getValue(), authenticationToken.getRefreshToken());
         if (principal == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCode.AUTHENTICATION_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        return new RefreshAuthenticationToken(authenticationToken.getRefreshToken(), principal);
+        return new RefreshAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getRefreshToken(), principal);
     }
 
     @Override

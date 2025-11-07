@@ -69,10 +69,10 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
     }
 
     private boolean generateUser(HttpServletRequest request, SecurityContext ctx) {
-        final String userinfo = request.getHeader(HeaderConstants.X_USER_INFO);
+        final String userinfo = request.getHeader(HeaderConstants.X_Admin_INFO);
         if (StringUtil.isNotBlank(userinfo)) {
             ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(userinfo, LoginAdmin.class), request,
-                    request.getHeader(HeaderConstants.X_USER_TOKEN)));
+                    request.getHeader(HeaderConstants.X_ADMIN_TOKEN)));
             return true;
         }
         return false;

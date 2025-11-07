@@ -47,7 +47,7 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                 .flatMap(principal -> {
                     String infoHeader;
                     if (principal instanceof LoginAdmin) {
-                        infoHeader = HeaderConstants.X_USER_INFO;
+                        infoHeader = HeaderConstants.X_Admin_INFO;
                     } else if (principal instanceof LoginStaff) {
                         infoHeader = HeaderConstants.X_STAFF_INFO;
                     } else if (principal instanceof LoginCustomer) {

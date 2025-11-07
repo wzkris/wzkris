@@ -15,7 +15,7 @@ public enum AuthType {
 
     ANONYMOUS("anonymous"),
 
-    USER("user"),
+    ADMIN("admin"),
 
     STAFF("staff"),
 

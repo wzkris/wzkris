@@ -36,17 +36,25 @@ public class LogoutHandlerImpl implements LogoutHandler {
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        String userToken = request.getHeader(HeaderConstants.X_USER_TOKEN);
-        if (StringUtil.isNotBlank(userToken)) {
-            Serializable id = tokenService.logoutByAccessToken(userToken);
+        String adminToken = request.getHeader(HeaderConstants.X_ADMIN_TOKEN);
+        if (StringUtil.isNotBlank(adminToken)) {
+            Serializable id = tokenService.logoutByAccessToken(AuthType.ADMIN.getValue(), adminToken);
             if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.USER.getValue()));
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.ADMIN.getValue()));
+            }
+        }
+
+        String staffToken = request.getHeader(HeaderConstants.X_STAFF_TOKEN);
+        if (StringUtil.isNotBlank(staffToken)) {
+            Serializable id = tokenService.logoutByAccessToken(AuthType.STAFF.getValue(), staffToken);
+            if (id != null) {
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.STAFF.getValue()));
             }
         }
 
         String customerToken = request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN);
         if (StringUtil.isNotBlank(customerToken)) {
-            Serializable id = tokenService.logoutByAccessToken(customerToken);
+            Serializable id = tokenService.logoutByAccessToken(AuthType.CUSTOMER.getValue(), customerToken);
             if (id != null) {
                 SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.CUSTOMER.getValue()));
             }

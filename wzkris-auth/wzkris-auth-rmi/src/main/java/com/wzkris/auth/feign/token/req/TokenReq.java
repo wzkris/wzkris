@@ -12,6 +12,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class TokenReq implements Serializable {
 
+    @NotBlank(message = "authType {validate.notnull}")
+    private String authType;
+
     @NotBlank(message = "token {validate.notnull}")
     private String token;
 
