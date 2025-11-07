@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.principal.constant.MenuConstants;
+import com.wzkris.principal.domain.AdminInfoDO;
 import com.wzkris.principal.domain.MenuInfoDO;
-import com.wzkris.principal.domain.UserInfoDO;
 import com.wzkris.principal.domain.vo.MetaVO;
 import com.wzkris.principal.domain.vo.RouterVO;
 import com.wzkris.principal.domain.vo.SelectTreeVO;
@@ -142,10 +142,10 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<SelectTreeVO> listSystemSelectTree(Long userId) {
+    public List<SelectTreeVO> listSystemSelectTree(Long adminId) {
         List<Long> menuIds = null;
-        if (!UserInfoDO.isSuperAdmin(userId)) {
-            menuIds = this.listMenuIdByUserId(userId);
+        if (!AdminInfoDO.isSuperAdmin(adminId)) {
+            menuIds = this.listMenuIdByAdminId(adminId);
             if (CollectionUtils.isEmpty(menuIds)) {
                 return Collections.emptyList();
             }
@@ -189,10 +189,10 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<RouterVO> listSystemRoutes(Long userId) {
+    public List<RouterVO> listSystemRoutes(Long adminId) {
         List<Long> menuIds = null;
-        if (!UserInfoDO.isSuperAdmin(userId)) {
-            menuIds = this.listMenuIdByUserId(userId);
+        if (!AdminInfoDO.isSuperAdmin(adminId)) {
+            menuIds = this.listMenuIdByAdminId(adminId);
             if (CollectionUtils.isEmpty(menuIds)) {
                 return Collections.emptyList();
             }
@@ -222,8 +222,8 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     /**
      * 查询用户对应菜单id
      */
-    public List<Long> listMenuIdByUserId(Long userId) {
-        List<Long> roleIds = roleInfoService.listInheritedIdByUserId(userId);
+    public List<Long> listMenuIdByAdminId(Long adminId) {
+        List<Long> roleIds = roleInfoService.listInheritedIdByAdminId(adminId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }

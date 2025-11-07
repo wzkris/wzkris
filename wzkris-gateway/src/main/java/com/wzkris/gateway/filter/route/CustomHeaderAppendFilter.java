@@ -5,7 +5,7 @@ import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
-import com.wzkris.common.core.model.domain.LoginUser;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.utils.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
         return exchange.getPrincipal()
                 .flatMap(principal -> {
                     String infoHeader;
-                    if (principal instanceof LoginUser) {
+                    if (principal instanceof LoginAdmin) {
                         infoHeader = HeaderConstants.X_USER_INFO;
                     } else if (principal instanceof LoginStaff) {
                         infoHeader = HeaderConstants.X_STAFF_INFO;

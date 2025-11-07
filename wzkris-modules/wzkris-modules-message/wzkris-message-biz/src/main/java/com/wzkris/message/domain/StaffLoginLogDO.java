@@ -2,7 +2,7 @@ package com.wzkris.message.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.message.feign.stafflog.req.StaffLoginLogReq;
+import com.wzkris.message.feign.stafflog.req.LoginLogReq;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -18,7 +18,7 @@ import java.util.Date;
  * @date : 2023/8/26 14:35
  */
 @Data
-@AutoMapper(target = StaffLoginLogReq.class)
+@AutoMapper(target = LoginLogReq.class)
 @TableName(schema = "biz", value = "staff_login_log")
 public class StaffLoginLogDO implements Serializable {
 
@@ -32,7 +32,7 @@ public class StaffLoginLogDO implements Serializable {
     private Long staffId;
 
     @Schema(description = "用户名")
-    private String staffName;
+    private String username;
 
     @Schema(description = "登录类型")
     private String loginType;

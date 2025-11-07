@@ -64,11 +64,11 @@ public class LoginStaffService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public MyPrincipal loadByUsernameAndPassword(String staffName, String password) throws UsernameNotFoundException {
-        StaffInfoResp staffResp = staffInfoFeign.getByStaffName(staffName);
+    public MyPrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+        StaffInfoResp staffResp = staffInfoFeign.getByUsername(username);
 
         if (staffResp == null) {
-            captchaService.freezeAccount(staffName, 60);
+            captchaService.freezeAccount(username, 60);
             return null;
         }
 
@@ -104,7 +104,7 @@ public class LoginStaffService extends UserInfoTemplate {
         return new LoginStaff(staffResp.getStaffId(),
                 new HashSet<>(permissions.getGrantedAuthority()),
                 permissions.getAdmin(),
-                staffResp.getStaffName(),
+                staffResp.getUsername(),
                 staffResp.getTenantId());
     }
 
@@ -136,7 +136,7 @@ public class LoginStaffService extends UserInfoTemplate {
         LoginStaff loginStaff = new LoginStaff(staffResp.getStaffId(),
                 Collections.emptySet(),
                 false,
-                staffResp.getStaffName(),
+                staffResp.getUsername(),
                 staffResp.getTenantId());
 
         SpringUtil.getContext()

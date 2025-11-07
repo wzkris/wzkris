@@ -16,7 +16,7 @@ public class StaffInfoVO {
     private boolean admin;
 
     @Schema(description = "用户名")
-    private String staffName;
+    private String username;
 
     @Schema(description = "权限")
     private Collection<String> authorities;

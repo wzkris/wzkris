@@ -5,18 +5,17 @@ import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
-import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.IpUtil;
+import com.wzkris.message.feign.adminlog.AdminLogFeign;
 import com.wzkris.message.feign.stafflog.StaffLogFeign;
-import com.wzkris.message.feign.stafflog.req.StaffLoginLogReq;
-import com.wzkris.message.feign.userlog.UserLogFeign;
-import com.wzkris.message.feign.userlog.req.UserLoginLogReq;
+import com.wzkris.message.feign.stafflog.req.LoginLogReq;
+import com.wzkris.principal.feign.admin.AdminInfoFeign;
+import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.customer.CustomerInfoFeign;
 import com.wzkris.principal.feign.staff.StaffInfoFeign;
-import com.wzkris.principal.feign.user.UserInfoFeign;
-import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.basjes.parse.useragent.UserAgent;
@@ -40,11 +39,11 @@ public class LoginEventListener {
 
     private final TokenService tokenService;
 
-    private final UserLogFeign userLogFeign;
+    private final AdminLogFeign adminLogFeign;
 
     private final StaffLogFeign staffLogFeign;
 
-    private final UserInfoFeign userInfoFeign;
+    private final AdminInfoFeign adminInfoFeign;
 
     private final StaffInfoFeign staffInfoFeign;
 
@@ -57,7 +56,7 @@ public class LoginEventListener {
         log.info("'{}' 发生登录事件", principal);
 
         if (Objects.equals(principal.getType(), AuthType.USER)) {
-            this.handleLoginUser(event, (LoginUser) principal);
+            this.handleLoginAdmin(event, (LoginAdmin) principal);
         } else if (Objects.equals(principal.getType(), AuthType.STAFF)) {
             this.handleLoginStaff(event, (LoginStaff) principal);
         } else if (Objects.equals(principal.getType(), AuthType.CUSTOMER)) {
@@ -65,7 +64,7 @@ public class LoginEventListener {
         }
     }
 
-    private void handleLoginUser(LoginEvent event, LoginUser user) {
+    private void handleLoginAdmin(LoginEvent event, LoginAdmin user) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
@@ -90,11 +89,11 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
-            userInfoFeign.updateLoginInfo(loginInfoReq);
+            adminInfoFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
-        final UserLoginLogReq loginLogReq = new UserLoginLogReq();
-        loginLogReq.setUserId(user.getId());
+        final com.wzkris.message.feign.adminlog.req.LoginLogReq loginLogReq = new com.wzkris.message.feign.adminlog.req.LoginLogReq();
+        loginLogReq.setAdminId(user.getId());
         loginLogReq.setUsername(user.getUsername());
         loginLogReq.setLoginTime(new Date());
         loginLogReq.setLoginIp(ipAddr);
@@ -104,7 +103,7 @@ public class LoginEventListener {
         loginLogReq.setLoginLocation(loginLocation);
         loginLogReq.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
         loginLogReq.setBrowser(browser);
-        userLogFeign.saveLoginlog(loginLogReq);
+        adminLogFeign.saveLoginlog(loginLogReq);
     }
 
     private void handleLoginStaff(LoginEvent event, LoginStaff staff) {
@@ -135,9 +134,9 @@ public class LoginEventListener {
             staffInfoFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
-        final StaffLoginLogReq loginLogReq = new StaffLoginLogReq();
+        final LoginLogReq loginLogReq = new LoginLogReq();
         loginLogReq.setStaffId(staff.getId());
-        loginLogReq.setStaffName(staff.getStaffName());
+        loginLogReq.setUsername(staff.getUsername());
         loginLogReq.setTenantId(staff.getTenantId());
         loginLogReq.setLoginTime(new Date());
         loginLogReq.setLoginIp(ipAddr);

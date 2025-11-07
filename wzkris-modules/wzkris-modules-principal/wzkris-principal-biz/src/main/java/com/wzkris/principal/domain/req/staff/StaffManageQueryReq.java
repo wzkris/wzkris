@@ -9,7 +9,7 @@ import lombok.Data;
 public class StaffManageQueryReq extends QueryReq {
 
     @Schema(description = "用户名")
-    private String staffName;
+    private String username;
 
     @Schema(description = "手机号码")
     private String phoneNumber;

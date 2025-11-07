@@ -3,12 +3,12 @@ package com.wzkris.principal.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.principal.domain.AdminInfoDO;
 import com.wzkris.principal.domain.DeptInfoDO;
 import com.wzkris.principal.domain.PostInfoDO;
 import com.wzkris.principal.domain.RoleInfoDO;
-import com.wzkris.principal.domain.UserInfoDO;
+import com.wzkris.principal.feign.admin.resp.AdminPermissionResp;
 import com.wzkris.principal.feign.staff.resp.StaffPermissionResp;
-import com.wzkris.principal.feign.user.resp.UserPermissionResp;
 import com.wzkris.principal.manager.DeptInfoDscManager;
 import com.wzkris.principal.mapper.DeptInfoMapper;
 import com.wzkris.principal.mapper.TenantInfoMapper;
@@ -65,25 +65,25 @@ public class PermissionServiceImpl implements PermissionService {
     private final DeptInfoDscManager deptInfoDscManager;
 
     @Override
-    public UserPermissionResp getUserPermission(Long userId, Long deptId) {
+    public AdminPermissionResp getAdminPermission(Long adminId, Long deptId) {
         List<RoleInfoDO> roles;
         List<String> grantedAuthority;
         List<Long> deptScopes = Collections.emptyList();
         boolean administrator = false;
-        if (UserInfoDO.isSuperAdmin(userId)) {
+        if (AdminInfoDO.isSuperAdmin(adminId)) {
             // 超级管理员查出所有角色
             administrator = true;
             grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
         } else {
             // 查询角色
-            roles = roleInfoService.listInheritedByUserId(userId);
+            roles = roleInfoService.listInheritedByAdminId(adminId);
             // 菜单权限
             List<Long> roleIds = roles.stream().map(RoleInfoDO::getRoleId).collect(Collectors.toList());
             grantedAuthority = menuInfoService.listPermsByRoleIds(roleIds);
             // 数据权限
             deptScopes = this.listDeptScope(roles, deptId);
         }
-        return new UserPermissionResp(administrator, grantedAuthority, deptScopes);
+        return new AdminPermissionResp(administrator, grantedAuthority, deptScopes);
     }
 
     @Override

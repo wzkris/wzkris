@@ -2,9 +2,9 @@ package com.wzkris.common.security.oauth2.repository;
 
 import com.wzkris.common.core.constant.HeaderConstants;
 import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
-import com.wzkris.common.core.model.domain.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.SupplierDeferredSecurityContext;
@@ -71,7 +71,7 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
     private boolean generateUser(HttpServletRequest request, SecurityContext ctx) {
         final String userinfo = request.getHeader(HeaderConstants.X_USER_INFO);
         if (StringUtil.isNotBlank(userinfo)) {
-            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(userinfo, LoginUser.class), request,
+            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(userinfo, LoginAdmin.class), request,
                     request.getHeader(HeaderConstants.X_USER_TOKEN)));
             return true;
         }

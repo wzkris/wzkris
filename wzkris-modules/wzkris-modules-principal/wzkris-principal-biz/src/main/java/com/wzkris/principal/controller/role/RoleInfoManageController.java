@@ -9,21 +9,21 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.RoleInfoDO;
 import com.wzkris.principal.domain.req.EditStatusReq;
+import com.wzkris.principal.domain.req.admin.AdminMngQueryReq;
 import com.wzkris.principal.domain.req.role.RoleManageQueryReq;
 import com.wzkris.principal.domain.req.role.RoleManageReq;
 import com.wzkris.principal.domain.req.role.RoleToUsersReq;
-import com.wzkris.principal.domain.req.user.UserManageQueryReq;
 import com.wzkris.principal.domain.vo.CheckedSelectTreeVO;
 import com.wzkris.principal.domain.vo.CheckedSelectVO;
 import com.wzkris.principal.domain.vo.SelectVO;
+import com.wzkris.principal.manager.AdminInfoDscManager;
 import com.wzkris.principal.manager.DeptInfoDscManager;
 import com.wzkris.principal.manager.RoleInfoDscManager;
-import com.wzkris.principal.manager.UserInfoDscManager;
 import com.wzkris.principal.mapper.RoleInfoMapper;
 import com.wzkris.principal.mapper.RoleToMenuMapper;
 import com.wzkris.principal.service.MenuInfoService;
@@ -60,7 +60,7 @@ public class RoleInfoManageController extends BaseController {
 
     private final MenuInfoService menuInfoService;
 
-    private final UserInfoDscManager userInfoDscManager;
+    private final AdminInfoDscManager adminInfoDscManager;
 
     private final RoleInfoDscManager roleInfoDscManager;
 
@@ -103,7 +103,7 @@ public class RoleInfoManageController extends BaseController {
         checkedSelectTreeVO.setCheckedKeys(
                 roleId == null ? Collections.emptyList()
                         : roleToMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listSystemSelectTree(LoginUserUtil.getId()));
+        checkedSelectTreeVO.setSelectTrees(menuInfoService.listSystemSelectTree(AdminUtil.getId()));
         return ok(checkedSelectTreeVO);
     }
 
@@ -198,48 +198,48 @@ public class RoleInfoManageController extends BaseController {
     }
 
     @Operation(summary = "已授权的用户列表")
-    @GetMapping("/authorized-user-list")
-    @CheckUserPerms("prin-mod:role-mng:grant-user")
-    public Result<Page<SelectVO>> allocatedList(UserManageQueryReq queryReq, Long roleId) {
+    @GetMapping("/authorized-admin-list")
+    @CheckUserPerms("prin-mod:role-mng:grant-admin")
+    public Result<Page<SelectVO>> allocatedList(AdminMngQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleInfoDscManager.checkDataScopes(roleId);
         startPage();
-        List<SelectVO> list = userInfoDscManager.listAllocated(queryReq, roleId);
+        List<SelectVO> list = adminInfoDscManager.listAllocated(queryReq, roleId);
         return getDataTable(list);
     }
 
     @Operation(summary = "未授权的用户列表")
-    @GetMapping("/unauthorized-user-list")
-    @CheckUserPerms("prin-mod:role-mng:grant-user")
-    public Result<Page<SelectVO>> unallocatedList(UserManageQueryReq queryReq, Long roleId) {
+    @GetMapping("/unauthorized-admin-list")
+    @CheckUserPerms("prin-mod:role-mng:grant-admin")
+    public Result<Page<SelectVO>> unallocatedList(AdminMngQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleInfoDscManager.checkDataScopes(roleId);
         startPage();
-        List<SelectVO> list = userInfoDscManager.listUnallocated(queryReq, roleId);
+        List<SelectVO> list = adminInfoDscManager.listUnallocated(queryReq, roleId);
         return getDataTable(list);
     }
 
     @Operation(summary = "取消授权")
     @OperateLog(title = "角色管理", subTitle = "取消授权", operateType = OperateType.GRANT)
-    @PostMapping("/cancel-authorize-user")
-    @CheckUserPerms("prin-mod:role-mng:grant-user")
+    @PostMapping("/cancel-authorize-admin")
+    @CheckUserPerms("prin-mod:role-mng:grant-admin")
     public Result<Void> cancelAuth(@RequestBody @Valid RoleToUsersReq req) {
         // 权限校验
         roleInfoDscManager.checkDataScopes(req.getRoleId());
         // 校验用户权限
-        userInfoDscManager.checkDataScopes(req.getUserIds());
+        adminInfoDscManager.checkDataScopes(req.getUserIds());
         return toRes(roleInfoService.ungrantUsers(req.getRoleId(), req.getUserIds()));
     }
 
     @Operation(summary = "角色授权")
     @OperateLog(title = "角色管理", subTitle = "授权用户", operateType = OperateType.GRANT)
-    @PostMapping("/authorize-user")
-    @CheckUserPerms("prin-mod:role-mng:grant-user")
+    @PostMapping("/authorize-admin")
+    @CheckUserPerms("prin-mod:role-mng:grant-admin")
     public Result<Void> batchAuth(@RequestBody @Valid RoleToUsersReq req) {
         // 权限校验
         roleInfoDscManager.checkDataScopes(req.getRoleId());
         // 校验用户权限
-        userInfoDscManager.checkDataScopes(req.getUserIds());
+        adminInfoDscManager.checkDataScopes(req.getUserIds());
         return toRes(roleInfoService.grantUsers(req.getRoleId(), req.getUserIds()));
     }
 

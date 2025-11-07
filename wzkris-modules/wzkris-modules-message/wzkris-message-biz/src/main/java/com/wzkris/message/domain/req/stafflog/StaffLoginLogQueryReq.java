@@ -12,7 +12,7 @@ public class StaffLoginLogQueryReq extends QueryReq {
     private Long staffId;
 
     @Schema(description = "用户名")
-    private String staffName;
+    private String username;
 
     @Schema(description = "登录状态")
     private Boolean success;

@@ -1,8 +1,8 @@
 package com.wzkris.message.feign.stafflog.fallback;
 
 import com.wzkris.message.feign.stafflog.StaffLogFeign;
-import com.wzkris.message.feign.stafflog.req.StaffLoginLogReq;
-import com.wzkris.message.feign.stafflog.req.StaffOperateLogReq;
+import com.wzkris.message.feign.stafflog.req.LoginLogReq;
+import com.wzkris.message.feign.stafflog.req.OperateLogReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
@@ -15,12 +15,12 @@ public class StaffLogFeignFallback implements FallbackFactory<StaffLogFeign> {
     public StaffLogFeign create(Throwable cause) {
         return new StaffLogFeign() {
             @Override
-            public void saveOperlogs(List<StaffOperateLogReq> operateLogReqs) {
+            public void saveOperlogs(List<OperateLogReq> operateLogReqs) {
                 log.error("saveOperlogs => req: {}", operateLogReqs, cause);
             }
 
             @Override
-            public void saveLoginlog(StaffLoginLogReq loginLogReq) {
+            public void saveLoginlog(LoginLogReq loginLogReq) {
                 log.error("saveLoginlog => req: {}", loginLogReq, cause);
             }
         };

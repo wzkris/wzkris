@@ -2,7 +2,7 @@ package com.wzkris.message.service.impl;
 
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.message.domain.NotificationInfoDO;
 import com.wzkris.message.domain.NotificationToUserDO;
 import com.wzkris.message.domain.dto.SimpleMessageDTO;
@@ -35,7 +35,7 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    LoginUserUtil.isAuthenticated() ? LoginUserUtil.getId() : SecurityConstants.DEFAULT_USER_ID);
+                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.DEFAULT_USER_ID);
             notificationInfoDO.setCreateAt(new Date());
             notificationInfoMapper.insert(notificationInfoDO);
             List<NotificationToUserDO> list = toUserIds.stream()

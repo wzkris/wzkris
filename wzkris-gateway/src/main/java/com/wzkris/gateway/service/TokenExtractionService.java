@@ -11,7 +11,7 @@ import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
-import com.wzkris.common.core.model.domain.LoginUser;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.exception.RpcException;
@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TokenExtractionService {
 
-    private static final ParameterizedTypeReference<TokenResponse<LoginUser>> userReference =
+    private static final ParameterizedTypeReference<TokenResponse<LoginAdmin>> userReference =
             new ParameterizedTypeReference<>() {
             };
 

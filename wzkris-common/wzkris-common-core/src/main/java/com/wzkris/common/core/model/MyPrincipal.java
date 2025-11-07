@@ -6,7 +6,7 @@ import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginStaff;
-import com.wzkris.common.core.model.domain.LoginUser;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import lombok.Getter;
 import org.springframework.util.Assert;
 
@@ -24,7 +24,7 @@ import java.util.Set;
         @JsonSubTypes.Type(value = LoginCustomer.class, name = "customer"),
         @JsonSubTypes.Type(value = LoginClient.class, name = "oauth2_client"),
         @JsonSubTypes.Type(value = LoginStaff.class, name = "staff"),
-        @JsonSubTypes.Type(value = LoginUser.class, name = "user")
+        @JsonSubTypes.Type(value = LoginAdmin.class, name = "user")
 })
 public abstract class MyPrincipal implements Principal {
 

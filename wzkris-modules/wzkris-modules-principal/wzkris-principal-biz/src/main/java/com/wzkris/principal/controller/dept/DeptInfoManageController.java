@@ -116,7 +116,7 @@ public class DeptInfoManageController extends BaseController {
         if (deptInfoMapper.existSubDept(deptId)) {
             return err40000("存在下级部门,不允许删除");
         }
-        if (deptInfoMapper.existUser(deptId)) {
+        if (deptInfoMapper.existAdmin(deptId)) {
             return err40000("部门存在用户,不允许删除");
         }
         return toRes(deptInfoService.removeById(deptId));

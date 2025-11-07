@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.redis.annotation.GlobalCacheEvict;
-import com.wzkris.common.security.utils.LoginCustomerUtil;
+import com.wzkris.common.security.utils.CustomerUtil;
 import com.wzkris.principal.domain.CustomerInfoDO;
 import com.wzkris.principal.domain.req.customer.CustomerInfoReq;
 import com.wzkris.principal.domain.vo.customer.CustomerInfoVO;
@@ -40,7 +40,7 @@ public class CustomerInfoController extends BaseController {
     @GetMapping
     @GlobalCache(keyPrefix = info_prefix, key = "@cu.getId()", ttl = 3_600_000, sync = true)
     public Result<CustomerInfoVO> customerInfo() {
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(LoginCustomerUtil.getId());
+        CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(CustomerUtil.getId());
 
         CustomerInfoVO customerInfoVO = new CustomerInfoVO();
         customerInfoVO.setNickname(customerInfoDO.getNickname());
@@ -55,17 +55,17 @@ public class CustomerInfoController extends BaseController {
     @PostMapping
     @GlobalCacheEvict(keyPrefix = info_prefix, key = "@cu.getId()")
     public Result<?> editInfo(@RequestBody CustomerInfoReq req) {
-        CustomerInfoDO user = new CustomerInfoDO(LoginCustomerUtil.getId());
-        user.setNickname(req.getNickname());
-        user.setGender(req.getGender());
-        return toRes(customerInfoMapper.updateById(user));
+        CustomerInfoDO customer = new CustomerInfoDO(CustomerUtil.getId());
+        customer.setNickname(req.getNickname());
+        customer.setGender(req.getGender());
+        return toRes(customerInfoMapper.updateById(customer));
     }
 
     @Operation(summary = "更新头像")
     @PostMapping("/edit-avatar")
     @GlobalCacheEvict(keyPrefix = info_prefix, key = "@cu.getId()")
     public Result<?> editAvatar(@RequestBody String url) {
-        CustomerInfoDO customerInfoDO = new CustomerInfoDO(LoginCustomerUtil.getId());
+        CustomerInfoDO customerInfoDO = new CustomerInfoDO(CustomerUtil.getId());
         customerInfoDO.setAvatar(url);
         return toRes(customerInfoMapper.updateById(customerInfoDO));
     }

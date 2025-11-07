@@ -72,10 +72,10 @@ public class StaffInfoServiceImpl implements StaffInfoService {
     }
 
     @Override
-    public boolean existByStaffName(Long staffId, String staffName) {
+    public boolean existByStaffName(Long staffId, String username) {
         return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<StaffInfoDO> lqw = new LambdaQueryWrapper<>(StaffInfoDO.class)
-                    .eq(StaffInfoDO::getStaffName, staffName)
+                    .eq(StaffInfoDO::getUsername, username)
                     .ne(Objects.nonNull(staffId), StaffInfoDO::getStaffId, staffId);
             return staffInfoMapper.exists(lqw);
         });

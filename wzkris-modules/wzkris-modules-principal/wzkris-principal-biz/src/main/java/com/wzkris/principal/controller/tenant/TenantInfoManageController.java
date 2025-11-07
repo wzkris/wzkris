@@ -10,7 +10,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckUserPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.TenantInfoDO;
@@ -22,9 +22,9 @@ import com.wzkris.principal.domain.vo.SelectVO;
 import com.wzkris.principal.domain.vo.tenant.TenantManageVO;
 import com.wzkris.principal.listener.event.CreateTenantEvent;
 import com.wzkris.principal.mapper.TenantInfoMapper;
+import com.wzkris.principal.service.AdminInfoService;
 import com.wzkris.principal.service.TenantInfoService;
 import com.wzkris.principal.service.TenantPackageInfoService;
-import com.wzkris.principal.service.UserInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -55,7 +55,7 @@ public class TenantInfoManageController extends BaseController {
 
     private final TenantInfoService tenantInfoService;
 
-    private final UserInfoService userInfoService;
+    private final AdminInfoService adminInfoService;
 
     private final TenantPackageInfoService tenantPackageInfoService;
 
@@ -108,7 +108,7 @@ public class TenantInfoManageController extends BaseController {
     @PostMapping("/add")
     @CheckUserPerms("prin-mod:tenant-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody TenantManageReq tenantReq) {
-        if (userInfoService.existByUsername(null, tenantReq.getUsername())) {
+        if (adminInfoService.existByUsername(null, tenantReq.getUsername())) {
             return err40000("登录账号'" + tenantReq.getUsername() + "'已存在");
         }
         TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
@@ -121,7 +121,7 @@ public class TenantInfoManageController extends BaseController {
         if (success) {
             SpringUtil.getContext()
                     .publishEvent(new CreateTenantEvent(
-                            LoginUserUtil.getId(),
+                            AdminUtil.getId(),
                             tenantReq.getUsername(),
                             tenantReq.getTenantName(),
                             password,

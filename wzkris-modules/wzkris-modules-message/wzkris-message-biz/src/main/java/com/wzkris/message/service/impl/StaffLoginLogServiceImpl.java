@@ -27,7 +27,7 @@ public class StaffLoginLogServiceImpl implements StaffLoginLogService {
         return new LambdaQueryWrapper<StaffLoginLogDO>()
                 .eq(ObjectUtils.isNotEmpty(queryReq.getStaffId()), StaffLoginLogDO::getStaffId, queryReq.getStaffId())
                 .eq(ObjectUtils.isNotEmpty(queryReq.getSuccess()), StaffLoginLogDO::getSuccess, queryReq.getSuccess())
-                .like(StringUtil.isNotEmpty(queryReq.getStaffName()), StaffLoginLogDO::getStaffName, queryReq.getStaffName())
+                .like(StringUtil.isNotEmpty(queryReq.getUsername()), StaffLoginLogDO::getUsername, queryReq.getUsername())
                 .like(
                         StringUtil.isNotEmpty(queryReq.getLoginLocation()),
                         StaffLoginLogDO::getLoginLocation,

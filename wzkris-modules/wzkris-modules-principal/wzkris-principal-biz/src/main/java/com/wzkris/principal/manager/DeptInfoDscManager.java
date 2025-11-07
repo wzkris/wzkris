@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DataScopeUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.principal.domain.DeptInfoDO;
 import com.wzkris.principal.domain.vo.SelectTreeVO;
 import com.wzkris.principal.mapper.datascope.DeptInfoDscMapper;
@@ -34,7 +34,7 @@ public class DeptInfoDscManager {
     private final DeptInfoService deptInfoService;
 
     public List<DeptInfoDO> list(Wrapper<DeptInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
+        DataScopeUtil.putParameter("dept_id", AdminUtil.get().getDeptScopes());
 
         try {
             return deptInfoDscMapper.selectLists(queryWrapper);
@@ -65,7 +65,7 @@ public class DeptInfoDscManager {
      * @return 部门id集合
      */
     public List<Long> listDeptIdByRoleIds(List<Long> roleIds) {
-        DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
+        DataScopeUtil.putParameter("dept_id", AdminUtil.get().getDeptScopes());
 
         try {
             return deptInfoDscMapper.listDeptIdByRoleIds(roleIds);
@@ -85,7 +85,7 @@ public class DeptInfoDscManager {
      */
     public void checkDataScopes(Collection<Long> deptIds) {
         if (CollectionUtils.isNotEmpty(deptIds)) {
-            DataScopeUtil.putParameter("dept_id", LoginUserUtil.get().getDeptScopes());
+            DataScopeUtil.putParameter("dept_id", AdminUtil.get().getDeptScopes());
 
             try {
                 if (!deptInfoDscMapper.checkDataScopes(new HashSet<>(deptIds))) {

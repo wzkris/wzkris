@@ -1,11 +1,11 @@
 package com.wzkris.principal.feign.staff;
 
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
+import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.staff.fallback.StaffInfoFeignFallback;
 import com.wzkris.principal.feign.staff.req.QueryStaffPermsReq;
 import com.wzkris.principal.feign.staff.resp.StaffInfoResp;
 import com.wzkris.principal.feign.staff.resp.StaffPermissionResp;
-import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +24,8 @@ public interface StaffInfoFeign {
     /**
      * 根据用户名查询用户
      */
-    @PostMapping("/query-by-staffname")
-    StaffInfoResp getByStaffName(@RequestBody String staffName);
+    @PostMapping("/query-by-username")
+    StaffInfoResp getByUsername(@RequestBody String username);
 
     /**
      * 根据手机号查询用户

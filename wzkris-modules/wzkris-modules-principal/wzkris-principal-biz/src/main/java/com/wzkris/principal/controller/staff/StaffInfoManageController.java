@@ -10,7 +10,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckStaffPerms;
 import com.wzkris.common.security.annotation.enums.CheckMode;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.utils.StaffUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.StaffInfoDO;
@@ -72,7 +72,7 @@ public class StaffInfoManageController extends BaseController {
 
     private QueryWrapper<StaffInfoDO> buildPageWrapper(StaffManageQueryReq queryReq) {
         return new QueryWrapper<StaffInfoDO>()
-                .like(ObjectUtils.isNotEmpty(queryReq.getStaffName()), "staff_name", queryReq.getStaffName())
+                .like(ObjectUtils.isNotEmpty(queryReq.getUsername()), "username", queryReq.getUsername())
                 .like(ObjectUtils.isNotEmpty(queryReq.getPhoneNumber()), "phone_number", queryReq.getPhoneNumber())
                 .eq(ObjectUtils.isNotEmpty(queryReq.getStatus()), "s.status", queryReq.getStatus())
                 .between(queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
@@ -85,6 +85,7 @@ public class StaffInfoManageController extends BaseController {
     @GetMapping("/{staffId}")
     @CheckStaffPerms("prin-mod:staff-mng:list")
     public Result<StaffInfoDO> getInfo(@PathVariable Long staffId) {
+        tenantInfoService.checkAdministrator(staffId);
         return ok(staffInfoMapper.selectById(staffId));
     }
 
@@ -105,13 +106,13 @@ public class StaffInfoManageController extends BaseController {
     @PostMapping("/add")
     @CheckStaffPerms("prin-mod:staff-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody StaffManageReq staffReq) {
-        if (!tenantInfoService.checkAccountLimit(LoginStaffUtil.getTenantId())) {
+        if (!tenantInfoService.checkAccountLimit(StaffUtil.getTenantId())) {
             return err40000("账号数量已达上限，请联系管理员");
-        } else if (staffInfoService.existByStaffName(staffReq.getStaffId(), staffReq.getStaffName())) {
-            return err40000("添加员工'" + staffReq.getStaffName() + "'失败，登录账号已存在");
+        } else if (staffInfoService.existByStaffName(staffReq.getStaffId(), staffReq.getUsername())) {
+            return err40000("添加员工'" + staffReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(staffReq.getPhoneNumber())
                 && staffInfoService.existByPhoneNumber(staffReq.getStaffId(), staffReq.getPhoneNumber())) {
-            return err40000("添加员工'" + staffReq.getStaffName() + "'失败，手机号码已存在");
+            return err40000("添加员工'" + staffReq.getUsername() + "'失败，手机号码已存在");
         }
         StaffInfoDO staff = BeanUtil.convert(staffReq, StaffInfoDO.class);
         String password = RandomStringUtils.secure().nextAlphabetic(8);
@@ -120,7 +121,7 @@ public class StaffInfoManageController extends BaseController {
         boolean success = staffInfoService.saveStaff(staff, staffReq.getPostIds());
         if (success) {
             SpringUtil.getContext()
-                    .publishEvent(new CreateUserEvent(LoginStaffUtil.getId(), staffReq.getStaffName(), password));
+                    .publishEvent(new CreateUserEvent(StaffUtil.getId(), staffReq.getUsername(), password));
         }
         return toRes(success);
     }
@@ -131,11 +132,11 @@ public class StaffInfoManageController extends BaseController {
     @CheckStaffPerms("prin-mod:staff-mng:edit")
     public Result<Void> edit(@Validated @RequestBody StaffManageReq staffReq) {
         tenantInfoService.checkAdministrator(staffReq.getStaffId());
-        if (staffInfoService.existByStaffName(staffReq.getStaffId(), staffReq.getStaffName())) {
-            return err40000("修改员工'" + staffReq.getStaffName() + "'失败，登录账号已存在");
+        if (staffInfoService.existByStaffName(staffReq.getStaffId(), staffReq.getUsername())) {
+            return err40000("修改员工'" + staffReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(staffReq.getPhoneNumber())
                 && staffInfoService.existByPhoneNumber(staffReq.getStaffId(), staffReq.getPhoneNumber())) {
-            return err40000("修改员工'" + staffReq.getStaffName() + "'失败，手机号码已存在");
+            return err40000("修改员工'" + staffReq.getUsername() + "'失败，手机号码已存在");
         }
         StaffInfoDO staff = BeanUtil.convert(staffReq, StaffInfoDO.class);
 

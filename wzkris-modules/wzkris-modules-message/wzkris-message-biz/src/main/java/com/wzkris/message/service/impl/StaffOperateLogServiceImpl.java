@@ -36,7 +36,7 @@ public class StaffOperateLogServiceImpl implements StaffOperateLogService {
                 .like(StringUtil.isNotBlank(queryReq.getTitle()), StaffOperateLogDO::getTitle, queryReq.getTitle())
                 .like(StringUtil.isNotBlank(queryReq.getSubTitle()), StaffOperateLogDO::getSubTitle, queryReq.getSubTitle())
                 .eq(StringUtil.isNotEmpty(queryReq.getOperType()), StaffOperateLogDO::getOperType, queryReq.getOperType())
-                .like(StringUtil.isNotBlank(queryReq.getStaffName()), StaffOperateLogDO::getStaffName, queryReq.getStaffName())
+                .like(StringUtil.isNotBlank(queryReq.getUsername()), StaffOperateLogDO::getUsername, queryReq.getUsername())
                 .between(
                         queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
                         StaffOperateLogDO::getOperTime,

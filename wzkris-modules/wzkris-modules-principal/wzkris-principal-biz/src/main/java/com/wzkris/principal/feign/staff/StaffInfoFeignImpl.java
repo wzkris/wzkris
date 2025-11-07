@@ -4,10 +4,10 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.StaffInfoDO;
 import com.wzkris.principal.domain.TenantInfoDO;
 import com.wzkris.principal.domain.TenantPackageInfoDO;
+import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.staff.req.QueryStaffPermsReq;
 import com.wzkris.principal.feign.staff.resp.StaffInfoResp;
 import com.wzkris.principal.feign.staff.resp.StaffPermissionResp;
-import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import com.wzkris.principal.mapper.StaffInfoMapper;
 import com.wzkris.principal.mapper.TenantInfoMapper;
 import com.wzkris.principal.mapper.TenantPackageInfoMapper;
@@ -33,8 +33,8 @@ public class StaffInfoFeignImpl implements StaffInfoFeign {
     private final PermissionService permissionService;
 
     @Override
-    public StaffInfoResp getByStaffName(String staffName) {
-        StaffInfoDO staff = staffInfoMapper.selectByStaffName(staffName);
+    public StaffInfoResp getByUsername(String username) {
+        StaffInfoDO staff = staffInfoMapper.selectByUsername(username);
         StaffInfoResp staffResp = BeanUtil.convert(staff, StaffInfoResp.class);
         this.retrieveAllStatus(staffResp);
         return staffResp;
@@ -63,12 +63,12 @@ public class StaffInfoFeignImpl implements StaffInfoFeign {
     @Override
     public StaffPermissionResp getPermission(QueryStaffPermsReq staffPermsReq) {
         return permissionService.getStaffPermission(
-                staffPermsReq.getUserId(), staffPermsReq.getTenantId());
+                staffPermsReq.getStaffId(), staffPermsReq.getTenantId());
     }
 
     @Override
     public void updateLoginInfo(LoginInfoReq loginInfoReq) {
-        StaffInfoDO staffInfoDO = new StaffInfoDO(loginInfoReq.getUserId());
+        StaffInfoDO staffInfoDO = new StaffInfoDO(loginInfoReq.getId());
         staffInfoDO.setLoginIp(loginInfoReq.getLoginIp());
         staffInfoDO.setLoginDate(loginInfoReq.getLoginDate());
 

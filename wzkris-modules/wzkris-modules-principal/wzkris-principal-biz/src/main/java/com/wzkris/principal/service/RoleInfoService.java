@@ -13,36 +13,36 @@ import java.util.List;
 public interface RoleInfoService {
 
     /**
-     * 根据用户ID查询关联角色(正常状态)
+     * 根据管理员ID查询关联角色(正常状态)
      *
-     * @param userId 用户ID
+     * @param adminId 管理员ID
      * @return 角色列表
      */
-    List<RoleInfoDO> listByUserId(Long userId);
+    List<RoleInfoDO> listByAdminId(Long adminId);
 
     /**
-     * 根据用户ID查询关联角色ID(正常状态)
+     * 根据管理员ID查询关联角色ID(正常状态)
      *
-     * @param userId 用户ID
+     * @param adminId 管理员ID
      * @return 角色列表
      */
-    List<Long> listIdByUserId(Long userId);
+    List<Long> listIdByAdminId(Long adminId);
 
     /**
-     * 根据用户ID查询关联角色(正常状态)包含继承角色
+     * 根据管理员ID查询关联角色(正常状态)包含继承角色
      *
-     * @param userId 用户ID
+     * @param adminId 管理员ID
      * @return 角色列表
      */
-    List<RoleInfoDO> listInheritedByUserId(Long userId);
+    List<RoleInfoDO> listInheritedByAdminId(Long adminId);
 
     /**
-     * 根据用户ID查询关联角色ID(正常状态)包含继承角色
+     * 根据管理员ID查询关联角色ID(正常状态)包含继承角色
      *
-     * @param userId 用户ID
+     * @param adminId 管理员ID
      * @return 角色列表
      */
-    List<Long> listInheritedIdByUserId(Long userId);
+    List<Long> listInheritedIdByAdminId(Long adminId);
 
     /**
      * 获取当前角色组
@@ -70,20 +70,20 @@ public interface RoleInfoService {
     boolean modifyRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds, @Nullable List<Long> inheritedIds);
 
     /**
-     * 角色分配用户
+     * 角色分配管理员
      *
-     * @param roleId  角色ID
-     * @param userIds 用户ID
+     * @param roleId   角色ID
+     * @param adminIds 管理员ID
      */
-    boolean grantUsers(Long roleId, List<Long> userIds);
+    boolean grantUsers(Long roleId, List<Long> adminIds);
 
     /**
      * 角色取消分配
      *
-     * @param roleId  角色ID
-     * @param userIds 用户ID
+     * @param roleId   角色ID
+     * @param adminIds 管理员ID
      */
-    boolean ungrantUsers(Long roleId, List<Long> userIds);
+    boolean ungrantUsers(Long roleId, List<Long> adminIds);
 
     /**
      * 批量删除角色信息
@@ -93,7 +93,7 @@ public interface RoleInfoService {
     boolean removeByIds(List<Long> roleIds);
 
     /**
-     * 校验角色是否被用户关联
+     * 校验角色是否被管理员关联
      *
      * @param roleIds 角色组
      */

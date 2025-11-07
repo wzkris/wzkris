@@ -12,7 +12,7 @@ import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.event.OperateEvent;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.utils.StaffUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -238,7 +238,7 @@ public class OperateLogAspect {
             String authType = operateEvent.getAuthType();
             if (StringUtil.equals(authType, AuthType.STAFF.getValue())) {
                 // 对于员工认证，获取租户ID
-                operateEvent.setTenantId(LoginStaffUtil.getTenantId());
+                operateEvent.setTenantId(StaffUtil.getTenantId());
             } else {
                 // 对于其他认证类型，暂时设置为null
                 operateEvent.setTenantId(null);

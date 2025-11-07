@@ -57,7 +57,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveTenant(TenantInfoDO tenant, String staffName, String password) {
+    public boolean saveTenant(TenantInfoDO tenant, String username, String password) {
         if (!passwordEncoder.isEncode(tenant.getOperPwd())) {
             tenant.setOperPwd(passwordEncoder.encode(tenant.getOperPwd()));
         }
@@ -71,7 +71,7 @@ public class TenantInfoServiceImpl implements TenantInfoService {
         StaffInfoDO staff = new StaffInfoDO();
         staff.setStaffId(staffId);
         staff.setTenantId(tenant.getTenantId());
-        staff.setStaffName(staffName);
+        staff.setUsername(username);
         staff.setPassword(password);
         return staffInfoService.saveStaff(staff, null);
     }

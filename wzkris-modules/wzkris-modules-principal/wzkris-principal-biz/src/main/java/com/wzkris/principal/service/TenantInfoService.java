@@ -25,10 +25,10 @@ public interface TenantInfoService {
      * 添加租户, 会创建租户管理员账号
      *
      * @param tenant    参数
-     * @param staffName 登录账户
+     * @param username 登录账户
      * @param password  登录密码
      */
-    boolean saveTenant(TenantInfoDO tenant, String staffName, String password);
+    boolean saveTenant(TenantInfoDO tenant, String username, String password);
 
     /**
      * 删除租户及相关信息(hard delete)
@@ -60,8 +60,8 @@ public interface TenantInfoService {
      */
     void checkAdministrator(List<Long> staffIds);
 
-    default void checkAdministrator(Long userId) {
-        this.checkAdministrator(Collections.singletonList(userId));
+    default void checkAdministrator(Long staffId) {
+        this.checkAdministrator(Collections.singletonList(staffId));
     }
 
 }

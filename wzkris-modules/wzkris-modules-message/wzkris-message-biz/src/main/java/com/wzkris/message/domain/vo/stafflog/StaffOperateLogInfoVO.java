@@ -21,7 +21,7 @@ public class StaffOperateLogInfoVO {
     private String operType;
 
     @Schema(description = "用户名")
-    private String staffName;
+    private String username;
 
     @Schema(description = "操作ip地址")
     private String operIp;

@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class QueryStaffPermsReq implements Serializable {
 
     @NonNull
-    private Long userId;
+    private Long staffId;
 
     @NonNull
     private Long tenantId;

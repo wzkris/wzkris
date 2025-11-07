@@ -27,11 +27,11 @@ public interface StaffInfoMapper extends BaseMapperPlus<StaffInfoDO> {
     /**
      * 通过用户名查询员工
      *
-     * @param staffName 员工账号
+     * @param username 员工账号
      * @return 员工信息
      */
-    @Select("SELECT * FROM biz.t_staff_info WHERE staff_name = #{staffName}")
-    StaffInfoDO selectByStaffName(String staffName);
+    @Select("SELECT * FROM biz.t_staff_info WHERE username = #{username}")
+    StaffInfoDO selectByUsername(String username);
 
     /**
      * 通过手机号查询用户

@@ -3,8 +3,8 @@ package com.wzkris.message.feign.stafflog;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.message.domain.StaffLoginLogDO;
 import com.wzkris.message.domain.StaffOperateLogDO;
-import com.wzkris.message.feign.stafflog.req.StaffLoginLogReq;
-import com.wzkris.message.feign.stafflog.req.StaffOperateLogReq;
+import com.wzkris.message.feign.stafflog.req.LoginLogReq;
+import com.wzkris.message.feign.stafflog.req.OperateLogReq;
 import com.wzkris.message.mapper.StaffLoginLogMapper;
 import com.wzkris.message.mapper.StaffOperateLogMapper;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -26,14 +26,14 @@ public class StaffLogFeignImpl implements StaffLogFeign {
     private final StaffLoginLogMapper loginLogMapper;
 
     @Override
-    public void saveOperlogs(@RequestBody List<StaffOperateLogReq> staffOperateLogReqs) {
-        List<StaffOperateLogDO> operLogs = BeanUtil.convert(staffOperateLogReqs, StaffOperateLogDO.class);
+    public void saveOperlogs(@RequestBody List<OperateLogReq> operateLogReqs) {
+        List<StaffOperateLogDO> operLogs = BeanUtil.convert(operateLogReqs, StaffOperateLogDO.class);
         operateLogMapper.insert(operLogs, 1000);
     }
 
     @Override
-    public void saveLoginlog(@RequestBody StaffLoginLogReq staffLoginLogReq) {
-        StaffLoginLogDO loginLogDO = BeanUtil.convert(staffLoginLogReq, StaffLoginLogDO.class);
+    public void saveLoginlog(@RequestBody LoginLogReq loginLogReq) {
+        StaffLoginLogDO loginLogDO = BeanUtil.convert(loginLogReq, StaffLoginLogDO.class);
         loginLogMapper.insert(loginLogDO);
     }
 

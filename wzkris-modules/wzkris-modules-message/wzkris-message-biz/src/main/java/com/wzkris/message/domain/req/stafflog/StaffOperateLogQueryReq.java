@@ -18,7 +18,7 @@ public class StaffOperateLogQueryReq extends QueryReq {
     private String operType;
 
     @Schema(description = "操作人员")
-    private String staffName;
+    private String username;
 
     @Schema(description = "操作状态")
     private Boolean success;

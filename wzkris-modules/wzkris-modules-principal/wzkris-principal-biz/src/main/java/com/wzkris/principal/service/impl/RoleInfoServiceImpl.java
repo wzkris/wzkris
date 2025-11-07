@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.service.GenericException;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.principal.domain.*;
 import com.wzkris.principal.mapper.*;
 import com.wzkris.principal.service.RoleInfoService;
@@ -31,15 +31,15 @@ public class RoleInfoServiceImpl implements RoleInfoService {
 
     private final RoleToMenuMapper roleToMenuMapper;
 
-    private final UserToRoleMapper userToRoleMapper;
+    private final AdminToRoleMapper adminToRoleMapper;
 
     private final RoleToDeptMapper roleToDeptMapper;
 
     private final RoleToHierarchyMapper roleToHierarchyMapper;
 
     @Override
-    public List<RoleInfoDO> listByUserId(Long userId) {
-        List<Long> roleIds = userToRoleMapper.listRoleIdByUserId(userId);
+    public List<RoleInfoDO> listByAdminId(Long adminId) {
+        List<Long> roleIds = adminToRoleMapper.listRoleIdByAdminId(adminId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -51,8 +51,8 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public List<Long> listIdByUserId(Long userId) {
-        List<Long> roleIds = userToRoleMapper.listRoleIdByUserId(userId);
+    public List<Long> listIdByAdminId(Long adminId) {
+        List<Long> roleIds = adminToRoleMapper.listRoleIdByAdminId(adminId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -65,8 +65,8 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public List<RoleInfoDO> listInheritedByUserId(Long userId) {
-        List<Long> roleIds = userToRoleMapper.listRoleIdByUserId(userId);
+    public List<RoleInfoDO> listInheritedByAdminId(Long adminId) {
+        List<Long> roleIds = adminToRoleMapper.listRoleIdByAdminId(adminId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -80,8 +80,8 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public List<Long> listInheritedIdByUserId(Long userId) {
-        List<Long> roleIds = userToRoleMapper.listRoleIdByUserId(userId);
+    public List<Long> listInheritedIdByAdminId(Long adminId) {
+        List<Long> roleIds = adminToRoleMapper.listRoleIdByAdminId(adminId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -97,10 +97,10 @@ public class RoleInfoServiceImpl implements RoleInfoService {
 
     @Override
     public String getRoleGroup() {
-        if (LoginUserUtil.isAdmin()) {
+        if (AdminUtil.isAdmin()) {
             return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<RoleInfoDO> roles = this.listByUserId(LoginUserUtil.getId());
+        List<RoleInfoDO> roles = this.listByAdminId(AdminUtil.getId());
         return roles.stream().map(RoleInfoDO::getRoleName).collect(Collectors.joining(","));
     }
 
@@ -147,21 +147,21 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public boolean grantUsers(Long roleId, List<Long> userIds) {
-        if (CollectionUtils.isNotEmpty(userIds)) {
+    public boolean grantUsers(Long roleId, List<Long> adminIds) {
+        if (CollectionUtils.isNotEmpty(adminIds)) {
             // 新增用户与角色管理
-            List<UserToRoleDO> list = userIds.stream()
-                    .map(userId -> new UserToRoleDO(userId, roleId))
+            List<AdminToRoleDO> list = adminIds.stream()
+                    .map(adminId -> new AdminToRoleDO(adminId, roleId))
                     .toList();
-            return userToRoleMapper.insert(list) > 0;
+            return adminToRoleMapper.insert(list) > 0;
         }
         return false;
     }
 
     @Override
-    public boolean ungrantUsers(Long roleId, List<Long> userIds) {
-        if (CollectionUtils.isNotEmpty(userIds)) {
-            return userToRoleMapper.deleteBatch(roleId, userIds) > 0;
+    public boolean ungrantUsers(Long roleId, List<Long> adminIds) {
+        if (CollectionUtils.isNotEmpty(adminIds)) {
+            return adminToRoleMapper.deleteBatch(roleId, adminIds) > 0;
         }
         return false;
     }
@@ -221,7 +221,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
             // 删除角色与部门关联
             roleToDeptMapper.deleteByRoleIds(roleIds);
             // 删除角色与用户关联
-            userToRoleMapper.deleteByRoleIds(roleIds);
+            adminToRoleMapper.deleteByRoleIds(roleIds);
             // 删除角色继承关系
             roleToHierarchyMapper.deleteByRoleIds(roleIds);
         }
@@ -232,7 +232,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     public void existUser(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (userToRoleMapper.existByRoleIds(roleIds)) {
+        if (adminToRoleMapper.existByRoleIds(roleIds)) {
             throw new GenericException("当前角色已被分配用户");
         }
     }

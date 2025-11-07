@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.DataScopeUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.principal.domain.RoleInfoDO;
 import com.wzkris.principal.domain.vo.SelectVO;
 import com.wzkris.principal.mapper.datascope.RoleInfoDscMapper;
@@ -32,7 +32,7 @@ public class RoleInfoDscManager {
     private final RoleInfoDscMapper roleInfoDscMapper;
 
     public List<RoleInfoDO> list(Wrapper<RoleInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.get().getDeptScopes());
+        DataScopeUtil.putParameter("rd.dept_id", AdminUtil.get().getDeptScopes());
 
         try {
             return roleInfoDscMapper.selectLists(queryWrapper);
@@ -42,7 +42,7 @@ public class RoleInfoDscManager {
     }
 
     public List<Long> listInheritedIdByRoleId(Long roleId) {
-        DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.get().getDeptScopes());
+        DataScopeUtil.putParameter("rd.dept_id", AdminUtil.get().getDeptScopes());
 
         try {
             return roleInfoDscMapper.listInheritedIdByRoleId(roleId);
@@ -91,7 +91,7 @@ public class RoleInfoDscManager {
      */
     public void checkDataScopes(Collection<Long> roleIds) {
         if (CollectionUtils.isNotEmpty(roleIds)) {
-            DataScopeUtil.putParameter("rd.dept_id", LoginUserUtil.get().getDeptScopes());
+            DataScopeUtil.putParameter("rd.dept_id", AdminUtil.get().getDeptScopes());
 
             try {
                 if (!roleInfoDscMapper.checkDataScopes(roleIds)) {

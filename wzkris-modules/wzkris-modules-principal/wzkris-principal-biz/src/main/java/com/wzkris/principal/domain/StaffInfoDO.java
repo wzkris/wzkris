@@ -30,8 +30,8 @@ public class StaffInfoDO extends BaseEntity {
     @Schema(description = "租户ID")
     private Long tenantId;
 
-    @Schema(description = "员工账号")
-    private String staffName;
+    @Schema(description = "用户名")
+    private String username;
 
     @Schema(description = "手机号码")
     private String phoneNumber;

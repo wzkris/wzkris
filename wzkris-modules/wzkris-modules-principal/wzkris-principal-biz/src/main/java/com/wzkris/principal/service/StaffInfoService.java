@@ -33,7 +33,7 @@ public interface StaffInfoService {
 
     boolean removeByIds(List<Long> staffIds);
 
-    boolean existByStaffName(Long staffId, String staffName);
+    boolean existByStaffName(Long staffId, String username);
 
     boolean existByPhoneNumber(Long staffId, String phoneNumber);
 

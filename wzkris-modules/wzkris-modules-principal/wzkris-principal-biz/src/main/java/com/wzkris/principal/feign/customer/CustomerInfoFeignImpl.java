@@ -3,9 +3,9 @@ package com.wzkris.principal.feign.customer;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.CustomerInfoDO;
 import com.wzkris.principal.domain.CustomerSocialInfoDO;
+import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.customer.req.SocialLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
-import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import com.wzkris.principal.mapper.CustomerInfoMapper;
 import com.wzkris.principal.mapper.CustomerSocialInfoMapper;
 import com.wzkris.principal.service.CustomerInfoService;
@@ -57,7 +57,7 @@ public class CustomerInfoFeignImpl implements CustomerInfoFeign {
 
     @Override
     public void updateLoginInfo(LoginInfoReq loginInfoReq) {
-        CustomerInfoDO customerInfoDO = new CustomerInfoDO(loginInfoReq.getUserId());
+        CustomerInfoDO customerInfoDO = new CustomerInfoDO(loginInfoReq.getId());
         customerInfoDO.setLoginIp(loginInfoReq.getLoginIp());
         customerInfoDO.setLoginDate(loginInfoReq.getLoginDate());
 

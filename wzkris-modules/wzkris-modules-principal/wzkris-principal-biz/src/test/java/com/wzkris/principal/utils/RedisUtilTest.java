@@ -1,6 +1,6 @@
 package com.wzkris.principal.utils;
 
-import com.wzkris.common.core.model.domain.LoginUser;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.principal.PrincipalServerApplication;
 import org.junit.jupiter.api.Test;
@@ -13,10 +13,10 @@ public class RedisUtilTest {
 
     @Test
     public void test1() {
-        RedisUtil.setObj("1", new LoginUser(1L, new HashSet<>(), true, "admin", null), 100);
+        RedisUtil.setObj("1", new LoginAdmin(1L, new HashSet<>(), true, "admin", null), 100);
 
-        LoginUser loginUser = RedisUtil.getObj("1", LoginUser.class);
-        System.out.println(loginUser);
+        LoginAdmin loginAdmin = RedisUtil.getObj("1", LoginAdmin.class);
+        System.out.println(loginAdmin);
     }
 
 }

@@ -3,7 +3,7 @@ package com.wzkris.message.controller.notification;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.message.domain.vo.notification.NotificationInfoVO;
 import com.wzkris.message.mapper.NotificationInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,20 +25,20 @@ public class NotificationInfoController extends BaseController {
     @GetMapping("/list")
     public Result<Page<NotificationInfoVO>> list(String read, String notificationType) {
         startPage();
-        List<NotificationInfoVO> list = notificationInfoMapper.listNotice(LoginUserUtil.getId(), notificationType, read);
+        List<NotificationInfoVO> list = notificationInfoMapper.listNotice(AdminUtil.getId(), notificationType, read);
         return getDataTable(list);
     }
 
     @Operation(summary = "标记已读")
     @PostMapping("/mark-read")
     public Result<Void> markRead(@RequestBody Long notificationId) {
-        return toRes(notificationInfoMapper.markRead(notificationId, LoginUserUtil.getId()));
+        return toRes(notificationInfoMapper.markRead(notificationId, AdminUtil.getId()));
     }
 
     @Operation(summary = "未读数量")
     @GetMapping("/unread-size")
     public Result<Integer> unreadSize(String notificationType) {
-        int count = notificationInfoMapper.countUnread(LoginUserUtil.getId(), notificationType);
+        int count = notificationInfoMapper.countUnread(AdminUtil.getId(), notificationType);
         return ok(count);
     }
 

@@ -29,7 +29,7 @@ public class StaffManageReq {
     @NotBlank(message = "{invalidParameter.username.invalid}", groups = ValidationGroups.Insert.class)
     @Size(min = 6, max = 30, message = "{invalidParameter.username.invalid}")
     @Schema(description = "用户名")
-    private String staffName;
+    private String username;
 
     @PhoneNumber
     @Schema(description = "手机号码")

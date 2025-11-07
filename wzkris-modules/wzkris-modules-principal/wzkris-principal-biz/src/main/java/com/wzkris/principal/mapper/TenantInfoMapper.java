@@ -35,11 +35,11 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
     /**
      * 根据用户ID查询套餐ID，如果查到则说明是租户最高管理员
      *
-     * @param userId 用户ID
+     * @param staffId 用户ID
      * @return 套餐ID
      */
-    @Select("SELECT package_id FROM biz.tenant_info WHERE administrator = #{userId}")
-    Long selectPackageIdByStaffId(Long userId);
+    @Select("SELECT package_id FROM biz.tenant_info WHERE administrator = #{staffId}")
+    Long selectPackageIdByStaffId(Long staffId);
 
     @Select("""
              SELECT t.*, p.package_name FROM biz.tenant_info t LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id

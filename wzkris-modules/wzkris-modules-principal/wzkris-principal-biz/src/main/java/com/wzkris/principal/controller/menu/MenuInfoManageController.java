@@ -7,7 +7,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckUserPerms;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.constant.MenuConstants;
 import com.wzkris.principal.domain.MenuInfoDO;
@@ -50,8 +50,8 @@ public class MenuInfoManageController extends BaseController {
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuManageQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!LoginUserUtil.isAdmin()) {
-            menuIds = menuInfoService.listMenuIdByUserId(LoginUserUtil.getId());
+        if (!AdminUtil.isAdmin()) {
+            menuIds = menuInfoService.listMenuIdByAdminId(AdminUtil.getId());
         }
         return new LambdaQueryWrapper<MenuInfoDO>()
                 .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)

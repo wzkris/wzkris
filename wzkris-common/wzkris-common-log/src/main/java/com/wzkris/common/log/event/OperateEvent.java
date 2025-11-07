@@ -1,7 +1,6 @@
 package com.wzkris.common.log.event;
 
-import com.wzkris.message.feign.stafflog.req.StaffOperateLogReq;
-import com.wzkris.message.feign.userlog.req.UserOperateLogReq;
+import com.wzkris.message.feign.stafflog.req.OperateLogReq;
 import lombok.Data;
 
 import java.util.Date;
@@ -100,45 +99,45 @@ public class OperateEvent {
      */
     private Long tenantId;
 
-    public UserOperateLogReq toUserOperateLogReq() {
-        UserOperateLogReq userOperateLogReq = new UserOperateLogReq();
-        userOperateLogReq.setTitle(this.getTitle());
-        userOperateLogReq.setSubTitle(this.getSubTitle());
-        userOperateLogReq.setOperType(this.getOperType());
-        userOperateLogReq.setMethod(this.getMethod());
-        userOperateLogReq.setRequestMethod(this.getRequestMethod());
-        userOperateLogReq.setUserId(this.getOperatorId());
-        userOperateLogReq.setUsername(this.getOperName());
-        userOperateLogReq.setOperUrl(this.getOperUrl());
-        userOperateLogReq.setOperIp(this.getOperIp());
-        userOperateLogReq.setOperParam(this.getOperParam());
-        userOperateLogReq.setJsonResult(this.getJsonResult());
-        userOperateLogReq.setOperLocation(this.getOperLocation());
-        userOperateLogReq.setSuccess(this.isSuccess());
-        userOperateLogReq.setErrorMsg(this.getErrorMsg());
-        userOperateLogReq.setOperTime(this.getOperTime());
-        return userOperateLogReq;
+    public com.wzkris.message.feign.adminlog.req.OperateLogReq toUserOperateLogReq() {
+        com.wzkris.message.feign.adminlog.req.OperateLogReq operateLogReq = new com.wzkris.message.feign.adminlog.req.OperateLogReq();
+        operateLogReq.setTitle(this.getTitle());
+        operateLogReq.setSubTitle(this.getSubTitle());
+        operateLogReq.setOperType(this.getOperType());
+        operateLogReq.setMethod(this.getMethod());
+        operateLogReq.setRequestMethod(this.getRequestMethod());
+        operateLogReq.setUserId(this.getOperatorId());
+        operateLogReq.setUsername(this.getOperName());
+        operateLogReq.setOperUrl(this.getOperUrl());
+        operateLogReq.setOperIp(this.getOperIp());
+        operateLogReq.setOperParam(this.getOperParam());
+        operateLogReq.setJsonResult(this.getJsonResult());
+        operateLogReq.setOperLocation(this.getOperLocation());
+        operateLogReq.setSuccess(this.isSuccess());
+        operateLogReq.setErrorMsg(this.getErrorMsg());
+        operateLogReq.setOperTime(this.getOperTime());
+        return operateLogReq;
     }
 
-    public StaffOperateLogReq toStaffOperateLogReq() {
-        StaffOperateLogReq staffOperateLogReq = new StaffOperateLogReq();
-        staffOperateLogReq.setTitle(this.getTitle());
-        staffOperateLogReq.setSubTitle(this.getSubTitle());
-        staffOperateLogReq.setOperType(this.getOperType());
-        staffOperateLogReq.setMethod(this.getMethod());
-        staffOperateLogReq.setRequestMethod(this.getRequestMethod());
-        staffOperateLogReq.setStaffId(this.getOperatorId());
-        staffOperateLogReq.setStaffName(this.getOperName());
-        staffOperateLogReq.setOperUrl(this.getOperUrl());
-        staffOperateLogReq.setOperIp(this.getOperIp());
-        staffOperateLogReq.setOperParam(this.getOperParam());
-        staffOperateLogReq.setJsonResult(this.getJsonResult());
-        staffOperateLogReq.setOperLocation(this.getOperLocation());
-        staffOperateLogReq.setSuccess(this.isSuccess());
-        staffOperateLogReq.setErrorMsg(this.getErrorMsg());
-        staffOperateLogReq.setOperTime(this.getOperTime());
-        staffOperateLogReq.setTenantId(this.getTenantId());
-        return staffOperateLogReq;
+    public OperateLogReq toStaffOperateLogReq() {
+        OperateLogReq operateLogReq = new OperateLogReq();
+        operateLogReq.setTitle(this.getTitle());
+        operateLogReq.setSubTitle(this.getSubTitle());
+        operateLogReq.setOperType(this.getOperType());
+        operateLogReq.setMethod(this.getMethod());
+        operateLogReq.setRequestMethod(this.getRequestMethod());
+        operateLogReq.setStaffId(this.getOperatorId());
+        operateLogReq.setUsername(this.getOperName());
+        operateLogReq.setOperUrl(this.getOperUrl());
+        operateLogReq.setOperIp(this.getOperIp());
+        operateLogReq.setOperParam(this.getOperParam());
+        operateLogReq.setJsonResult(this.getJsonResult());
+        operateLogReq.setOperLocation(this.getOperLocation());
+        operateLogReq.setSuccess(this.isSuccess());
+        operateLogReq.setErrorMsg(this.getErrorMsg());
+        operateLogReq.setOperTime(this.getOperTime());
+        operateLogReq.setTenantId(this.getTenantId());
+        return operateLogReq;
     }
 
 }

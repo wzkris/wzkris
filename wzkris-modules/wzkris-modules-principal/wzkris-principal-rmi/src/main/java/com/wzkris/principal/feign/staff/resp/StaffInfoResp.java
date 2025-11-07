@@ -17,7 +17,7 @@ public class StaffInfoResp implements Serializable {
 
     private Long tenantId;
 
-    private String staffName;
+    private String username;
 
     private String phoneNumber;
 

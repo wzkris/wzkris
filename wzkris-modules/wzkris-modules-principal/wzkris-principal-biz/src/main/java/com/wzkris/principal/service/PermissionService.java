@@ -1,7 +1,7 @@
 package com.wzkris.principal.service;
 
+import com.wzkris.principal.feign.admin.resp.AdminPermissionResp;
 import com.wzkris.principal.feign.staff.resp.StaffPermissionResp;
-import com.wzkris.principal.feign.user.resp.UserPermissionResp;
 import jakarta.annotation.Nullable;
 
 /**
@@ -14,11 +14,11 @@ public interface PermissionService {
     /**
      * 返回已授权码及数据权限
      *
-     * @param userId 用户ID
-     * @param deptId 部门ID
+     * @param adminId 管理员ID
+     * @param deptId  部门ID
      * @return 权限
      */
-    UserPermissionResp getUserPermission(Long userId, @Nullable Long deptId);
+    AdminPermissionResp getAdminPermission(Long adminId, @Nullable Long deptId);
 
     /**
      * 返回已授权码及数据权限

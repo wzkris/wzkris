@@ -3,7 +3,7 @@ package com.wzkris.message.controller.stafflog.operate;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.utils.StaffUtil;
 import com.wzkris.message.domain.req.stafflog.StaffOperateLogQueryReq;
 import com.wzkris.message.domain.vo.stafflog.StaffOperateLogInfoVO;
 import com.wzkris.message.service.StaffOperateLogService;
@@ -28,7 +28,7 @@ public class StaffOperateLogInfoController extends BaseController {
     @GetMapping("/list")
     public Result<Page<StaffOperateLogInfoVO>> list(StaffOperateLogQueryReq queryReq) {
         startPage();
-        queryReq.setStaffId(LoginStaffUtil.getId());
+        queryReq.setStaffId(StaffUtil.getId());
         List<StaffOperateLogInfoVO> list = staffOperateLogService.listInfoVO(queryReq);
         return getDataTable(list);
     }

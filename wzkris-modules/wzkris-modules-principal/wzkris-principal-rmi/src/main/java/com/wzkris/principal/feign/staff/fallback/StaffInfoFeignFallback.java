@@ -1,10 +1,10 @@
 package com.wzkris.principal.feign.staff.fallback;
 
+import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.staff.StaffInfoFeign;
 import com.wzkris.principal.feign.staff.req.QueryStaffPermsReq;
 import com.wzkris.principal.feign.staff.resp.StaffInfoResp;
 import com.wzkris.principal.feign.staff.resp.StaffPermissionResp;
-import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
@@ -15,8 +15,8 @@ public class StaffInfoFeignFallback implements FallbackFactory<StaffInfoFeign> {
     public StaffInfoFeign create(Throwable cause) {
         return new StaffInfoFeign() {
             @Override
-            public StaffInfoResp getByStaffName(String staffName) {
-                log.error("getByStaffName => req: {}", staffName, cause);
+            public StaffInfoResp getByUsername(String username) {
+                log.error("getByUsername => req: {}", username, cause);
                 return null;
             }
 

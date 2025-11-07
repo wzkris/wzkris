@@ -8,7 +8,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckStaffPerms;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.utils.StaffUtil;
 import com.wzkris.principal.domain.TenantInfoDO;
 import com.wzkris.principal.domain.TenantWalletRecordDO;
 import com.wzkris.principal.domain.req.tenantwallet.TenantWalletRecordQueryReq;
@@ -51,7 +51,7 @@ public class TenantWalletInfoController extends BaseController {
     @Operation(summary = "余额信息")
     @GetMapping
     public Result<TenantWalletInfoVO> walletInfo() {
-        return ok(tenantWalletInfoMapper.selectById2VO(LoginStaffUtil.getTenantId(), TenantWalletInfoVO.class));
+        return ok(tenantWalletInfoMapper.selectById2VO(StaffUtil.getTenantId(), TenantWalletInfoVO.class));
     }
 
     @Operation(summary = "钱包记录")
@@ -82,7 +82,7 @@ public class TenantWalletInfoController extends BaseController {
     @PostMapping("/withdrawal")
     @CheckStaffPerms("prin-mod:tenant-wallet-info:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
-        TenantInfoDO sysTenant = tenantInfoMapper.selectById(LoginStaffUtil.getTenantId());
+        TenantInfoDO sysTenant = tenantInfoMapper.selectById(StaffUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
             return err40000("密码错误");
         }

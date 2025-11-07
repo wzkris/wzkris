@@ -4,15 +4,15 @@ import com.wzkris.common.security.annotation.aspect.CheckPermsAspect;
 import com.wzkris.common.security.handler.SecurityExceptionHandler;
 import com.wzkris.common.security.oauth2.ResourceServerConfig;
 import com.wzkris.common.security.oauth2.filter.RequestSignatureFilter;
-import com.wzkris.common.security.utils.LoginClientUtil;
-import com.wzkris.common.security.utils.LoginCustomerUtil;
-import com.wzkris.common.security.utils.LoginStaffUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
+import com.wzkris.common.security.utils.ClientUtil;
+import com.wzkris.common.security.utils.CustomerUtil;
+import com.wzkris.common.security.utils.StaffUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 @Import({ResourceServerConfig.class, RequestSignatureFilter.class,
-        LoginUserUtil.class, LoginStaffUtil.class, LoginCustomerUtil.class, LoginClientUtil.class,
+        AdminUtil.class, StaffUtil.class, CustomerUtil.class, ClientUtil.class,
         CheckPermsAspect.class, SecurityExceptionHandler.class})
 @AutoConfiguration
 public class SecurityAutoConfiguration {

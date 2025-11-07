@@ -65,7 +65,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz.user_info WHERE dept_id = #{deptId})")
-    boolean existUser(Long deptId);
+    @Select("SELECT EXISTS(SELECT dept_id FROM biz.admin_info WHERE dept_id = #{deptId})")
+    boolean existAdmin(Long deptId);
 
 }

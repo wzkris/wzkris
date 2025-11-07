@@ -1,10 +1,10 @@
 package com.wzkris.principal.feign.customer;
 
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
+import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.customer.fallback.CustomerInfoFeignFallback;
 import com.wzkris.principal.feign.customer.req.SocialLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
-import com.wzkris.principal.feign.user.req.LoginInfoReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

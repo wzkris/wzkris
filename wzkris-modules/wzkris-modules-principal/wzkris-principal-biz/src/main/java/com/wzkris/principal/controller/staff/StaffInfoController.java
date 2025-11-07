@@ -6,7 +6,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.utils.StaffUtil;
 import com.wzkris.principal.domain.StaffInfoDO;
 import com.wzkris.principal.domain.req.EditPhoneReq;
 import com.wzkris.principal.domain.req.EditPwdReq;
@@ -47,15 +47,15 @@ public class StaffInfoController extends BaseController {
     @Operation(summary = "账户信息")
     @GetMapping
     public Result<StaffInfoVO> userinfo() {
-        StaffInfoDO staff = staffInfoMapper.selectById(LoginStaffUtil.getId());
+        StaffInfoDO staff = staffInfoMapper.selectById(StaffUtil.getId());
 
         if (staff == null) {// 降级会走到这
             staff = new StaffInfoDO();
         }
         StaffInfoVO staffInfoVO = new StaffInfoVO();
-        staffInfoVO.setAdmin(LoginStaffUtil.isAdmin());
-        staffInfoVO.setStaffName(LoginStaffUtil.getStaffName());
-        staffInfoVO.setAuthorities(LoginStaffUtil.getAuthorities());
+        staffInfoVO.setAdmin(StaffUtil.isAdmin());
+        staffInfoVO.setUsername(StaffUtil.getUsername());
+        staffInfoVO.setAuthorities(StaffUtil.getAuthorities());
         staffInfoVO.setAvatar(staff.getAvatar());
         staffInfoVO.setPhoneNumber(staff.getPhoneNumber());
         staffInfoVO.setGender(staff.getGender());
@@ -69,7 +69,7 @@ public class StaffInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
     @PostMapping("/edit-phonenumber")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
-        Long staffId = LoginStaffUtil.getId();
+        Long staffId = StaffUtil.getId();
 
         if (staffInfoService.existByPhoneNumber(staffId, req.getPhoneNumber())) {
             return err40000("该手机号已被使用");
@@ -89,7 +89,7 @@ public class StaffInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit-password")
     public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
-        Long staffId = LoginStaffUtil.getId();
+        Long staffId = StaffUtil.getId();
 
         String password = staffInfoMapper.selectPwdById(staffId);
 
@@ -110,7 +110,7 @@ public class StaffInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
     @PostMapping("/edit-avatar")
     public Result<Void> editAvatar(@RequestBody String url) {
-        StaffInfoDO staffInfoDO = new StaffInfoDO(LoginStaffUtil.getId());
+        StaffInfoDO staffInfoDO = new StaffInfoDO(StaffUtil.getId());
         staffInfoDO.setAvatar(url);
         return toRes(staffInfoMapper.updateById(staffInfoDO));
     }
