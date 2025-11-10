@@ -4,13 +4,13 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
 import com.wzkris.common.excel.convert.ExcelDictConvert;
 import com.wzkris.common.validator.annotation.PhoneNumber;
-import com.wzkris.principal.domain.vo.admin.AdminManageVO;
+import com.wzkris.principal.domain.vo.admin.AdminMngVO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import lombok.Data;
 
 @Data
-@AutoMappers({@AutoMapper(target = AdminManageVO.class)})
+@AutoMappers({@AutoMapper(target = AdminMngVO.class)})
 public class AdminInfoExport {
 
     @ExcelProperty("用户名")

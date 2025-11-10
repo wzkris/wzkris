@@ -56,10 +56,10 @@ public interface MenuInfoService {
     /**
      * 查询租户菜单选择树
      *
-     * @param staffId 员工ID
+     * @param memberId 成员ID
      * @return 菜单列表
      */
-    List<SelectTreeVO> listTenantSelectTree(Long staffId);
+    List<SelectTreeVO> listTenantSelectTree(Long memberId);
 
     /**
      * 查询所有租户菜单选择树
@@ -77,12 +77,12 @@ public interface MenuInfoService {
     List<RouterVO> listSystemRoutes(Long adminId);
 
     /**
-     * 根据员工ID查询租户路由
+     * 根据租户成员ID查询租户路由
      *
-     * @param staffId 员工ID
+     * @param memberId 成员ID
      * @return 前端路由
      */
-    List<RouterVO> listTenantRoutes(Long staffId);
+    List<RouterVO> listTenantRoutes(Long memberId);
 
     /**
      * 查询管理员对应菜单id
@@ -93,12 +93,12 @@ public interface MenuInfoService {
     List<Long> listMenuIdByAdminId(Long adminId);
 
     /**
-     * 查询租户员工对应菜单id
+     * 查询租户租户成员对应菜单id
      *
-     * @param staffId 员工ID
+     * @param memberId 成员ID
      * @return 菜单ID
      */
-    List<Long> listMenuIdByStaffId(Long staffId);
+    List<Long> listMenuIdByMemberId(Long memberId);
 
     /**
      * 是否存在菜单子节点

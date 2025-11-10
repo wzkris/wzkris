@@ -18,8 +18,8 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
 
     @Select("""
             <script>
-                SELECT * FROM biz.notification_to_user s LEFT JOIN biz.notification_info n ON s.notification_id = n.notification_id
-                WHERE user_id = #{userId}
+                SELECT * FROM biz.notification_to_admin s LEFT JOIN biz.notification_info n ON s.notification_id = n.notification_id
+                WHERE admin_id = #{adminId}
             	    <if test="notificationType != null and notificationType != ''">
             	        AND notification_type = #{notificationType}
             	    </if>
@@ -29,16 +29,34 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 ORDER BY s.notification_id DESC
             </script>
             """)
-    List<NotificationInfoVO> listNotice(
-            @Param("userId") Long userId,
+    List<NotificationInfoVO> listAdminNotice(
+            @Param("adminId") Long adminId,
+            @Nullable @Param("notificationType") String notificationType,
+            @Nullable @Param("read") String read);
+
+    @Select("""
+            <script>
+                SELECT * FROM biz.notification_to_tenant s LEFT JOIN biz.notification_info n ON s.notification_id = n.notification_id
+                WHERE member_id = #{memberId}
+            	    <if test="notificationType != null and notificationType != ''">
+            	        AND notification_type = #{notificationType}
+            	    </if>
+            	    <if test="read != null and read != ''">
+            	        AND read = #{read}
+            	    </if>
+                ORDER BY s.notification_id DESC
+            </script>
+            """)
+    List<NotificationInfoVO> listTenantNotice(
+            @Param("memberId") Long memberId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") String read);
 
     /**
      * 标记已读
      */
-    @Update("UPDATE biz.notification_to_user SET read = '1' WHERE notification_id = #{notificationId} AND user_id = #{userId}")
-    int markRead(@Param("notificationId") Long notificationId, @Param("userId") Long userId);
+    @Update("UPDATE biz.notification_to_admin SET read = '1' WHERE notification_id = #{notificationId} AND admin_id = #{adminId}")
+    int markAdminRead(@Param("notificationId") Long notificationId, @Param("adminId") Long adminId);
 
     /**
      * 最大统计100
@@ -46,14 +64,36 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     @Select("""
             <script>
                 SELECT COUNT(*) FROM
-                (SELECT 1 FROM biz.notification_to_user u LEFT JOIN biz.notification_info n ON u.notification_id = n.notification_id
-                WHERE user_id = #{userId} AND read = '0'
+                (SELECT 1 FROM biz.notification_to_admin u LEFT JOIN biz.notification_info n ON u.notification_id = n.notification_id
+                WHERE admin_id = #{adminId} AND read = '0'
                     <if test="notificationType != null and notificationType != ''">
             	        AND notification_type = #{notificationType}
             	    </if>
                 LIMIT 100) tmp
             </script>
             """)
-    int countUnread(@Param("userId") Long userId, @Nullable @Param("notificationType") String notificationType);
+    int countAdminUnread(@Param("adminId") Long adminId, @Nullable @Param("notificationType") String notificationType);
+
+    /**
+     * 租户端标记已读
+     */
+    @Update("UPDATE biz.notification_to_tenant SET read = '1' WHERE notification_id = #{notificationId} AND member_id = #{memberId}")
+    int markTenantRead(@Param("notificationId") Long notificationId, @Param("memberId") Long memberId);
+
+    /**
+     * 租户端未读统计（最大统计100）
+     */
+    @Select("""
+            <script>
+                SELECT COUNT(*) FROM
+                (SELECT 1 FROM biz.notification_to_tenant u LEFT JOIN biz.notification_info n ON u.notification_id = n.notification_id
+                WHERE member_id = #{memberId} AND read = '0'
+                    <if test="notificationType != null and notificationType != ''">
+                        AND notification_type = #{notificationType}
+                    </if>
+                LIMIT 100) tmp
+            </script>
+            """)
+    int countTenantUnread(@Param("memberId") Long memberId, @Nullable @Param("notificationType") String notificationType);
 
 }

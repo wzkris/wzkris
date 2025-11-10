@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-11-07 15:02:33
+-- Started on 2025-11-10 13:41:41
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1124,6 +1124,198 @@ COMMENT ON COLUMN biz.role_to_menu.menu_id IS '菜单ID';
 
 
 --
+-- TOC entry 228 (class 1259 OID 16899)
+-- Name: t_member_info; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.t_member_info (
+    member_id bigint NOT NULL,
+    tenant_id bigint NOT NULL,
+    username character varying(30) NOT NULL,
+    phone_number character varying(16),
+    status character(1) DEFAULT 0 NOT NULL,
+    gender character(1) DEFAULT 2 NOT NULL,
+    avatar character varying(150),
+    password character varying(100),
+    login_ip inet,
+    login_date timestamp(6) with time zone,
+    remark character varying(64),
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(6) with time zone NOT NULL,
+    update_at timestamp(6) with time zone
+);
+
+
+ALTER TABLE biz.t_member_info OWNER TO postgres;
+
+--
+-- TOC entry 3591 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: TABLE t_member_info; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON TABLE biz.t_member_info IS '租户成员表';
+
+
+--
+-- TOC entry 3592 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.member_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.member_id IS 'ID';
+
+
+--
+-- TOC entry 3593 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.tenant_id IS '租户ID';
+
+
+--
+-- TOC entry 3594 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.username; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.username IS '用户名';
+
+
+--
+-- TOC entry 3595 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.phone_number; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.phone_number IS '手机号码';
+
+
+--
+-- TOC entry 3596 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.status; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.status IS '状态值';
+
+
+--
+-- TOC entry 3597 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.gender; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.gender IS '性别（0男 1女 2未知）';
+
+
+--
+-- TOC entry 3598 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.avatar; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.avatar IS '头像地址';
+
+
+--
+-- TOC entry 3599 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.password; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.password IS '密码';
+
+
+--
+-- TOC entry 3600 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.login_ip; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.login_ip IS '登录ip';
+
+
+--
+-- TOC entry 3601 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.login_date; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.login_date IS '登录时间';
+
+
+--
+-- TOC entry 3602 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.remark; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.remark IS '备注';
+
+
+--
+-- TOC entry 3603 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.creator_id IS '创建者';
+
+
+--
+-- TOC entry 3604 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: COLUMN t_member_info.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_info.updater_id IS '更新者';
+
+
+--
+-- TOC entry 229 (class 1259 OID 16906)
+-- Name: t_member_to_post; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.t_member_to_post (
+    member_id bigint NOT NULL,
+    post_id bigint NOT NULL
+);
+
+
+ALTER TABLE biz.t_member_to_post OWNER TO postgres;
+
+--
+-- TOC entry 3605 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: TABLE t_member_to_post; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON TABLE biz.t_member_to_post IS '租户成员和职位关联表';
+
+
+--
+-- TOC entry 3606 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: COLUMN t_member_to_post.member_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_to_post.member_id IS '租户成员ID';
+
+
+--
+-- TOC entry 3607 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: COLUMN t_member_to_post.post_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.t_member_to_post.post_id IS '职位ID';
+
+
+--
 -- TOC entry 226 (class 1259 OID 16893)
 -- Name: t_post_info; Type: TABLE; Schema: biz; Owner: root
 --
@@ -1144,16 +1336,16 @@ CREATE TABLE biz.t_post_info (
 ALTER TABLE biz.t_post_info OWNER TO root;
 
 --
--- TOC entry 3591 (class 0 OID 0)
+-- TOC entry 3608 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: TABLE t_post_info; Type: COMMENT; Schema: biz; Owner: root
 --
 
-COMMENT ON TABLE biz.t_post_info IS '员工职位信息';
+COMMENT ON TABLE biz.t_post_info IS '租户职位信息';
 
 
 --
--- TOC entry 3592 (class 0 OID 0)
+-- TOC entry 3609 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN t_post_info.post_id; Type: COMMENT; Schema: biz; Owner: root
 --
@@ -1162,7 +1354,7 @@ COMMENT ON COLUMN biz.t_post_info.post_id IS '职位ID';
 
 
 --
--- TOC entry 3593 (class 0 OID 0)
+-- TOC entry 3610 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN t_post_info.tenant_id; Type: COMMENT; Schema: biz; Owner: root
 --
@@ -1171,7 +1363,7 @@ COMMENT ON COLUMN biz.t_post_info.tenant_id IS '租户ID';
 
 
 --
--- TOC entry 3594 (class 0 OID 0)
+-- TOC entry 3611 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN t_post_info.post_name; Type: COMMENT; Schema: biz; Owner: root
 --
@@ -1180,7 +1372,7 @@ COMMENT ON COLUMN biz.t_post_info.post_name IS '职位名称';
 
 
 --
--- TOC entry 3595 (class 0 OID 0)
+-- TOC entry 3612 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN t_post_info.status; Type: COMMENT; Schema: biz; Owner: root
 --
@@ -1189,7 +1381,7 @@ COMMENT ON COLUMN biz.t_post_info.status IS '状态（0代表正常 1代表停�
 
 
 --
--- TOC entry 3596 (class 0 OID 0)
+-- TOC entry 3613 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: COLUMN t_post_info.post_sort; Type: COMMENT; Schema: biz; Owner: root
 --
@@ -1211,7 +1403,7 @@ CREATE TABLE biz.t_post_to_menu (
 ALTER TABLE biz.t_post_to_menu OWNER TO postgres;
 
 --
--- TOC entry 3597 (class 0 OID 0)
+-- TOC entry 3614 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: TABLE t_post_to_menu; Type: COMMENT; Schema: biz; Owner: postgres
 --
@@ -1220,7 +1412,7 @@ COMMENT ON TABLE biz.t_post_to_menu IS '职位和菜单关联表';
 
 
 --
--- TOC entry 3598 (class 0 OID 0)
+-- TOC entry 3615 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN t_post_to_menu.post_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
@@ -1229,204 +1421,12 @@ COMMENT ON COLUMN biz.t_post_to_menu.post_id IS '职位ID';
 
 
 --
--- TOC entry 3599 (class 0 OID 0)
+-- TOC entry 3616 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: COLUMN t_post_to_menu.menu_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.t_post_to_menu.menu_id IS '菜单ID';
-
-
---
--- TOC entry 228 (class 1259 OID 16899)
--- Name: t_staff_info; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.t_staff_info (
-    staff_id bigint NOT NULL,
-    tenant_id bigint NOT NULL,
-    username character varying(30) NOT NULL,
-    phone_number character varying(16),
-    status character(1) DEFAULT 0 NOT NULL,
-    gender character(1) DEFAULT 2 NOT NULL,
-    avatar character varying(150),
-    password character varying(100),
-    login_ip inet,
-    login_date timestamp(6) with time zone,
-    remark character varying(64),
-    creator_id bigint NOT NULL,
-    updater_id bigint,
-    create_at timestamp(6) with time zone NOT NULL,
-    update_at timestamp(6) with time zone
-);
-
-
-ALTER TABLE biz.t_staff_info OWNER TO postgres;
-
---
--- TOC entry 3600 (class 0 OID 0)
--- Dependencies: 228
--- Name: TABLE t_staff_info; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.t_staff_info IS '租户员工表';
-
-
---
--- TOC entry 3601 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.staff_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.staff_id IS '员工ID';
-
-
---
--- TOC entry 3602 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.tenant_id IS '租户ID';
-
-
---
--- TOC entry 3603 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.username; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.username IS '员工账号';
-
-
---
--- TOC entry 3604 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.phone_number; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.phone_number IS '手机号码';
-
-
---
--- TOC entry 3605 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.status IS '状态值';
-
-
---
--- TOC entry 3606 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.gender; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.gender IS '性别（0男 1女 2未知）';
-
-
---
--- TOC entry 3607 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.avatar; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.avatar IS '头像地址';
-
-
---
--- TOC entry 3608 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.password; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.password IS '密码';
-
-
---
--- TOC entry 3609 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.login_ip; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.login_ip IS '登录ip';
-
-
---
--- TOC entry 3610 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.login_date; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.login_date IS '登录时间';
-
-
---
--- TOC entry 3611 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.remark; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.remark IS '备注';
-
-
---
--- TOC entry 3612 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.creator_id IS '创建者';
-
-
---
--- TOC entry 3613 (class 0 OID 0)
--- Dependencies: 228
--- Name: COLUMN t_staff_info.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_info.updater_id IS '更新者';
-
-
---
--- TOC entry 229 (class 1259 OID 16906)
--- Name: t_staff_to_post; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.t_staff_to_post (
-    staff_id bigint NOT NULL,
-    post_id bigint NOT NULL
-);
-
-
-ALTER TABLE biz.t_staff_to_post OWNER TO postgres;
-
---
--- TOC entry 3614 (class 0 OID 0)
--- Dependencies: 229
--- Name: TABLE t_staff_to_post; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.t_staff_to_post IS '员工和职位关联表';
-
-
---
--- TOC entry 3615 (class 0 OID 0)
--- Dependencies: 229
--- Name: COLUMN t_staff_to_post.staff_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_to_post.staff_id IS '员工ID';
-
-
---
--- TOC entry 3616 (class 0 OID 0)
--- Dependencies: 229
--- Name: COLUMN t_staff_to_post.post_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.t_staff_to_post.post_id IS '职位ID';
 
 
 --
@@ -2001,7 +2001,7 @@ COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.remark IS '备注';
 --
 
 COPY biz.admin_info (admin_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-100	\N	super	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.131	2025-11-07 13:55:45+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
+100	\N	super	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.131	2025-11-10 11:18:00+08	\N	1	\N	2024-04-17 14:08:54.616+08	\N
 \.
 
 
@@ -2075,7 +2075,6 @@ COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort,
 
 COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at) FROM stdin;
 1980906033277222913	日志审计	0	0	audit-log	\N	\N	D	0	\N	carbon:catalog-publish	f	t	tenant	1	1	2025-10-22 15:56:16.449+08	2025-10-22 15:58:02.486+08
-1980906374936838146	登录日志	1980906033277222913	10	login	loginlog-staff/mng/index	\N	M	0	msg-mod:staff-loginlog-mng:list	carbon:login	f	t	tenant	1	1	2025-10-22 15:57:37.907+08	2025-10-22 16:00:07.632+08
 1906263415450001129	重置租户操作密码	1906263415450000601	11	#	\N	\N	B	0	prin-mod:tenant-mng:reset-operpwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:23.785+08
 1906263415450001215	修改密钥	1906263415450000700	5	#	\N	\N	B	0	prin-mod:oauth2client-mng:edit-secret	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:16:07.901+08
 1983741300921024514	api分析	1983739365543329794	10	apicall	statistics/apicall/index	\N	M	0	\N	carbon:api-1	f	t	system	1	1	2025-10-30 11:42:36.932+08	2025-10-31 09:22:48.476+08
@@ -2088,7 +2087,6 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1906263415450000700	终端管理	1906263415450000003	3	oauth2client	oauth2client/mng/index	\N	M	0	prin-mod:oauth2client-mng:list	carbon:application	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:48.237+08
 1906263415450000002	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:09:40.54+08
 1906263415450000104	日志审计	0	1	audit-log	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:59:16.035+08
-1980906706949554177	操作日志	1980906033277222913	0	operate	operatelog-staff/mng/index	\N	M	0	msg-mod:staff-operatelog-mng:list	carbon:touch-interaction	f	t	tenant	1	1	2025-10-22 15:58:57.063+08	2025-10-22 16:00:21.933+08
 1906263415450000001	消息管理	0	80	system-mng	\N	\N	D	0	\N	carbon:z-systems	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-30 11:35:26.814+08
 1906263415450000302	Sentinel控制台	1906263415450000101	3	http://localhost:8718	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:06.192+08
 1906263415450000301	系统接口	1906263415450000101	2	http://localhost:8080/doc.html	\N	\N	I	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:14.675+08
@@ -2103,7 +2101,6 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1976223833424326657	修改角色	1906263415450000206	4	#	\N	\N	B	0	prin-mod:role-mng:edit	#	f	t	system	1	1	2025-10-09 17:50:53.008+08	2025-10-09 17:50:53.008+08
 1976565556872667137	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	tenant	1	1	2025-10-10 16:28:46.235+08	2025-10-22 15:56:22.969+08
 1976585906620653569	职位管理	1976565556872667137	0	post	post/mng/index	\N	M	0	prin-mod:post-mng:list	carbon:load-balancer-classic	f	t	tenant	1	1	2025-10-10 17:49:37.998+08	2025-10-15 14:55:01.703+08
-1976570103963770881	员工管理	1976565556872667137	8	staff	staff/mng/index	\N	M	0	prin-mod:staff-mng:list	carbon:user-identification	f	t	tenant	1	1	2025-10-10 16:46:50.34+08	2025-10-15 16:17:39.442+08
 1976455457936171010	修改参数	1906263415450000103	4	#	\N	\N	B	0	msg-mod:config-mng:edit	#	f	t	system	1	1	2025-10-10 09:11:16.596+08	2025-10-10 09:11:16.596+08
 1976455537858633730	删除参数	1906263415450000103	5	#	\N	\N	B	0	msg-mod:config-mng:remove	#	f	t	system	1	1	2025-10-10 09:11:35.655+08	2025-10-10 09:11:35.655+08
 1976455824778387458	添加字典	1906263415450000102	0	#	\N	\N	B	0	msg-mod:dictionary-mng:add	#	f	t	system	1	1	2025-10-10 09:12:44.068+08	2025-10-10 09:12:44.068+08
@@ -2122,6 +2119,9 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1976225825756475393	新增菜单	1906263415450000207	0	#	\N	\N	B	0	prin-mod:menu-mng:add	#	f	t	system	1	1	2025-10-09 17:58:48.025+08	2025-10-09 17:58:48.025+08
 1910569625749024770	授权角色	1906263415450000203	0	#	\N	\N	B	0	prin-mod:admin-mng:grant-role	#	f	t	system	1	100	2025-04-11 13:44:30.104+08	2025-11-07 13:58:45.924+08
 1906263415450000151	登录日志	1906263415450000104	2	login	loginlog-admin/mng/index	\N	M	0	msg-mod:admin-loginlog-mng:list	carbon:login	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 15:00:44.821+08
+1980906706949554177	操作日志	1980906033277222913	0	operate	operatelog-tenant/mng/index	\N	M	0	msg-mod:tenant-operatelog-mng:list	carbon:touch-interaction	f	t	tenant	1	100	2025-10-22 15:58:57.063+08	2025-11-10 11:08:34.818+08
+1976570103963770881	成员管理	1976565556872667137	8	member	member/mng/index	\N	M	0	prin-mod:member-mng:list	carbon:user-identification	f	t	tenant	1	100	2025-10-10 16:46:50.34+08	2025-11-10 11:11:21.068+08
+1980906374936838146	登录日志	1980906033277222913	10	login	loginlog-tenant/mng/index	\N	M	0	msg-mod:tenant-loginlog-mng:list	carbon:login	f	t	tenant	1	100	2025-10-22 15:57:37.907+08	2025-11-10 11:08:26.941+08
 1976225899114852354	修改菜单	1906263415450000207	0	#	\N	\N	B	0	prin-mod:menu-mng:edit	#	f	t	system	1	1	2025-10-09 17:59:05.507+08	2025-10-09 17:59:05.507+08
 1976226216250372098	新增租户	1906263415450000601	5	#	\N	\N	B	0	prin-mod:tenant-mng:add	#	f	t	system	1	1	2025-10-09 18:00:21.123+08	2025-10-09 18:00:21.123+08
 1976226385717030913	删除租户	1906263415450000601	8	#	\N	\N	B	0	prin-mod:tenant-mng:remove	#	f	t	system	1	1	2025-10-09 18:01:01.527+08	2025-10-09 18:01:01.527+08
@@ -2140,10 +2140,6 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1906263415450001133	修改租户	1906263415450000601	2	#	\N	\N	B	0	prin-mod:tenant-mng:edit	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 18:00:31.48+08
 1976586292211408897	删除职位	1976585906620653569	5	#	\N	\N	B	0	prin-mod:post-mng:remove	#	f	t	tenant	1	1	2025-10-10 17:51:09.924+08	2025-10-10 17:51:09.924+08
 1976586196090544129	修改职位	1976585906620653569	3	#	\N	\N	B	0	prin-mod:post-mng:edit	#	f	t	tenant	1	1	2025-10-10 17:50:47.01+08	2025-10-10 17:51:16.27+08
-1976586554187636737	新增员工	1976570103963770881	0	#	\N	\N	B	0	prin-mod:staff-mng:add	#	f	t	tenant	1	1	2025-10-10 17:52:12.388+08	2025-10-10 17:52:12.388+08
-1976586698882736130	授权员工职位	1976570103963770881	5	#	\N	\N	B	0	prin-mod:staff-mng:grant-post	#	f	t	tenant	1	1	2025-10-10 17:52:46.886+08	2025-10-10 17:52:46.886+08
-1976586772002037762	删除员工	1976570103963770881	7	#	\N	\N	B	0	prin-mod:staff-mng:remove	#	f	t	tenant	1	1	2025-10-10 17:53:04.318+08	2025-10-10 17:53:04.318+08
-1976586612681400321	修改员工	1976570103963770881	3	#	\N	\N	B	0	prin-mod:staff-mng:edit	#	f	t	tenant	1	1	2025-10-10 17:52:26.329+08	2025-10-10 17:53:11.135+08
 1906272182215585793	租户信息	0	100	tenant-info	tenant/info/index	\N	M	0	prin-mod:tenant-info	carbon:information-filled	f	t	tenant	1	1	2025-03-30 17:07:59.723+08	2025-10-22 15:11:16.513+08
 1906263415450000201	顾客管理	1906263415450000003	1	customer	customer/mng/index	\N	M	0	prin-mod:customer-mng:list	carbon:customer	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:53.092+08
 1906263415450000601	租户管理	1906263415450000003	100	tenant	tenant/mng/index	\N	M	0	prin-mod:tenant-mng:list	carbon:id-management	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:30.704+08
@@ -2152,6 +2148,10 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1906263415450000205	部门管理	1906263415450000002	70	dept	dept/mng/index	\N	M	0	prin-mod:dept-mng:list	carbon:departure	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:19.213+08
 1906263415450000150	操作日志	1906263415450000104	1	operate	operatelog-admin/mng/index	\N	M	0	msg-mod:admin-operatelog-mng:list	carbon:touch-interaction	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 15:01:00.731+08
 1906263415450002062	重置密码	1906263415450000203	7	#	\N	\N	B	0	prin-mod:admin-mng:resetPwd	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 13:57:48.304+08
+1976586772002037762	删除	1976570103963770881	7	#	\N	\N	B	0	prin-mod:member-mng:remove	#	f	t	tenant	1	100	2025-10-10 17:53:04.318+08	2025-11-10 11:06:54.2+08
+1976586698882736130	授权职位	1976570103963770881	5	#	\N	\N	B	0	prin-mod:member-mng:grant-post	#	f	t	tenant	1	100	2025-10-10 17:52:46.886+08	2025-11-10 11:07:03.634+08
+1976586612681400321	修改	1976570103963770881	3	#	\N	\N	B	0	prin-mod:member-mng:edit	#	f	t	tenant	1	100	2025-10-10 17:52:26.329+08	2025-11-10 11:07:13.481+08
+1976586554187636737	新增	1976570103963770881	0	#	\N	\N	B	0	prin-mod:member-mng:add	#	f	t	tenant	1	100	2025-10-10 17:52:12.388+08	2025-11-10 11:07:25.231+08
 1906263415450000203	账号管理	1906263415450000002	100	admin	admin/mng/index	\N	M	0	prin-mod:admin-mng:list	carbon:user-admin	t	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:01:24.632+08
 1906263415450002064	修改账号	1906263415450000203	3	#	\N	\N	B	0	prin-mod:admin-mng:edit	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:08.592+08
 1906263415450002077	导出	1906263415450000203	1	#	\N	\N	B	0	prin-mod:admin-mng:export	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:17.222+08
@@ -2213,6 +2213,27 @@ COPY biz.role_to_menu (role_id, menu_id) FROM stdin;
 
 
 --
+-- TOC entry 3483 (class 0 OID 16899)
+-- Dependencies: 228
+-- Data for Name: t_member_info; Type: TABLE DATA; Schema: biz; Owner: postgres
+--
+
+COPY biz.t_member_info (member_id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
+1910557183820165120	1910557183820165122	testadmin	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.131	2025-11-10 11:17:07+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
+\.
+
+
+--
+-- TOC entry 3484 (class 0 OID 16906)
+-- Dependencies: 229
+-- Data for Name: t_member_to_post; Type: TABLE DATA; Schema: biz; Owner: postgres
+--
+
+COPY biz.t_member_to_post (member_id, post_id) FROM stdin;
+\.
+
+
+--
 -- TOC entry 3481 (class 0 OID 16893)
 -- Dependencies: 226
 -- Data for Name: t_post_info; Type: TABLE DATA; Schema: biz; Owner: root
@@ -2245,34 +2266,13 @@ COPY biz.t_post_to_menu (post_id, menu_id) FROM stdin;
 
 
 --
--- TOC entry 3483 (class 0 OID 16899)
--- Dependencies: 228
--- Data for Name: t_staff_info; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-COPY biz.t_staff_info (staff_id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at) FROM stdin;
-1910557183820165120	1910557183820165122	testadmin	\N	0	2	\N	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.131	2025-11-07 14:17:02+08	\N	1	\N	2025-04-11 12:55:03.816+08	\N
-\.
-
-
---
--- TOC entry 3484 (class 0 OID 16906)
--- Dependencies: 229
--- Data for Name: t_staff_to_post; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-COPY biz.t_staff_to_post (staff_id, post_id) FROM stdin;
-\.
-
-
---
 -- TOC entry 3485 (class 0 OID 16909)
 -- Dependencies: 230
 -- Data for Name: tenant_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
 COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, account_limit, post_limit, creator_id, create_at, updater_id, update_at) FROM stdin;
-1910557183820165122	1910557183820165120	0	\N	test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-11-10 00:00:00+08	5	5	1	2025-04-11 12:55:03.715+08	100	2025-11-07 14:16:58.549+08
+1910557183820165122	1910557183820165120	0	\N	test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0	\N	\N	1773625804122202113	2025-11-11 00:00:00+08	5	5	1	2025-04-11 12:55:03.715+08	100	2025-11-10 09:35:50.537+08
 \.
 
 
@@ -2436,6 +2436,24 @@ ALTER TABLE ONLY biz.role_to_menu
 
 
 --
+-- TOC entry 3304 (class 2606 OID 16966)
+-- Name: t_member_info t_member_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.t_member_info
+    ADD CONSTRAINT t_member_info_pkey PRIMARY KEY (member_id);
+
+
+--
+-- TOC entry 3308 (class 2606 OID 16968)
+-- Name: t_member_to_post t_member_to_post_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.t_member_to_post
+    ADD CONSTRAINT t_member_to_post_pkey PRIMARY KEY (member_id, post_id);
+
+
+--
 -- TOC entry 3300 (class 2606 OID 16962)
 -- Name: t_post_info t_post_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
 --
@@ -2451,24 +2469,6 @@ ALTER TABLE ONLY biz.t_post_info
 
 ALTER TABLE ONLY biz.t_post_to_menu
     ADD CONSTRAINT t_post_to_menu_pkey PRIMARY KEY (post_id, menu_id);
-
-
---
--- TOC entry 3304 (class 2606 OID 16966)
--- Name: t_staff_info t_staff_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.t_staff_info
-    ADD CONSTRAINT t_staff_info_pkey PRIMARY KEY (staff_id);
-
-
---
--- TOC entry 3308 (class 2606 OID 16968)
--- Name: t_staff_to_post t_staff_to_post_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.t_staff_to_post
-    ADD CONSTRAINT t_staff_to_post_pkey PRIMARY KEY (staff_id, post_id);
 
 
 --
@@ -2601,7 +2601,7 @@ CREATE UNIQUE INDEX uk_tenant_info_administrator ON biz.tenant_info USING btree 
 -- Name: uk_tenant_staff_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_tenant_staff_info_phone_number ON biz.t_staff_info USING btree (phone_number);
+CREATE UNIQUE INDEX uk_tenant_staff_info_phone_number ON biz.t_member_info USING btree (phone_number);
 
 
 --
@@ -2609,7 +2609,7 @@ CREATE UNIQUE INDEX uk_tenant_staff_info_phone_number ON biz.t_staff_info USING 
 -- Name: uk_tenant_staff_info_username; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_tenant_staff_info_username ON biz.t_staff_info USING btree (username);
+CREATE UNIQUE INDEX uk_tenant_staff_info_username ON biz.t_member_info USING btree (username);
 
 
 --
@@ -2628,7 +2628,7 @@ CREATE UNIQUE INDEX uk_user_info_phone_number ON biz.admin_info USING btree (pho
 CREATE UNIQUE INDEX uk_user_info_username ON biz.admin_info USING btree (username);
 
 
--- Completed on 2025-11-07 15:02:33
+-- Completed on 2025-11-10 13:41:41
 
 --
 -- PostgreSQL database dump complete

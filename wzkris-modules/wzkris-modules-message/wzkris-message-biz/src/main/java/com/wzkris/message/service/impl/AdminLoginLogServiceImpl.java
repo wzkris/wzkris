@@ -3,7 +3,7 @@ package com.wzkris.message.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.message.domain.AdminLoginLogDO;
-import com.wzkris.message.domain.req.userlog.AdminLoginLogQueryReq;
+import com.wzkris.message.domain.req.adminlog.AdminLoginLogQueryReq;
 import com.wzkris.message.mapper.AdminLoginLogMapper;
 import com.wzkris.message.service.AdminLoginLogService;
 import lombok.RequiredArgsConstructor;

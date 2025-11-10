@@ -32,16 +32,16 @@ import java.util.Set;
 public class CheckPermsAspect {
 
     @Pointcut("@annotation(com.wzkris.common.security.annotation.CheckPerms)"
-            + "|| @annotation(com.wzkris.common.security.annotation.CheckUserPerms)"
+            + "|| @annotation(com.wzkris.common.security.annotation.CheckAdminPerms)"
             + "|| @annotation(com.wzkris.common.security.annotation.CheckClientPerms)"
-            + "|| @annotation(com.wzkris.common.security.annotation.CheckStaffPerms)")
+            + "|| @annotation(com.wzkris.common.security.annotation.CheckTenantPerms)")
     public void pointCutMethod() {
     }
 
     @Pointcut("@within(com.wzkris.common.security.annotation.CheckPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckUserPerms)"
+            + "|| @within(com.wzkris.common.security.annotation.CheckAdminPerms)"
             + "|| @within(com.wzkris.common.security.annotation.CheckClientPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckStaffPerms)")
+            + "|| @within(com.wzkris.common.security.annotation.CheckTenantPerms)")
     public void pointCutClass() {
     }
 

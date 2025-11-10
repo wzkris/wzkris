@@ -1,6 +1,6 @@
 package com.wzkris.common.log.event;
 
-import com.wzkris.message.feign.stafflog.req.OperateLogReq;
+import com.wzkris.message.feign.tenantlog.req.OperateLogReq;
 import lombok.Data;
 
 import java.util.Date;
@@ -119,14 +119,14 @@ public class OperateEvent {
         return operateLogReq;
     }
 
-    public OperateLogReq toStaffOperateLogReq() {
+    public OperateLogReq toTenantOperateLogReq() {
         OperateLogReq operateLogReq = new OperateLogReq();
         operateLogReq.setTitle(this.getTitle());
         operateLogReq.setSubTitle(this.getSubTitle());
         operateLogReq.setOperType(this.getOperType());
         operateLogReq.setMethod(this.getMethod());
         operateLogReq.setRequestMethod(this.getRequestMethod());
-        operateLogReq.setStaffId(this.getOperatorId());
+        operateLogReq.setMemberId(this.getOperatorId());
         operateLogReq.setUsername(this.getOperName());
         operateLogReq.setOperUrl(this.getOperUrl());
         operateLogReq.setOperIp(this.getOperIp());

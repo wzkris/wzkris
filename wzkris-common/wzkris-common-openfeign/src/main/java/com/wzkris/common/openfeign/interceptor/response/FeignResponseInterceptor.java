@@ -1,6 +1,6 @@
 package com.wzkris.common.openfeign.interceptor.response;
 
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.openfeign.enums.BizRpcCode;
@@ -28,7 +28,7 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
     @Override
     public Object intercept(InvocationContext invocationContext, Chain chain) throws Exception {
         try (Response response = invocationContext.response()) {
-            Optional<String> reqTime = response.request().headers().get(HeaderConstants.X_REQUEST_TIME).stream().findFirst();
+            Optional<String> reqTime = response.request().headers().get(CustomHeaderConstants.X_REQUEST_TIME).stream().findFirst();
             long costTime = System.currentTimeMillis() - Long.parseLong(reqTime.get());
 
             checkSuccess(response, costTime);

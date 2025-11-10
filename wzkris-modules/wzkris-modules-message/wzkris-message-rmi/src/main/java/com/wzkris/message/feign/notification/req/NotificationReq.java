@@ -1,5 +1,6 @@
 package com.wzkris.message.feign.notification.req;
 
+import com.wzkris.common.core.enums.AuthType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 public class NotificationReq implements Serializable {
 
-    private List<Long> userIds;
+    /**
+     * 接收者ID
+     */
+    private List<Long> receiverIds;
+
+    /**
+     * 接收者类型
+     */
+    private AuthType authType;
 
     private String title;
 

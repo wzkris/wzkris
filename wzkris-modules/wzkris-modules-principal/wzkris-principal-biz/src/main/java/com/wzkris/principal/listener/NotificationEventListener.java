@@ -1,9 +1,11 @@
 package com.wzkris.principal.listener;
 
+import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.message.feign.notification.NotificationInfoFeign;
 import com.wzkris.message.feign.notification.req.NotificationReq;
+import com.wzkris.principal.listener.event.CreateAdminEvent;
+import com.wzkris.principal.listener.event.CreateMemberEvent;
 import com.wzkris.principal.listener.event.CreateTenantEvent;
-import com.wzkris.principal.listener.event.CreateUserEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -26,7 +28,7 @@ public class NotificationEventListener {
     @EventListener
     public void createTenantEvent(CreateTenantEvent event) {
         NotificationReq req = new NotificationReq(
-                Collections.singletonList(event.getToUserId()),
+                Collections.singletonList(event.getReceiverId()), AuthType.ADMIN,
                 "租户创建成功",
                 String.format(
                         "租户：%s创建成功，超级管理员账号：%s，临时登录密码：%s，临时操作密码：%s",
@@ -40,11 +42,22 @@ public class NotificationEventListener {
 
     @Async
     @EventListener
-    public void createUserEvent(CreateUserEvent event) {
+    public void createAdminEvent(CreateAdminEvent event) {
         NotificationReq req = new NotificationReq(
-                Collections.singletonList(event.getToUserId()),
-                "用户创建成功",
-                String.format("用户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
+                Collections.singletonList(event.getReceiverId()), AuthType.ADMIN,
+                "管理员创建成功",
+                String.format("管理员账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
+
+        notificationInfoFeign.send2Users(req);
+    }
+
+    @Async
+    @EventListener
+    public void createMemberEvent(CreateMemberEvent event) {
+        NotificationReq req = new NotificationReq(
+                Collections.singletonList(event.getReceiverId()), AuthType.TENANT,
+                "租户账号创建成功",
+                String.format("租户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
         notificationInfoFeign.send2Users(req);
     }

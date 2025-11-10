@@ -1,6 +1,6 @@
 package com.wzkris.common.apikey.utils;
 
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.utils.TraceIdUtil;
 
 import javax.crypto.Mac;
@@ -26,10 +26,10 @@ public class RequestSignerUtil {
                                         String requestBody,
                                         long timestamp) {
         final String traceId = TraceIdUtil.get();
-        headerSetter.accept(HeaderConstants.X_TRACING_ID, traceId);
-        headerSetter.accept(HeaderConstants.X_REQUEST_TIME, String.valueOf(timestamp));
-        headerSetter.accept(HeaderConstants.X_REQUEST_FROM, applicationName);
-        headerSetter.accept(HeaderConstants.X_REQUEST_SIGN,
+        headerSetter.accept(CustomHeaderConstants.X_TRACING_ID, traceId);
+        headerSetter.accept(CustomHeaderConstants.X_REQUEST_TIME, String.valueOf(timestamp));
+        headerSetter.accept(CustomHeaderConstants.X_REQUEST_FROM, applicationName);
+        headerSetter.accept(CustomHeaderConstants.X_REQUEST_SIGN,
                 RequestSignerUtil.generateSignature(secret, traceId, requestBody, timestamp));
     }
 

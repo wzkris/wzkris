@@ -1,10 +1,10 @@
 package com.wzkris.common.security.oauth2.repository;
 
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginStaff;
+import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.SupplierDeferredSecurityContext;
@@ -53,11 +53,11 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 
-        if (generateUser(request, ctx)) {
+        if (generateAdmin(request, ctx)) {
             return ctx;
         }
 
-        if (generateStaff(request, ctx)) {
+        if (generateTenant(request, ctx)) {
             return ctx;
         }
 
@@ -68,31 +68,31 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
         return ctx;
     }
 
-    private boolean generateUser(HttpServletRequest request, SecurityContext ctx) {
-        final String userinfo = request.getHeader(HeaderConstants.X_Admin_INFO);
+    private boolean generateAdmin(HttpServletRequest request, SecurityContext ctx) {
+        final String userinfo = request.getHeader(CustomHeaderConstants.X_Admin_INFO);
         if (StringUtil.isNotBlank(userinfo)) {
             ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(userinfo, LoginAdmin.class), request,
-                    request.getHeader(HeaderConstants.X_ADMIN_TOKEN)));
+                    request.getHeader(CustomHeaderConstants.X_ADMIN_TOKEN)));
             return true;
         }
         return false;
     }
 
-    private boolean generateStaff(HttpServletRequest request, SecurityContext ctx) {
-        final String staffinfo = request.getHeader(HeaderConstants.X_STAFF_INFO);
-        if (StringUtil.isNotBlank(staffinfo)) {
-            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(staffinfo, LoginStaff.class), request,
-                    request.getHeader(HeaderConstants.X_STAFF_TOKEN)));
+    private boolean generateTenant(HttpServletRequest request, SecurityContext ctx) {
+        final String tenantinfo = request.getHeader(CustomHeaderConstants.X_TENANT_INFO);
+        if (StringUtil.isNotBlank(tenantinfo)) {
+            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(tenantinfo, LoginTenant.class), request,
+                    request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN)));
             return true;
         }
         return false;
     }
 
     private boolean generateCustomer(HttpServletRequest request, SecurityContext ctx) {
-        final String customerinfo = request.getHeader(HeaderConstants.X_CUSTOMER_INFO);
+        final String customerinfo = request.getHeader(CustomHeaderConstants.X_CUSTOMER_INFO);
         if (StringUtil.isNotBlank(customerinfo)) {
             ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(customerinfo, LoginCustomer.class), request,
-                    request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN)));
+                    request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN)));
             return true;
         }
         return false;

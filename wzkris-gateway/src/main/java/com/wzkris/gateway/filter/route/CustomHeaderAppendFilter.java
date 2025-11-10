@@ -2,9 +2,9 @@ package com.wzkris.gateway.filter.route;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginStaff;
+import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.utils.JsonUtil;
 import lombok.RequiredArgsConstructor;
@@ -47,11 +47,11 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                 .flatMap(principal -> {
                     String infoHeader;
                     if (principal instanceof LoginAdmin) {
-                        infoHeader = HeaderConstants.X_Admin_INFO;
-                    } else if (principal instanceof LoginStaff) {
-                        infoHeader = HeaderConstants.X_STAFF_INFO;
+                        infoHeader = CustomHeaderConstants.X_Admin_INFO;
+                    } else if (principal instanceof LoginTenant) {
+                        infoHeader = CustomHeaderConstants.X_TENANT_INFO;
                     } else if (principal instanceof LoginCustomer) {
-                        infoHeader = HeaderConstants.X_CUSTOMER_INFO;
+                        infoHeader = CustomHeaderConstants.X_CUSTOMER_INFO;
                     } else {
                         return Mono.empty();
                     }

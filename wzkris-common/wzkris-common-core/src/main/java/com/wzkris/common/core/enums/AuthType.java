@@ -17,7 +17,7 @@ public enum AuthType {
 
     ADMIN("admin"),
 
-    STAFF("staff"),
+    TENANT("tenant"),
 
     CUSTOMER("customer"),
 

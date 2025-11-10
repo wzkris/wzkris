@@ -5,7 +5,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.message.domain.AdminLoginLogDO;
-import com.wzkris.message.domain.req.userlog.AdminLoginLogQueryReq;
+import com.wzkris.message.domain.req.adminlog.AdminLoginLogQueryReq;
 import com.wzkris.message.service.AdminLoginLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

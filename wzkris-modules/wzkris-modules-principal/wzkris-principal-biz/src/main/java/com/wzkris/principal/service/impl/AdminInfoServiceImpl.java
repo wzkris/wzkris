@@ -39,7 +39,7 @@ public class AdminInfoServiceImpl implements AdminInfoService {
         }
         boolean success = adminInfoMapper.insert(adminInfoDO) > 0;
         if (success) {
-            this.insertUserRole(adminInfoDO.getAdminId(), roleIds);
+            this.insertAdminRole(adminInfoDO.getAdminId(), roleIds);
         }
         return success;
     }
@@ -53,7 +53,7 @@ public class AdminInfoServiceImpl implements AdminInfoService {
         boolean success = adminInfoMapper.updateById(adminInfoDO) > 0;
         if (success && roleIds != null) {
             adminToRoleMapper.deleteByAdminId(adminInfoDO.getAdminId());
-            this.insertUserRole(adminInfoDO.getAdminId(), roleIds);
+            this.insertAdminRole(adminInfoDO.getAdminId(), roleIds);
         }
         return success;
     }
@@ -72,10 +72,10 @@ public class AdminInfoServiceImpl implements AdminInfoService {
     @Transactional(rollbackFor = Exception.class)
     public boolean grantRoles(Long adminId, List<Long> roleIds) {
         adminToRoleMapper.deleteByAdminId(adminId);
-        return this.insertUserRole(adminId, roleIds);
+        return this.insertAdminRole(adminId, roleIds);
     }
 
-    private boolean insertUserRole(Long adminId, List<Long> roleIds) {
+    private boolean insertAdminRole(Long adminId, List<Long> roleIds) {
         if (CollectionUtils.isNotEmpty(roleIds)) {
             List<AdminToRoleDO> list = roleIds.stream()
                     .map(roleId -> new AdminToRoleDO(adminId, roleId))

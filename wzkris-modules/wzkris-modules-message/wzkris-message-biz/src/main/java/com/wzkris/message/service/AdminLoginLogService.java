@@ -1,7 +1,7 @@
 package com.wzkris.message.service;
 
 import com.wzkris.message.domain.AdminLoginLogDO;
-import com.wzkris.message.domain.req.userlog.AdminLoginLogQueryReq;
+import com.wzkris.message.domain.req.adminlog.AdminLoginLogQueryReq;
 
 import java.util.List;
 

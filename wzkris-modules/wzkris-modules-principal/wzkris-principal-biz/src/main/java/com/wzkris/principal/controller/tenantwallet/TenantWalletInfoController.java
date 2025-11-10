@@ -7,8 +7,8 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckStaffPerms;
-import com.wzkris.common.security.utils.StaffUtil;
+import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.principal.domain.TenantInfoDO;
 import com.wzkris.principal.domain.TenantWalletRecordDO;
 import com.wzkris.principal.domain.req.tenantwallet.TenantWalletRecordQueryReq;
@@ -36,7 +36,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/tenant-wallet")
-@CheckStaffPerms("prin-mod:tenant-wallet-info")
+@CheckTenantPerms("prin-mod:tenant-wallet-info")
 @RequiredArgsConstructor
 public class TenantWalletInfoController extends BaseController {
 
@@ -51,7 +51,7 @@ public class TenantWalletInfoController extends BaseController {
     @Operation(summary = "余额信息")
     @GetMapping
     public Result<TenantWalletInfoVO> walletInfo() {
-        return ok(tenantWalletInfoMapper.selectById2VO(StaffUtil.getTenantId(), TenantWalletInfoVO.class));
+        return ok(tenantWalletInfoMapper.selectById2VO(TenantUtil.getTenantId(), TenantWalletInfoVO.class));
     }
 
     @Operation(summary = "钱包记录")
@@ -80,9 +80,9 @@ public class TenantWalletInfoController extends BaseController {
     @Operation(summary = "提现")
     @OperateLog(title = "商户信息", subTitle = "提现", operateType = OperateType.OTHER)
     @PostMapping("/withdrawal")
-    @CheckStaffPerms("prin-mod:tenant-wallet-info:withdrawal")
+    @CheckTenantPerms("prin-mod:tenant-wallet-info:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
-        TenantInfoDO sysTenant = tenantInfoMapper.selectById(StaffUtil.getTenantId());
+        TenantInfoDO sysTenant = tenantInfoMapper.selectById(TenantUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
             return err40000("密码错误");
         }

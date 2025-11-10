@@ -8,7 +8,7 @@ import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.principal.domain.AdminInfoDO;
 import com.wzkris.principal.domain.req.admin.AdminMngQueryReq;
 import com.wzkris.principal.domain.vo.SelectVO;
-import com.wzkris.principal.domain.vo.admin.AdminManageVO;
+import com.wzkris.principal.domain.vo.admin.AdminMngVO;
 import com.wzkris.principal.mapper.AdminToRoleMapper;
 import com.wzkris.principal.mapper.datascope.AdminInfoDscMapper;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class AdminInfoDscManager {
         }
     }
 
-    public List<AdminManageVO> listVO(Wrapper<AdminInfoDO> queryWrapper) {
+    public List<AdminMngVO> listVO(Wrapper<AdminInfoDO> queryWrapper) {
         DataScopeUtil.putParameter("d.dept_id", AdminUtil.get().getDeptScopes());
 
         try {

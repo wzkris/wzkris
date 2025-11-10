@@ -7,15 +7,15 @@ import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginStaff;
+import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.message.feign.adminlog.AdminLogFeign;
-import com.wzkris.message.feign.stafflog.StaffLogFeign;
-import com.wzkris.message.feign.stafflog.req.LoginLogReq;
+import com.wzkris.message.feign.tenantlog.TenantLogFeign;
+import com.wzkris.message.feign.tenantlog.req.LoginLogReq;
 import com.wzkris.principal.feign.admin.AdminInfoFeign;
 import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.customer.CustomerInfoFeign;
-import com.wzkris.principal.feign.staff.StaffInfoFeign;
+import com.wzkris.principal.feign.member.MemberInfoFeign;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.basjes.parse.useragent.UserAgent;
@@ -41,11 +41,11 @@ public class LoginEventListener {
 
     private final AdminLogFeign adminLogFeign;
 
-    private final StaffLogFeign staffLogFeign;
+    private final TenantLogFeign tenantLogFeign;
 
     private final AdminInfoFeign adminInfoFeign;
 
-    private final StaffInfoFeign staffInfoFeign;
+    private final MemberInfoFeign memberInfoFeign;
 
     private final CustomerInfoFeign customerInfoFeign;
 
@@ -57,8 +57,8 @@ public class LoginEventListener {
 
         if (Objects.equals(principal.getType(), AuthType.ADMIN)) {
             this.handleLoginAdmin(event, (LoginAdmin) principal);
-        } else if (Objects.equals(principal.getType(), AuthType.STAFF)) {
-            this.handleLoginStaff(event, (LoginStaff) principal);
+        } else if (Objects.equals(principal.getType(), AuthType.TENANT)) {
+            this.handleLoginTenant(event, (LoginTenant) principal);
         } else if (Objects.equals(principal.getType(), AuthType.CUSTOMER)) {
             this.handleLoginCustomer(event, (LoginCustomer) principal);
         }
@@ -106,7 +106,7 @@ public class LoginEventListener {
         adminLogFeign.saveLoginlog(loginLogReq);
     }
 
-    private void handleLoginStaff(LoginEvent event, LoginStaff staff) {
+    private void handleLoginTenant(LoginEvent event, LoginTenant tenant) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
@@ -126,18 +126,18 @@ public class LoginEventListener {
             onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
             onlineSession.setLoginTime(new Date());
 
-            tokenService.putSession(staff.getType().getValue(), staff.getId(), event.getRefreshToken(), onlineSession);
+            tokenService.putSession(tenant.getType().getValue(), tenant.getId(), event.getRefreshToken(), onlineSession);
 
-            LoginInfoReq loginInfoReq = new LoginInfoReq(staff.getId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(tenant.getId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
-            staffInfoFeign.updateLoginInfo(loginInfoReq);
+            memberInfoFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
         final LoginLogReq loginLogReq = new LoginLogReq();
-        loginLogReq.setStaffId(staff.getId());
-        loginLogReq.setUsername(staff.getUsername());
-        loginLogReq.setTenantId(staff.getTenantId());
+        loginLogReq.setMemberId(tenant.getId());
+        loginLogReq.setUsername(tenant.getUsername());
+        loginLogReq.setTenantId(tenant.getTenantId());
         loginLogReq.setLoginTime(new Date());
         loginLogReq.setLoginIp(ipAddr);
         loginLogReq.setLoginType(loginType);
@@ -146,7 +146,7 @@ public class LoginEventListener {
         loginLogReq.setLoginLocation(loginLocation);
         loginLogReq.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
         loginLogReq.setBrowser(browser);
-        staffLogFeign.saveLoginlog(loginLogReq);
+        tenantLogFeign.saveLoginlog(loginLogReq);
     }
 
     private void handleLoginCustomer(LoginEvent event, LoginCustomer customer) {

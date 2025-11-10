@@ -9,20 +9,20 @@ import java.util.List;
 public interface PostInfoService {
 
     /**
-     * 根据员工ID查询关联职位(正常状态)
+     * 根据租户成员ID查询关联职位(正常状态)
      *
-     * @param staffId 员工ID
+     * @param memberId 成员ID
      * @return 职位列表
      */
-    List<PostInfoDO> listByStaffId(Long staffId);
+    List<PostInfoDO> listByMemberId(Long memberId);
 
     /**
-     * 根据员工ID查询关联职位ID(正常状态)
+     * 根据租户成员ID查询关联职位ID(正常状态)
      *
-     * @param staffId 员工ID
+     * @param memberId 成员ID
      * @return 职位列表
      */
-    List<Long> listIdByStaffId(Long staffId);
+    List<Long> listIdByMemberId(Long memberId);
 
     /**
      * 获取职位选择列表(正常状态)
@@ -55,6 +55,6 @@ public interface PostInfoService {
 
     boolean removeByIds(List<Long> postIds);
 
-    void existStaff(List<Long> postIds);
+    void existMember(List<Long> postIds);
 
 }

@@ -4,8 +4,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.annotation.CheckStaffPerms;
-import com.wzkris.common.security.utils.StaffUtil;
+import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.TenantInfoDO;
 import com.wzkris.principal.domain.req.EditPwdReq;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "租户信息")
 @Validated
 @RestController
-@CheckStaffPerms("prin-mod:tenant-info")
+@CheckTenantPerms("prin-mod:tenant-info")
 @RequestMapping("/tenant-info")
 @RequiredArgsConstructor
 public class TenantInfoController extends BaseController {
@@ -47,14 +47,14 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "获取信息")
     @GetMapping
     public Result<TenantInfoVO> tenantInfo() {
-        return ok(tenantInfoMapper.selectVOById(StaffUtil.getTenantId()));
+        return ok(tenantInfoMapper.selectVOById(TenantUtil.getTenantId()));
     }
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CheckStaffPerms("prin-mod:tenant-info:edit")
+    @CheckTenantPerms("prin-mod:tenant-info:edit")
     public Result<TenantInfoVO> tenantInfo(@RequestBody TenantInfoReq req) {
-        TenantInfoDO sysTenant = BeanUtil.convert(req, new TenantInfoDO(StaffUtil.getTenantId()));
+        TenantInfoDO sysTenant = BeanUtil.convert(req, new TenantInfoDO(TenantUtil.getTenantId()));
         return toRes(tenantInfoMapper.updateById(sysTenant));
     }
 
@@ -70,9 +70,9 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit-operpwd")
-    @PreAuthorize("@su.isAdmin()") // 只允许租户的超级管理员修改
+    @PreAuthorize("@tu.isAdmin()") // 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
-        Long tenantId = StaffUtil.getTenantId();
+        Long tenantId = TenantUtil.getTenantId();
 
         String operPwd = tenantInfoMapper.selectOperPwdById(tenantId);
 

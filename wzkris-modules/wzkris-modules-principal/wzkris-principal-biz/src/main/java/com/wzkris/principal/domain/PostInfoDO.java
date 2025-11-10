@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 员工职位表 t_post_info
+ * 租户职位表 t_post_info
  *
  * @author wzkris
  */

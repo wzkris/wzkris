@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.filter;
 
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.oauth2.request.RepeatableReadRequestWrapper;
 import jakarta.servlet.FilterChain;
@@ -27,9 +27,9 @@ public class CommonRequestAndResponseFilter extends OncePerRequestFilter {
 
         try {
             // 解析TraceID
-            final String traceId = requestWrapper.getHeader(HeaderConstants.X_TRACING_ID);
+            final String traceId = requestWrapper.getHeader(CustomHeaderConstants.X_TRACING_ID);
             TraceIdUtil.set(traceId);
-            response.setHeader(HeaderConstants.X_TRACING_ID, traceId);
+            response.setHeader(CustomHeaderConstants.X_TRACING_ID, traceId);
 
             filterChain.doFilter(requestWrapper, response);
         } finally {

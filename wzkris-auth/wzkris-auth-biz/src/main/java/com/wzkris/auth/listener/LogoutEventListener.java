@@ -21,7 +21,7 @@ public class LogoutEventListener {
 
         if (StringUtil.equals(event.getAuthType(), AuthType.ADMIN.getValue())) {
 
-        } else if (StringUtil.equals(event.getAuthType(), AuthType.STAFF.getValue())) {
+        } else if (StringUtil.equals(event.getAuthType(), AuthType.TENANT.getValue())) {
 
         } else if (StringUtil.equals(event.getAuthType(), AuthType.CUSTOMER.getValue())) {
 

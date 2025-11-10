@@ -2,8 +2,8 @@ package com.wzkris.principal.controller.menu;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.utils.StaffUtil;
 import com.wzkris.common.security.utils.AdminUtil;
+import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.principal.domain.vo.RouterVO;
 import com.wzkris.principal.service.MenuInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +38,7 @@ public class MenuRouterController extends BaseController {
     @Operation(summary = "租户路由")
     @GetMapping("/tenant-routes")
     public Result<List<RouterVO>> tenantRoute() {
-        List<RouterVO> routerVOS = menuInfoService.listTenantRoutes(StaffUtil.getId());
+        List<RouterVO> routerVOS = menuInfoService.listTenantRoutes(TenantUtil.getId());
         return ok(routerVOS);
     }
 

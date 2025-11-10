@@ -2,7 +2,7 @@ package com.wzkris.principal.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.principal.domain.DeptInfoDO;
-import com.wzkris.principal.domain.req.dept.DeptManageQueryReq;
+import com.wzkris.principal.domain.req.dept.DeptMngQueryReq;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -24,7 +24,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param queryReq 查询条件
      * @return 部门列表
      */
-    List<DeptInfoDO> listSubDept(DeptManageQueryReq queryReq);
+    List<DeptInfoDO> listSubDept(DeptMngQueryReq queryReq);
 
     /**
      * 根据部门ID查询名称

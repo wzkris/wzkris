@@ -24,9 +24,9 @@ public interface TenantInfoService {
     /**
      * 添加租户, 会创建租户管理员账号
      *
-     * @param tenant    参数
+     * @param tenant   参数
      * @param username 登录账户
-     * @param password  登录密码
+     * @param password 登录密码
      */
     boolean saveTenant(TenantInfoDO tenant, String username, String password);
 
@@ -56,12 +56,12 @@ public interface TenantInfoService {
     /**
      * 校验是否租户超管
      *
-     * @param staffIds 用户ID
+     * @param memberIds 用户ID
      */
-    void checkAdministrator(List<Long> staffIds);
+    void checkAdministrator(List<Long> memberIds);
 
-    default void checkAdministrator(Long staffId) {
-        this.checkAdministrator(Collections.singletonList(staffId));
+    default void checkAdministrator(Long memberId) {
+        this.checkAdministrator(Collections.singletonList(memberId));
     }
 
 }

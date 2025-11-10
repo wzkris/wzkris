@@ -2,7 +2,7 @@ package com.wzkris.auth.security.filter;
 
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -36,7 +36,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        String adminToken = request.getHeader(HeaderConstants.X_ADMIN_TOKEN);
+        String adminToken = request.getHeader(CustomHeaderConstants.X_ADMIN_TOKEN);
         if (StringUtil.isNotBlank(adminToken)) {
             Serializable id = tokenService.logoutByAccessToken(AuthType.ADMIN.getValue(), adminToken);
             if (id != null) {
@@ -44,15 +44,15 @@ public class LogoutHandlerImpl implements LogoutHandler {
             }
         }
 
-        String staffToken = request.getHeader(HeaderConstants.X_STAFF_TOKEN);
-        if (StringUtil.isNotBlank(staffToken)) {
-            Serializable id = tokenService.logoutByAccessToken(AuthType.STAFF.getValue(), staffToken);
+        String tenantToken = request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN);
+        if (StringUtil.isNotBlank(tenantToken)) {
+            Serializable id = tokenService.logoutByAccessToken(AuthType.TENANT.getValue(), tenantToken);
             if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.STAFF.getValue()));
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.TENANT.getValue()));
             }
         }
 
-        String customerToken = request.getHeader(HeaderConstants.X_CUSTOMER_TOKEN);
+        String customerToken = request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN);
         if (StringUtil.isNotBlank(customerToken)) {
             Serializable id = tokenService.logoutByAccessToken(AuthType.CUSTOMER.getValue(), customerToken);
             if (id != null) {

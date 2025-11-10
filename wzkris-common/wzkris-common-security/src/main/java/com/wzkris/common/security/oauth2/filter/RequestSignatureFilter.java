@@ -3,7 +3,7 @@ package com.wzkris.common.security.oauth2.filter;
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.enums.BizSignCode;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -35,7 +35,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         RepeatableReadRequestWrapper requestWrapper = (RepeatableReadRequestWrapper) request;
 
-        final String requestFrom = requestWrapper.getHeader(HeaderConstants.X_REQUEST_FROM);
+        final String requestFrom = requestWrapper.getHeader(CustomHeaderConstants.X_REQUEST_FROM);
         final SignkeyProperties.Sign sign = signProp.getKeys().get(requestFrom);
         if (sign == null) {
             sendErrorResponse(response, Result.init(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
@@ -43,8 +43,8 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
         }
 
         // 1. 获取请求头中的签名和时间戳
-        final String signature = requestWrapper.getHeader(HeaderConstants.X_REQUEST_SIGN);
-        final String requestTime = requestWrapper.getHeader(HeaderConstants.X_REQUEST_TIME);
+        final String signature = requestWrapper.getHeader(CustomHeaderConstants.X_REQUEST_SIGN);
+        final String requestTime = requestWrapper.getHeader(CustomHeaderConstants.X_REQUEST_TIME);
 
         // 2. 检查必要的请求头是否存在
         if (StringUtil.isBlank(signature) || StringUtil.isBlank(requestTime)) {

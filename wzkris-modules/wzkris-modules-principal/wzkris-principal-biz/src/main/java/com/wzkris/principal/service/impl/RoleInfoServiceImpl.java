@@ -147,7 +147,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public boolean grantUsers(Long roleId, List<Long> adminIds) {
+    public boolean grantAdmins(Long roleId, List<Long> adminIds) {
         if (CollectionUtils.isNotEmpty(adminIds)) {
             // 新增用户与角色管理
             List<AdminToRoleDO> list = adminIds.stream()
@@ -159,7 +159,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public boolean ungrantUsers(Long roleId, List<Long> adminIds) {
+    public boolean ungrantAdmins(Long roleId, List<Long> adminIds) {
         if (CollectionUtils.isNotEmpty(adminIds)) {
             return adminToRoleMapper.deleteBatch(roleId, adminIds) > 0;
         }
@@ -229,7 +229,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public void existUser(List<Long> roleIds) {
+    public void existAdmin(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
         if (adminToRoleMapper.existByRoleIds(roleIds)) {

@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 操作日志记录表 sys_oper_log
+ * 操作日志
  *
  * @author wzkris
  */

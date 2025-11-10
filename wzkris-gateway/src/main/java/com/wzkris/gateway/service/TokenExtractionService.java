@@ -4,7 +4,7 @@ import com.wzkris.auth.feign.token.req.TokenReq;
 import com.wzkris.auth.feign.token.resp.TokenResponse;
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
-import com.wzkris.common.core.constant.HeaderConstants;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.enums.BizBaseCode;
@@ -12,7 +12,7 @@ import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginStaff;
+import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.exception.RpcException;
@@ -44,7 +44,7 @@ public class TokenExtractionService {
             new ParameterizedTypeReference<>() {
             };
 
-    private static final ParameterizedTypeReference<TokenResponse<LoginStaff>> staffReference =
+    private static final ParameterizedTypeReference<TokenResponse<LoginTenant>> tenantReference =
             new ParameterizedTypeReference<>() {
             };
 
@@ -75,9 +75,9 @@ public class TokenExtractionService {
             return (Mono<T>) validatePrincipal(AuthType.ADMIN.getValue(), adminToken, userReference);
         }
 
-        String staffToken = getStaffToken(request);
-        if (StringUtil.isNotBlank(staffToken)) {
-            return (Mono<T>) validatePrincipal(AuthType.STAFF.getValue(), staffToken, staffReference);
+        String tenantToken = getTenantToken(request);
+        if (StringUtil.isNotBlank(tenantToken)) {
+            return (Mono<T>) validatePrincipal(AuthType.TENANT.getValue(), tenantToken, tenantReference);
         }
 
         String customerToken = getCustomerToken(request);
@@ -146,11 +146,11 @@ public class TokenExtractionService {
      */
     private boolean hasAnyToken(ServerHttpRequest request) {
         return Stream.of(
-                        request.getHeaders().getFirst(HeaderConstants.X_ADMIN_TOKEN),
-                        request.getHeaders().getFirst(HeaderConstants.X_STAFF_TOKEN),
-                        request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN),
+                        request.getHeaders().getFirst(CustomHeaderConstants.X_ADMIN_TOKEN),
+                        request.getHeaders().getFirst(CustomHeaderConstants.X_TENANT_TOKEN),
+                        request.getHeaders().getFirst(CustomHeaderConstants.X_CUSTOMER_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_ADMIN_TOKEN),
-                        request.getQueryParams().getFirst(QueryParamConstants.X_STAFF_TOKEN),
+                        request.getQueryParams().getFirst(QueryParamConstants.X_TENANT_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN)
                 )
                 .anyMatch(StringUtil::isNotBlank);
@@ -160,7 +160,7 @@ public class TokenExtractionService {
      * 获取管理员Token（优先Header，其次Query参数）
      */
     private String getAdminToken(ServerHttpRequest request) {
-        String token = request.getHeaders().getFirst(HeaderConstants.X_ADMIN_TOKEN);
+        String token = request.getHeaders().getFirst(CustomHeaderConstants.X_ADMIN_TOKEN);
         if (StringUtil.isNotBlank(token)) {
             return token;
         }
@@ -168,21 +168,21 @@ public class TokenExtractionService {
     }
 
     /**
-     * 获取员工Token（优先Header，其次Query参数）
+     * 获取租户Token（优先Header，其次Query参数）
      */
-    private String getStaffToken(ServerHttpRequest request) {
-        String token = request.getHeaders().getFirst(HeaderConstants.X_STAFF_TOKEN);
+    private String getTenantToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(CustomHeaderConstants.X_TENANT_TOKEN);
         if (StringUtil.isNotBlank(token)) {
             return token;
         }
-        return request.getQueryParams().getFirst(QueryParamConstants.X_STAFF_TOKEN);
+        return request.getQueryParams().getFirst(QueryParamConstants.X_TENANT_TOKEN);
     }
 
     /**
      * 获取客户Token（优先Header，其次Query参数）
      */
     private String getCustomerToken(ServerHttpRequest request) {
-        String token = request.getHeaders().getFirst(HeaderConstants.X_CUSTOMER_TOKEN);
+        String token = request.getHeaders().getFirst(CustomHeaderConstants.X_CUSTOMER_TOKEN);
         if (StringUtil.isNotBlank(token)) {
             return token;
         }

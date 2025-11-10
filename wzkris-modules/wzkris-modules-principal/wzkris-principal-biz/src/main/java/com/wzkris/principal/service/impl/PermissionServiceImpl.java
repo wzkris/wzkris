@@ -8,7 +8,7 @@ import com.wzkris.principal.domain.DeptInfoDO;
 import com.wzkris.principal.domain.PostInfoDO;
 import com.wzkris.principal.domain.RoleInfoDO;
 import com.wzkris.principal.feign.admin.resp.AdminPermissionResp;
-import com.wzkris.principal.feign.staff.resp.StaffPermissionResp;
+import com.wzkris.principal.feign.member.resp.MemberPermissionResp;
 import com.wzkris.principal.manager.DeptInfoDscManager;
 import com.wzkris.principal.mapper.DeptInfoMapper;
 import com.wzkris.principal.mapper.TenantInfoMapper;
@@ -87,24 +87,24 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public StaffPermissionResp getStaffPermission(Long staffId, Long tenantId) {
+    public MemberPermissionResp getTenantPermission(Long memberId, Long tenantId) {
         List<PostInfoDO> posts;
         List<String> grantedAuthority;
         boolean administrator = false;
         // 租户最高管理员特殊处理
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
+        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
         if (tenantPackageId != null) {
             // 租户最高管理员查出所有租户角色
             administrator = true;
             grantedAuthority = menuInfoService.listPermsByTenantPackageId(tenantPackageId);
         } else {
             // 否则为普通用户
-            posts = postInfoService.listByStaffId(staffId);
+            posts = postInfoService.listByMemberId(memberId);
             // 菜单权限
             List<Long> postIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
             grantedAuthority = menuInfoService.listPermsByPostIds(postIds);
         }
-        return new StaffPermissionResp(administrator, grantedAuthority);
+        return new MemberPermissionResp(administrator, grantedAuthority);
     }
 
     /**

@@ -15,7 +15,7 @@ public interface AdminInfoService {
     /**
      * 新增管理员信息
      *
-     * @param admin    管理员信息
+     * @param admin   管理员信息
      * @param roleIds 关联角色
      */
     boolean saveAdmin(AdminInfoDO admin, @Nullable List<Long> roleIds);
@@ -23,7 +23,7 @@ public interface AdminInfoService {
     /**
      * 修改管理员信息
      *
-     * @param admin    管理员信息
+     * @param admin   管理员信息
      * @param roleIds 关联角色
      */
     boolean modifyAdmin(AdminInfoDO admin, @Nullable List<Long> roleIds);

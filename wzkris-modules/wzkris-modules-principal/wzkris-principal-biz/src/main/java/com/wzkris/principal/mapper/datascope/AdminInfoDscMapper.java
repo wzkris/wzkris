@@ -6,7 +6,7 @@ import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.principal.domain.AdminInfoDO;
-import com.wzkris.principal.domain.vo.admin.AdminManageVO;
+import com.wzkris.principal.domain.vo.admin.AdminMngVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -34,7 +34,7 @@ public interface AdminInfoDscMapper extends BaseMapperPlus<AdminInfoDO> {
                     		FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
                     ${ew.customSqlSegment}
             """)
-    List<AdminManageVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
+    List<AdminMngVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
 
     /**
      * 带权限查询列表

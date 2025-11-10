@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class CreateTenantEvent {
 
     @Schema(description = "接收方ID")
-    private Long toUserId;
+    private Long receiverId;
 
     private String username;
 

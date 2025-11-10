@@ -33,7 +33,7 @@ public class RefreshTokenEventListener {
 
         if (Objects.equals(principal.getType(), AuthType.ADMIN)) {
 
-        } else if (Objects.equals(principal.getType(), AuthType.STAFF)) {
+        } else if (Objects.equals(principal.getType(), AuthType.TENANT)) {
 
         } else if (Objects.equals(principal.getType(), AuthType.CUSTOMER)) {
             // empty

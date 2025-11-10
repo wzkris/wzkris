@@ -159,14 +159,14 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<SelectTreeVO> listTenantSelectTree(Long staffId) {
+    public List<SelectTreeVO> listTenantSelectTree(Long memberId) {
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
+        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
         if (tenantPackageId != null) {
             // 租户最高管理员，去查套餐绑定菜单
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
         } else {
-            menuIds = this.listMenuIdByStaffId(staffId);
+            menuIds = this.listMenuIdByMemberId(memberId);
         }
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
@@ -202,15 +202,15 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<RouterVO> listTenantRoutes(Long staffId) {
+    public List<RouterVO> listTenantRoutes(Long memberId) {
         // 去关联表中查绑定的菜单ID
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByStaffId(staffId);
+        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
         if (tenantPackageId != null) {
             // 户最高管理员，去查套餐绑定菜单租
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
         } else {
-            menuIds = this.listMenuIdByStaffId(staffId);
+            menuIds = this.listMenuIdByMemberId(memberId);
         }
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
@@ -231,8 +231,8 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<Long> listMenuIdByStaffId(Long staffId) {
-        List<Long> postIds = postInfoService.listIdByStaffId(staffId);
+    public List<Long> listMenuIdByMemberId(Long memberId) {
+        List<Long> postIds = postInfoService.listIdByMemberId(memberId);
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }

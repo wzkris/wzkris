@@ -15,7 +15,7 @@ public class QueryParamConstants {
     /**
      * 租户Token
      */
-    public static final String X_STAFF_TOKEN = "X_Staff_Token";
+    public static final String X_TENANT_TOKEN = "X_Tenant_Token";
 
     /**
      * 客户Token

@@ -7,12 +7,12 @@ import com.wzkris.common.security.oauth2.filter.RequestSignatureFilter;
 import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.security.utils.ClientUtil;
 import com.wzkris.common.security.utils.CustomerUtil;
-import com.wzkris.common.security.utils.StaffUtil;
+import com.wzkris.common.security.utils.TenantUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 @Import({ResourceServerConfig.class, RequestSignatureFilter.class,
-        AdminUtil.class, StaffUtil.class, CustomerUtil.class, ClientUtil.class,
+        AdminUtil.class, TenantUtil.class, CustomerUtil.class, ClientUtil.class,
         CheckPermsAspect.class, SecurityExceptionHandler.class})
 @AutoConfiguration
 public class SecurityAutoConfiguration {

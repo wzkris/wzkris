@@ -75,7 +75,7 @@ public interface RoleInfoService {
      * @param roleId   角色ID
      * @param adminIds 管理员ID
      */
-    boolean grantUsers(Long roleId, List<Long> adminIds);
+    boolean grantAdmins(Long roleId, List<Long> adminIds);
 
     /**
      * 角色取消分配
@@ -83,7 +83,7 @@ public interface RoleInfoService {
      * @param roleId   角色ID
      * @param adminIds 管理员ID
      */
-    boolean ungrantUsers(Long roleId, List<Long> adminIds);
+    boolean ungrantAdmins(Long roleId, List<Long> adminIds);
 
     /**
      * 批量删除角色信息
@@ -97,7 +97,7 @@ public interface RoleInfoService {
      *
      * @param roleIds 角色组
      */
-    void existUser(List<Long> roleIds);
+    void existAdmin(List<Long> roleIds);
 
     /**
      * 校验是否存在继承关系
