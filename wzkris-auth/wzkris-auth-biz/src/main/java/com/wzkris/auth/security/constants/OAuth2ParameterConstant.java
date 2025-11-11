@@ -23,13 +23,13 @@ public interface OAuth2ParameterConstant {
     String AUTH_TYPE = "auth_type";
 
     /**
-     * 微信平台的码
+     * 微信小程序code
      */
-    String WX_CODE = "wx_code";
+    String WXXCX_CODE = "wx_code";
 
     /**
-     * 渠道
+     * 微信小程序手机号code
      */
-    String CHANNEL = "channel";
+    String WXXCX_PHONE_CODE = "phone_code";
 
 }

@@ -48,7 +48,7 @@ public final class OAuth2ExceptionUtil {
         // Bearer Token异常
         if (oAuth2Error instanceof BearerTokenError bearerTokenError) {
             return Result.init(
-                    bearerTokenError.getHttpStatus().value(),
+                    BizBaseCode.AUTHENTICATION_ERROR.value(),
                     bearerTokenError.getErrorCode(),
                     bearerTokenError.getDescription());
         }

@@ -23,8 +23,8 @@ public interface OAuth2LoginTypeConstant {
     String SMS = "sms";
 
     /**
-     * 微信
+     * 微信小程序
      */
-    String WECHAT = "wechat";
+    String WE_XCX = "we_xcx";
 
 }

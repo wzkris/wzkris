@@ -19,14 +19,14 @@ import java.util.Optional;
 /**
  * @author wzkris
  * @date 2024/3/11
- * @description 短信模式核心处理
+ * @description 微信小程序核心处理
  */
 @Component
-public final class WechatAuthenticationProvider extends CommonAuthenticationProvider<WechatAuthenticationToken> {
+public final class WexcxAuthenticationProvider extends CommonAuthenticationProvider<WexcxAuthenticationToken> {
 
     private final List<UserInfoTemplate> userInfoTemplates;
 
-    public WechatAuthenticationProvider(
+    public WexcxAuthenticationProvider(
             TokenProperties tokenProperties,
             TokenService tokenService,
             JwtEncoder jwtEncoder,
@@ -36,8 +36,8 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
     }
 
     @Override
-    public WechatAuthenticationToken doAuthenticate(Authentication authentication) {
-        WechatAuthenticationToken authenticationToken = (WechatAuthenticationToken) authentication;
+    public WexcxAuthenticationToken doAuthenticate(Authentication authentication) {
+        WexcxAuthenticationToken authenticationToken = (WexcxAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
                 .filter(t -> t.checkAuthType(authenticationToken.getAuthType()))
@@ -54,19 +54,19 @@ public final class WechatAuthenticationProvider extends CommonAuthenticationProv
 
         MyPrincipal principal = templateOptional
                 .get()
-                .loadUserByWechat(authenticationToken.getIdentifierType(), authenticationToken.getWxCode());
+                .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
 
         if (principal == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        return new WechatAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getIdentifierType(), principal);
+        return new WexcxAuthenticationToken(authenticationToken.getAuthType(), principal);
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return WechatAuthenticationToken.class.isAssignableFrom(authentication);
+        return WexcxAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
 }

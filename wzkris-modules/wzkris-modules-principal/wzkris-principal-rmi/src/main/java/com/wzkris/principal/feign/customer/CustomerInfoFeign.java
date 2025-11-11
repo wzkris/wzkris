@@ -3,7 +3,7 @@ package com.wzkris.principal.feign.customer;
 import com.wzkris.common.openfeign.constants.ServiceIdConstant;
 import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.customer.fallback.CustomerInfoFeignFallback;
-import com.wzkris.principal.feign.customer.req.SocialLoginReq;
+import com.wzkris.principal.feign.customer.req.WexcxLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,10 +27,10 @@ public interface CustomerInfoFeign {
     CustomerResp getByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
-     * 根据三方唯一标识获取信息或注册
+     * 微信小程序获取信息或注册
      */
-    @PostMapping("/social-login-query")
-    CustomerResp socialLoginQuery(@RequestBody SocialLoginReq req);
+    @PostMapping("/wexcx-login")
+    CustomerResp wexcxLogin(@RequestBody WexcxLoginReq req);
 
     /**
      * 更新用户登录信息

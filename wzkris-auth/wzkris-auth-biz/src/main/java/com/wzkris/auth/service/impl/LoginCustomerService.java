@@ -2,7 +2,6 @@ package com.wzkris.auth.service.impl;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.enums.IdentifierType;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
@@ -10,15 +9,15 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthType;
 import com.wzkris.common.core.enums.BizCallCode;
-import com.wzkris.common.core.exception.service.ExternalServiceException;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.exception.CustomOAuth2Error;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.principal.feign.customer.CustomerInfoFeign;
-import com.wzkris.principal.feign.customer.req.SocialLoginReq;
+import com.wzkris.principal.feign.customer.req.WexcxLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +28,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -73,36 +73,32 @@ public class LoginCustomerService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public LoginCustomer loadUserByWechat(String identifierType, String wxCode) {
-        IdentifierType type = IdentifierType.valueOf(identifierType);
-
+    public LoginCustomer loadUserByWxXcx(String wxCode, String phoneCode) {
         String identifier;
+        String phoneNumber = null;
         try {
-            switch (type) {
-                case WX_XCX -> {
-                    identifier = wxMaService
-                            .getUserService()
-                            .getSessionInfo(wxCode)
-                            .getOpenid();
-                }
-                case WX_GZH -> {
-                    identifier = wxMpService
-                            .getOAuth2Service()
-                            .getAccessToken(wxCode)
-                            .getOpenId();
-                }
-                default -> identifier = null;
+            identifier = wxMaService
+                    .getUserService()
+                    .getSessionInfo(wxCode)
+                    .getOpenid();
+            if (StringUtil.isNotBlank(phoneCode)) {
+                phoneNumber = wxMaService.getUserService()
+                        .getPhoneNumber(phoneCode).getPhoneNumber();
             }
         } catch (WxErrorException e) {
-            throw new ExternalServiceException(BizCallCode.WX_ERROR.value(), e.getError().getErrorMsg());
+            CustomOAuth2Error error = new CustomOAuth2Error(BizCallCode.WX_ERROR.value(), e.getError().getErrorMsg());
+            throw new OAuth2AuthenticationException(error);
         }
 
-        if (StringUtil.isBlank(identifier)) {
-            log.error("三方登录'{}'查询结果为null，登录失败", identifierType);
+        if (StringUtil.isAnyBlank(identifier)) {
+            log.error("微信小程序登录api查询结果为null，登录失败");
             return null;
         }
 
-        CustomerResp customerResp = customerInfoFeign.socialLoginQuery(new SocialLoginReq(identifier, identifierType));
+        WexcxLoginReq wexcxLoginReq = new WexcxLoginReq();
+        wexcxLoginReq.setIdentifier(identifier);
+        wexcxLoginReq.setPhoneNumber(phoneNumber);
+        CustomerResp customerResp = customerInfoFeign.wexcxLogin(wexcxLoginReq);
 
         if (customerResp == null) {
             return null;
@@ -111,7 +107,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         try {
             return this.buildLoginCustomer(customerResp);
         } catch (Exception e) {
-            this.recordFailedLog(customerResp, OAuth2LoginTypeConstant.WECHAT, e.getMessage());
+            this.recordFailedLog(customerResp, OAuth2LoginTypeConstant.WE_XCX, e.getMessage());
             throw e;
         }
     }

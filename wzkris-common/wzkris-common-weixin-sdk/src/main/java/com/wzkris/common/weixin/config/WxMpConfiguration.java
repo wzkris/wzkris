@@ -9,6 +9,7 @@ import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedissonConfigImpl;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
  */
 @Slf4j
+@EnableConfigurationProperties(WxMpProperties.class)
 @ConditionalOnProperty(value = "weixin.mp.enable")
 public class WxMpConfiguration {
 

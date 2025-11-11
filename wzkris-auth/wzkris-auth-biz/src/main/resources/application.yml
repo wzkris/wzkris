@@ -7,3 +7,11 @@ spring:
   profiles:
     active: @profiles.active@
     include: feign
+
+weixin:
+  miniapp:
+    enable: true
+    use-redis: true
+    configs:
+      - appid: xxx
+        secret: xxx

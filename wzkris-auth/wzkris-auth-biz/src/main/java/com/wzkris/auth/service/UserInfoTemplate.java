@@ -17,7 +17,7 @@ public abstract class UserInfoTemplate {
     }
 
     @Nullable
-    public MyPrincipal loadUserByWechat(String identifierType, String wxCode) {
+    public MyPrincipal loadUserByWxXcx(String wxCode, String phoneCode) {
         return null;
     }
 

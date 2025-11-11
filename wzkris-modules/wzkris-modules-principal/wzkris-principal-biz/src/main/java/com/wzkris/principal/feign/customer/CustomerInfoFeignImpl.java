@@ -1,10 +1,12 @@
 package com.wzkris.principal.feign.customer;
 
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.CustomerInfoDO;
 import com.wzkris.principal.domain.CustomerSocialInfoDO;
+import com.wzkris.principal.enums.IdentifierType;
 import com.wzkris.principal.feign.admin.req.LoginInfoReq;
-import com.wzkris.principal.feign.customer.req.SocialLoginReq;
+import com.wzkris.principal.feign.customer.req.WexcxLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
 import com.wzkris.principal.mapper.CustomerInfoMapper;
 import com.wzkris.principal.mapper.CustomerSocialInfoMapper;
@@ -36,23 +38,31 @@ public class CustomerInfoFeignImpl implements CustomerInfoFeign {
     }
 
     @Override
-    public CustomerResp socialLoginQuery(SocialLoginReq req) {
-        CustomerSocialInfoDO userThirdinfo = customerSocialInfoMapper.selectByIdentifier(req.getIdentifier());
-        if (userThirdinfo == null) {
-            userThirdinfo = transactionTemplate.execute(status -> {
-                CustomerInfoDO customerInfoDO = new CustomerInfoDO();
-                customerInfoService.saveCustomer(customerInfoDO);
+    public CustomerResp wexcxLogin(WexcxLoginReq req) {
+        Long customerId;
+        CustomerSocialInfoDO thirdinfo = customerSocialInfoMapper.selectByIdentifier(req.getIdentifier());
+        if (thirdinfo == null) {
+            final CustomerInfoDO customerInfoDO = new CustomerInfoDO();
+            customerInfoDO.setPhoneNumber(req.getPhoneNumber());
+            customerInfoDO.setNickname("微信用户" + System.currentTimeMillis());
 
-                CustomerSocialInfoDO socialInfoDO = new CustomerSocialInfoDO();
-                socialInfoDO.setCustomerId(customerInfoDO.getCustomerId());
-                socialInfoDO.setIdentifier(req.getIdentifier());
-                socialInfoDO.setIdentifierType(req.getIdentifierType());
-                customerSocialInfoMapper.insert(socialInfoDO);
-                return socialInfoDO;
-            });
+            final CustomerSocialInfoDO socialInfoDO = new CustomerSocialInfoDO();
+            socialInfoDO.setIdentifier(req.getIdentifier());
+            socialInfoDO.setIdentifierType(IdentifierType.WE_XCX.getValue());
+
+            customerId = customerInfoService.registerBySocial(customerInfoDO, socialInfoDO);
+        } else {
+            // 根据标识更新手机号
+            customerId = thirdinfo.getCustomerId();
+            if (StringUtil.isNotBlank(req.getPhoneNumber())) {
+                CustomerInfoDO customerInfoDO = new CustomerInfoDO(customerId);
+                customerInfoDO.setPhoneNumber(req.getPhoneNumber());
+                customerInfoMapper.updateById(customerInfoDO);
+            }
         }
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(userThirdinfo.getCustomerId());
-        return BeanUtil.convert(customerInfoDO, CustomerResp.class);
+        CustomerInfoDO customerInfo = customerInfoMapper.selectById(customerId);
+
+        return BeanUtil.convert(customerInfo, CustomerResp.class);
     }
 
     @Override

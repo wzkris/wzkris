@@ -6,18 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * 三方登录参数
+ * 微信小程序登录参数
  */
 @Data
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SocialLoginReq {
+public class WexcxLoginReq {
 
     private String identifier;
 
-    private String identifierType;
-
-    // 其余客户字段
+    private String phoneNumber;
 
 }

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxRuntimeException;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
  */
 @Slf4j
+@EnableConfigurationProperties(WxMaProperties.class)
 @ConditionalOnProperty(value = "weixin.miniapp.enable")
 public class WxMaConfiguration {
 

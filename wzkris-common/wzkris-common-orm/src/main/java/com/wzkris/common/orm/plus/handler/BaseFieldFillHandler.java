@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +23,20 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
-                && metaObject.getOriginalObject() instanceof BaseEntity
-                && SecurityUtil.isAuthenticated()) {
-            MyPrincipal principal = SecurityUtil.getPrincipal();
-            fillInsert(principal.getId(), metaObject);
+                && metaObject.getOriginalObject() instanceof BaseEntity) {
+            Long id = getPrincipalId();
+            fillInsert(id, metaObject);
         }
+    }
+
+    private static Long getPrincipalId() {
+        Long id;
+        if (SecurityUtil.isAuthenticated()) {
+            id = SecurityUtil.getId();
+        } else {
+            id = SecurityConstants.SYSTEM_USER_ID;
+        }
+        return id;
     }
 
     private void fillInsert(Serializable userId, MetaObject metaObject) {
@@ -41,10 +50,9 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
-                && metaObject.getOriginalObject() instanceof BaseEntity
-                && SecurityUtil.isAuthenticated()) {
-            MyPrincipal principal = SecurityUtil.getPrincipal();
-            fillUpdate(principal.getId(), metaObject);
+                && metaObject.getOriginalObject() instanceof BaseEntity) {
+            Long id = getPrincipalId();
+            fillUpdate(id, metaObject);
         }
     }
 

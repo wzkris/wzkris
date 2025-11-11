@@ -1,4 +1,4 @@
-package com.wzkris.common.core.enums;
+package com.wzkris.principal.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -6,29 +6,25 @@ import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 
 /**
- * 认证类型
+ *
  */
 @AllArgsConstructor
-public enum AuthType {
+public enum IdentifierType {
 
-    ANONYMOUS("anonymous"),
+    WE_XCX("we_xcx"),
 
-    ADMIN("admin"),
+    WE_GZH("we_gzh"),
 
-    TENANT("tenant"),
-
-    CUSTOMER("customer"),
-
-    CLIENT("oauth2_client");
+    WEIBO("weibo");
 
     private final String value;
 
     @JsonCreator
     @Nullable
-    public static AuthType fromValue(String value) {
-        for (AuthType authType : values()) {
-            if (authType.value.equals(value)) {
-                return authType;
+    public static IdentifierType fromValue(String value) {
+        for (IdentifierType type : values()) {
+            if (type.value.equals(value)) {
+                return type;
             }
         }
         return null;

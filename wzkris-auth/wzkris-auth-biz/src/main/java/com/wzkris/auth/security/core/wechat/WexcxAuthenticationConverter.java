@@ -19,38 +19,27 @@ import java.util.Map;
 /**
  * @author wzkris
  * @date 2024/3/11
- * @description 微信登录模式转换器
+ * @description 微信小程序登录模式转换器
  */
 @Component
-public final class WechatAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+public final class WexcxAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
     @Override
     protected boolean support(String loginType) {
-        return OAuth2LoginTypeConstant.WECHAT.equals(loginType);
+        return OAuth2LoginTypeConstant.WE_XCX.equals(loginType);
     }
 
     @Override
     public void checkParams(MultiValueMap<String, String> parameters) {
-        // channel (REQUIRED)
-        String channel = parameters.getFirst(OAuth2ParameterConstant.CHANNEL);
-        if (!StringUtils.hasText(channel)
-                || parameters.get(OAuth2ParameterConstant.CHANNEL).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.REQUEST_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "oauth2.wxlogin.fail",
-                    OAuth2ParameterConstant.CHANNEL);
-        }
-
         // wxcode (REQUIRED)
-        String wxCode = parameters.getFirst(OAuth2ParameterConstant.WX_CODE);
+        String wxCode = parameters.getFirst(OAuth2ParameterConstant.WXXCX_CODE);
         if (!StringUtils.hasText(wxCode)
-                || parameters.get(OAuth2ParameterConstant.WX_CODE).size() != 1) {
+                || parameters.get(OAuth2ParameterConstant.WXXCX_CODE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCode.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.wxlogin.fail",
-                    OAuth2ParameterConstant.WX_CODE);
+                    OAuth2ParameterConstant.WXXCX_CODE);
         }
 
         // authType (REQUIRED)
@@ -76,9 +65,9 @@ public final class WechatAuthenticationConverter extends CommonAuthenticationCon
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
-        String channel = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.CHANNEL));
-        String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WX_CODE));
-        return new WechatAuthenticationToken(authType, channel, wxCode);
+        String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_CODE));
+        String phoneCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_PHONE_CODE));
+        return new WexcxAuthenticationToken(authType, wxCode, phoneCode);
     }
 
 }

@@ -10,36 +10,35 @@ import org.springframework.security.core.Transient;
 /**
  * @author wzkris
  * @date 2024/3/11
- * @description 微信验证token
+ * @description 微信小程序验证token
  */
 @Getter
 @Transient
-public final class WechatAuthenticationToken extends CommonAuthenticationToken {
+public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
 
     private final AuthType authType;
 
-    private final String identifierType;
-
     private final String wxCode;
 
-    public WechatAuthenticationToken(
+    private final String phoneCode;
+
+    public WexcxAuthenticationToken(
             AuthType authType,
-            String identifierType,
-            String wxCode) {
+            String wxCode,
+            String phoneCode) {
         super(null);
         this.authType = authType;
-        this.identifierType = identifierType;
         this.wxCode = wxCode;
+        this.phoneCode = phoneCode;
     }
 
-    public WechatAuthenticationToken(
+    public WexcxAuthenticationToken(
             AuthType authType,
-            String identifierType,
             MyPrincipal principal) {
         super(null, principal);
         this.authType = authType;
-        this.identifierType = identifierType;
         this.wxCode = null;
+        this.phoneCode = null;
     }
 
     @Override
@@ -49,7 +48,7 @@ public final class WechatAuthenticationToken extends CommonAuthenticationToken {
 
     @Override
     public String getLoginType() {
-        return OAuth2LoginTypeConstant.WECHAT;
+        return OAuth2LoginTypeConstant.WE_XCX;
     }
 
 }

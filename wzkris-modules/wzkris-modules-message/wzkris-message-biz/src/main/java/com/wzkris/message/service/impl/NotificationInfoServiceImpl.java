@@ -39,7 +39,7 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.DEFAULT_USER_ID);
+                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(new Date());
             notificationInfoMapper.insert(notificationInfoDO);
             List<NotificationToAdminDO> list = adminIds.stream()
@@ -58,7 +58,7 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.DEFAULT_USER_ID);
+                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(new Date());
             notificationInfoMapper.insert(notificationInfoDO);
             List<NotificationToTenantDO> list = memberIds.stream()
