@@ -18,7 +18,7 @@ import static com.wzkris.common.core.model.Result.ok;
 @Controller
 @RestController
 @RequiredArgsConstructor
-public class RefreshController {
+public class OAuth2ClientCacheController {
 
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 

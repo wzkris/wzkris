@@ -1,7 +1,6 @@
 package com.wzkris.principal.domain.req.menu;
 
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.principal.constant.MenuConstants;
 import com.wzkris.principal.domain.MenuInfoDO;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -9,6 +8,7 @@ import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -50,18 +50,22 @@ public class MenuManageReq {
     private Boolean visible;
 
     @NotBlank(message = "{invalidParameter.menuType.invalid}")
-    @EnumsCheck(
-            values = {
-                    MenuConstants.TYPE_DIR,
-                    MenuConstants.TYPE_MENU,
-                    MenuConstants.TYPE_BUTTON,
-                    MenuConstants.TYPE_INNERLINK,
+    @Pattern(
+            regexp = "[" +
+                    MenuConstants.TYPE_DIR +
+                    MenuConstants.TYPE_MENU +
+                    MenuConstants.TYPE_BUTTON +
+                    MenuConstants.TYPE_INNERLINK +
                     MenuConstants.TYPE_OUTLINK
-            }, message = "{invalidParameter.menuType.invalid}")
+                    + "]", message = "{invalidParameter.menuType.invalid}")
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
 
-    @EnumsCheck(values = {CommonConstants.STATUS_ENABLE, CommonConstants.STATUS_DISABLE},
+    @Pattern(
+            regexp = "[" +
+                    CommonConstants.STATUS_ENABLE +
+                    CommonConstants.STATUS_DISABLE
+                    + "]",
             message = "{invalidParameter.status.invalid}")
     @Schema(description = "菜单状态（0正常 1停用）") // 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
     private String status;
@@ -73,7 +77,10 @@ public class MenuManageReq {
     private String icon;
 
     @NotBlank(message = "{invalidParameter.menuScope.invalid}")
-    @EnumsCheck(values = {MenuConstants.SCOPE_SYSTEM, MenuConstants.SCOPE_TENANT},
+    @Pattern(
+            regexp = "[" +
+                    MenuConstants.SCOPE_SYSTEM + MenuConstants.SCOPE_TENANT
+                    + "]",
             message = "{invalidParameter.menuScope.invalid}")
     @Schema(description = "菜单域")
     private String scope;

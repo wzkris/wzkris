@@ -1,7 +1,6 @@
 package com.wzkris.principal.domain.req.admin;
 
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.common.validator.group.ValidationGroups;
@@ -47,12 +46,19 @@ public class AdminMngReq {
     @Schema(description = "手机号码")
     private String phoneNumber;
 
-    @EnumsCheck(values = {CommonConstants.STATUS_DISABLE, CommonConstants.STATUS_ENABLE},
+    @Pattern(
+            regexp = "[" +
+                    CommonConstants.STATUS_ENABLE +
+                    CommonConstants.STATUS_DISABLE
+                    + "]",
             message = "{invalidParameter.status.invalid}")
     @Schema(description = "用户状态")
     private String status;
 
-    @EnumsCheck(values = {UserConstants.GENDER_MALE, UserConstants.GENDER_FEMALE, UserConstants.GENDER_UNKNOWN},
+    @Pattern(
+            regexp = "[" +
+                    UserConstants.GENDER_MALE + UserConstants.GENDER_FEMALE + UserConstants.GENDER_UNKNOWN +
+                    "]",
             message = "{invalidParameter.gender.invalid}")
     @Schema(description = "用户性别")
     private String gender;

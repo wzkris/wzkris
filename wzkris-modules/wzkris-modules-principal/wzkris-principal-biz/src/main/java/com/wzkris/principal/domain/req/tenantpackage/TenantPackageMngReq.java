@@ -1,12 +1,12 @@
 package com.wzkris.principal.domain.req.tenantpackage;
 
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.principal.domain.TenantPackageInfoDO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -24,7 +24,12 @@ public class TenantPackageMngReq {
     @Schema(description = "套餐名称")
     private String packageName;
 
-    @EnumsCheck(values = {CommonConstants.STATUS_ENABLE, CommonConstants.STATUS_DISABLE})
+    @Pattern(
+            regexp = "[" +
+                    CommonConstants.STATUS_ENABLE +
+                    CommonConstants.STATUS_DISABLE
+                    + "]",
+            message = "{invalidParameter.status.invalid}")
     @Schema(description = "状态（0正常 1停用）")
     private String status;
 

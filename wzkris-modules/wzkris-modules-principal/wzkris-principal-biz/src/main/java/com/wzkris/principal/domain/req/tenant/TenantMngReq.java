@@ -1,6 +1,5 @@
 package com.wzkris.principal.domain.req.tenant;
 
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.principal.domain.TenantInfoDO;
@@ -27,8 +26,7 @@ public class TenantMngReq {
 
     private Long tenantId;
 
-    @EnumsCheck(message = "{invalidParameter.tenantType.invalid}",
-            values = {"0", "1"})
+    @Pattern(regexp = "[01]", message = "{invalidParameter.tenantType.invalid}")
     @Schema(description = "租户类型 0-个人 1-企业")
     private String tenantType;
 

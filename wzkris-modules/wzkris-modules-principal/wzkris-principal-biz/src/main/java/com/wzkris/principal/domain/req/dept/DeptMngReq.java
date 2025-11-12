@@ -1,16 +1,12 @@
 package com.wzkris.principal.domain.req.dept;
 
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.principal.domain.DeptInfoDO;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -36,7 +32,11 @@ public class DeptMngReq {
     @Schema(description = "部门名称")
     private String deptName;
 
-    @EnumsCheck(values = {CommonConstants.STATUS_DISABLE, CommonConstants.STATUS_ENABLE},
+    @Pattern(
+            regexp = "[" +
+                    CommonConstants.STATUS_ENABLE +
+                    CommonConstants.STATUS_DISABLE
+                    + "]",
             message = "{invalidParameter.status.invalid}")
     @Schema(description = "0代表存在 1代表停用")
     private String status;
