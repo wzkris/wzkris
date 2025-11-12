@@ -2,7 +2,6 @@ package com.wzkris.common.web.handler;
 
 import com.wzkris.common.core.enums.BizBaseCode;
 import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.exception.mode.DemoModeException;
 import com.wzkris.common.core.model.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -15,11 +14,14 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.stream.Collectors;
 
 /**
  * 统一将 Spring MVC 常见异常转换为 Result 返回体
@@ -38,8 +40,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("请求地址'{} {}',发生异常", request.getMethod(), request.getRequestURI(), ex);
 
         if (ex instanceof BindException exception) {
-            String message = exception.getBindingResult().getFieldError() != null ?
-                    exception.getFieldError().getDefaultMessage() : null;
+            String message = exception.getFieldError().getDefaultMessage();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Result.requestFail(message));
         } else if (ex instanceof IllegalArgumentException exception) {
@@ -50,13 +51,24 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             String message = violation.getMessage();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Result.requestFail(message));
-        } else if (ex instanceof DemoModeException exception) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Result.accessDenied(exception.getMessage()));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Result.requestFail(ex.getMessage()));
         }
+    }
+
+    // 处理父类中的 MethodArgumentNotValidException 异常
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        String errorMessage = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining("; "));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Result.requestFail(errorMessage));
     }
 
     @ExceptionHandler(exception = {
