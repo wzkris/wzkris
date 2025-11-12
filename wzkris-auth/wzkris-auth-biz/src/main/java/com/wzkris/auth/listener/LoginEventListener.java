@@ -150,7 +150,26 @@ public class LoginEventListener {
     }
 
     private void handleLoginCustomer(LoginEvent event, LoginCustomer customer) {
+        final String loginType = event.getLoginType();
+        final String errorMsg = event.getErrorMsg();
+        final String ipAddr = event.getIpAddr();
+        final UserAgent userAgent = event.getUserAgent();
+
+        // 获取客户端浏览器
+        String browser = userAgent.getValue(UserAgent.AGENT_NAME);
+        // 获取登录地址
+        String loginLocation = IpUtil.parseIp(ipAddr);
         if (event.getSuccess()) { // 更新用户登录信息
+            OnlineSession onlineSession = new OnlineSession();
+            onlineSession.setDeviceType(userAgent.getValue(UserAgent.DEVICE_NAME));
+            onlineSession.setLoginIp(ipAddr);
+            onlineSession.setLoginLocation(loginLocation);
+            onlineSession.setBrowser(browser);
+            onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
+            onlineSession.setLoginTime(new Date());
+
+            tokenService.putSession(customer.getType().getValue(), customer.getId(), event.getRefreshToken(), onlineSession);
+
             LoginInfoReq loginInfoReq = new LoginInfoReq(customer.getId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(new Date());
