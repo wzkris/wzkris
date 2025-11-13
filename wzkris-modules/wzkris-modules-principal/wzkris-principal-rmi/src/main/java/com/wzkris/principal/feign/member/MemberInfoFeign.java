@@ -34,6 +34,12 @@ public interface MemberInfoFeign {
     MemberInfoResp getByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
+     * 根据微信小程序code查询用户
+     */
+    @PostMapping("/query-by-wexcx-identifier")
+    MemberInfoResp getByWexcxIdentifier(@RequestBody String xcxIdentifier);
+
+    /**
      * 查询管理员权限
      */
     @PostMapping("/query-permission")

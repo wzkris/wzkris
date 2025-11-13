@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 职位和菜单关联表 t_post_to_menu
+ * 职位和菜单关联表 post_to_menu
  *
  * @author wzkris
  */

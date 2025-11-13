@@ -21,7 +21,7 @@ import java.util.Date;
 @Data
 @AutoMappers({@AutoMapper(target = MemberInfoResp.class)})
 @NoArgsConstructor
-@TableName(schema = "biz", value = "t_member_info")
+@TableName(schema = "biz", value = "member_info")
 public class MemberInfoDO extends BaseEntity {
 
     @TableId

@@ -18,8 +18,8 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
 
     @Select("""
             SELECT s.*, STRING_AGG(p.post_name, ',') AS post_name
-                    		FROM biz.t_member_info s LEFT JOIN biz.t_member_to_post sp ON s.member_id = sp.member_id
-                    		 LEFT JOIN biz.t_post_info p ON sp.post_id = p.post_id AND p.status = '0'
+                    		FROM biz.member_info s LEFT JOIN biz.member_to_post sp ON s.member_id = sp.member_id
+                    		 LEFT JOIN biz.post_info p ON sp.post_id = p.post_id AND p.status = '0'
                     ${ew.customSqlSegment} GROUP BY s.member_id ORDER BY s.member_id DESC
             """)
     List<MemberMngVO> listVO(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
@@ -30,7 +30,7 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
      * @param username 租户成员账号
      * @return 租户成员信息
      */
-    @Select("SELECT * FROM biz.t_member_info WHERE username = #{username}")
+    @Select("SELECT * FROM biz.member_info WHERE username = #{username}")
     MemberInfoDO selectByUsername(String username);
 
     /**
@@ -39,13 +39,13 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
      * @param phoneNumber 手机号
      * @return 用户对象信息
      */
-    @Select("SELECT * FROM biz.t_member_info WHERE phone_number = #{phoneNumber}")
+    @Select("SELECT * FROM biz.member_info WHERE phone_number = #{phoneNumber}")
     MemberInfoDO selectByPhoneNumber(String phoneNumber);
 
-    @Select("SELECT password FROM biz.t_member_info WHERE member_id = #{memberId}")
+    @Select("SELECT password FROM biz.member_info WHERE member_id = #{memberId}")
     String selectPwdById(Long memberId);
 
-    @Select("SELECT phone_number FROM biz.t_member_info WHERE member_id = #{memberId}")
+    @Select("SELECT phone_number FROM biz.member_info WHERE member_id = #{memberId}")
     String selectPhoneNumberById(Long memberId);
 
 }

@@ -27,6 +27,12 @@ public class MemberInfoFeignFallback implements FallbackFactory<MemberInfoFeign>
             }
 
             @Override
+            public MemberInfoResp getByWexcxIdentifier(String xcxIdentifier) {
+                log.error("getByWexcxIdentifier => req: {}", xcxIdentifier, cause);
+                return null;
+            }
+
+            @Override
             public MemberPermissionResp getPermission(QueryMemberPermsReq memberPermsReq) {
                 log.error("getPermission => req: {}", memberPermsReq, cause);
                 return null;

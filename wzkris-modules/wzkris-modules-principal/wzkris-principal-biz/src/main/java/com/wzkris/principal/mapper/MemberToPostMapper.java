@@ -13,12 +13,12 @@ import java.util.List;
 @Repository
 public interface MemberToPostMapper {
 
-    @Select("SELECT post_id FROM biz.t_member_to_post WHERE member_id = #{memberId}")
+    @Select("SELECT post_id FROM biz.member_to_post WHERE member_id = #{memberId}")
     List<Long> listPostIdByMemberId(Long memberId);
 
     @Insert("""
             <script>
-                INSERT INTO biz.t_member_to_post(member_id, post_id) VALUES
+                INSERT INTO biz.member_to_post(member_id, post_id) VALUES
                     <foreach collection="list" item="item" index="index" separator=",">
                         (#{item.memberId}, #{item.postId})
                     </foreach>
@@ -28,7 +28,7 @@ public interface MemberToPostMapper {
 
     @Delete("""
             <script>
-                DELETE FROM biz.t_member_to_post WHERE member_id IN
+                DELETE FROM biz.member_to_post WHERE member_id IN
                     <foreach collection="list" item="memberId" open="(" separator="," close=")">
                         #{memberId}
                     </foreach>
@@ -42,7 +42,7 @@ public interface MemberToPostMapper {
 
     @Delete("""
             <script>
-                DELETE FROM biz.t_member_to_post WHERE post_id IN
+                DELETE FROM biz.member_to_post WHERE post_id IN
                     <foreach collection="list" item="postId" open="(" separator="," close=")">
                         #{postId}
                     </foreach>
@@ -53,7 +53,7 @@ public interface MemberToPostMapper {
     @Select("""
             <script>
                 SELECT EXISTS(
-                    SELECT post_id FROM biz.t_member_to_post WHERE post_id IN
+                    SELECT post_id FROM biz.member_to_post WHERE post_id IN
                         <foreach collection="list" item="postId" open="(" separator="," close=")">
                             #{postId}
                         </foreach>
