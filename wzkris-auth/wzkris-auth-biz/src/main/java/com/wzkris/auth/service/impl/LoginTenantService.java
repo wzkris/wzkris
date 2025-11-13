@@ -101,11 +101,11 @@ public class LoginTenantService extends UserInfoTemplate {
         MemberPermissionResp permissions = memberInfoFeign.getPermission(
                 new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
 
-        return new LoginTenant(memberResp.getMemberId(),
-                new HashSet<>(permissions.getGrantedAuthority()),
-                permissions.getAdmin(),
-                memberResp.getUsername(),
-                memberResp.getTenantId());
+        LoginTenant loginTenant = new LoginTenant(memberResp.getMemberId(), new HashSet<>(permissions.getGrantedAuthority()));
+        loginTenant.setAdmin(permissions.getAdmin());
+        loginTenant.setUsername(memberResp.getUsername());
+        loginTenant.setTenantId(memberResp.getTenantId());
+        return loginTenant;
     }
 
     /**
@@ -131,13 +131,12 @@ public class LoginTenantService extends UserInfoTemplate {
      * 记录失败日志
      */
     private void recordFailedLog(MemberInfoResp memberResp, String loginType, String errorMsg) {
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginTenant loginTenant = new LoginTenant(memberResp.getMemberId(),
-                Collections.emptySet(),
-                false,
-                memberResp.getUsername(),
-                memberResp.getTenantId());
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        LoginTenant loginTenant = new LoginTenant(memberResp.getMemberId(), Collections.emptySet());
+        loginTenant.setAdmin(false);
+        loginTenant.setUsername(memberResp.getUsername());
+        loginTenant.setTenantId(memberResp.getTenantId());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(

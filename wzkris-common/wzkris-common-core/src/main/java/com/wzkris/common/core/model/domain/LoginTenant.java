@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Set;
@@ -17,24 +18,19 @@ import java.util.Set;
  */
 @Getter
 @ToString
+@Setter
 public class LoginTenant extends MyPrincipal {
 
-    private final boolean admin;
+    private boolean admin;
 
-    private final String username;
+    private String username;
 
-    private final Long tenantId;
+    private Long tenantId;
 
     @JsonCreator
     public LoginTenant(@JsonProperty("id") Long id,
-                       @JsonProperty("permissions") Set<String> permissions,
-                       @JsonProperty("admin") boolean admin,
-                       @JsonProperty("username") String username,
-                       @JsonProperty("tenantId") Long tenantId) {
+                       @JsonProperty("permissions") Set<String> permissions) {
         super(id, AuthTypeEnum.TENANT, permissions);
-        this.admin = admin;
-        this.username = username;
-        this.tenantId = tenantId;
     }
 
     @Override

@@ -101,11 +101,12 @@ public class LoginAdminService extends UserInfoTemplate {
         AdminPermissionResp permissions = adminInfoFeign.getPermission(
                 new QueryAdminPermsReq(userResp.getAdminId(), userResp.getDeptId()));
 
-        return new LoginAdmin(userResp.getAdminId(),
-                new HashSet<>(permissions.getGrantedAuthority()),
-                permissions.getAdmin(),
-                userResp.getUsername(),
-                permissions.getDeptScopes());
+        LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(), new HashSet<>(permissions.getGrantedAuthority()));
+        loginAdmin.setAdmin(permissions.getAdmin());
+        loginAdmin.setUsername(userResp.getUsername());
+        loginAdmin.setDeptScopes(permissions.getDeptScopes());
+
+        return loginAdmin;
     }
 
     /**
@@ -122,13 +123,10 @@ public class LoginAdminService extends UserInfoTemplate {
      * 记录失败日志
      */
     private void recordFailedLog(adminInfoResp userResp, String loginType, String errorMsg) {
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(),
-                Collections.emptySet(),
-                false,
-                userResp.getUsername(),
-                null);
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(), Collections.emptySet());
+        loginAdmin.setAdmin(false);
+        loginAdmin.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(

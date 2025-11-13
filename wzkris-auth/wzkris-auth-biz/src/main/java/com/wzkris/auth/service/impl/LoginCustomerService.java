@@ -105,7 +105,9 @@ public class LoginCustomerService extends UserInfoTemplate {
         }
 
         try {
-            return this.buildLoginCustomer(customerResp);
+            LoginCustomer loginCustomer = this.buildLoginCustomer(customerResp);
+            loginCustomer.setWxopenid(identifier);
+            return loginCustomer;
         } catch (Exception e) {
             this.recordFailedLog(customerResp, OAuth2LoginTypeConstant.WE_XCX, e.getMessage());
             throw e;
@@ -124,9 +126,10 @@ public class LoginCustomerService extends UserInfoTemplate {
         // 校验用户状态
         this.checkAccount(customerResp);
 
-        return new LoginCustomer(customerResp.getCustomerId(),
-                Collections.emptySet(),
-                customerResp.getPhoneNumber());
+        LoginCustomer loginCustomer = new LoginCustomer(customerResp.getCustomerId(),
+                Collections.emptySet());
+        loginCustomer.setPhoneNumber(customerResp.getPhoneNumber());
+        return loginCustomer;
     }
 
     /**
@@ -140,15 +143,14 @@ public class LoginCustomerService extends UserInfoTemplate {
     }
 
     private void recordFailedLog(CustomerResp customerResp, String loginType, String errorMsg) {
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginCustomer customer = new LoginCustomer(customerResp.getCustomerId(),
-                Collections.emptySet(),
-                customerResp.getPhoneNumber());
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        LoginCustomer loginCustomer = new LoginCustomer(customerResp.getCustomerId(), Collections.emptySet());
+        loginCustomer.setPhoneNumber(customerResp.getPhoneNumber());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        customer,
+                        loginCustomer,
                         null,
                         loginType,
                         false,

@@ -51,7 +51,8 @@ public class TokenFeignImpl implements TokenFeign {
                 .findByClientId(oAuth2Authorization.getRegisteredClientId());
 
         LoginClient loginClient = new LoginClient(Long.valueOf(registeredClient.getId()),
-                this.buildScopes(oAuth2Authorization.getAuthorizedScopes()), registeredClient.getClientId());
+                this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
+        loginClient.setClientId(registeredClient.getClientId());
         return TokenResponse.ok(loginClient);
     }
 

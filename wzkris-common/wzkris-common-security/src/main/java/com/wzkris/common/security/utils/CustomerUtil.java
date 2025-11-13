@@ -58,4 +58,13 @@ public class CustomerUtil extends SecurityUtil {
         return get().getPhoneNumber();
     }
 
+    /**
+     * 获取当前的微信openid,未登录抛出异常
+     *
+     * @return openid
+     */
+    public static String getWxopenid() {
+        return get().getWxopenid();
+    }
+
 }

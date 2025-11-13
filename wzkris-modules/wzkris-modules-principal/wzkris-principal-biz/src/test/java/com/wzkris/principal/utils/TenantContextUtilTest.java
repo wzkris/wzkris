@@ -22,12 +22,16 @@ public class TenantContextUtilTest {
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
     static {
-        LoginAdmin user = new LoginAdmin(1L, Collections.singleton("*"), true, "admin", Collections.emptyList());
+        LoginAdmin loginAdmin = new LoginAdmin(1L, Collections.singleton("*"));
+        loginAdmin.setAdmin(true);
+        loginAdmin.setUsername("admin");
+        loginAdmin.setDeptScopes(Collections.emptyList());
+
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(
                 OAuth2AccessToken.TokenType.BEARER, "xxxxxx", Instant.MIN, Instant.MAX, Collections.emptySet());
         SecurityContextHolder.getContext()
                 .setAuthentication(
-                        new UsernamePasswordAuthenticationToken(user, ""));
+                        new UsernamePasswordAuthenticationToken(loginAdmin, ""));
     }
 
     TenantProperties tenantProperties;
