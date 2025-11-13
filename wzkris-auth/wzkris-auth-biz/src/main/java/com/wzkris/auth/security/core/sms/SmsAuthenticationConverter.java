@@ -1,12 +1,12 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -36,7 +36,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(phoneNumber)
                 || parameters.get(OAuth2ParameterConstant.PHONE_NUMBER).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.REQUEST_ERROR.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.PHONE_NUMBER);
@@ -47,7 +47,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(smsCode)
                 || parameters.get(OAuth2ParameterConstant.SMS_CODE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.REQUEST_ERROR.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.SMS_CODE);
@@ -58,7 +58,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(authType)
                 || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.REQUEST_ERROR.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.AUTH_TYPE);
@@ -68,10 +68,10 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
     @Override
     protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
         String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthType authType = AuthType.fromValue(type);
+        AuthTypeEnum authType = AuthTypeEnum.fromValue(type);
         if (authType == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);

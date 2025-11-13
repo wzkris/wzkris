@@ -1,7 +1,7 @@
 package com.wzkris.common.security.oauth2.filter;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
-import com.wzkris.common.apikey.enums.BizSignCode;
+import com.wzkris.common.apikey.enums.BizSignCodeEnum;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.Result;
@@ -38,7 +38,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
         final String requestFrom = requestWrapper.getHeader(CustomHeaderConstants.X_REQUEST_FROM);
         final SignkeyProperties.Sign sign = signProp.getKeys().get(requestFrom);
         if (sign == null) {
-            sendErrorResponse(response, Result.init(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
+            sendErrorResponse(response, Result.init(BizSignCodeEnum.SIGN_NOT_EXIST.value(), null, BizSignCodeEnum.SIGN_NOT_EXIST.desc()));
             return;
         }
 
@@ -48,7 +48,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
 
         // 2. 检查必要的请求头是否存在
         if (StringUtil.isBlank(signature) || StringUtil.isBlank(requestTime)) {
-            sendErrorResponse(response, Result.init(BizSignCode.SIGN_NOT_EXIST.value(), null, BizSignCode.SIGN_NOT_EXIST.desc()));
+            sendErrorResponse(response, Result.init(BizSignCodeEnum.SIGN_NOT_EXIST.value(), null, BizSignCodeEnum.SIGN_NOT_EXIST.desc()));
             return;
         }
 
@@ -61,7 +61,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
         );
 
         if (!verified) {
-            sendErrorResponse(response, Result.init(BizSignCode.SIGN_ERROR.value(), null, BizSignCode.SIGN_ERROR.desc()));
+            sendErrorResponse(response, Result.init(BizSignCodeEnum.SIGN_ERROR.value(), null, BizSignCodeEnum.SIGN_ERROR.desc()));
             return;
         }
 

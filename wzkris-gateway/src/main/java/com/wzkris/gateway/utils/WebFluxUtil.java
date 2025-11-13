@@ -1,6 +1,6 @@
 package com.wzkris.gateway.utils;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import jakarta.annotation.Nullable;
@@ -18,8 +18,8 @@ import reactor.core.publisher.Mono;
  */
 public class WebFluxUtil {
 
-    public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCode bizBaseCode) {
-        return writeResponse(response, Result.init(bizBaseCode.value(), null, bizBaseCode.desc()));
+    public static Mono<Void> writeResponse(ServerHttpResponse response, BizBaseCodeEnum bizBaseCodeEnum) {
+        return writeResponse(response, Result.init(bizBaseCodeEnum.value(), null, bizBaseCodeEnum.desc()));
     }
 
     public static Mono<Void> writeResponse(ServerHttpResponse response, int biz, String msg) {

@@ -1,6 +1,6 @@
 package com.wzkris.gateway.controller;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.gateway.domain.vo.ApiCallDailySeriesVO;
 import com.wzkris.gateway.domain.vo.PageViewDailySeriesVO;
@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter;
 @RestController
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
-@RequireAuth(authType = AuthType.ADMIN, permissions = {"gateway-mod:statistics:pvuv"})
+@RequireAuth(authType = AuthTypeEnum.ADMIN, permissions = {"gateway-mod:statistics:pvuv"})
 public class StatisticsController {
 
     private final StatisticsService statisticsService;

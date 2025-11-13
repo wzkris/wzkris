@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.utils;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -48,7 +48,7 @@ public final class OAuth2ExceptionUtil {
         // Bearer Token异常
         if (oAuth2Error instanceof BearerTokenError bearerTokenError) {
             return Result.init(
-                    BizBaseCode.AUTHENTICATION_ERROR.value(),
+                    BizBaseCodeEnum.AUTHENTICATION_ERROR.value(),
                     bearerTokenError.getErrorCode(),
                     bearerTokenError.getDescription());
         }
@@ -94,7 +94,7 @@ public final class OAuth2ExceptionUtil {
                 default -> Result.requestFail(errorMsg);
             };
         } else if (errorCode.equals(OAuth2ErrorCodes.TEMPORARILY_UNAVAILABLE)) {
-            return Result.init(BizBaseCode.SYSTEM_ERROR.value(), null, errorMsg);
+            return Result.init(BizBaseCodeEnum.SYSTEM_ERROR.value(), null, errorMsg);
         } else {
             return Result.unauth(errorMsg);
         }

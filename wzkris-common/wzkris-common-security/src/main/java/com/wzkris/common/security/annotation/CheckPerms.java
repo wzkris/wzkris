@@ -1,6 +1,6 @@
 package com.wzkris.common.security.annotation;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.security.annotation.enums.CheckMode;
 
 import java.lang.annotation.ElementType;
@@ -24,7 +24,7 @@ public @interface CheckPerms {
      *
      * @return /
      */
-    AuthType checkType();
+    AuthTypeEnum checkType();
 
     /**
      * 权限前缀

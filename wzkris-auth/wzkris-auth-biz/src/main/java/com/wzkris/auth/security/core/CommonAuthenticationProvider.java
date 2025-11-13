@@ -3,7 +3,7 @@ package com.wzkris.auth.security.core;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.annotation.Nullable;
@@ -96,9 +96,9 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
 
     @Nullable
     private String generateKey(MyPrincipal principal) {
-        if (StringUtil.equalsAny(principal.getType().getValue(), AuthType.ADMIN.getValue(), AuthType.TENANT.getValue())) {
+        if (StringUtil.equalsAny(principal.getType().getValue(), AuthTypeEnum.ADMIN.getValue(), AuthTypeEnum.TENANT.getValue())) {
             return tokenGenerator.generateKey();
-        } else if (principal.getType().equals(AuthType.CUSTOMER)) {
+        } else if (principal.getType().equals(AuthTypeEnum.CUSTOMER)) {
             JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
             JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
                     .build();

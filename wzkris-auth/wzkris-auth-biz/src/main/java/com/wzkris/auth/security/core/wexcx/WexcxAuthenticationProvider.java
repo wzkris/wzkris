@@ -1,6 +1,6 @@
-package com.wzkris.auth.security.core.wechat;
+package com.wzkris.auth.security.core.wexcx;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
@@ -45,7 +45,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
@@ -58,7 +58,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
 
         if (principal == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
         return new WexcxAuthenticationToken(authenticationToken.getAuthType(), principal);

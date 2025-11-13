@@ -1,6 +1,6 @@
 package com.wzkris.principal.listener;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.message.feign.notification.NotificationInfoFeign;
 import com.wzkris.message.feign.notification.req.NotificationReq;
 import com.wzkris.principal.listener.event.CreateAdminEvent;
@@ -28,7 +28,7 @@ public class NotificationEventListener {
     @EventListener
     public void createTenantEvent(CreateTenantEvent event) {
         NotificationReq req = new NotificationReq(
-                Collections.singletonList(event.getReceiverId()), AuthType.ADMIN,
+                Collections.singletonList(event.getReceiverId()), AuthTypeEnum.ADMIN,
                 "租户创建成功",
                 String.format(
                         "租户：%s创建成功，超级管理员账号：%s，临时登录密码：%s，临时操作密码：%s",
@@ -44,7 +44,7 @@ public class NotificationEventListener {
     @EventListener
     public void createAdminEvent(CreateAdminEvent event) {
         NotificationReq req = new NotificationReq(
-                Collections.singletonList(event.getReceiverId()), AuthType.ADMIN,
+                Collections.singletonList(event.getReceiverId()), AuthTypeEnum.ADMIN,
                 "管理员创建成功",
                 String.format("管理员账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
@@ -55,7 +55,7 @@ public class NotificationEventListener {
     @EventListener
     public void createMemberEvent(CreateMemberEvent event) {
         NotificationReq req = new NotificationReq(
-                Collections.singletonList(event.getReceiverId()), AuthType.TENANT,
+                Collections.singletonList(event.getReceiverId()), AuthTypeEnum.TENANT,
                 "租户账号创建成功",
                 String.format("租户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 

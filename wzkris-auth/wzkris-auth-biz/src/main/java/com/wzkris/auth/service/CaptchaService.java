@@ -6,7 +6,7 @@ import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.service.CapService;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
 import com.wzkris.common.core.utils.StringUtil;
@@ -48,7 +48,7 @@ public class CaptchaService extends CapService {
      */
     public void validateAccount(String key) {
         if (RedisUtil.exist(LOCK_PREFIX + key)) {
-            throw new CaptchaException(BizBaseCode.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
+            throw new CaptchaException(BizBaseCodeEnum.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
         }
     }
 

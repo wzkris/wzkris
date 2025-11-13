@@ -1,6 +1,6 @@
 package com.wzkris.common.core.model;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -50,27 +50,27 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> ok() {
-        return init(BizBaseCode.OK.value(), null, BizBaseCode.OK.desc());
+        return init(BizBaseCodeEnum.OK.value(), null, BizBaseCodeEnum.OK.desc());
     }
 
     public static <T> Result<T> ok(T data) {
-        return init(BizBaseCode.OK.value(), data, BizBaseCode.OK.desc());
+        return init(BizBaseCodeEnum.OK.value(), data, BizBaseCodeEnum.OK.desc());
     }
 
     public static <T> Result<T> requestFail(String message) {
-        return init(BizBaseCode.REQUEST_ERROR.value(), null, message);
+        return init(BizBaseCodeEnum.REQUEST_ERROR.value(), null, message);
     }
 
     public static <T> Result<T> unauth(String message) {
-        return init(BizBaseCode.AUTHENTICATION_ERROR.value(), null, message);
+        return init(BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), null, message);
     }
 
     public static <T> Result<T> accessDenied(String message) {
-        return init(BizBaseCode.ACCESS_DENIED.value(), null, message);
+        return init(BizBaseCodeEnum.ACCESS_DENIED.value(), null, message);
     }
 
     public static <T> Result<T> systemError(String message) {
-        return init(BizBaseCode.SYSTEM_ERROR.value(), null, message);
+        return init(BizBaseCodeEnum.SYSTEM_ERROR.value(), null, message);
     }
 
     public static <T> Result<T> init(int code, T data, String message) {
@@ -81,7 +81,7 @@ public class Result<T> implements Serializable {
      * 是否成功
      */
     public final boolean isSuccess() {
-        return this.code == BizBaseCode.OK.value();
+        return this.code == BizBaseCodeEnum.OK.value();
     }
 
 }

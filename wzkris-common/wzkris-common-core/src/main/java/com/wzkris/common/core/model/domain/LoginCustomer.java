@@ -2,7 +2,7 @@ package com.wzkris.common.core.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import lombok.ToString;
@@ -28,7 +28,7 @@ public class LoginCustomer extends MyPrincipal {
     public LoginCustomer(@JsonProperty("id") Long id,
                          @JsonProperty("permissions") Set<String> permissions,
                          @JsonProperty("phoneNumber") String phoneNumber) {
-        super(id, AuthType.CUSTOMER, permissions);
+        super(id, AuthTypeEnum.CUSTOMER, permissions);
         this.phoneNumber = phoneNumber;
     }
 

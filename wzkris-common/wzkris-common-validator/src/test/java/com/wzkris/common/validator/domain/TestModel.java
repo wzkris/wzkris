@@ -1,7 +1,7 @@
 package com.wzkris.common.validator.domain;
 
 import com.wzkris.common.core.annotation.Sensitive;
-import com.wzkris.common.core.enums.SensitiveStrategy;
+import com.wzkris.common.core.enums.SensitiveStrategyEnum;
 import com.wzkris.common.validator.annotation.IdCard;
 import com.wzkris.common.validator.annotation.PhoneNumber;
 import lombok.Data;
@@ -15,16 +15,16 @@ public class TestModel {
     @PhoneNumber
     private String phonenumber;
 
-    @Sensitive(strategy = SensitiveStrategy.ADDRESS)
+    @Sensitive(strategy = SensitiveStrategyEnum.ADDRESS)
     private String ssAddr;
 
-    @Sensitive(strategy = SensitiveStrategy.EMAIL)
+    @Sensitive(strategy = SensitiveStrategyEnum.EMAIL)
     private String ssEmail;
 
-    @Sensitive(strategy = SensitiveStrategy.PHONE)
+    @Sensitive(strategy = SensitiveStrategyEnum.PHONE)
     private String ssPhone;
 
-    @Sensitive(strategy = SensitiveStrategy.BANK_CARD)
+    @Sensitive(strategy = SensitiveStrategyEnum.BANK_CARD)
     private String ssBankcard;
 
 }

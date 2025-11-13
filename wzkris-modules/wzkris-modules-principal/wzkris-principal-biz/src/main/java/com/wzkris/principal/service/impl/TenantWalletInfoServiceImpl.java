@@ -1,7 +1,7 @@
 package com.wzkris.principal.service.impl;
 
-import com.wzkris.principal.constant.UserConstants;
 import com.wzkris.principal.domain.TenantWalletRecordDO;
+import com.wzkris.principal.enums.WalletRecordTypeEnum;
 import com.wzkris.principal.mapper.TenantWalletInfoMapper;
 import com.wzkris.principal.mapper.TenantWalletRecordMapper;
 import com.wzkris.principal.service.TenantWalletInfoService;
@@ -29,7 +29,7 @@ public class TenantWalletInfoServiceImpl implements TenantWalletInfoService {
             TenantWalletRecordDO record = new TenantWalletRecordDO();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setRecordType(UserConstants.WALLET_INCOME);
+            record.setRecordType(WalletRecordTypeEnum.INCOME.getValue());
             record.setBizNo(bizNo);
             record.setBizType(bizType);
             record.setCreateAt(new Date());
@@ -48,7 +48,7 @@ public class TenantWalletInfoServiceImpl implements TenantWalletInfoService {
             TenantWalletRecordDO record = new TenantWalletRecordDO();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setRecordType(UserConstants.WALLET_OUTCOME);
+            record.setRecordType(WalletRecordTypeEnum.OUTCOME.getValue());
             record.setBizNo(bizNo);
             record.setBizType(bizType);
             record.setCreateAt(new Date());

@@ -4,7 +4,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.CustomerInfoDO;
 import com.wzkris.principal.domain.CustomerSocialInfoDO;
-import com.wzkris.principal.enums.IdentifierType;
+import com.wzkris.principal.enums.IdentifierTypeEnum;
 import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.customer.req.WexcxLoginReq;
 import com.wzkris.principal.feign.customer.resp.CustomerResp;
@@ -48,7 +48,7 @@ public class CustomerInfoFeignImpl implements CustomerInfoFeign {
 
             final CustomerSocialInfoDO socialInfoDO = new CustomerSocialInfoDO();
             socialInfoDO.setIdentifier(req.getIdentifier());
-            socialInfoDO.setIdentifierType(IdentifierType.WE_XCX.getValue());
+            socialInfoDO.setIdentifierType(IdentifierTypeEnum.WE_XCX.getValue());
 
             customerId = customerInfoService.registerBySocial(customerInfoDO, socialInfoDO);
         } else {

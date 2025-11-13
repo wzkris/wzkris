@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.mode;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -11,7 +11,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class DemoModeException extends BaseException {
 
     public DemoModeException() {
-        super("演示异常", 403, BizBaseCode.ACCESS_DENIED.value(), null, null, "演示模式，不允许操作");
+        super("演示异常", 403, BizBaseCodeEnum.ACCESS_DENIED.value(), null, null, "演示模式，不允许操作");
     }
 
 }

@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.message.constant.MessageConstants;
 import com.wzkris.message.domain.AnnouncementInfoDO;
 import com.wzkris.message.domain.vo.announcement.AnnouncementInfoVO;
+import com.wzkris.message.enums.AnncStatusEnum;
 import com.wzkris.message.mapper.AnnouncementInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +30,7 @@ public class AnnouncementInfoController extends BaseController {
     @GetMapping("/list")
     public Result<Page<AnnouncementInfoVO>> list() {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
-                .eq(AnnouncementInfoDO::getStatus, MessageConstants.STATUS_PUBLISH)
+                .eq(AnnouncementInfoDO::getStatus, AnncStatusEnum.PUBLISH.getValue())
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
         startPage();
         List<AnnouncementInfoVO> list = announcementInfoMapper.selectList2VO(lqw, AnnouncementInfoVO.class);

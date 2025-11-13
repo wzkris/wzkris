@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
  * 业务签名状态码
  */
 @AllArgsConstructor
-public enum BizSignCode {
+public enum BizSignCodeEnum {
 
     SIGN_NOT_EXIST(40_600, "签名不存在"),
     SIGN_ERROR(40_601, "签名异常");

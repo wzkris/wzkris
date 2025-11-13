@@ -1,11 +1,12 @@
 package com.wzkris.principal.domain.req.admin;
 
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.common.validator.group.ValidationGroups;
-import com.wzkris.principal.constant.UserConstants;
 import com.wzkris.principal.domain.AdminInfoDO;
+import com.wzkris.principal.enums.GenderEnum;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,11 +56,7 @@ public class AdminMngReq {
     @Schema(description = "用户状态")
     private String status;
 
-    @Pattern(
-            regexp = "[" +
-                    UserConstants.GENDER_MALE + UserConstants.GENDER_FEMALE + UserConstants.GENDER_UNKNOWN +
-                    "]",
-            message = "{invalidParameter.gender.invalid}")
+    @EnumsCheck(value = GenderEnum.class, property = "value")
     @Schema(description = "用户性别")
     private String gender;
 

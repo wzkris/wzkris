@@ -1,6 +1,6 @@
 package com.wzkris.common.core.exception.request;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
 
 /**
@@ -12,7 +12,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class TooManyRequestException extends BaseException {
 
     public TooManyRequestException() {
-        this(BizBaseCode.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
+        this(BizBaseCodeEnum.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
     }
 
     public TooManyRequestException(int biz, String code, Object... args) {

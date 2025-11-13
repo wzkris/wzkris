@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
  * 业务登录状态码
  */
 @AllArgsConstructor
-public enum BizLoginCode {
+public enum BizLoginCodeEnum {
 
     // 登录请求参数异常
     PARAMETER_ERROR(40_201, "登录参数异常"),

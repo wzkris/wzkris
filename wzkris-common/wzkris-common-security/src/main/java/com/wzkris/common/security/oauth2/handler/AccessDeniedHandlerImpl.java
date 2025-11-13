@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.handler;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.JsonUtil;
@@ -30,7 +30,7 @@ public final class AccessDeniedHandlerImpl implements AccessDeniedHandler {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        JsonUtil.writeValue(response.getWriter(), Result.init(BizBaseCode.ACCESS_DENIED.value(), null,
+        JsonUtil.writeValue(response.getWriter(), Result.init(BizBaseCodeEnum.ACCESS_DENIED.value(), null,
                 I18nUtil.message("forbidden.accessDenied.permissionDenied")));
     }
 

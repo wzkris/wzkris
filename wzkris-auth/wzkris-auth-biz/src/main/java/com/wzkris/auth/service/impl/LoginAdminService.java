@@ -1,13 +1,13 @@
 package com.wzkris.auth.service.impl;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.utils.ServletUtil;
@@ -75,7 +75,7 @@ public class LoginAdminService extends UserInfoTemplate {
         try {
             if (!passwordEncoder.matches(password, userResp.getPassword())) {
                 OAuth2ExceptionUtil.throwErrorI18n(
-                        BizBaseCode.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
+                        BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
             return this.buildLoginAdmin(userResp);
@@ -86,8 +86,8 @@ public class LoginAdminService extends UserInfoTemplate {
     }
 
     @Override
-    public boolean checkAuthType(AuthType authType) {
-        return AuthType.ADMIN.equals(authType);
+    public boolean checkAuthType(AuthTypeEnum authType) {
+        return AuthTypeEnum.ADMIN.equals(authType);
     }
 
     /**
@@ -114,7 +114,7 @@ public class LoginAdminService extends UserInfoTemplate {
     private void checkAccount(adminInfoResp userResp) {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 

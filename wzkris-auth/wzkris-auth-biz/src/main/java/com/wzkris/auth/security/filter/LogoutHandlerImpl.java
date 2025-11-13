@@ -3,7 +3,7 @@ package com.wzkris.auth.security.filter;
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.annotation.Nullable;
@@ -38,25 +38,25 @@ public class LogoutHandlerImpl implements LogoutHandler {
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
         String adminToken = request.getHeader(CustomHeaderConstants.X_ADMIN_TOKEN);
         if (StringUtil.isNotBlank(adminToken)) {
-            Serializable id = tokenService.logoutByAccessToken(AuthType.ADMIN.getValue(), adminToken);
+            Serializable id = tokenService.logoutByAccessToken(AuthTypeEnum.ADMIN.getValue(), adminToken);
             if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.ADMIN.getValue()));
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthTypeEnum.ADMIN.getValue()));
             }
         }
 
         String tenantToken = request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN);
         if (StringUtil.isNotBlank(tenantToken)) {
-            Serializable id = tokenService.logoutByAccessToken(AuthType.TENANT.getValue(), tenantToken);
+            Serializable id = tokenService.logoutByAccessToken(AuthTypeEnum.TENANT.getValue(), tenantToken);
             if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.TENANT.getValue()));
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthTypeEnum.TENANT.getValue()));
             }
         }
 
         String customerToken = request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN);
         if (StringUtil.isNotBlank(customerToken)) {
-            Serializable id = tokenService.logoutByAccessToken(AuthType.CUSTOMER.getValue(), customerToken);
+            Serializable id = tokenService.logoutByAccessToken(AuthTypeEnum.CUSTOMER.getValue(), customerToken);
             if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthType.CUSTOMER.getValue()));
+                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthTypeEnum.CUSTOMER.getValue()));
             }
         }
     }

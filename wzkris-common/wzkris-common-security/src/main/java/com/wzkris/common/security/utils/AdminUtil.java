@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import lombok.AccessLevel;
@@ -24,7 +24,7 @@ public class AdminUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthType().equals(AuthType.ADMIN);
+        return isAuthenticated() && getAuthType().equals(AuthTypeEnum.ADMIN);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.filter;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.handler.AuthenticationFailureHandlerImpl;
@@ -73,7 +73,7 @@ public class LoginEndpointFilter extends OncePerRequestFilter {
             }
 
             if (commonAuthenticationToken == null) {
-                OAuth2ExceptionUtil.throwErrorI18n(BizLoginCode.LOGIN_TYPE_ERROR.value(), "oauth2.unsupport.logintype");
+                OAuth2ExceptionUtil.throwErrorI18n(BizLoginCodeEnum.LOGIN_TYPE_ERROR.value(), "oauth2.unsupport.logintype");
             }
 
             commonAuthenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));

@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
@@ -52,7 +52,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
@@ -72,7 +72,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         if (principal == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
         return new SmsAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getPhoneNumber(), principal);

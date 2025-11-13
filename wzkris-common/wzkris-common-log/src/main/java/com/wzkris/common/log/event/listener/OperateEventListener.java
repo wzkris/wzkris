@@ -1,6 +1,6 @@
 package com.wzkris.common.log.event.listener;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.event.OperateEvent;
@@ -37,9 +37,9 @@ public class OperateEventListener {
                         if (StringUtil.isNotBlank(event.getOperIp())) {
                             event.setOperLocation(IpUtil.parseIp(event.getOperIp()));
                         }
-                        if (StringUtil.equals(event.getAuthType(), AuthType.ADMIN.getValue())) {
+                        if (StringUtil.equals(event.getAuthType(), AuthTypeEnum.ADMIN.getValue())) {
                             operateLogReqs.add(event.toUserOperateLogReq());
-                        } else if (StringUtil.equals(event.getAuthType(), AuthType.TENANT.getValue())) {
+                        } else if (StringUtil.equals(event.getAuthType(), AuthTypeEnum.TENANT.getValue())) {
                             tenantOperateLogReqs.add(event.toTenantOperateLogReq());
                         }
                     });

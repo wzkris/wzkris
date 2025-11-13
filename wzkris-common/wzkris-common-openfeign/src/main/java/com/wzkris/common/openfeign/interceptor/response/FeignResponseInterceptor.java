@@ -3,7 +3,7 @@ package com.wzkris.common.openfeign.interceptor.response;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.openfeign.enums.BizRpcCode;
+import com.wzkris.common.openfeign.enums.BizRpcCodeEnum;
 import com.wzkris.common.openfeign.event.FeignResponseEvent;
 import com.wzkris.common.openfeign.exception.RpcException;
 import feign.InvocationContext;
@@ -65,7 +65,7 @@ public class FeignResponseInterceptor implements ResponseInterceptor {
 
             SpringUtil.getContext().publishEvent(responseEvent);
 
-            throw new RpcException(response.status(), BizRpcCode.RPC_REMOTE_ERROR.value(),
+            throw new RpcException(response.status(), BizRpcCodeEnum.RPC_REMOTE_ERROR.value(),
                     body);
         }
     }

@@ -2,7 +2,7 @@ package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
@@ -16,14 +16,14 @@ import org.springframework.security.core.Transient;
 @Transient
 public final class SmsAuthenticationToken extends CommonAuthenticationToken {
 
-    private final AuthType authType;
+    private final AuthTypeEnum authType;
 
     private final String phoneNumber;
 
     private final String smsCode;
 
     public SmsAuthenticationToken(
-            AuthType authType,
+            AuthTypeEnum authType,
             String phoneNumber,
             String smsCode) {
         super(null);
@@ -33,7 +33,7 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
     }
 
     public SmsAuthenticationToken(
-            AuthType authType,
+            AuthTypeEnum authType,
             String phoneNumber,
             MyPrincipal principal) {
         super(null, principal);

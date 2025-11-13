@@ -6,8 +6,8 @@ import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginAdmin;
@@ -72,17 +72,17 @@ public class TokenExtractionService {
 
         String adminToken = getAdminToken(request);
         if (StringUtil.isNotBlank(adminToken)) {
-            return (Mono<T>) validatePrincipal(AuthType.ADMIN.getValue(), adminToken, userReference);
+            return (Mono<T>) validatePrincipal(AuthTypeEnum.ADMIN.getValue(), adminToken, userReference);
         }
 
         String tenantToken = getTenantToken(request);
         if (StringUtil.isNotBlank(tenantToken)) {
-            return (Mono<T>) validatePrincipal(AuthType.TENANT.getValue(), tenantToken, tenantReference);
+            return (Mono<T>) validatePrincipal(AuthTypeEnum.TENANT.getValue(), tenantToken, tenantReference);
         }
 
         String customerToken = getCustomerToken(request);
         if (StringUtil.isNotBlank(customerToken)) {
-            return (Mono<T>) validatePrincipal(AuthType.CUSTOMER.getValue(), customerToken, customerReference);
+            return (Mono<T>) validatePrincipal(AuthTypeEnum.CUSTOMER.getValue(), customerToken, customerReference);
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
@@ -122,7 +122,7 @@ public class TokenExtractionService {
                                     return JsonUtil.parseObject(responseStr, Result.class);
                                 } catch (Exception e) {
                                     log.error("Failed to parse error response body: {}", responseStr, e);
-                                    return Result.init(BizBaseCode.AUTHENTICATION_ERROR.value(), null, "Unauthorized");
+                                    return Result.init(BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), null, "Unauthorized");
                                 }
                             })
                             .flatMap(responseBody -> Mono.error(new RpcException(response.statusCode().value(), responseBody)));

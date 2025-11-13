@@ -1,6 +1,6 @@
 package com.wzkris.common.notifier.config.dingtalk.client;
 
-import com.wzkris.common.core.enums.BizCallCode;
+import com.wzkris.common.core.enums.BizCallCodeEnum;
 import com.wzkris.common.core.exception.service.ExternalServiceException;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.notifier.config.dingtalk.domain.TokenCache;
@@ -67,7 +67,7 @@ public class DingtalkApiClient {
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 String errorBody = response.body() != null ? response.body().string() : "未知错误";
-                throw new ExternalServiceException(BizCallCode.DINGTALK_ERROR.value(), errorBody);
+                throw new ExternalServiceException(BizCallCodeEnum.DINGTALK_ERROR.value(), errorBody);
             }
 
             ResponseBody responseBody = response.body();
@@ -125,7 +125,7 @@ public class DingtalkApiClient {
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 String errorBody = response.body() != null ? response.body().string() : "未知错误";
-                throw new ExternalServiceException(BizCallCode.DINGTALK_ERROR.value(), errorBody);
+                throw new ExternalServiceException(BizCallCodeEnum.DINGTALK_ERROR.value(), errorBody);
             }
 
             ResponseBody responseBody = response.body();

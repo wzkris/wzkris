@@ -1,6 +1,6 @@
 package com.wzkris.gateway.security.annotation;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,7 +22,7 @@ public @interface RequireAuth {
      *
      * @return 认证类型
      */
-    AuthType authType();
+    AuthTypeEnum authType();
 
     /**
      * 需要的权限标识（支持多个）

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.wzkris.common.core.annotation.Sensitive;
-import com.wzkris.common.core.enums.SensitiveStrategy;
+import com.wzkris.common.core.enums.SensitiveStrategyEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 
@@ -22,7 +22,7 @@ import java.util.Objects;
 @Slf4j
 public class SensitiveHandler extends JsonSerializer<String> implements ContextualSerializer {
 
-    private SensitiveStrategy strategy;
+    private SensitiveStrategyEnum strategy;
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {

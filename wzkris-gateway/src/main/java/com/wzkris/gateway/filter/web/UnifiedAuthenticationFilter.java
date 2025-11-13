@@ -1,6 +1,6 @@
 package com.wzkris.gateway.filter.web;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.openfeign.exception.RpcException;
 import com.wzkris.gateway.config.PermitAllProperties;
@@ -60,7 +60,7 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
 
         // 1) 黑名单拦截
         if (isPathDenied(path)) {
-            return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCode.ACCESS_DENIED);
+            return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCodeEnum.ACCESS_DENIED);
         }
 
         // 2) 白名单放行
@@ -91,7 +91,7 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
                 .onErrorResume(throwable -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();
                     exchangeResponse.setRawStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                    return WebFluxUtil.writeResponse(exchangeResponse, BizBaseCode.SYSTEM_ERROR);
+                    return WebFluxUtil.writeResponse(exchangeResponse, BizBaseCodeEnum.SYSTEM_ERROR);
                 });
     }
 

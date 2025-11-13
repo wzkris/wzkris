@@ -8,11 +8,10 @@ import java.util.function.Function;
 /**
  * 脱敏策略
  *
- * @author Yjoioooo
- * @version 3.6.0
+ * @author wzkris
  */
 @AllArgsConstructor
-public enum SensitiveStrategy {
+public enum SensitiveStrategyEnum {
 
     /**
      * 身份证脱敏

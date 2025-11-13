@@ -1,4 +1,4 @@
-package com.wzkris.common.core.enums;
+package com.wzkris.message.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -6,29 +6,25 @@ import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 
 /**
- * 认证类型
+ * 公告状态
  */
 @AllArgsConstructor
-public enum AuthType {
-
-    ANONYMOUS("anonymous"),
-
-    ADMIN("admin"),
-
-    TENANT("tenant"),
-
-    CUSTOMER("customer"),
-
-    CLIENT("oauth2_client");
+public enum AnncStatusEnum {
+    // 草稿
+    DRAFT("0"),
+    // 关闭
+    CLOSED("1"),
+    // 已发布
+    PUBLISH("2");
 
     private final String value;
 
     @JsonCreator
     @Nullable
-    public static AuthType fromValue(String value) {
-        for (AuthType authType : values()) {
-            if (authType.value.equals(value)) {
-                return authType;
+    public static AnncStatusEnum fromValue(String value) {
+        for (AnncStatusEnum typeEnum : values()) {
+            if (typeEnum.value.equals(value)) {
+                return typeEnum;
             }
         }
         return null;
@@ -38,5 +34,4 @@ public enum AuthType {
     public String getValue() {
         return value;
     }
-
 }

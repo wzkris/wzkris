@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.MyPrincipal;
 import org.springframework.lang.Nullable;
@@ -92,7 +92,7 @@ public abstract class SecurityUtil {
      *
      * @return 登录类型
      */
-    public static AuthType getAuthType() {
+    public static AuthTypeEnum getAuthType() {
         return getPrincipal().getType();
     }
 

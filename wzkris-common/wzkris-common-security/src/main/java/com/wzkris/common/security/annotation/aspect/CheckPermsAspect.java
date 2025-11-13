@@ -1,6 +1,6 @@
 package com.wzkris.common.security.annotation.aspect;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
@@ -91,7 +91,7 @@ public class CheckPermsAspect {
         }
 
         String expectedType = checkPerms.checkType().getValue();
-        AuthType actualType = principal.getType();
+        AuthTypeEnum actualType = principal.getType();
 
         if (!StringUtil.equals(actualType.getValue(), expectedType)) {
             throw new AccessDeniedException(
@@ -130,7 +130,7 @@ public class CheckPermsAspect {
      */
     private AccessDeniedException createAccessDeniedException(MyPrincipal principal, String[] perms, CheckMode mode) {
         String name = principal.getName();
-        AuthType type = principal.getType();
+        AuthTypeEnum type = principal.getType();
 
         if (mode == CheckMode.AND) {
             return new AccessDeniedException(

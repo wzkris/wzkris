@@ -1,12 +1,12 @@
 package com.wzkris.auth.security.core.password;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -39,7 +39,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(username)
                 || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.REQUEST_ERROR.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.USERNAME);
@@ -50,7 +50,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(password)
                 || parameters.get(OAuth2ParameterNames.PASSWORD).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.REQUEST_ERROR.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.PASSWORD);
@@ -61,7 +61,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(captchaId)
                 || parameters.get(CAPTCHA_ID).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.REQUEST_ERROR.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.captcha.error",
                     OAuth2ParameterNames.PASSWORD);
@@ -71,10 +71,10 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     @Override
     protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
         String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthType authType = AuthType.fromValue(type);
+        AuthTypeEnum authType = AuthTypeEnum.fromValue(type);
         if (authType == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);

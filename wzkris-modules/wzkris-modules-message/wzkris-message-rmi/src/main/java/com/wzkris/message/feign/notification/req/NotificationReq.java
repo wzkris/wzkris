@@ -1,6 +1,6 @@
 package com.wzkris.message.feign.notification.req;
 
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class NotificationReq implements Serializable {
     /**
      * 接收者类型
      */
-    private AuthType authType;
+    private AuthTypeEnum authType;
 
     private String title;
 

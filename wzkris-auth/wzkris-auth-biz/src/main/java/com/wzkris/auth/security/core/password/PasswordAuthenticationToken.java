@@ -2,7 +2,7 @@ package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
@@ -16,7 +16,7 @@ import org.springframework.security.core.Transient;
 @Transient
 public final class PasswordAuthenticationToken extends CommonAuthenticationToken {
 
-    private final AuthType authType;
+    private final AuthTypeEnum authType;
 
     private final String username;
 
@@ -25,7 +25,7 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
     private final String captchaId;
 
     public PasswordAuthenticationToken(
-            AuthType authType,
+            AuthTypeEnum authType,
             String username,
             String password,
             String captchaId) {
@@ -37,7 +37,7 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
     }
 
     public PasswordAuthenticationToken(
-            AuthType authType,
+            AuthTypeEnum authType,
             String username,
             MyPrincipal principal) {
         super(null, principal);

@@ -9,10 +9,10 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.web.utils.BeanUtil;
-import com.wzkris.principal.constant.MenuConstants;
 import com.wzkris.principal.domain.MenuInfoDO;
 import com.wzkris.principal.domain.req.menu.MenuManageReq;
 import com.wzkris.principal.domain.req.menu.MenuMngQueryReq;
+import com.wzkris.principal.enums.MenuTypeEnum;
 import com.wzkris.principal.mapper.MenuInfoMapper;
 import com.wzkris.principal.service.MenuInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,7 +73,7 @@ public class MenuMngController extends BaseController {
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:menu-mng:add")
     public Result<Void> add(@Validated @RequestBody MenuManageReq req) {
-        if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
+        if (StringUtil.equalsAny(req.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
                 && !StringUtil.ishttp(req.getPath())) {
             return err40000("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
@@ -85,7 +85,7 @@ public class MenuMngController extends BaseController {
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:menu-mng:edit")
     public Result<Void> edit(@Validated @RequestBody MenuManageReq req) {
-        if (StringUtil.equalsAny(req.getMenuType(), MenuConstants.TYPE_INNERLINK, MenuConstants.TYPE_OUTLINK)
+        if (StringUtil.equalsAny(req.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
                 && !StringUtil.ishttp(req.getPath())) {
             return err40000("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         } else if (req.getMenuId().equals(req.getParentId())) {

@@ -1,8 +1,8 @@
-package com.wzkris.auth.security.core.wechat;
+package com.wzkris.auth.security.core.wexcx;
 
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
@@ -16,14 +16,14 @@ import org.springframework.security.core.Transient;
 @Transient
 public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
 
-    private final AuthType authType;
+    private final AuthTypeEnum authType;
 
     private final String wxCode;
 
     private final String phoneCode;
 
     public WexcxAuthenticationToken(
-            AuthType authType,
+            AuthTypeEnum authType,
             String wxCode,
             String phoneCode) {
         super(null);
@@ -33,7 +33,7 @@ public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
     }
 
     public WexcxAuthenticationToken(
-            AuthType authType,
+            AuthTypeEnum authType,
             MyPrincipal principal) {
         super(null, principal);
         this.authType = authType;

@@ -1,6 +1,6 @@
 package com.wzkris.gateway.handler;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.gateway.utils.WebFluxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class GatewayExceptionHandler extends WebFluxResponseStatusExceptionHandl
 
         HttpStatusCode httpStatusCode = determineStatus(ex);
         response.setStatusCode(httpStatusCode);
-        return WebFluxUtil.writeResponse(response, BizBaseCode.SYSTEM_ERROR.value(), ex.getMessage());
+        return WebFluxUtil.writeResponse(response, BizBaseCodeEnum.SYSTEM_ERROR.value(), ex.getMessage());
     }
 
 }

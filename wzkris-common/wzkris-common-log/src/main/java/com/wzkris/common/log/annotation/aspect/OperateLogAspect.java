@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ServletUtil;
@@ -236,7 +236,7 @@ public class OperateLogAspect {
     private void setTenantId(OperateEvent operateEvent) {
         try {
             String authType = operateEvent.getAuthType();
-            if (StringUtil.equals(authType, AuthType.TENANT.getValue())) {
+            if (StringUtil.equals(authType, AuthTypeEnum.TENANT.getValue())) {
                 operateEvent.setTenantId(TenantUtil.getTenantId());
             } else {
                 // 对于其他认证类型，暂时设置为null

@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core.refresh;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
@@ -37,7 +37,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         if (principal == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.AUTHENTICATION_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+                    BizLoginCodeEnum.AUTHENTICATION_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
         return new RefreshAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getRefreshToken(), principal);

@@ -4,12 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.principal.constant.MenuConstants;
 import com.wzkris.principal.domain.AdminInfoDO;
 import com.wzkris.principal.domain.MenuInfoDO;
 import com.wzkris.principal.domain.vo.MetaVO;
 import com.wzkris.principal.domain.vo.RouterVO;
 import com.wzkris.principal.domain.vo.SelectTreeVO;
+import com.wzkris.principal.enums.MenuScopeEnum;
+import com.wzkris.principal.enums.MenuTypeEnum;
 import com.wzkris.principal.mapper.*;
 import com.wzkris.principal.service.MenuInfoService;
 import com.wzkris.principal.service.PostInfoService;
@@ -152,7 +153,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         }
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
-                .eq(MenuInfoDO::getScope, MenuConstants.SCOPE_SYSTEM)
+                .eq(MenuInfoDO::getScope, MenuScopeEnum.SYSTEM.getValue())
                 .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
                 .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
         return this.buildSelectTree(menuInfoMapper.selectList(lqw));
@@ -173,7 +174,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         }
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
-                .eq(MenuInfoDO::getScope, MenuConstants.SCOPE_TENANT)
+                .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT.getValue())
                 .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
                 .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
         return this.buildSelectTree(menuInfoMapper.selectList(lqw));
@@ -183,7 +184,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     public List<SelectTreeVO> listAllTenantSelectTree() {
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
-                .eq(MenuInfoDO::getScope, MenuConstants.SCOPE_TENANT)
+                .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT.getValue())
                 .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
         return this.buildSelectTree(menuInfoMapper.selectList(lqw));
     }
@@ -197,7 +198,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
                 return Collections.emptyList();
             }
         }
-        List<MenuInfoDO> list = this.buildTree(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_SYSTEM));
+        List<MenuInfoDO> list = this.buildTree(menuInfoMapper.listMenuRoutes(menuIds, MenuScopeEnum.SYSTEM.getValue()));
         return this.buildRouter(list);
     }
 
@@ -215,7 +216,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
-        List<MenuInfoDO> list = this.buildTree(menuInfoMapper.listMenuRoutes(menuIds, MenuConstants.SCOPE_TENANT));
+        List<MenuInfoDO> list = this.buildTree(menuInfoMapper.listMenuRoutes(menuIds, MenuScopeEnum.TENANT.getValue()));
         return this.buildRouter(list);
     }
 
@@ -274,10 +275,10 @@ public class MenuInfoServiceImpl implements MenuInfoService {
             );
 
             // 处理菜单类型
-            if (StringUtil.equals(MenuConstants.TYPE_DIR, menu.getMenuType())) {
+            if (StringUtil.equals(MenuTypeEnum.DIR.getValue(), menu.getMenuType())) {
                 router.setChildren(this.buildRouter(menu.getChildren()));
             } else if (StringUtil.equalsAny(
-                    menu.getMenuType(), MenuConstants.TYPE_OUTLINK, MenuConstants.TYPE_INNERLINK)) {
+                    menu.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())) {
                 meta.setLink(menu.getPath());
                 router.setPath(menu.getMenuName());
             }

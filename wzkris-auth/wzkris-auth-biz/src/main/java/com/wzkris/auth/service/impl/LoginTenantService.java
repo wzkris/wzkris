@@ -1,13 +1,13 @@
 package com.wzkris.auth.service.impl;
 
-import com.wzkris.auth.enums.BizLoginCode;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.ServletUtil;
@@ -75,7 +75,7 @@ public class LoginTenantService extends UserInfoTemplate {
         try {
             if (!passwordEncoder.matches(password, memberResp.getPassword())) {
                 OAuth2ExceptionUtil.throwErrorI18n(
-                        BizBaseCode.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
+                        BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
             return this.buildLoginTenant(memberResp);
@@ -86,8 +86,8 @@ public class LoginTenantService extends UserInfoTemplate {
     }
 
     @Override
-    public boolean checkAuthType(AuthType authType) {
-        return AuthType.TENANT.equals(authType);
+    public boolean checkAuthType(AuthTypeEnum authType) {
+        return AuthTypeEnum.TENANT.equals(authType);
     }
 
     /**
@@ -114,16 +114,16 @@ public class LoginTenantService extends UserInfoTemplate {
     private void checkAccount(MemberInfoResp memberResp) {
         if (StringUtil.equals(memberResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         } else if (StringUtil.equals(memberResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.TENANT_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
+                    BizLoginCodeEnum.TENANT_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
         } else if (memberResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.TENANT_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
+                    BizLoginCodeEnum.TENANT_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
         } else if (StringUtil.equals(memberResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.TENANT_PACKAGE_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
+                    BizLoginCodeEnum.TENANT_PACKAGE_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
     }
 

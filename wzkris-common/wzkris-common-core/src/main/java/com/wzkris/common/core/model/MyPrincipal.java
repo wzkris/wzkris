@@ -2,7 +2,7 @@ package com.wzkris.common.core.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
@@ -30,11 +30,11 @@ public abstract class MyPrincipal implements Principal {
 
     private final Long id;
 
-    private final AuthType type;
+    private final AuthTypeEnum type;
 
     private final Set<String> permissions;
 
-    public MyPrincipal(Long id, AuthType type, Set<String> permissions) {
+    public MyPrincipal(Long id, AuthTypeEnum type, Set<String> permissions) {
         Assert.notNull(id, "ID cannot be null");
         Assert.notNull(type, "type cannot be null");
         Assert.notNull(permissions, "permissions cannot be null");

@@ -2,7 +2,7 @@ package com.wzkris.auth.listener;
 
 import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.enums.AuthType;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +31,11 @@ public class RefreshTokenEventListener {
         MyPrincipal principal = event.getPrincipal();
         log.info("'{}' 发生刷新TOKEN事件", principal);
 
-        if (Objects.equals(principal.getType(), AuthType.ADMIN)) {
+        if (Objects.equals(principal.getType(), AuthTypeEnum.ADMIN)) {
 
-        } else if (Objects.equals(principal.getType(), AuthType.TENANT)) {
+        } else if (Objects.equals(principal.getType(), AuthTypeEnum.TENANT)) {
 
-        } else if (Objects.equals(principal.getType(), AuthType.CUSTOMER)) {
+        } else if (Objects.equals(principal.getType(), AuthTypeEnum.CUSTOMER)) {
             // empty
         }
     }

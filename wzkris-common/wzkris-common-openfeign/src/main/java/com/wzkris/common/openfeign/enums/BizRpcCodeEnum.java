@@ -1,16 +1,16 @@
-package com.wzkris.common.core.enums;
+package com.wzkris.common.openfeign.enums;
 
 import lombok.AllArgsConstructor;
 
 /**
- * 业务调用服务状态码
+ * rpc调用状态码
  */
 @AllArgsConstructor
-public enum BizCaptchaCode {
+public enum BizRpcCodeEnum {
 
-    CAPTCHA_ERROR(40_101, "验证码错误"),
+    RPC_ERROR(10_001, "Rpc调用失败，远程服务拒绝"),
 
-    CAPTCHA_EXPIRED(40_102, "验证码已过期");
+    RPC_REMOTE_ERROR(10_002, "远程服务异常");
 
     private final int code;
 

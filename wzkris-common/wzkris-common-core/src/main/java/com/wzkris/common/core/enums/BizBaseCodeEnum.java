@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
  * @date : 2023/3/3 8:46
  */
 @AllArgsConstructor
-public enum BizBaseCode {
+public enum BizBaseCodeEnum {
     OK(0, "ok"),
     ACCESS_DENIED(99_900, "禁止访问"),
     AUTHENTICATION_ERROR(99_901, "凭证异常"),

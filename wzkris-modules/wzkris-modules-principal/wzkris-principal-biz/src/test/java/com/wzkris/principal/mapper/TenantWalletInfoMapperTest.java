@@ -2,9 +2,9 @@ package com.wzkris.principal.mapper;
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.principal.constant.UserConstants;
 import com.wzkris.principal.domain.TenantWalletInfoDO;
 import com.wzkris.principal.domain.TenantWalletRecordDO;
+import com.wzkris.principal.enums.WalletRecordTypeEnum;
 import com.wzkris.principal.service.TenantWalletInfoService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ public class TenantWalletInfoMapperTest {
         TenantWalletRecordDO record =
                 tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(TenantWalletRecordDO.class)
                         .eq(TenantWalletRecordDO::getTenantId, tenantId)
-                        .eq(TenantWalletRecordDO::getRecordType, UserConstants.WALLET_INCOME));
+                        .eq(TenantWalletRecordDO::getRecordType, WalletRecordTypeEnum.INCOME.getValue()));
         Assert.notNull(record, "增加余额记录失败");
     }
 
@@ -66,7 +66,7 @@ public class TenantWalletInfoMapperTest {
         TenantWalletRecordDO record =
                 tenantWalletRecordMapper.selectOne(Wrappers.lambdaQuery(TenantWalletRecordDO.class)
                         .eq(TenantWalletRecordDO::getTenantId, tenantId)
-                        .eq(TenantWalletRecordDO::getRecordType, UserConstants.WALLET_OUTCOME));
+                        .eq(TenantWalletRecordDO::getRecordType, WalletRecordTypeEnum.OUTCOME.getValue()));
         Assert.notNull(record, "扣减余额记录失败");
     }
 

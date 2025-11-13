@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.enums.BizSqlCode;
+import com.wzkris.common.orm.enums.BizSqlCodeEnum;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
@@ -80,7 +80,7 @@ public abstract class BaseController {
         String orderBys = request.getParameter(ORDER_BY);
         if (StringUtil.isNotBlank(orderBys)) {
             if (SqlInjectionUtils.check(orderBys)) {
-                throw new GenericException(BizSqlCode.INJECT_SQL.value(), BizSqlCode.INJECT_SQL.desc());
+                throw new GenericException(BizSqlCodeEnum.INJECT_SQL.value(), BizSqlCodeEnum.INJECT_SQL.desc());
             }
             for (String orderBy : orderBys.split(",")) {
                 OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))

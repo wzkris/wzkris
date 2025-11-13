@@ -1,8 +1,10 @@
 package com.wzkris.principal.domain.req.menu;
 
 import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.principal.constant.MenuConstants;
+import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.principal.domain.MenuInfoDO;
+import com.wzkris.principal.enums.MenuScopeEnum;
+import com.wzkris.principal.enums.MenuTypeEnum;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,14 +52,7 @@ public class MenuManageReq {
     private Boolean visible;
 
     @NotBlank(message = "{invalidParameter.menuType.invalid}")
-    @Pattern(
-            regexp = "[" +
-                    MenuConstants.TYPE_DIR +
-                    MenuConstants.TYPE_MENU +
-                    MenuConstants.TYPE_BUTTON +
-                    MenuConstants.TYPE_INNERLINK +
-                    MenuConstants.TYPE_OUTLINK
-                    + "]", message = "{invalidParameter.menuType.invalid}")
+    @EnumsCheck(value = MenuTypeEnum.class, property = "value")
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
     private String menuType;
 
@@ -77,11 +72,7 @@ public class MenuManageReq {
     private String icon;
 
     @NotBlank(message = "{invalidParameter.menuScope.invalid}")
-    @Pattern(
-            regexp = "[" +
-                    MenuConstants.SCOPE_SYSTEM + MenuConstants.SCOPE_TENANT
-                    + "]",
-            message = "{invalidParameter.menuScope.invalid}")
+    @EnumsCheck(value = MenuScopeEnum.class, property = "value")
     @Schema(description = "菜单域")
     private String scope;
 

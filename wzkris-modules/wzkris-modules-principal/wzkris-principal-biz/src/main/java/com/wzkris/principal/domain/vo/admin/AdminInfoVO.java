@@ -1,7 +1,7 @@
 package com.wzkris.principal.domain.vo.admin;
 
 import com.wzkris.common.core.annotation.Sensitive;
-import com.wzkris.common.core.enums.SensitiveStrategy;
+import com.wzkris.common.core.enums.SensitiveStrategyEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -33,11 +33,11 @@ public class AdminInfoVO {
     @Schema(description = "用户昵称")
     private String nickname;
 
-    @Sensitive(strategy = SensitiveStrategy.EMAIL)
+    @Sensitive(strategy = SensitiveStrategyEnum.EMAIL)
     @Schema(description = "用户邮箱")
     private String email;
 
-    @Sensitive(strategy = SensitiveStrategy.PHONE)
+    @Sensitive(strategy = SensitiveStrategyEnum.PHONE)
     @Schema(description = "手机号码")
     private String phoneNumber;
 

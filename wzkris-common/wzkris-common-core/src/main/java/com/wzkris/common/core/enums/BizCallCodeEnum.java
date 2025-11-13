@@ -1,16 +1,16 @@
-package com.wzkris.common.openfeign.enums;
+package com.wzkris.common.core.enums;
 
 import lombok.AllArgsConstructor;
 
 /**
- * rpc调用状态码
+ * 业务调用服务状态码
  */
 @AllArgsConstructor
-public enum BizRpcCode {
+public enum BizCallCodeEnum {
 
-    RPC_ERROR(10_001, "Rpc调用失败，远程服务拒绝"),
+    WX_ERROR(30_001, "调用微信服务异常"),
 
-    RPC_REMOTE_ERROR(10_002, "远程服务异常");
+    DINGTALK_ERROR(30_002, "调用钉钉服务异常");
 
     private final int code;
 

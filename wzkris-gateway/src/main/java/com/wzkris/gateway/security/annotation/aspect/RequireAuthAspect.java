@@ -1,6 +1,6 @@
 package com.wzkris.gateway.security.annotation.aspect;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.openfeign.exception.RpcException;
@@ -70,7 +70,7 @@ public class RequireAuthAspect {
                     .orElse(null);
 
             if (principal == null) {
-                return Mono.error(new RpcException(401, BizBaseCode.AUTHENTICATION_ERROR.value(), BizBaseCode.AUTHENTICATION_ERROR.desc()));
+                return Mono.error(new RpcException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc()));
             }
 
             boolean passed = AuthChecker.check(principal, requireAuth);
@@ -84,7 +84,7 @@ public class RequireAuthAspect {
                         authType,
                         Arrays.toString(permissions));
 
-                return Mono.error(new RpcException(403, BizBaseCode.ACCESS_DENIED.value(), BizBaseCode.ACCESS_DENIED.desc()));
+                return Mono.error(new RpcException(403, BizBaseCodeEnum.ACCESS_DENIED.value(), BizBaseCodeEnum.ACCESS_DENIED.desc()));
             }
 
             try {

@@ -1,6 +1,6 @@
 package com.wzkris.common.security.oauth2.handler;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.JsonUtil;
@@ -38,7 +38,7 @@ public final class AuthenticationEntryPointImpl implements AuthenticationEntryPo
             JsonUtil.writeValue(response.getWriter(), result);
         } else {
             JsonUtil.writeValue(
-                    response.getWriter(), Result.init(BizBaseCode.AUTHENTICATION_ERROR.value(), null,
+                    response.getWriter(), Result.init(BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), null,
                             I18nUtil.message("forbidden.accessDenied.tokenExpired")));
         }
     }

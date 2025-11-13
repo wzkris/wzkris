@@ -1,6 +1,6 @@
 package com.wzkris.common.web.handler;
 
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.core.model.Result;
 import jakarta.servlet.http.HttpServletRequest;
@@ -93,7 +93,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         Result<?> resultBody = (body instanceof Result) ? (Result<?>) body
-                : Result.init(BizBaseCode.API_REQUEST_ERROR.value(), null, ex.getMessage());
+                : Result.init(BizBaseCodeEnum.API_REQUEST_ERROR.value(), null, ex.getMessage());
         return new ResponseEntity<>(resultBody, headers, statusCode);
     }
 
