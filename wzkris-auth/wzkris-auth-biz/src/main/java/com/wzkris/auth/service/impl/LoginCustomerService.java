@@ -126,8 +126,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         // 校验用户状态
         this.checkAccount(customerResp);
 
-        LoginCustomer loginCustomer = new LoginCustomer(customerResp.getCustomerId(),
-                Collections.emptySet());
+        LoginCustomer loginCustomer = new LoginCustomer(customerResp.getCustomerId(), Collections.emptySet());
         loginCustomer.setPhoneNumber(customerResp.getPhoneNumber());
         return loginCustomer;
     }

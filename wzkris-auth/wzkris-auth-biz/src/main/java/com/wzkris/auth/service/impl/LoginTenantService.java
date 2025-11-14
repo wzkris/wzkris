@@ -93,7 +93,7 @@ public class LoginTenantService extends UserInfoTemplate {
     /**
      * 构建登录用户
      */
-    private LoginTenant buildLoginTenant(MemberInfoResp memberResp) {
+    public LoginTenant buildLoginTenant(MemberInfoResp memberResp) {
         // 校验用户状态
         this.checkAccount(memberResp);
 

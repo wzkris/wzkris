@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2025-11-13 14:02:32
+-- Started on 2025-11-14 09:30:20
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1438,6 +1438,22 @@ ALTER TABLE ONLY biz.user_chat_message
 
 
 --
+-- TOC entry 3223 (class 1259 OID 16575)
+-- Name: idx_admin_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE INDEX idx_admin_login_log_login_time ON biz.admin_login_log USING brin (login_time);
+
+
+--
+-- TOC entry 3232 (class 1259 OID 16576)
+-- Name: idx_admin_operate_log_oper_time; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE INDEX idx_admin_operate_log_oper_time ON biz.admin_operate_log USING brin (oper_time);
+
+
+--
 -- TOC entry 3235 (class 1259 OID 16831)
 -- Name: idx_tenant_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
 --
@@ -1451,22 +1467,6 @@ CREATE INDEX idx_tenant_login_log_login_time ON biz.tenant_login_log USING brin 
 --
 
 CREATE INDEX idx_tenant_operate_log_oper_time ON biz.tenant_operate_log USING brin (oper_time);
-
-
---
--- TOC entry 3223 (class 1259 OID 16575)
--- Name: idx_user_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE INDEX idx_user_login_log_login_time ON biz.admin_login_log USING brin (login_time);
-
-
---
--- TOC entry 3232 (class 1259 OID 16576)
--- Name: idx_user_operate_log_oper_time; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE INDEX idx_user_operate_log_oper_time ON biz.admin_operate_log USING brin (oper_time);
 
 
 --
@@ -1485,7 +1485,7 @@ CREATE UNIQUE INDEX uk_config_info_config_key ON biz.config_info USING btree (co
 CREATE UNIQUE INDEX uk_dictionary_info_dict_key ON biz.dictionary_info USING btree (dict_key);
 
 
--- Completed on 2025-11-13 14:02:32
+-- Completed on 2025-11-14 09:30:20
 
 --
 -- PostgreSQL database dump complete

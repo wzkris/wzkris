@@ -9,7 +9,6 @@ import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,9 +22,8 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
     private final TokenService tokenService;
 
     public RefreshAuthenticationProvider(TokenProperties tokenProperties,
-                                         TokenService tokenService,
-                                         JwtEncoder jwtEncoder) {
-        super(tokenProperties, tokenService, jwtEncoder);
+                                         TokenService tokenService) {
+        super(tokenProperties, tokenService);
         this.tokenService = tokenService;
     }
 

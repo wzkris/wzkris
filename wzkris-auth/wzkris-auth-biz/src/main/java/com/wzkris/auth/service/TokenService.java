@@ -2,15 +2,25 @@ package com.wzkris.auth.service;
 
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.security.config.TokenProperties;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
 import jakarta.annotation.Nullable;
 import org.redisson.api.RMapCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
+import org.springframework.security.crypto.keygen.StringKeyGenerator;
+import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,8 +46,40 @@ public class TokenService {
      */
     private final String REFRESH_TOKEN_PREFIX = "auth-token:%s:info:%s";
 
+    private final StringKeyGenerator tokenGenerator = new Base64StringKeyGenerator(Base64.getUrlEncoder().withoutPadding(), 96);
+
     @Autowired
     private TokenProperties tokenProperties;
+
+    @Autowired
+    private JwtEncoder jwtEncoder;
+
+    public String generateToken() {
+        return tokenGenerator.generateKey();
+    }
+
+    @Nullable
+    public String generateToken(MyPrincipal principal) {
+        if (StringUtil.equalsAny(principal.getType().getValue(), AuthTypeEnum.ADMIN.getValue(), AuthTypeEnum.TENANT.getValue())) {
+            return this.generateToken();
+        } else if (principal.getType().equals(AuthTypeEnum.CUSTOMER)) {
+            JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
+            JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
+                    .build();
+            Instant issuedAt = Instant.now();
+            Instant expiresAt = issuedAt.plus(Duration.ofSeconds(tokenProperties.getAccessTokenTimeOut()));
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .subject(principal.getId().toString())
+                    .issuedAt(issuedAt)
+                    .expiresAt(expiresAt)
+                    .id(UUID.randomUUID().toString())
+                    .notBefore(issuedAt)
+                    .build();
+            Jwt jwt = this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims));
+            return jwt.getTokenValue();
+        }
+        return null;
+    }
 
     /**
      * 构建在线会话Key
