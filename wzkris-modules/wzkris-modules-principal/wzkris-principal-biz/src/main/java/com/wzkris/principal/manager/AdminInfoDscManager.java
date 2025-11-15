@@ -3,7 +3,6 @@ package com.wzkris.principal.manager;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.orm.utils.DataScopeUtil;
 import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.principal.domain.AdminInfoDO;
 import com.wzkris.principal.domain.req.admin.AdminMngQueryReq;
@@ -35,23 +34,11 @@ public class AdminInfoDscManager {
     private final AdminToRoleMapper adminToRoleMapper;
 
     public List<AdminInfoDO> list(Wrapper<AdminInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("dept_id", AdminUtil.get().getDeptScopes());
-
-        try {
-            return adminInfoDscMapper.selectLists(queryWrapper);
-        } finally {
-            DataScopeUtil.remove();
-        }
+        return adminInfoDscMapper.selectLists(queryWrapper);
     }
 
     public List<AdminMngVO> listVO(Wrapper<AdminInfoDO> queryWrapper) {
-        DataScopeUtil.putParameter("d.dept_id", AdminUtil.get().getDeptScopes());
-
-        try {
-            return adminInfoDscMapper.selectVOList(queryWrapper);
-        } finally {
-            DataScopeUtil.remove();
-        }
+        return adminInfoDscMapper.selectVOList(queryWrapper);
     }
 
     /**
@@ -117,14 +104,8 @@ public class AdminInfoDscManager {
                 throw new AccessDeniedException("adminId：‘" + AdminUtil.getId() + "'禁止访问自身数据");
             }
 
-            DataScopeUtil.putParameter("dept_id", AdminUtil.get().getDeptScopes());
-
-            try {
-                if (!adminInfoDscMapper.checkDataScopes(adminIds)) {
-                    throw new AccessDeniedException("无此用户数据访问权限");
-                }
-            } finally {
-                DataScopeUtil.remove();
+            if (!adminInfoDscMapper.checkDataScopes(adminIds)) {
+                throw new AccessDeniedException("无此用户数据访问权限");
             }
         }
     }

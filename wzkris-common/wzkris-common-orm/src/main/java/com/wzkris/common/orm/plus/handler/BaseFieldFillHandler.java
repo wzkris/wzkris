@@ -20,15 +20,6 @@ import java.util.Date;
 @Slf4j
 public class BaseFieldFillHandler implements MetaObjectHandler {
 
-    @Override
-    public void insertFill(MetaObject metaObject) {
-        if (ObjectUtils.isNotEmpty(metaObject)
-                && metaObject.getOriginalObject() instanceof BaseEntity) {
-            Long id = getPrincipalId();
-            fillInsert(id, metaObject);
-        }
-    }
-
     private static Long getPrincipalId() {
         Long id;
         if (SecurityUtil.isAuthenticated()) {
@@ -37,6 +28,15 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
             id = SecurityConstants.SYSTEM_USER_ID;
         }
         return id;
+    }
+
+    @Override
+    public void insertFill(MetaObject metaObject) {
+        if (ObjectUtils.isNotEmpty(metaObject)
+                && metaObject.getOriginalObject() instanceof BaseEntity) {
+            Long id = getPrincipalId();
+            fillInsert(id, metaObject);
+        }
     }
 
     private void fillInsert(Serializable userId, MetaObject metaObject) {

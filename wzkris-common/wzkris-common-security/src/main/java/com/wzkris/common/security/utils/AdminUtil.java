@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -65,6 +67,15 @@ public class AdminUtil extends SecurityUtil {
      */
     public static boolean isAdmin() {
         return get().isAdmin();
+    }
+
+    /**
+     * 获取当前用户的部门权限范围
+     *
+     * @return 部门ID
+     */
+    public static List<Long> getDeptScopes() {
+        return get().getDeptScopes();
     }
 
 }
