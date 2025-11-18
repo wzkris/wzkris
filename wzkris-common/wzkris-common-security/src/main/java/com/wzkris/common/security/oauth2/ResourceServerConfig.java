@@ -1,7 +1,5 @@
 package com.wzkris.common.security.oauth2;
 
-import com.wzkris.common.security.oauth2.filter.CommonRequestAndResponseFilter;
-import com.wzkris.common.security.oauth2.filter.RequestSignatureFilter;
 import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.oauth2.repository.HttpHeaderSecurityContextRepository;
@@ -17,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
@@ -36,8 +33,7 @@ public class ResourceServerConfig {
     @RefreshScope
     public SecurityFilterChain resourceSecurityFilterChain(
             HttpSecurity http,
-            SecurityContextRepository securityContextRepository,
-            RequestSignatureFilter requestSignatureFilter)
+            SecurityContextRepository securityContextRepository)
             throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
@@ -47,10 +43,8 @@ public class ResourceServerConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new CommonRequestAndResponseFilter(), SecurityContextHolderFilter.class)// 1
-                .addFilterBefore(requestSignatureFilter, SecurityContextHolderFilter.class)// 2
                 .securityContext(securityContextConfigurer -> securityContextConfigurer
-                        .securityContextRepository(securityContextRepository) // SecurityContextHolderFilter // 3
+                        .securityContextRepository(securityContextRepository) // SecurityContextHolderFilter
                 )
                 .exceptionHandling(exceptionHandler -> exceptionHandler
                         .authenticationEntryPoint(new AuthenticationEntryPointImpl())

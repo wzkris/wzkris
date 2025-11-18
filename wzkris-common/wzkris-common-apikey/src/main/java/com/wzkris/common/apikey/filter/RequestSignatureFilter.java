@@ -1,19 +1,20 @@
-package com.wzkris.common.security.oauth2.filter;
+package com.wzkris.common.apikey.filter;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.enums.BizSignCodeEnum;
+import com.wzkris.common.apikey.request.RepeatableReadRequestWrapper;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
-import com.wzkris.common.security.oauth2.request.RepeatableReadRequestWrapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @author wzkris
  */
+@Slf4j
 @RequiredArgsConstructor
 public class RequestSignatureFilter extends OncePerRequestFilter {
 

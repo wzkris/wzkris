@@ -1,8 +1,8 @@
-package com.wzkris.common.security.oauth2.filter;
+package com.wzkris.common.apikey.filter;
 
+import com.wzkris.common.apikey.request.RepeatableReadRequestWrapper;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.utils.TraceIdUtil;
-import com.wzkris.common.security.oauth2.request.RepeatableReadRequestWrapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -28,11 +28,6 @@
             <artifactId>spring-cloud-context</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-apikey</artifactId>
-        </dependency>
-
         <!-- Spring OAuth2资源服务器-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
