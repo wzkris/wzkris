@@ -2,8 +2,6 @@ package com.wzkris.message.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.message.feign.adminlog.req.LoginLogReq;
-import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -18,7 +16,6 @@ import java.util.Date;
  * @date : 2023/8/26 14:35
  */
 @Data
-@AutoMapper(target = LoginLogReq.class)
 @TableName(schema = "biz", value = "admin_login_log")
 public class AdminLoginLogDO implements Serializable {
 

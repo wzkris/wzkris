@@ -1,17 +1,17 @@
-package com.wzkris.message.feign.adminlog.req;
+package com.wzkris.message.feign.operatelog.req;
 
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 操作日志记录
+ * 操作事件
  *
  * @author wzkris
+ * @date 2025/10/13
  */
 @Data
-public class OperateLogReq implements Serializable {
+public class OperateLogEvent {
 
     /**
      * 操作模块
@@ -39,14 +39,19 @@ public class OperateLogReq implements Serializable {
     private String requestMethod;
 
     /**
-     * 用户ID
+     * 认证类型
      */
-    private Long userId;
+    private String authType;
 
     /**
-     * 用户名
+     * 操作人员ID
      */
-    private String username;
+    private Long operatorId;
+
+    /**
+     * 操作人员
+     */
+    private String operName;
 
     /**
      * 请求url
@@ -76,7 +81,7 @@ public class OperateLogReq implements Serializable {
     /**
      * 操作状态
      */
-    private boolean success;
+    private Boolean success;
 
     /**
      * 错误消息
@@ -87,5 +92,10 @@ public class OperateLogReq implements Serializable {
      * 操作时间
      */
     private Date operTime;
+
+    /**
+     * 租户ID
+     */
+    private Long tenantId;
 
 }

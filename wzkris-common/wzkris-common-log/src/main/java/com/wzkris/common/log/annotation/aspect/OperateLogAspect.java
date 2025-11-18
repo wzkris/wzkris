@@ -11,7 +11,7 @@ import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.event.OperateEvent;
+import com.wzkris.message.feign.operatelog.req.OperateLogEvent;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.security.utils.TenantUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,74 +73,74 @@ public class OperateLogAspect {
     }
 
     protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog, Object jsonResult, Exception exception) {
-        OperateEvent operateEvent = buildOperateEvent(joinPoint, operateLog, jsonResult, exception);
+        OperateLogEvent operateLogEvent = buildOperateEvent(joinPoint, operateLog, jsonResult, exception);
 
-        SpringUtil.getContext().publishEvent(operateEvent);
+        SpringUtil.getContext().publishEvent(operateLogEvent);
     }
 
     /**
      * 构建操作事件 - 不依赖HTTP请求
      */
-    private OperateEvent buildOperateEvent(JoinPoint joinPoint, OperateLog operateLog,
-                                           Object jsonResult, Exception exception) {
-        OperateEvent operateEvent = new OperateEvent();
+    private OperateLogEvent buildOperateEvent(JoinPoint joinPoint, OperateLog operateLog,
+                                              Object jsonResult, Exception exception) {
+        OperateLogEvent operateLogEvent = new OperateLogEvent();
 
         // 设置用户信息
-        operateEvent.setOperatorId(SecurityUtil.getId());
-        operateEvent.setAuthType(SecurityUtil.getAuthType().getValue());
-        operateEvent.setOperName(SecurityUtil.getName());
+        operateLogEvent.setOperatorId(SecurityUtil.getId());
+        operateLogEvent.setAuthType(SecurityUtil.getAuthType().getValue());
+        operateLogEvent.setOperName(SecurityUtil.getName());
 
         // 设置租户ID
         if (Objects.equals(SecurityUtil.getAuthType(), AuthTypeEnum.TENANT)) {
-            operateEvent.setTenantId(TenantUtil.getTenantId());
+            operateLogEvent.setTenantId(TenantUtil.getTenantId());
         }
 
         // 设置操作信息
-        operateEvent.setOperType(operateLog.operateType().getValue());
-        operateEvent.setSuccess(true);
-        operateEvent.setOperTime(new Date());
+        operateLogEvent.setOperType(operateLog.operateType().getValue());
+        operateLogEvent.setSuccess(true);
+        operateLogEvent.setOperTime(new Date());
 
         // 设置方法信息
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
-        operateEvent.setMethod(className + StringUtil.DOT + methodName + "()");
+        operateLogEvent.setMethod(className + StringUtil.DOT + methodName + "()");
 
         // 对于Web环境，尝试获取请求信息；非Web环境则为空
-        setRequestParams(operateEvent);
+        setRequestParams(operateLogEvent);
 
         // 处理异常情况
         if (exception != null) {
-            operateEvent.setSuccess(false);
-            operateEvent.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
+            operateLogEvent.setSuccess(false);
+            operateLogEvent.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
         } else if (jsonResult instanceof Result<?> result && !result.isSuccess()) {
-            operateEvent.setSuccess(false);
-            operateEvent.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
+            operateLogEvent.setSuccess(false);
+            operateLogEvent.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
         }
 
         // 设置注解信息
-        operateEvent.setTitle(operateLog.title());
-        operateEvent.setSubTitle(operateLog.subTitle());
-        operateEvent.setOperType(operateLog.operateType().getValue());
+        operateLogEvent.setTitle(operateLog.title());
+        operateLogEvent.setSubTitle(operateLog.subTitle());
+        operateLogEvent.setOperType(operateLog.operateType().getValue());
 
         // 处理参数和结果
         try {
-            setRequestValue(joinPoint, operateLog.excludeRequestParam(), operateEvent);
+            setRequestValue(joinPoint, operateLog.excludeRequestParam(), operateLogEvent);
 
             if (jsonResult != null) {
-                operateEvent.setJsonResult(StringUtil.substring(
+                operateLogEvent.setJsonResult(StringUtil.substring(
                         objectMapper.writeValueAsString(jsonResult), 0, MAX_PARAM_LENGTH));
             }
         } catch (JsonProcessingException e) {
             log.error("日志参数转换发生异常：{}", e.getMessage(), e);
         }
 
-        return operateEvent;
+        return operateLogEvent;
     }
 
     /**
      * 设置Web环境信息（如果存在）
      */
-    private void setRequestParams(OperateEvent operateEvent) {
+    private void setRequestParams(OperateLogEvent operateLogEvent) {
         try {
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
                     RequestContextHolder.getRequestAttributes();
@@ -148,16 +148,16 @@ public class OperateLogAspect {
             HttpServletRequest request = requestAttributes.getRequest();
 
             String ip = ServletUtil.getClientIP(request);
-            operateEvent.setRequestMethod(request.getMethod());
-            operateEvent.setOperIp(ip);
-            operateEvent.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
+            operateLogEvent.setRequestMethod(request.getMethod());
+            operateLogEvent.setOperIp(ip);
+            operateLogEvent.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
 
         } catch (Exception e) {
             log.info("非Web环境，跳过设置请求信息");
         }
     }
 
-    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperateEvent operateEvent)
+    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperateLogEvent operateLogEvent)
             throws JsonProcessingException {
         String operParams = argsArrayToString(joinPoint.getArgs());
 
@@ -178,7 +178,7 @@ public class OperateLogAspect {
             }
         }
 
-        operateEvent.setOperParam(operParams);
+        operateLogEvent.setOperParam(operParams);
     }
 
     private void fuzzyParams(Map<String, String> paramsMap, String[] excludeRequestParam) {

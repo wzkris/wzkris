@@ -2,8 +2,6 @@ package com.wzkris.message.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.message.feign.tenantlog.req.OperateLogReq;
-import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -17,7 +15,6 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-@AutoMapper(target = OperateLogReq.class)
 @TableName(schema = "biz", value = "tenant_operate_log")
 public class TenantOperateLogDO implements Serializable {
 

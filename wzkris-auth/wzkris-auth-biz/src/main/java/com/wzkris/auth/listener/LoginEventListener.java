@@ -9,9 +9,8 @@ import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.IpUtil;
-import com.wzkris.message.feign.adminlog.AdminLogFeign;
-import com.wzkris.message.feign.tenantlog.TenantLogFeign;
-import com.wzkris.message.feign.tenantlog.req.LoginLogReq;
+import com.wzkris.message.feign.loginlog.LoginLogFeign;
+import com.wzkris.message.feign.loginlog.req.LoginLogEvent;
 import com.wzkris.principal.feign.admin.AdminInfoFeign;
 import com.wzkris.principal.feign.admin.req.LoginInfoReq;
 import com.wzkris.principal.feign.customer.CustomerInfoFeign;
@@ -23,6 +22,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 
@@ -39,9 +39,7 @@ public class LoginEventListener {
 
     private final TokenService tokenService;
 
-    private final AdminLogFeign adminLogFeign;
-
-    private final TenantLogFeign tenantLogFeign;
+    private final LoginLogFeign loginLogFeign;
 
     private final AdminInfoFeign adminInfoFeign;
 
@@ -92,18 +90,19 @@ public class LoginEventListener {
             adminInfoFeign.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
-        final com.wzkris.message.feign.adminlog.req.LoginLogReq loginLogReq = new com.wzkris.message.feign.adminlog.req.LoginLogReq();
-        loginLogReq.setAdminId(user.getId());
-        loginLogReq.setUsername(user.getUsername());
-        loginLogReq.setLoginTime(new Date());
-        loginLogReq.setLoginIp(ipAddr);
-        loginLogReq.setLoginType(loginType);
-        loginLogReq.setSuccess(event.getSuccess());
-        loginLogReq.setErrorMsg(errorMsg);
-        loginLogReq.setLoginLocation(loginLocation);
-        loginLogReq.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-        loginLogReq.setBrowser(browser);
-        adminLogFeign.saveLoginlog(loginLogReq);
+        LoginLogEvent loginLogEvent = new LoginLogEvent();
+        loginLogEvent.setAuthType(AuthTypeEnum.ADMIN.getValue());
+        loginLogEvent.setOperatorId(user.getId());
+        loginLogEvent.setUsername(user.getUsername());
+        loginLogEvent.setLoginTime(new Date());
+        loginLogEvent.setLoginIp(ipAddr);
+        loginLogEvent.setLoginType(loginType);
+        loginLogEvent.setSuccess(event.getSuccess());
+        loginLogEvent.setErrorMsg(errorMsg);
+        loginLogEvent.setLoginLocation(loginLocation);
+        loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
+        loginLogEvent.setBrowser(browser);
+        loginLogFeign.save(Collections.singletonList(loginLogEvent));
     }
 
     private void handleLoginTenant(LoginEvent event, LoginTenant tenant) {
@@ -133,25 +132,24 @@ public class LoginEventListener {
             loginInfoReq.setLoginDate(new Date());
             memberInfoFeign.updateLoginInfo(loginInfoReq);
         }
-        // 插入后台登陆日志
-        final LoginLogReq loginLogReq = new LoginLogReq();
-        loginLogReq.setMemberId(tenant.getId());
-        loginLogReq.setUsername(tenant.getUsername());
-        loginLogReq.setTenantId(tenant.getTenantId());
-        loginLogReq.setLoginTime(new Date());
-        loginLogReq.setLoginIp(ipAddr);
-        loginLogReq.setLoginType(loginType);
-        loginLogReq.setSuccess(event.getSuccess());
-        loginLogReq.setErrorMsg(errorMsg);
-        loginLogReq.setLoginLocation(loginLocation);
-        loginLogReq.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-        loginLogReq.setBrowser(browser);
-        tenantLogFeign.saveLoginlog(loginLogReq);
+        // 插入租户登陆日志
+        LoginLogEvent loginLogEvent = new LoginLogEvent();
+        loginLogEvent.setAuthType(AuthTypeEnum.TENANT.getValue());
+        loginLogEvent.setOperatorId(tenant.getId());
+        loginLogEvent.setUsername(tenant.getUsername());
+        loginLogEvent.setTenantId(tenant.getTenantId());
+        loginLogEvent.setLoginTime(new Date());
+        loginLogEvent.setLoginIp(ipAddr);
+        loginLogEvent.setLoginType(loginType);
+        loginLogEvent.setSuccess(event.getSuccess());
+        loginLogEvent.setErrorMsg(errorMsg);
+        loginLogEvent.setLoginLocation(loginLocation);
+        loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
+        loginLogEvent.setBrowser(browser);
+        loginLogFeign.save(Collections.singletonList(loginLogEvent));
     }
 
     private void handleLoginCustomer(LoginEvent event, LoginCustomer customer) {
-        final String loginType = event.getLoginType();
-        final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
         final UserAgent userAgent = event.getUserAgent();
 
