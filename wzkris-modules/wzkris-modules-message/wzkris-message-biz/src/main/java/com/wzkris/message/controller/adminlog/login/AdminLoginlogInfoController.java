@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "管理员登录日志信息")
+@Tag(name = "管理员个人登录日志信息")
 @RestController
 @RequestMapping("/admin-loginlog-info")
 @RequiredArgsConstructor

@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-@Tag(name = "租户成员操作日志管理")
+@Tag(name = "租户操作日志管理")
 @RestController
 @RequestMapping("/tenant-operatelog-manage")
 @RequiredArgsConstructor

@@ -53,9 +53,9 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "修改信息")
     @PostMapping
     @CheckTenantPerms("prin-mod:tenant-info:edit")
-    public Result<TenantInfoVO> tenantInfo(@RequestBody TenantInfoReq req) {
-        TenantInfoDO sysTenant = BeanUtil.convert(req, new TenantInfoDO(TenantUtil.getTenantId()));
-        return toRes(tenantInfoMapper.updateById(sysTenant));
+    public Result<Void> tenantInfo(@RequestBody TenantInfoReq req) {
+        TenantInfoDO tenantInfoDO = BeanUtil.convert(req, new TenantInfoDO(TenantUtil.getTenantId()));
+        return toRes(tenantInfoMapper.updateById(tenantInfoDO));
     }
 
     @Operation(summary = "获取已使用配额")

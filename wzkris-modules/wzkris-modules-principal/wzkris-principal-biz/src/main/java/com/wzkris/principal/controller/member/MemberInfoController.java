@@ -10,6 +10,7 @@ import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.principal.domain.MemberInfoDO;
 import com.wzkris.principal.domain.req.EditPhoneReq;
 import com.wzkris.principal.domain.req.EditPwdReq;
+import com.wzkris.principal.domain.req.member.MemberInfoReq;
 import com.wzkris.principal.domain.vo.member.MemberInfoVO;
 import com.wzkris.principal.mapper.MemberInfoMapper;
 import com.wzkris.principal.service.MemberInfoService;
@@ -58,6 +59,15 @@ public class MemberInfoController extends BaseController {
 
         memberInfoVO.setPostGroup(postInfoService.getPostGroup());
         return ok(memberInfoVO);
+    }
+
+    @Operation(summary = "修改基本信息")
+    @OperateLog(title = "个人信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
+    @PostMapping
+    public Result<Void> editInfo(@RequestBody MemberInfoReq profileReq) {
+        MemberInfoDO memberInfoDO = new MemberInfoDO(TenantUtil.getId());
+        memberInfoDO.setGender(profileReq.getGender());
+        return toRes(memberInfoMapper.updateById(memberInfoDO));
     }
 
     @Operation(summary = "修改手机号")

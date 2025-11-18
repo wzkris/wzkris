@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "租户成员个人操作日志信息")
+@Tag(name = "租户个人操作日志信息")
 @RestController
 @RequestMapping("/tenant-operatelog-info")
 @RequiredArgsConstructor

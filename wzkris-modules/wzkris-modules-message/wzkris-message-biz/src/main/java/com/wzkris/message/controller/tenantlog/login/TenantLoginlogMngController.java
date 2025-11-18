@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "租户成员登录日志管理")
+@Tag(name = "租户登录日志管理")
 @RestController
 @RequestMapping("/tenant-loginlog-manage")
 @RequiredArgsConstructor
