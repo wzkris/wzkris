@@ -59,7 +59,8 @@ wzkris
 │   ├── wzkris-common-web           // Web基础
 │   └── wzkris-common-weixin-sdk    // 微信SDK
 ├── wzkris-demo            // 示例模块
-│   └── wzkris-mq-demo     // 消息队列示例
+│   ├── wzkris-mq-demo         // RocketMQ Stream 示例
+│   └── wzkris-pg-bus-demo     // PostgreSQL LISTEN/NOTIFY + MyBatis-Plus 示例
 ├── wzkris-extends         // 扩展模块
 │   └── wzkris-monitor-admin  // 监控中心
 ├── wzkris-gateway         // API网关
@@ -138,6 +139,37 @@ wzkris
 | Principal | 8000 | 主体信息服务 |
 | Message | 5555 | 消息服务 |
 | Monitor | 9100 | 监控中心 |
+
+## 📨 PostgreSQL 消息总线 Demo
+
+`wzkris-demo/wzkris-pg-bus-demo` 演示了如何通过 **MyBatis-Plus + PostgreSQL NOTIFY/LISTEN** 组合出轻量级消息总线，覆盖如下能力：
+
+- MyBatis-Plus 管理消息表 `demo_bus_message`（字段包含 channel、title、payload、status）
+- 通过 `pg_notify` 推送变更事件，监听线程常驻 `LISTEN <channel>`
+- REST API 用于发消息、补发、手动 ACK，便于联调
+
+### 快速体验
+
+1. 初始化表结构
+   ```sql
+   \i sql/postgresql/wzkris_pg_bus_demo.sql
+   ```
+2. 根据需要在 `wzkris-demo/wzkris-pg-bus-demo/src/main/resources/application.yml` 配置数据库
+3. 启动 Demo
+   ```bash
+   mvn -pl wzkris-demo/wzkris-pg-bus-demo spring-boot:run
+   ```
+4. 调用接口
+   ```bash
+   # 发布一条消息
+   curl -X POST http://localhost:3341/messages \
+     -H "Content-Type: application/json" \
+     -d '{"title":"demo","payload":"hello pg bus"}'
+   # 重放
+   curl -X POST http://localhost:3341/messages/{id}/resend
+   # 查询
+   curl http://localhost:3341/messages
+   ```
 
 ### 访问方式
 

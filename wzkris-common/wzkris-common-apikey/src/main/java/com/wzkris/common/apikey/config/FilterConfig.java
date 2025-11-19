@@ -1,0 +1,33 @@
+package com.wzkris.common.apikey.config;
+
+import com.wzkris.common.apikey.filter.CommonRequestAndResponseFilter;
+import com.wzkris.common.apikey.filter.RequestSignatureFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+
+/**
+ * 自定义的过滤器链
+ */
+@Configuration
+public class FilterConfig {
+
+    @Bean
+    public FilterRegistrationBean<CommonRequestAndResponseFilter> commonRequestAndResponseFilter() {
+        FilterRegistrationBean<CommonRequestAndResponseFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new CommonRequestAndResponseFilter());
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean<RequestSignatureFilter> requestSignatureFilter(
+            SignkeyProperties signkeyProperties) {
+        FilterRegistrationBean<RequestSignatureFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new RequestSignatureFilter(signkeyProperties));
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
+        return registration;
+    }
+
+}

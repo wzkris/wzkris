@@ -134,6 +134,7 @@
         <module>wzkris-auth</module>
         <module>wzkris-bom</module>
         <module>wzkris-demo/wzkris-mq-demo</module>
+        <module>wzkris-demo/wzkris-pg-bus-demo</module>
         <module>wzkris-gateway</module>
         <module>wzkris-extends</module>
         <module>wzkris-modules</module>
