@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,6 +25,7 @@ import java.util.Optional;
  * @author wzkris
  */
 @Slf4j
+@Order(Ordered.LOWEST_PRECEDENCE)
 @Aspect
 public class ControllerStatisticAspect {
 
@@ -34,14 +37,16 @@ public class ControllerStatisticAspect {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        long startTime = 0L;
+        long startTime = System.currentTimeMillis();
         long endTime = 0L;
         Object result = null;
 
         try {
-            startTime = System.currentTimeMillis();
             result = joinPoint.proceed();
             endTime = System.currentTimeMillis();
+        } catch (Exception e) {
+            endTime = System.currentTimeMillis();
+            throw e;
         } finally {
             log.info("""
                             Request URL: {}
@@ -49,7 +54,7 @@ public class ControllerStatisticAspect {
                             Request Parameters: {}
                             Request Body: {}
                             Response: {}
-                            Time Taken: {} ms
+                            Time Cost: {} ms
                             """,
                     request.getRequestURL(),
                     request.getMethod(),

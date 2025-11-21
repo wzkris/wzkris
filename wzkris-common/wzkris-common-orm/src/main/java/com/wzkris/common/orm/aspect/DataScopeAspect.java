@@ -107,7 +107,7 @@ public class DataScopeAspect {
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to inject data scope parameters: {}", e.getMessage());
+            log.error("Failed to inject data scope parameters: {}", e.getMessage(), e);
         }
     }
 
@@ -142,7 +142,7 @@ public class DataScopeAspect {
             // 执行表达式获取值
             return expression.getValue(createSpelContext());
         } catch (Exception e) {
-            log.error("Failed to evaluate SpEL expression '{}': {}", source, e.getMessage());
+            log.error("Failed to evaluate SpEL expression '{}': {}", source, e.getMessage(), e);
             return null;
         }
     }
