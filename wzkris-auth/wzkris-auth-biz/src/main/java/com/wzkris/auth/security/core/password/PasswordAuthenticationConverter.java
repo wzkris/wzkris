@@ -1,8 +1,6 @@
 package com.wzkris.auth.security.core.password;
 
-import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -69,20 +67,11 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
-        String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthTypeEnum authType = AuthTypeEnum.fromValue(type);
-        if (authType == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.AUTH_TYPE);
-        }
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters) {
         String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
         String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
         String captchaId = StringUtil.toStringOrNull(additionalParameters.get(CAPTCHA_ID));
-        return new PasswordAuthenticationToken(authType, username, password, captchaId);
+        return new PasswordAuthenticationToken(authTypeEnum, username, password, captchaId);
     }
 
 }

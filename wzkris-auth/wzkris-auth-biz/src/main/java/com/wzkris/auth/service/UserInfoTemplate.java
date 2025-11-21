@@ -17,7 +17,7 @@ public abstract class UserInfoTemplate {
     }
 
     @Nullable
-    public MyPrincipal loadUserByWxXcx(String wxCode, String phoneCode) {
+    public MyPrincipal loadUserByWxXcx(String wxCode, @Nullable String phoneCode) {
         return null;
     }
 

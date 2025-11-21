@@ -1,8 +1,6 @@
 package com.wzkris.auth.security.core.refresh;
 
-import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -32,7 +30,7 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
 
     @Override
     public void checkParams(MultiValueMap<String, String> parameters) {
-        // username (REQUIRED)
+        // refresh_token (REQUIRED)
         String refreshToken = parameters.getFirst(OAuth2ParameterNames.REFRESH_TOKEN);
         if (!StringUtils.hasText(refreshToken)
                 || parameters.get(OAuth2ParameterNames.REFRESH_TOKEN).size() != 1) {
@@ -45,18 +43,9 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
-        String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthTypeEnum authType = AuthTypeEnum.fromValue(type);
-        if (authType == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.AUTH_TYPE);
-        }
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters) {
         String refreshToken = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.REFRESH_TOKEN));
-        return new RefreshAuthenticationToken(authType, refreshToken);
+        return new RefreshAuthenticationToken(authTypeEnum, refreshToken);
     }
 
 }

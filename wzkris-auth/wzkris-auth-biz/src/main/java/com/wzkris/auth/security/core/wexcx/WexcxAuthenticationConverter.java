@@ -1,6 +1,5 @@
 package com.wzkris.auth.security.core.wexcx;
 
-import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
@@ -33,41 +32,16 @@ public final class WexcxAuthenticationConverter extends CommonAuthenticationConv
     public void checkParams(MultiValueMap<String, String> parameters) {
         // wxcode (REQUIRED)
         String wxCode = parameters.getFirst(OAuth2ParameterConstant.WXXCX_CODE);
-        if (!StringUtils.hasText(wxCode)
-                || parameters.get(OAuth2ParameterConstant.WXXCX_CODE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCodeEnum.REQUEST_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "oauth2.wxlogin.fail",
-                    OAuth2ParameterConstant.WXXCX_CODE);
-        }
-
-        // authType (REQUIRED)
-        String authType = parameters.getFirst(OAuth2ParameterConstant.AUTH_TYPE);
-        if (!StringUtils.hasText(authType)
-                || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCodeEnum.REQUEST_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "oauth2.wxlogin.fail",
-                    OAuth2ParameterConstant.AUTH_TYPE);
+        if (!StringUtils.hasText(wxCode) || parameters.get(OAuth2ParameterConstant.WXXCX_CODE).size() != 1) {
+            OAuth2ExceptionUtil.throwErrorI18n(BizBaseCodeEnum.REQUEST_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail", OAuth2ParameterConstant.WXXCX_CODE);
         }
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
-        String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthTypeEnum authType = AuthTypeEnum.fromValue(type);
-        if (authType == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.AUTH_TYPE);
-        }
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters) {
         String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_CODE));
         String phoneCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_PHONE_CODE));
-        return new WexcxAuthenticationToken(authType, wxCode, phoneCode);
+        return new WexcxAuthenticationToken(authTypeEnum, wxCode, phoneCode);
     }
 
 }

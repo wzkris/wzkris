@@ -1,5 +1,7 @@
 package com.wzkris.auth.security.core;
 
+import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.LinkedMultiValueMap;
@@ -41,23 +43,30 @@ public abstract class CommonAuthenticationConverter<T extends CommonAuthenticati
             return null;
         }
 
+        // auth_type (REQUIRED)
+        String authType = request.getParameter(OAuth2ParameterConstant.AUTH_TYPE);
+        AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(authType);
+        if (authTypeEnum == null) {
+            return null;
+        }
+
         MultiValueMap<String, String> parameters = getParameters(request);
 
         this.checkParams(parameters);
 
         // 扩展信息
         Map<String, Object> additionalParameters = parameters.entrySet().stream()
-                .filter(e -> !e.getKey().equals(LOGIN_TYPE))
+                .filter(e -> !e.getKey().equals(LOGIN_TYPE) && !e.getKey().equals(OAuth2ParameterConstant.AUTH_TYPE))
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
         // 创建待认证token
-        return this.buildToken(loginType, additionalParameters);
+        return this.buildToken(authTypeEnum, loginType, additionalParameters);
     }
 
     /**
      * 构建AuthenticationToken
      */
-    protected abstract CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters);
+    protected abstract CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters);
 
     final MultiValueMap<String, String> getParameters(HttpServletRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();
