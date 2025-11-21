@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core.wexcx;
 
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
@@ -47,8 +47,8 @@ public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
     }
 
     @Override
-    public String getLoginType() {
-        return OAuth2LoginTypeConstant.WE_XCX;
+    public LoginTypeEnum getLoginType() {
+        return LoginTypeEnum.WE_XCX;
     }
 
 }

@@ -113,7 +113,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                         .publishEvent(new LoginEvent(
                                 commonAuthenticationToken.getPrincipal(),
                                 authenticationToken.getRefreshToken().getTokenValue(),
-                                commonAuthenticationToken.getLoginType(),
+                                commonAuthenticationToken.getLoginType().getValue(),
                                 true,
                                 "",
                                 ServletUtil.getClientIP(request),

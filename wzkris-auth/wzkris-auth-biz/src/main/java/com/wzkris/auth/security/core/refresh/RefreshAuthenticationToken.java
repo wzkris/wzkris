@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core.refresh;
 
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
@@ -36,8 +36,8 @@ public final class RefreshAuthenticationToken extends CommonAuthenticationToken 
     }
 
     @Override
-    public String getLoginType() {
-        return OAuth2LoginTypeConstant.REFRESH;
+    public LoginTypeEnum getLoginType() {
+        return LoginTypeEnum.REFRESH;
     }
 
 }

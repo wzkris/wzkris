@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core.refresh;
 
+import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.security.config.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.TokenService;

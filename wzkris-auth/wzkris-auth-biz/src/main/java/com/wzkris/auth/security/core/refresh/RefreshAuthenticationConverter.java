@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core.refresh;
 
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -24,8 +24,8 @@ import java.util.Map;
 public final class RefreshAuthenticationConverter extends CommonAuthenticationConverter<RefreshAuthenticationToken> {
 
     @Override
-    protected boolean support(String loginType) {
-        return OAuth2LoginTypeConstant.REFRESH.equals(loginType);
+    protected boolean support(LoginTypeEnum loginType) {
+        return LoginTypeEnum.REFRESH.equals(loginType);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters) {
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String refreshToken = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.REFRESH_TOKEN));
         return new RefreshAuthenticationToken(authTypeEnum, refreshToken);
     }

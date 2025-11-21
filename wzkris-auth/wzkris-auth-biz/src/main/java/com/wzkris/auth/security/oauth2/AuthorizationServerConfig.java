@@ -4,7 +4,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.wzkris.auth.security.config.JwtSecretProperties;
+import com.wzkris.auth.config.JwtSecretProperties;
 import com.wzkris.auth.security.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
 import com.wzkris.auth.security.oauth2.customize.CustomTokenClaimsCustomizer;

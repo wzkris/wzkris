@@ -1,4 +1,4 @@
-package com.wzkris.auth.security.config;
+package com.wzkris.auth.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.auth.security.config.TokenProperties;
+import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
 import org.springframework.security.authentication.AuthenticationProvider;

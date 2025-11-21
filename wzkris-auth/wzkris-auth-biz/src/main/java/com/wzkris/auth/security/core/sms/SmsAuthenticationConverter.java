@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -24,8 +24,8 @@ import java.util.Map;
 public final class SmsAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
     @Override
-    protected boolean support(String loginType) {
-        return OAuth2LoginTypeConstant.SMS.equals(loginType);
+    protected boolean support(LoginTypeEnum loginType) {
+        return LoginTypeEnum.SMS.equals(loginType);
     }
 
     @Override
@@ -54,7 +54,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters) {
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
         String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
         return new SmsAuthenticationToken(authTypeEnum, phoneNumber, smsCode);

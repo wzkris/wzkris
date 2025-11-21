@@ -1,8 +1,8 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -57,7 +57,7 @@ public class LoginTenantService extends UserInfoTemplate {
         try {
             return this.buildLoginTenant(memberResp);
         } catch (Exception e) {
-            this.recordFailedLog(memberResp, OAuth2LoginTypeConstant.SMS, e.getMessage());
+            this.recordFailedLog(memberResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
         }
     }
@@ -80,7 +80,7 @@ public class LoginTenantService extends UserInfoTemplate {
 
             return this.buildLoginTenant(memberResp);
         } catch (Exception e) {
-            this.recordFailedLog(memberResp, OAuth2LoginTypeConstant.PASSWORD, e.getMessage());
+            this.recordFailedLog(memberResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
             throw e;
         }
     }

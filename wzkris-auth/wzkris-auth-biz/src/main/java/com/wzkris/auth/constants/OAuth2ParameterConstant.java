@@ -1,4 +1,4 @@
-package com.wzkris.auth.security.constants;
+package com.wzkris.auth.constants;
 
 /**
  * @author wzkris

@@ -2,8 +2,8 @@ package com.wzkris.auth.service.impl;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -66,7 +66,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         try {
             return this.buildLoginCustomer(customerResp);
         } catch (Exception e) {
-            this.recordFailedLog(customerResp, OAuth2LoginTypeConstant.SMS, e.getMessage());
+            this.recordFailedLog(customerResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
         }
     }
@@ -109,7 +109,7 @@ public class LoginCustomerService extends UserInfoTemplate {
             loginCustomer.setWxopenid(identifier);
             return loginCustomer;
         } catch (Exception e) {
-            this.recordFailedLog(customerResp, OAuth2LoginTypeConstant.WE_XCX, e.getMessage());
+            this.recordFailedLog(customerResp, LoginTypeEnum.WE_XCX.getValue(), e.getMessage());
             throw e;
         }
     }

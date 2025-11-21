@@ -1,5 +1,6 @@
 package com.wzkris.auth.security.core;
 
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +29,7 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
         }
     }
 
-    public abstract String getLoginType();
+    public abstract LoginTypeEnum getLoginType();
 
     @Override
     public final MyPrincipal getPrincipal() {

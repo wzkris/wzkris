@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.core.password;
 
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -26,8 +26,8 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     private static final String CAPTCHA_ID = "captcha_id";
 
     @Override
-    protected boolean support(String loginType) {
-        return OAuth2LoginTypeConstant.PASSWORD.equals(loginType);
+    protected boolean support(LoginTypeEnum loginType) {
+        return LoginTypeEnum.PASSWORD.equals(loginType);
     }
 
     @Override
@@ -67,7 +67,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters) {
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
         String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
         String captchaId = StringUtil.toStringOrNull(additionalParameters.get(CAPTCHA_ID));

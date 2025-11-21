@@ -1,6 +1,7 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.authentication.AuthenticationConverter;
@@ -26,7 +27,7 @@ public abstract class CommonAuthenticationConverter<T extends CommonAuthenticati
      * @param loginType 授权类型
      * @return 是否支持
      */
-    protected abstract boolean support(String loginType);
+    protected abstract boolean support(LoginTypeEnum loginType);
 
     /**
      * 校验参数
@@ -38,14 +39,13 @@ public abstract class CommonAuthenticationConverter<T extends CommonAuthenticati
     @Override
     public final CommonAuthenticationToken convert(HttpServletRequest request) {
         // login_type (REQUIRED)
-        String loginType = request.getParameter(LOGIN_TYPE);
-        if (!this.support(loginType)) {
+        LoginTypeEnum loginTypeEnum = LoginTypeEnum.fromValue(request.getParameter(LOGIN_TYPE));
+        if (loginTypeEnum == null || !this.support(loginTypeEnum)) {
             return null;
         }
 
         // auth_type (REQUIRED)
-        String authType = request.getParameter(OAuth2ParameterConstant.AUTH_TYPE);
-        AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(authType);
+        AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(request.getParameter(OAuth2ParameterConstant.AUTH_TYPE));
         if (authTypeEnum == null) {
             return null;
         }
@@ -60,13 +60,13 @@ public abstract class CommonAuthenticationConverter<T extends CommonAuthenticati
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
         // 创建待认证token
-        return this.buildToken(authTypeEnum, loginType, additionalParameters);
+        return this.buildToken(authTypeEnum, additionalParameters);
     }
 
     /**
      * 构建AuthenticationToken
      */
-    protected abstract CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, String loginType, Map<String, Object> additionalParameters);
+    protected abstract CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters);
 
     final MultiValueMap<String, String> getParameters(HttpServletRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();

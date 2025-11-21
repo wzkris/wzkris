@@ -1,8 +1,8 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -57,7 +57,7 @@ public class LoginAdminService extends UserInfoTemplate {
         try {
             return this.buildLoginAdmin(userResp);
         } catch (Exception e) {
-            this.recordFailedLog(userResp, OAuth2LoginTypeConstant.SMS, e.getMessage());
+            this.recordFailedLog(userResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
         }
     }
@@ -80,7 +80,7 @@ public class LoginAdminService extends UserInfoTemplate {
 
             return this.buildLoginAdmin(userResp);
         } catch (Exception e) {
-            this.recordFailedLog(userResp, OAuth2LoginTypeConstant.PASSWORD, e.getMessage());
+            this.recordFailedLog(userResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
             throw e;
         }
     }

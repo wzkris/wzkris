@@ -1,8 +1,8 @@
 package com.wzkris.auth.security.core.sms;
 
+import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.security.config.TokenProperties;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
