@@ -73,6 +73,8 @@ public class QrLoginController {
             return Result.requestFail("二维码已被扫描");
         }
         qrTokenResp.setStatus(QrCodeStatus.CONFIRM.getValue());
+        // TODO 需要另存一份，避免此处退出登录，影响扫码端登录态
+
         String tokenValue = SecurityUtil.getTokenValue();
         qrTokenResp.setAccessToken(tokenValue);
         String refreshToken = tokenService.loadRefreshTokenByAccessToken(SecurityUtil.getAuthType().getValue(), tokenValue);

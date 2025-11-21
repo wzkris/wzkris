@@ -62,7 +62,7 @@ public class LoginEventListener {
         }
     }
 
-    private void handleLoginAdmin(LoginEvent event, LoginAdmin user) {
+    private void handleLoginAdmin(LoginEvent event, LoginAdmin admin) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
@@ -82,9 +82,9 @@ public class LoginEventListener {
             onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
             onlineSession.setLoginTime(new Date());
 
-            tokenService.putSession(user.getType().getValue(), user.getId(), event.getRefreshToken(), onlineSession);
+            tokenService.putSession(admin.getType().getValue(), admin.getId(), event.getRefreshToken(), onlineSession);
 
-            LoginInfoReq loginInfoReq = new LoginInfoReq(user.getId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(admin.getId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
             adminInfoFeign.updateLoginInfo(loginInfoReq);
@@ -92,8 +92,8 @@ public class LoginEventListener {
         // 插入后台登陆日志
         LoginLogEvent loginLogEvent = new LoginLogEvent();
         loginLogEvent.setAuthType(AuthTypeEnum.ADMIN.getValue());
-        loginLogEvent.setOperatorId(user.getId());
-        loginLogEvent.setUsername(user.getUsername());
+        loginLogEvent.setOperatorId(admin.getId());
+        loginLogEvent.setUsername(admin.getUsername());
         loginLogEvent.setLoginTime(new Date());
         loginLogEvent.setLoginIp(ipAddr);
         loginLogEvent.setLoginType(loginType);
