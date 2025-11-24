@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FeignRequestInterceptor implements RequestInterceptor {
 
+    private final SignkeyProperties signkeyProperties;
+
     @Value("${spring.application.name}")
     private String applicationName;
-
-    private final SignkeyProperties signkeyProperties;
 
     @Override
     public void apply(RequestTemplate template) {

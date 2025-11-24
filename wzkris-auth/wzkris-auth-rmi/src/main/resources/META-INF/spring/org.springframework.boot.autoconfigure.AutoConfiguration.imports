@@ -1,2 +1,3 @@
 com.wzkris.auth.feign.captcha.fallback.CaptchaFeignFeignFallback
 com.wzkris.auth.feign.token.fallback.TokenFeignFallback
+com.wzkris.auth.feign.token.fallback.TokenHttpServiceFallbackFactory
