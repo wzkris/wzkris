@@ -16,10 +16,10 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
-import com.wzkris.principal.feign.member.MemberInfoFeign;
-import com.wzkris.principal.feign.member.req.QueryMemberPermsReq;
-import com.wzkris.principal.feign.member.resp.MemberInfoResp;
-import com.wzkris.principal.feign.member.resp.MemberPermissionResp;
+import com.wzkris.principal.httpservice.member.MemberInfoHttpService;
+import com.wzkris.principal.httpservice.member.req.QueryMemberPermsReq;
+import com.wzkris.principal.httpservice.member.resp.MemberInfoResp;
+import com.wzkris.principal.httpservice.member.resp.MemberPermissionResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -40,14 +40,14 @@ public class LoginTenantService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final MemberInfoFeign memberInfoFeign;
+    private final MemberInfoHttpService memberInfoHttpService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public MyPrincipal loadUserByPhoneNumber(String phoneNumber) {
-        MemberInfoResp memberResp = memberInfoFeign.getByPhoneNumber(phoneNumber);
+        MemberInfoResp memberResp = memberInfoHttpService.getByPhoneNumber(phoneNumber);
 
         if (memberResp == null) {
             captchaService.freezeAccount(phoneNumber, 60);
@@ -65,7 +65,7 @@ public class LoginTenantService extends UserInfoTemplate {
     @Nullable
     @Override
     public MyPrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        MemberInfoResp memberResp = memberInfoFeign.getByUsername(username);
+        MemberInfoResp memberResp = memberInfoHttpService.getByUsername(username);
 
         if (memberResp == null) {
             captchaService.freezeAccount(username, 60);
@@ -98,7 +98,7 @@ public class LoginTenantService extends UserInfoTemplate {
         this.checkAccount(memberResp);
 
         // 获取权限信息
-        MemberPermissionResp permissions = memberInfoFeign.getPermission(
+        MemberPermissionResp permissions = memberInfoHttpService.getPermission(
                 new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
 
         LoginTenant loginTenant = new LoginTenant(memberResp.getMemberId(), new HashSet<>(permissions.getGrantedAuthority()));

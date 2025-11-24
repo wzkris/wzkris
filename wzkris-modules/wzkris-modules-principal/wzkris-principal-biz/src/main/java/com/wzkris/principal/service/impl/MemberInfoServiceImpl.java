@@ -8,9 +8,9 @@ import com.wzkris.principal.domain.MemberToPostDO;
 import com.wzkris.principal.mapper.MemberInfoMapper;
 import com.wzkris.principal.mapper.MemberToPostMapper;
 import com.wzkris.principal.service.MemberInfoService;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,13 +1,14 @@
 package com.wzkris.gateway.service;
 
-import com.wzkris.auth.feign.token.req.TokenReq;
-import com.wzkris.auth.feign.token.resp.TokenResponse;
+import com.wzkris.auth.httpservice.token.req.TokenReq;
+import com.wzkris.auth.httpservice.token.resp.TokenResponse;
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
+import com.wzkris.common.core.exception.service.ResultException;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginAdmin;
@@ -15,7 +16,6 @@ import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.openfeign.exception.RpcException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +67,7 @@ public class TokenExtractionService {
      */
     public <T extends MyPrincipal> Mono<T> getCurrentPrincipal(ServerHttpRequest request) {
         if (!hasAnyToken(request)) {
-            return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
+            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
         }
 
         String adminToken = getAdminToken(request);
@@ -86,7 +86,7 @@ public class TokenExtractionService {
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
-        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token type not found!!")));
+        return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token type not found!!")));
     }
 
     /**
@@ -125,14 +125,14 @@ public class TokenExtractionService {
                                     return Result.init(BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), null, "Unauthorized");
                                 }
                             })
-                            .flatMap(responseBody -> Mono.error(new RpcException(response.statusCode().value(), responseBody)));
+                            .flatMap(responseBody -> Mono.error(new ResultException(response.statusCode().value(), responseBody)));
                 })
                 .bodyToMono(typeReference)
                 .flatMap(tokenResponse -> {
                     if (tokenResponse == null || !tokenResponse.isSuccess()) {
                         log.error("Token validation failed. {}", tokenResponse);
                         String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
-                        return Mono.error(new RpcException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
+                        return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
                     } else {
                         T principal = tokenResponse.getPrincipal();
 

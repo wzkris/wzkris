@@ -8,8 +8,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.CustomerUtil;
-import com.wzkris.principal.feign.member.MemberInfoFeign;
-import com.wzkris.principal.feign.member.resp.MemberInfoResp;
+import com.wzkris.principal.httpservice.member.MemberInfoHttpService;
+import com.wzkris.principal.httpservice.member.resp.MemberInfoResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ import static com.wzkris.common.core.model.Result.ok;
 @RequiredArgsConstructor
 public class SwitchTokenController {
 
-    private final MemberInfoFeign memberInfoFeign;
+    private final MemberInfoHttpService memberInfoHttpService;
 
     private final TokenService tokenService;
 
@@ -56,7 +56,7 @@ public class SwitchTokenController {
             return Result.requestFail("当前用户不允许切换");
         }
 
-        MemberInfoResp memberInfoResp = memberInfoFeign.getByWexcxIdentifier(identifier);
+        MemberInfoResp memberInfoResp = memberInfoHttpService.getByWexcxIdentifier(identifier);
         if (memberInfoResp == null) {
             return Result.requestFail("微信未绑定商户账号");
         }

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.principal.feign.member.resp.MemberInfoResp;
+import com.wzkris.principal.httpservice.member.resp.MemberInfoResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;

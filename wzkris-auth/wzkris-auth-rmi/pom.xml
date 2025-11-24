@@ -15,7 +15,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-openfeign</artifactId>
+            <artifactId>wzkris-common-httpservice</artifactId>
         </dependency>
 
         <dependency>

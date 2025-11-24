@@ -16,9 +16,9 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomOAuth2Error;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
-import com.wzkris.principal.feign.customer.CustomerInfoFeign;
-import com.wzkris.principal.feign.customer.req.WexcxLoginReq;
-import com.wzkris.principal.feign.customer.resp.CustomerResp;
+import com.wzkris.principal.httpservice.customer.CustomerInfoHttpService;
+import com.wzkris.principal.httpservice.customer.req.WexcxLoginReq;
+import com.wzkris.principal.httpservice.customer.resp.CustomerResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class LoginCustomerService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final CustomerInfoFeign customerInfoFeign;
+    private final CustomerInfoHttpService customerInfoHttpService;
 
     @Autowired
     @Lazy
@@ -56,7 +56,7 @@ public class LoginCustomerService extends UserInfoTemplate {
     @Nullable
     @Override
     public LoginCustomer loadUserByPhoneNumber(String phoneNumber) {
-        CustomerResp customerResp = customerInfoFeign.getByPhoneNumber(phoneNumber);
+        CustomerResp customerResp = customerInfoHttpService.getByPhoneNumber(phoneNumber);
 
         if (customerResp == null) {
             captchaService.freezeAccount(phoneNumber, 60);
@@ -98,7 +98,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         WexcxLoginReq wexcxLoginReq = new WexcxLoginReq();
         wexcxLoginReq.setIdentifier(identifier);
         wexcxLoginReq.setPhoneNumber(phoneNumber);
-        CustomerResp customerResp = customerInfoFeign.wexcxLogin(wexcxLoginReq);
+        CustomerResp customerResp = customerInfoHttpService.wexcxLogin(wexcxLoginReq);
 
         if (customerResp == null) {
             return null;

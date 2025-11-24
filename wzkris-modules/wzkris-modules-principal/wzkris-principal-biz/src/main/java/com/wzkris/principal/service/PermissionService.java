@@ -1,7 +1,7 @@
 package com.wzkris.principal.service;
 
-import com.wzkris.principal.feign.admin.resp.AdminPermissionResp;
-import com.wzkris.principal.feign.member.resp.MemberPermissionResp;
+import com.wzkris.principal.httpservice.admin.resp.AdminPermissionResp;
+import com.wzkris.principal.httpservice.member.resp.MemberPermissionResp;
 import jakarta.annotation.Nullable;
 
 /**

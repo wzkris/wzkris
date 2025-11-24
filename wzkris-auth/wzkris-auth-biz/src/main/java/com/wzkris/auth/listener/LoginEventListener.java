@@ -8,12 +8,12 @@ import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.IpUtil;
-import com.wzkris.message.feign.loginlog.LoginLogFeign;
-import com.wzkris.message.feign.loginlog.req.LoginLogEvent;
-import com.wzkris.principal.feign.admin.AdminInfoFeign;
-import com.wzkris.principal.feign.admin.req.LoginInfoReq;
-import com.wzkris.principal.feign.customer.CustomerInfoFeign;
-import com.wzkris.principal.feign.member.MemberInfoFeign;
+import com.wzkris.message.httpservice.loginlog.LoginLogHttpService;
+import com.wzkris.message.httpservice.loginlog.req.LoginLogEvent;
+import com.wzkris.principal.httpservice.admin.AdminInfoHttpService;
+import com.wzkris.principal.httpservice.admin.req.LoginInfoReq;
+import com.wzkris.principal.httpservice.customer.CustomerInfoHttpService;
+import com.wzkris.principal.httpservice.member.MemberInfoHttpService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.basjes.parse.useragent.UserAgent;
@@ -38,13 +38,13 @@ public class LoginEventListener {
 
     private final TokenService tokenService;
 
-    private final LoginLogFeign loginLogFeign;
+    private final LoginLogHttpService loginLogHttpService;
 
-    private final AdminInfoFeign adminInfoFeign;
+    private final AdminInfoHttpService adminInfoHttpService;
 
-    private final MemberInfoFeign memberInfoFeign;
+    private final MemberInfoHttpService memberInfoHttpService;
 
-    private final CustomerInfoFeign customerInfoFeign;
+    private final CustomerInfoHttpService customerInfoHttpService;
 
     @Async
     @EventListener
@@ -76,7 +76,7 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(admin.getId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
-            adminInfoFeign.updateLoginInfo(loginInfoReq);
+            adminInfoHttpService.updateLoginInfo(loginInfoReq);
         }
         // 插入后台登陆日志
         LoginLogEvent loginLogEvent = new LoginLogEvent();
@@ -91,7 +91,7 @@ public class LoginEventListener {
         loginLogEvent.setLoginLocation(loginLocation);
         loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
         loginLogEvent.setBrowser(browser);
-        loginLogFeign.save(Collections.singletonList(loginLogEvent));
+        loginLogHttpService.save(Collections.singletonList(loginLogEvent));
     }
 
     private void handleLoginTenant(LoginEvent event, LoginTenant tenant) {
@@ -109,7 +109,7 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(tenant.getId());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
-            memberInfoFeign.updateLoginInfo(loginInfoReq);
+            memberInfoHttpService.updateLoginInfo(loginInfoReq);
         }
         // 插入租户登陆日志
         LoginLogEvent loginLogEvent = new LoginLogEvent();
@@ -125,7 +125,7 @@ public class LoginEventListener {
         loginLogEvent.setLoginLocation(loginLocation);
         loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
         loginLogEvent.setBrowser(browser);
-        loginLogFeign.save(Collections.singletonList(loginLogEvent));
+        loginLogHttpService.save(Collections.singletonList(loginLogEvent));
     }
 
     private void handleLoginCustomer(LoginEvent event, LoginCustomer customer) {
@@ -133,7 +133,7 @@ public class LoginEventListener {
             LoginInfoReq loginInfoReq = new LoginInfoReq(customer.getId());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(new Date());
-            customerInfoFeign.updateLoginInfo(loginInfoReq);
+            customerInfoHttpService.updateLoginInfo(loginInfoReq);
         }
     }
 

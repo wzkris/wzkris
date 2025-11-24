@@ -16,10 +16,10 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
-import com.wzkris.principal.feign.admin.AdminInfoFeign;
-import com.wzkris.principal.feign.admin.req.QueryAdminPermsReq;
-import com.wzkris.principal.feign.admin.resp.AdminPermissionResp;
-import com.wzkris.principal.feign.admin.resp.adminInfoResp;
+import com.wzkris.principal.httpservice.admin.AdminInfoHttpService;
+import com.wzkris.principal.httpservice.admin.req.QueryAdminPermsReq;
+import com.wzkris.principal.httpservice.admin.resp.AdminPermissionResp;
+import com.wzkris.principal.httpservice.admin.resp.adminInfoResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -40,14 +40,14 @@ public class LoginAdminService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final AdminInfoFeign adminInfoFeign;
+    private final AdminInfoHttpService adminInfoHttpService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public MyPrincipal loadUserByPhoneNumber(String phoneNumber) {
-        adminInfoResp userResp = adminInfoFeign.getByPhoneNumber(phoneNumber);
+        adminInfoResp userResp = adminInfoHttpService.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.freezeAccount(phoneNumber, 60);
@@ -65,7 +65,7 @@ public class LoginAdminService extends UserInfoTemplate {
     @Nullable
     @Override
     public MyPrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        adminInfoResp userResp = adminInfoFeign.getByUsername(username);
+        adminInfoResp userResp = adminInfoHttpService.getByUsername(username);
 
         if (userResp == null) {
             captchaService.freezeAccount(username, 60);
@@ -98,7 +98,7 @@ public class LoginAdminService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        AdminPermissionResp permissions = adminInfoFeign.getPermission(
+        AdminPermissionResp permissions = adminInfoHttpService.getPermission(
                 new QueryAdminPermsReq(userResp.getAdminId(), userResp.getDeptId()));
 
         LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(), new HashSet<>(permissions.getGrantedAuthority()));

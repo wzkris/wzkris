@@ -11,7 +11,7 @@ import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.message.feign.operatelog.req.OperateLogEvent;
+import com.wzkris.message.httpservice.operatelog.req.OperateLogEvent;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.security.utils.TenantUtil;
 import jakarta.servlet.http.HttpServletRequest;

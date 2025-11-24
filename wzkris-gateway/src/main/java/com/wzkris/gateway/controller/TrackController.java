@@ -1,7 +1,7 @@
 package com.wzkris.gateway.controller;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.openfeign.exception.RpcException;
+import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.domain.req.PageViewReq;
 import com.wzkris.gateway.service.StatisticsService;
@@ -49,7 +49,7 @@ public class TrackController {
                     recordPageview(principal.getType(), principal.getId(), request);
                     return Mono.just(ResponseEntity.noContent().build());
                 })
-                .onErrorResume(RpcException.class, rpcException -> {
+                .onErrorResume(BaseException.class, rpcException -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();
                     exchangeResponse.setRawStatusCode(rpcException.getHttpStatusCode());
                     return Mono.just(ResponseEntity.noContent().build());

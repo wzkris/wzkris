@@ -1,8 +1,8 @@
 package com.wzkris.gateway.filter.web;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
+import com.wzkris.common.core.exception.service.ResultException;
 import com.wzkris.common.core.model.MyPrincipal;
-import com.wzkris.common.openfeign.exception.RpcException;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.service.TokenExtractionService;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
@@ -83,10 +83,10 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
                                 )
                                 .contextWrite(context -> context.put(GATEWAY_PRINCIPAL, principal))
                 )
-                .onErrorResume(RpcException.class, rpcException -> {
+                .onErrorResume(ResultException.class, resultException -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();
-                    exchangeResponse.setRawStatusCode(rpcException.getHttpStatusCode());
-                    return WebFluxUtil.writeResponse(exchangeResponse, rpcException.getResult());
+                    exchangeResponse.setRawStatusCode(resultException.getHttpStatusCode());
+                    return WebFluxUtil.writeResponse(exchangeResponse, resultException.getResult());
                 })
                 .onErrorResume(throwable -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();

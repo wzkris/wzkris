@@ -1,6 +1,6 @@
 package com.wzkris.gateway.config;
 
-import com.wzkris.common.openfeign.constants.ServiceIdConstant;
+import com.wzkris.common.httpservice.constants.ServiceIdConstant;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.reactive.DeferringLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;

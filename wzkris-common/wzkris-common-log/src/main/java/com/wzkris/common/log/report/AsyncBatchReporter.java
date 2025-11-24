@@ -1,8 +1,8 @@
 package com.wzkris.common.log.report;
 
 import com.wzkris.common.core.threads.TracingIdRunnable;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
