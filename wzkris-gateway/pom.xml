@@ -20,10 +20,16 @@
     </properties>
 
     <dependencies>
-        <!-- SpringCloud Gateway -->
+        <!-- SpringCloud Gateway功能 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-gateway-server-webflux</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Gateway Starter-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <!-- SpringCloud Alibaba Nacos -->

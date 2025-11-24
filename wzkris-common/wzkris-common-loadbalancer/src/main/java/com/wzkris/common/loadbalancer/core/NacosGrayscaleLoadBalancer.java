@@ -4,7 +4,6 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.balancer.NacosBalancer;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
-import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,7 @@ import org.springframework.cloud.client.loadbalancer.Response;
 import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;

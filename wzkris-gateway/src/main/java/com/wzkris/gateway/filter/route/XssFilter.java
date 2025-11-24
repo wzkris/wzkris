@@ -4,7 +4,6 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.config.XssProperties;
 import io.netty.buffer.ByteBufAllocator;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.http.protocol.HTTP;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -95,7 +94,7 @@ public class XssFilter implements GlobalFilter {
                 httpHeaders.putAll(super.getHeaders());
                 // 由于修改了请求体的body，导致content-length长度不确定，因此需要删除原先的content-length
                 httpHeaders.remove(HttpHeaders.CONTENT_LENGTH);
-                httpHeaders.set(HttpHeaders.TRANSFER_ENCODING, HTTP.CHUNK_CODING);
+                httpHeaders.set(HttpHeaders.TRANSFER_ENCODING, "chunked");
                 return httpHeaders;
             }
         };
