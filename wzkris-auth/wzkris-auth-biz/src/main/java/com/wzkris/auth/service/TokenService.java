@@ -4,22 +4,30 @@ import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import nl.basjes.parse.useragent.UserAgent;
 import org.redisson.api.RMapCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
 import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -129,13 +137,29 @@ public class TokenService {
         long accessTTL = tokenProperties.getUserTokenTimeOut();
 
         // ========== 1️⃣ 写入在线会话 ==========
+
         RMapCache<String, OnlineSession> onlineCache = loadSessionCache(type, id);
-        // 如果已存在则刷新过期时间，否则新建
-        if (onlineCache.containsKey(refreshToken)) {
-            // 已存在则仅刷新过期时间
-            onlineCache.expireEntry(refreshToken, Duration.ofSeconds(refreshTTL), Duration.ZERO);
-        } else {
-            // 新建会话
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+            if (onlineCache.containsKey(refreshToken)) {
+                // 已存在则仅刷新过期时间
+                onlineCache.expireEntry(refreshToken, Duration.ofSeconds(refreshTTL), Duration.ZERO);
+            } else {
+                String clientIP = ServletUtil.getClientIP(request);
+                UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT));
+                OnlineSession onlineSession = new OnlineSession();
+                onlineSession.setDevice(userAgent.getValue(UserAgent.DEVICE_NAME));
+                onlineSession.setDeviceBrand(userAgent.getValue(UserAgent.DEVICE_BRAND));
+                onlineSession.setLoginIp(clientIP);
+                onlineSession.setBrowser(userAgent.getValue(UserAgent.AGENT_NAME));
+                onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
+                onlineSession.setLoginTime(new Date());
+
+                // 新建会话
+                onlineCache.put(refreshToken, onlineSession, refreshTTL, TimeUnit.SECONDS);
+            }
+        } catch (Exception e) {// 不存在请求
             onlineCache.put(refreshToken, new OnlineSession(), refreshTTL, TimeUnit.SECONDS);
         }
 
@@ -243,17 +267,6 @@ public class TokenService {
      */
     public final RMapCache<String, OnlineSession> loadSessionCache(String type, Serializable id) {
         return RedisUtil.getRMapCache(buildSessionKey(type, id), String.class, OnlineSession.class);
-    }
-
-    /**
-     * 添加会话
-     *
-     * @param id            用户ID
-     * @param onlineSession 会话信息
-     */
-    public final void putSession(String type, Serializable id, String refreshToken, OnlineSession onlineSession) {
-        RMapCache<String, OnlineSession> onlineCache = loadSessionCache(type, id);
-        onlineCache.put(refreshToken, onlineSession, tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
     }
 
 }

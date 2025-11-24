@@ -20,19 +20,19 @@ public class OnlineSession implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 设备类型
+     * 设备
      */
-    private String deviceType;
+    private String device;
+
+    /**
+     * 设备品牌
+     */
+    private String deviceBrand;
 
     /**
      * 登录IP地址
      */
     private String loginIp;
-
-    /**
-     * 登录地址
-     */
-    private String loginLocation;
 
     /**
      * 浏览器类型
