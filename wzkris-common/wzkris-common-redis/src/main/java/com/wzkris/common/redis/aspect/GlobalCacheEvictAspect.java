@@ -1,4 +1,4 @@
-package com.wzkris.common.redis.annotation.aspect;
+package com.wzkris.common.redis.aspect;
 
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.redis.annotation.GlobalCacheEvict;

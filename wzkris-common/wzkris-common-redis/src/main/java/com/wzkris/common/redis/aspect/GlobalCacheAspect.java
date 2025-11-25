@@ -1,4 +1,4 @@
-package com.wzkris.common.redis.annotation.aspect;
+package com.wzkris.common.redis.aspect;
 
 import com.wzkris.common.core.function.ThrowableSupplier;
 import com.wzkris.common.core.utils.SpringUtil;

@@ -1,7 +1,7 @@
 package com.wzkris.common.security.annotation;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.security.annotation.enums.CheckMode;
+import com.wzkris.common.security.enums.CheckMode;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;

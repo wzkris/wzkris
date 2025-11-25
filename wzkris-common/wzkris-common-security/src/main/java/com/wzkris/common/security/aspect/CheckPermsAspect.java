@@ -1,10 +1,10 @@
-package com.wzkris.common.security.annotation.aspect;
+package com.wzkris.common.security.aspect;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
-import com.wzkris.common.security.annotation.enums.CheckMode;
+import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.PermissionUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.wzkris.common.security.annotation.enums;
+package com.wzkris.common.security.enums;
 
 /**
  * 校验模式标识

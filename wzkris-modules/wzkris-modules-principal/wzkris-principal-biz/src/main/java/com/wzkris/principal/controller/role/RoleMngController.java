@@ -8,7 +8,7 @@ import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.common.security.annotation.enums.CheckMode;
+import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
