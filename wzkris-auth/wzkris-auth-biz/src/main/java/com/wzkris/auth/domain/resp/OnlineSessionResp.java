@@ -25,6 +25,7 @@ public class OnlineSessionResp extends OnlineSession {
 
     public OnlineSessionResp(OnlineSession onlineSession) {
         setDevice(onlineSession.getDevice());
+        setDeviceBrand(onlineSession.getDeviceBrand());
         setLoginIp(onlineSession.getLoginIp());
         setBrowser(onlineSession.getBrowser());
         setOs(onlineSession.getOs());
