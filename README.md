@@ -46,7 +46,7 @@ wzkris
 │   ├── wzkris-common-loadbalancer  // 负载均衡
 │   ├── wzkris-common-log           // 日志记录
 │   ├── wzkris-common-notifier      // 通知SDK集成
-│   ├── wzkris-common-openfeign     // 远程调用
+│   ├── wzkris-common-httpservice   // 远程调用
 │   ├── wzkris-common-orm           // 持久层框架
 │   ├── wzkris-common-redis         // Redis缓存
 │   ├── wzkris-common-seata         // 分布式事务
@@ -201,7 +201,7 @@ wzkris
 | **分布式事务**   | Seata                       | -         | 分布式事务框架（Spring Cloud Alibaba集成）|
 | **限流熔断**    | Sentinel                    | -         | 流量控制与熔断降级（Spring Cloud Alibaba集成）|
 | **监控管理**    | Spring Boot Admin           | -         | 应用监控管理               |
-| **远程调用**    | OpenFeign                   | -         | 服务间HTTP调用             |
+| **远程调用**    | HttpService                 | -         | 服务间HTTP调用             |
 | **代码质量**    | Checkstyle                  | 3.6.0     | 代码风格检查                |
 | **代码格式化**   | Spotless                    | 2.44.4    | 代码自动格式化               |
 

@@ -55,19 +55,19 @@ public class CaptchaService extends CapService {
     /**
      * 校验验证码
      */
-    public void validateCaptcha(String key, String code) {
+    public boolean validateCaptcha(String key, String code) {
         if (mockProperties.getCaptchaValidateMock()) {
-            return;
+            return true;
         }
         String fullKey = VALIDATE_PREFIX + key;
         String realcode = RedisUtil.getObj(fullKey);
         if (StringUtil.isBlank(realcode)) {
-            throw new CaptchaException("invalidParameter.captcha.error");
+            return false;
         }
         if (!StringUtil.equals(realcode, code)) {
-            throw new CaptchaException("invalidParameter.captcha.error");
+            return false;
         }
-        RedisUtil.delObj(fullKey);
+        return RedisUtil.delObj(fullKey);
     }
 
     /**
