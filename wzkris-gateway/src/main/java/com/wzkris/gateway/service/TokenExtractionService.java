@@ -1,31 +1,24 @@
 package com.wzkris.gateway.service;
 
+import com.wzkris.auth.httpservice.token.TokenHttpService;
 import com.wzkris.auth.httpservice.token.req.TokenReq;
-import com.wzkris.auth.httpservice.token.resp.TokenResponse;
-import com.wzkris.common.apikey.config.SignkeyProperties;
-import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
-import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.stream.Stream;
 
@@ -40,24 +33,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TokenExtractionService {
 
-    private static final ParameterizedTypeReference<TokenResponse<LoginAdmin>> userReference =
-            new ParameterizedTypeReference<>() {
-            };
-
-    private static final ParameterizedTypeReference<TokenResponse<LoginTenant>> tenantReference =
-            new ParameterizedTypeReference<>() {
-            };
-
-    private static final ParameterizedTypeReference<TokenResponse<LoginCustomer>> customerReference =
-            new ParameterizedTypeReference<>() {
-            };
-
-    private final WebClient tokenWebClient;
-
-    private final SignkeyProperties signkeyProperties;
-
-    @Value("${spring.application.name}")
-    private String applicationName;
+    private final TokenHttpService tokenHttpService;
 
     /**
      * 获取当前请求的用户信息
@@ -65,24 +41,24 @@ public class TokenExtractionService {
      * @param request 请求对象
      * @return 用户信息
      */
-    public <T extends MyPrincipal> Mono<T> getCurrentPrincipal(ServerHttpRequest request) {
+    public Mono<? extends MyPrincipal> getCurrentPrincipal(ServerHttpRequest request) {
         if (!hasAnyToken(request)) {
             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
         }
 
         String adminToken = getAdminToken(request);
         if (StringUtil.isNotBlank(adminToken)) {
-            return (Mono<T>) validatePrincipal(AuthTypeEnum.ADMIN.getValue(), adminToken, userReference);
+            return validatePrincipal(AuthTypeEnum.ADMIN.getValue(), adminToken, LoginAdmin.class);
         }
 
         String tenantToken = getTenantToken(request);
         if (StringUtil.isNotBlank(tenantToken)) {
-            return (Mono<T>) validatePrincipal(AuthTypeEnum.TENANT.getValue(), tenantToken, tenantReference);
+            return validatePrincipal(AuthTypeEnum.TENANT.getValue(), tenantToken, LoginTenant.class);
         }
 
         String customerToken = getCustomerToken(request);
         if (StringUtil.isNotBlank(customerToken)) {
-            return (Mono<T>) validatePrincipal(AuthTypeEnum.CUSTOMER.getValue(), customerToken, customerReference);
+            return validatePrincipal(AuthTypeEnum.CUSTOMER.getValue(), customerToken, LoginCustomer.class);
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
@@ -95,48 +71,26 @@ public class TokenExtractionService {
     private <T extends MyPrincipal> Mono<T> validatePrincipal(
             String authType,
             String token,
-            ParameterizedTypeReference<TokenResponse<T>> typeReference) {
+            Class<T> targetType) {
         TokenReq tokenReq = new TokenReq(authType, token);
 
-        return tokenWebClient.post()
-                .uri("/feign-token/check-principal")
-                .bodyValue(tokenReq)
-                .headers(httpHeaders -> {
-                    RequestSignerUtil.setCommonHeaders(httpHeaders::add,
-                            applicationName,
-                            signkeyProperties.getKeys().get(applicationName).getSecret(),
-                            JsonUtil.toJsonString(tokenReq),
-                            System.currentTimeMillis()
-                    );// 请求签名 -> 防止伪造请求
-                })
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, response -> {
-                    // 处理错误状态码，获取响应体
-                    return response.bodyToMono(String.class)
-                            .doOnNext(responseStr -> {
-                                log.error("Authentication called failed. Status: {}, Response body: {}",
-                                        response.statusCode(), responseStr);
-                            })
-                            .map(responseStr -> {
-                                try {
-                                    return JsonUtil.parseObject(responseStr, Result.class);
-                                } catch (Exception e) {
-                                    log.error("Failed to parse error response body: {}", responseStr, e);
-                                    return Result.init(BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), null, "Unauthorized");
-                                }
-                            })
-                            .flatMap(responseBody -> Mono.error(new ResultException(response.statusCode().value(), responseBody)));
-                })
-                .bodyToMono(typeReference)
+        return Mono.fromCallable(() -> tokenHttpService.validatePrincipal(tokenReq))
+                .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(tokenResponse -> {
                     if (tokenResponse == null || !tokenResponse.isSuccess()) {
                         log.error("Token validation failed. {}", tokenResponse);
                         String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
                         return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
                     } else {
-                        T principal = tokenResponse.getPrincipal();
-
-                        return Mono.just(principal);
+                        MyPrincipal principal = tokenResponse.getPrincipal();
+                        if (principal == null) {
+                            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Principal not found")));
+                        }
+                        if (!targetType.isInstance(principal)) {
+                            log.error("Principal type mismatch. expected: {}, actual: {}", targetType.getSimpleName(), principal.getClass().getSimpleName());
+                            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid principal type")));
+                        }
+                        return Mono.just(targetType.cast(principal));
                     }
                 });
     }
