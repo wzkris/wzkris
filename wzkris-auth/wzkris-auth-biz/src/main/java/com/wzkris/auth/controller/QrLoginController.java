@@ -4,6 +4,7 @@ import com.wzkris.auth.constants.QrCodeConstant;
 import com.wzkris.auth.domain.resp.QrTokenResp;
 import com.wzkris.auth.enums.QrCodeStatus;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -74,12 +75,14 @@ public class QrLoginController {
         if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatus.SCANED.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
-        qrTokenResp.setStatus(QrCodeStatus.CONFIRM.getValue());
-        // TODO 需要另存一份，避免此处退出登录，影响扫码端登录态
 
-        String tokenValue = SecurityUtil.getTokenValue();
-        qrTokenResp.setAccessToken(tokenValue);
-        String refreshToken = tokenService.loadRefreshTokenByAccessToken(SecurityUtil.getAuthType().getValue(), tokenValue);
+        MyPrincipal principal = SecurityUtil.getPrincipal();
+        String accessToken = tokenService.generateAccessToken(principal);
+        String refreshToken = tokenService.generateToken();
+        tokenService.save(principal, accessToken, refreshToken);
+
+        qrTokenResp.setStatus(QrCodeStatus.CONFIRM.getValue());
+        qrTokenResp.setAccessToken(accessToken);
         qrTokenResp.setRefreshToken(refreshToken);
         RedisUtil.setObj(key, qrTokenResp, 60);
         return Result.ok();

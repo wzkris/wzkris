@@ -63,7 +63,7 @@ public class SwitchTokenController {
 
         LoginTenant loginTenant = loginTenantService.buildLoginTenant(memberInfoResp);
 
-        String accessToken = tokenService.generateToken(loginTenant);
+        String accessToken = tokenService.generateAccessToken(loginTenant);
         String refreshToken = tokenService.generateToken();
 
         tokenService.save(loginTenant, accessToken, refreshToken);

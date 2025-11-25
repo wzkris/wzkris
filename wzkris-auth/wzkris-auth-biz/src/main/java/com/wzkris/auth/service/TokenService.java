@@ -67,10 +67,10 @@ public class TokenService {
     }
 
     @Nullable
-    public String generateToken(MyPrincipal principal) {
+    public String generateAccessToken(MyPrincipal principal) {
         if (StringUtil.equalsAny(principal.getType().getValue(), AuthTypeEnum.ADMIN.getValue(), AuthTypeEnum.TENANT.getValue())) {
             return this.generateToken();
-        } else if (principal.getType().equals(AuthTypeEnum.CUSTOMER)) {
+        } else if (StringUtil.equals(principal.getType().getValue(), AuthTypeEnum.CUSTOMER.getValue())) {
             JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
             JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
                     .build();

@@ -54,7 +54,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     }
 
     final OAuth2AccessTokenAuthenticationToken buildOAuth2AccessTokenAuthenticationToken(T authenticationToken) {
-        String generatedToken = tokenService.generateToken(authenticationToken.getPrincipal());
+        String generatedToken = tokenService.generateAccessToken(authenticationToken.getPrincipal());
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
                 generatedToken, Instant.now(), Instant.now().plus(tokenProperties.getUserTokenTimeOut(), ChronoUnit.SECONDS));
 
