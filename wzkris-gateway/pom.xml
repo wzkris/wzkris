@@ -20,13 +20,13 @@
     </properties>
 
     <dependencies>
-        <!-- SpringCloud Gateway功能 -->
+        <!-- SpringCloud Gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-gateway-server-webflux</artifactId>
         </dependency>
 
-        <!-- SpringCloud Gateway Starter-->
+        <!--webflux Starter-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
