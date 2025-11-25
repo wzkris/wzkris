@@ -7,6 +7,7 @@ import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.web.annotation.ExControllerStat;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import static com.wzkris.common.core.model.Result.requestFail;
 @Tag(name = "验证码")
 @Slf4j
 @Validated
+@ExControllerStat
 @RestController
 @RequestMapping("/captcha")
 @RequiredArgsConstructor
