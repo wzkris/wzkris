@@ -1,4 +1,4 @@
-package com.wzkris.common.security.model;
+package com.wzkris.common.security.component;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.DeferredSecurityContext;

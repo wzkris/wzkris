@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.repository;
+package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.MyPrincipal;
@@ -7,7 +7,6 @@ import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.model.SupplierDeferredSecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

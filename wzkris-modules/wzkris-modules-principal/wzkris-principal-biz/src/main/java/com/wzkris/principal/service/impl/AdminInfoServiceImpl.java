@@ -1,7 +1,7 @@
 package com.wzkris.principal.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
+import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.principal.domain.AdminInfoDO;
 import com.wzkris.principal.domain.AdminToRoleDO;
 import com.wzkris.principal.mapper.AdminInfoMapper;

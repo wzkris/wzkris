@@ -4,7 +4,7 @@ import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

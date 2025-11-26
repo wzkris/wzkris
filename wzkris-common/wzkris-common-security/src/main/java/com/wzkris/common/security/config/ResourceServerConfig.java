@@ -1,9 +1,9 @@
-package com.wzkris.common.security.oauth2;
+package com.wzkris.common.security.config;
 
-import com.wzkris.common.security.oauth2.handler.AccessDeniedHandlerImpl;
-import com.wzkris.common.security.oauth2.handler.AuthenticationEntryPointImpl;
-import com.wzkris.common.security.oauth2.repository.HttpHeaderSecurityContextRepository;
-import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
+import com.wzkris.common.security.component.HttpHeaderSecurityContextRepository;
+import com.wzkris.common.security.component.PasswordEncoderDelegate;
+import com.wzkris.common.security.handler.AccessDeniedHandlerImpl;
+import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;

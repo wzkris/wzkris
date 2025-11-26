@@ -7,7 +7,7 @@ import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;

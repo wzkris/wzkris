@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
-import com.wzkris.common.security.oauth2.service.PasswordEncoderDelegate;
+import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.principal.domain.*;
 import com.wzkris.principal.domain.vo.SelectVO;
 import com.wzkris.principal.mapper.*;

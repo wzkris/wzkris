@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.service;
+package com.wzkris.common.security.component;
 
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;

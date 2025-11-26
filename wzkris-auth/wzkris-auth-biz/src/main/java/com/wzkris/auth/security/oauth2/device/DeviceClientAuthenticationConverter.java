@@ -16,7 +16,7 @@
 package com.wzkris.auth.security.oauth2.device;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpMethod;

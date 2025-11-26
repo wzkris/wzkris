@@ -14,7 +14,7 @@ import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomOAuth2Error;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.principal.httpservice.customer.CustomerInfoHttpService;
 import com.wzkris.principal.httpservice.customer.req.WexcxLoginReq;

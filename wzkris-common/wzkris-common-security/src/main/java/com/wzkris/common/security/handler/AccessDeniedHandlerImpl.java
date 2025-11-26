@@ -1,4 +1,4 @@
-package com.wzkris.common.security.oauth2.handler;
+package com.wzkris.common.security.handler;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;

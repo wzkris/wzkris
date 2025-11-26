@@ -5,7 +5,7 @@ import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
