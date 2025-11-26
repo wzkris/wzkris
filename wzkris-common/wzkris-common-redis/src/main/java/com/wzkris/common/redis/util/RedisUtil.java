@@ -1,5 +1,6 @@
 package com.wzkris.common.redis.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
 import org.redisson.codec.TypedJsonJacksonCodec;
@@ -20,13 +21,16 @@ public final class RedisUtil {
 
     private static RedissonClient client;
 
+    private static ObjectMapper objectMapper;
+
     /**
      * Codec缓存，避免重复创建TypedJsonJacksonCodec实例
      */
     private static final ConcurrentMap<String, TypedJsonJacksonCodec> CODEC_CACHE = new ConcurrentHashMap<>(64);
 
-    private RedisUtil(RedissonClient client) {
+    private RedisUtil(RedissonClient client, ObjectMapper objectMapper) {
         RedisUtil.client = client;
+        RedisUtil.objectMapper = objectMapper;
     }
 
     /**
@@ -34,7 +38,7 @@ public final class RedisUtil {
      */
     private static TypedJsonJacksonCodec getCodec(Class<?> clazz) {
         String key = clazz.getName();
-        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(clazz));
+        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(clazz, objectMapper));
     }
 
     /**
