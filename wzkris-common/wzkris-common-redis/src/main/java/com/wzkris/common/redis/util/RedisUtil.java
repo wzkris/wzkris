@@ -61,7 +61,9 @@ public final class RedisUtil {
         if (key == null || key.trim().isEmpty()) {
             return null;
         }
-        return (T) getBucket(key).get();
+        Object o = getBucket(key).get();
+
+        return o == null ? null : (T) o;
     }
 
     /**
@@ -75,7 +77,9 @@ public final class RedisUtil {
         if (key == null || key.trim().isEmpty()) {
             return null;
         }
-        return (T) getBucket(key, clazz).get();
+        Object o = getBucket(key, clazz).get();
+
+        return o == null ? null : (T) o;
     }
 
     /**
