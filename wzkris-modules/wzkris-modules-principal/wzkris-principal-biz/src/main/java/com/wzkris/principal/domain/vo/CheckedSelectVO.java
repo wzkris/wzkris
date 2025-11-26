@@ -14,7 +14,7 @@ public class CheckedSelectVO {
     @Schema(description = "已选中节点")
     private List<Long> checkedKeys;
 
-    @Schema(description = "可选择树")
+    @Schema(description = "可选择列表")
     private List<SelectVO> selects;
 
 }

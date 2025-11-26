@@ -103,9 +103,7 @@ public class DeptInfoServiceImpl implements DeptInfoService {
      */
     public void updateDeptChildren(Long deptId, Long[] newAncestors, Long[] oldAncestors) {
         // 查出子元素并更新祖先列表
-        DeptMngQueryReq queryReq = new DeptMngQueryReq();
-        queryReq.setParentId(deptId);
-        List<DeptInfoDO> children = deptInfoMapper.listSubDept(queryReq);
+        List<DeptInfoDO> children = deptInfoMapper.listSubsByParentId(deptId);
         List<DeptInfoDO> updateList = children.stream()
                 .map(child -> {
                     // 替换旧的祖先路径为新的祖先路径
