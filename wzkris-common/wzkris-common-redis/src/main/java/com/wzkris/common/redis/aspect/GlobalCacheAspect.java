@@ -2,7 +2,6 @@ package com.wzkris.common.redis.aspect;
 
 import com.wzkris.common.core.function.ThrowableSupplier;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.redis.util.DistLockTemplate;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -24,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 全局缓存切面
  *
  * @author wzkris
- * @date : 2025/08/29
  */
 @Slf4j
 @Aspect
@@ -39,7 +37,7 @@ public class GlobalCacheAspect {
     /**
      * 执行原方法并回写缓存
      */
-    private static <T> T proceedAndRewrite(ProceedingJoinPoint point, long ttl, String key) throws Throwable {
+    private static Object proceedAndRewrite(ProceedingJoinPoint point, long ttl, String key) throws Throwable {
         Object proceedResult = point.proceed();
         // 回写缓存
         if (proceedResult != null) {
@@ -48,11 +46,8 @@ public class GlobalCacheAspect {
             } else {
                 RedisUtil.setObj(key, proceedResult);
             }
-        } else {
-            // null值缓存15s，避免缓存穿透
-            RedisUtil.setObj(key, null, Duration.ofSeconds(15));
         }
-        return (T) proceedResult;
+        return proceedResult;
     }
 
     @Around("@annotation(globalCache)")
@@ -60,44 +55,43 @@ public class GlobalCacheAspect {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
 
         try {
-            // 拼接key并获取数据
-            String globalKey = globalCache.keyPrefix();
-            if (StringUtils.isNotBlank(globalCache.key())) {
-                String key = evaluateExpression(globalCache.key());
-                globalKey = globalKey + ":" + key;
+            String globalKey = buildCacheKey(globalCache);
+
+            if (globalKey == null) {
+                return point.proceed();
             }
 
-            // 创建final变量供lambda使用
-            final String finalGlobalKey = globalKey;
+            Object cachedValue = RedisUtil.getObj(globalKey, methodSignature.getReturnType());
 
-            // 尝试从缓存获取数据
-            Object cachedValue = RedisUtil.getObj(finalGlobalKey, methodSignature.getReturnType());
             if (cachedValue != null) {
                 return cachedValue;
             }
 
-            // 数据不存在需要执行方法并回写缓存
             Object result;
             if (globalCache.sync()) {
-                result = DistLockTemplate.lockAndExecute(finalGlobalKey, 1_500,
+                result = DistLockTemplate.lockAndExecute(globalKey, 1_500,
                         (ThrowableSupplier<Object, Throwable>) () -> {
-                            // 双重检查缓存
-                            Object doubleCheckValue = RedisUtil.getObj(finalGlobalKey, methodSignature.getReturnType());
-                            if (doubleCheckValue != null) {
-                                return doubleCheckValue;
-                            }
-                            return proceedAndRewrite(point, globalCache.ttl(), finalGlobalKey);
+                            Object doubleCheck = RedisUtil.getObj(globalKey, methodSignature.getReturnType());
+                            if (doubleCheck != null) return doubleCheck;
+                            return proceedAndRewrite(point, globalCache.ttl(), globalKey);
                         });
             } else {
-                result = proceedAndRewrite(point, globalCache.ttl(), finalGlobalKey);
+                result = proceedAndRewrite(point, globalCache.ttl(), globalKey);
             }
-
             return result;
         } catch (Exception e) {
-            log.error("缓存切面执行异常，方法: {}", point.getTarget().getClass().getName() + StringUtil.DOT + methodSignature.getName(),
-                    e);
+            log.error("缓存切面异常", e);
             throw e;
         }
+    }
+
+    private String buildCacheKey(GlobalCache globalCache) {
+        String globalKey = globalCache.keyPrefix();
+        if (StringUtils.isNotBlank(globalCache.key())) {
+            String key = evaluateExpression(globalCache.key());
+            globalKey = globalKey + ":" + key;
+        }
+        return globalKey;
     }
 
     /**

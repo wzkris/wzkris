@@ -30,17 +30,21 @@ public class GlobalCacheEvictAspect {
         String methodName = point.getSignature().getName();
 
         try {
-            // 拼接key并获取数据
-            String globalKey = globalCacheEvict.keyPrefix();
-            if (StringUtils.isNotBlank(globalCacheEvict.key())) {
-                String key = evaluateExpression(globalCacheEvict.key());
-                globalKey = globalKey + ":" + key;
-            }
+            String globalKey = buildCacheKey(globalCacheEvict);
 
             RedisUtil.delObj(globalKey);
         } catch (Exception e) {
             log.error("缓存驱逐切面执行异常，方法: {}", methodName, e);
         }
+    }
+
+    private String buildCacheKey(GlobalCacheEvict globalCache) {
+        String globalKey = globalCache.keyPrefix();
+        if (StringUtils.isNotBlank(globalCache.key())) {
+            String key = evaluateExpression(globalCache.key());
+            globalKey = globalKey + ":" + key;
+        }
+        return globalKey;
     }
 
     /**

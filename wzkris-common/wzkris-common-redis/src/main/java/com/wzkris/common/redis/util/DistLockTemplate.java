@@ -16,10 +16,10 @@ import java.util.function.Supplier;
 @Slf4j
 public final class DistLockTemplate {
 
+    private static final String LOCK_KEY_PREFIX = "distlock:";
+
     private DistLockTemplate() {
     }
-
-    private static final String LOCK_KEY_PREFIX = "distlock:";
 
     public static boolean lockAndExecute(final String lockKey, Runnable runnable) {
         return lockAndExecute(lockKey, -1, -1, runnable);

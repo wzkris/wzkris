@@ -19,14 +19,14 @@ import java.util.concurrent.ConcurrentMap;
  **/
 public final class RedisUtil {
 
-    private static RedissonClient client;
-
-    private static ObjectMapper objectMapper;
-
     /**
      * Codec缓存，避免重复创建TypedJsonJacksonCodec实例
      */
     private static final ConcurrentMap<String, TypedJsonJacksonCodec> CODEC_CACHE = new ConcurrentHashMap<>(64);
+
+    private static RedissonClient client;
+
+    private static ObjectMapper objectMapper;
 
     private RedisUtil(RedissonClient client, ObjectMapper objectMapper) {
         RedisUtil.client = client;
@@ -491,7 +491,7 @@ public final class RedisUtil {
         if (list.isEmpty()) {
             return null;
         }
-        return (T) list.remove(0);
+        return list.remove(0);
     }
 
     /**
