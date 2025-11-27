@@ -4,7 +4,9 @@ import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.httpservice.annotation.EnableHttpServiceClients;
 import com.wzkris.common.httpservice.interceptor.HttpServiceClientInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
@@ -21,19 +23,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 自动配置 HTTP service clients.
  */
-@Import({HttpServiceProperties.class, HttpServiceClientInterceptor.class})
-@AutoConfiguration
+@Import(HttpServiceClientInterceptor.class)
+@EnableConfigurationProperties({HttpServiceProperties.class})
 @EnableHttpServiceClients
+@AutoConfiguration
 public class HttpServiceClientAutoConfiguration {
 
     @Bean
+    @LoadBalanced
+    @ConditionalOnMissingBean
     public RestClient.Builder httpServiceRestClientBuilder(
             HttpServiceProperties httpServiceProperties,
-            DeferringLoadBalancerInterceptor deferringLoadBalancerInterceptor,
             HttpServiceClientInterceptor httpServiceClientInterceptor) {
         return RestClient.builder()
                 .requestFactory(buildFactory(httpServiceProperties))
-                .requestInterceptor(deferringLoadBalancerInterceptor)
                 .requestInterceptor(httpServiceClientInterceptor);
     }
 

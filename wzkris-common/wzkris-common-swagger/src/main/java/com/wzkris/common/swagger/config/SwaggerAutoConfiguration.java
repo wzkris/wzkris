@@ -7,13 +7,14 @@ import io.swagger.v3.oas.models.info.License;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 /**
  * @author wzkris
  */
-@Import(SwaggerProperties.class)
+@EnableConfigurationProperties(SwaggerProperties.class)
 @ConditionalOnProperty(name = "springdoc.enabled", matchIfMissing = true)
 @AutoConfiguration
 public class SwaggerAutoConfiguration {
