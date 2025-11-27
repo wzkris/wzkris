@@ -75,14 +75,13 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
 
     private Mono<Void> checkToken(ServerWebExchange exchange, WebFilterChain chain) {
         return tokenExtractionService.getCurrentPrincipal(exchange.getRequest())
-                .flatMap(principal ->
-                        chain.filter(
-                                        exchange.mutate()
-                                                .principal(Mono.just(principal))
-                                                .build()
-                                )
-                                .contextWrite(context -> context.put(GATEWAY_PRINCIPAL, principal))
-                )
+                .flatMap(principal -> {
+                    ServerWebExchange mutatedExchange = exchange.mutate()
+                            .principal(Mono.just(principal))
+                            .build();
+                    return chain.filter(mutatedExchange)
+                            .contextWrite(context -> context.put(GATEWAY_PRINCIPAL, principal));
+                })
                 .onErrorResume(ResultException.class, resultException -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();
                     exchangeResponse.setRawStatusCode(resultException.getHttpStatusCode());

@@ -19,6 +19,16 @@ public interface SecurityConstants {
     String SYSTEM_USER_NAME = "system";
 
     /**
+     * 默认版本号
+     */
+    String DEFAULT_VERSION = "0";
+
+    /**
+     * 版本号
+     */
+    String VERSION_KEY = "version";
+
+    /**
      * 系统用户ID
      */
     Long SYSTEM_USER_ID = 0L;

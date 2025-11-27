@@ -80,8 +80,8 @@
 
         <!-- 均衡负载-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-loadbalancer</artifactId>
         </dependency>
 
         <!-- 本地缓存 -->

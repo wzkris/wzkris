@@ -3,13 +3,17 @@ package com.wzkris.gateway.filter.route;
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
+import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
-import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
@@ -36,6 +40,8 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
 
     private final SignkeyProperties signkeyProperties;
 
+    private final LoadBalancerProperties loadBalancerProperties;
+
     @Value("${spring.application.name}")
     private String applicationName;
 
@@ -58,6 +64,11 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
 
                     // 追加身份信息头
                     requestBuilder.header(infoHeader, JsonUtil.toJsonString(principal));
+
+                    String version = ((MyPrincipal) principal).getVersion();
+                    if (StringUtil.equals(version, SecurityConstants.DEFAULT_VERSION)) {
+                        requestBuilder.header(loadBalancerProperties.getHintHeaderName(), version);
+                    }
                     return Mono.just(principal);
                 })
                 .then(Mono.defer(() -> {

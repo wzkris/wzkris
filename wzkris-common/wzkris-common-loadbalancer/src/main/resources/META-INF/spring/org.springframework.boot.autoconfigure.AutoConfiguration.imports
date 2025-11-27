@@ -1,1 +1,1 @@
-com.wzkris.common.loadbalancer.config.LoadBalancerAutoConfiguration
+com.wzkris.common.loadbalancer.config.CustomAutoConfiguration
