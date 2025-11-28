@@ -61,6 +61,10 @@ public class Result<T> implements Serializable {
         return init(BizBaseCodeEnum.REQUEST_ERROR.value(), null, message);
     }
 
+    public static <T> Result<T> apiRequestFail(String message) {
+        return init(BizBaseCodeEnum.API_REQUEST_ERROR.value(), null, message);
+    }
+
     public static <T> Result<T> unauth(String message) {
         return init(BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), null, message);
     }
