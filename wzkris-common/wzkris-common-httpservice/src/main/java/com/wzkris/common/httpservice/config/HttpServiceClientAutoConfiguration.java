@@ -2,6 +2,7 @@ package com.wzkris.common.httpservice.config;
 
 import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.httpservice.annotation.EnableHttpServiceClients;
+import com.wzkris.common.httpservice.interceptor.BaseInterceptorPostProcessor;
 import com.wzkris.common.httpservice.interceptor.HttpServiceClientInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 自动配置 HTTP service clients.
  */
-@Import(HttpServiceClientInterceptor.class)
+@Import({HttpServiceClientInterceptor.class, BaseInterceptorPostProcessor.class})
 @EnableConfigurationProperties({HttpServiceProperties.class})
 @EnableHttpServiceClients
 @AutoConfiguration
