@@ -66,7 +66,7 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                     requestBuilder.header(infoHeader, JsonUtil.toJsonString(principal));
 
                     String version = ((MyPrincipal) principal).getVersion();
-                    if (StringUtil.equals(version, SecurityConstants.DEFAULT_VERSION)) {
+                    if (!StringUtil.equals(version, SecurityConstants.DEFAULT_VERSION)) {
                         requestBuilder.header(loadBalancerProperties.getHintHeaderName(), version);
                     }
                     return Mono.just(principal);

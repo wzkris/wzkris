@@ -1,15 +1,14 @@
 package com.wzkris.common.loadbalancer.supplier;
 
+import com.wzkris.common.loadbalancer.core.HintContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.HintRequestContext;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
 import org.springframework.cloud.client.loadbalancer.Request;
-import org.springframework.cloud.client.loadbalancer.RequestDataContext;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactiveLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.DelegatingServiceInstanceListSupplier;
+import org.springframework.cloud.loadbalancer.core.HintBasedServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
-import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 
@@ -18,6 +17,9 @@ import java.util.List;
 
 /**
  * 扩展hint，从上下文中获取
+ *
+ * @author wzkris
+ * @see HintBasedServiceInstanceListSupplier
  */
 @Slf4j
 public class CustomHintServiceInstanceListSupplier extends DelegatingServiceInstanceListSupplier {
@@ -37,31 +39,11 @@ public class CustomHintServiceInstanceListSupplier extends DelegatingServiceInst
 
     @Override
     public Flux<List<ServiceInstance>> get(Request request) {
-        return delegate.get(request).map(instances -> filteredByHint(instances, getHint(request.getContext())));
+        return delegate.get(request).map(instances -> filteredByHint(instances, getHint()));
     }
 
-    private String getHint(Object requestContext) {
-        if (requestContext == null) {
-            return null;
-        }
-        String hint = null;
-        if (requestContext instanceof RequestDataContext) {
-            hint = getHintFromHeader((RequestDataContext) requestContext);
-        }
-        if (!StringUtils.hasText(hint) && requestContext instanceof HintRequestContext) {
-            hint = ((HintRequestContext) requestContext).getHint();
-        }
-        return hint;
-    }
-
-    private String getHintFromHeader(RequestDataContext context) {
-        if (context.getClientRequest() != null) {
-            HttpHeaders headers = context.getClientRequest().getHeaders();
-            if (headers != null) {
-                return headers.getFirst(properties.getHintHeaderName());
-            }
-        }
-        return null;
+    private String getHint() {
+        return HintContextHolder.get();
     }
 
     private List<ServiceInstance> filteredByHint(List<ServiceInstance> instances, String hint) {

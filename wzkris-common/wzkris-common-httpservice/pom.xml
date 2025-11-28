@@ -24,8 +24,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-loadbalancer</artifactId>
         </dependency>
 
         <dependency>
