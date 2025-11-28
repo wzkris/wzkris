@@ -14,6 +14,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-core</artifactId>
         </dependency>
@@ -21,6 +26,7 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-apikey</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

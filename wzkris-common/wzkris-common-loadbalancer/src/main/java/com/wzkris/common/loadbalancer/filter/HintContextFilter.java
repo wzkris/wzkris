@@ -29,6 +29,7 @@ public class HintContextFilter extends OncePerRequestFilter {
         try {
             if (bool) {
                 HintContextHolder.set(hint);
+                response.setHeader(properties.getHintHeaderName(), hint);
             }
             filterChain.doFilter(request, response);
         } finally {

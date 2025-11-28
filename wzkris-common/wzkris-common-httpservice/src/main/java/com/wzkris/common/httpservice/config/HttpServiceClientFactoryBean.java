@@ -83,6 +83,10 @@ public class HttpServiceClientFactoryBean<T> implements FactoryBean<T>, Initiali
         return (HttpServiceFallback<T>) listableBeanFactory.getBean(fallbackFactory);
     }
 
+    public void setFallbackFactory(Class<? extends HttpServiceFallback<?>> fallbackFactory) {
+        this.fallbackFactory = fallbackFactory;
+    }
+
     @Override
     public T getObject() {
         if (proxy == null) {
@@ -122,10 +126,6 @@ public class HttpServiceClientFactoryBean<T> implements FactoryBean<T>, Initiali
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public void setFallbackFactory(Class<? extends HttpServiceFallback<?>> fallbackFactory) {
-        this.fallbackFactory = fallbackFactory;
     }
 
     @Override

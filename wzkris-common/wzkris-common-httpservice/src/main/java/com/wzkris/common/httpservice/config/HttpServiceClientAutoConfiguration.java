@@ -2,8 +2,9 @@ package com.wzkris.common.httpservice.config;
 
 import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.httpservice.annotation.EnableHttpServiceClients;
-import com.wzkris.common.httpservice.interceptor.BaseInterceptorPostProcessor;
-import com.wzkris.common.httpservice.interceptor.HttpServiceClientInterceptor;
+import com.wzkris.common.httpservice.interceptor.ApiSignInterceptorPostProcessor;
+import com.wzkris.common.httpservice.interceptor.PublishEventInterceptorPostProcessor;
+import com.wzkris.common.httpservice.interceptor.core.HttpServiceClientInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -24,22 +25,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 自动配置 HTTP service clients.
  */
-@Import({HttpServiceClientInterceptor.class, BaseInterceptorPostProcessor.class})
+@Import({HttpServiceClientInterceptor.class, ApiSignInterceptorPostProcessor.class, PublishEventInterceptorPostProcessor.class})
 @EnableConfigurationProperties({HttpServiceProperties.class})
 @EnableHttpServiceClients
 @AutoConfiguration
 public class HttpServiceClientAutoConfiguration {
-
-    @Bean
-    @LoadBalanced
-    @ConditionalOnMissingBean
-    public RestClient.Builder httpServiceRestClientBuilder(
-            HttpServiceProperties httpServiceProperties,
-            HttpServiceClientInterceptor httpServiceClientInterceptor) {
-        return RestClient.builder()
-                .requestFactory(buildFactory(httpServiceProperties))
-                .requestInterceptor(httpServiceClientInterceptor);
-    }
 
     private static BufferingClientHttpRequestFactory buildFactory(HttpServiceProperties httpServiceProperties) {
         // 根据 connectionPool 配置创建 Executor
@@ -67,6 +57,17 @@ public class HttpServiceClientAutoConfiguration {
         factory.setReadTimeout(httpServiceProperties.getReadTimeout());
 
         return new BufferingClientHttpRequestFactory(factory);
+    }
+
+    @Bean
+    @LoadBalanced
+    @ConditionalOnMissingBean
+    public RestClient.Builder httpServiceRestClientBuilder(
+            HttpServiceProperties httpServiceProperties,
+            HttpServiceClientInterceptor httpServiceClientInterceptor) {
+        return RestClient.builder()
+                .requestFactory(buildFactory(httpServiceProperties))
+                .requestInterceptor(httpServiceClientInterceptor);
     }
 
 }

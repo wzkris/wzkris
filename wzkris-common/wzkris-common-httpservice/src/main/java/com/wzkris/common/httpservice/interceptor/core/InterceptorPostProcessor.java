@@ -1,4 +1,4 @@
-package com.wzkris.common.httpservice.interceptor;
+package com.wzkris.common.httpservice.interceptor.core;
 
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpRequest;
