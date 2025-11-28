@@ -1,6 +1,5 @@
 package com.wzkris.common.loadbalancer.filter;
 
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.loadbalancer.core.HintContextHolder;
 import jakarta.servlet.FilterChain;
@@ -24,8 +23,8 @@ public class HintContextFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String hint = request.getHeader(properties.getHintHeaderName());
 
-        // 不为空且不为默认版本号
-        boolean bool = hint != null && !StringUtil.equals(hint, SecurityConstants.DEFAULT_VERSION);
+        // 不为空
+        boolean bool = StringUtil.isNotBlank(hint);
         try {
             if (bool) {
                 HintContextHolder.set(hint);

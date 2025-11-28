@@ -65,8 +65,9 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                     // 追加身份信息头
                     requestBuilder.header(infoHeader, JsonUtil.toJsonString(principal));
 
+                    // 不为空且不为默认版本号则透传
                     String version = ((MyPrincipal) principal).getVersion();
-                    if (!StringUtil.equals(version, SecurityConstants.DEFAULT_VERSION)) {
+                    if (StringUtil.isNotBlank(version) && !StringUtil.equals(version, SecurityConstants.DEFAULT_VERSION)) {
                         requestBuilder.header(loadBalancerProperties.getHintHeaderName(), version);
                     }
                     return Mono.just(principal);
