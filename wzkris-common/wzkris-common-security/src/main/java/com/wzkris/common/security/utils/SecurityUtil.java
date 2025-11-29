@@ -79,6 +79,15 @@ public abstract class SecurityUtil {
     }
 
     /**
+     * 获取当前标签
+     *
+     * @return 标签
+     */
+    public static String getHint() {
+        return getPrincipal().getHint();
+    }
+
+    /**
      * 获取当前名称
      *
      * @return 登录名称

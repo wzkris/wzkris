@@ -47,4 +47,11 @@ public class BaseEntity implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updaterId;
 
+    /**
+     * 标签
+     */
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @TableField(fill = FieldFill.INSERT)
+    private String hint;
+
 }

@@ -7,6 +7,7 @@ import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
+import com.wzkris.common.core.utils.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.Assert;
@@ -36,7 +37,7 @@ public abstract class MyPrincipal implements Principal {
     private final Set<String> permissions;
 
     @Setter
-    private String hint = "";
+    private String hint = StringUtil.EMPTY;
 
     public MyPrincipal(Long id, AuthTypeEnum type, Set<String> permissions) {
         Assert.notNull(id, "ID cannot be null");
