@@ -12,7 +12,6 @@ import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
@@ -39,8 +38,6 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
 
     private final SignkeyProperties signkeyProperties;
 
-    private final LoadBalancerProperties loadBalancerProperties;
-
     @Value("${spring.application.name}")
     private String applicationName;
 
@@ -52,7 +49,7 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                 .flatMap(principal -> {
                     String infoHeader;
                     if (principal instanceof LoginAdmin) {
-                        infoHeader = CustomHeaderConstants.X_Admin_INFO;
+                        infoHeader = CustomHeaderConstants.X_ADMIN_INFO;
                     } else if (principal instanceof LoginTenant) {
                         infoHeader = CustomHeaderConstants.X_TENANT_INFO;
                     } else if (principal instanceof LoginCustomer) {
@@ -64,10 +61,10 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                     // 追加身份信息头
                     requestBuilder.header(infoHeader, JsonUtil.toJsonString(principal));
 
-                    // 不为空且不为默认版本号则透传
-                    String version = ((MyPrincipal) principal).getHint();
-                    if (StringUtil.isNotBlank(version)) {
-                        requestBuilder.header(loadBalancerProperties.getHintHeaderName(), version);
+                    // 存在值则透传hint头
+                    String hint = ((MyPrincipal) principal).getHint();
+                    if (StringUtil.isNotBlank(hint)) {
+                        requestBuilder.header(CustomHeaderConstants.X_ROUTE_HINT, hint);
                     }
                     return Mono.just(principal);
                 })

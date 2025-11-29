@@ -1,6 +1,6 @@
 package com.wzkris.common.loadbalancer.config;
 
-import com.wzkris.common.loadbalancer.core.RequestHintServiceInstanceListSupplier;
+import com.wzkris.common.loadbalancer.core.EnhanceHintBasedServiceInstanceListSupplier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Primary;
 public class HintServiceSupplierConfig {
 
     /**
-     * webflux用，要保证设置exchange.getRequest().mutate().header(loadBalancerProperties.getHintHeaderName(), version)才会生效
+     * webflux用，要保证设置exchange.getRequest().mutate().header(CustomHeaderConstants.X_LB_HINT, version)才会生效
      */
     @Bean
     @Primary // 同时存在以此为准
@@ -28,7 +28,11 @@ public class HintServiceSupplierConfig {
         return ServiceInstanceListSupplier.builder()
                 .withDiscoveryClient()
                 .withCaching()
-                .withHints()
+                .with((context, delegate) -> {
+                    LoadBalancerClientFactory factory = context.getBean(LoadBalancerClientFactory.class);
+
+                    return new EnhanceHintBasedServiceInstanceListSupplier(delegate, factory);
+                })
                 .build(configurableApplicationContext);
     }
 
@@ -45,7 +49,7 @@ public class HintServiceSupplierConfig {
                 .with((context, delegate) -> {
                     LoadBalancerClientFactory factory = context.getBean(LoadBalancerClientFactory.class);
 
-                    return new RequestHintServiceInstanceListSupplier(delegate, factory);
+                    return new EnhanceHintBasedServiceInstanceListSupplier(delegate, factory);
                 })
                 .build(configurableApplicationContext);
     }

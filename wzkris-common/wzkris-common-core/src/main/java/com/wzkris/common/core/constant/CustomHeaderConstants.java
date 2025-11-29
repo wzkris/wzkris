@@ -18,6 +18,11 @@ public class CustomHeaderConstants {
     public static final String X_TRACING_ID = "X-Tracing-Id";
 
     /**
+     * 路由Hint请求头
+     */
+    public static final String X_ROUTE_HINT = "X-Route-Hint";
+
+    /**
      * API签名请求头
      */
     public static final String X_REQUEST_SIGN = "X-Request-Sign";
@@ -40,7 +45,7 @@ public class CustomHeaderConstants {
     /**
      * 管理员信息
      */
-    public static final String X_Admin_INFO = "X-Admin-Info";
+    public static final String X_ADMIN_INFO = "X-Admin-Info";
 
     /**
      * 租户Token
