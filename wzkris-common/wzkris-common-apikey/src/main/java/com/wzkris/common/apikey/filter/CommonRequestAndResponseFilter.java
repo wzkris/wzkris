@@ -2,6 +2,7 @@ package com.wzkris.common.apikey.filter;
 
 import com.wzkris.common.apikey.request.RepeatableReadRequestWrapper;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,8 +30,13 @@ public class CommonRequestAndResponseFilter extends OncePerRequestFilter {
             // 解析TraceID
             final String traceId = requestWrapper.getHeader(CustomHeaderConstants.X_TRACING_ID);
             TraceIdUtil.set(traceId);
-            response.setHeader(CustomHeaderConstants.X_TRACING_ID, traceId);
+            String hint = requestWrapper.getHeader(CustomHeaderConstants.X_ROUTE_HINT);
+            TraceIdUtil.setHint(hint);
 
+            response.setHeader(CustomHeaderConstants.X_TRACING_ID, traceId);
+            if (StringUtil.isNotBlank(hint)) {
+                response.setHeader(CustomHeaderConstants.X_ROUTE_HINT, hint);
+            }
             filterChain.doFilter(requestWrapper, response);
         } finally {
             TraceIdUtil.clear();

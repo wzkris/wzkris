@@ -4,6 +4,7 @@ import com.wzkris.common.core.constant.CustomHeaderConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
+import org.springframework.lang.Nullable;
 
 import java.util.Date;
 import java.util.Optional;
@@ -25,8 +26,10 @@ public abstract class TraceIdUtil {
         MDC.put(CustomHeaderConstants.X_TRACING_ID, StringUtils.isNoneEmpty(id) ? id : get());
     }
 
-    public static void set() {
-        MDC.put(CustomHeaderConstants.X_TRACING_ID, get());
+    public static void setHint(@Nullable String hint) {
+        if (StringUtil.isNotBlank(hint)) {
+            MDC.put(CustomHeaderConstants.X_ROUTE_HINT, hint);
+        }
     }
 
     public static void clear() {
