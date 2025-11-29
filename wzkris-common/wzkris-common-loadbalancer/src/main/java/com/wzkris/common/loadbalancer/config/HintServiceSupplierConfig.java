@@ -1,6 +1,6 @@
 package com.wzkris.common.loadbalancer.config;
 
-import com.wzkris.common.loadbalancer.supplier.CustomHintServiceInstanceListSupplier;
+import com.wzkris.common.loadbalancer.core.RequestHintServiceInstanceListSupplier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
@@ -33,7 +33,7 @@ public class HintServiceSupplierConfig {
     }
 
     /*
-     *webmvc用
+     * webmvc用
      */
     @Bean
     @ConditionalOnBean(DiscoveryClient.class)
@@ -45,7 +45,7 @@ public class HintServiceSupplierConfig {
                 .with((context, delegate) -> {
                     LoadBalancerClientFactory factory = context.getBean(LoadBalancerClientFactory.class);
 
-                    return new CustomHintServiceInstanceListSupplier(delegate, factory);
+                    return new RequestHintServiceInstanceListSupplier(delegate, factory);
                 })
                 .build(configurableApplicationContext);
     }
