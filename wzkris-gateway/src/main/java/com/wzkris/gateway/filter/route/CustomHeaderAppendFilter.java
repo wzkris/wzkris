@@ -3,7 +3,6 @@ package com.wzkris.gateway.filter.route;
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
@@ -66,8 +65,8 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                     requestBuilder.header(infoHeader, JsonUtil.toJsonString(principal));
 
                     // 不为空且不为默认版本号则透传
-                    String version = ((MyPrincipal) principal).getVersion();
-                    if (StringUtil.isNotBlank(version) && !StringUtil.equals(version, SecurityConstants.DEFAULT_VERSION)) {
+                    String version = ((MyPrincipal) principal).getHint();
+                    if (StringUtil.isNotBlank(version)) {
                         requestBuilder.header(loadBalancerProperties.getHintHeaderName(), version);
                     }
                     return Mono.just(principal);

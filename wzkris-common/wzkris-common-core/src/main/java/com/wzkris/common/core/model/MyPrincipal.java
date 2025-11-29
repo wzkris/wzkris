@@ -2,7 +2,6 @@ package com.wzkris.common.core.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginClient;
@@ -37,7 +36,7 @@ public abstract class MyPrincipal implements Principal {
     private final Set<String> permissions;
 
     @Setter
-    private String version = SecurityConstants.DEFAULT_VERSION;
+    private String hint = "";
 
     public MyPrincipal(Long id, AuthTypeEnum type, Set<String> permissions) {
         Assert.notNull(id, "ID cannot be null");
