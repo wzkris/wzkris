@@ -1,7 +1,7 @@
 package com.wzkris.common.log.report;
 
 import com.wzkris.common.core.threads.TracingIdRunnable;
-import jakarta.validation.constraints.NotNull;
+import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class AsyncBatchReporter<T> implements AutoCloseable {
                     final AtomicInteger tCounter = new AtomicInteger(0);
 
                     @Override
-                    public Thread newThread(@NotNull Runnable r) {
+                    public Thread newThread(@Nonnull Runnable r) {
                         Thread t = new Thread(new TracingIdRunnable(r),
                                 AsyncBatchReporter.this.name + "-Reporter-" + tCounter.incrementAndGet());
                         t.setDaemon(true);

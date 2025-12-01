@@ -1,9 +1,10 @@
 package com.wzkris.auth.httpservice.captcha.req;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 
@@ -18,10 +19,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class CaptchaCheckReq implements Serializable {
 
-    @NotEmpty(message = "{invalidParameter.captcha.error}")
+    @Nonnull
     private String key;
 
-    @NotEmpty(message = "{invalidParameter.captcha.error}")
+    @NonNull
     private String code;
 
 }

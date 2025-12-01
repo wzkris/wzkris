@@ -1,5 +1,6 @@
 package com.wzkris.principal.httpservice.member.req;
 
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class QueryMemberPermsReq implements Serializable {
 
-    @NonNull
+    @Nonnull
     private Long memberId;
 
-    @NonNull
+    @Nonnull
     private Long tenantId;
 
 }

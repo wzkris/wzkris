@@ -1,10 +1,10 @@
 package com.wzkris.principal.httpservice.admin.req;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class QueryAdminPermsReq implements Serializable {
 
-    @NonNull
+    @Nonnull
     private Long adminId;
 
     @Nullable

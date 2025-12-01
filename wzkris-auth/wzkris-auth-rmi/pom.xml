@@ -18,10 +18,5 @@
             <artifactId>wzkris-common-httpservice</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-validator</artifactId>
-        </dependency>
-
     </dependencies>
 </project>

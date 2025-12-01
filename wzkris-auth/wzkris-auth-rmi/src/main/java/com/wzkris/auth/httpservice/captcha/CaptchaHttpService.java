@@ -4,7 +4,6 @@ import com.wzkris.auth.httpservice.captcha.fallback.CaptchaHttpServiceFallback;
 import com.wzkris.auth.httpservice.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
 import com.wzkris.common.httpservice.constants.ServiceIdConstant;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -26,6 +25,6 @@ public interface CaptchaHttpService {
      * 校验手机号验证码
      */
     @PostExchange("/validate")
-    boolean validateCaptcha(@Valid @RequestBody CaptchaCheckReq captchaCheckReq);
+    boolean validateCaptcha(@RequestBody CaptchaCheckReq captchaCheckReq);
 
 }
