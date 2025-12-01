@@ -3,12 +3,10 @@ package com.wzkris.gateway.filter.route;
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,11 +59,6 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                     // 追加身份信息头
                     requestBuilder.header(infoHeader, JsonUtil.toJsonString(principal));
 
-                    // 存在值则透传hint头
-                    String hint = ((MyPrincipal) principal).getHint();
-                    if (StringUtil.isNotBlank(hint)) {
-                        requestBuilder.header(CustomHeaderConstants.X_ROUTE_HINT, hint);
-                    }
                     return Mono.just(principal);
                 })
                 .then(Mono.defer(() -> {
