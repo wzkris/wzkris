@@ -115,7 +115,7 @@ public class EnhanceHintBasedServiceInstanceListSupplier extends DelegatingServi
             return filteredInstances;
         }
 
-        log.warn("无法找到匹配hint的路由实例: {}, 降级返回全部: {}", hint, instances);
+        log.warn("无法找到匹配hint的路由实例: {}, 降级返回全部数量: {}", hint, instances.size());
         // If instances cannot be found based on hint,
         // we return all instances retrieved for given service id.
         return instances;

@@ -52,7 +52,13 @@ public class RouteDecisionFilter implements GlobalFilter {
         return exchange.getPrincipal()
                 .map(principal -> (MyPrincipal) principal)
                 .map(MyPrincipal::getHint)
-                .filter(StringUtil::isNotBlank)
+                .filter(hint -> {
+                    if (StringUtil.isNotBlank(hint)) {
+                        return true;
+                    }
+                    hint = routePolicyProperties.getDefaultHint();
+                    return StringUtil.isNotBlank(hint);
+                })
                 .map(hint -> {
                     ServerHttpRequest request = exchange.getRequest().mutate()
                             .header(CustomHeaderConstants.X_ROUTE_HINT, hint)

@@ -20,6 +20,14 @@ public class RoutePolicyProperties {
      */
     private String status = RoutePolicyStatusEnum.CLOSE.getValue();
 
+    /**
+     * 强制路由，RoutePolicyStatusEnum.FORCE下生效
+     */
     private String forceHint;
+
+    /**
+     * 默认路由，RoutePolicyStatusEnum.OPEN当hint=null或""时生效
+     */
+    private String defaultHint;
 
 }
