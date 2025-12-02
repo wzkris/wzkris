@@ -1,6 +1,6 @@
 package com.wzkris.common.apikey.config;
 
-import com.wzkris.common.apikey.filter.CommonRequestAndResponseFilter;
+import com.wzkris.common.apikey.filter.TraceIdFilter;
 import com.wzkris.common.apikey.filter.RequestSignatureFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +14,9 @@ import org.springframework.core.Ordered;
 public class FilterConfig {
 
     @Bean
-    public FilterRegistrationBean<CommonRequestAndResponseFilter> commonRequestAndResponseFilter() {
-        FilterRegistrationBean<CommonRequestAndResponseFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new CommonRequestAndResponseFilter());
+    public FilterRegistrationBean<TraceIdFilter> commonRequestAndResponseFilter() {
+        FilterRegistrationBean<TraceIdFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new TraceIdFilter());
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
     }

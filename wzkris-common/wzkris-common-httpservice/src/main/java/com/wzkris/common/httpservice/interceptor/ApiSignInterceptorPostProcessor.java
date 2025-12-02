@@ -2,6 +2,7 @@ package com.wzkris.common.httpservice.interceptor;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.httpservice.interceptor.core.InterceptorPostProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,7 @@ public class ApiSignInterceptorPostProcessor implements InterceptorPostProcessor
         long requestTime = System.currentTimeMillis();
         RequestSignerUtil.setCommonHeaders(
                 request.getHeaders()::add,
+                TraceIdUtil.getOrGenerate(),
                 applicationName,
                 resolveAppSecret(),
                 body != null ? new String(body, StandardCharsets.UTF_8) : "",

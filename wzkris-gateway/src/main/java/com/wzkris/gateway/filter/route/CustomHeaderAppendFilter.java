@@ -7,6 +7,7 @@ import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,6 +74,11 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
     private Mono<Void> appendSignatureHeaders(ServerWebExchange exchange,
                                               GatewayFilterChain chain,
                                               ServerHttpRequest.Builder requestBuilder) {
+
+        final String traceId = TraceIdUtil.generate();
+
+        TraceIdUtil.set(traceId);
+
         // 追加请求签名头
         requestBuilder.headers(header -> {
             String reqBodyStr;
@@ -84,6 +90,7 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
             }
 
             RequestSignerUtil.setCommonHeaders(header::add,
+                    traceId,
                     applicationName,
                     signkeyProperties.getKeys().get(applicationName).getSecret(),
                     reqBodyStr,

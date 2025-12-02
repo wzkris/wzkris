@@ -13,22 +13,23 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * 请求响应处理
  * <p></p>
- * 做一些大家都需要的事情
+ * traceId请求响应处理
  *
  * @author wzkris
  */
-public class CommonRequestAndResponseFilter extends OncePerRequestFilter {
+public class TraceIdFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         // 使请求体可重复读取
         RepeatableReadRequestWrapper requestWrapper = new RepeatableReadRequestWrapper(request);
 
         try {
             // 解析TraceID
-            final String traceId = requestWrapper.getHeader(CustomHeaderConstants.X_TRACING_ID);
+            String traceId = requestWrapper.getHeader(CustomHeaderConstants.X_TRACING_ID);
+            traceId = StringUtil.isNotBlank(traceId) ? traceId : TraceIdUtil.generate();
             TraceIdUtil.set(traceId);
             String hint = requestWrapper.getHeader(CustomHeaderConstants.X_ROUTE_HINT);
             TraceIdUtil.setHint(hint);
