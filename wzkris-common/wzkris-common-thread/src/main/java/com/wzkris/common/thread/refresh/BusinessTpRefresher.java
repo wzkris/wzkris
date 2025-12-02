@@ -1,27 +1,8 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wzkris.common.thread.refresh;
 
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.thread.properties.ExecutorProperties;
-import com.wzkris.common.thread.properties.TpProperties;
-import com.wzkris.common.thread.refresh.adapter.WebServerTpAdapter;
-import com.wzkris.common.thread.utils.ExecutorPropertiesComparator;
+import com.wzkris.common.thread.utils.BusinessExecutorPropertiesComparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -30,6 +11,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -37,23 +20,23 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Abstract class for refreshing properties in a Spring environment.
+ * 业务线程池刷新器
+ * 专门处理业务线程池的动态刷新逻辑
  *
  * @author wzkris
- * @date 2025/8/8
+ * @date 2025/12/02
  */
 @Slf4j
-public abstract class AbstractTpRefresher implements ApplicationRunner {
+public class BusinessTpRefresher implements ApplicationRunner {
 
-    protected final TpProperties tpProperties;
+    private final List<ExecutorProperties> executorPropertiesList;
 
-    private final WebServerTpAdapter webServerTpAdapter;
+    private List<ExecutorProperties> localBusinessPropertiesList;
 
-    private TpProperties localTpProperties;// 本地的变量，用来对比
-
-    protected AbstractTpRefresher(TpProperties tpProperties, WebServerTpAdapter webServerTpAdapter) {
-        this.tpProperties = tpProperties;
-        this.webServerTpAdapter = webServerTpAdapter;
+    public BusinessTpRefresher(List<ExecutorProperties> executorPropertiesList) {
+        this.executorPropertiesList = executorPropertiesList != null
+                ? executorPropertiesList
+                : new ArrayList<>();
     }
 
     @Override
@@ -62,27 +45,12 @@ public abstract class AbstractTpRefresher implements ApplicationRunner {
     }
 
     /**
-     * 刷新配置
+     * 刷新业务线程池配置
      */
-    protected final void refresh() {
-        boolean hasChanges = false;
-
-        // 1. 刷新Web服务器线程池
-        hasChanges |= refreshWebServerThreadPool();
-
-        // 2. 刷新业务线程池
-        hasChanges |= refreshBusinessThreadPools();
-
-        // 3. 更新本地配置
-        if (hasChanges) {
-            updateLocalConfiguration();
-        }
-    }
-
-    private boolean refreshBusinessThreadPools() {
+    public void refresh() {
         boolean hasAnyChange = false;
-        // 刷新线程池配置
-        for (ExecutorProperties properties : tpProperties.getTpExecutors()) {
+
+        for (ExecutorProperties properties : executorPropertiesList) {
             try {
                 Object bean = SpringUtil.getContext().getBean(properties.getThreadPoolName());
 
@@ -96,7 +64,7 @@ public abstract class AbstractTpRefresher implements ApplicationRunner {
                 }
 
                 // 比较配置变化
-                if (new ExecutorPropertiesComparator(properties.getThreadPoolName()).compare(localProp, properties)) {
+                if (new BusinessExecutorPropertiesComparator(properties.getThreadPoolName()).compare(localProp, properties)) {
                     log.info("线程池'{}'进行配置更新", properties.getThreadPoolName());
                     applyConfiguration(bean, properties);
                     hasAnyChange = true;
@@ -107,54 +75,21 @@ public abstract class AbstractTpRefresher implements ApplicationRunner {
                 hasAnyChange = true;
             }
         }
-        return hasAnyChange;
-    }
 
-    private void updateLocalConfiguration() {
-        if (localTpProperties == null) {
-            localTpProperties = new TpProperties();
+        // 更新本地配置
+        if (hasAnyChange) {
+            updateLocalConfiguration();
         }
-        localTpProperties.setTomcatExecutor(tpProperties.getTomcatExecutor());
-        localTpProperties.setTpExecutors(tpProperties.getTpExecutors());
-    }
-
-    /**
-     * 刷新Web服务器线程池配置
-     *
-     * @return 是否刷新了配置
-     */
-    private boolean refreshWebServerThreadPool() {
-        ExecutorProperties webExecutorProperties = tpProperties.getTomcatExecutor();
-        if (webExecutorProperties == null) {
-            return false;
-        }
-
-        // 查找本地Web服务器配置
-        ExecutorProperties localWebProp = localTpProperties != null ? localTpProperties.getTomcatExecutor() : null;
-
-        if (localWebProp == null) {
-            // 初始化Web服务器配置
-            log.info("Web服务器线程池进行启动配置更新");
-            webServerTpAdapter.refreshWeb(webExecutorProperties);
-            return true;
-        }
-
-        // 比较Web服务器配置变化
-        boolean hasWebChanges = new ExecutorPropertiesComparator(webExecutorProperties.getThreadPoolName()).compare(localWebProp, webExecutorProperties);
-        if (hasWebChanges) {
-            webServerTpAdapter.refreshWeb(webExecutorProperties);
-        }
-        return hasWebChanges;
     }
 
     /**
      * 在本地配置中查找对应的线程池配置
      */
     private ExecutorProperties findLocalExecutorProperties(String threadPoolName) {
-        if (localTpProperties == null || localTpProperties.getTpExecutors() == null) {
+        if (localBusinessPropertiesList == null) {
             return null;
         }
-        return localTpProperties.getTpExecutors().stream()
+        return localBusinessPropertiesList.stream()
                 .filter(prop -> threadPoolName.equals(prop.getThreadPoolName()))
                 .findFirst()
                 .orElse(null);
@@ -269,4 +204,27 @@ public abstract class AbstractTpRefresher implements ApplicationRunner {
         }
     }
 
+    /**
+     * 更新本地配置
+     */
+    private void updateLocalConfiguration() {
+        if (localBusinessPropertiesList == null) {
+            localBusinessPropertiesList = new ArrayList<>();
+        }
+        localBusinessPropertiesList.clear();
+        for (ExecutorProperties properties : executorPropertiesList) {
+            ExecutorProperties localProp = new ExecutorProperties();
+            localProp.setThreadPoolName(properties.getThreadPoolName());
+            localProp.setThreadNamePrefix(properties.getThreadNamePrefix());
+            localProp.setCorePoolSize(properties.getCorePoolSize());
+            localProp.setMaximumPoolSize(properties.getMaximumPoolSize());
+            localProp.setKeepAliveTime(properties.getKeepAliveTime());
+            localProp.setUnit(properties.getUnit());
+            localProp.setQueueCapacity(properties.getQueueCapacity());
+            localProp.setRejectedHandlerType(properties.getRejectedHandlerType());
+            localBusinessPropertiesList.add(localProp);
+        }
+    }
+
 }
+

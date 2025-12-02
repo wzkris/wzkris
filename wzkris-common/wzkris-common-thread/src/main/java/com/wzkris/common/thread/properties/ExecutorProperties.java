@@ -4,6 +4,13 @@ import lombok.Data;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 业务线程池配置属性
+ * 包含业务线程池可以动态更新的所有配置项
+ *
+ * @author wzkris
+ * @date 2025/12/02
+ */
 @Data
 public class ExecutorProperties {
 
@@ -50,3 +57,4 @@ public class ExecutorProperties {
     private String rejectedHandlerType = "AbortPolicy";
 
 }
+

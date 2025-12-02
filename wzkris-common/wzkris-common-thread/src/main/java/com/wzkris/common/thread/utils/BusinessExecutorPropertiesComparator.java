@@ -6,20 +6,24 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Objects;
 
 /**
- * 线程池参数比较器
+ * 业务线程池参数比较器
+ *
+ * @author wzkris
+ * @date 2025/12/02
  */
 @Slf4j
-public class ExecutorPropertiesComparator {
+public class BusinessExecutorPropertiesComparator {
 
     private final String threadPoolName;
 
     private boolean hasChanges = false;
 
-    public ExecutorPropertiesComparator(String threadPoolName) {
+    public BusinessExecutorPropertiesComparator(String threadPoolName) {
         this.threadPoolName = threadPoolName;
     }
 
     public boolean compare(ExecutorProperties local, ExecutorProperties remote) {
+        hasChanges = false;
         compareField("corePoolSize", local.getCorePoolSize(), remote.getCorePoolSize());
         compareField("maximumPoolSize", local.getMaximumPoolSize(), remote.getMaximumPoolSize());
         compareField("keepAliveTime", local.getKeepAliveTime(), remote.getKeepAliveTime());
@@ -27,16 +31,15 @@ public class ExecutorPropertiesComparator {
         compareField("threadNamePrefix", local.getThreadNamePrefix(), remote.getThreadNamePrefix());
         compareField("rejectedHandler", local.getRejectedHandlerType(), remote.getRejectedHandlerType());
         compareField("unit", local.getUnit(), remote.getUnit());
-        // 其他字段比较...
         return hasChanges;
     }
 
     private void compareField(String fieldName, Object localValue, Object remoteValue) {
         if (!Objects.equals(localValue, remoteValue)) {
-            log.info("线程池'{}' {}发生变化: {} -> {}", threadPoolName,
-                    fieldName, localValue, remoteValue);
+            log.info("线程池'{}' {}发生变化: {} -> {}", threadPoolName, fieldName, localValue, remoteValue);
             hasChanges = true;
         }
     }
 
 }
+

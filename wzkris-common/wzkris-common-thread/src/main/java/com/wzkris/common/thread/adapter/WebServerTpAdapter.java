@@ -1,6 +1,6 @@
-package com.wzkris.common.thread.refresh.adapter;
+package com.wzkris.common.thread.adapter;
 
-import com.wzkris.common.thread.properties.ExecutorProperties;
+import com.wzkris.common.thread.properties.TpProperties;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.server.WebServer;
@@ -21,7 +21,7 @@ public abstract class WebServerTpAdapter {
         this.webServer = servletWebServerApplicationContext.getWebServer();
     }
 
-    public void refreshWeb(@Nullable ExecutorProperties properties) {
+    public void refreshWeb(@Nullable TpProperties.TomcatThreadProperties properties) {
         // empty
     }
 
