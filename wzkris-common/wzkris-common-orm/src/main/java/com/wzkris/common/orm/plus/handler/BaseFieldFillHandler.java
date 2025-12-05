@@ -1,7 +1,8 @@
 package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +21,32 @@ import java.util.Date;
 @Slf4j
 public class BaseFieldFillHandler implements MetaObjectHandler {
 
+    private static Long getPrincipalId() {
+        Long id;
+        if (SecurityUtil.isAuthenticated()) {
+            id = SecurityUtil.getId();
+        } else {
+            id = SecurityConstants.SYSTEM_USER_ID;
+        }
+        return id;
+    }
+
+    private static String getHint() {
+        String hint;
+        if (SecurityUtil.isAuthenticated()) {
+            hint = SecurityUtil.getHint();
+        } else {
+            hint = StringUtil.EMPTY;
+        }
+        return hint;
+    }
+
     @Override
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
-                && metaObject.getOriginalObject() instanceof BaseEntity
-                && SecurityUtil.isAuthenticated()) {
-            CorePrincipal principal = SecurityUtil.getPrincipal();
-            fillInsert(principal.getId(), metaObject);
+                && metaObject.getOriginalObject() instanceof BaseEntity) {
+            Long id = getPrincipalId();
+            fillInsert(id, metaObject);
         }
     }
 
@@ -36,15 +56,15 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.creatorId, userId, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
+        this.setFieldValByName(BaseEntity.Fields.hint, getHint(), metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
-                && metaObject.getOriginalObject() instanceof BaseEntity
-                && SecurityUtil.isAuthenticated()) {
-            CorePrincipal principal = SecurityUtil.getPrincipal();
-            fillUpdate(principal.getId(), metaObject);
+                && metaObject.getOriginalObject() instanceof BaseEntity) {
+            Long id = getPrincipalId();
+            fillUpdate(id, metaObject);
         }
     }
 

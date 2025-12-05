@@ -1,11 +1,13 @@
 package com.wzkris.common.core.model.domain;
 
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.MyPrincipal;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -16,17 +18,15 @@ import java.util.Set;
  */
 @Getter
 @ToString
-public class LoginClient extends CorePrincipal {
+@Setter
+public class LoginClient extends MyPrincipal {
 
-    private final String clientId;
+    private String clientId;
 
-    public LoginClient() {
-        this(null, Collections.emptySet());
-    }
-
-    public LoginClient(String clientId, Set<String> scopes) {
-        super(System.currentTimeMillis(), AuthType.CLIENT.getValue(), scopes);
-        this.clientId = clientId;
+    @JsonCreator
+    public LoginClient(@JsonProperty("id") Long id,
+                       @JsonProperty("permissions") Set<String> permissions) {
+        super(id, AuthTypeEnum.CLIENT, permissions);
     }
 
     @Override

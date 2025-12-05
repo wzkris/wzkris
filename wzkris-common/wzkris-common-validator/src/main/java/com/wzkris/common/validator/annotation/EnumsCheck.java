@@ -21,9 +21,14 @@ import java.lang.annotation.Target;
 public @interface EnumsCheck {
 
     /**
-     * 枚举值
+     * 目标枚举类
      */
-    String[] values() default {};
+    Class<? extends Enum<?>> value();
+
+    /**
+     * 要校验的属性名，默认为空表示校验枚举名称
+     */
+    String property() default "";
 
     String message() default "{invalidParameter.enums.invalid}";
 

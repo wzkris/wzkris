@@ -15,8 +15,8 @@
  */
 package com.wzkris.auth.security.oauth2.device;
 
-import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpMethod;
@@ -69,7 +69,7 @@ public final class DeviceClientAuthenticationConverter implements Authentication
         String clientId = request.getParameter(OAuth2ParameterNames.CLIENT_ID);
         if (!StringUtils.hasText(clientId) || request.getParameterValues(OAuth2ParameterNames.CLIENT_ID).length != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.OAUTH_CLIENT_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+                    BizLoginCodeEnum.OAUTH_CLIENT_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
         return new DeviceClientAuthenticationToken(

@@ -2,8 +2,9 @@ package com.wzkris.message.domain.req.announcement;
 
 import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.Xss;
-import com.wzkris.message.constant.MessageConstants;
 import com.wzkris.message.domain.AnnouncementInfoDO;
+import com.wzkris.message.enums.AnncStatusEnum;
+import com.wzkris.message.enums.AnncTypeEnum;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,16 +25,14 @@ public class AnnouncementManageReq {
     @Schema(description = "标题")
     private String title;
 
-    @EnumsCheck(values = {MessageConstants.ANN_TYPE_APP, MessageConstants.ANN_TYPE_SYSTEM})
+    @EnumsCheck(value = AnncTypeEnum.class, property = "value")
     @Schema(description = "消息类型（1系统公告 2APP公告）")
     private String msgType;
 
     @Schema(description = "内容")
     private String content;
 
-    @EnumsCheck(
-            values = {MessageConstants.STATUS_CLOSED, MessageConstants.STATUS_DRAFT, MessageConstants.STATUS_PUBLISH},
-            message = "{invalidParameter.status.invalid}")
+    @EnumsCheck(value = AnncStatusEnum.class, property = "value")
     @Schema(description = "状态（0草稿 1关闭 2公开）")
     private String status;
 

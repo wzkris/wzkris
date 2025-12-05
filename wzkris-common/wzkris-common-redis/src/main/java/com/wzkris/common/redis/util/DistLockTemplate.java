@@ -1,11 +1,9 @@
 package com.wzkris.common.redis.util;
 
 import com.wzkris.common.core.function.ThrowableSupplier;
-import com.wzkris.common.core.utils.SpringUtil;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -16,12 +14,12 @@ import java.util.function.Supplier;
  * @author wzkris
  **/
 @Slf4j
-public abstract class DistLockTemplate {
+public final class DistLockTemplate {
 
     private static final String LOCK_KEY_PREFIX = "distlock:";
 
-    private static final RedissonClient redissonclient
-            = SpringUtil.getFactory().getBean(RedissonClient.class);
+    private DistLockTemplate() {
+    }
 
     public static boolean lockAndExecute(final String lockKey, Runnable runnable) {
         return lockAndExecute(lockKey, -1, -1, runnable);
@@ -33,29 +31,30 @@ public abstract class DistLockTemplate {
 
     /**
      * @param lockKey      锁名
-     * @param waitLockTime 获取锁等待时间，毫秒
-     * @param lockTimeout  锁超时时间，毫秒
+     * @param waitLockTime 获取锁等待时间，毫秒。小于0表示不等待，立即返回
+     * @param lockTimeout  锁超时时间，毫秒。小于0表示不设置超时，需要手动释放
      * @param runnable     执行
      * @return 是否已执行
      */
     public static boolean lockAndExecute(final String lockKey, final long waitLockTime,
                                          final long lockTimeout, Runnable runnable) {
+        final String distLockKey = getLockKey(lockKey);
+
+        final RLock lock = RedisUtil.getLock(distLockKey);
+        boolean locked = false;
         try {
-            RLock lock = redissonclient.getLock(getLockKey(lockKey));
-            boolean res = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
-            if (!res) {
-                return false;
-            }
-            try {
+            locked = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
+            if (locked) {
                 runnable.run();
-                return true;
-            } finally {
+            }
+        } catch (Exception e) {
+            log.error("获取分布式锁或执行任务时发生异常, lockKey: {}", distLockKey, e);
+        } finally {
+            if (locked) {
                 lock.unlock();
             }
-        } catch (InterruptedException e) {
-            log.error("线程发生中断", e);
-            return false;
         }
+        return locked;
     }
 
     /**
@@ -75,35 +74,41 @@ public abstract class DistLockTemplate {
 
     /**
      * @param lockKey      锁名
-     * @param waitLockTime 获取锁等待时间，毫秒
-     * @param lockTimeout  锁超时时间，毫秒
+     * @param waitLockTime 获取锁等待时间，毫秒。小于0表示不等待，立即返回
+     * @param lockTimeout  锁超时时间，毫秒。小于0表示不设置超时，需要手动释放
      * @param supplier     执行
-     * @return 是否已执行
+     * @return 执行结果，获取锁失败返回null
      */
     @Nullable
-    public static <T> T lockAndExecute(final String lockKey, final long waitLockTime,
-                                       final long lockTimeout, Supplier<T> supplier) {
+    public static <T> T lockAndExecute(
+            final String lockKey, final long waitLockTime,
+            final long lockTimeout, Supplier<T> supplier) {
+
+        final String distLockKey = getLockKey(lockKey);
+
+        final RLock lock = RedisUtil.getLock(distLockKey);
+        boolean locked = false;
         try {
-            RLock lock = redissonclient.getLock(getLockKey(lockKey));
-            boolean res = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
-            if (!res) {
-                return null;
-            }
-            try {
+            locked = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
+            if (locked) {
                 return supplier.get();
-            } finally {
+            }
+        } catch (Exception e) {
+            log.error("获取分布式锁或执行任务时发生异常, lockKey: {}", distLockKey, e);
+        } finally {
+            if (locked) {
                 lock.unlock();
             }
-        } catch (InterruptedException e) {
-            log.error("线程发生中断", e);
-            return null;
         }
+        return null;
     }
 
+    @Nullable
     public static <T> T lockAndExecute(final String lockKey, ThrowableSupplier<T, Throwable> throwableSupplier) throws Throwable {
         return lockAndExecute(lockKey, -1, -1, throwableSupplier);
     }
 
+    @Nullable
     public static <T> T lockAndExecute(final String lockKey, final long waitLockTime,
                                        ThrowableSupplier<T, Throwable> throwableSupplier) throws Throwable {
         return lockAndExecute(lockKey, waitLockTime, -1, throwableSupplier);
@@ -111,31 +116,35 @@ public abstract class DistLockTemplate {
 
     /**
      * @param lockKey           锁名
-     * @param waitLockTime      获取锁等待时间，毫秒
-     * @param lockTimeout       锁超时时间，毫秒
-     * @param throwableSupplier 执行
-     * @return 是否已执行
+     * @param waitLockTime      获取锁等待时间，毫秒。小于0表示不等待，立即返回
+     * @param lockTimeout       锁超时时间，毫秒。小于0表示不设置超时，需要手动释放
+     * @param throwableSupplier 执行，可能抛出异常
+     * @return 执行结果，获取锁失败返回null
+     * @throws Throwable 业务代码抛出的异常
      */
-    public static <T> T lockAndExecute(final String lockKey, final long waitLockTime,
-                                       final long lockTimeout, ThrowableSupplier<T, Throwable> throwableSupplier) throws Throwable {
+    @Nullable
+    public static <T> T lockAndExecute(
+            final String lockKey, final long waitLockTime,
+            final long lockTimeout, ThrowableSupplier<T, Throwable> throwableSupplier) throws Throwable {
+
+        final String distLockKey = getLockKey(lockKey);
+
+        final RLock lock = RedisUtil.getLock(distLockKey);
+        boolean locked = false;
         try {
-            RLock lock = redissonclient.getLock(getLockKey(lockKey));
-            boolean res = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
-            if (!res) {
-                return null;
-            }
-            try {
+            locked = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
+            if (locked) {
                 return throwableSupplier.get();
-            } finally {
+            }
+        } finally {
+            if (locked) {
                 lock.unlock();
             }
-        } catch (InterruptedException e) {
-            log.error("线程发生中断", e);
-            return null;
         }
+        return null;
     }
 
-    static String getLockKey(String lockKey) {
+    private static String getLockKey(String lockKey) {
         return LOCK_KEY_PREFIX + lockKey;
     }
 

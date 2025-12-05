@@ -44,13 +44,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 多数据源 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-datasource</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- excel导入导出-->
             <dependency>
                 <groupId>com.wzkris</groupId>
@@ -82,7 +75,7 @@
             <!-- feign调用 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-openfeign</artifactId>
+                <artifactId>wzkris-common-httpservice</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -97,13 +90,6 @@
             <dependency>
                 <groupId>com.wzkris</groupId>
                 <artifactId>wzkris-common-redis</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 缓存限流服务 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-redis-ratelimiter</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -132,13 +118,6 @@
             <dependency>
                 <groupId>com.wzkris</groupId>
                 <artifactId>wzkris-common-statemachine</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!--mq服务 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-stream</artifactId>
                 <version>${revision}</version>
             </dependency>
 

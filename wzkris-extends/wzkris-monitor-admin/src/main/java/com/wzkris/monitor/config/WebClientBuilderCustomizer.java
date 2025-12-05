@@ -2,6 +2,7 @@ package com.wzkris.monitor.config;
 
 import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.monitor.request.CapturingClientHttpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +91,7 @@ public class WebClientBuilderCustomizer implements WebClientCustomizer {
                                        String body) {
         RequestSignerUtil.setCommonHeaders(
                 headerSetter,
+                TraceIdUtil.generate(),
                 applicationName,
                 signProp.getKeys().get(applicationName).getSecret(),
                 body,

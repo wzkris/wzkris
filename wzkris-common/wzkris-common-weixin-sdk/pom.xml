@@ -27,6 +27,12 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!--微信小程序-->
         <dependency>
             <groupId>com.github.binarywang</groupId>

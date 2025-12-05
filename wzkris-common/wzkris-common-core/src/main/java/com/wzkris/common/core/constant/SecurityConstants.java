@@ -9,24 +9,24 @@ package com.wzkris.common.core.constant;
 public interface SecurityConstants {
 
     /**
-     * 默认租戶ID
+     * 系统租戶ID
      */
-    Long DEFAULT_TENANT_ID = 0L;
+    Long SYSTEM_TENANT_ID = 0L;
 
     /**
-     * 默认用户名
+     * 系统用户名
      */
-    String DEFAULT_USER_NAME = "default_user";
+    String SYSTEM_USER_NAME = "system";
 
     /**
-     * 默认用户ID
+     * 系统用户ID
      */
-    Long DEFAULT_USER_ID = 0L;
+    Long SYSTEM_USER_ID = 0L;
 
     /**
      * 超级管理员ID
      */
-    Long SUPER_ADMIN_ID = 1L;
+    Long SUPER_ADMIN_ID = 100L;
 
     /**
      * 超级管理员名称

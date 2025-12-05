@@ -2,7 +2,6 @@ package com.wzkris.principal.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.principal.domain.DeptInfoDO;
-import com.wzkris.principal.domain.req.dept.DeptManageQueryReq;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -19,12 +18,13 @@ import java.util.List;
 public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
 
     /**
-     * 根据条件查询所有子部门（包括自身）
+     * 查询所有子级
      *
-     * @param queryReq 查询条件
+     * @param parentId 父ID
      * @return 部门列表
      */
-    List<DeptInfoDO> listSubDept(DeptManageQueryReq queryReq);
+    @Select("SELECT * FROM biz.dept_info WHERE #{parentId} = ANY(ancestors) ORDER BY dept_sort, dept_id DESC")
+    List<DeptInfoDO> listSubsByParentId(Long parentId);
 
     /**
      * 根据部门ID查询名称
@@ -65,7 +65,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz.user_info WHERE dept_id = #{deptId})")
-    boolean existUser(Long deptId);
+    @Select("SELECT EXISTS(SELECT dept_id FROM biz.admin_info WHERE dept_id = #{deptId})")
+    boolean existAdmin(Long deptId);
 
 }

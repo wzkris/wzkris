@@ -2,7 +2,7 @@ package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.wzkris.common.orm.plus.config.TenantProperties;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.utils.TenantUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -20,12 +20,12 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        return new LongValue(LoginStaffUtil.getTenantId());
+        return new LongValue(TenantUtil.getTenantId());
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        return !LoginStaffUtil.isLogin() || !tenantProperties.getIncludes().contains(tableName);
+        return !TenantUtil.isLogin() || !tenantProperties.getIncludes().contains(tableName);
     }
 
 }

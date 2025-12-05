@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.principal.domain.TenantInfoDO;
 import com.wzkris.principal.domain.vo.tenant.TenantInfoVO;
-import com.wzkris.principal.domain.vo.tenant.TenantManageVO;
+import com.wzkris.principal.domain.vo.tenant.TenantMngVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -30,16 +30,16 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             LEFT JOIN biz.tenant_wallet_info w ON t.tenant_id = w.tenant_id
             ${ew.customSqlSegment}
             """)
-    List<TenantManageVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
+    List<TenantMngVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
 
     /**
      * 根据用户ID查询套餐ID，如果查到则说明是租户最高管理员
      *
-     * @param userId 用户ID
+     * @param memberId 用户ID
      * @return 套餐ID
      */
-    @Select("SELECT package_id FROM biz.tenant_info WHERE administrator = #{userId}")
-    Long selectPackageIdByStaffId(Long userId);
+    @Select("SELECT package_id FROM biz.tenant_info WHERE administrator = #{memberId}")
+    Long selectPackageIdByMemberId(Long memberId);
 
     @Select("""
              SELECT t.*, p.package_name FROM biz.tenant_info t LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id

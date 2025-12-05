@@ -20,21 +20,21 @@ public interface CustomerWalletInfoMapper extends BaseMapperPlus<CustomerWalletI
     /**
      * 增加余额
      *
-     * @param userId 用户ID
-     * @param amount 元 > 0
+     * @param customerId 用户ID
+     * @param amount     元 > 0
      * @return
      */
-    @Update("UPDATE biz.customer_wallet_info SET balance = balance + #{amount} WHERE user_id = #{userId} AND #{amount} > 0")
-    int incryBalance(Long userId, BigDecimal amount);
+    @Update("UPDATE biz.customer_wallet_info SET balance = balance + #{amount} WHERE customer_id = #{customerId} AND #{amount} > 0")
+    int incryBalance(Long customerId, BigDecimal amount);
 
     /**
      * 扣减余额
      *
-     * @param userId 用户ID
-     * @param amount 元 > 0
+     * @param customerId 用户ID
+     * @param amount     元 > 0
      * @return
      */
-    @Update("UPDATE biz.customer_wallet_info SET balance = balance - #{amount} WHERE user_id = #{userId} AND #{amount} > 0 AND balance >= #{amount}")
-    int decryBalance(Long userId, BigDecimal amount);
+    @Update("UPDATE biz.customer_wallet_info SET balance = balance - #{amount} WHERE customer_id = #{customerId} AND #{amount} > 0 AND balance >= #{amount}")
+    int decryBalance(Long customerId, BigDecimal amount);
 
 }

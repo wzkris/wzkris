@@ -1,19 +1,19 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.security.config.TokenProperties;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,10 +34,9 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     public SmsAuthenticationProvider(
             TokenProperties tokenProperties,
             TokenService tokenService,
-            JwtEncoder jwtEncoder,
             List<UserInfoTemplate> userInfoTemplates,
             CaptchaService captchaService) {
-        super(tokenProperties, tokenService, jwtEncoder);
+        super(tokenProperties, tokenService);
         this.userInfoTemplates = userInfoTemplates;
         this.captchaService = captchaService;
     }
@@ -52,27 +51,32 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
+        // 校验验证码
+        boolean pass = captchaService.validateCaptcha(
+                authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
+        if (!pass) {
+            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
+                    "invalidParameter.captcha.error");
+        }
+
         try {
             // 校验是否被冻结
             captchaService.validateAccount(authenticationToken.getAuthType().getValue() + ":" + authenticationToken.getPhoneNumber());
-            // 校验验证码
-            captchaService.validateCaptcha(
-                    authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
         } catch (BaseException e) {
             OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
         }
 
-        CorePrincipal principal = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        MyPrincipal principal = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
         if (principal == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
         return new SmsAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getPhoneNumber(), principal);

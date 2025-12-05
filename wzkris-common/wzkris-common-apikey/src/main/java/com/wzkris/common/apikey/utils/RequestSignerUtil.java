@@ -1,7 +1,6 @@
 package com.wzkris.common.apikey.utils;
 
-import com.wzkris.common.core.constant.HeaderConstants;
-import com.wzkris.common.core.utils.TraceIdUtil;
+import com.wzkris.common.core.constant.CustomHeaderConstants;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -21,15 +20,15 @@ public class RequestSignerUtil {
     private static final String DELIMITER = "\n"; // 分隔符
 
     public static void setCommonHeaders(BiConsumer<String, String> headerSetter,
+                                        String traceId,
                                         String applicationName,
                                         String secret,
                                         String requestBody,
                                         long timestamp) {
-        final String traceId = TraceIdUtil.get();
-        headerSetter.accept(HeaderConstants.X_TRACING_ID, traceId);
-        headerSetter.accept(HeaderConstants.X_REQUEST_TIME, String.valueOf(timestamp));
-        headerSetter.accept(HeaderConstants.X_REQUEST_FROM, applicationName);
-        headerSetter.accept(HeaderConstants.X_REQUEST_SIGN,
+        headerSetter.accept(CustomHeaderConstants.X_TRACING_ID, traceId);
+        headerSetter.accept(CustomHeaderConstants.X_REQUEST_TIME, String.valueOf(timestamp));
+        headerSetter.accept(CustomHeaderConstants.X_REQUEST_FROM, applicationName);
+        headerSetter.accept(CustomHeaderConstants.X_REQUEST_SIGN,
                 RequestSignerUtil.generateSignature(secret, traceId, requestBody, timestamp));
     }
 

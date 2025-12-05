@@ -6,13 +6,13 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.principal.domain.PostInfoDO;
 import com.wzkris.principal.domain.PostToMenuDO;
 import com.wzkris.principal.domain.vo.SelectVO;
+import com.wzkris.principal.mapper.MemberToPostMapper;
 import com.wzkris.principal.mapper.PostInfoMapper;
 import com.wzkris.principal.mapper.PostToMenuMapper;
-import com.wzkris.principal.mapper.StaffToPostMapper;
 import com.wzkris.principal.service.PostInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,15 +28,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostInfoServiceImpl implements PostInfoService {
 
-    private final StaffToPostMapper staffToPostMapper;
+    private final MemberToPostMapper memberToPostMapper;
 
     private final PostToMenuMapper postToMenuMapper;
 
     private final PostInfoMapper postInfoMapper;
 
     @Override
-    public List<PostInfoDO> listByStaffId(Long staffId) {
-        List<Long> postIds = staffToPostMapper.listPostIdByStaffId(staffId);
+    public List<PostInfoDO> listByMemberId(Long memberId) {
+        List<Long> postIds = memberToPostMapper.listPostIdByMemberId(memberId);
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }
@@ -48,8 +48,8 @@ public class PostInfoServiceImpl implements PostInfoService {
     }
 
     @Override
-    public List<Long> listIdByStaffId(Long staffId) {
-        List<Long> postIds = staffToPostMapper.listPostIdByStaffId(staffId);
+    public List<Long> listIdByMemberId(Long memberId) {
+        List<Long> postIds = memberToPostMapper.listPostIdByMemberId(memberId);
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }
@@ -75,10 +75,10 @@ public class PostInfoServiceImpl implements PostInfoService {
 
     @Override
     public String getPostGroup() {
-        if (LoginStaffUtil.isAdmin()) {
+        if (TenantUtil.isAdmin()) {
             return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<PostInfoDO> posts = this.listByStaffId(LoginStaffUtil.getId());
+        List<PostInfoDO> posts = this.listByMemberId(TenantUtil.getId());
         return posts.stream().map(PostInfoDO::getPostName).collect(Collectors.joining(","));
     }
 
@@ -122,18 +122,18 @@ public class PostInfoServiceImpl implements PostInfoService {
         if (success) {
             // 删除职位与菜单关联
             postToMenuMapper.deleteByPostIds(postIds);
-            // 删除员工与职位关联
-            staffToPostMapper.deleteByPostIds(postIds);
+            // 删除租户成员与职位关联
+            memberToPostMapper.deleteByPostIds(postIds);
         }
         return success;
     }
 
     @Override
-    public void existStaff(List<Long> postIds) {
+    public void existMember(List<Long> postIds) {
         postIds = postIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (staffToPostMapper.existByPostIds(postIds)) {
-            throw new GenericException("当前职位已被分配给员工");
+        if (memberToPostMapper.existByPostIds(postIds)) {
+            throw new GenericException("当前职位已被分配");
         }
     }
 

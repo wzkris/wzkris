@@ -1,7 +1,7 @@
 package com.wzkris.principal.service.impl;
 
-import com.wzkris.principal.constant.UserConstants;
 import com.wzkris.principal.domain.CustomerWalletRecordDO;
+import com.wzkris.principal.enums.WalletRecordTypeEnum;
 import com.wzkris.principal.mapper.CustomerWalletInfoMapper;
 import com.wzkris.principal.mapper.CustomerWalletRecordMapper;
 import com.wzkris.principal.service.CustomerWalletInfoService;
@@ -29,7 +29,7 @@ public class CustomerWalletInfoServiceImpl implements CustomerWalletInfoService 
             CustomerWalletRecordDO record = new CustomerWalletRecordDO();
             record.setCustomerId(customerId);
             record.setAmount(amount);
-            record.setRecordType(UserConstants.WALLET_INCOME);
+            record.setRecordType(WalletRecordTypeEnum.INCOME.getValue());
             record.setCreateAt(new Date());
             customerWalletRecordMapper.insert(record);
         }
@@ -45,7 +45,7 @@ public class CustomerWalletInfoServiceImpl implements CustomerWalletInfoService 
             CustomerWalletRecordDO record = new CustomerWalletRecordDO();
             record.setCustomerId(customerId);
             record.setAmount(amount);
-            record.setRecordType(UserConstants.WALLET_OUTCOME);
+            record.setRecordType(WalletRecordTypeEnum.OUTCOME.getValue());
             record.setCreateAt(new Date());
             customerWalletRecordMapper.insert(record);
         }

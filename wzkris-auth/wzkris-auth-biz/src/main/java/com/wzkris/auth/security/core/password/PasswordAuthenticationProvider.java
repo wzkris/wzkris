@@ -1,19 +1,18 @@
 package com.wzkris.auth.security.core.password;
 
-import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.security.config.TokenProperties;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.core.enums.BizCaptchaCode;
+import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.model.CorePrincipal;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,10 +33,9 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     public PasswordAuthenticationProvider(
             TokenProperties tokenProperties,
             TokenService tokenService,
-            JwtEncoder jwtEncoder,
             List<UserInfoTemplate> userInfoTemplates,
             CaptchaService captchaService) {
-        super(tokenProperties, tokenService, jwtEncoder);
+        super(tokenProperties, tokenService);
         this.userInfoTemplates = userInfoTemplates;
         this.captchaService = captchaService;
     }
@@ -52,7 +50,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
@@ -67,16 +65,16 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         boolean valid = captchaService.validateChallenge(authenticationToken.getCaptchaId());
         if (!valid) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCode.CAPTCHA_ERROR.value(), "invalidParameter.captcha.error");
+            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), "invalidParameter.captcha.error");
         }
 
-        CorePrincipal principal = templateOptional.get().loadByUsernameAndPassword(
+        MyPrincipal principal = templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
         if (principal == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
         return new PasswordAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getUsername(), principal);

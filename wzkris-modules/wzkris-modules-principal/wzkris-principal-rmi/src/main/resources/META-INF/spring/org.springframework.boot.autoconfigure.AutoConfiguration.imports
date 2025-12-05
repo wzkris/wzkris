@@ -1,4 +1,4 @@
-com.wzkris.principal.feign.customer.fallback.CustomerInfoFeignFallback
-com.wzkris.principal.feign.oauth2.fallback.OAuth2ClientFeignFallback
-com.wzkris.principal.feign.staff.fallback.StaffInfoFeignFallback
-com.wzkris.principal.feign.user.fallback.UserInfoFeignFallback
+com.wzkris.principal.httpservice.admin.fallback.AdminInfoHttpServiceFallback
+com.wzkris.principal.httpservice.customer.fallback.CustomerInfoHttpServiceFallback
+com.wzkris.principal.httpservice.member.fallback.MemberInfoHttpServiceFallback
+com.wzkris.principal.httpservice.oauth2.fallback.OAuth2ClientHttpServiceFallback

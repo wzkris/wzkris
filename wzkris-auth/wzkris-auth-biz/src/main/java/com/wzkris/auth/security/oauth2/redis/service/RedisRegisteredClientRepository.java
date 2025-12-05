@@ -15,13 +15,13 @@
  */
 package com.wzkris.auth.security.oauth2.redis.service;
 
-import com.wzkris.auth.security.config.TokenProperties;
+import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.security.oauth2.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.oauth2.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.I18nUtil;
-import com.wzkris.principal.feign.oauth2.OAuth2ClientFeign;
-import com.wzkris.principal.feign.oauth2.resp.OAuth2ClientResp;
+import com.wzkris.principal.httpservice.oauth2.OAuth2ClientHttpService;
+import com.wzkris.principal.httpservice.oauth2.resp.OAuth2ClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -46,7 +46,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
 
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 
-    private final OAuth2ClientFeign oAuth2ClientFeign;
+    private final OAuth2ClientHttpService oAuth2ClientHttpService;
 
     private final TokenProperties tokenProperties;
 
@@ -75,7 +75,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oauth2RegisteredClient);
         }
 
-        OAuth2ClientResp oauth2Client = oAuth2ClientFeign.getByClientId(clientId);
+        OAuth2ClientResp oauth2Client = oAuth2ClientHttpService.getByClientId(clientId);
 
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
@@ -92,7 +92,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
     }
 
     private RegisteredClient buildRegisteredClient(OAuth2ClientResp oauth2Client) {
-        RegisteredClient.Builder builder = RegisteredClient.withId(oauth2Client.getClientId())
+        RegisteredClient.Builder builder = RegisteredClient.withId(String.valueOf(oauth2Client.getId()))
                 .clientId(oauth2Client.getClientId())
                 .clientSecret(oauth2Client.getClientSecret())
                 .clientAuthenticationMethods(clientAuthenticationMethods -> {

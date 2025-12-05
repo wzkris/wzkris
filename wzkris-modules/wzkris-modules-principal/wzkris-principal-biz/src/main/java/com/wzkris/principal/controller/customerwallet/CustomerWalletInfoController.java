@@ -5,7 +5,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.LoginCustomerUtil;
+import com.wzkris.common.security.utils.CustomerUtil;
 import com.wzkris.principal.domain.CustomerWalletRecordDO;
 import com.wzkris.principal.domain.req.customer.CustomerWalletRecordQueryReq;
 import com.wzkris.principal.domain.vo.customerwallet.CustomerWalletInfoVO;
@@ -42,7 +42,7 @@ public class CustomerWalletInfoController extends BaseController {
     @Operation(summary = "余额信息")
     @GetMapping
     public Result<CustomerWalletInfoVO> walletInfo() {
-        return ok(customerWalletInfoMapper.selectById2VO(LoginCustomerUtil.getId(), CustomerWalletInfoVO.class));
+        return ok(customerWalletInfoMapper.selectById2VO(CustomerUtil.getId(), CustomerWalletInfoVO.class));
     }
 
     @Operation(summary = "钱包记录")

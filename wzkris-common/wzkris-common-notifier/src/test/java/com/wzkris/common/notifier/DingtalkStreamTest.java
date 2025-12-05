@@ -2,11 +2,18 @@ package com.wzkris.common.notifier;
 
 import com.dingtalk.open.app.api.OpenDingTalkStreamClientBuilder;
 import com.dingtalk.open.app.api.security.AuthClientCredential;
-import com.wzkris.common.notifier.api.DingtalkRobotApi;
-import com.wzkris.common.notifier.properties.DingtalkProperties;
+import com.wzkris.common.notifier.config.dingtalk.client.DingtalkApiClient;
+import com.wzkris.common.notifier.config.dingtalk.properties.DingtalkProperties;
+import com.wzkris.common.notifier.domain.DingtalkMessage;
+import com.wzkris.common.notifier.domain.NotificationResult;
+import com.wzkris.common.notifier.enums.DingtalkTemplateKey;
+import com.wzkris.common.notifier.impl.DingtalkNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import shade.com.alibaba.fastjson2.JSONObject;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class DingtalkStreamTest {
@@ -26,10 +33,18 @@ public class DingtalkStreamTest {
 
     @Test
     public void apitest() {
-        DingtalkProperties.AppProperties appProperties = new DingtalkProperties.AppProperties();
-        DingtalkRobotApi robotApi = DingtalkRobotApi.getInstance(appProperties);
-        String res = robotApi.sendGroupMessage("sampleText", "你好");
-        log.info(res);
+        DingtalkProperties dingtalkProperties = new DingtalkProperties();
+        dingtalkProperties.setAppKey("111");
+        dingtalkProperties.setAppSecret("222");
+        DingtalkApiClient apiClient = new DingtalkApiClient(dingtalkProperties);
+        DingtalkNotifier robotApi = new DingtalkNotifier(apiClient);
+        DingtalkMessage message = DingtalkMessage.builder()
+                .templateKey(DingtalkTemplateKey.MARKDOWN)
+                .recipients(List.of("100"))
+                .templateParams(Map.of("title", "钉钉通知", "text", "这是一条通过钉钉机器人发送的测试消息。"))
+                .build();
+        NotificationResult notificationResult = robotApi.send(message);
+        log.info("{}", notificationResult);
     }
 
 }

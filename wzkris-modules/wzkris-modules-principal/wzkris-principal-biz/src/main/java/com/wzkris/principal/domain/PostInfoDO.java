@@ -8,13 +8,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 员工职位表 t_post_info
+ * 租户职位表 post_info
  *
  * @author wzkris
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz", value = "t_post_info")
+@TableName(schema = "biz", value = "post_info")
 public class PostInfoDO extends BaseEntity {
 
     @TableId

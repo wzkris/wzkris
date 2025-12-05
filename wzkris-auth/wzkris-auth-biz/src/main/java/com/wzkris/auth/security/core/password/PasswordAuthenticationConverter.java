@@ -1,14 +1,12 @@
 package com.wzkris.auth.security.core.password;
 
-import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
@@ -28,8 +26,8 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     private static final String CAPTCHA_ID = "captcha_id";
 
     @Override
-    protected boolean support(String loginType) {
-        return OAuth2LoginTypeConstant.PASSWORD.equals(loginType);
+    protected boolean support(LoginTypeEnum loginType) {
+        return LoginTypeEnum.PASSWORD.equals(loginType);
     }
 
     @Override
@@ -39,7 +37,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(username)
                 || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.USERNAME);
@@ -50,7 +48,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(password)
                 || parameters.get(OAuth2ParameterNames.PASSWORD).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.passlogin.fail",
                     OAuth2ParameterNames.PASSWORD);
@@ -61,7 +59,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         if (!StringUtils.hasText(captchaId)
                 || parameters.get(CAPTCHA_ID).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.captcha.error",
                     OAuth2ParameterNames.PASSWORD);
@@ -69,20 +67,11 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
-        String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthType authType = AuthType.fromValue(type);
-        if (authType == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.AUTH_TYPE);
-        }
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
         String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
         String captchaId = StringUtil.toStringOrNull(additionalParameters.get(CAPTCHA_ID));
-        return new PasswordAuthenticationToken(authType, username, password, captchaId);
+        return new PasswordAuthenticationToken(authTypeEnum, username, password, captchaId);
     }
 
 }

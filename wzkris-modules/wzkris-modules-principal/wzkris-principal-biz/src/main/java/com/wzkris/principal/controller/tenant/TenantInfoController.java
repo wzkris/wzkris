@@ -4,17 +4,17 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateType;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.annotation.CheckStaffPerms;
-import com.wzkris.common.security.utils.LoginStaffUtil;
+import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.principal.domain.TenantInfoDO;
 import com.wzkris.principal.domain.req.EditPwdReq;
 import com.wzkris.principal.domain.req.tenant.TenantInfoReq;
 import com.wzkris.principal.domain.vo.tenant.TenantInfoVO;
 import com.wzkris.principal.domain.vo.tenant.TenantUsedQuotaVO;
+import com.wzkris.principal.mapper.AdminInfoMapper;
 import com.wzkris.principal.mapper.PostInfoMapper;
 import com.wzkris.principal.mapper.TenantInfoMapper;
-import com.wzkris.principal.mapper.UserInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +31,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "租户信息")
 @Validated
 @RestController
-@CheckStaffPerms("prin-mod:tenant-info")
+@CheckTenantPerms("prin-mod:tenant-info")
 @RequestMapping("/tenant-info")
 @RequiredArgsConstructor
 public class TenantInfoController extends BaseController {
 
-    private final UserInfoMapper userInfoMapper;
+    private final AdminInfoMapper adminInfoMapper;
 
     private final PostInfoMapper postInfoMapper;
 
@@ -47,22 +47,22 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "获取信息")
     @GetMapping
     public Result<TenantInfoVO> tenantInfo() {
-        return ok(tenantInfoMapper.selectVOById(LoginStaffUtil.getTenantId()));
+        return ok(tenantInfoMapper.selectVOById(TenantUtil.getTenantId()));
     }
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @CheckStaffPerms("prin-mod:tenant-info:edit")
-    public Result<TenantInfoVO> tenantInfo(@RequestBody TenantInfoReq req) {
-        TenantInfoDO sysTenant = BeanUtil.convert(req, new TenantInfoDO(LoginStaffUtil.getTenantId()));
-        return toRes(tenantInfoMapper.updateById(sysTenant));
+    @CheckTenantPerms("prin-mod:tenant-info:edit")
+    public Result<Void> tenantInfo(@RequestBody TenantInfoReq req) {
+        TenantInfoDO tenantInfoDO = BeanUtil.convert(req, new TenantInfoDO(TenantUtil.getTenantId()));
+        return toRes(tenantInfoMapper.updateById(tenantInfoDO));
     }
 
     @Operation(summary = "获取已使用配额")
     @GetMapping("/used-quota")
     public Result<TenantUsedQuotaVO> limitInfo() {
         TenantUsedQuotaVO usedQuotaVO = new TenantUsedQuotaVO();
-        usedQuotaVO.setAccountHas(Math.toIntExact(userInfoMapper.selectCount(null)));
+        usedQuotaVO.setAccountHas(Math.toIntExact(adminInfoMapper.selectCount(null)));
         usedQuotaVO.setPostHas(Math.toIntExact(postInfoMapper.selectCount(null)));
         return ok(usedQuotaVO);
     }
@@ -70,9 +70,9 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
     @PostMapping("/edit-operpwd")
-    @PreAuthorize("@ls.isAdmin()") // 只允许租户的超级管理员修改
+    @PreAuthorize("@tu.isAdmin()") // 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
-        Long tenantId = LoginStaffUtil.getTenantId();
+        Long tenantId = TenantUtil.getTenantId();
 
         String operPwd = tenantInfoMapper.selectOperPwdById(tenantId);
 

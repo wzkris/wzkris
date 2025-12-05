@@ -5,9 +5,9 @@ import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.message.domain.DictionaryInfoDO;
 import com.wzkris.message.mapper.DictionaryInfoMapper;
 import com.wzkris.message.service.DictionaryInfoService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -16,17 +16,21 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DictionaryInfoServiceImpl implements DictionaryInfoService {
+public class DictionaryInfoServiceImpl implements DictionaryInfoService, SmartInitializingSingleton {
 
     private static final String DICT_KEY = "system-dictionary";
 
     private final DictionaryInfoMapper dictionaryInfoMapper;
 
     private RMap<String, DictionaryInfoDO.DictData[]> cache() {
-        return RedisUtil.getRMap(DICT_KEY);
+        return RedisUtil.getRMap(DICT_KEY, String.class, DictionaryInfoDO.DictData[].class);
     }
 
-    @PostConstruct
+    @Override
+    public void afterSingletonsInstantiated() {
+        loadingDictCache();
+    }
+
     @Override
     public void loadingDictCache() {
         RMap<String, DictionaryInfoDO.DictData[]> rMap = cache();
@@ -38,13 +42,13 @@ public class DictionaryInfoServiceImpl implements DictionaryInfoService {
 
     @Override
     public DictionaryInfoDO.DictData[] getValueByKey(String dictKey) {
-        DictionaryInfoDO.DictData[] dictData = cache().get(dictKey);
-        if (dictData != null) {
-            return dictData;
+        DictionaryInfoDO.DictData[] dictDataArray = cache().get(dictKey);
+        if (dictDataArray != null) {
+            return dictDataArray;
         }
         DictionaryInfoDO dict = dictionaryInfoMapper.selectByDictKey(dictKey);
         if (dict == null) {
-            return new DictionaryInfoDO.DictData[]{};
+            return new DictionaryInfoDO.DictData[0];
         }
         cache().put(dictKey, dict.getDictValue());
         return dict.getDictValue();

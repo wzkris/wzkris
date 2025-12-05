@@ -11,7 +11,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class BusinessException extends BaseException {
 
     public BusinessException(int biz, String code, Object... args) {
-        super("业务异常", biz, code, args, null);
+        super("业务异常", 500, biz, code, args, null);
     }
 
 }

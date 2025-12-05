@@ -26,9 +26,9 @@ public class SelectVO implements Serializable {
     @Schema(description = "节点名称")
     private String label;
 
-    public SelectVO(UserInfoDO user) {
-        this.id = user.getUserId();
-        this.label = user.getUsername();
+    public SelectVO(AdminInfoDO admin) {
+        this.id = admin.getAdminId();
+        this.label = admin.getUsername();
     }
 
     public SelectVO(RoleInfoDO role) {

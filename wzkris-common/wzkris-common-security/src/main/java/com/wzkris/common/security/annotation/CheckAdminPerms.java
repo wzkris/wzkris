@@ -1,0 +1,23 @@
+package com.wzkris.common.security.annotation;
+
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.security.enums.CheckMode;
+import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@CheckPerms(checkType = AuthTypeEnum.ADMIN)
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface CheckAdminPerms {
+
+    @AliasFor(annotation = CheckPerms.class, attribute = "value")
+    String[] value() default {};
+
+    @AliasFor(annotation = CheckPerms.class, attribute = "mode")
+    CheckMode mode() default CheckMode.AND;
+
+}

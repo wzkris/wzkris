@@ -1,7 +1,7 @@
 package com.wzkris.principal.service.impl;
 
 import com.wzkris.principal.domain.DeptInfoDO;
-import com.wzkris.principal.domain.req.dept.DeptManageQueryReq;
+import com.wzkris.principal.domain.req.dept.DeptMngQueryReq;
 import com.wzkris.principal.domain.vo.SelectTreeVO;
 import com.wzkris.principal.mapper.DeptInfoMapper;
 import com.wzkris.principal.mapper.RoleToDeptMapper;
@@ -103,9 +103,7 @@ public class DeptInfoServiceImpl implements DeptInfoService {
      */
     public void updateDeptChildren(Long deptId, Long[] newAncestors, Long[] oldAncestors) {
         // 查出子元素并更新祖先列表
-        DeptManageQueryReq queryReq = new DeptManageQueryReq();
-        queryReq.setParentId(deptId);
-        List<DeptInfoDO> children = deptInfoMapper.listSubDept(queryReq);
+        List<DeptInfoDO> children = deptInfoMapper.listSubsByParentId(deptId);
         List<DeptInfoDO> updateList = children.stream()
                 .map(child -> {
                     // 替换旧的祖先路径为新的祖先路径

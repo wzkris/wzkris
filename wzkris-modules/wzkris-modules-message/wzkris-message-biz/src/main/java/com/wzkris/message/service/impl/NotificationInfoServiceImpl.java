@@ -2,13 +2,15 @@ package com.wzkris.message.service.impl;
 
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.security.utils.LoginUserUtil;
+import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.message.domain.NotificationInfoDO;
-import com.wzkris.message.domain.NotificationToUserDO;
+import com.wzkris.message.domain.NotificationToAdminDO;
+import com.wzkris.message.domain.NotificationToTenantDO;
 import com.wzkris.message.domain.dto.SimpleMessageDTO;
 import com.wzkris.message.listener.event.PubNotificationEvent;
 import com.wzkris.message.mapper.NotificationInfoMapper;
-import com.wzkris.message.mapper.NotificationToUserMapper;
+import com.wzkris.message.mapper.NotificationToAdminMapper;
+import com.wzkris.message.mapper.NotificationToTenantMapper;
 import com.wzkris.message.service.NotificationInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,27 +25,48 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
 
     private final NotificationInfoMapper notificationInfoMapper;
 
-    private final NotificationToUserMapper notificationToUserMapper;
+    private final NotificationToAdminMapper notificationToAdminMapper;
+
+    private final NotificationToTenantMapper notificationToTenantMapper;
 
     private final TransactionTemplate transactionTemplate;
 
     @Override
-    public void saveBatchAndNotify(List<Long> toUserIds, SimpleMessageDTO messageDTO) {
+    public void save2Admin(List<Long> adminIds, SimpleMessageDTO messageDTO) {
         transactionTemplate.executeWithoutResult(status -> {
             NotificationInfoDO notificationInfoDO = new NotificationInfoDO();
             notificationInfoDO.setTitle(messageDTO.getTitle());
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    LoginUserUtil.isAuthenticated() ? LoginUserUtil.getId() : SecurityConstants.DEFAULT_USER_ID);
+                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(new Date());
             notificationInfoMapper.insert(notificationInfoDO);
-            List<NotificationToUserDO> list = toUserIds.stream()
-                    .map(uid -> new NotificationToUserDO(notificationInfoDO.getNotificationId(), uid))
+            List<NotificationToAdminDO> list = adminIds.stream()
+                    .map(uid -> new NotificationToAdminDO(notificationInfoDO.getNotificationId(), uid))
                     .toList();
-            notificationToUserMapper.insert(list);
+            notificationToAdminMapper.insert(list);
         });
-        SpringUtil.getContext().publishEvent(new PubNotificationEvent(toUserIds, messageDTO));
+        SpringUtil.getContext().publishEvent(new PubNotificationEvent(adminIds, messageDTO));
+    }
+
+    @Override
+    public void save2Tenant(List<Long> memberIds, SimpleMessageDTO messageDTO) {
+        transactionTemplate.executeWithoutResult(status -> {
+            NotificationInfoDO notificationInfoDO = new NotificationInfoDO();
+            notificationInfoDO.setTitle(messageDTO.getTitle());
+            notificationInfoDO.setNotificationType(messageDTO.getType());
+            notificationInfoDO.setContent(messageDTO.getContent());
+            notificationInfoDO.setCreatorId(
+                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.SYSTEM_USER_ID);
+            notificationInfoDO.setCreateAt(new Date());
+            notificationInfoMapper.insert(notificationInfoDO);
+            List<NotificationToTenantDO> list = memberIds.stream()
+                    .map(uid -> new NotificationToTenantDO(notificationInfoDO.getNotificationId(), uid))
+                    .toList();
+            notificationToTenantMapper.insert(list);
+        });
+        SpringUtil.getContext().publishEvent(new PubNotificationEvent(memberIds, messageDTO));
     }
 
 }

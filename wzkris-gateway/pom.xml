@@ -23,7 +23,18 @@
         <!-- SpringCloud Gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-gateway-server-webflux</artifactId>
+        </dependency>
+
+        <!--webflux Starter-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>context-propagation</artifactId>
         </dependency>
 
         <!-- SpringCloud Alibaba Nacos -->
@@ -61,6 +72,12 @@
             <artifactId>wzkris-common-core</artifactId>
         </dependency>
 
+        <!-- Redis支持 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-auth-rmi</artifactId>
@@ -68,8 +85,8 @@
 
         <!-- 均衡负载-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-loadbalancer</artifactId>
         </dependency>
 
         <!-- 本地缓存 -->

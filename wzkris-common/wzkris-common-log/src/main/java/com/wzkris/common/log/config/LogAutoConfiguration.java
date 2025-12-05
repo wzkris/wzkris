@@ -1,6 +1,6 @@
 package com.wzkris.common.log.config;
 
-import com.wzkris.common.log.annotation.aspect.OperateLogAspect;
+import com.wzkris.common.log.aspect.OperateLogAspect;
 import com.wzkris.common.log.event.listener.OperateEventListener;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;

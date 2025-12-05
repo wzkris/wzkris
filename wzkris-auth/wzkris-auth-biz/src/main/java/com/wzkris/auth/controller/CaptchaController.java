@@ -1,12 +1,13 @@
 package com.wzkris.auth.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.wzkris.auth.domain.req.SmsCodeReq;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.response.RedeemChallengeResponse;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.redis.ratelimiter.annotation.RateLimit;
+import com.wzkris.common.web.annotation.ExControllerStat;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.wzkris.common.core.model.Result.err40000;
 import static com.wzkris.common.core.model.Result.ok;
+import static com.wzkris.common.core.model.Result.requestFail;
 
 /**
  * @author : wzkris
@@ -31,6 +32,7 @@ import static com.wzkris.common.core.model.Result.ok;
 @Tag(name = "验证码")
 @Slf4j
 @Validated
+@ExControllerStat
 @RestController
 @RequestMapping("/captcha")
 @RequiredArgsConstructor
@@ -38,7 +40,7 @@ public class CaptchaController {
 
     private final CaptchaService captchaService;
 
-    @RateLimit
+    @SentinelResource(value = "challenge")
     @Operation(summary = "获取挑战")
     @PostMapping("/challenge")
     public ChallengeData challenge() {
@@ -56,7 +58,7 @@ public class CaptchaController {
     public Result<Integer> sendSms(@RequestBody @Valid SmsCodeReq req) {
         boolean valid = captchaService.validateChallenge(req.getCaptchaId());
         if (!valid) {
-            return err40000("验证码异常");
+            return requestFail("验证码异常");
         }
         captchaService.validateMaxTry(req.getPhone(), 1, 120);
         // TODO 发送短信

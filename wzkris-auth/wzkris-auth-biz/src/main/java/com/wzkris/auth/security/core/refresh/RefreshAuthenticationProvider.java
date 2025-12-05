@@ -1,15 +1,14 @@
 package com.wzkris.auth.security.core.refresh;
 
-import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.security.config.TokenProperties;
+import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.CorePrincipal;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,9 +22,8 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
     private final TokenService tokenService;
 
     public RefreshAuthenticationProvider(TokenProperties tokenProperties,
-                                         TokenService tokenService,
-                                         JwtEncoder jwtEncoder) {
-        super(tokenProperties, tokenService, jwtEncoder);
+                                         TokenService tokenService) {
+        super(tokenProperties, tokenService);
         this.tokenService = tokenService;
     }
 
@@ -33,14 +31,14 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
     public RefreshAuthenticationToken doAuthenticate(Authentication authentication) {
         RefreshAuthenticationToken authenticationToken = (RefreshAuthenticationToken) authentication;
 
-        CorePrincipal principal = tokenService.loadByRefreshToken(authenticationToken.getRefreshToken());
+        MyPrincipal principal = tokenService.loadByRefreshToken(authenticationToken.getAuthType().getValue(), authenticationToken.getRefreshToken());
         if (principal == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.AUTHENTICATION_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+                    BizLoginCodeEnum.AUTHENTICATION_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        return new RefreshAuthenticationToken(authenticationToken.getRefreshToken(), principal);
+        return new RefreshAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getRefreshToken(), principal);
     }
 
     @Override

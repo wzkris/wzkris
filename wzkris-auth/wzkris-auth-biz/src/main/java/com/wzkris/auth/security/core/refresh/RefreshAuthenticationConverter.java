@@ -1,11 +1,12 @@
 package com.wzkris.auth.security.core.refresh;
 
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
@@ -23,18 +24,18 @@ import java.util.Map;
 public final class RefreshAuthenticationConverter extends CommonAuthenticationConverter<RefreshAuthenticationToken> {
 
     @Override
-    protected boolean support(String loginType) {
-        return OAuth2LoginTypeConstant.REFRESH.equals(loginType);
+    protected boolean support(LoginTypeEnum loginType) {
+        return LoginTypeEnum.REFRESH.equals(loginType);
     }
 
     @Override
     public void checkParams(MultiValueMap<String, String> parameters) {
-        // username (REQUIRED)
+        // refresh_token (REQUIRED)
         String refreshToken = parameters.getFirst(OAuth2ParameterNames.REFRESH_TOKEN);
         if (!StringUtils.hasText(refreshToken)
                 || parameters.get(OAuth2ParameterNames.REFRESH_TOKEN).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.refresh.fail",
                     OAuth2ParameterNames.REFRESH_TOKEN);
@@ -42,9 +43,9 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String refreshToken = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.REFRESH_TOKEN));
-        return new RefreshAuthenticationToken(refreshToken);
+        return new RefreshAuthenticationToken(authTypeEnum, refreshToken);
     }
 
 }

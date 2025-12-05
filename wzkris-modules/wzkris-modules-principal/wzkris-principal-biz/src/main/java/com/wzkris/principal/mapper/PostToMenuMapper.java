@@ -15,7 +15,7 @@ public interface PostToMenuMapper {
 
     @Select("""
             <script>
-                SELECT menu_id FROM biz.t_post_to_menu WHERE post_id IN
+                SELECT menu_id FROM biz.post_to_menu WHERE post_id IN
                     <foreach collection="list" item="postId" separator="," open="(" close=")">
                         #{postId}
                     </foreach>
@@ -25,7 +25,7 @@ public interface PostToMenuMapper {
 
     @Insert("""
             <script>
-                INSERT INTO biz.t_post_to_menu(post_id, menu_id) VALUES
+                INSERT INTO biz.post_to_menu(post_id, menu_id) VALUES
                     <foreach item="item" index="index" collection="list" separator=",">
                         (#{item.postId}, #{item.menuId})
                     </foreach>
@@ -35,7 +35,7 @@ public interface PostToMenuMapper {
 
     @Delete("""
             <script>
-                DELETE FROM biz.t_post_to_menu WHERE post_id IN
+                DELETE FROM biz.post_to_menu WHERE post_id IN
                     <foreach collection="list" item="postId" open="(" separator="," close=")">
                         #{postId}
                     </foreach>
@@ -47,7 +47,7 @@ public interface PostToMenuMapper {
         return this.deleteByPostIds(List.of(postId));
     }
 
-    @Delete("DELETE FROM biz.t_post_to_menu WHERE menu_id = #{menuId}")
+    @Delete("DELETE FROM biz.post_to_menu WHERE menu_id = #{menuId}")
     int deleteByMenuId(Long menuId);
 
 }

@@ -9,9 +9,11 @@ public interface NotificationInfoService {
     /**
      * 批量保存并发送在线通知
      *
-     * @param toUserIds  接收方用户ID
+     * @param adminIds   管理员ID
      * @param messageDTO 消息
      */
-    void saveBatchAndNotify(List<Long> toUserIds, SimpleMessageDTO messageDTO);
+    void save2Admin(List<Long> adminIds, SimpleMessageDTO messageDTO);
+
+    void save2Tenant(List<Long> memberIds, SimpleMessageDTO messageDTO);
 
 }

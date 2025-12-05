@@ -1,0 +1,32 @@
+server:
+  port: 3333
+
+spring:
+  application:
+    name: wzkris-mq-demo
+  cloud:
+    function:
+      definition: order;orderPay # 函数式消费者绑定
+    stream:
+      rocketmq:
+        binder:
+          name-server: localhost:9876;localhost:9886;localhost:9896
+        bindings:
+          order-out-0:
+            producer:
+              group: ${spring.application.name} # 指定生产者组
+      # 绑定通道定义
+      bindings:
+        order-out-0: # 生产者不用函数式绑定，直接用通道名
+          destination: order
+          content-type: application/json
+        order-in-0: # 函数式消费者绑定后缀-in-0，单通道默认0
+          consumer:
+            concurrency: 3 # 并发消费者数量
+          destination: order
+          content-type: application/json
+          group: order-consumer-group
+        orderPay-in-0:
+          destination: order_pay
+          content-type: application/json
+          group: order-pay-consumer-group

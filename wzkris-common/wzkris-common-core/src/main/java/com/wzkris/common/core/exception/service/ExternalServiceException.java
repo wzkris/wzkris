@@ -11,7 +11,7 @@ import com.wzkris.common.core.exception.BaseException;
 public final class ExternalServiceException extends BaseException {
 
     public ExternalServiceException(int biz, String message) {
-        super("外部服务异常", biz, null, null, message);
+        super("外部服务异常", 500, biz, null, null, message);
     }
 
     /**

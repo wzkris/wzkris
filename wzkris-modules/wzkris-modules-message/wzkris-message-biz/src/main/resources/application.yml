@@ -6,4 +6,4 @@ spring:
     name: wzkris-message
   profiles:
     active: @profiles.active@
-    include: feign
+    

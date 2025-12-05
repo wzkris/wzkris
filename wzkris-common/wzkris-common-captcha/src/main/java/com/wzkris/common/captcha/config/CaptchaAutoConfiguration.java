@@ -10,13 +10,15 @@ import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 /**
  * 自动配置类
  */
-@Import({CapProperties.class, CapService.class, CapHandler.class})
+@Import({CapService.class, CapHandler.class})
+@EnableConfigurationProperties({CapProperties.class})
 @AutoConfiguration
 public class CaptchaAutoConfiguration {
 

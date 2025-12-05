@@ -1,16 +1,34 @@
 package com.wzkris.auth.service;
 
-import com.wzkris.auth.domain.OnlineUser;
-import com.wzkris.auth.security.config.TokenProperties;
-import com.wzkris.common.core.model.CorePrincipal;
+import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.domain.OnlineSession;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.redis.util.RedisUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
-import lombok.Data;
-import org.redisson.api.*;
+import jakarta.servlet.http.HttpServletRequest;
+import nl.basjes.parse.useragent.UserAgent;
+import org.redisson.api.RMapCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
+import org.springframework.security.crypto.keygen.StringKeyGenerator;
+import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.Serializable;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,240 +39,234 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TokenService {
 
-    private final String TOKEN_PREFIX = "auth-token:{%s}";
+    /**
+     * 在线会话Key前缀
+     */
+    private final String SESSION_PREFIX = "auth-token:%s:session:{%s}";
 
-    private final String ONLINE_PREFIX = "auth-token:{%s}:online";
+    /**
+     * Access Token Key前缀
+     */
+    private final String ACCESS_TOKEN_PREFIX = "auth-token:%s:access:%s";
 
-    private final String ACCESS_TOKEN_PREFIX = "auth-token:access-token:";
+    /**
+     * Refresh Token Key前缀
+     */
+    private final String REFRESH_TOKEN_PREFIX = "auth-token:%s:info:%s";
 
-    private final String REFRESH_TOKEN_PREFIX = "auth-token:refresh-token:";
-
-    @Autowired
-    private RedissonClient redissonClient;
+    private final StringKeyGenerator tokenGenerator = new Base64StringKeyGenerator(Base64.getUrlEncoder().withoutPadding(), 96);
 
     @Autowired
     private TokenProperties tokenProperties;
 
-    private String buildInfoKey(Serializable id) {
-        return TOKEN_PREFIX.formatted(id);
+    @Autowired
+    private JwtEncoder jwtEncoder;
+
+    public String generateToken() {
+        return tokenGenerator.generateKey();
     }
 
-    private String buildOnlineKey(Serializable id) {
-        return ONLINE_PREFIX.formatted(id);
+    @Nullable
+    public String generateAccessToken(MyPrincipal principal) {
+        if (StringUtil.equalsAny(principal.getType().getValue(), AuthTypeEnum.ADMIN.getValue(), AuthTypeEnum.TENANT.getValue())) {
+            return this.generateToken();
+        } else if (StringUtil.equals(principal.getType().getValue(), AuthTypeEnum.CUSTOMER.getValue())) {
+            JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
+            JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
+                    .build();
+            Instant issuedAt = Instant.now();
+            Instant expiresAt = issuedAt.plus(Duration.ofSeconds(tokenProperties.getAccessTokenTimeOut()));
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .subject(principal.getId().toString())
+                    .issuedAt(issuedAt)
+                    .expiresAt(expiresAt)
+                    .id(UUID.randomUUID().toString())
+                    .notBefore(issuedAt)
+                    .build();
+            Jwt jwt = this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims));
+            return jwt.getTokenValue();
+        }
+        return null;
     }
 
-    private String buildAccessTokenKey(String accessToken) {
-        return ACCESS_TOKEN_PREFIX + accessToken;
+    /**
+     * 构建在线会话Key
+     *
+     * @param id 用户ID
+     * @return Key
+     */
+    private String buildSessionKey(String type, Serializable id) {
+        return SESSION_PREFIX.formatted(type, id);
     }
 
-    private String buildRefreshTokenKey(String refreshToken) {
-        return REFRESH_TOKEN_PREFIX + refreshToken;
+    /**
+     * 构建Access Token Key
+     *
+     * @param accessToken Access Token
+     * @return Key
+     */
+    private String buildAccessTokenKey(String type, String accessToken) {
+        return ACCESS_TOKEN_PREFIX.formatted(type, accessToken);
+    }
+
+    /**
+     * 构建Refresh Token Key
+     *
+     * @param refreshToken Refresh Token
+     * @return Key
+     */
+    private String buildRefreshTokenKey(String type, String refreshToken) {
+        return REFRESH_TOKEN_PREFIX.formatted(type, refreshToken);
     }
 
     /**
      * 保存token及用户信息
+     * 存储结构：
+     * - accessToken -> refreshToken (字符串)
+     * - refreshToken -> MyPrincipal (用户信息)
+     * - session:{userId} -> Map<refreshToken, OnlineSession> (在线会话)
      *
      * @param principal    用户信息
-     * @param accessToken  token
-     * @param refreshToken token
+     * @param accessToken  access token
+     * @param refreshToken refresh token
      */
-    public final void save(CorePrincipal principal, String accessToken, String refreshToken) {
+    public final void save(MyPrincipal principal, String accessToken, String refreshToken) {
         Serializable id = principal.getId();
+        String type = principal.getType().getValue();
         long refreshTTL = tokenProperties.getUserRefreshTokenTimeOut();
         long accessTTL = tokenProperties.getUserTokenTimeOut();
 
-        // ========== 1️⃣ 批量写入用户信息 + 在线会话 ==========
-        RBatch batch = redissonClient.createBatch();
+        // ========== 1️⃣ 写入在线会话 ==========
 
-        // 保存用户主信息（带过期）
-        RBucketAsync<CorePrincipal> userinfo = batch.getBucket(buildInfoKey(id));
-        userinfo.setAsync(principal, Duration.ofSeconds(refreshTTL));
+        RMapCache<String, OnlineSession> onlineCache = loadSessionCache(type, id);
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        // 处理在线会话（必须用同步 get，否则批量不会执行）
-        RMapCache<String, OnlineUser> onlineCache = redissonClient.getMapCache(buildOnlineKey(id));
-        OnlineUser existing = onlineCache.get(refreshToken);
+            if (onlineCache.containsKey(refreshToken)) {
+                // 已存在则仅刷新过期时间
+                onlineCache.expireEntry(refreshToken, Duration.ofSeconds(refreshTTL), Duration.ZERO);
+            } else {
+                String clientIP = ServletUtil.getClientIP(request);
+                UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT));
+                OnlineSession onlineSession = new OnlineSession();
+                onlineSession.setDevice(userAgent.getValue(UserAgent.DEVICE_NAME));
+                onlineSession.setDeviceBrand(userAgent.getValue(UserAgent.DEVICE_BRAND));
+                onlineSession.setLoginIp(clientIP);
+                onlineSession.setBrowser(userAgent.getValue(UserAgent.AGENT_NAME));
+                onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
+                onlineSession.setLoginTime(new Date());
 
-        RMapCacheAsync<String, OnlineUser> onlineCacheAsync = batch.getMapCache(buildOnlineKey(id));
-        if (existing == null) {
-            // 新建会话
-            onlineCacheAsync.putAsync(refreshToken, new OnlineUser(), refreshTTL, TimeUnit.SECONDS);
-        } else {
-            // 已存在则仅刷新过期时间
-            onlineCacheAsync.expireEntryAsync(refreshToken, Duration.ofSeconds(refreshTTL), Duration.ZERO);
-        }
-
-        // 执行批处理（此时所有命令都被加入 batch）
-        batch.execute();
-
-        // ========== 2️⃣ 写入 AccessToken 与 RefreshToken 映射 ==========
-        RBucket<TokenBody> accessTokenBucket = redissonClient.getBucket(buildAccessTokenKey(accessToken));
-        accessTokenBucket.setAsync(new TokenBody(id, refreshToken), Duration.ofSeconds(accessTTL));
-
-        // 立刻失效旧 access_token（若存在）
-        RBucket<TokenBody> refreshTokenBucket = redissonClient.getBucket(buildRefreshTokenKey(refreshToken));
-        TokenBody oldToken = refreshTokenBucket.get();
-        if (oldToken != null) {
-            redissonClient.getBucket(buildAccessTokenKey(oldToken.getToken())).deleteAsync();
-        }
-
-        // 更新 refresh_token 关联的 access_token
-        refreshTokenBucket.setAsync(new TokenBody(id, accessToken), Duration.ofSeconds(refreshTTL));
-    }
-
-    /**
-     * 根据token获取用户信息
-     *
-     * @param accessToken token
-     */
-    @Nullable
-    public final CorePrincipal loadByAccessToken(String accessToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
-        if (tokenBody == null) return null;
-
-        return (CorePrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
-    }
-
-    /**
-     * 根据token获取用户信息
-     *
-     * @param refreshToken token
-     */
-    @Nullable
-    public final CorePrincipal loadByRefreshToken(String refreshToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
-        if (tokenBody == null) return null;
-
-        return (CorePrincipal) redissonClient.getBucket(buildInfoKey(tokenBody.getId())).get();
-    }
-
-    /**
-     * token反查
-     *
-     * @param accessToken token
-     */
-    public final String loadRefreshTokenByAccessToken(String accessToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
-        return tokenBody.getToken();
-    }
-
-    /**
-     * token反查
-     *
-     * @param refreshToken token
-     */
-    public final String loadAccessTokenByRefreshToken(String refreshToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
-        return tokenBody.getToken();
-    }
-
-    /**
-     * 根据token移除信息
-     *
-     * @param accessToken token
-     */
-    public final Serializable logoutByAccessToken(String accessToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildAccessTokenKey(accessToken)).get();
-        if (tokenBody == null) return null;
-
-        Serializable id = tokenBody.getId();
-        String refreshToken = tokenBody.getToken();
-
-        // 删除Token（独立键）
-        redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
-        redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).delete();
-
-        // 创建批量操作对象
-        RBatch batch = redissonClient.createBatch();
-
-        // 删除会话
-        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineKey(id));
-
-        mapCacheAsync.removeAsync(refreshToken);
-
-        mapCacheAsync.sizeAsync().thenAccept(size -> {
-            if (size == 0) {
-                redissonClient.getBucket(buildInfoKey(tokenBody.getId())).delete();
+                // 新建会话
+                onlineCache.put(refreshToken, onlineSession, refreshTTL, TimeUnit.SECONDS);
             }
-        });
+        } catch (Exception e) {// 不存在请求
+            onlineCache.put(refreshToken, new OnlineSession(), refreshTTL, TimeUnit.SECONDS);
+        }
 
-        batch.execute();
+        // ========== 2️⃣ 处理Token映射（不同分片，单独操作） ==========
+        // Access Token -> Refresh Token (存储字符串)
+        RedisUtil.setObj(buildAccessTokenKey(type, accessToken), refreshToken, accessTTL);
+
+        // Refresh Token -> MyPrincipal (直接存储用户信息)
+        RedisUtil.setObj(buildRefreshTokenKey(type, refreshToken), principal, refreshTTL);
+    }
+
+    /**
+     * 根据accessToken获取用户信息
+     * 查询路径：accessToken -> refreshToken -> MyPrincipal
+     *
+     * @param accessToken access token
+     * @return 用户信息，如果不存在则返回null
+     */
+    @Nullable
+    public final MyPrincipal loadByAccessToken(String type, String accessToken) {
+        // 1. 通过accessToken获取refreshToken
+        String refreshToken = loadRefreshTokenByAccessToken(type, accessToken);
+        if (refreshToken == null) {
+            return null;
+        }
+
+        // 2. 通过refreshToken获取用户信息
+        return loadByRefreshToken(type, refreshToken);
+    }
+
+    /**
+     * 根据refreshToken获取用户信息
+     * 查询路径：refreshToken -> MyPrincipal（直接获取）
+     *
+     * @param refreshToken refresh token
+     * @return 用户信息，如果不存在则返回null
+     */
+    @Nullable
+    public final MyPrincipal loadByRefreshToken(String type, String refreshToken) {
+        return RedisUtil.getObj(buildRefreshTokenKey(type, refreshToken), MyPrincipal.class);
+    }
+
+    /**
+     * 通过accessToken获取refreshToken
+     *
+     * @param accessToken access token
+     * @return refreshToken，如果不存在则返回null
+     */
+    @Nullable
+    public final String loadRefreshTokenByAccessToken(String type, String accessToken) {
+        return RedisUtil.getObj(buildAccessTokenKey(type, accessToken), String.class);
+    }
+
+    /**
+     * 根据accessToken移除信息
+     *
+     * @param accessToken access token
+     * @return 用户ID，如果不存在则返回null
+     */
+    @Nullable
+    public final Serializable logoutByAccessToken(String type, String accessToken) {
+        // 1. 通过accessToken获取refreshToken
+        String refreshToken = loadRefreshTokenByAccessToken(type, accessToken);
+
+        if (refreshToken == null) {
+            RedisUtil.delObj(buildAccessTokenKey(type, accessToken));
+            return null;
+        }
+
+        return logoutByRefreshToken(type, refreshToken);
+    }
+
+    /**
+     * 根据refreshToken移除信息
+     *
+     * @param refreshToken refresh token
+     */
+    public final Serializable logoutByRefreshToken(String type, String refreshToken) {
+        // 通过refreshToken获取用户信息
+        MyPrincipal principal = loadByRefreshToken(type, refreshToken);
+        if (principal == null) {
+            return null;
+        }
+
+        Serializable id = principal.getId();
+
+        // 删除refreshToken映射
+        RedisUtil.delObj(buildRefreshTokenKey(type, refreshToken));
+
+        // 删除在线会话
+        RMapCache<String, OnlineSession> onlineCache = loadSessionCache(type, id);
+        onlineCache.remove(refreshToken);
+
+        if (onlineCache.isEmpty()) {
+            onlineCache.delete();
+        }
+
         return id;
-    }
-
-    /**
-     * 根据token移除信息
-     *
-     * @param refreshToken token
-     */
-    public final void logoutByRefreshToken(String refreshToken) {
-        TokenBody tokenBody = (TokenBody) redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).get();
-        if (tokenBody == null) return;
-
-        Serializable id = tokenBody.getId();
-        String accessToken = tokenBody.getToken();
-
-        // 删除Token（独立键）
-        redissonClient.getBucket(buildAccessTokenKey(accessToken)).delete();
-        redissonClient.getBucket(buildRefreshTokenKey(refreshToken)).delete();
-
-        // 创建批量操作对象
-        RBatch batch = redissonClient.createBatch();
-
-        // 删除会话
-        RMapCacheAsync<String, Object> mapCacheAsync = batch.getMapCache(buildOnlineKey(id));
-
-        mapCacheAsync.removeAsync(refreshToken);
-
-        mapCacheAsync.sizeAsync().thenAccept(size -> {
-            if (size == 0) {
-                redissonClient.getBucket(buildInfoKey(tokenBody.getId())).delete();
-            }
-        });
-
-        batch.execute();
     }
 
     /**
      * 根据用户ID获取在线会话列表
      *
-     * @param userId 用户ID
+     * @param id 用户ID
      */
-    public final RMapCache<String, OnlineUser> getOnlineCache(Serializable userId) {
-        return redissonClient.getMapCache(buildOnlineKey(userId));
-    }
-
-    /**
-     * 添加会话
-     *
-     * @param userId     用户ID
-     * @param onlineUser 会话信息
-     */
-    public final void putOnlineSession(Serializable userId, String refreshToken, OnlineUser onlineUser) {
-        RMapCache<String, OnlineUser> onlineCache = getOnlineCache(userId);
-        onlineCache.put(refreshToken, onlineUser, tokenProperties.getUserRefreshTokenTimeOut(), TimeUnit.SECONDS);
-    }
-
-    @Data
-    private static class TokenBody {
-
-        /**
-         * 用户ID
-         */
-        private Serializable id;
-
-        /**
-         * 另外的TOKEN
-         */
-        private String token;
-
-        public TokenBody() {
-        }
-
-        private TokenBody(Serializable id, String token) {
-            this.id = id;
-            this.token = token;
-        }
-
+    public final RMapCache<String, OnlineSession> loadSessionCache(String type, Serializable id) {
+        return RedisUtil.getRMapCache(buildSessionKey(type, id), String.class, OnlineSession.class);
     }
 
 }

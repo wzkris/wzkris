@@ -1,14 +1,13 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.enums.BizLoginCode;
-import com.wzkris.auth.security.constants.OAuth2LoginTypeConstant;
-import com.wzkris.auth.security.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.common.core.enums.AuthType;
-import com.wzkris.common.core.enums.BizBaseCode;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.oauth2.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -25,8 +24,8 @@ import java.util.Map;
 public final class SmsAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
 
     @Override
-    protected boolean support(String loginType) {
-        return OAuth2LoginTypeConstant.SMS.equals(loginType);
+    protected boolean support(LoginTypeEnum loginType) {
+        return LoginTypeEnum.SMS.equals(loginType);
     }
 
     @Override
@@ -36,7 +35,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(phoneNumber)
                 || parameters.get(OAuth2ParameterConstant.PHONE_NUMBER).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.PHONE_NUMBER);
@@ -47,38 +46,18 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
         if (!StringUtils.hasText(smsCode)
                 || parameters.get(OAuth2ParameterConstant.SMS_CODE).size() != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
+                    BizBaseCodeEnum.REQUEST_ERROR.value(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "oauth2.smslogin.fail",
                     OAuth2ParameterConstant.SMS_CODE);
         }
-
-        // userType (REQUIRED)
-        String userType = parameters.getFirst(OAuth2ParameterConstant.AUTH_TYPE);
-        if (!StringUtils.hasText(userType)
-                || parameters.get(OAuth2ParameterConstant.AUTH_TYPE).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCode.MISSING_PARAMETER.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "oauth2.smslogin.fail",
-                    OAuth2ParameterConstant.AUTH_TYPE);
-        }
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(String loginType, Map<String, Object> additionalParameters) {
-        String type = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.AUTH_TYPE));
-        AuthType authType = AuthType.fromValue(type);
-        if (authType == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCode.PARAMETER_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "invalidParameter.param.invalid",
-                    OAuth2ParameterConstant.AUTH_TYPE);
-        }
+    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
         String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
-        return new SmsAuthenticationToken(authType, phoneNumber, smsCode);
+        return new SmsAuthenticationToken(authTypeEnum, phoneNumber, smsCode);
     }
 
 }

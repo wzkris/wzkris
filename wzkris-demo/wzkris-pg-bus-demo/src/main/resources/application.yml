@@ -1,0 +1,33 @@
+server:
+  port: 3341
+
+spring:
+  application:
+    name: wzkris-pg-bus-demo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?ssl=false&reWriteBatchedInserts=true
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/**/*.xml
+
+demo:
+  pg-bus:
+    listener-enabled: true
+    reconnect-delay: 3s
+    # 单个 channel 配置（向后兼容）
+    channels:
+      - wzkris_demo_bus
+
+logging:
+  level:
+    com.demo.pgbus: DEBUG
+

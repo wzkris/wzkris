@@ -17,9 +17,9 @@
         <revision>4.1.0</revision>
         <project.encoding>UTF-8</project.encoding>
         <java.version>17</java.version>
-        <spring-boot.version>3.4.4</spring-boot.version>
-        <spring-cloud.version>2024.0.1</spring-cloud.version>
-        <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
+        <spring-boot.version>3.5.0</spring-boot.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud-alibaba.version>2025.0.0.0</spring-cloud-alibaba.version>
         <lombok.version>1.18.28</lombok.version>
         <netty.version>4.1.110.Final</netty.version>
         <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
@@ -133,6 +133,8 @@
     <modules>
         <module>wzkris-auth</module>
         <module>wzkris-bom</module>
+        <module>wzkris-demo/wzkris-mq-demo</module>
+        <module>wzkris-demo/wzkris-pg-bus-demo</module>
         <module>wzkris-gateway</module>
         <module>wzkris-extends</module>
         <module>wzkris-modules</module>
