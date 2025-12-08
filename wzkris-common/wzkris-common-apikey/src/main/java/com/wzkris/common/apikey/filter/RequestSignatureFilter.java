@@ -66,7 +66,7 @@ public class RequestSignatureFilter extends OncePerRequestFilter {
                 requestWrapper.getBodyAsString(),
                 Long.parseLong(requestTime),
                 signature,
-                sign.getMaxInterval()
+                sign.getCallMaxInterval()
         );
 
         if (!verified) {

@@ -2,6 +2,7 @@ package com.wzkris.common.apikey.config;
 
 import com.wzkris.common.apikey.filter.TraceIdFilter;
 import com.wzkris.common.apikey.filter.RequestSignatureFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ public class FilterConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "request-signature", name = "enable", havingValue = "true", matchIfMissing = true)
     public FilterRegistrationBean<RequestSignatureFilter> requestSignatureFilter(
             SignkeyProperties signkeyProperties) {
         FilterRegistrationBean<RequestSignatureFilter> registration = new FilterRegistrationBean<>();

@@ -11,8 +11,10 @@ import java.util.Map;
 @Data
 @RefreshScope
 @Configuration
-@ConfigurationProperties(prefix = "signature")
+@ConfigurationProperties(prefix = "request-signature")
 public class SignkeyProperties {
+
+    private boolean enable = true;
 
     /**
      * key为服务名 value为密钥
@@ -28,9 +30,9 @@ public class SignkeyProperties {
         private String secret;
 
         /**
-         * 最大间隔时间 // ms
+         * 调用最大间隔时间 // ms
          */
-        private long maxInterval = 10_000;
+        private long callMaxInterval = 10_000;
 
     }
 
