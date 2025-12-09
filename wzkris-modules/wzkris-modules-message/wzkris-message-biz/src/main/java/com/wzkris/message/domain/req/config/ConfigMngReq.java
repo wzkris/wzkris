@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @AutoMappers({@AutoMapper(target = ConfigInfoDO.class)})
 @Schema(description = "系统参数添加修改参数体")
-public class ConfigManageReq {
+public class ConfigMngReq {
 
     private Long configId;
 

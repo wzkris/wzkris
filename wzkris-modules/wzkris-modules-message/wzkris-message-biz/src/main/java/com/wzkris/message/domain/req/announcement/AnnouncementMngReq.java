@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 @AutoMappers({@AutoMapper(target = AnnouncementInfoDO.class)})
 @Schema(description = "系统消息添加修改参数体")
-public class AnnouncementManageReq {
+public class AnnouncementMngReq {
 
     private Long announcementId;
 

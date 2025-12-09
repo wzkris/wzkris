@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class ConfigManageQueryReq {
+public class ConfigMngQueryReq {
 
     @Schema(description = "参数名称")
     private String configName;

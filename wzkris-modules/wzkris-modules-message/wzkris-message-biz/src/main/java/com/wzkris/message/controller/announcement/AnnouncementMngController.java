@@ -10,8 +10,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.message.domain.AnnouncementInfoDO;
-import com.wzkris.message.domain.req.announcement.AnnouncementManageQueryReq;
-import com.wzkris.message.domain.req.announcement.AnnouncementManageReq;
+import com.wzkris.message.domain.req.announcement.AnnouncementMngQueryReq;
+import com.wzkris.message.domain.req.announcement.AnnouncementMngReq;
 import com.wzkris.message.mapper.AnnouncementInfoMapper;
 import com.wzkris.message.service.AnnouncementInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,13 +43,13 @@ public class AnnouncementMngController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @CheckAdminPerms("msg-mod:announcement-mng:list")
-    public Result<Page<AnnouncementInfoDO>> list(AnnouncementManageQueryReq queryReq) {
+    public Result<Page<AnnouncementInfoDO>> list(AnnouncementMngQueryReq queryReq) {
         startPage();
         List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
     }
 
-    private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementManageQueryReq queryReq) {
+    private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngQueryReq queryReq) {
         return new LambdaQueryWrapper<AnnouncementInfoDO>()
                 .like(StringUtil.isNotBlank(queryReq.getTitle()), AnnouncementInfoDO::getTitle, queryReq.getTitle())
                 .eq(StringUtil.isNotBlank(queryReq.getStatus()), AnnouncementInfoDO::getStatus, queryReq.getStatus())
@@ -67,7 +67,7 @@ public class AnnouncementMngController extends BaseController {
     @OperateLog(title = "系统消息", subTitle = "添加草稿", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("msg-mod:announcement-mng:add")
-    public Result<Void> add(@Valid @RequestBody AnnouncementManageReq req) {
+    public Result<Void> add(@Valid @RequestBody AnnouncementMngReq req) {
         return toRes(announcementInfoMapper.insert(BeanUtil.convert(req, AnnouncementInfoDO.class)));
     }
 
@@ -75,7 +75,7 @@ public class AnnouncementMngController extends BaseController {
     @OperateLog(title = "系统消息", subTitle = "修改草稿", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("msg-mod:announcement-mng:edit")
-    public Result<Void> edit(@RequestBody AnnouncementManageReq req) {
+    public Result<Void> edit(@RequestBody AnnouncementMngReq req) {
         return toRes(announcementInfoMapper.updateById(BeanUtil.convert(req, AnnouncementInfoDO.class)));
     }
 

@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @AutoMappers({@AutoMapper(target = DictionaryInfoDO.class)})
 @Schema(description = "字典添加修改参数体")
-public class DictionaryManageReq {
+public class DictionaryMngReq {
 
     private Long dictId;
 

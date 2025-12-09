@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class AnnouncementManageQueryReq {
+public class AnnouncementMngQueryReq {
 
     @Schema(description = "标题")
     private String title;

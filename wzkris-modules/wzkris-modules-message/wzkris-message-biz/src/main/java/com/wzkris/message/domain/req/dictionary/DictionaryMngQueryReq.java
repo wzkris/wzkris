@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class DictionaryManageQueryReq {
+public class DictionaryMngQueryReq {
 
     @Schema(description = "字典键")
     private String dictKey;

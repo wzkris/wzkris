@@ -10,8 +10,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.message.domain.DictionaryInfoDO;
-import com.wzkris.message.domain.req.dictionary.DictionaryManageQueryReq;
-import com.wzkris.message.domain.req.dictionary.DictionaryManageReq;
+import com.wzkris.message.domain.req.dictionary.DictionaryMngQueryReq;
+import com.wzkris.message.domain.req.dictionary.DictionaryMngReq;
 import com.wzkris.message.mapper.DictionaryInfoMapper;
 import com.wzkris.message.service.DictionaryInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,13 +39,13 @@ public class DictionaryMngController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @CheckAdminPerms("msg-mod:dictionary-mng:list")
-    public Result<Page<DictionaryInfoDO>> list(DictionaryManageQueryReq queryReq) {
+    public Result<Page<DictionaryInfoDO>> list(DictionaryMngQueryReq queryReq) {
         startPage();
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(queryReq);
         return getDataTable(dictionaryInfoMapper.selectList(lqw));
     }
 
-    private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryManageQueryReq queryReq) {
+    private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngQueryReq queryReq) {
         return new LambdaQueryWrapper<DictionaryInfoDO>()
                 .like(StringUtil.isNotBlank(queryReq.getDictName()), DictionaryInfoDO::getDictName, queryReq.getDictName())
                 .like(StringUtil.isNotBlank(queryReq.getDictKey()), DictionaryInfoDO::getDictKey, queryReq.getDictKey())
@@ -63,7 +63,7 @@ public class DictionaryMngController extends BaseController {
     @OperateLog(title = "数据字典", subTitle = "添加字典", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("msg-mod:dictionary-mng:add")
-    public Result<Void> add(@RequestBody DictionaryManageReq req) {
+    public Result<Void> add(@RequestBody DictionaryMngReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return err40000("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
@@ -74,7 +74,7 @@ public class DictionaryMngController extends BaseController {
     @OperateLog(title = "数据字典", subTitle = "修改字典", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("msg-mod:dictionary-mng:edit")
-    public Result<Void> edit(@RequestBody DictionaryManageReq req) {
+    public Result<Void> edit(@RequestBody DictionaryMngReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
             return err40000("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
         }

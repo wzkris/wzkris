@@ -10,8 +10,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.message.domain.ConfigInfoDO;
-import com.wzkris.message.domain.req.config.ConfigManageQueryReq;
-import com.wzkris.message.domain.req.config.ConfigManageReq;
+import com.wzkris.message.domain.req.config.ConfigMngQueryReq;
+import com.wzkris.message.domain.req.config.ConfigMngReq;
 import com.wzkris.message.mapper.ConfigInfoMapper;
 import com.wzkris.message.service.ConfigInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,13 +41,13 @@ public class ConfigMngController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/list")
     @CheckAdminPerms("msg-mod:config-mng:list")
-    public Result<Page<ConfigInfoDO>> list(ConfigManageQueryReq queryReq) {
+    public Result<Page<ConfigInfoDO>> list(ConfigMngQueryReq queryReq) {
         startPage();
         List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
     }
 
-    private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigManageQueryReq queryReq) {
+    private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigMngQueryReq queryReq) {
         return new LambdaQueryWrapper<ConfigInfoDO>()
                 .like(StringUtil.isNotEmpty(queryReq.getConfigKey()), ConfigInfoDO::getConfigKey, queryReq.getConfigKey())
                 .like(
@@ -72,7 +72,7 @@ public class ConfigMngController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("msg-mod:config-mng:add")
-    public Result<Void> add(@RequestBody ConfigManageReq req) {
+    public Result<Void> add(@RequestBody ConfigMngReq req) {
         if (configInfoService.checkUsedByConfigKey(null, req.getConfigKey())) {
             return err40000("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
@@ -83,7 +83,7 @@ public class ConfigMngController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("msg-mod:config-mng:edit")
-    public Result<Void> edit(@RequestBody ConfigManageReq req) {
+    public Result<Void> edit(@RequestBody ConfigMngReq req) {
         if (configInfoService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
             return err40000("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
