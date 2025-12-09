@@ -150,7 +150,6 @@ public class LoginCustomerService extends UserInfoTemplate {
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         loginCustomer,
-                        null,
                         loginType,
                         false,
                         errorMsg,

@@ -17,7 +17,6 @@
 package com.wzkris.auth.security.handler;
 
 import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.listener.event.RefreshTokenEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.common.core.model.Result;
@@ -101,18 +100,10 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     private void recordSuccessLog(
             HttpServletRequest request, OAuth2AccessTokenAuthenticationToken authenticationToken) {
         if (authenticationToken.getPrincipal() instanceof CommonAuthenticationToken commonAuthenticationToken) {
-            if (commonAuthenticationToken instanceof RefreshAuthenticationToken refreshAuthenticationToken) {
-                SpringUtil.getContext()
-                        .publishEvent(new RefreshTokenEvent(
-                                commonAuthenticationToken.getPrincipal(),
-                                authenticationToken.getAccessToken().getTokenValue(),
-                                refreshAuthenticationToken.getRefreshToken())
-                        );
-            } else {
+            if (!(commonAuthenticationToken instanceof RefreshAuthenticationToken)) {
                 SpringUtil.getContext()
                         .publishEvent(new LoginEvent(
                                 commonAuthenticationToken.getPrincipal(),
-                                authenticationToken.getRefreshToken().getTokenValue(),
                                 commonAuthenticationToken.getLoginType().getValue(),
                                 true,
                                 "",

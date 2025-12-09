@@ -141,7 +141,6 @@ public class LoginTenantService extends UserInfoTemplate {
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         loginTenant,
-                        null,
                         loginType,
                         false,
                         errorMsg,

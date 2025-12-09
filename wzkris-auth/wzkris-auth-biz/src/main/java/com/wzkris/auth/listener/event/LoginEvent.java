@@ -17,8 +17,6 @@ public class LoginEvent {
 
     private MyPrincipal principal;
 
-    private String refreshToken;
-
     private String loginType;
 
     private Boolean success;

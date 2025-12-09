@@ -131,7 +131,6 @@ public class LoginAdminService extends UserInfoTemplate {
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         loginAdmin,
-                        null,
                         loginType,
                         false,
                         errorMsg,
