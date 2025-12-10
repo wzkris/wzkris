@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author wzkris
@@ -26,10 +25,9 @@ public class SwaggerAutoConfiguration {
     }
 
     @Bean
-    public GroupedOpenApi groupedOpenApi(SwaggerProperties swaggerProperties) {
+    public GroupedOpenApi groupedOpenApi() {
         return GroupedOpenApi.builder()
                 .group(this.getClass().getName())
-                .displayName(swaggerProperties.getTitle())
                 .addOpenApiMethodFilter(it -> it.getAnnotation(Tag.class) != null)
                 .build();
     }
@@ -37,13 +35,12 @@ public class SwaggerAutoConfiguration {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(
-                        new Info()
-                                .title(swaggerProperties.getTitle())
-                                .description(swaggerProperties.getDescription())
-                                .license(new License().url(swaggerProperties.getLicense()))
-                                .version(swaggerProperties.getVersion())
-                                .termsOfService("gg bom") // API服务条款
+                .info(new Info()
+                        .title(swaggerProperties.getTitle())
+                        .description(swaggerProperties.getDescription())
+                        .license(new License().url(swaggerProperties.getLicense()))
+                        .version(swaggerProperties.getVersion())
+                        .termsOfService(swaggerProperties.getTermsOfServiceUrl())
                 );
     }
 
