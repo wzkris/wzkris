@@ -1,7 +1,7 @@
 package com.wzkris.common.captcha.store.impl;
 
+import com.wzkris.common.captcha.enums.StoreTypeEnum;
 import com.wzkris.common.captcha.model.ChallengeData;
-import com.wzkris.common.captcha.properties.StoreType;
 import com.wzkris.common.captcha.store.CapStore;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ public class InMemoryStore implements CapStore {
     private final Map<String, Date> tokenMap = new ConcurrentHashMap<>();
 
     @Override
-    public StoreType storeType() {
-        return StoreType.IN_MEMORY;
+    public StoreTypeEnum storeType() {
+        return StoreTypeEnum.IN_MEMORY;
     }
 
     @Override

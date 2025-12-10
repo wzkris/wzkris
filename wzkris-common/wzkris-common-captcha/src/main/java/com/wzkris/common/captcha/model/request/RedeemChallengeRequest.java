@@ -1,4 +1,4 @@
-package com.wzkris.common.captcha.request;
+package com.wzkris.common.captcha.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

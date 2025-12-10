@@ -1,7 +1,7 @@
 package com.wzkris.common.captcha.store;
 
+import com.wzkris.common.captcha.enums.StoreTypeEnum;
 import com.wzkris.common.captcha.model.ChallengeData;
-import com.wzkris.common.captcha.properties.StoreType;
 
 import java.util.Date;
 
@@ -18,7 +18,7 @@ public interface CapStore {
      *
      * @return 存储类型
      */
-    StoreType storeType();
+    StoreTypeEnum storeType();
 
     /**
      * 存储 挑战

@@ -1,5 +1,6 @@
-package com.wzkris.common.captcha.properties;
+package com.wzkris.common.captcha.config;
 
+import com.wzkris.common.captcha.enums.StoreTypeEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties("captcha")
 public class CapProperties {
+
+    /**
+     * 存储方式
+     */
+    private String store = StoreTypeEnum.REDIS.getValue();
 
     /**
      * 前缀

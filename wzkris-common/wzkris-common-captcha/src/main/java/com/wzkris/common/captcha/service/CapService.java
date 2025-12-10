@@ -1,12 +1,11 @@
 package com.wzkris.common.captcha.service;
 
+import com.wzkris.common.captcha.config.CapProperties;
 import com.wzkris.common.captcha.exception.ChallengeStoreException;
-import com.wzkris.common.captcha.handler.CapHandler;
 import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.model.Token;
-import com.wzkris.common.captcha.properties.CapProperties;
-import com.wzkris.common.captcha.request.RedeemChallengeRequest;
-import com.wzkris.common.captcha.response.RedeemChallengeResponse;
+import com.wzkris.common.captcha.model.request.RedeemChallengeRequest;
+import com.wzkris.common.captcha.model.response.RedeemChallengeResponse;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 

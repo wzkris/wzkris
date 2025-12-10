@@ -1,4 +1,4 @@
-package com.wzkris.common.captcha.response;
+package com.wzkris.common.captcha.model.response;
 
 import com.wzkris.common.captcha.model.Token;
 

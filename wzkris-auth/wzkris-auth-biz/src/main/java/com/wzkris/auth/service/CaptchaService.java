@@ -1,10 +1,10 @@
 package com.wzkris.auth.service;
 
 import com.wzkris.auth.config.MockProperties;
-import com.wzkris.common.captcha.handler.CapHandler;
-import com.wzkris.common.captcha.properties.CapProperties;
-import com.wzkris.common.captcha.request.RedeemChallengeRequest;
-import com.wzkris.common.captcha.response.RedeemChallengeResponse;
+import com.wzkris.common.captcha.service.CapHandler;
+import com.wzkris.common.captcha.config.CapProperties;
+import com.wzkris.common.captcha.model.request.RedeemChallengeRequest;
+import com.wzkris.common.captcha.model.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.captcha.CaptchaException;

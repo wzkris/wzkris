@@ -1,8 +1,8 @@
 package com.wzkris.common.captcha.store.impl;
 
+import com.wzkris.common.captcha.config.CapProperties;
+import com.wzkris.common.captcha.enums.StoreTypeEnum;
 import com.wzkris.common.captcha.model.ChallengeData;
-import com.wzkris.common.captcha.properties.CapProperties;
-import com.wzkris.common.captcha.properties.StoreType;
 import com.wzkris.common.captcha.store.CapStore;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
@@ -25,8 +25,8 @@ public class RedisStore implements CapStore {
     private final CapProperties capProperties;
 
     @Override
-    public StoreType storeType() {
-        return StoreType.REDIS;
+    public StoreTypeEnum storeType() {
+        return StoreTypeEnum.REDIS;
     }
 
     @Override

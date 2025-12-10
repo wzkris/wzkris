@@ -1,10 +1,10 @@
-package com.wzkris.common.captcha.handler;
+package com.wzkris.common.captcha.service;
 
+import com.wzkris.common.captcha.config.CapProperties;
 import com.wzkris.common.captcha.exception.ChallengeStoreException;
 import com.wzkris.common.captcha.model.Challenge;
 import com.wzkris.common.captcha.model.ChallengeData;
 import com.wzkris.common.captcha.model.Token;
-import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.store.CapStore;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.utils.StringUtil;
