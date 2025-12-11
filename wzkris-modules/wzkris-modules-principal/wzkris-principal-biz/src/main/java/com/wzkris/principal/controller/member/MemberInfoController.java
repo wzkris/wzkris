@@ -4,7 +4,7 @@ import com.wzkris.auth.httpservice.captcha.CaptchaHttpService;
 import com.wzkris.auth.httpservice.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.principal.domain.MemberInfoDO;
@@ -62,7 +62,7 @@ public class MemberInfoController extends BaseController {
     }
 
     @Operation(summary = "修改基本信息")
-    @OperateLog(title = "个人信息", subTitle = "修改基本信息", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping
     public Result<Void> editInfo(@RequestBody MemberInfoReq profileReq) {
         MemberInfoDO memberInfoDO = new MemberInfoDO(TenantUtil.getId());
@@ -71,7 +71,7 @@ public class MemberInfoController extends BaseController {
     }
 
     @Operation(summary = "修改手机号")
-    @OperateLog(title = "个人信息", subTitle = "修改手机号", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "修改手机号", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-phonenumber")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
         Long memberId = TenantUtil.getId();
@@ -91,7 +91,7 @@ public class MemberInfoController extends BaseController {
     }
 
     @Operation(summary = "修改密码")
-    @OperateLog(title = "个人信息", subTitle = "修改密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "修改密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-password")
     public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
         Long memberId = TenantUtil.getId();
@@ -112,7 +112,7 @@ public class MemberInfoController extends BaseController {
     }
 
     @Operation(summary = "更新头像")
-    @OperateLog(title = "个人信息", subTitle = "更新头像", operateType = OperateType.UPDATE)
+    @OperateLog(title = "个人信息", subTitle = "更新头像", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-avatar")
     public Result<Void> editAvatar(@RequestBody String url) {
         MemberInfoDO memberInfoDO = new MemberInfoDO(TenantUtil.getId());

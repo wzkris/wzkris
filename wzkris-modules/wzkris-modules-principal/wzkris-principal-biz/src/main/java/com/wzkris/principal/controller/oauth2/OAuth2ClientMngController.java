@@ -5,7 +5,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -69,7 +69,7 @@ public class OAuth2ClientMngController extends BaseController {
     }
 
     @Operation(summary = "根据id修改客户端")
-    @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", operateType = OperateType.UPDATE)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:oauth2client-mng:edit")
     public Result<Void> edit(@RequestBody OAuth2ClientMngReq clientReq) {
@@ -77,7 +77,7 @@ public class OAuth2ClientMngController extends BaseController {
     }
 
     @Operation(summary = "修改密钥")
-    @OperateLog(title = "OAuth2客户端管理", subTitle = "修改密钥", operateType = OperateType.UPDATE)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "修改密钥", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-secret")
     @CheckAdminPerms("prin-mod:oauth2client-mng:edit-secret")
     public Result<Void> editSecret(@RequestBody @Valid EditClientSecretReq req) {
@@ -88,7 +88,7 @@ public class OAuth2ClientMngController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "OAuth2客户端管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("prin-mod:oauth2client-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -100,7 +100,7 @@ public class OAuth2ClientMngController extends BaseController {
     }
 
     @Operation(summary = "添加客户端")
-    @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", operateType = OperateType.INSERT)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:oauth2client-mng:add")
     public Result<String> add(@RequestBody @Valid OAuth2ClientMngReq clientReq) {
@@ -113,7 +113,7 @@ public class OAuth2ClientMngController extends BaseController {
     }
 
     @Operation(summary = "删除客户端")
-    @OperateLog(title = "OAuth2客户端管理", subTitle = "删除客户端", operateType = OperateType.DELETE)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "删除客户端", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("prin-mod:oauth2client-mng:remove")
     public Result<Void> remove(@RequestBody Long id) {
@@ -121,7 +121,7 @@ public class OAuth2ClientMngController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "OAuth2客户端管理", subTitle = "导出客户端数据", operateType = OperateType.EXPORT)
+    @OperateLog(title = "OAuth2客户端管理", subTitle = "导出客户端数据", type = OperateTypeEnum.EXPORT)
     @GetMapping("/export")
     @CheckAdminPerms("prin-mod:oauth2client-mng:export")
     public void export(HttpServletResponse response, OAuth2ClientMngQueryReq queryReq) {

@@ -5,7 +5,7 @@ import com.wzkris.common.notifier.api.Notifier;
 import com.wzkris.common.notifier.config.dingtalk.client.DingtalkApiClient;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.NotificationChannel;
+import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
@@ -44,8 +44,8 @@ public class DingtalkNotifier implements Notifier<DingtalkMessage> {
     }
 
     @Override
-    public NotificationChannel getChannel() {
-        return NotificationChannel.DINGTALK;
+    public NotificationChannelEnum getChannel() {
+        return NotificationChannelEnum.DINGTALK;
     }
 
 }

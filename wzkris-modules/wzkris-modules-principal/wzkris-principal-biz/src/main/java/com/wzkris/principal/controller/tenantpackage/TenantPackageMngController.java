@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -87,7 +87,7 @@ public class TenantPackageMngController extends BaseController {
     }
 
     @Operation(summary = "新增租户套餐")
-    @OperateLog(title = "租户套餐", subTitle = "新增套餐", operateType = OperateType.INSERT)
+    @OperateLog(title = "租户套餐", subTitle = "新增套餐", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:tenantpackage-mng:add")
     public Result<Void> add(@Valid @RequestBody TenantPackageMngReq req) {
@@ -95,7 +95,7 @@ public class TenantPackageMngController extends BaseController {
     }
 
     @Operation(summary = "修改租户套餐")
-    @OperateLog(title = "租户套餐", subTitle = "修改套餐", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户套餐", subTitle = "修改套餐", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:tenantpackage-mng:edit")
     public Result<Void> edit(@Valid @RequestBody TenantPackageMngReq req) {
@@ -103,7 +103,7 @@ public class TenantPackageMngController extends BaseController {
     }
 
     @Operation(summary = "修改租户套餐状态")
-    @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("prin-mod:tenantpackage-mng:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
@@ -113,7 +113,7 @@ public class TenantPackageMngController extends BaseController {
     }
 
     @Operation(summary = "删除租户套餐")
-    @OperateLog(title = "租户套餐", subTitle = "删除套餐", operateType = OperateType.DELETE)
+    @OperateLog(title = "租户套餐", subTitle = "删除套餐", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("prin-mod:tenantpackage-mng:remove")
     public Result<Void> remove(

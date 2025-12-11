@@ -60,7 +60,7 @@ spring:
 ```java
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.DingtalkTemplateKey;
+import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import com.wzkris.common.notifier.manager.NotifierManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,7 +73,7 @@ public class NoticeService {
 
     public NotificationResult sendToDingtalk() {
         DingtalkMessage message = DingtalkMessage.builder()
-                .templateKey(DingtalkTemplateKey.MARKDOWN)
+                .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
                 .recipients(java.util.List.of("user1", "user2"))
                 .templateParams(java.util.Map.of(
                         "title", "系统通知",
@@ -83,6 +83,7 @@ public class NoticeService {
 
         return notifierManager.send(message);
     }
+
 }
 ```
 
@@ -91,7 +92,7 @@ public class NoticeService {
 ```java
 import com.wzkris.common.notifier.domain.EmailMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.EmailTemplateKey;
+import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;
 import com.wzkris.common.notifier.manager.NotifierManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -100,20 +101,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MailService {
 
-    private final NotifierManager notifierManager;
+  private final NotifierManager notifierManager;
 
-    public NotificationResult sendMail() {
-        EmailMessage message = EmailMessage.builder()
-                .templateKey(EmailTemplateKey.PLAINTEXT) // 或 HTML
-                .recipients(java.util.List.of("to1@example.com", "to2@example.com"))
-                .subject("主题")
-                .content("正文内容")
-                .fromEmail("no-reply@example.com")
-                .fromName("系统通知")
-                .build();
+  public NotificationResult sendMail() {
+    EmailMessage message = EmailMessage.builder()
+            .templateKey(EmailTemplateKeyEnum.PLAINTEXT) // 或 HTML
+            .recipients(java.util.List.of("to1@example.com", "to2@example.com"))
+            .subject("主题")
+            .content("正文内容")
+            .fromEmail("no-reply@example.com")
+            .fromName("系统通知")
+            .build();
 
-        return notifierManager.send(message);
-    }
+    return notifierManager.send(message);
+  }
+
 }
 ```
 
@@ -128,21 +130,23 @@ public class MailService {
 ```java
 import com.wzkris.common.notifier.api.Notifier;
 import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.NotificationChannel;
+import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WechatWorkNotifier implements Notifier<YourWechatMessage> {
-    @Override
-    public NotificationResult send(YourWechatMessage message) {
-        // TODO: 调用企业微信发送
-        return NotificationResult.success("message-id");
-    }
 
-    @Override
-    public NotificationChannel getChannel() {
-        return NotificationChannel.WECHAT_WORK;
-    }
+  @Override
+  public NotificationResult send(YourWechatMessage message) {
+    // TODO: 调用企业微信发送
+    return NotificationResult.success("message-id");
+  }
+
+  @Override
+  public NotificationChannelEnum getChannel() {
+    return NotificationChannelEnum.WECHAT_WORK;
+  }
+
 }
 ```
 

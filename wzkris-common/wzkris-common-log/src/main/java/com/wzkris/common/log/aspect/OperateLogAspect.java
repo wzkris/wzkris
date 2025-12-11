@@ -96,7 +96,7 @@ public class OperateLogAspect {
         }
 
         // 设置操作信息
-        operateLogEvent.setOperType(operateLog.operateType().getValue());
+        operateLogEvent.setOperType(operateLog.type().getValue());
         operateLogEvent.setSuccess(true);
         operateLogEvent.setOperTime(new Date());
 
@@ -120,7 +120,7 @@ public class OperateLogAspect {
         // 设置注解信息
         operateLogEvent.setTitle(operateLog.title());
         operateLogEvent.setSubTitle(operateLog.subTitle());
-        operateLogEvent.setOperType(operateLog.operateType().getValue());
+        operateLogEvent.setOperType(operateLog.type().getValue());
 
         // 处理参数和结果
         try {

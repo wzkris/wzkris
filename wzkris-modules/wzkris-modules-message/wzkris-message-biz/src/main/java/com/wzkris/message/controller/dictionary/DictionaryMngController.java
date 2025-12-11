@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -60,7 +60,7 @@ public class DictionaryMngController extends BaseController {
     }
 
     @Operation(summary = "新增")
-    @OperateLog(title = "数据字典", subTitle = "添加字典", operateType = OperateType.INSERT)
+    @OperateLog(title = "数据字典", subTitle = "添加字典", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("msg-mod:dictionary-mng:add")
     public Result<Void> add(@RequestBody DictionaryMngReq req) {
@@ -71,7 +71,7 @@ public class DictionaryMngController extends BaseController {
     }
 
     @Operation(summary = "修改")
-    @OperateLog(title = "数据字典", subTitle = "修改字典", operateType = OperateType.UPDATE)
+    @OperateLog(title = "数据字典", subTitle = "修改字典", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("msg-mod:dictionary-mng:edit")
     public Result<Void> edit(@RequestBody DictionaryMngReq req) {
@@ -82,7 +82,7 @@ public class DictionaryMngController extends BaseController {
     }
 
     @Operation(summary = "删除")
-    @OperateLog(title = "数据字典", subTitle = "删除字典", operateType = OperateType.DELETE)
+    @OperateLog(title = "数据字典", subTitle = "删除字典", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("msg-mod:dictionary-mng:remove")
     public Result<Void> remove(@RequestBody Long dictId) {

@@ -5,7 +5,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
@@ -97,7 +97,7 @@ public class MemberMngController extends BaseController {
     }
 
     @Operation(summary = "新增成员")
-    @OperateLog(title = "成员管理", subTitle = "新增成员", operateType = OperateType.INSERT)
+    @OperateLog(title = "成员管理", subTitle = "新增成员", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckTenantPerms("prin-mod:member-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody MemberMngReq memberReq) {
@@ -122,7 +122,7 @@ public class MemberMngController extends BaseController {
     }
 
     @Operation(summary = "修改成员")
-    @OperateLog(title = "成员管理", subTitle = "修改成员", operateType = OperateType.UPDATE)
+    @OperateLog(title = "成员管理", subTitle = "修改成员", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckTenantPerms("prin-mod:member-mng:edit")
     public Result<Void> edit(@Validated @RequestBody MemberMngReq memberReq) {
@@ -139,7 +139,7 @@ public class MemberMngController extends BaseController {
     }
 
     @Operation(summary = "重置密码")
-    @OperateLog(title = "成员管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "成员管理", subTitle = "重置密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-password")
     @CheckTenantPerms("prin-mod:member-mng:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
@@ -150,7 +150,7 @@ public class MemberMngController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "成员管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "成员管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckTenantPerms("prin-mod:member-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -161,7 +161,7 @@ public class MemberMngController extends BaseController {
     }
 
     @Operation(summary = "授权职位")
-    @OperateLog(title = "成员管理", subTitle = "授权成员职位", operateType = OperateType.GRANT)
+    @OperateLog(title = "成员管理", subTitle = "授权成员职位", type = OperateTypeEnum.GRANT)
     @PostMapping("/grant-post")
     @CheckTenantPerms("prin-mod:member-mng:grant-post")
     public Result<Void> grantPosts(@RequestBody @Valid MemberToPostsReq req) {
@@ -170,7 +170,7 @@ public class MemberMngController extends BaseController {
     }
 
     @Operation(summary = "删除成员")
-    @OperateLog(title = "成员管理", subTitle = "删除成员", operateType = OperateType.DELETE)
+    @OperateLog(title = "成员管理", subTitle = "删除成员", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckTenantPerms("prin-mod:member-mng:remove")
     public Result<Void> remove(@RequestBody List<Long> memberIds) {

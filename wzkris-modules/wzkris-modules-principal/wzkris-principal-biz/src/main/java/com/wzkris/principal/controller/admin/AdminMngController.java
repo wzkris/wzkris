@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -127,7 +127,7 @@ public class AdminMngController extends BaseController {
     }
 
     @Operation(summary = "新增管理员")
-    @OperateLog(title = "管理员管理", subTitle = "新增管理员", operateType = OperateType.INSERT)
+    @OperateLog(title = "管理员管理", subTitle = "新增管理员", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:admin-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody AdminMngReq req) {
@@ -150,7 +150,7 @@ public class AdminMngController extends BaseController {
     }
 
     @Operation(summary = "修改管理员")
-    @OperateLog(title = "管理员管理", subTitle = "修改管理员", operateType = OperateType.UPDATE)
+    @OperateLog(title = "管理员管理", subTitle = "修改管理员", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:admin-mng:edit")
     public Result<Void> edit(@Validated @RequestBody AdminMngReq req) {
@@ -168,7 +168,7 @@ public class AdminMngController extends BaseController {
     }
 
     @Operation(summary = "管理员授权角色")
-    @OperateLog(title = "管理员管理", subTitle = "授权管理员角色", operateType = OperateType.GRANT)
+    @OperateLog(title = "管理员管理", subTitle = "授权管理员角色", type = OperateTypeEnum.GRANT)
     @PostMapping("/grant-role")
     @CheckAdminPerms("prin-mod:admin-mng:grant-role")
     public Result<Void> grantRoles(@RequestBody @Valid AdminToRolesReq req) {
@@ -180,7 +180,7 @@ public class AdminMngController extends BaseController {
     }
 
     @Operation(summary = "删除管理员")
-    @OperateLog(title = "管理员管理", subTitle = "删除管理员", operateType = OperateType.DELETE)
+    @OperateLog(title = "管理员管理", subTitle = "删除管理员", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("prin-mod:admin-mng:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
@@ -190,7 +190,7 @@ public class AdminMngController extends BaseController {
     }
 
     @Operation(summary = "重置密码")
-    @OperateLog(title = "管理员管理", subTitle = "重置密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "管理员管理", subTitle = "重置密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-password")
     @CheckAdminPerms("prin-mod:admin-mng:edit")
     public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
@@ -203,7 +203,7 @@ public class AdminMngController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "管理员管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "管理员管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("prin-mod:admin-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -215,7 +215,7 @@ public class AdminMngController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "管理员管理", subTitle = "导出管理员数据", operateType = OperateType.EXPORT)
+    @OperateLog(title = "管理员管理", subTitle = "导出管理员数据", type = OperateTypeEnum.EXPORT)
     @GetMapping("/export")
     @CheckAdminPerms("prin-mod:admin-mng:export")
     public void export(HttpServletResponse response, AdminMngQueryReq queryReq) {

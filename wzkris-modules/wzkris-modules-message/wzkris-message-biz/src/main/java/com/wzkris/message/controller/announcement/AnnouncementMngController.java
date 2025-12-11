@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -64,7 +64,7 @@ public class AnnouncementMngController extends BaseController {
     }
 
     @Operation(summary = "添加草稿")
-    @OperateLog(title = "系统消息", subTitle = "添加草稿", operateType = OperateType.INSERT)
+    @OperateLog(title = "系统消息", subTitle = "添加草稿", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("msg-mod:announcement-mng:add")
     public Result<Void> add(@Valid @RequestBody AnnouncementMngReq req) {
@@ -72,7 +72,7 @@ public class AnnouncementMngController extends BaseController {
     }
 
     @Operation(summary = "修改草稿")
-    @OperateLog(title = "系统消息", subTitle = "修改草稿", operateType = OperateType.UPDATE)
+    @OperateLog(title = "系统消息", subTitle = "修改草稿", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("msg-mod:announcement-mng:edit")
     public Result<Void> edit(@RequestBody AnnouncementMngReq req) {
@@ -80,7 +80,7 @@ public class AnnouncementMngController extends BaseController {
     }
 
     @Operation(summary = "删除草稿")
-    @OperateLog(title = "系统消息", subTitle = "删除草稿", operateType = OperateType.DELETE)
+    @OperateLog(title = "系统消息", subTitle = "删除草稿", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("msg-mod:announcement-mng:remove")
     public Result<Void> remove(

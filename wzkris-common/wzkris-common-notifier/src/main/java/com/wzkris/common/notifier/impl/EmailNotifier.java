@@ -3,8 +3,8 @@ package com.wzkris.common.notifier.impl;
 import com.wzkris.common.notifier.api.Notifier;
 import com.wzkris.common.notifier.domain.EmailMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.EmailTemplateKey;
-import com.wzkris.common.notifier.enums.NotificationChannel;
+import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;
+import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -42,10 +42,10 @@ public class EmailNotifier implements Notifier<EmailMessage> {
             return NotificationResult.failure("邮件接收人不能为空");
         }
 
-        if (Objects.equals(message.getTemplateKey(), EmailTemplateKey.PLAINTEXT)) {
+        if (Objects.equals(message.getTemplateKey(), EmailTemplateKeyEnum.PLAINTEXT)) {
             // 发送纯文本邮件
             return sendTextEmail(message);
-        } else if (Objects.equals(message.getTemplateKey(), EmailTemplateKey.HTML)) {
+        } else if (Objects.equals(message.getTemplateKey(), EmailTemplateKeyEnum.HTML)) {
             // 发送HTML格式邮件
             return sendHtmlEmail(message);
         } else {
@@ -54,8 +54,8 @@ public class EmailNotifier implements Notifier<EmailMessage> {
     }
 
     @Override
-    public NotificationChannel getChannel() {
-        return NotificationChannel.EMAIL;
+    public NotificationChannelEnum getChannel() {
+        return NotificationChannelEnum.EMAIL;
     }
 
     /**

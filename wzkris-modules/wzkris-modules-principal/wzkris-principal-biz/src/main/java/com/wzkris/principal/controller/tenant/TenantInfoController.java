@@ -2,7 +2,7 @@ package com.wzkris.principal.controller.tenant;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.utils.TenantUtil;
@@ -68,7 +68,7 @@ public class TenantInfoController extends BaseController {
     }
 
     @Operation(summary = "修改操作密码")
-    @OperateLog(title = "商户信息", subTitle = "修改操作密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "商户信息", subTitle = "修改操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-operpwd")
     @PreAuthorize("@tu.isAdmin()") // 只允许租户的超级管理员修改
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {

@@ -6,7 +6,7 @@ package com.wzkris.common.notifier.enums;
  * @author wzkris
  * @date 2025/11/06
  */
-public enum NotificationChannel {
+public enum NotificationChannelEnum {
 
     /**
      * 钉钉

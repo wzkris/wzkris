@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -137,7 +137,7 @@ public class RoleMngController extends BaseController {
     }
 
     @Operation(summary = "新增角色")
-    @OperateLog(title = "角色管理", subTitle = "新增角色", operateType = OperateType.INSERT)
+    @OperateLog(title = "角色管理", subTitle = "新增角色", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:role-mng:add")
     public Result<Void> add(@Validated @RequestBody RoleMngReq req) {
@@ -154,7 +154,7 @@ public class RoleMngController extends BaseController {
     }
 
     @Operation(summary = "修改角色")
-    @OperateLog(title = "角色管理", subTitle = "修改角色", operateType = OperateType.UPDATE)
+    @OperateLog(title = "角色管理", subTitle = "修改角色", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:role-mng:edit")
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody RoleMngReq req) {
@@ -173,7 +173,7 @@ public class RoleMngController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("prin-mod:role-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -185,7 +185,7 @@ public class RoleMngController extends BaseController {
     }
 
     @Operation(summary = "删除角色")
-    @OperateLog(title = "角色管理", subTitle = "删除角色", operateType = OperateType.DELETE)
+    @OperateLog(title = "角色管理", subTitle = "删除角色", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("prin-mod:role-mng:remove")
     public Result<Void> remove(
@@ -220,7 +220,7 @@ public class RoleMngController extends BaseController {
     }
 
     @Operation(summary = "取消授权")
-    @OperateLog(title = "角色管理", subTitle = "取消授权", operateType = OperateType.GRANT)
+    @OperateLog(title = "角色管理", subTitle = "取消授权", type = OperateTypeEnum.GRANT)
     @PostMapping("/cancel-authorize-admin")
     @CheckAdminPerms("prin-mod:role-mng:grant-admin")
     public Result<Void> cancelAuth(@RequestBody @Valid RoleToAdminsReq req) {
@@ -232,7 +232,7 @@ public class RoleMngController extends BaseController {
     }
 
     @Operation(summary = "角色授权")
-    @OperateLog(title = "角色管理", subTitle = "授权用户", operateType = OperateType.GRANT)
+    @OperateLog(title = "角色管理", subTitle = "授权用户", type = OperateTypeEnum.GRANT)
     @PostMapping("/authorize-admin")
     @CheckAdminPerms("prin-mod:role-mng:grant-admin")
     public Result<Void> batchAuth(@RequestBody @Valid RoleToAdminsReq req) {

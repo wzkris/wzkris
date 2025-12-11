@@ -1,6 +1,6 @@
 package com.wzkris.common.notifier.domain;
 
-import com.wzkris.common.notifier.enums.DingtalkTemplateKey;
+import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class DingtalkMessage {
     /**
      * 指定消息类型
      */
-    private DingtalkTemplateKey templateKey;
+    private DingtalkTemplateKeyEnum templateKey;
 
     /**
      * 发送对象
@@ -35,13 +35,13 @@ public class DingtalkMessage {
 
     public static class Builder {
 
-        private DingtalkTemplateKey templateKey;
+        private DingtalkTemplateKeyEnum templateKey;
 
         private List<String> recipients;
 
         private Map<String, Object> templateParams = new HashMap<>();
 
-        public Builder templateKey(DingtalkTemplateKey templateKey) {
+        public Builder templateKey(DingtalkTemplateKeyEnum templateKey) {
             this.templateKey = templateKey;
             return this;
         }

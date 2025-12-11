@@ -5,7 +5,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -72,7 +72,7 @@ public class CustomerMngController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "客户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "客户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("prin-mod:customer-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -83,7 +83,7 @@ public class CustomerMngController extends BaseController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "客户管理", operateType = OperateType.EXPORT)
+    @OperateLog(title = "客户管理", type = OperateTypeEnum.EXPORT)
     @GetMapping("/export")
     @CheckAdminPerms("prin-mod:customer-mng:export")
     public void export(HttpServletResponse response, CustomerMngQueryReq queryReq) {

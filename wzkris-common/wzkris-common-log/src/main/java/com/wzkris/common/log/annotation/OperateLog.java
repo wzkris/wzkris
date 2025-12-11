@@ -1,6 +1,6 @@
 package com.wzkris.common.log.annotation;
 
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 
 import java.lang.annotation.*;
 
@@ -27,7 +27,7 @@ public @interface OperateLog {
     /**
      * 操作类型
      */
-    OperateType operateType() default OperateType.OTHER;
+    OperateTypeEnum type() default OperateTypeEnum.OTHER;
 
     /**
      * 请求参数排除

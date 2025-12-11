@@ -5,7 +5,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.validator.group.ValidationGroups;
@@ -75,7 +75,7 @@ public class DeptMngController extends BaseController {
     }
 
     @Operation(summary = "新增部门")
-    @OperateLog(title = "部门管理", subTitle = "新增部门", operateType = OperateType.INSERT)
+    @OperateLog(title = "部门管理", subTitle = "新增部门", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:dept-mng:add")
     public Result<?> add(@Validated @RequestBody DeptMngReq req) {
@@ -92,7 +92,7 @@ public class DeptMngController extends BaseController {
     }
 
     @Operation(summary = "修改部门")
-    @OperateLog(title = "部门管理", subTitle = "修改部门", operateType = OperateType.UPDATE)
+    @OperateLog(title = "部门管理", subTitle = "修改部门", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:dept-mng:edit")
     public Result<?> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody DeptMngReq req) {
@@ -108,7 +108,7 @@ public class DeptMngController extends BaseController {
     }
 
     @Operation(summary = "删除部门")
-    @OperateLog(title = "部门管理", subTitle = "删除部门", operateType = OperateType.DELETE)
+    @OperateLog(title = "部门管理", subTitle = "删除部门", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("prin-mod:dept-mng:remove")
     public Result<?> remove(@RequestBody Long deptId) {

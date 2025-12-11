@@ -5,7 +5,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -104,7 +104,7 @@ public class TenantMngController extends BaseController {
     }
 
     @Operation(summary = "新增租户")
-    @OperateLog(title = "租户管理", subTitle = "新增租户", operateType = OperateType.INSERT)
+    @OperateLog(title = "租户管理", subTitle = "新增租户", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:tenant-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody TenantMngReq tenantReq) {
@@ -131,7 +131,7 @@ public class TenantMngController extends BaseController {
     }
 
     @Operation(summary = "修改租户")
-    @OperateLog(title = "租户管理", subTitle = "修改租户", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户管理", subTitle = "修改租户", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:tenant-mng:edit")
     public Result<Void> edit(@Validated @RequestBody TenantMngReq tenantReq) {
@@ -142,7 +142,7 @@ public class TenantMngController extends BaseController {
     }
 
     @Operation(summary = "修改租户状态")
-    @OperateLog(title = "租户管理", subTitle = "修改租户状态", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户管理", subTitle = "修改租户状态", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("prin-mod:tenant-mng:edit")
     public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
@@ -152,7 +152,7 @@ public class TenantMngController extends BaseController {
     }
 
     @Operation(summary = "重置租户操作密码")
-    @OperateLog(title = "租户管理", subTitle = "重置操作密码", operateType = OperateType.UPDATE)
+    @OperateLog(title = "租户管理", subTitle = "重置操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-operpwd")
     @CheckAdminPerms("prin-mod:tenant-mng:reset-operpwd")
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
@@ -165,7 +165,7 @@ public class TenantMngController extends BaseController {
     }
 
     @Operation(summary = "删除租户")
-    @OperateLog(title = "租户管理", subTitle = "删除租户", operateType = OperateType.DELETE)
+    @OperateLog(title = "租户管理", subTitle = "删除租户", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("prin-mod:tenant-mng:remove")
     public Result<Void> remove(@RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {

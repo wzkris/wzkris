@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.utils.AdminUtil;
@@ -69,7 +69,7 @@ public class MenuMngController extends BaseController {
     }
 
     @Operation(summary = "新增菜单")
-    @OperateLog(title = "菜单管理", subTitle = "新增菜单", operateType = OperateType.INSERT)
+    @OperateLog(title = "菜单管理", subTitle = "新增菜单", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("prin-mod:menu-mng:add")
     public Result<Void> add(@Validated @RequestBody MenuManageReq req) {
@@ -81,7 +81,7 @@ public class MenuMngController extends BaseController {
     }
 
     @Operation(summary = "修改菜单")
-    @OperateLog(title = "菜单管理", subTitle = "修改菜单", operateType = OperateType.UPDATE)
+    @OperateLog(title = "菜单管理", subTitle = "修改菜单", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("prin-mod:menu-mng:edit")
     public Result<Void> edit(@Validated @RequestBody MenuManageReq req) {
@@ -95,7 +95,7 @@ public class MenuMngController extends BaseController {
     }
 
     @Operation(summary = "删除菜单")
-    @OperateLog(title = "菜单管理", subTitle = "删除菜单", operateType = OperateType.DELETE)
+    @OperateLog(title = "菜单管理", subTitle = "删除菜单", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("prin-mod:menu-mng:remove")
     public Result<Void> remove(@RequestBody Long menuId) {

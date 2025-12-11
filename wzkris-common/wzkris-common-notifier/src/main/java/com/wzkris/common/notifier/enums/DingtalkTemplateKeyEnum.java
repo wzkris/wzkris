@@ -13,7 +13,7 @@ import java.util.Set;
  * @date 2025/11/06
  */
 @AllArgsConstructor
-public enum DingtalkTemplateKey {
+public enum DingtalkTemplateKeyEnum {
     TEXT(
             "sampleText",
             Set.of("content"),

@@ -2,7 +2,7 @@ package com.wzkris.common.notifier.manager;
 
 import com.wzkris.common.notifier.api.Notifier;
 import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.NotificationChannel;
+import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -15,7 +15,7 @@ import java.util.Map;
 @Component
 public class NotifierManager {
 
-    private final Map<NotificationChannel, Notifier<?>> notifiers = new HashMap<>();
+    private final Map<NotificationChannelEnum, Notifier<?>> notifiers = new HashMap<>();
 
     public NotifierManager(List<Notifier<?>> notifiers) {
         if (notifiers == null || notifiers.isEmpty()) {
@@ -23,7 +23,7 @@ public class NotifierManager {
             return;
         }
         for (Notifier<?> n : notifiers) {
-            NotificationChannel ch = n.getChannel();
+            NotificationChannelEnum ch = n.getChannel();
             if (this.notifiers.containsKey(ch)) {
                 log.warn("发现重复的通知器: {}，使用第一个", ch);
                 continue;
@@ -33,7 +33,7 @@ public class NotifierManager {
         log.info("已加载 {} 个通知器: {}", this.notifiers.size(), this.notifiers.keySet());
     }
 
-    public NotificationResult send(NotificationChannel channel, Object message) {
+    public NotificationResult send(NotificationChannelEnum channel, Object message) {
         Assert.notNull(channel, "通知渠道不能为空");
         Assert.notNull(message, "通知消息不能为空");
         Notifier<?> notifier = notifiers.get(channel);

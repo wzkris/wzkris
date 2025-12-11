@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
@@ -69,7 +69,7 @@ public class ConfigMngController extends BaseController {
     }
 
     @Operation(summary = "添加参数")
-    @OperateLog(title = "参数管理", subTitle = "添加参数", operateType = OperateType.INSERT)
+    @OperateLog(title = "参数管理", subTitle = "添加参数", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("msg-mod:config-mng:add")
     public Result<Void> add(@RequestBody ConfigMngReq req) {
@@ -80,7 +80,7 @@ public class ConfigMngController extends BaseController {
     }
 
     @Operation(summary = "修改参数")
-    @OperateLog(title = "参数管理", subTitle = "修改参数", operateType = OperateType.UPDATE)
+    @OperateLog(title = "参数管理", subTitle = "修改参数", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("msg-mod:config-mng:edit")
     public Result<Void> edit(@RequestBody ConfigMngReq req) {
@@ -91,7 +91,7 @@ public class ConfigMngController extends BaseController {
     }
 
     @Operation(summary = "删除参数")
-    @OperateLog(title = "参数管理", subTitle = "删除参数", operateType = OperateType.DELETE)
+    @OperateLog(title = "参数管理", subTitle = "删除参数", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("msg-mod:config-mng:remove")
     public Result<Void> remove(@RequestBody Long configId) {

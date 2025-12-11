@@ -6,7 +6,7 @@ import com.wzkris.common.notifier.config.dingtalk.client.DingtalkApiClient;
 import com.wzkris.common.notifier.config.dingtalk.properties.DingtalkProperties;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.DingtalkTemplateKey;
+import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import com.wzkris.common.notifier.impl.DingtalkNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class DingtalkStreamTest {
         DingtalkApiClient apiClient = new DingtalkApiClient(dingtalkProperties);
         DingtalkNotifier robotApi = new DingtalkNotifier(apiClient);
         DingtalkMessage message = DingtalkMessage.builder()
-                .templateKey(DingtalkTemplateKey.MARKDOWN)
+                .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
                 .recipients(List.of("100"))
                 .templateParams(Map.of("title", "钉钉通知", "text", "这是一条通过钉钉机器人发送的测试消息。"))
                 .build();

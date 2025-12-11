@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateType;
+import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
@@ -89,7 +89,7 @@ public class PostMngController extends BaseController {
     }
 
     @Operation(summary = "新增职位")
-    @OperateLog(title = "职位管理", subTitle = "新增职位", operateType = OperateType.INSERT)
+    @OperateLog(title = "职位管理", subTitle = "新增职位", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckTenantPerms("prin-mod:post-mng:add")
     public Result<Void> add(@Validated @RequestBody PostMngReq req) {
@@ -98,7 +98,7 @@ public class PostMngController extends BaseController {
     }
 
     @Operation(summary = "修改职位")
-    @OperateLog(title = "职位管理", subTitle = "修改职位", operateType = OperateType.UPDATE)
+    @OperateLog(title = "职位管理", subTitle = "修改职位", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckTenantPerms("prin-mod:post-mng:edit")
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody PostMngReq req) {
@@ -107,7 +107,7 @@ public class PostMngController extends BaseController {
     }
 
     @Operation(summary = "状态修改")
-    @OperateLog(title = "用户管理", subTitle = "状态修改", operateType = OperateType.UPDATE)
+    @OperateLog(title = "用户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckTenantPerms("prin-mod:post-mng:edit")
     public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
@@ -117,7 +117,7 @@ public class PostMngController extends BaseController {
     }
 
     @Operation(summary = "删除职位")
-    @OperateLog(title = "职位管理", subTitle = "删除职位", operateType = OperateType.DELETE)
+    @OperateLog(title = "职位管理", subTitle = "删除职位", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckTenantPerms("prin-mod:post-mng:remove")
     public Result<Void> remove(
