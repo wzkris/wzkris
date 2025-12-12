@@ -97,7 +97,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
 
     @Override
     public String getRoleGroup() {
-        if (AdminUtil.isAdmin()) {
+        if (AdminUtil.isSuperadmin()) {
             return SecurityConstants.SUPER_ADMIN_NAME;
         }
         List<RoleInfoDO> roles = this.listByAdminId(AdminUtil.getId());

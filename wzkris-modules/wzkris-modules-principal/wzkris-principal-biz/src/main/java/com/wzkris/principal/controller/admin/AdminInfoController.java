@@ -66,7 +66,7 @@ public class AdminInfoController extends BaseController {
             adminInfoDO = new AdminInfoDO();
         }
         AdminInfoVO adminInfoVO = new AdminInfoVO();
-        adminInfoVO.setAdmin(AdminUtil.isAdmin());
+        adminInfoVO.setAdmin(AdminUtil.isSuperadmin());
         adminInfoVO.setUsername(AdminUtil.getUsername());
         adminInfoVO.setAuthorities(AdminUtil.getAuthorities());
         adminInfoVO.setAvatar(adminInfoDO.getAvatar());

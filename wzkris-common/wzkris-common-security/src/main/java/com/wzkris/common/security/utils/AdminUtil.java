@@ -65,8 +65,8 @@ public class AdminUtil extends SecurityUtil {
      *
      * @return 是否
      */
-    public static boolean isAdmin() {
-        return get().isAdmin();
+    public static boolean isSuperadmin() {
+        return get().isSuperadmin();
     }
 
     /**

@@ -14,7 +14,7 @@ public class RedisUtilTest {
     @Test
     public void test1() {
         LoginAdmin loginAdmin = new LoginAdmin(1L, Collections.singleton("*"));
-        loginAdmin.setAdmin(true);
+        loginAdmin.setSuperadmin(true);
         loginAdmin.setUsername("admin");
         loginAdmin.setDeptScopes(Collections.emptyList());
         RedisUtil.setObj("1", loginAdmin, 100);

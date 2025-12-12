@@ -23,7 +23,7 @@ public class TenantContextUtilTest {
 
     static {
         LoginAdmin loginAdmin = new LoginAdmin(1L, Collections.singleton("*"));
-        loginAdmin.setAdmin(true);
+        loginAdmin.setSuperadmin(true);
         loginAdmin.setUsername("admin");
         loginAdmin.setDeptScopes(Collections.emptyList());
 

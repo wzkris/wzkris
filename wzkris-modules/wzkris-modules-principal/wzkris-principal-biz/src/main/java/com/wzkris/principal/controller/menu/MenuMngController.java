@@ -50,7 +50,7 @@ public class MenuMngController extends BaseController {
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!AdminUtil.isAdmin()) {
+        if (!AdminUtil.isSuperadmin()) {
             menuIds = menuInfoService.listMenuIdByAdminId(AdminUtil.getId());
         }
         return new LambdaQueryWrapper<MenuInfoDO>()

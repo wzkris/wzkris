@@ -102,7 +102,7 @@ public class LoginAdminService extends UserInfoTemplate {
                 new QueryAdminPermsReq(userResp.getAdminId(), userResp.getDeptId()));
 
         LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(), new HashSet<>(permissions.getGrantedAuthority()));
-        loginAdmin.setAdmin(permissions.getAdmin());
+        loginAdmin.setSuperadmin(permissions.getSuperadmin());
         loginAdmin.setUsername(userResp.getUsername());
         loginAdmin.setDeptScopes(permissions.getDeptScopes());
 
@@ -125,7 +125,7 @@ public class LoginAdminService extends UserInfoTemplate {
     private void recordFailedLog(adminInfoResp userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(), Collections.emptySet());
-        loginAdmin.setAdmin(false);
+        loginAdmin.setSuperadmin(false);
         loginAdmin.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()

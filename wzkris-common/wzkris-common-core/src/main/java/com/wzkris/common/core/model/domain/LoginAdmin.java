@@ -22,7 +22,7 @@ import java.util.Set;
 @Setter
 public class LoginAdmin extends MyPrincipal {
 
-    private boolean admin;
+    private boolean superadmin;
 
     private String username;
 
