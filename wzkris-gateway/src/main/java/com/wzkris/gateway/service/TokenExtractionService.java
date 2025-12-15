@@ -9,11 +9,13 @@ import com.wzkris.common.core.exception.service.ResultException;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginAdmin;
+import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -61,6 +63,11 @@ public class TokenExtractionService {
             return validatePrincipal(AuthTypeEnum.CUSTOMER.getValue(), customerToken, LoginCustomer.class);
         }
 
+        String clientToken = getClientToken(request);
+        if (StringUtil.isNotBlank(clientToken)) {
+            return validatePrincipal(AuthTypeEnum.CLIENT.getValue(), clientToken, LoginClient.class);
+        }
+
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
         return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token type not found!!")));
     }
@@ -103,9 +110,11 @@ public class TokenExtractionService {
                         request.getHeaders().getFirst(CustomHeaderConstants.X_ADMIN_TOKEN),
                         request.getHeaders().getFirst(CustomHeaderConstants.X_TENANT_TOKEN),
                         request.getHeaders().getFirst(CustomHeaderConstants.X_CUSTOMER_TOKEN),
+                        request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION),
                         request.getQueryParams().getFirst(QueryParamConstants.X_ADMIN_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_TENANT_TOKEN),
-                        request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN)
+                        request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN),
+                        request.getQueryParams().getFirst(HttpHeaders.AUTHORIZATION)
                 )
                 .anyMatch(StringUtil::isNotBlank);
     }
@@ -141,6 +150,14 @@ public class TokenExtractionService {
             return token;
         }
         return request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN);
+    }
+
+    private String getClientToken(ServerHttpRequest request) {
+        String token = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (StringUtil.isNotBlank(token)) {
+            return token;
+        }
+        return request.getQueryParams().getFirst(HttpHeaders.AUTHORIZATION);
     }
 
 }

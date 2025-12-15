@@ -3,8 +3,10 @@ package com.wzkris.auth.httpservice.token;
 import com.wzkris.auth.httpservice.token.req.TokenReq;
 import com.wzkris.auth.httpservice.token.resp.TokenResponse;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginClient;
+import com.wzkris.common.core.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -31,27 +33,26 @@ public class TokenHttpServiceImpl implements TokenHttpService {
 
     private final RegisteredClientRepository registeredClientRepository;
 
-    @Override
-    public TokenResponse<LoginClient> validateClient(TokenReq tokenReq) {
-        OAuth2Authorization oAuth2Authorization =
-                oAuth2AuthorizationService.findByToken(tokenReq.getToken(), OAuth2TokenType.ACCESS_TOKEN);
-        if (oAuth2Authorization == null) {
-            return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check failed");
-        }
+    private LoginClient validateClient(String token) {
+        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService
+                .findByToken(token, OAuth2TokenType.ACCESS_TOKEN);
+
+        if (oAuth2Authorization == null) return null;
 
         OAuth2AccessToken accessToken = oAuth2Authorization.getAccessToken().getToken();
 
-        if (accessToken.getExpiresAt() == null || accessToken.getExpiresAt().isBefore(Instant.now())) {
-            return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check expired");
+        if (accessToken.getExpiresAt() == null
+                || accessToken.getExpiresAt().isBefore(Instant.now())) {
+            return null;
         }
 
         RegisteredClient registeredClient = registeredClientRepository
-                .findByClientId(oAuth2Authorization.getRegisteredClientId());
+                .findById(oAuth2Authorization.getRegisteredClientId());
 
         LoginClient loginClient = new LoginClient(Long.valueOf(registeredClient.getId()),
                 this.buildScopes(oAuth2Authorization.getAuthorizedScopes()));
         loginClient.setClientId(registeredClient.getClientId());
-        return TokenResponse.ok(loginClient);
+        return loginClient;
     }
 
     private Set<String> buildScopes(Set<String> authorizedScopes) {
@@ -60,7 +61,12 @@ public class TokenHttpServiceImpl implements TokenHttpService {
 
     @Override
     public TokenResponse<MyPrincipal> validatePrincipal(TokenReq tokenReq) {
-        MyPrincipal principal = tokenService.loadByAccessToken(tokenReq.getAuthType(), tokenReq.getToken());
+        MyPrincipal principal;
+        if (StringUtil.equals(AuthTypeEnum.CLIENT.getValue(), tokenReq.getAuthType())) {
+            principal = validateClient(tokenReq.getToken());
+        } else {
+            principal = tokenService.loadByAccessToken(tokenReq.getAuthType(), tokenReq.getToken());
+        }
 
         if (principal == null) {
             return TokenResponse.error(OAuth2ErrorCodes.INVALID_TOKEN, "token check failed");

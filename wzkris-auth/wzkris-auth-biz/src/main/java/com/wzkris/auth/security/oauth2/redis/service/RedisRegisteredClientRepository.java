@@ -61,7 +61,15 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
     @Override
     public RegisteredClient findById(String id) {
         Assert.hasText(id, "id cannot be empty");
-        return this.findByClientId(id);
+
+        OAuth2RegisteredClient oAuth2RegisteredClient = this.registeredClientRepository.findById(id).orElse(null);
+        if (oAuth2RegisteredClient != null) {
+            return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
+        }
+
+        OAuth2ClientResp oauth2Client = oAuth2ClientHttpService.getById(id);
+
+        return checkAndSave(oauth2Client);
     }
 
     @Nullable
@@ -69,14 +77,18 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
     public RegisteredClient findByClientId(String clientId) {
         Assert.hasText(clientId, "clientId cannot be empty");
 
-        OAuth2RegisteredClient oauth2RegisteredClient = this.registeredClientRepository.findByClientId(clientId);
+        OAuth2RegisteredClient oAuth2RegisteredClient = this.registeredClientRepository.findByClientId(clientId);
 
-        if (oauth2RegisteredClient != null) {
-            return ModelMapper.convertRegisteredClient(oauth2RegisteredClient);
+        if (oAuth2RegisteredClient != null) {
+            return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
         OAuth2ClientResp oauth2Client = oAuth2ClientHttpService.getByClientId(clientId);
 
+        return checkAndSave(oauth2Client);
+    }
+
+    private RegisteredClient checkAndSave(OAuth2ClientResp oauth2Client) {
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(

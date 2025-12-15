@@ -4,6 +4,7 @@ import com.wzkris.common.apikey.config.SignkeyProperties;
 import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.domain.LoginAdmin;
+import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
@@ -53,6 +54,8 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                         infoHeader = CustomHeaderConstants.X_TENANT_INFO;
                     } else if (principal instanceof LoginCustomer) {
                         infoHeader = CustomHeaderConstants.X_CUSTOMER_INFO;
+                    } else if (principal instanceof LoginClient) {
+                        infoHeader = CustomHeaderConstants.X_CLIENT_INFO;
                     } else {
                         return Mono.empty();
                     }

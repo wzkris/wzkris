@@ -3,6 +3,7 @@ package com.wzkris.common.security.component;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
+import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
@@ -64,6 +65,10 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
             return ctx;
         }
 
+        if (generateClient(request, ctx)) {
+            return ctx;
+        }
+
         return ctx;
     }
 
@@ -92,6 +97,16 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
         if (StringUtil.isNotBlank(customerinfo)) {
             ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(customerinfo, LoginCustomer.class), request,
                     request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN)));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean generateClient(HttpServletRequest request, SecurityContext ctx) {
+        final String clientInfo = request.getHeader(CustomHeaderConstants.X_CLIENT_INFO);
+        if (StringUtil.isNotBlank(clientInfo)) {
+            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(clientInfo, LoginClient.class), request,
+                    request.getHeader(CustomHeaderConstants.X_CLIENT_INFO)));
             return true;
         }
         return false;

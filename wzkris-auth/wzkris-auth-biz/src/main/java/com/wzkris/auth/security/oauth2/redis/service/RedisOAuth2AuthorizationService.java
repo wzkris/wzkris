@@ -113,8 +113,8 @@ public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationServi
 
     private OAuth2Authorization toOAuth2Authorization(
             OAuth2AuthorizationGrantAuthorization authorizationGrantAuthorization) {
-        RegisteredClient registeredClient =
-                this.registeredClientRepository.findById(authorizationGrantAuthorization.getRegisteredClientId());
+        RegisteredClient registeredClient = this.registeredClientRepository
+                .findById(authorizationGrantAuthorization.getRegisteredClientId());
         OAuth2Authorization.Builder builder = OAuth2Authorization.withRegisteredClient(registeredClient);
         ModelMapper.mapOAuth2AuthorizationGrantAuthorization(authorizationGrantAuthorization, builder);
         return builder.build();

@@ -22,6 +22,15 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface OAuth2ClientHttpService {
 
     /**
+     * 根据id查询客户端信息
+     *
+     * @param id id
+     * @return oauth2客户端
+     */
+    @PostExchange("/query-by-id")
+    OAuth2ClientResp getById(@RequestBody String id);
+
+    /**
      * 根据clientid查询客户端信息
      *
      * @param clientid clientid
