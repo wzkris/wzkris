@@ -2,7 +2,6 @@ package com.wzkris.common.httpservice.config;
 
 import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.httpservice.annotation.EnableHttpServiceClients;
-import com.wzkris.common.httpservice.interceptor.ApiSignInterceptorPostProcessor;
 import com.wzkris.common.httpservice.interceptor.PublishEventInterceptorPostProcessor;
 import com.wzkris.common.httpservice.interceptor.core.HttpServiceClientInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -25,8 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 自动配置 HTTP service clients.
  */
-@Import({HttpServiceClientInterceptor.class, ApiSignInterceptorPostProcessor.class,
-        PublishEventInterceptorPostProcessor.class})
+@Import({HttpServiceClientInterceptor.class, PublishEventInterceptorPostProcessor.class})
 @EnableConfigurationProperties({HttpServiceProperties.class})
 @EnableHttpServiceClients
 @AutoConfiguration

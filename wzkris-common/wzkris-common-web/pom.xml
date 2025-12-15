@@ -25,11 +25,6 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-apikey</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-validator</artifactId>
         </dependency>
 

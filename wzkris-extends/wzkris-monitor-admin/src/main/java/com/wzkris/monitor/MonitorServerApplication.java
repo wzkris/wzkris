@@ -1,6 +1,5 @@
 package com.wzkris.monitor;
 
-import com.wzkris.common.apikey.config.FilterConfig;
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +12,7 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
  * @author wzkris
  */
 @EnableAdminServer
-@SpringBootApplication(exclude = FilterConfig.class) // 禁止自定义过滤器自动装配
+@SpringBootApplication
 public class MonitorServerApplication {
 
     public static void main(String[] args) {

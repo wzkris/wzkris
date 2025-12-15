@@ -25,12 +25,6 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-apikey</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-loadbalancer</artifactId>
         </dependency>
 

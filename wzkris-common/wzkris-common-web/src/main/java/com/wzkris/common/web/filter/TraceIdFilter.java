@@ -1,6 +1,5 @@
-package com.wzkris.common.apikey.filter;
+package com.wzkris.common.web.filter;
 
-import com.wzkris.common.apikey.request.RepeatableReadRequestWrapper;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
@@ -23,22 +22,20 @@ public class TraceIdFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        // 使请求体可重复读取
-        RepeatableReadRequestWrapper requestWrapper = new RepeatableReadRequestWrapper(request);
 
         try {
             // 解析TraceID
-            String traceId = requestWrapper.getHeader(CustomHeaderConstants.X_TRACING_ID);
+            String traceId = request.getHeader(CustomHeaderConstants.X_TRACING_ID);
             traceId = StringUtil.isNotBlank(traceId) ? traceId : TraceIdUtil.generate();
             TraceIdUtil.set(traceId);
-            String hint = requestWrapper.getHeader(CustomHeaderConstants.X_ROUTE_HINT);
+            String hint = request.getHeader(CustomHeaderConstants.X_ROUTE_HINT);
             TraceIdUtil.setHint(hint);
 
             response.setHeader(CustomHeaderConstants.X_TRACING_ID, traceId);
             if (StringUtil.isNotBlank(hint)) {
                 response.setHeader(CustomHeaderConstants.X_ROUTE_HINT, hint);
             }
-            filterChain.doFilter(requestWrapper, response);
+            filterChain.doFilter(request, response);
         } finally {
             TraceIdUtil.clear();
         }

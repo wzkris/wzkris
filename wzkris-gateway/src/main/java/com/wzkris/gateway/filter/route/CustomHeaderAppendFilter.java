@@ -1,29 +1,20 @@
 package com.wzkris.gateway.filter.route;
 
-import com.wzkris.common.apikey.config.SignkeyProperties;
-import com.wzkris.common.apikey.utils.RequestSignerUtil;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
 import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.core.utils.TraceIdUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.nio.charset.StandardCharsets;
-
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * 自定义请求头追加
@@ -35,11 +26,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.C
 @Component
 @RequiredArgsConstructor
 public class CustomHeaderAppendFilter implements GlobalFilter {
-
-    private final SignkeyProperties signkeyProperties;
-
-    @Value("${spring.application.name}")
-    private String applicationName;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -66,43 +52,10 @@ public class CustomHeaderAppendFilter implements GlobalFilter {
                     return Mono.just(principal);
                 })
                 .then(Mono.defer(() -> {
-                    // 无论是否有身份信息，都继续处理请求签名
-                    return appendSignatureHeaders(exchange, chain, requestBuilder);
+                    ServerWebExchange newExchange = exchange.mutate().request(requestBuilder.build()).build();
+
+                    return chain.filter(newExchange);
                 }));
-    }
-
-    /**
-     * 追加请求签名头
-     */
-    private Mono<Void> appendSignatureHeaders(ServerWebExchange exchange,
-                                              GatewayFilterChain chain,
-                                              ServerHttpRequest.Builder requestBuilder) {
-
-        final String traceId = TraceIdUtil.generate();
-
-        TraceIdUtil.set(traceId);
-
-        // 追加请求签名头
-        requestBuilder.headers(header -> {
-            String reqBodyStr;
-            Object bodyAttr = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
-            if (bodyAttr instanceof DataBuffer dataBuffer) {
-                reqBodyStr = dataBuffer.toString(StandardCharsets.UTF_8);
-            } else {
-                reqBodyStr = (String) bodyAttr;
-            }
-
-            RequestSignerUtil.setCommonHeaders(header::add,
-                    traceId,
-                    applicationName,
-                    signkeyProperties.getKeys().get(applicationName).getSecret(),
-                    reqBodyStr,
-                    System.currentTimeMillis()
-            );// 请求签名 -> 防止伪造请求
-        });
-
-        ServerHttpRequest newRequest = requestBuilder.build();
-        return chain.filter(exchange.mutate().request(newRequest).build());
     }
 
 }

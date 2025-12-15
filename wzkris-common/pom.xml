@@ -18,7 +18,6 @@
     </description>
 
     <modules>
-        <module>wzkris-common-apikey</module>
         <module>wzkris-common-captcha</module>
         <module>wzkris-common-core</module>
         <module>wzkris-common-excel</module>

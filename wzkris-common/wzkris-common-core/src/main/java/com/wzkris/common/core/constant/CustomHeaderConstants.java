@@ -23,16 +23,6 @@ public class CustomHeaderConstants {
     public static final String X_ROUTE_HINT = "X-Route-Hint";
 
     /**
-     * API签名请求头
-     */
-    public static final String X_REQUEST_SIGN = "X-Request-Sign";
-
-    /**
-     * 请求来源
-     */
-    public static final String X_REQUEST_FROM = "X-Request-From";
-
-    /**
      * 请求时间
      */
     public static final String X_REQUEST_TIME = "X-Request-Time";

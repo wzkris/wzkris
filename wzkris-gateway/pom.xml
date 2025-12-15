@@ -61,11 +61,6 @@
             <artifactId>wzkris-common-sentinel</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-apikey</artifactId>
-        </dependency>
-
         <!-- 核心包 -->
         <dependency>
             <groupId>com.wzkris</groupId>

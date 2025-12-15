@@ -30,6 +30,3 @@ demo:
 logging:
   level:
     com.demo.pgbus: DEBUG
-
-request-signature:
-  enable: false

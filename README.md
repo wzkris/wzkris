@@ -39,7 +39,6 @@ wzkris
 │   └── wzkris-auth-rmi    // 认证远程接口
 ├── wzkris-bom             // 依赖版本管理
 ├── wzkris-common          // 公共模块集合
-│   ├── wzkris-common-apikey        // API密钥管理
 │   ├── wzkris-common-captcha       // 验证码模块
 │   ├── wzkris-common-core          // 核心工具包
 │   ├── wzkris-common-excel         // Excel处理
