@@ -93,7 +93,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         Result<?> resultBody = (body instanceof Result) ? (Result<?>) body
-                : Result.init(BizBaseCodeEnum.API_REQUEST_ERROR.value(), null, ex.getMessage());
+                : Result.init(BizBaseCodeEnum.SYSTEM_ERROR.value(), null, ex.getMessage());
         return new ResponseEntity<>(resultBody, headers, statusCode);
     }
 

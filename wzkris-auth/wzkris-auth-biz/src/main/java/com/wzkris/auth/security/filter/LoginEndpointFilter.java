@@ -3,8 +3,8 @@ package com.wzkris.auth.security.filter;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.auth.security.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
+import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -46,7 +47,8 @@ public class LoginEndpointFilter extends OncePerRequestFilter {
 
     private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
 
-    private final AuthenticationFailureHandler authenticationFailureHandler = new AuthenticationFailureHandlerImpl();
+    private final AuthenticationFailureHandler jsonFailureHandler =
+            new AuthenticationEntryPointFailureHandler(new AuthenticationEntryPointImpl());
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler = new AuthenticationSuccessHandlerImpl();
 
@@ -87,12 +89,12 @@ public class LoginEndpointFilter extends OncePerRequestFilter {
             if (this.logger.isTraceEnabled()) {
                 this.logger.trace(LogMessage.format("Login request failed: %s", ex.getError()), ex);
             }
-            this.authenticationFailureHandler.onAuthenticationFailure(request, response, ex);
+            this.jsonFailureHandler.onAuthenticationFailure(request, response, ex);
         } catch (Exception ex) {
             if (this.logger.isTraceEnabled()) {
                 this.logger.trace(LogMessage.format("Login request failed: %s", ex.getMessage()), ex);
             }
-            this.authenticationFailureHandler.onAuthenticationFailure(request, response,
+            this.jsonFailureHandler.onAuthenticationFailure(request, response,
                     new OAuth2AuthenticationException(new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR, ex.getMessage(), null)));
         } finally {
             SecurityContextHolder.clearContext();

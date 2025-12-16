@@ -5,7 +5,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.wzkris.auth.config.JwtSecretProperties;
-import com.wzkris.auth.security.handler.AuthenticationFailureHandlerImpl;
 import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
 import com.wzkris.auth.security.oauth2.customize.CustomTokenClaimsCustomizer;
 import com.wzkris.auth.security.oauth2.device.DeviceClientAuthenticationConverter;
@@ -29,7 +28,10 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.*;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.List;
@@ -43,6 +45,11 @@ import java.util.List;
 @Slf4j
 @Configuration
 public class AuthorizationServerConfig {
+
+    private final AuthenticationEntryPoint authenticationEntryPoint = new AuthenticationEntryPointImpl();
+
+    private final AuthenticationFailureHandler jsonFailureHandler =
+            new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -65,47 +72,48 @@ public class AuthorizationServerConfig {
                 .securityContext(securityContextConfigurer -> securityContextConfigurer
                         .securityContextRepository(securityContextRepository)// 需要支持用户token
                 )
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().authenticated()
+                )
                 .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
                         .tokenEndpoint(tokenEndpoint -> tokenEndpoint
                                 .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
-                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                                .errorResponseHandler(jsonFailureHandler)
                         )
                         .tokenIntrospectionEndpoint(tokenIntrospectionEndpoint -> tokenIntrospectionEndpoint
                                 .introspectionResponseHandler(new AuthenticationSuccessHandlerImpl()) // token验证端点
-                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                                .errorResponseHandler(jsonFailureHandler)
                         )
                         .tokenRevocationEndpoint(tokenRevocationEndpoint -> tokenRevocationEndpoint
                                 .revocationResponseHandler(new AuthenticationSuccessHandlerImpl()) // token撤销端点
-                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                                .errorResponseHandler(jsonFailureHandler)
                         )
                         .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> deviceAuthorizationEndpoint
                                 .verificationUri("/activate")// 自定义设备码验证页面
-                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                                .errorResponseHandler(jsonFailureHandler)
                         )
                         .deviceVerificationEndpoint(deviceVerificationEndpoint -> deviceVerificationEndpoint
                                 .consentPage("/oauth2/consent")// 自定义设备授权页面
-                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                                .errorResponseHandler(jsonFailureHandler)
                         )
                         .clientAuthentication(clientAuthentication -> clientAuthentication // 客户端认证
                                 .authenticationConverter(new DeviceClientAuthenticationConverter(
                                         serverSettings.getDeviceAuthorizationEndpoint()))
                                 .authenticationProvider(new DeviceClientAuthenticationProvider(registeredClientRepository))
-                                .errorResponseHandler(new AuthenticationFailureHandlerImpl())
+                                .errorResponseHandler(jsonFailureHandler)
                         )
                         .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
                                 .consentPage("/oauth2/consent")
+                                .errorResponseHandler(jsonFailureHandler)
                         )
                         .oidc(Customizer.withDefaults()) // Enable OpenID Connect 1.0
                 )
-                .authorizeHttpRequests((authorize) ->
-                        authorize.anyRequest().authenticated()
-                )
         .oauth2ResourceServer(resourceServer -> resourceServer
-                .authenticationEntryPoint(new AuthenticationEntryPointImpl()) // 处理oauth路径异常
+                .authenticationEntryPoint(authenticationEntryPoint) // 处理oauth路径异常
                 .accessDeniedHandler(new AccessDeniedHandlerImpl())
         )
         .exceptionHandling(exceptionHandler -> exceptionHandler
-                .authenticationEntryPoint(new AuthenticationEntryPointImpl())
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(new AccessDeniedHandlerImpl())
         );
 
