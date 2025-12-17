@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.log.LogMessage;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -24,7 +25,7 @@ import org.springframework.security.web.authentication.AuthenticationEntryPointF
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ import java.util.List;
  */
 public class LoginEndpointFilter extends OncePerRequestFilter {
 
-    private final AntPathRequestMatcher requestMatcher = new AntPathRequestMatcher("/login",
-            "POST");
+    private final PathPatternRequestMatcher requestMatcher = PathPatternRequestMatcher.withDefaults()
+            .matcher(HttpMethod.POST, "/login");
 
     private final AuthenticationManager authenticationManager;
 
