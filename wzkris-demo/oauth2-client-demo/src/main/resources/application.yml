@@ -1,0 +1,32 @@
+server:
+  port: 3342
+
+spring:
+  application:
+    name: oauth2-client-demo
+  security:
+    oauth2:
+      client:
+        registration:
+          auth-center:
+            provider: wzkris
+            client-id: oauth_client_demo
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:3342/login/oauth2/code/{registrationId}"
+            scope: read
+            client-name: 系统
+        provider:
+          wzkris:
+            # 授权服务器的基础 URL（根据实际部署地址修改）
+            issuer-uri: http://127.0.0.1:9000
+            # 或者手动指定各个端点（如果 issuer-uri 不适用）
+            # authorization-uri: http://127.0.0.1:9000/oauth2/authorize
+            # token-uri: http://127.0.0.1:9000/oauth2/token
+            # jwk-set-uri: http://127.0.0.1:9000/oauth2/jwks
+            # user-info-uri: http://127.0.0.1:9000/userinfo
+
+logging:
+  level:
+    com.demo.pgbus: DEBUG
+    org.springframework.security: trace

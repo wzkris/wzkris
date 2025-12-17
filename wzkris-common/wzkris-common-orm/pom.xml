@@ -32,6 +32,7 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-security</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- jdbc驱动-->

@@ -62,8 +62,22 @@ public class PgNotificationListener {
     public void shutdown() {
         log.info("🛑 正在关闭 PostgreSQL 通知监听器...");
         running.set(false);
-        closeListenerConnection();
+        
+        // 先中断监听线程，让它从阻塞的 getNotifications 中退出
         executor.shutdownNow();
+        
+        // 等待线程退出，但设置超时避免无限等待
+        try {
+            if (!executor.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                log.warn("监听器线程未在5秒内正常退出，强制关闭连接");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.warn("等待监听器线程退出时被中断");
+        }
+        
+        // 最后关闭连接
+        closeListenerConnection();
     }
 
     private void listenLoop() {
@@ -127,21 +141,30 @@ public class PgNotificationListener {
     /**
      * 监听通知（使用阻塞式调用，无需轮询和 sleep）
      * <p>
-     * 使用 getNotifications(0) 阻塞等待，直到收到通知或连接关闭
-     * 这样可以消除轮询带来的 CPU 占用和延迟
+     * 使用 getNotifications(timeout) 阻塞等待，设置超时以便能够响应关闭信号
+     * 这样可以消除轮询带来的 CPU 占用和延迟，同时支持优雅关闭
      * </p>
      */
     private void monitorNotifications(PGConnection pgConnection) throws SQLException, InterruptedException {
+        // 使用 1 秒超时，这样可以定期检查 running 状态和中断信号
+        final int timeoutMillis = 1000;
+        
         while (running.get() && !Thread.currentThread().isInterrupted()) {
             try {
-                // 阻塞等待通知，timeout=0 表示无限等待直到收到通知或连接关闭
-                PGNotification[] notifications = pgConnection.getNotifications(0);
+                // 使用超时等待，定期检查运行状态，避免无限阻塞导致无法关闭
+                PGNotification[] notifications = pgConnection.getNotifications(timeoutMillis);
 
                 if (Objects.nonNull(notifications) && notifications.length > 0) {
                     processNotifications(notifications);
                 }
+                // 如果超时返回 null，继续循环检查 running 状态
             } catch (SQLException e) {
                 // 连接异常（如断开），抛出异常让外层处理重连
+                // 但如果正在关闭，则不抛出异常，直接退出
+                if (!running.get()) {
+                    log.debug("监听器正在关闭，忽略连接错误");
+                    break;
+                }
                 log.warn("等待通知时发生连接错误: {}", e.getMessage());
                 throw e;
             }
@@ -177,12 +200,31 @@ public class PgNotificationListener {
 
     private synchronized void closeListenerConnection() {
         if (listenerConnection != null) {
+            Connection conn = listenerConnection;
+            listenerConnection = null; // 先清空引用，避免重复关闭
+            
             try {
-                listenerConnection.close();
+                // 如果连接未关闭，尝试关闭
+                if (!conn.isClosed()) {
+                    // 设置超时，避免关闭时无限等待
+                    try {
+                        // PostgreSQL JDBC 驱动在某些情况下关闭连接可能会阻塞
+                        // 这里不设置超时，但确保在单独的同步块中执行
+                        conn.close();
+                        log.debug("监听器连接已关闭");
+                    } catch (SQLException e) {
+                        // 忽略关闭时的异常，连接可能已经关闭
+                        log.debug("关闭连接时发生异常（可能已关闭）: {}", e.getMessage());
+                    }
+                }
             } catch (SQLException e) {
-                log.warn("关闭监听器连接失败", e);
-            } finally {
-                listenerConnection = null;
+                log.warn("检查连接状态时发生异常: {}", e.getMessage());
+                // 即使检查失败，也尝试关闭
+                try {
+                    conn.close();
+                } catch (SQLException closeEx) {
+                    log.debug("强制关闭连接时发生异常: {}", closeEx.getMessage());
+                }
             }
         }
     }

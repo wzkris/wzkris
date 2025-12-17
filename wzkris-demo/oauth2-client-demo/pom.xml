@@ -11,9 +11,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>wzkris-pg-bus-demo</artifactId>
-    <name>wzkris-pg-bus-demo</name>
-    <description>PostgreSQL NOTIFY/LISTEN 与 MyBatis-Plus 组合的轻量级消息总线示例</description>
+    <artifactId>oauth2-client-demo</artifactId>
+    <name>oauth2-client-demo</name>
+    <description>oauth2客户端demo</description>
 
     <dependencies>
 
@@ -28,13 +28,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-orm</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
         </dependency>
 
         <dependency>

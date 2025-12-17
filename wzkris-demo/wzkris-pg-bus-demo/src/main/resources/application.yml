@@ -30,3 +30,4 @@ demo:
 logging:
   level:
     com.demo.pgbus: DEBUG
+    org.springframework.security: trace

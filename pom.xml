@@ -133,6 +133,7 @@
     <modules>
         <module>wzkris-auth</module>
         <module>wzkris-bom</module>
+        <module>wzkris-demo/oauth2-client-demo</module>
         <module>wzkris-demo/wzkris-mq-demo</module>
         <module>wzkris-demo/wzkris-pg-bus-demo</module>
         <module>wzkris-gateway</module>
