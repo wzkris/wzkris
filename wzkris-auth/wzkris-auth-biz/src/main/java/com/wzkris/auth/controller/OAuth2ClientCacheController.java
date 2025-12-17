@@ -1,6 +1,6 @@
 package com.wzkris.auth.controller;
 
-import com.wzkris.auth.security.oauth2.redis.repository.OAuth2RegisteredClientRepository;
+import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.model.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 the original author or authors.
+ * Copyright 2020-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wzkris.auth.controllerviews;
+package com.wzkris.auth.security.redis.repository;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-/**
- * @author Steve Riesenberg
- * @since 1.1
- */
-@Controller
-public class LoginController {
+@Repository
+public interface OAuth2RegisteredClientRepository extends CrudRepository<OAuth2RegisteredClient, String> {
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
+    OAuth2RegisteredClient findByClientId(String clientId);
 
 }
