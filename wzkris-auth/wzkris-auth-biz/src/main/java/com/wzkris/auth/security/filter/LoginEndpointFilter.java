@@ -81,11 +81,9 @@ public class LoginEndpointFilter extends OncePerRequestFilter {
 
             commonAuthenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
 
-            Authentication authentication = this.authenticationManager
-                    .authenticate(commonAuthenticationToken);
+            Authentication authentication = this.authenticationManager.authenticate(commonAuthenticationToken);
 
-            this.authenticationSuccessHandler.onAuthenticationSuccess(request, response,
-                    authentication);
+            this.authenticationSuccessHandler.onAuthenticationSuccess(request, response, authentication);
         } catch (OAuth2AuthenticationException ex) {
             if (this.logger.isTraceEnabled()) {
                 this.logger.trace(LogMessage.format("Login request failed: %s", ex.getError()), ex);

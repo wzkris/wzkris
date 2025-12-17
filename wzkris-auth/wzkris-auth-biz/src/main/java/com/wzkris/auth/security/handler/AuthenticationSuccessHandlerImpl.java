@@ -91,7 +91,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
             log.warn("use default response info, current authentication type :{}",
                     authentication.getClass().getName());
             jsonMessageConverter.write(
-                    Result.ok(), STRING_OBJECT_MAP.getType(),
+                    Result.systemError("当前不支持" + authentication.getClass().getName() + "的转化"), STRING_OBJECT_MAP.getType(),
                     MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
         }
 
