@@ -31,11 +31,6 @@ public final class RefreshAuthenticationToken extends CommonAuthenticationToken 
     }
 
     @Override
-    public Object getCredentials() {
-        return this.refreshToken;
-    }
-
-    @Override
     public LoginTypeEnum getLoginType() {
         return LoginTypeEnum.REFRESH;
     }

@@ -64,6 +64,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         } else {
             refreshToken = tokenService.generateToken();
         }
+        authenticationToken.setCredentials(generatedToken);
 
         tokenService.save(authenticationToken.getPrincipal(), generatedToken, refreshToken);
 

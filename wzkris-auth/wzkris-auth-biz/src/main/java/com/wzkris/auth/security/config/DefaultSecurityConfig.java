@@ -15,8 +15,6 @@
  */
 package com.wzkris.auth.security.config;
 
-import com.wzkris.auth.security.core.CommonAuthenticationConverter;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.filter.LoginEndpointFilter;
 import com.wzkris.auth.security.filter.LogoutHandlerImpl;
 import com.wzkris.auth.service.TokenService;
@@ -24,15 +22,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-
-import java.util.List;
 
 /**
  * 授权服务器的安全配置
@@ -47,9 +42,7 @@ public class DefaultSecurityConfig {
     @Order(0)
     public SecurityFilterChain defaultSecurityFilterChain(
             HttpSecurity http,
-            List<AuthenticationProvider> authenticationProviders,
-            List<CommonAuthenticationConverter<? extends CommonAuthenticationToken>>
-                    authenticationConverters,
+            LoginEndpointFilter loginEndpointFilter,
             TokenService tokenService)
             throws Exception {
         http.securityMatcher("/assets/**", "/activate", "/login", "/logout")
@@ -57,16 +50,16 @@ public class DefaultSecurityConfig {
                 .cors(configurer -> configurer.configure(http))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
                 )
-                .addFilterAt(new LoginEndpointFilter(authenticationProviders, authenticationConverters)
-                        , UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(loginEndpointFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> {
                     logout.addLogoutHandler(new LogoutHandlerImpl(tokenService))
                             .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT));
                 });
+
         return http.build();
     }
 

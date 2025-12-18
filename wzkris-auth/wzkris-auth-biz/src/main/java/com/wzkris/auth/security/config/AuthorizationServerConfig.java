@@ -58,7 +58,6 @@ public class AuthorizationServerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationFilterChain(
             HttpSecurity http,
-            SecurityContextRepository securityContextRepository,
             RegisteredClientRepository registeredClientRepository)
             throws Exception {
 
@@ -70,7 +69,7 @@ public class AuthorizationServerConfig {
 
         http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().authenticated()

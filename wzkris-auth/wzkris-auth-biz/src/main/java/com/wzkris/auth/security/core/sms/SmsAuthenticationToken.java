@@ -43,11 +43,6 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
     }
 
     @Override
-    public Object getCredentials() {
-        return this.smsCode;
-    }
-
-    @Override
     public LoginTypeEnum getLoginType() {
         return LoginTypeEnum.SMS;
     }

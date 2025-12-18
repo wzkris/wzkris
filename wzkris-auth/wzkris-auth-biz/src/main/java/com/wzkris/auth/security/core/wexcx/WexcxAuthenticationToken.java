@@ -42,11 +42,6 @@ public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
     }
 
     @Override
-    public Object getCredentials() {
-        return this.wxCode;
-    }
-
-    @Override
     public LoginTypeEnum getLoginType() {
         return LoginTypeEnum.WE_XCX;
     }

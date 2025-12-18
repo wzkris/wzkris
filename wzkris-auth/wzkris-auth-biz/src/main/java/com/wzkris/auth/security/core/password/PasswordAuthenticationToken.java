@@ -48,11 +48,6 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
     }
 
     @Override
-    public Object getCredentials() {
-        return this.password;
-    }
-
-    @Override
     public LoginTypeEnum getLoginType() {
         return LoginTypeEnum.PASSWORD;
     }

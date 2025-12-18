@@ -6,27 +6,20 @@ import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
-import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.web.authentication.*;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,61 +31,33 @@ import java.util.Optional;
  * @date : 2024/6/14 16:30
  */
 @Slf4j
-public class LoginEndpointFilter extends OncePerRequestFilter {
-
-    private final PathPatternRequestMatcher requestMatcher = PathPatternRequestMatcher.withDefaults()
-            .matcher(HttpMethod.POST, "/login");
-
-    private final AuthenticationManager authenticationManager;
+@Component
+public class LoginEndpointFilter extends AbstractAuthenticationProcessingFilter {
 
     private final List<CommonAuthenticationConverter<? extends CommonAuthenticationToken>> authenticationConverters;
-
-    private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
-
-    private final AuthenticationFailureHandler jsonFailureHandler =
-            new AuthenticationEntryPointFailureHandler(new AuthenticationEntryPointImpl());
-
-    private final AuthenticationSuccessHandler authenticationSuccessHandler
-            = new AuthenticationSuccessHandlerImpl();
-
-    private final AuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler =
-            new SavedRequestAwareAuthenticationSuccessHandler();
 
     public LoginEndpointFilter(
             List<AuthenticationProvider> providers,
             List<CommonAuthenticationConverter<? extends CommonAuthenticationToken>> converters
     ) {
-        this.authenticationManager = new ProviderManager(providers);
+        super(PathPatternRequestMatcher.withDefaults()
+                .matcher(HttpMethod.POST, "/login"), new ProviderManager(providers));
         this.authenticationConverters = converters;
+        setAuthenticationSuccessHandler(new AuthenticationSuccessHandlerImpl());
+        setAuthenticationFailureHandler(new AuthenticationEntryPointFailureHandler(new AuthenticationEntryPointImpl()));
+        setAllowSessionCreation(false);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!requestMatcher.matches(request)) {
-            filterChain.doFilter(request, response);
-            return;
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException, ServletException {
+        Authentication authentication = this.findSupportedToken(request);
+
+        Authentication result = this.getAuthenticationManager().authenticate(authentication);
+        if (result == null) {
+            throw new ServletException("AuthenticationManager should not return null Authentication object.");
         }
-
-        try {
-            CommonAuthenticationToken commonAuthenticationToken = findSupportedToken(request);
-
-            Authentication authentication = this.authenticationManager.authenticate(commonAuthenticationToken);
-
-            this.authenticationSuccessHandler.onAuthenticationSuccess(request, response, authentication);
-        } catch (OAuth2AuthenticationException ex) {
-            if (this.logger.isTraceEnabled()) {
-                this.logger.trace(LogMessage.format("Login request failed: %s", ex.getError()), ex);
-            }
-            this.jsonFailureHandler.onAuthenticationFailure(request, response, ex);
-        } catch (Exception ex) {
-            if (this.logger.isTraceEnabled()) {
-                this.logger.trace(LogMessage.format("Login request failed: %s", ex.getMessage()), ex);
-            }
-            this.jsonFailureHandler.onAuthenticationFailure(request, response,
-                    new OAuth2AuthenticationException(new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR, ex.getMessage(), null)));
-        } finally {
-            SecurityContextHolder.clearContext();
-        }
+        return result;
     }
 
     /**
