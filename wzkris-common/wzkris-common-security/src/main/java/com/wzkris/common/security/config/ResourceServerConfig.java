@@ -1,6 +1,6 @@
 package com.wzkris.common.security.config;
 
-import com.wzkris.common.security.component.HttpHeaderSecurityContextRepository;
+import com.wzkris.common.security.component.CustomSecurityContextRepository;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.common.security.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
@@ -56,7 +56,7 @@ public class ResourceServerConfig {
 
     @Bean
     public SecurityContextRepository securityContextRepository() {
-        return new HttpHeaderSecurityContextRepository();
+        return new CustomSecurityContextRepository();
     }
 
     @Bean

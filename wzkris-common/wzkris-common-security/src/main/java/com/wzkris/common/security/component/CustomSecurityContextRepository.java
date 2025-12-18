@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * @date 2025/06/19 15:40
  */
 @Slf4j
-public final class HttpHeaderSecurityContextRepository implements SecurityContextRepository {
+public final class CustomSecurityContextRepository implements SecurityContextRepository {
 
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
             .getContextHolderStrategy();
@@ -114,7 +114,7 @@ public final class HttpHeaderSecurityContextRepository implements SecurityContex
     }
 
     private Authentication createAuthentication(MyPrincipal principal, HttpServletRequest request, String token) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, token,
+        UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(principal, token,
                 AuthorityUtils.createAuthorityList((principal).getPermissions()));
         authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
         return authenticationToken;

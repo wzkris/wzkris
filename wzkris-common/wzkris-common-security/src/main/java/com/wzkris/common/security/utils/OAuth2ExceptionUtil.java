@@ -87,6 +87,8 @@ public final class OAuth2ExceptionUtil {
                         Result.unauth(I18nUtil.message("forbidden.accessDenied.tokenExpired"));
                 case OAuth2ErrorCodes.INVALID_GRANT -> // refresh_token刷新失败
                         Result.unauth(StringUtil.defaultIfBlank(errorMsg, I18nUtil.message("forbidden.accessDenied.tokenExpired")));
+                case OAuth2ErrorCodes.INVALID_REQUEST -> // 请求参数不合法
+                        Result.requestFail(I18nUtil.message("invalidParameter.param.invalid"));
                 case OAuth2ErrorCodes.INVALID_SCOPE -> // scope不合法
                         Result.requestFail(I18nUtil.message("oauth2.scope.invalid"));
                 case OAuth2ErrorCodes.INVALID_CLIENT -> // 客户端不合法
