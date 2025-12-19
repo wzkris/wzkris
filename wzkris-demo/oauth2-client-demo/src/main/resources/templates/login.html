@@ -6,6 +6,8 @@
     <title>Spring Authorization Server sample</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/assets/css/signin.css" th:href="@{/assets/css/signin.css}" />
+    <!-- 引入 OAuth2 SDK -->
+    <script src="http://localhost:5777/static/oauth2-sdk.js"></script>
 </head>
 <body>
 <div class="container">
@@ -17,6 +19,10 @@
             You have been logged out.
         </div>
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <div id="oauth2Loading" class="alert alert-info text-center" style="display: none;">
+            <p>正在打开授权窗口...</p>
+        </div>
+        <div id="oauth2Error" class="alert alert-danger" style="display: none;"></div>
         <input type="hidden" name="login_type" value="password">
         <input type="hidden" name="auth_type" value="admin">
         <input type="hidden" name="captcha_id" value="111">
@@ -30,6 +36,9 @@
         </div>
         <div>
             <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <button id="oauth2AuthBtn" class="w-100 btn btn-lg btn-success btn-block" type="button" style="margin-top: 10px">
+                OAuth2 授权登录
+            </button>
             <a class="w-100 btn btn-light btn-block bg-white" href="/oauth2/authorization/google-idp" role="link" style="margin-top: 10px">
                 <img src="/assets/img/google.png" th:src="@{/assets/img/google.png}" width="20" style="margin-right: 5px;" alt="Sign in with Google">
                 Sign in with Google
@@ -41,5 +50,44 @@
         </div>
     </form>
 </div>
+
+<script>
+    // 手动触发授权按钮
+    document.getElementById('oauth2AuthBtn').addEventListener('click', function() {
+        openOAuth2Authorize();
+    });
+
+    function openOAuth2Authorize() {
+        const loadingDiv = document.getElementById('oauth2Loading');
+        const errorDiv = document.getElementById('oauth2Error');
+        
+        // 显示加载提示
+        loadingDiv.style.display = 'block';
+        errorDiv.style.display = 'none';
+        
+        OAuth2SDK.authorize({
+            client_id: 'oauth_client_demo',
+            redirect_uri: 'http://127.0.0.1:3342/login/oauth2/code/auth-center',
+            scope: 'read',
+            response_type: 'code'
+        }).then(function(result) {
+            // 授权成功，保存状态并重定向到 OAuth2 回调处理
+            sessionStorage.setItem('oauth2_authorized', 'true');
+            loadingDiv.style.display = 'none';
+            
+            // 构建回调URL，Spring Security OAuth2 会自动处理
+            // 这里我们需要将授权码传递给后端处理
+            // 由于使用的是弹出窗口方式，我们需要通过后端接口来处理
+            window.location.href = '/login/oauth2/code/auth-center?code=' + encodeURIComponent(result.code);
+        }).catch(function(error) {
+            // 授权失败或取消
+            loadingDiv.style.display = 'none';
+            if (error.message !== '用户取消了授权') {
+                errorDiv.innerHTML = '<strong>授权失败：</strong>' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+    }
+</script>
 </body>
 </html>

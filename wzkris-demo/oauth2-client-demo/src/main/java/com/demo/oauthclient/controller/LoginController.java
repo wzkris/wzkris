@@ -1,26 +1,33 @@
+/*
+ * Copyright 2020-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.demo.oauthclient.controller;
 
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * 登录控制器
- * 直接重定向到 OAuth2 授权端点，避免使用默认登录页面（需要静态资源）
- *
- * @author wzkris
+ * @author Steve Riesenberg
+ * @since 1.1
  */
 @Controller
 public class LoginController {
 
-    /**
-     * 登录页面 - 直接重定向到 OAuth2 授权端点
-     * {@link OAuth2AuthorizationRequestRedirectFilter}
-     */
     @GetMapping("/login")
     public String login() {
-        return "redirect:/oauth2/authorization/auth-center";
+        return "login";
     }
 
 }
-
