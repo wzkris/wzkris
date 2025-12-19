@@ -4,6 +4,8 @@ import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.httpservice.annotation.EnableHttpServiceClients;
 import com.wzkris.common.httpservice.interceptor.PublishEventInterceptorPostProcessor;
 import com.wzkris.common.httpservice.interceptor.core.HttpServiceClientInterceptor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,10 +14,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestClient;
 
 import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -35,10 +40,18 @@ public class HttpServiceClientAutoConfiguration {
     @ConditionalOnMissingBean
     public RestClient.Builder httpServiceRestClientBuilder(
             HttpServiceProperties httpServiceProperties,
+            ObjectProvider<List<HttpMessageConverter<?>>> messageConvertersObjectProvider,
             HttpServiceClientInterceptor httpServiceClientInterceptor) {
-        return RestClient.builder()
+        RestClient.Builder builder = RestClient.builder()
                 .requestFactory(buildFactory(httpServiceProperties))
                 .requestInterceptor(httpServiceClientInterceptor);
+
+        List<HttpMessageConverter<?>> messageConverters = messageConvertersObjectProvider.getIfAvailable();
+        if (CollectionUtils.isNotEmpty(messageConverters)) {
+            builder.messageConverters(messageConverters);
+        }
+
+        return builder;
     }
 
     private static BufferingClientHttpRequestFactory buildFactory(HttpServiceProperties httpServiceProperties) {
