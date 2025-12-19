@@ -2,6 +2,7 @@ package com.wzkris.auth.security.utils;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wzkris.common.core.utils.JsonUtil;
 import lombok.Getter;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
@@ -17,7 +18,7 @@ import java.util.List;
 public final class OAuth2JsonUtil {
 
     @Getter
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
     static {
         ClassLoader classLoader = OAuth2JsonUtil.class.getClassLoader();

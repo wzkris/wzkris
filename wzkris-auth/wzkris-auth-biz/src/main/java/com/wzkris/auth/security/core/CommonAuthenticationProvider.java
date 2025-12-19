@@ -56,7 +56,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
     final OAuth2AccessTokenAuthenticationToken buildOAuth2AccessTokenAuthenticationToken(T authenticationToken) {
         String generatedToken = tokenService.generateAccessToken(authenticationToken.getPrincipal());
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
-                generatedToken, Instant.now(), Instant.now().plus(tokenProperties.getUserTokenTimeOut(), ChronoUnit.SECONDS));
+                generatedToken, Instant.now(), Instant.now().plus(tokenProperties.getAccessTokenTimeOut(), ChronoUnit.SECONDS));
 
         String refreshToken;
         if (authenticationToken instanceof RefreshAuthenticationToken refreshAuthenticationToken) {
@@ -69,7 +69,7 @@ public abstract class CommonAuthenticationProvider<T extends CommonAuthenticatio
         tokenService.save(authenticationToken.getPrincipal(), generatedToken, refreshToken);
 
         OAuth2RefreshToken oAuth2RefreshToken = new OAuth2RefreshToken(
-                refreshToken, Instant.now(), Instant.now().plus(tokenProperties.getUserRefreshTokenTimeOut(), ChronoUnit.SECONDS));
+                refreshToken, Instant.now(), Instant.now().plus(tokenProperties.getRefreshTokenTimeOut(), ChronoUnit.SECONDS));
         OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(
                         registeredClient, authenticationToken, accessToken, oAuth2RefreshToken);

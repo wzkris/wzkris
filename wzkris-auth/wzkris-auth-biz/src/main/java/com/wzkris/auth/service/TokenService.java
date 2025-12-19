@@ -133,8 +133,8 @@ public class TokenService {
     public final void save(MyPrincipal principal, String accessToken, String refreshToken) {
         Serializable id = principal.getId();
         String type = principal.getType().getValue();
-        long refreshTTL = tokenProperties.getUserRefreshTokenTimeOut();
-        long accessTTL = tokenProperties.getUserTokenTimeOut();
+        long refreshTTL = tokenProperties.getRefreshTokenTimeOut();
+        long accessTTL = tokenProperties.getAccessTokenTimeOut();
 
         // ========== 1️⃣ 写入在线会话 ==========
 

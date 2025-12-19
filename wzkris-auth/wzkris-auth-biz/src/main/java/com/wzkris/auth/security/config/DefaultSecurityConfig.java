@@ -38,6 +38,8 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 @Configuration
 public class DefaultSecurityConfig {
 
+    static final String[] defaultUrl = new String[]{"/login", "/logout"};
+
     @Bean
     @Order(0)
     public SecurityFilterChain defaultSecurityFilterChain(
@@ -45,7 +47,7 @@ public class DefaultSecurityConfig {
             LoginEndpointFilter loginEndpointFilter,
             TokenService tokenService)
             throws Exception {
-        http.securityMatcher("/assets/**", "/activate", "/login", "/logout")
+        http.securityMatcher(defaultUrl)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> configurer.configure(http))
                 .httpBasic(AbstractHttpConfigurer::disable)

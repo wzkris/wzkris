@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,9 +32,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.util.List;
 
@@ -58,6 +55,7 @@ public class AuthorizationServerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationFilterChain(
             HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
             RegisteredClientRepository registeredClientRepository)
             throws Exception {
 
@@ -70,6 +68,9 @@ public class AuthorizationServerConfig {
         http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .securityContext(securityContextConfigurer -> securityContextConfigurer
+                        .securityContextRepository(securityContextRepository) // SecurityContextHolderFilter
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().authenticated()
@@ -88,11 +89,11 @@ public class AuthorizationServerConfig {
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> deviceAuthorizationEndpoint
-                                .verificationUri("/activate")// 自定义设备码验证页面
+                                .verificationUri("http://localhost:5777/auth/oauth2/activate")// 自定义设备码验证页面
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .deviceVerificationEndpoint(deviceVerificationEndpoint -> deviceVerificationEndpoint
-                                .consentPage("/oauth2/consent")// 自定义设备授权页面
+                                .consentPage("http://localhost:5777/auth/oauth2/consent")// 设备授权页面
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .clientAuthentication(clientAuthentication -> clientAuthentication // 客户端认证
@@ -102,7 +103,7 @@ public class AuthorizationServerConfig {
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-                                .consentPage("/oauth2/consent")
+                                .consentPage("http://localhost:5777/auth/oauth2/consent")
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .oidc(Customizer.withDefaults()) // Enable OpenID Connect 1.0
@@ -112,10 +113,8 @@ public class AuthorizationServerConfig {
                 .accessDeniedHandler(new AccessDeniedHandlerImpl())
         )
         .exceptionHandling(exceptionHandler -> exceptionHandler
-                .defaultAuthenticationEntryPointFor(
-                        new LoginUrlAuthenticationEntryPoint("/login"),
-                        new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                )
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(new AccessDeniedHandlerImpl())
         );
 
         return http.build();

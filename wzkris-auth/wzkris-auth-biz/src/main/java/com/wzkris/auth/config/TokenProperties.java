@@ -20,12 +20,12 @@ public class TokenProperties {
     /**
      * access_token 有效期（单位：秒）
      **/
-    private int accessTokenTimeOut = 900;
+    private int accessTokenTimeOut = 1800;
 
     /**
      * refresh_token 有效期 （单位：秒）
      **/
-    private int refreshTokenTimeOut = 86400;
+    private int refreshTokenTimeOut = 86400 * 3;
 
     /**
      * 是否重复使用刷新令牌 false则每次签发新的刷新令牌
@@ -41,15 +41,5 @@ public class TokenProperties {
      * device_code 有效期 （单位：秒）
      */
     private int deviceCodeTimeOut = 1800;
-
-    /**
-     * 自定义的用户token 有效期（单位：秒）
-     */
-    private int userTokenTimeOut = 1800;
-
-    /**
-     * 自定义的用户refresh_token 有效期（单位：秒）
-     */
-    private int userRefreshTokenTimeOut = 86400 * 3; // 默认3天
 
 }
