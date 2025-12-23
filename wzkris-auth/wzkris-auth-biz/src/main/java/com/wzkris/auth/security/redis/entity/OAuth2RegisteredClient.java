@@ -18,6 +18,7 @@ package com.wzkris.auth.security.redis.entity;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -89,6 +90,11 @@ public class OAuth2RegisteredClient {
         this.scopes = scopes;
         this.clientSettings = clientSettings;
         this.tokenSettings = tokenSettings;
+    }
+
+    @TimeToLive
+    protected Long getTimeToLive() {
+        return Duration.ofMinutes(30).getSeconds();
     }
 
     @Getter

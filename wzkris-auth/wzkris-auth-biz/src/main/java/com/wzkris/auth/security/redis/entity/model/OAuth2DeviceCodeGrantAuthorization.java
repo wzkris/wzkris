@@ -62,7 +62,7 @@ public class OAuth2DeviceCodeGrantAuthorization extends OAuth2AuthorizationGrant
 
     @Override
     public Long getTimeToLive() {
-        long maxLiveTime = -1;
+        long maxLiveTime = super.getTimeToLive();
         maxLiveTime = Math.max(
                 maxLiveTime,
                 deviceCode != null

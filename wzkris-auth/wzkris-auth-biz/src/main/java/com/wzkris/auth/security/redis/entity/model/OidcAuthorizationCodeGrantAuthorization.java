@@ -58,7 +58,7 @@ public class OidcAuthorizationCodeGrantAuthorization extends OAuth2Authorization
 
     @TimeToLive
     protected Long getTimeToLive() {
-        long maxLiveTime = -1;
+        long maxLiveTime = super.getTimeToLive();
         maxLiveTime = Math.max(
                 maxLiveTime,
                 idToken != null ? ChronoUnit.SECONDS.between(idToken.getIssuedAt(), idToken.getExpiresAt()) : -1);

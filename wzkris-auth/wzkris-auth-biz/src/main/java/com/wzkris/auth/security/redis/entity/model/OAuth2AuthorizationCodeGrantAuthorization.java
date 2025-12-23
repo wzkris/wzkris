@@ -60,7 +60,7 @@ public class OAuth2AuthorizationCodeGrantAuthorization extends OAuth2Authorizati
 
     @TimeToLive
     protected Long getTimeToLive() {
-        long maxLiveTime = -1;
+        long maxLiveTime = super.getTimeToLive();
         maxLiveTime = Math.max(
                 maxLiveTime,
                 authorizationCode != null

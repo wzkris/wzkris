@@ -18,9 +18,11 @@ package com.wzkris.auth.security.redis.entity;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.time.Duration;
 import java.util.Set;
 
 @Getter
@@ -48,4 +50,10 @@ public class OAuth2UserConsent {
     }
 
     // @fold:off
+
+    @TimeToLive
+    protected Long getTimeToLive() {
+        return Duration.ofMinutes(3).getSeconds();
+    }
+
 }
