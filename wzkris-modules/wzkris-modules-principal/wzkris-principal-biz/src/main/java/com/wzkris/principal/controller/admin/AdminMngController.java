@@ -72,9 +72,9 @@ public class AdminMngController extends BaseController {
     private final RoleInfoDscManager roleInfoDscManager;
 
     @Operation(summary = "管理员分页列表")
-    @GetMapping("/list")
-    @CheckAdminPerms("prin-mod:admin-mng:list")
-    public Result<Page<AdminMngVO>> listPage(AdminMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("prin-mod:admin-mng:page")
+    public Result<Page<AdminMngVO>> page(AdminMngQueryReq queryReq) {
         startPage();
         List<AdminMngVO> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
         return getDataTable(list);

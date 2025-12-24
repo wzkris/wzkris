@@ -1,7 +1,6 @@
 package com.wzkris.principal.service.impl;
 
 import com.wzkris.principal.domain.DeptInfoDO;
-import com.wzkris.principal.domain.req.dept.DeptMngQueryReq;
 import com.wzkris.principal.domain.vo.SelectTreeVO;
 import com.wzkris.principal.mapper.DeptInfoMapper;
 import com.wzkris.principal.mapper.RoleToDeptMapper;

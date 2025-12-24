@@ -42,9 +42,9 @@ public class CustomerMngController extends BaseController {
     private final CustomerInfoService customerInfoService;
 
     @Operation(summary = "客户分页列表")
-    @GetMapping("/list")
-    @CheckAdminPerms("prin-mod:customer-mng:list")
-    public Result<Page<CustomerInfoDO>> listPage(CustomerMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("prin-mod:customer-mng:page")
+    public Result<Page<CustomerInfoDO>> page(CustomerMngQueryReq queryReq) {
         startPage();
         List<CustomerInfoDO> list = customerInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);

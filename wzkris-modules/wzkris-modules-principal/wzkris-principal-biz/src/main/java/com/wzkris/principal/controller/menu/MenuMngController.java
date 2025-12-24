@@ -40,7 +40,7 @@ public class MenuMngController extends BaseController {
 
     private final MenuInfoService menuInfoService;
 
-    @Operation(summary = "菜单列表")
+    @Operation(summary = "菜单列表（无分页）")
     @GetMapping("/list")
     @CheckAdminPerms("prin-mod:menu-mng:list")
     public Result<List<MenuInfoDO>> list(MenuMngQueryReq queryReq) {

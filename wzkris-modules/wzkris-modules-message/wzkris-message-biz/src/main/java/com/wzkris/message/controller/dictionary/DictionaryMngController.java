@@ -37,9 +37,9 @@ public class DictionaryMngController extends BaseController {
     private final DictionaryInfoService dictionaryInfoService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("msg-mod:dictionary-mng:list")
-    public Result<Page<DictionaryInfoDO>> list(DictionaryMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("msg-mod:dictionary-mng:page")
+    public Result<Page<DictionaryInfoDO>> page(DictionaryMngQueryReq queryReq) {
         startPage();
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(queryReq);
         return getDataTable(dictionaryInfoMapper.selectList(lqw));
@@ -54,7 +54,7 @@ public class DictionaryMngController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{dictId}")
-    @CheckAdminPerms("msg-mod:dictionary-mng:list")
+    @CheckAdminPerms("msg-mod:dictionary-mng:page")
     public Result<DictionaryInfoDO> getInfo(@PathVariable Long dictId) {
         return ok(dictionaryInfoMapper.selectById(dictId));
     }

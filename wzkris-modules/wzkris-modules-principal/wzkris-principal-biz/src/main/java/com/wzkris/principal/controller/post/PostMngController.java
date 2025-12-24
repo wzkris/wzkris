@@ -52,9 +52,9 @@ public class PostMngController extends BaseController {
     private final MenuInfoService menuInfoService;
 
     @Operation(summary = "职位分页")
-    @GetMapping("/list")
-    @CheckTenantPerms("prin-mod:post-mng:list")
-    public Result<Page<PostInfoDO>> listPage(PostMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckTenantPerms("prin-mod:post-mng:page")
+    public Result<Page<PostInfoDO>> page(PostMngQueryReq queryReq) {
         startPage();
         List<PostInfoDO> list = postInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
@@ -69,7 +69,7 @@ public class PostMngController extends BaseController {
 
     @Operation(summary = "职位详细信息")
     @GetMapping("/{postId}")
-    @CheckTenantPerms("prin-mod:post-mng:list")
+    @CheckTenantPerms("prin-mod:post-mng:page")
     public Result<PostInfoDO> getInfo(@PathVariable Long postId) {
         return ok(postInfoMapper.selectById(postId));
     }

@@ -34,10 +34,10 @@ public class TenantWalletMngController extends BaseController {
 
     private final TenantWalletRecordMapper tenantWalletRecordMapper;
 
-    @Operation(summary = "钱包记录列表")
-    @GetMapping("/record")
-    @CheckAdminPerms("prin-mod:tenant-wallet-mng:list")
-    public Result<Page<TenantWalletRecordDO>> listWalletPage(TenantWalletRecordQueryReq queryReq) {
+    @Operation(summary = "钱包记录分页")
+    @GetMapping("/record/page")
+    @CheckAdminPerms("prin-mod:tenant-wallet-mng:record-page")
+    public Result<Page<TenantWalletRecordDO>> pageRecord(TenantWalletRecordQueryReq queryReq) {
         startPage();
         List<TenantWalletRecordDO> recordList =
                 tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));

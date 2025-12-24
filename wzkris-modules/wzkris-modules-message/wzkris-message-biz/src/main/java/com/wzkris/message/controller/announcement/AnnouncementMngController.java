@@ -41,9 +41,9 @@ public class AnnouncementMngController extends BaseController {
     private final AnnouncementInfoService announcementInfoService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("msg-mod:announcement-mng:list")
-    public Result<Page<AnnouncementInfoDO>> list(AnnouncementMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("msg-mod:announcement-mng:page")
+    public Result<Page<AnnouncementInfoDO>> page(AnnouncementMngQueryReq queryReq) {
         startPage();
         List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
@@ -58,7 +58,7 @@ public class AnnouncementMngController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{announcementId}")
-    @CheckAdminPerms("msg-mod:announcement-mng:list")
+    @CheckAdminPerms("msg-mod:announcement-mng:page")
     public Result<AnnouncementInfoDO> query(@PathVariable Long announcementId) {
         return ok(announcementInfoMapper.selectById(announcementId));
     }

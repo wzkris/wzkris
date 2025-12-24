@@ -48,9 +48,9 @@ public class TenantPackageMngController extends BaseController {
     private final MenuInfoService menuInfoService;
 
     @Operation(summary = "套餐分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("prin-mod:tenantpackage-mng:list")
-    public Result<Page<TenantPackageInfoDO>> listPage(TenantPackageMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("prin-mod:tenantpackage-mng:page")
+    public Result<Page<TenantPackageInfoDO>> page(TenantPackageMngQueryReq queryReq) {
         startPage();
         List<TenantPackageInfoDO> list = tenantPackageInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
@@ -68,7 +68,7 @@ public class TenantPackageMngController extends BaseController {
 
     @Operation(summary = "套餐详细信息")
     @GetMapping("/{packageId}")
-    @CheckAdminPerms("prin-mod:tenantpackage-mng:list")
+    @CheckAdminPerms("prin-mod:tenantpackage-mng:page")
     public Result<TenantPackageInfoDO> getInfo(
             @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long packageId) {
         return ok(tenantPackageInfoMapper.selectById(packageId));

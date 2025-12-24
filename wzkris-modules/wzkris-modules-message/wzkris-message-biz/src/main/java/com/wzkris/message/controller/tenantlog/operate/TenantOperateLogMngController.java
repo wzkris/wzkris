@@ -33,9 +33,9 @@ public class TenantOperateLogMngController extends BaseController {
     private final TenantOperateLogService tenantOperateLogService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckTenantPerms("msg-mod:tenant-operatelog-mng:list")
-    public Result<Page<TenantOperateLogInfoVO>> list(TenantOperateLogQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckTenantPerms("msg-mod:tenant-operatelog-mng:page")
+    public Result<Page<TenantOperateLogInfoVO>> page(TenantOperateLogQueryReq queryReq) {
         startPage();
         List<TenantOperateLogInfoVO> list = tenantOperateLogService.listInfoVO(queryReq);
         return getDataTable(list);

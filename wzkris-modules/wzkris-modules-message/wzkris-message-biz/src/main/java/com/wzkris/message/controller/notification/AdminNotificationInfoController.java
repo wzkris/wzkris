@@ -22,8 +22,8 @@ public class AdminNotificationInfoController extends BaseController {
     private final NotificationInfoMapper notificationInfoMapper;
 
     @Operation(summary = "通知分页")
-    @GetMapping("/list")
-    public Result<Page<NotificationInfoVO>> list(String read, String notificationType) {
+    @GetMapping("/page")
+    public Result<Page<NotificationInfoVO>> page(String read, String notificationType) {
         startPage();
         List<NotificationInfoVO> list = notificationInfoMapper.listAdminNotice(AdminUtil.getId(), notificationType, read);
         return getDataTable(list);

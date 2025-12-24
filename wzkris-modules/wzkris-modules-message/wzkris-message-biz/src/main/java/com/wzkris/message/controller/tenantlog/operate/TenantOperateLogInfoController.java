@@ -25,8 +25,8 @@ public class TenantOperateLogInfoController extends BaseController {
     private final TenantOperateLogService tenantOperateLogService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    public Result<Page<TenantOperateLogInfoVO>> list(TenantOperateLogQueryReq queryReq) {
+    @GetMapping("/page")
+    public Result<Page<TenantOperateLogInfoVO>> page(TenantOperateLogQueryReq queryReq) {
         startPage();
         queryReq.setMemberId(TenantUtil.getId());
         List<TenantOperateLogInfoVO> list = tenantOperateLogService.listInfoVO(queryReq);

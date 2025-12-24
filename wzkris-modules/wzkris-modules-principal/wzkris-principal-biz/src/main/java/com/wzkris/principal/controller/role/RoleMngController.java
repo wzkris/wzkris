@@ -67,9 +67,9 @@ public class RoleMngController extends BaseController {
     private final DeptInfoDscManager deptInfoDscManager;
 
     @Operation(summary = "角色分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("prin-mod:role-mng:list")
-    public Result<Page<RoleInfoDO>> listPage(RoleMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("prin-mod:role-mng:page")
+    public Result<Page<RoleInfoDO>> page(RoleMngQueryReq queryReq) {
         startPage();
         List<RoleInfoDO> list = roleInfoDscManager.list(this.buildQueryWrapper(queryReq));
         return getDataTable(list);

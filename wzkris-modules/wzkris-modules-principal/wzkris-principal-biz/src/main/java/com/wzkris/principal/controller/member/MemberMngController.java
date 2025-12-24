@@ -57,9 +57,9 @@ public class MemberMngController extends BaseController {
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "分页列表")
-    @GetMapping("/list")
-    @CheckTenantPerms("prin-mod:member-mng:list")
-    public Result<Page<MemberMngVO>> listPage(MemberMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckTenantPerms("prin-mod:member-mng:page")
+    public Result<Page<MemberMngVO>> page(MemberMngQueryReq queryReq) {
         startPage();
         List<MemberMngVO> list = memberInfoMapper.listVO(this.buildPageWrapper(queryReq));
         return getDataTable(list);
@@ -78,7 +78,7 @@ public class MemberMngController extends BaseController {
 
     @Operation(summary = "成员详细信息")
     @GetMapping("/{memberId}")
-    @CheckTenantPerms("prin-mod:member-mng:list")
+    @CheckTenantPerms("prin-mod:member-mng:page")
     public Result<MemberInfoDO> getInfo(@PathVariable Long memberId) {
         tenantInfoService.checkAdministrator(memberId);
         return ok(memberInfoMapper.selectById(memberId));

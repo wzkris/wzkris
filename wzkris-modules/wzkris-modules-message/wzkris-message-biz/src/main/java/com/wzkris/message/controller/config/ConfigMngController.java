@@ -39,9 +39,9 @@ public class ConfigMngController extends BaseController {
     private final ConfigInfoService configInfoService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("msg-mod:config-mng:list")
-    public Result<Page<ConfigInfoDO>> list(ConfigMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("msg-mod:config-mng:page")
+    public Result<Page<ConfigInfoDO>> page(ConfigMngQueryReq queryReq) {
         startPage();
         List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
@@ -63,7 +63,7 @@ public class ConfigMngController extends BaseController {
 
     @Operation(summary = "详情")
     @GetMapping("/{configId}")
-    @CheckAdminPerms("msg-mod:config-mng:list")
+    @CheckAdminPerms("msg-mod:config-mng:page")
     public Result<ConfigInfoDO> getInfo(@PathVariable Long configId) {
         return ok(configInfoMapper.selectById(configId));
     }

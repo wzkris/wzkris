@@ -33,9 +33,9 @@ public class AdminOperateLogMngController extends BaseController {
     private final AdminOperateLogService adminOperateLogService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("msg-mod:admin-operatelog-mng:list")
-    public Result<Page<AdminOperateLogDO>> list(AdminOperateLogQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("msg-mod:admin-operatelog-mng:page")
+    public Result<Page<AdminOperateLogDO>> page(AdminOperateLogQueryReq queryReq) {
         startPage();
         List<AdminOperateLogDO> list = adminOperateLogService.list(queryReq);
         return getDataTable(list);

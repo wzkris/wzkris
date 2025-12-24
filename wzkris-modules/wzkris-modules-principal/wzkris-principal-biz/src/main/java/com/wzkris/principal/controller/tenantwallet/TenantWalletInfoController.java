@@ -49,14 +49,14 @@ public class TenantWalletInfoController extends BaseController {
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "余额信息")
-    @GetMapping
+    @GetMapping("/info")
     public Result<TenantWalletInfoVO> walletInfo() {
         return ok(tenantWalletInfoMapper.selectById2VO(TenantUtil.getTenantId(), TenantWalletInfoVO.class));
     }
 
-    @Operation(summary = "钱包记录")
-    @GetMapping("/record")
-    public Result<Page<TenantWalletRecordDO>> listWalletPage(TenantWalletRecordQueryReq queryReq) {
+    @Operation(summary = "钱包记录分页")
+    @GetMapping("/record/page")
+    public Result<Page<TenantWalletRecordDO>> pageRecord(TenantWalletRecordQueryReq queryReq) {
         startPage();
         List<TenantWalletRecordDO> recordList =
                 tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));

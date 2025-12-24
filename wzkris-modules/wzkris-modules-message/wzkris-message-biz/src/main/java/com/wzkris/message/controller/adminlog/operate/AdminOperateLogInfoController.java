@@ -25,8 +25,8 @@ public class AdminOperateLogInfoController extends BaseController {
     private final AdminOperateLogService adminOperateLogService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    public Result<Page<AdminOperateLogDO>> list(AdminOperateLogQueryReq queryReq) {
+    @GetMapping("/page")
+    public Result<Page<AdminOperateLogDO>> page(AdminOperateLogQueryReq queryReq) {
         startPage();
         queryReq.setAdminId(AdminUtil.getId());
         List<AdminOperateLogDO> list = adminOperateLogService.list(queryReq);

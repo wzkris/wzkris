@@ -47,9 +47,9 @@ public class OAuth2ClientMngController extends BaseController {
     private final OAuth2ClientService oAuth2ClientService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("prin-mod:oauth2client-mng:list")
-    public Result<Page<OAuth2ClientDO>> listPage(OAuth2ClientMngQueryReq req) {
+    @GetMapping("/page")
+    @CheckAdminPerms("prin-mod:oauth2client-mng:page")
+    public Result<Page<OAuth2ClientDO>> page(OAuth2ClientMngQueryReq req) {
         startPage();
         List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(req));
         return getDataTable(list);

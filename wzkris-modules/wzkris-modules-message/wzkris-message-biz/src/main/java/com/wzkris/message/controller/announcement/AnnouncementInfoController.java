@@ -27,8 +27,8 @@ public class AnnouncementInfoController extends BaseController {
     private final AnnouncementInfoMapper announcementInfoMapper;
 
     @Operation(summary = "公告分页")
-    @GetMapping("/list")
-    public Result<Page<AnnouncementInfoVO>> list() {
+    @GetMapping("/page")
+    public Result<Page<AnnouncementInfoVO>> page() {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
                 .eq(AnnouncementInfoDO::getStatus, AnncStatusEnum.PUBLISH.getValue())
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);

@@ -25,8 +25,8 @@ public class TenantLoginlogInfoController extends BaseController {
     private final TenantLoginLogService tenantLoginLogService;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    public Result<Page<TenantLoginLogDO>> list(TenantLoginLogQueryReq queryReq) {
+    @GetMapping("/page")
+    public Result<Page<TenantLoginLogDO>> page(TenantLoginLogQueryReq queryReq) {
         startPage();
         queryReq.setMemberId(TenantUtil.getId());
         List<TenantLoginLogDO> list = tenantLoginLogService.list(queryReq);

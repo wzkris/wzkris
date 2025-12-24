@@ -28,9 +28,9 @@ public class AdminLoginlogMngController extends BaseController {
     private final AdminLoginLogMapper adminLoginLogMapper;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("msg-mod:admin-loginlog-mng:list")
-    public Result<Page<AdminLoginLogDO>> list(AdminLoginLogQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("msg-mod:admin-loginlog-mng:page")
+    public Result<Page<AdminLoginLogDO>> page(AdminLoginLogQueryReq queryReq) {
         startPage();
         List<AdminLoginLogDO> list = adminLoginLogService.list(queryReq);
         return getDataTable(list);

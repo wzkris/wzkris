@@ -28,9 +28,9 @@ public class TenantLoginlogMngController extends BaseController {
     private final TenantLoginLogMapper tenantLoginLogMapper;
 
     @Operation(summary = "分页")
-    @GetMapping("/list")
-    @CheckTenantPerms("msg-mod:tenant-loginlog-mng:list")
-    public Result<Page<TenantLoginLogDO>> list(TenantLoginLogQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckTenantPerms("msg-mod:tenant-loginlog-mng:page")
+    public Result<Page<TenantLoginLogDO>> page(TenantLoginLogQueryReq queryReq) {
         startPage();
         List<TenantLoginLogDO> list = tenantLoginLogService.list(queryReq);
         return getDataTable(list);

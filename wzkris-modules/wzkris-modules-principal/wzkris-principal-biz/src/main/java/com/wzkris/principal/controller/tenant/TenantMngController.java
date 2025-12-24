@@ -62,9 +62,9 @@ public class TenantMngController extends BaseController {
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "租户分页")
-    @GetMapping("/list")
-    @CheckAdminPerms("prin-mod:tenant-mng:list")
-    public Result<Page<TenantMngVO>> listPage(TenantMngQueryReq queryReq) {
+    @GetMapping("/page")
+    @CheckAdminPerms("prin-mod:tenant-mng:page")
+    public Result<Page<TenantMngVO>> page(TenantMngQueryReq queryReq) {
         startPage();
         List<TenantMngVO> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
@@ -79,14 +79,14 @@ public class TenantMngController extends BaseController {
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/{tenantId}")
-    @CheckAdminPerms("prin-mod:tenant-mng:list")
+    @CheckAdminPerms("prin-mod:tenant-mng:page")
     public Result<TenantInfoDO> queryByid(
             @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long tenantId) {
         return ok(tenantInfoMapper.selectById(tenantId));
     }
 
     @Operation(summary = "租户选择列表(带分页)")
-    @GetMapping("/selectlist")
+    @GetMapping("/selectpage")
     public Result<Page<SelectVO>> selectlist(String tenantName) {
         startPage();
         List<SelectVO> list = tenantInfoService.listSelect(tenantName);
