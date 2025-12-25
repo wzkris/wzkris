@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wzkris.common.core.exception.service.GenericException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -55,19 +56,11 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      */
     default <C> C selectById2VO(Serializable id, Class<C> voClass) {
         T obj = this.selectById(id);
-        if (Objects.isNull(obj)) {
-            return null;
-        }
-        try {
-            C c = voClass.getDeclaredConstructor().newInstance();
-            BeanUtils.copyProperties(obj, c);
-            return c;
-        } catch (InstantiationException
-                 | IllegalAccessException
-                 | InvocationTargetException
-                 | NoSuchMethodException e) {
-            throw new GenericException(e.getMessage());
-        }
+        if (Objects.isNull(obj)) return null;
+
+        C c = getInstance(voClass);
+        BeanUtils.copyProperties(obj, c);
+        return c;
     }
 
     /**
@@ -75,19 +68,11 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      */
     default <C> C selectOne2VO(AbstractWrapper<T, ?, ?> wrapper, Class<C> voClass) {
         T obj = this.selectOne(wrapper);
-        if (Objects.isNull(obj)) {
-            return null;
-        }
-        try {
-            C c = voClass.getDeclaredConstructor().newInstance();
-            BeanUtils.copyProperties(obj, c);
-            return c;
-        } catch (InstantiationException
-                 | IllegalAccessException
-                 | InvocationTargetException
-                 | NoSuchMethodException e) {
-            throw new GenericException(e.getMessage());
-        }
+        if (Objects.isNull(obj)) return null;
+
+        C c = getInstance(voClass);
+        BeanUtils.copyProperties(obj, c);
+        return c;
     }
 
     /**
@@ -101,18 +86,24 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
 
         return list.stream()
                 .map(obj -> {
-                    try {
-                        C c = voClass.getDeclaredConstructor().newInstance();
-                        BeanUtils.copyProperties(obj, c);
-                        return c;
-                    } catch (InstantiationException
-                             | IllegalAccessException
-                             | InvocationTargetException
-                             | NoSuchMethodException e) {
-                        throw new GenericException(e.getMessage());
-                    }
+                    C c = getInstance(voClass);
+                    BeanUtils.copyProperties(obj, c);
+                    return c;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private static <C> C getInstance(Class<C> voClass, Class<?>... parameterTypes) {
+        C c;
+        try {
+            c = ReflectionUtils.accessibleConstructor(voClass, parameterTypes).newInstance();
+        } catch (InstantiationException
+                 | IllegalAccessException
+                 | InvocationTargetException
+                 | NoSuchMethodException e) {
+            throw new GenericException(e.getMessage());
+        }
+        return c;
     }
 
 }
