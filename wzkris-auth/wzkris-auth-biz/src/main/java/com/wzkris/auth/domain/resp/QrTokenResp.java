@@ -1,6 +1,6 @@
 package com.wzkris.auth.domain.resp;
 
-import com.wzkris.auth.enums.QrCodeStatus;
+import com.wzkris.auth.enums.QrCodeStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class QrTokenResp {
     }
 
     public static QrTokenResp OVERDUE() {
-        return new QrTokenResp(QrCodeStatus.OVERDUE.getValue());
+        return new QrTokenResp(QrCodeStatusEnum.OVERDUE.getValue());
     }
 
 }

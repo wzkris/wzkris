@@ -13,7 +13,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.security.utils.TenantUtil;
-import com.wzkris.message.httpservice.operatelog.req.OperateLogEvent;
+import com.wzkris.system.httpservice.operatelog.req.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

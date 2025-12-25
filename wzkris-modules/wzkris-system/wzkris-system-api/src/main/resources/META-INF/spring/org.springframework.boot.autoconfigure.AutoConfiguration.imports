@@ -1,0 +1,3 @@
+com.wzkris.system.httpservice.loginlog.fallback.LoginLogHttpServiceFallback
+com.wzkris.system.httpservice.notification.fallback.NotificationHttpServiceFallback
+com.wzkris.system.httpservice.operatelog.fallback.OperateLogHttpServiceFallback

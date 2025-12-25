@@ -3,8 +3,8 @@ package com.wzkris.common.log.event.listener;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.report.AsyncBatchReporter;
-import com.wzkris.message.httpservice.operatelog.OperateLogHttpService;
-import com.wzkris.message.httpservice.operatelog.req.OperateLogEvent;
+import com.wzkris.system.httpservice.operatelog.OperateLogHttpService;
+import com.wzkris.system.httpservice.operatelog.req.OperateLogEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 

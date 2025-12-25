@@ -60,7 +60,7 @@ public class TokenHttpServiceImpl implements TokenHttpService {
     }
 
     @Override
-    public TokenResponse<MyPrincipal> validatePrincipal(TokenReq tokenReq) {
+    public TokenResponse<MyPrincipal> introspect(TokenReq tokenReq) {
         MyPrincipal principal;
         if (StringUtil.equals(AuthTypeEnum.CLIENT.getValue(), tokenReq.getAuthType())) {
             principal = validateClient(tokenReq.getToken());

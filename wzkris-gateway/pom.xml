@@ -75,7 +75,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-rmi</artifactId>
+            <artifactId>wzkris-auth-api</artifactId>
         </dependency>
 
         <!-- 均衡负载-->

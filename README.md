@@ -64,8 +64,8 @@ wzkris
 │   └── wzkris-monitor-admin  // 监控中心
 ├── wzkris-gateway         // API网关
 ├── wzkris-modules         // 业务功能模块
-│   ├── wzkris-modules-message     // 消息服务
-│   └── wzkris-modules-principal   // 主体信息服务
+│   ├── wzkris-system     // 系统服务
+│   └── wzkris-user-center // 用户中心服务
 └── pom.xml                // 项目依赖管理
 ```
 
@@ -98,8 +98,8 @@ wzkris
    
    **PostgreSQL数据库（主数据库）**
    - 创建PostgreSQL数据库（推荐版本 12+）
-   - 执行 `sql/postgresql/wzkris_principal.sql` 初始化主体服务数据库
-   - 执行 `sql/postgresql/wzkris_message.sql` 初始化消息服务数据库
+   - 执行 `sql/postgresql/wzkris_user_center.sql` 初始化用户中心数据库
+   - 执行 `sql/postgresql/wzkris_system.sql` 初始化系统服务数据库
    
    **MySQL数据库（Nacos配置中心）**
    - 创建MySQL数据库（推荐版本 8.0+）
@@ -125,8 +125,8 @@ wzkris
      1. Nacos（服务注册与配置中心）
      2. Gateway (8080) - API网关服务
      3. Auth (9000) - 认证授权服务
-     4. Principal (8000) - 主体信息服务
-     5. Message (5555) - 消息服务
+     4. User-Center (8000) - 用户中心服务
+     5. System (5555) - 系统服务
      6. Monitor (9100) - 监控中心（可选）
 
 ### 服务端口说明
@@ -135,15 +135,15 @@ wzkris
 |---------|------|------|
 | Gateway | 8080 | API网关服务 |
 | Auth | 9000 | 认证授权服务 |
-| Principal | 8000 | 主体信息服务 |
-| Message | 5555 | 消息服务 |
+| User-Center | 8000 | 用户中心服务 |
+| System | 5555 | 系统服务 |
 | Monitor | 9100 | 监控中心 |
 
 ## 📨 PostgreSQL 消息总线 Demo
 
 `wzkris-demo/wzkris-pg-bus-demo` 演示了如何通过 **MyBatis-Plus + PostgreSQL NOTIFY/LISTEN** 组合出轻量级消息总线，覆盖如下能力：
 
-- MyBatis-Plus 管理消息表 `demo_bus_message`（字段包含 channel、title、payload、status）
+- MyBatis-Plus 管理消息表 `demo_bus_system`（字段包含 channel、title、payload、status）
 - 通过 `pg_notify` 推送变更事件，监听线程常驻 `LISTEN <channel>`
 - REST API 用于发消息、补发、手动 ACK，便于联调
 
@@ -161,13 +161,13 @@ wzkris
 4. 调用接口
    ```bash
    # 发布一条消息
-   curl -X POST http://localhost:3341/messages \
+   curl -X POST http://localhost:3341/systems \
      -H "Content-Type: application/json" \
      -d '{"title":"demo","payload":"hello pg bus"}'
    # 重放
-   curl -X POST http://localhost:3341/messages/{id}/resend
+   curl -X POST http://localhost:3341/systems/{id}/resend
    # 查询
-   curl http://localhost:3341/messages
+   curl http://localhost:3341/systems
    ```
 
 ### 访问方式

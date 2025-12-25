@@ -2,7 +2,7 @@ package com.wzkris.auth.controller;
 
 import com.wzkris.auth.constants.QrCodeConstant;
 import com.wzkris.auth.domain.resp.QrTokenResp;
-import com.wzkris.auth.enums.QrCodeStatus;
+import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.core.model.Result;
@@ -44,7 +44,7 @@ public class QrLoginController {
         params.put("qrcodeId", qrcodeId);
         //存放二维码唯一标识30秒有效
         RedisUtil.setObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId,
-                new QrTokenResp(QrCodeStatus.WAIT.getValue(), null, null), 60);
+                new QrTokenResp(QrCodeStatusEnum.WAIT.getValue(), null, null), 60);
         return Result.ok(params);
     }
 
@@ -56,10 +56,10 @@ public class QrLoginController {
         if (Objects.isNull(qrTokenResp)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatus.WAIT.getValue())) {
+        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatusEnum.WAIT.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
-        qrTokenResp.setStatus(QrCodeStatus.SCANED.getValue());
+        qrTokenResp.setStatus(QrCodeStatusEnum.SCANED.getValue());
         RedisUtil.setObj(key, qrTokenResp, 60);
         return Result.ok();
     }
@@ -72,7 +72,7 @@ public class QrLoginController {
         if (Objects.isNull(qrTokenResp)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatus.SCANED.getValue())) {
+        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatusEnum.SCANED.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
 
@@ -81,7 +81,7 @@ public class QrLoginController {
         String refreshToken = tokenService.generateToken();
         tokenService.save(principal, accessToken, refreshToken);
 
-        qrTokenResp.setStatus(QrCodeStatus.CONFIRM.getValue());
+        qrTokenResp.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
         qrTokenResp.setAccessToken(accessToken);
         qrTokenResp.setRefreshToken(refreshToken);
         RedisUtil.setObj(key, qrTokenResp, 60);

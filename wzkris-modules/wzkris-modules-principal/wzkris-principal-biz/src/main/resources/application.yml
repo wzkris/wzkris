@@ -1,9 +1,0 @@
-server:
-  port: 8000
-
-spring:
-  application:
-    name: wzkris-principal
-  profiles:
-    active: @profiles.active@
-    

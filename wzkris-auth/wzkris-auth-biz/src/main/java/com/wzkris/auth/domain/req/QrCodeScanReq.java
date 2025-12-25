@@ -1,6 +1,6 @@
 package com.wzkris.auth.domain.req;
 
-import com.wzkris.auth.enums.QrCodeStatus;
+import com.wzkris.auth.enums.QrCodeStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ public class QrCodeScanReq {
 
     @Schema(description = "扫码状态")
     @NotNull(message = "{invalidParameter.param.invalid}")
-    private QrCodeStatus status;
+    private QrCodeStatusEnum status;
 
 }
 

@@ -73,19 +73,19 @@
         <!--本地rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-rmi</artifactId>
+            <artifactId>wzkris-auth-api</artifactId>
         </dependency>
 
         <!--用户rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-principal-rmi</artifactId>
+            <artifactId>wzkris-user-center-api</artifactId>
         </dependency>
 
         <!--系统rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-message-rmi</artifactId>
+            <artifactId>wzkris-system-api</artifactId>
         </dependency>
 
         <!-- 接口文档 -->

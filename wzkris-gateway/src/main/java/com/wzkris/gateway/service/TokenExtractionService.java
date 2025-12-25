@@ -81,7 +81,7 @@ public class TokenExtractionService {
             Class<T> targetType) {
         TokenReq tokenReq = new TokenReq(authType, token);
 
-        return Mono.fromCallable(() -> tokenHttpService.validatePrincipal(tokenReq))
+        return Mono.fromCallable(() -> tokenHttpService.introspect(tokenReq))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(tokenResponse -> {
                     if (tokenResponse == null || !tokenResponse.isSuccess()) {
