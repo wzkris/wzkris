@@ -1,6 +1,7 @@
 package com.wzkris.system.httpservice.notification;
 
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
+import com.wzkris.common.httpservice.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpservice.constants.ServiceIdConstant;
 import com.wzkris.system.httpservice.notification.fallback.NotificationHttpServiceFallback;
 import com.wzkris.system.httpservice.notification.req.NotificationReq;
@@ -16,6 +17,7 @@ import org.springframework.web.service.annotation.PostExchange;
  */
 @HttpServiceClient(
         serviceId = ServiceIdConstant.SYSTEM,
+        path = ServiceContextPathConstant.SYSTEM,
         fallbackFactory = NotificationHttpServiceFallback.class
 )
 @HttpExchange(url = "/feign-notification")

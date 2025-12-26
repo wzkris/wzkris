@@ -3,6 +3,7 @@ package com.wzkris.auth.httpservice.captcha;
 import com.wzkris.auth.httpservice.captcha.fallback.CaptchaHttpServiceFallback;
 import com.wzkris.auth.httpservice.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
+import com.wzkris.common.httpservice.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpservice.constants.ServiceIdConstant;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -16,6 +17,7 @@ import org.springframework.web.service.annotation.PostExchange;
  */
 @HttpServiceClient(
         serviceId = ServiceIdConstant.AUTH,
+        path = ServiceContextPathConstant.AUTH,
         fallbackFactory = CaptchaHttpServiceFallback.class
 )
 @HttpExchange(url = "/feign-captcha")

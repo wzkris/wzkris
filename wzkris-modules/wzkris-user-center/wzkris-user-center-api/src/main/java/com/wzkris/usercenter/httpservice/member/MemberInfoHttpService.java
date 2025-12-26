@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.httpservice.member;
 
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
+import com.wzkris.common.httpservice.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpservice.constants.ServiceIdConstant;
 import com.wzkris.usercenter.httpservice.admin.req.LoginInfoReq;
 import com.wzkris.usercenter.httpservice.member.fallback.MemberInfoHttpServiceFallback;
@@ -19,6 +20,7 @@ import org.springframework.web.service.annotation.PostExchange;
  */
 @HttpServiceClient(
         serviceId = ServiceIdConstant.USER_CENTER,
+        path = ServiceContextPathConstant.USER_CENTER,
         fallbackFactory = MemberInfoHttpServiceFallback.class
 )
 @HttpExchange(url = "/feign-member")

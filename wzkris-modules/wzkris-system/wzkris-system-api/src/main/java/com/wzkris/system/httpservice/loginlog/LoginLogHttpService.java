@@ -1,6 +1,7 @@
 package com.wzkris.system.httpservice.loginlog;
 
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
+import com.wzkris.common.httpservice.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpservice.constants.ServiceIdConstant;
 import com.wzkris.system.httpservice.loginlog.fallback.LoginLogHttpServiceFallback;
 import com.wzkris.system.httpservice.loginlog.req.LoginLogEvent;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @HttpServiceClient(
         serviceId = ServiceIdConstant.SYSTEM,
+        path = ServiceContextPathConstant.SYSTEM,
         fallbackFactory = LoginLogHttpServiceFallback.class
 )
 @HttpExchange(url = "/feign-login-log")

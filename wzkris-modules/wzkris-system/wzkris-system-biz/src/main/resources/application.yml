@@ -1,5 +1,7 @@
 server:
   port: 5555
+  servlet:
+    context-path: /wzkris-system-api
 
 spring:
   application:

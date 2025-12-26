@@ -1,5 +1,7 @@
 server:
   port: 8000
+  servlet:
+    context-path: /wzkris-user-center-api
 
 spring:
   application:

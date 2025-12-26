@@ -5,6 +5,7 @@ import com.wzkris.auth.httpservice.token.req.TokenReq;
 import com.wzkris.auth.httpservice.token.resp.TokenResponse;
 import com.wzkris.common.core.model.MyPrincipal;
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
+import com.wzkris.common.httpservice.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpservice.constants.ServiceIdConstant;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -18,6 +19,7 @@ import org.springframework.web.service.annotation.PostExchange;
  */
 @HttpServiceClient(
         serviceId = ServiceIdConstant.AUTH,
+        path = ServiceContextPathConstant.AUTH,
         fallbackFactory = TokenHttpServiceFallback.class
 )
 @HttpExchange(url = "/feign-token")
