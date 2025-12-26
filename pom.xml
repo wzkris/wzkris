@@ -20,7 +20,7 @@
         <spring-boot.version>3.5.0</spring-boot.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
         <spring-cloud-alibaba.version>2025.0.0.0</spring-cloud-alibaba.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.42</lombok.version>
         <netty.version>4.1.110.Final</netty.version>
         <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
