@@ -71,6 +71,7 @@ public class HttpServiceClientsRegistrar implements ImportBeanDefinitionRegistra
 
             String url = resolvePlaceholders(attributes.getString("url"));
             String serviceId = resolvePlaceholders(attributes.getString("serviceId"));
+            String path = resolvePlaceholders(attributes.getString("path"));
             Class<?> fallbackFactory = attributes.getClass("fallbackFactory");
 
             // 验证：必须提供 url 或 serviceId 中的一个
@@ -87,6 +88,7 @@ public class HttpServiceClientsRegistrar implements ImportBeanDefinitionRegistra
             builder.addPropertyValue("type", beanClass);
             builder.addPropertyValue("url", url);
             builder.addPropertyValue("serviceId", serviceId);
+            builder.addPropertyValue("path", path);
             builder.addPropertyValue("fallbackFactory", fallbackFactory);
             builder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);

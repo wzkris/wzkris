@@ -28,6 +28,8 @@ public class HttpServiceClientFactoryBean<T> implements FactoryBean<T>, Initiali
 
     private String serviceId;
 
+    private String path;
+
     private Class<? extends HttpServiceFallback<?>> fallbackFactory;
 
     private BeanFactory beanFactory;
@@ -56,10 +58,10 @@ public class HttpServiceClientFactoryBean<T> implements FactoryBean<T>, Initiali
     private String buildBaseUrl() {
         // 优先使用 url
         if (StringUtils.hasText(url)) {
-            return url;
+            return url + path;
         }
         // 否则使用 serviceId（服务发现）
-        return "http://" + serviceId;
+        return "http://" + serviceId + path;
     }
 
     private T wrapWithFallbackIfNecessary(T target) {
@@ -74,17 +76,6 @@ public class HttpServiceClientFactoryBean<T> implements FactoryBean<T>, Initiali
                 new Class[]{type},
                 handler
         );
-    }
-
-    private HttpServiceFallback<T> getFallbackFactory() {
-        if (!(beanFactory instanceof ListableBeanFactory listableBeanFactory)) {
-            throw new IllegalStateException("BeanFactory 必须是 ListableBeanFactory");
-        }
-        return (HttpServiceFallback<T>) listableBeanFactory.getBean(fallbackFactory);
-    }
-
-    public void setFallbackFactory(Class<? extends HttpServiceFallback<?>> fallbackFactory) {
-        this.fallbackFactory = fallbackFactory;
     }
 
     @Override
@@ -120,12 +111,27 @@ public class HttpServiceClientFactoryBean<T> implements FactoryBean<T>, Initiali
         this.type = type;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    private HttpServiceFallback<T> getFallbackFactory() {
+        if (!(beanFactory instanceof ListableBeanFactory listableBeanFactory)) {
+            throw new IllegalStateException("BeanFactory 必须是 ListableBeanFactory");
+        }
+        return (HttpServiceFallback<T>) listableBeanFactory.getBean(fallbackFactory);
+    }
+
+    public void setFallbackFactory(Class<? extends HttpServiceFallback<?>> fallbackFactory) {
+        this.fallbackFactory = fallbackFactory;
     }
 
     @Override

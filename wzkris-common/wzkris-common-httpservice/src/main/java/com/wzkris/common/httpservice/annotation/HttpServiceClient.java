@@ -29,6 +29,11 @@ public @interface HttpServiceClient {
     String serviceId() default "";
 
     /**
+     * 接口公共路径
+     */
+    String path() default "";
+
+    /**
      * Optional fallback factory for degraded handling.
      */
     Class<? extends HttpServiceFallback<?>> fallbackFactory()
