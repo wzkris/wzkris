@@ -127,7 +127,7 @@ public class OAuth2ClientMngController extends BaseController {
     public void export(HttpServletResponse response, OAuth2ClientMngQueryReq queryReq) {
         List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(queryReq));
         List<OAuth2ClientExport> convert = BeanUtil.convert(list, OAuth2ClientExport.class);
-        ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, response);
+        ExcelUtil.exportExcel(convert, "客户端数据", OAuth2ClientExport.class, false, response, null);
     }
 
 }

@@ -89,7 +89,7 @@ public class CustomerMngController extends BaseController {
     public void export(HttpServletResponse response, CustomerMngQueryReq queryReq) {
         List<CustomerInfoDO> list = customerInfoMapper.selectList(this.buildQueryWrapper(queryReq));
         List<CustomerInfoExport> convert = BeanUtil.convert(list, CustomerInfoExport.class);
-        ExcelUtil.exportExcel(convert, "客户数据", CustomerInfoExport.class, response);
+        ExcelUtil.exportExcel(convert, "客户数据", CustomerInfoExport.class, false, response, null);
     }
 
 }

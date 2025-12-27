@@ -221,7 +221,7 @@ public class AdminMngController extends BaseController {
     public void export(HttpServletResponse response, AdminMngQueryReq queryReq) {
         List<AdminMngVO> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
         List<AdminInfoExport> convert = BeanUtil.convert(list, AdminInfoExport.class);
-        ExcelUtil.exportExcel(convert, "后台管理员数据", AdminInfoExport.class, response);
+        ExcelUtil.exportExcel(convert, "后台管理员数据", AdminInfoExport.class, false, response, null);
     }
 
 }
