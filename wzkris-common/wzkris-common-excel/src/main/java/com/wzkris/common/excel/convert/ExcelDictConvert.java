@@ -6,8 +6,8 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
-import com.wzkris.common.excel.utils.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -39,7 +39,7 @@ public class ExcelDictConvert implements Converter<Object> {
             ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         ExcelDictFormat anno = getAnnotation(contentProperty.getField());
         String label = cellData.getStringValue();
-        return ExcelUtil.reverseByExp(label, anno.readConverterExp(), anno.separator());
+        return reverseByExp(label, anno.readConverterExp(), anno.separator());
     }
 
     // 扩展支持list字典翻译
@@ -56,12 +56,82 @@ public class ExcelDictConvert implements Converter<Object> {
             value = String.valueOf(object);
         }
         ExcelDictFormat anno = getAnnotation(contentProperty.getField());
-        String label = ExcelUtil.convertByExp(value, anno.readConverterExp(), anno.separator());
+        String label = convertByExp(value, anno.readConverterExp(), anno.separator());
         return new WriteCellData<>(label);
     }
 
     private ExcelDictFormat getAnnotation(Field field) {
         return AnnotationUtils.getAnnotation(field, ExcelDictFormat.class);
+    }
+
+    /**
+     * 解析导出值 0=男,1=女,2=未知
+     *
+     * @param propertyValue 参数值
+     * @param converterExp  翻译注解
+     * @param separator     分隔符
+     * @return 解析后值
+     */
+    private String convertByExp(String propertyValue, String converterExp, String separator) {
+        if (StringUtil.isBlank(propertyValue) || StringUtil.isBlank(converterExp)) {
+            return propertyValue;
+        }
+        StringBuilder propertyString = new StringBuilder();
+        String[] convertSource = converterExp.split(",");
+        for (String item : convertSource) {
+            String[] itemArray = item.split("=", 2);
+            if (itemArray.length != 2) {
+                continue;
+            }
+            if (StringUtil.containsAny(propertyValue, separator)) {
+                for (String value : propertyValue.split(separator)) {
+                    if (itemArray[0].equals(value)) {
+                        propertyString.append(itemArray[1]).append(separator);
+                        break;
+                    }
+                }
+            } else {
+                if (itemArray[0].equals(propertyValue)) {
+                    return itemArray[1];
+                }
+            }
+        }
+        return StringUtil.removeEnd(propertyString.toString(), separator);
+    }
+
+    /**
+     * 反向解析值 男=0,女=1,未知=2
+     *
+     * @param propertyValue 参数值
+     * @param converterExp  翻译注解
+     * @param separator     分隔符
+     * @return 解析后值
+     */
+    private String reverseByExp(String propertyValue, String converterExp, String separator) {
+        if (StringUtil.isBlank(propertyValue) || StringUtil.isBlank(converterExp)) {
+            return propertyValue;
+        }
+        StringBuilder propertyString = new StringBuilder();
+        String[] convertSource = converterExp.split(",");
+        for (String item : convertSource) {
+            String[] itemArray = item.split("=", 2);
+            if (itemArray.length != 2) {
+                continue;
+            }
+            if (StringUtil.containsAny(propertyValue, separator)) {
+                for (String value : propertyValue.split(separator)) {
+                    if (itemArray[1].equals(value)) {
+                        propertyString.append(itemArray[0]).append(separator);
+                        break;
+                    }
+                }
+            } else {
+                if (itemArray[1].equals(propertyValue)) {
+                    return itemArray[0];
+                }
+            }
+        }
+        return StringUtil.removeEnd(propertyString.toString(), separator);
     }
 
 }

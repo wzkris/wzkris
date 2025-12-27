@@ -31,12 +31,9 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
 
     private final List<CellRangeAddress> cellList;
 
-    private final boolean hasTitle;
-
     private int rowIndex;
 
     public CellMergeStrategy(List<?> list, boolean hasTitle) {
-        this.hasTitle = hasTitle;
         // 行合并开始下标
         this.rowIndex = hasTitle ? 1 : 0;
         this.cellList = handle(list, hasTitle);
@@ -72,8 +69,7 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         if (CollectionUtils.isEmpty(list)) {
             return cellList;
         }
-        Field[] fields =
-                FieldUtils.getAllFields(list.get(0).getClass());
+        Field[] fields = FieldUtils.getAllFields(list.get(0).getClass());
 
         // 有注解的字段
         List<Field> mergeFields = new ArrayList<>();
@@ -99,10 +95,10 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
                 Object val = MethodUtils.invokeMethod(list.get(i), true, field.getName());
 
                 int colNum = mergeFieldsIndex.get(j);
-                if (!map.containsKey(field)) {
+                RepeatCell repeatCell = map.get(field);
+                if (repeatCell == null) {
                     map.put(field, new RepeatCell(val, i));
                 } else {
-                    RepeatCell repeatCell = map.get(field);
                     Object cellValue = repeatCell.getValue();
                     if (cellValue == null || "".equals(cellValue)) {
                         // 空值跳过不合并
@@ -110,21 +106,18 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
                     }
 
                     if (!cellValue.equals(val)) {
-                        if ((i - repeatCell.getCurrent() > 1)) {
-                            cellList.add(new CellRangeAddress(
-                                    repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
-                        }
+                        // 值发生变化，合并之前的相同值
+                        addMergeRangeIfNeeded(cellList, repeatCell, i, colNum, rowIndex);
                         map.put(field, new RepeatCell(val, i));
                     } else if (i == list.size() - 1) {
+                        // 最后一行，如果满足合并条件则合并
                         if (i > repeatCell.getCurrent() && isMerge(list, i, field)) {
                             cellList.add(new CellRangeAddress(
                                     repeatCell.getCurrent() + rowIndex, i + rowIndex, colNum, colNum));
                         }
                     } else if (!isMerge(list, i, field)) {
-                        if ((i - repeatCell.getCurrent() > 1)) {
-                            cellList.add(new CellRangeAddress(
-                                    repeatCell.getCurrent() + rowIndex, i + rowIndex - 1, colNum, colNum));
-                        }
+                        // 不满足合并条件，合并之前的相同值
+                        addMergeRangeIfNeeded(cellList, repeatCell, i, colNum, rowIndex);
                         map.put(field, new RepeatCell(val, i));
                     }
                 }
@@ -133,22 +126,36 @@ public class CellMergeStrategy extends AbstractMergeStrategy implements Workbook
         return cellList;
     }
 
+    /**
+     * 添加合并范围（如果需要）
+     */
+    private void addMergeRangeIfNeeded(
+            List<CellRangeAddress> cellList, RepeatCell repeatCell, int currentIndex, int colNum, int rowIndex) {
+        if (currentIndex - repeatCell.getCurrent() > 1) {
+            cellList.add(new CellRangeAddress(
+                    repeatCell.getCurrent() + rowIndex, currentIndex + rowIndex - 1, colNum, colNum));
+        }
+    }
+
+    /**
+     * 判断是否可以合并
+     */
     private boolean isMerge(List<?> list, int i, Field field) throws IllegalAccessException {
-        boolean isMerge = true;
         CellMerge cm = field.getAnnotation(CellMerge.class);
         final String[] mergeBy = cm.mergeBy();
-        if (!StringUtil.isAllBlank(mergeBy)) {
-            // 比对当前list(i)和list(i - 1)的各个属性值一一比对 如果全为真 则为真
-            for (String fieldName : mergeBy) {
-                final Object valCurrent = FieldUtils.readField(list.get(i), fieldName, true);
-                final Object valPre = FieldUtils.readField(list.get(i - 1), fieldName, true);
-                if (!Objects.equals(valPre, valCurrent)) {
-                    // 依赖字段如有任一不等值,则标记为不可合并
-                    isMerge = false;
-                }
+        if (StringUtil.isAllBlank(mergeBy)) {
+            return true;
+        }
+        // 比对当前list(i)和list(i - 1)的各个属性值一一比对 如果全为真 则为真
+        for (String fieldName : mergeBy) {
+            final Object valCurrent = FieldUtils.readField(list.get(i), fieldName, true);
+            final Object valPre = FieldUtils.readField(list.get(i - 1), fieldName, true);
+            if (!Objects.equals(valPre, valCurrent)) {
+                // 依赖字段如有任一不等值,则标记为不可合并
+                return false;
             }
         }
-        return isMerge;
+        return true;
     }
 
     @Data

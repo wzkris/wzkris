@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuppressWarnings("unused")
 public class DropDownOptions {
 
     /**
