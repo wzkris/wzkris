@@ -26,7 +26,7 @@ public class AdminUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthType().equals(AuthTypeEnum.ADMIN);
+        return isAuthenticated() && getAuthType().equals(AuthTypeEnum.ADMIN.getValue());
     }
 
     /**

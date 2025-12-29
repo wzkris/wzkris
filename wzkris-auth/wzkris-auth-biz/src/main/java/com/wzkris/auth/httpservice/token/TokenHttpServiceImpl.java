@@ -4,7 +4,7 @@ import com.wzkris.auth.httpservice.token.req.TokenReq;
 import com.wzkris.auth.httpservice.token.resp.TokenResponse;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -60,8 +60,8 @@ public class TokenHttpServiceImpl implements TokenHttpService {
     }
 
     @Override
-    public TokenResponse<MyPrincipal> introspect(TokenReq tokenReq) {
-        MyPrincipal principal;
+    public TokenResponse<UserPrincipal> introspect(TokenReq tokenReq) {
+        UserPrincipal principal;
         if (StringUtil.equals(AuthTypeEnum.CLIENT.getValue(), tokenReq.getAuthType())) {
             principal = validateClient(tokenReq.getToken());
         } else {

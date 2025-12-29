@@ -24,7 +24,7 @@ public class TenantUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthType().equals(AuthTypeEnum.TENANT);
+        return isAuthenticated() && getAuthType().equals(AuthTypeEnum.TENANT.getValue());
     }
 
     /**

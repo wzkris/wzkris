@@ -9,7 +9,7 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -68,7 +68,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), "invalidParameter.captcha.error");
         }
 
-        MyPrincipal principal = templateOptional.get().loadByUsernameAndPassword(
+        UserPrincipal principal = templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
         if (principal == null) {

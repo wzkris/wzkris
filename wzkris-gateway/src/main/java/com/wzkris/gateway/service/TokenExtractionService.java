@@ -6,7 +6,7 @@ import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginClient;
@@ -43,7 +43,7 @@ public class TokenExtractionService {
      * @param request 请求对象
      * @return 用户信息
      */
-    public Mono<? extends MyPrincipal> getCurrentPrincipal(ServerHttpRequest request) {
+    public Mono<? extends UserPrincipal> getCurrentPrincipal(ServerHttpRequest request) {
         if (!hasAnyToken(request)) {
             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
         }
@@ -75,7 +75,7 @@ public class TokenExtractionService {
     /**
      * 调用认证服务验证Token
      */
-    private <T extends MyPrincipal> Mono<T> validatePrincipal(
+    private <T extends UserPrincipal> Mono<T> validatePrincipal(
             String authType,
             String token,
             Class<T> targetType) {
@@ -89,7 +89,7 @@ public class TokenExtractionService {
                         String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
                         return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
                     } else {
-                        MyPrincipal principal = tokenResponse.getPrincipal();
+                        UserPrincipal principal = tokenResponse.getPrincipal();
                         if (principal == null) {
                             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Principal not found")));
                         }

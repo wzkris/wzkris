@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,7 +16,7 @@ import java.util.Collection;
  */
 public abstract class CommonAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final MyPrincipal principal;
+    private final UserPrincipal principal;
 
     @Setter
     private String credentials;
@@ -25,7 +25,7 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
         this(authorities, null);
     }
 
-    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities, MyPrincipal principal) {
+    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities, UserPrincipal principal) {
         super(authorities);
         this.principal = principal;
         if (principal != null) {
@@ -41,7 +41,7 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
     public abstract LoginTypeEnum getLoginType();
 
     @Override
-    public final MyPrincipal getPrincipal() {
+    public final UserPrincipal getPrincipal() {
         return this.principal;
     }
 
@@ -53,7 +53,7 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
         if (principal != null) {
-            return AuthorityUtils.createAuthorityList(principal.getPermissions());
+            return AuthorityUtils.createAuthorityList(principal.getPerms());
         }
         return super.getAuthorities();
     }

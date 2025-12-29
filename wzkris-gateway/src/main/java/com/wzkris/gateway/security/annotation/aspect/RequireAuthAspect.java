@@ -2,7 +2,7 @@ package com.wzkris.gateway.security.annotation.aspect;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.filter.web.UnifiedAuthenticationFilter;
 import com.wzkris.gateway.security.annotation.RequireAuth;
@@ -66,7 +66,7 @@ public class RequireAuthAspect {
      */
     private Publisher<Object> validatePermission(ProceedingJoinPoint point, RequireAuth requireAuth) {
         return Mono.deferContextual(contextView -> {
-            MyPrincipal principal = UnifiedAuthenticationFilter.getPrincipal(contextView)
+            UserPrincipal principal = UnifiedAuthenticationFilter.getPrincipal(contextView)
                     .orElse(null);
 
             if (principal == null) {

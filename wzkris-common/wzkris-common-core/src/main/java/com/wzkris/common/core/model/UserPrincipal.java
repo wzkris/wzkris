@@ -28,24 +28,24 @@ import java.util.Set;
         @JsonSubTypes.Type(value = LoginTenant.class, name = "tenant"),
         @JsonSubTypes.Type(value = LoginAdmin.class, name = "admin")
 })
-public abstract class MyPrincipal implements Principal {
+public abstract class UserPrincipal implements Principal {
 
     private final Long id;
 
-    private final AuthTypeEnum type;
+    private final String type;
 
-    private final Set<String> permissions;
+    private final Set<String> perms;
 
     @Setter
     private String hint = StringUtil.EMPTY;
 
-    public MyPrincipal(Long id, AuthTypeEnum type, Set<String> permissions) {
+    public UserPrincipal(Long id, AuthTypeEnum authType, Set<String> perms) {
         Assert.notNull(id, "ID cannot be null");
-        Assert.notNull(type, "type cannot be null");
-        Assert.notNull(permissions, "permissions cannot be null");
+        Assert.notNull(authType, "authType cannot be null");
+        Assert.notNull(perms, "permissions cannot be null");
         this.id = id;
-        this.type = type;
-        this.permissions = permissions;
+        this.type = authType.getValue();
+        this.perms = perms;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter.route;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.loadbalancer.enums.RoutePolicyEnum;
 import com.wzkris.gateway.config.RoutePolicyProperties;
@@ -48,8 +48,8 @@ public class RouteDecisionFilter implements GlobalFilter {
      */
     private Mono<Void> handleOpenStatus(ServerWebExchange exchange, GatewayFilterChain chain) {
         return exchange.getPrincipal()
-                .map(principal -> (MyPrincipal) principal)
-                .map(MyPrincipal::getHint)
+                .map(principal -> (UserPrincipal) principal)
+                .map(UserPrincipal::getHint)
                 .map(userHint -> {
                     // 如果用户hint为空，则使用默认hint
                     return StringUtil.isNotBlank(userHint) ? userHint : routePolicyProperties.getOpenConfig().getDefaultHintValue();

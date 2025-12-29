@@ -1,7 +1,6 @@
 package com.wzkris.common.security.aspect;
 
-import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
@@ -68,7 +67,7 @@ public class CheckPermsAspect {
      * 验证权限
      */
     private void validatePermission(CheckPerms checkPerms) {
-        MyPrincipal principal = SecurityUtil.getPrincipal();
+        UserPrincipal principal = SecurityUtil.getPrincipal();
         validatePrincipalType(principal, checkPerms);
 
         String[] fullPerms = buildFullPermissions(checkPerms);
@@ -76,7 +75,7 @@ public class CheckPermsAspect {
             return;
         }
 
-        boolean hasPermission = checkPermission(principal.getPermissions(), fullPerms, checkPerms.mode());
+        boolean hasPermission = checkPermission(principal.getPerms(), fullPerms, checkPerms.mode());
         if (!hasPermission) {
             throw createAccessDeniedException(principal, fullPerms, checkPerms.mode());
         }
@@ -85,17 +84,17 @@ public class CheckPermsAspect {
     /**
      * 验证主体类型
      */
-    private void validatePrincipalType(MyPrincipal principal, CheckPerms checkPerms) {
+    private void validatePrincipalType(UserPrincipal principal, CheckPerms checkPerms) {
         if (principal == null) {
             throw new AccessDeniedException("未找到认证信息，请先登录");
         }
 
         String expectedType = checkPerms.checkType().getValue();
-        AuthTypeEnum actualType = principal.getType();
+        String actualType = principal.getType();
 
-        if (!StringUtil.equals(actualType.getValue(), expectedType)) {
+        if (!StringUtil.equals(actualType, expectedType)) {
             throw new AccessDeniedException(
-                    String.format("认证类型不匹配: 需要[%s]，实际[%s]", expectedType, actualType.getValue()));
+                    String.format("认证类型不匹配: 需要[%s]，实际[%s]", expectedType, actualType));
         }
     }
 
@@ -128,16 +127,16 @@ public class CheckPermsAspect {
     /**
      * 创建权限拒绝异常
      */
-    private AccessDeniedException createAccessDeniedException(MyPrincipal principal, String[] perms, CheckMode mode) {
+    private AccessDeniedException createAccessDeniedException(UserPrincipal principal, String[] perms, CheckMode mode) {
         String name = principal.getName();
-        AuthTypeEnum type = principal.getType();
+        String type = principal.getType();
 
         if (mode == CheckMode.AND) {
             return new AccessDeniedException(
-                    String.format("[%s][%s]缺少以下权限之一: %s", type.getValue(), name, Arrays.toString(perms)));
+                    String.format("[%s][%s]缺少以下权限之一: %s", type, name, Arrays.toString(perms)));
         } else {
             return new AccessDeniedException(
-                    String.format("[%s][%s]缺少所有权限: %s", type.getValue(), name, Arrays.toString(perms)));
+                    String.format("[%s][%s]缺少所有权限: %s", type, name, Arrays.toString(perms)));
         }
     }
 

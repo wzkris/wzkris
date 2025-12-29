@@ -1,6 +1,6 @@
 package com.wzkris.auth.listener.event;
 
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nl.basjes.parse.useragent.UserAgent;
@@ -15,7 +15,7 @@ import nl.basjes.parse.useragent.UserAgent;
 @AllArgsConstructor
 public class LoginEvent {
 
-    private MyPrincipal principal;
+    private UserPrincipal principal;
 
     private String loginType;
 

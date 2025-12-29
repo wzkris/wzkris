@@ -94,7 +94,7 @@ public class StatisticsService {
         }
 
         String date = key.getDate();
-        String authType = key.getAuthType().getValue();
+        String authType = key.getAuthType();
         String path = key.getPath();
         Long userId = key.getUserId();
 
@@ -121,7 +121,7 @@ public class StatisticsService {
      */
     public void recordPV(StatisticsKey key) {
         String date = key.getDate();
-        String authType = key.getAuthType().getValue();
+        String authType = key.getAuthType();
         String hour = key.getHour();
         // 每日PV计数
         String dayPvKey = PV_STATS_DAY + date;
@@ -138,7 +138,7 @@ public class StatisticsService {
      */
     private void recordApiCall(StatisticsKey key, boolean success) {
         String date = key.getDate();
-        String authType = key.getAuthType().getValue();
+        String authType = key.getAuthType();
         String path = key.getPath();
 
         // 按日API调用（auth 维度）

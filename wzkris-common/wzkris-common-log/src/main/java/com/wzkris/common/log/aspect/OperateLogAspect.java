@@ -87,11 +87,11 @@ public class OperateLogAspect {
 
         // 设置用户信息
         operateLogEvent.setOperatorId(SecurityUtil.getId());
-        operateLogEvent.setAuthType(SecurityUtil.getAuthType().getValue());
+        operateLogEvent.setAuthType(SecurityUtil.getAuthType());
         operateLogEvent.setOperName(SecurityUtil.getName());
 
         // 设置租户ID
-        if (Objects.equals(SecurityUtil.getAuthType(), AuthTypeEnum.TENANT)) {
+        if (Objects.equals(SecurityUtil.getAuthType(), AuthTypeEnum.TENANT.getValue())) {
             operateLogEvent.setTenantId(TenantUtil.getTenantId());
         }
 

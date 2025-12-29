@@ -3,7 +3,7 @@ package com.wzkris.auth.security.core.sms;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
 
@@ -35,7 +35,7 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
     public SmsAuthenticationToken(
             AuthTypeEnum authType,
             String phoneNumber,
-            MyPrincipal principal) {
+            UserPrincipal principal) {
         super(null, principal);
         this.authType = authType;
         this.phoneNumber = phoneNumber;

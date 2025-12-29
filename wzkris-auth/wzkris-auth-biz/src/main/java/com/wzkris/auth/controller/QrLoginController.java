@@ -4,7 +4,7 @@ import com.wzkris.auth.constants.QrCodeConstant;
 import com.wzkris.auth.domain.vo.QrTokenVO;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -76,7 +76,7 @@ public class QrLoginController {
             return Result.requestFail("二维码已被扫描");
         }
 
-        MyPrincipal principal = SecurityUtil.getPrincipal();
+        UserPrincipal principal = SecurityUtil.getPrincipal();
         String accessToken = tokenService.generateAccessToken(principal);
         String refreshToken = tokenService.generateToken();
         tokenService.save(principal, accessToken, refreshToken);

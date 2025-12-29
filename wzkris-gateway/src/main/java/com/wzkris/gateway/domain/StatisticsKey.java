@@ -1,7 +1,5 @@
 package com.wzkris.gateway.domain;
 
-import com.wzkris.common.core.enums.AuthTypeEnum;
-
 /**
  * 统计键
  */
@@ -9,7 +7,7 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 @lombok.Builder
 public class StatisticsKey {
 
-    private AuthTypeEnum authType;
+    private String authType;
 
     private Long userId;
 

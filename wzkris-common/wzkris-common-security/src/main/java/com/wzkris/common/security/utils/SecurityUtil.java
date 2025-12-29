@@ -1,8 +1,7 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +41,7 @@ public abstract class SecurityUtil {
         Authentication authentication = getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof MyPrincipal;
+                && authentication.getPrincipal() instanceof UserPrincipal;
     }
 
     /**
@@ -61,9 +60,9 @@ public abstract class SecurityUtil {
      *
      * @return 当前用户
      */
-    public static MyPrincipal getPrincipal() {
+    public static UserPrincipal getPrincipal() {
         try {
-            return (MyPrincipal) getAuthentication().getPrincipal();
+            return (UserPrincipal) getAuthentication().getPrincipal();
         } catch (Exception e) {
             throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
@@ -101,7 +100,7 @@ public abstract class SecurityUtil {
      *
      * @return 登录类型
      */
-    public static AuthTypeEnum getAuthType() {
+    public static String getAuthType() {
         return getPrincipal().getType();
     }
 
@@ -109,7 +108,7 @@ public abstract class SecurityUtil {
      * 获取权限
      */
     public static Collection<String> getAuthorities() {
-        return getPrincipal().getPermissions();
+        return getPrincipal().getPerms();
     }
 
 }

@@ -3,7 +3,7 @@ package com.wzkris.common.core.model.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,7 +20,7 @@ import java.util.Set;
 @Getter
 @ToString
 @Setter
-public class LoginAdmin extends MyPrincipal {
+public class LoginAdmin extends UserPrincipal {
 
     private boolean superadmin;
 
@@ -30,7 +30,7 @@ public class LoginAdmin extends MyPrincipal {
 
     @JsonCreator
     public LoginAdmin(@JsonProperty("id") Long id,
-                      @JsonProperty("permissions") Set<String> permissions) {
+                      @JsonProperty("perms") Set<String> permissions) {
         super(id, AuthTypeEnum.ADMIN, permissions);
     }
 

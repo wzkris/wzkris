@@ -1,6 +1,6 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import jakarta.annotation.Nullable;
 import org.springframework.util.PatternMatchUtils;
 
@@ -14,13 +14,13 @@ import java.util.Collection;
 public class PermissionUtil {
 
     public static boolean hasPerms(String... permissions) {
-        MyPrincipal principal = SecurityUtil.getPrincipal();
+        UserPrincipal principal = SecurityUtil.getPrincipal();
 
         if (principal == null) {
             return false;
         }
 
-        return hasPerms(principal.getPermissions(), permissions);
+        return hasPerms(principal.getPerms(), permissions);
     }
 
     /**
@@ -49,13 +49,13 @@ public class PermissionUtil {
     }
 
     public static boolean hasPermsOr(String... permissions) {
-        MyPrincipal principal = SecurityUtil.getPrincipal();
+        UserPrincipal principal = SecurityUtil.getPrincipal();
 
         if (principal == null) {
             return false;
         }
 
-        return hasPermsOr(principal.getPermissions(), permissions);
+        return hasPermsOr(principal.getPerms(), permissions);
     }
 
     /**

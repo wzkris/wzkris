@@ -3,7 +3,7 @@ package com.wzkris.auth.service;
 import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -67,10 +67,10 @@ public class TokenService {
     }
 
     @Nullable
-    public String generateAccessToken(MyPrincipal principal) {
-        if (StringUtil.equalsAny(principal.getType().getValue(), AuthTypeEnum.ADMIN.getValue(), AuthTypeEnum.TENANT.getValue())) {
+    public String generateAccessToken(UserPrincipal principal) {
+        if (StringUtil.equalsAny(principal.getType(), AuthTypeEnum.ADMIN.getValue(), AuthTypeEnum.TENANT.getValue())) {
             return this.generateToken();
-        } else if (StringUtil.equals(principal.getType().getValue(), AuthTypeEnum.CUSTOMER.getValue())) {
+        } else if (StringUtil.equals(principal.getType(), AuthTypeEnum.CUSTOMER.getValue())) {
             JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
             JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
                     .build();
@@ -123,16 +123,16 @@ public class TokenService {
      * 保存token及用户信息
      * 存储结构：
      * - accessToken -> refreshToken (字符串)
-     * - refreshToken -> MyPrincipal (用户信息)
+     * - refreshToken -> principal (用户信息)
      * - session:{userId} -> Map<refreshToken, OnlineSession> (在线会话)
      *
      * @param principal    用户信息
      * @param accessToken  access token
      * @param refreshToken refresh token
      */
-    public final void save(MyPrincipal principal, String accessToken, String refreshToken) {
+    public final void save(UserPrincipal principal, String accessToken, String refreshToken) {
         Serializable id = principal.getId();
-        String type = principal.getType().getValue();
+        String type = principal.getType();
         long refreshTTL = tokenProperties.getRefreshTokenTimeOut();
         long accessTTL = tokenProperties.getAccessTokenTimeOut();
 
@@ -167,19 +167,19 @@ public class TokenService {
         // Access Token -> Refresh Token (存储字符串)
         RedisUtil.setObj(buildAccessTokenKey(type, accessToken), refreshToken, accessTTL);
 
-        // Refresh Token -> MyPrincipal (直接存储用户信息)
+        // Refresh Token -> principal (直接存储用户信息)
         RedisUtil.setObj(buildRefreshTokenKey(type, refreshToken), principal, refreshTTL);
     }
 
     /**
      * 根据accessToken获取用户信息
-     * 查询路径：accessToken -> refreshToken -> MyPrincipal
+     * 查询路径：accessToken -> refreshToken -> principal
      *
      * @param accessToken access token
      * @return 用户信息，如果不存在则返回null
      */
     @Nullable
-    public final MyPrincipal loadByAccessToken(String type, String accessToken) {
+    public final UserPrincipal loadByAccessToken(String type, String accessToken) {
         // 1. 通过accessToken获取refreshToken
         String refreshToken = loadRefreshTokenByAccessToken(type, accessToken);
         if (refreshToken == null) {
@@ -192,14 +192,14 @@ public class TokenService {
 
     /**
      * 根据refreshToken获取用户信息
-     * 查询路径：refreshToken -> MyPrincipal（直接获取）
+     * 查询路径：refreshToken -> principal（直接获取）
      *
      * @param refreshToken refresh token
      * @return 用户信息，如果不存在则返回null
      */
     @Nullable
-    public final MyPrincipal loadByRefreshToken(String type, String refreshToken) {
-        return RedisUtil.getObj(buildRefreshTokenKey(type, refreshToken), MyPrincipal.class);
+    public final UserPrincipal loadByRefreshToken(String type, String refreshToken) {
+        return RedisUtil.getObj(buildRefreshTokenKey(type, refreshToken), UserPrincipal.class);
     }
 
     /**
@@ -239,7 +239,7 @@ public class TokenService {
      */
     public final Serializable logoutByRefreshToken(String type, String refreshToken) {
         // 通过refreshToken获取用户信息
-        MyPrincipal principal = loadByRefreshToken(type, refreshToken);
+        UserPrincipal principal = loadByRefreshToken(type, refreshToken);
         if (principal == null) {
             return null;
         }

@@ -1,6 +1,6 @@
 package com.wzkris.gateway.filter.route;
 
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +39,12 @@ public class ApicallStatisticsFilter implements GlobalFilter {
 
         // 先获取认证主体并缓存，然后执行过滤链，最后处理统计（*本统计为API调用量*）
         return exchange.getPrincipal()
-                .map(p -> (MyPrincipal) p)
+                .map(p -> (UserPrincipal) p)
                 .doOnNext(principal -> exchange.getAttributes().put("STAT_PRINCIPAL", principal))
                 .then(chain.filter(exchange))
                 .then(Mono.defer(() -> {
                     // 从属性中获取缓存的用户信息
-                    MyPrincipal userInfo = (MyPrincipal) exchange.getAttributes().get("STAT_PRINCIPAL");
+                    UserPrincipal userInfo = (UserPrincipal) exchange.getAttributes().get("STAT_PRINCIPAL");
                     if (userInfo != null) {
                         try {
                             // 判断请求是否成功（根据响应状态码）
@@ -61,7 +61,7 @@ public class ApicallStatisticsFilter implements GlobalFilter {
     /**
      * 记录接口调用量统计
      */
-    private void recordApiCallStatistics(String path, boolean success, MyPrincipal userInfo) {
+    private void recordApiCallStatistics(String path, boolean success, UserPrincipal userInfo) {
         // 获取时间信息
         LocalDateTime now = LocalDateTime.now();
         String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));

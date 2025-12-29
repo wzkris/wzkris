@@ -2,7 +2,7 @@ package com.wzkris.gateway.filter.web;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.gateway.config.PermitAllProperties;
 import com.wzkris.gateway.service.TokenExtractionService;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
@@ -50,7 +50,7 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
 
     private final Set<String> permitAllAnnotations;
 
-    public static Optional<MyPrincipal> getPrincipal(ContextView contextView) {
+    public static Optional<UserPrincipal> getPrincipal(ContextView contextView) {
         return contextView.getOrEmpty(GATEWAY_PRINCIPAL);
     }
 

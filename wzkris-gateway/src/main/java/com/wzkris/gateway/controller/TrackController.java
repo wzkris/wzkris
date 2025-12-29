@@ -1,6 +1,5 @@
 package com.wzkris.gateway.controller;
 
-import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.domain.req.PageViewReq;
@@ -61,7 +60,7 @@ public class TrackController {
                 });
     }
 
-    private void recordPageview(AuthTypeEnum authType, Long userId, PageViewReq request) {
+    private void recordPageview(String authType, Long userId, PageViewReq request) {
         LocalDateTime now = LocalDateTime.now();
         String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String hourStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));

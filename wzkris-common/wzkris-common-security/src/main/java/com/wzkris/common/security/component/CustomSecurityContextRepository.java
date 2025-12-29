@@ -1,7 +1,7 @@
 package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
@@ -113,9 +113,9 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
         return false;
     }
 
-    private Authentication createAuthentication(MyPrincipal principal, HttpServletRequest request, String token) {
+    private Authentication createAuthentication(UserPrincipal principal, HttpServletRequest request, String token) {
         UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(principal, token,
-                AuthorityUtils.createAuthorityList((principal).getPermissions()));
+                AuthorityUtils.createAuthorityList((principal).getPerms()));
         authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
         return authenticationToken;
     }

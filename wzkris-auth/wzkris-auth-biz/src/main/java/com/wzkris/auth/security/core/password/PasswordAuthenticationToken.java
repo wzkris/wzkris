@@ -3,7 +3,7 @@ package com.wzkris.auth.security.core.password;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import lombok.Getter;
 import org.springframework.security.core.Transient;
 
@@ -39,7 +39,7 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
     public PasswordAuthenticationToken(
             AuthTypeEnum authType,
             String username,
-            MyPrincipal principal) {
+            UserPrincipal principal) {
         super(null, principal);
         this.authType = authType;
         this.username = username;

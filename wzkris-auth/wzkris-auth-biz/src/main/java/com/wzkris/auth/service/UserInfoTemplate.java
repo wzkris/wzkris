@@ -1,23 +1,23 @@
 package com.wzkris.auth.service;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import jakarta.annotation.Nullable;
 
 public abstract class UserInfoTemplate {
 
     @Nullable
-    public MyPrincipal loadUserByPhoneNumber(String phoneNumber) {
+    public UserPrincipal loadUserByPhoneNumber(String phoneNumber) {
         return null;
     }
 
     @Nullable
-    public MyPrincipal loadByUsernameAndPassword(String username, String password) {
+    public UserPrincipal loadByUsernameAndPassword(String username, String password) {
         return null;
     }
 
     @Nullable
-    public MyPrincipal loadUserByWxXcx(String wxCode, @Nullable String phoneCode) {
+    public UserPrincipal loadUserByWxXcx(String wxCode, @Nullable String phoneCode) {
         return null;
     }
 

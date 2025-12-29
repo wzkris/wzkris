@@ -8,7 +8,7 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
@@ -46,7 +46,7 @@ public class LoginAdminService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public MyPrincipal loadUserByPhoneNumber(String phoneNumber) {
+    public UserPrincipal loadUserByPhoneNumber(String phoneNumber) {
         adminInfoResp userResp = adminInfoHttpService.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
@@ -64,7 +64,7 @@ public class LoginAdminService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public MyPrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+    public UserPrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         adminInfoResp userResp = adminInfoHttpService.getByUsername(username);
 
         if (userResp == null) {

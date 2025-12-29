@@ -24,7 +24,7 @@ public class CustomerUtil extends SecurityUtil {
      * 是否登录
      */
     public static boolean isLogin() {
-        return isAuthenticated() && getAuthType().equals(AuthTypeEnum.CUSTOMER);
+        return isAuthenticated() && getAuthType().equals(AuthTypeEnum.CUSTOMER.getValue());
     }
 
     /**
