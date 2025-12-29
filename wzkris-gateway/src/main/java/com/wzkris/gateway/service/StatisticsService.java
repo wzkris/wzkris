@@ -147,9 +147,7 @@ public class StatisticsService {
 
         // 按日路径API调用量（ZSET：member=path，score=apiCall），键包含 auth
         String dayApiPathCallZsetKey = STATS_API_PATH_CALL_DAY + date + KEY_DELIM + authType;
-        // 直接使用 RedissonClient 以获得 RScoredSortedSet
-        org.redisson.api.RedissonClient client = com.wzkris.common.core.utils.SpringUtil.getFactory().getBean(org.redisson.api.RedissonClient.class);
-        RScoredSortedSet<String> scored = client.getScoredSortedSet(dayApiPathCallZsetKey);
+        RScoredSortedSet<String> scored = RedisUtil.getZset(dayApiPathCallZsetKey);
         scored.addScore(path, 1D);
 
         // 按日成功/失败统计（键包含 auth，field 为状态）
@@ -171,10 +169,7 @@ public class StatisticsService {
         // 过期策略：Hash 键级过期
         expireMapIfNeeded(dayApiCallHashKey, Duration.ofDays(90));
         // ZSET 过期
-        long ttlZ = scored.remainTimeToLive();
-        if (ttlZ <= 0) {
-            scored.expire(Duration.ofDays(30));
-        }
+        expireZsetIfNeeded(dayApiPathCallZsetKey, Duration.ofDays(30));
         expireMapIfNeeded(dayStatusHashKey, Duration.ofDays(90));
         expireMapIfNeeded(dayPathStatusHashKey, Duration.ofDays(30));
         expireMapIfNeeded(hourApiCallHashKey, Duration.ofDays(7));
@@ -187,8 +182,8 @@ public class StatisticsService {
      */
     public long getDailyPV(String authType, String date) {
         String key = PV_STATS_DAY + date;
-        Object val = RedisUtil.getRMap(key).get(authType);
-        return toLong(val);
+        Long value = RedisUtil.getRMap(key, Long.class).get(authType);
+        return value == null ? 0L : value;
     }
 
     /**
@@ -206,8 +201,8 @@ public class StatisticsService {
      */
     public long getHourlyPV(String authType, String hour) {
         String key = PV_STATS_HOUR + hour;
-        Object val = RedisUtil.getRMap(key).get(authType);
-        return toLong(val);
+        Long value = RedisUtil.getRMap(key, Long.class).get(authType);
+        return value == null ? 0L : value;
     }
 
     /**
@@ -217,12 +212,6 @@ public class StatisticsService {
         String hourUsersSetKey = STATS_UV_USERS_HOUR + hour + KEY_DELIM + authType;
         int size = RedisUtil.scard(hourUsersSetKey);
         return Math.max(size, 0);
-    }
-
-    private long toLong(Object value) {
-        if (value == null) return 0L;
-        if (value instanceof Number) return ((Number) value).longValue();
-        return Long.parseLong(String.valueOf(value));
     }
 
     private void incrementMapField(String mapKey, String field, long delta) {
@@ -246,17 +235,28 @@ public class StatisticsService {
         }
     }
 
+    private void expireZsetIfNeeded(String key, Duration duration) {
+        RScoredSortedSet<?> zset = RedisUtil.getZset(key);
+        long ttl = zset.remainTimeToLive();
+        if (ttl <= 0) {
+            zset.expire(duration);
+        }
+    }
+
     /**
      * 获取 API 调用次数统计（日）
      */
     public ApiCallVO getDailyApiCall(String authType, String date) {
         String key = STATS_API_CALL_DAY + date;
         String statusKey = STATS_API_CALL_DAY_STATUS + date + KEY_DELIM + authType;
-        RMap<String, Object> map = RedisUtil.getRMap(key);
-        long apiCallCount = toLong(map.get(authType));
-        RMap<String, Object> statusMap = RedisUtil.getRMap(statusKey);
-        long success = toLong(statusMap.get(STATUS_SUCCESS));
-        long error = toLong(statusMap.get(STATUS_ERROR));
+        RMap<String, Long> map = RedisUtil.getRMap(key);
+        Long apiCallCountNow = map.get(authType);
+        long apiCallCount = apiCallCountNow == null ? 0L : apiCallCountNow;
+        RMap<String, Long> statusMap = RedisUtil.getRMap(statusKey);
+        Long successNow = statusMap.get(STATUS_SUCCESS);
+        long success = successNow == null ? 0L : successNow;
+        Long errorNow = statusMap.get(STATUS_ERROR);
+        long error = errorNow == null ? 0L : errorNow;
         return ApiCallVO.builder()
                 .apiCallCount(apiCallCount)
                 .successCount(success)
@@ -272,13 +272,13 @@ public class StatisticsService {
 
         RBatch batch = RedisUtil.createBatch();
         java.util.List<String> hourStrList = new java.util.ArrayList<>(24);
-        java.util.List<RFuture<Object>> pvFutures = new java.util.ArrayList<>(24);
+        java.util.List<RFuture<Long>> pvFutures = new java.util.ArrayList<>(24);
         java.util.List<RFuture<Integer>> uvFutures = new java.util.ArrayList<>(24);
         for (int h = 0; h < 24; h++) {
             String hourStr = String.format("%s-%02d", date, h);
             hourStrList.add(hourStr);
             // 每小时PV取指定field
-            org.redisson.api.RMapAsync<String, Object> hourPvMap = batch.getMap(PV_STATS_HOUR + hourStr);
+            org.redisson.api.RMapAsync<String, Long> hourPvMap = batch.getMap(PV_STATS_HOUR + hourStr);
             pvFutures.add(hourPvMap.getAsync(authType));
             // 每小时UV使用集合大小
             org.redisson.api.RSetAsync<String> hourUvSet = batch.getSet(STATS_UV_USERS_HOUR + hourStr + KEY_DELIM + authType);
@@ -287,9 +287,9 @@ public class StatisticsService {
         batch.execute();
         for (int i = 0; i < hourStrList.size(); i++) {
             String hourStr = hourStrList.get(i);
-            Object pvObj = pvFutures.get(i).getNow();
+            Long pvNow = pvFutures.get(i).getNow();
+            long pv = pvNow == null ? 0L : pvNow;
             Integer uvNow = uvFutures.get(i).getNow();
-            long pv = toLong(pvObj);
             int uvSize = uvNow == null ? 0 : uvNow;
             long uv = Math.max(uvSize, 0);
             hoursMap.put(hourStr, PageViewVO.builder().pv(pv).uv(uv).build());
@@ -313,24 +313,27 @@ public class StatisticsService {
 
         RBatch batch = RedisUtil.createBatch();
         java.util.List<String> hourStrList = new java.util.ArrayList<>(24);
-        java.util.List<RFuture<Object>> apiCntFutures = new java.util.ArrayList<>(24);
-        java.util.List<RFuture<Object>> successFutures = new java.util.ArrayList<>(24);
-        java.util.List<RFuture<Object>> errorFutures = new java.util.ArrayList<>(24);
+        java.util.List<RFuture<Long>> apiCntFutures = new java.util.ArrayList<>(24);
+        java.util.List<RFuture<Long>> successFutures = new java.util.ArrayList<>(24);
+        java.util.List<RFuture<Long>> errorFutures = new java.util.ArrayList<>(24);
         for (int h = 0; h < 24; h++) {
             String hourStr = String.format("%s-%02d", date, h);
             hourStrList.add(hourStr);
-            org.redisson.api.RMapAsync<String, Object> hourMap = batch.getMap(STATS_API_CALL_HOUR + hourStr);
+            org.redisson.api.RMapAsync<String, Long> hourMap = batch.getMap(STATS_API_CALL_HOUR + hourStr);
             apiCntFutures.add(hourMap.getAsync(authType));
-            org.redisson.api.RMapAsync<String, Object> statusMap = batch.getMap(STATS_API_CALL_HOUR_STATUS + hourStr + KEY_DELIM + authType);
+            org.redisson.api.RMapAsync<String, Long> statusMap = batch.getMap(STATS_API_CALL_HOUR_STATUS + hourStr + KEY_DELIM + authType);
             successFutures.add(statusMap.getAsync(STATUS_SUCCESS));
             errorFutures.add(statusMap.getAsync(STATUS_ERROR));
         }
         batch.execute();
         for (int i = 0; i < hourStrList.size(); i++) {
             String hourStr = hourStrList.get(i);
-            long apiCnt = toLong(apiCntFutures.get(i).getNow());
-            long success = toLong(successFutures.get(i).getNow());
-            long error = toLong(errorFutures.get(i).getNow());
+            Long apiCntNow = apiCntFutures.get(i).getNow();
+            long apiCnt = apiCntNow == null ? 0L : apiCntNow;
+            Long successNow = successFutures.get(i).getNow();
+            long success = successNow == null ? 0L : successNow;
+            Long errorNow = errorFutures.get(i).getNow();
+            long error = errorNow == null ? 0L : errorNow;
             hoursMap.put(hourStr, ApiCallVO.builder()
                     .apiCallCount(apiCnt)
                     .successCount(success)
@@ -341,36 +344,41 @@ public class StatisticsService {
 
         // 按路径（日）总计：来自 ZSET + 状态HASH
         String zsetKey = STATS_API_PATH_CALL_DAY + date + KEY_DELIM + authType;
-        RScoredSortedSet<String> scored = RedisUtil.getScoredSortedSet(zsetKey);
+        RScoredSortedSet<String> scored = RedisUtil.getZset(zsetKey);
         Collection<ScoredEntry<String>> entries = scored.entryRange(0, -1);
-        java.util.Map<String, ApiCallVO> pathTotals = new java.util.LinkedHashMap<>(entries.size());
+        java.util.Map<String, ApiCallVO> pathTotals = new java.util.LinkedHashMap<>();
 
-        // 批量获取每个路径的成功/失败计数
-        RBatch pathBatch = RedisUtil.createBatch();
-        java.util.List<String> paths = new java.util.ArrayList<>(entries.size());
-        java.util.List<RFuture<Object>> pathSuccessFutures = new java.util.ArrayList<>(entries.size());
-        java.util.List<RFuture<Object>> pathErrorFutures = new java.util.ArrayList<>(entries.size());
-        java.util.List<Long> pathApiCounts = new java.util.ArrayList<>(entries.size());
-        for (org.redisson.client.protocol.ScoredEntry<String> e : entries) {
-            String path = e.getValue();
-            paths.add(path);
-            pathApiCounts.add(e.getScore() == null ? 0L : e.getScore().longValue());
-            String statusKey = STATS_API_PATH_CALL_DAY_STATUS + date + KEY_DELIM + authType + KEY_DELIM + path;
-            org.redisson.api.RMapAsync<String, Object> statusMap = pathBatch.getMap(statusKey);
-            pathSuccessFutures.add(statusMap.getAsync(STATUS_SUCCESS));
-            pathErrorFutures.add(statusMap.getAsync(STATUS_ERROR));
-        }
-        pathBatch.execute();
-        for (int i = 0; i < paths.size(); i++) {
-            String path = paths.get(i);
-            long apiCount = pathApiCounts.get(i);
-            long success = toLong(pathSuccessFutures.get(i).getNow());
-            long error = toLong(pathErrorFutures.get(i).getNow());
-            pathTotals.put(path, ApiCallVO.builder()
-                    .apiCallCount(apiCount)
-                    .successCount(success)
-                    .errorCount(error)
-                    .build());
+        // 如果路径数量为0，直接返回空Map，避免不必要的批量操作
+        if (!entries.isEmpty()) {
+            // 批量获取每个路径的成功/失败计数
+            RBatch pathBatch = RedisUtil.createBatch();
+            java.util.List<String> paths = new java.util.ArrayList<>(entries.size());
+            java.util.List<RFuture<Long>> pathSuccessFutures = new java.util.ArrayList<>(entries.size());
+            java.util.List<RFuture<Long>> pathErrorFutures = new java.util.ArrayList<>(entries.size());
+            java.util.List<Long> pathApiCounts = new java.util.ArrayList<>(entries.size());
+            for (org.redisson.client.protocol.ScoredEntry<String> e : entries) {
+                String path = e.getValue();
+                paths.add(path);
+                pathApiCounts.add(e.getScore() == null ? 0L : e.getScore().longValue());
+                String statusKey = STATS_API_PATH_CALL_DAY_STATUS + date + KEY_DELIM + authType + KEY_DELIM + path;
+                org.redisson.api.RMapAsync<String, Long> statusMap = pathBatch.getMap(statusKey);
+                pathSuccessFutures.add(statusMap.getAsync(STATUS_SUCCESS));
+                pathErrorFutures.add(statusMap.getAsync(STATUS_ERROR));
+            }
+            pathBatch.execute();
+            for (int i = 0; i < paths.size(); i++) {
+                String path = paths.get(i);
+                long apiCount = pathApiCounts.get(i);
+                Long successNow = pathSuccessFutures.get(i).getNow();
+                long success = successNow == null ? 0L : successNow;
+                Long errorNow = pathErrorFutures.get(i).getNow();
+                long error = errorNow == null ? 0L : errorNow;
+                pathTotals.put(path, ApiCallVO.builder()
+                        .apiCallCount(apiCount)
+                        .successCount(success)
+                        .errorCount(error)
+                        .build());
+            }
         }
 
         return ApiCallDailySeriesVO.builder()

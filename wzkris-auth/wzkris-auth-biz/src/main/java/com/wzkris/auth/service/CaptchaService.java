@@ -60,7 +60,7 @@ public class CaptchaService extends CapService {
             return true;
         }
         String fullKey = VALIDATE_PREFIX + key;
-        String realcode = RedisUtil.getObj(fullKey);
+        String realcode = RedisUtil.getObj(fullKey, String.class);
         if (StringUtil.isBlank(realcode)) {
             return false;
         }

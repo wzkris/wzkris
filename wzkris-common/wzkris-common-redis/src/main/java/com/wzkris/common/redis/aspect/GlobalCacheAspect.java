@@ -42,7 +42,7 @@ public class GlobalCacheAspect {
         // 回写缓存
         if (proceedResult != null) {
             if (ttl > 0) {
-                RedisUtil.setObj(key, proceedResult, Duration.ofMillis(ttl));
+                RedisUtil.setObj(key, proceedResult, Duration.ofMillis(ttl).toSeconds());
             } else {
                 RedisUtil.setObj(key, proceedResult);
             }

@@ -1,5 +1,6 @@
 package com.wzkris.common.redis.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
 import org.redisson.codec.TypedJsonJacksonCodec;
@@ -7,7 +8,6 @@ import org.redisson.codec.TypedJsonJacksonCodec;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -25,8 +25,11 @@ public final class RedisUtil {
 
     private static RedissonClient client;
 
-    private RedisUtil(RedissonClient client) {
+    private static ObjectMapper objectMapper;
+
+    private RedisUtil(RedissonClient client, ObjectMapper objectMapper) {
         RedisUtil.client = client;
+        RedisUtil.objectMapper = objectMapper;
     }
 
     /**
@@ -34,7 +37,7 @@ public final class RedisUtil {
      */
     private static TypedJsonJacksonCodec getCodec(Class<?> clazz) {
         String key = clazz.getName();
-        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(clazz));
+        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(clazz, objectMapper));
     }
 
     /**
@@ -42,25 +45,10 @@ public final class RedisUtil {
      */
     private static TypedJsonJacksonCodec getCodec(Class<?> keyClass, Class<?> valueClass) {
         String key = keyClass.getName() + ":" + valueClass.getName();
-        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(keyClass, valueClass));
+        return CODEC_CACHE.computeIfAbsent(key, k -> new TypedJsonJacksonCodec(keyClass, valueClass, objectMapper));
     }
 
     // ==================== 基础对象操作 ====================
-
-    /**
-     * 获得缓存的基本对象。
-     *
-     * @param key 缓存键值
-     * @return 缓存键值对应的数据，如果键不存在返回null
-     */
-    public static <T> T getObj(final String key) {
-        if (key == null || key.trim().isEmpty()) {
-            return null;
-        }
-        Object o = getBucket(key).get();
-
-        return o == null ? null : (T) o;
-    }
 
     /**
      * 获得缓存的基本对象（带类型）
@@ -86,20 +74,10 @@ public final class RedisUtil {
      * @param seconds 时间，单位秒
      */
     public static <T> void setObj(final String key, final T value, final long seconds) {
-        setObj(key, value, Duration.ofSeconds(seconds));
-    }
-
-    /**
-     * 缓存基本的对象，Integer、String、实体类等
-     *
-     * @param key      缓存的键值
-     * @param value    缓存的值
-     * @param duration 时间
-     */
-    public static <T> void setObj(final String key, final T value, final Duration duration) {
         if (key == null || key.trim().isEmpty()) {
             return;
         }
+        Duration duration = Duration.ofSeconds(seconds);
         if (duration == null || duration.isNegative() || duration.isZero()) {
             return;
         }
@@ -281,17 +259,6 @@ public final class RedisUtil {
     }
 
     /**
-     * 获取所有键
-     *
-     * @return 所有键的集合
-     */
-    public static Set<String> getAllKeys() {
-        Set<String> keys = new java.util.HashSet<>();
-        client.getKeys().getKeys().forEach(keys::add);
-        return keys;
-    }
-
-    /**
      * 重命名键
      *
      * @param oldKey 旧键名
@@ -304,23 +271,6 @@ public final class RedisUtil {
     // ==================== 过期时间操作 ====================
 
     /**
-     * 设置有效时间
-     *
-     * @param key      Redis键
-     * @param duration 过期时间
-     * @return true=设置成功；false=设置失败
-     */
-    public static boolean expire(final String key, final Duration duration) {
-        if (key == null || key.trim().isEmpty()) {
-            return false;
-        }
-        if (duration == null || duration.isNegative() || duration.isZero()) {
-            return false;
-        }
-        return getBucket(key).expire(duration);
-    }
-
-    /**
      * 设置有效时间（秒）
      *
      * @param key     Redis键
@@ -328,24 +278,14 @@ public final class RedisUtil {
      * @return true=设置成功；false=设置失败
      */
     public static boolean expire(final String key, final long seconds) {
-        return expire(key, Duration.ofSeconds(seconds));
-    }
-
-    /**
-     * 值存在才设置有效时间，否则不做任何操作
-     *
-     * @param key      Redis键
-     * @param duration 过期时间
-     * @return true=设置成功；false=设置失败
-     */
-    public static boolean expireIfSet(final String key, final Duration duration) {
         if (key == null || key.trim().isEmpty()) {
             return false;
         }
+        Duration duration = Duration.ofSeconds(seconds);
         if (duration == null || duration.isNegative() || duration.isZero()) {
             return false;
         }
-        return getBucket(key).expireIfSet(duration);
+        return getBucket(key).expire(duration);
     }
 
     /**
@@ -356,7 +296,14 @@ public final class RedisUtil {
      * @return true=设置成功；false=设置失败
      */
     public static boolean expireIfSet(final String key, final long seconds) {
-        return expireIfSet(key, Duration.ofSeconds(seconds));
+        if (key == null || key.trim().isEmpty()) {
+            return false;
+        }
+        Duration duration = Duration.ofSeconds(seconds);
+        if (duration == null || duration.isNegative() || duration.isZero()) {
+            return false;
+        }
+        return getBucket(key).expireIfSet(duration);
     }
 
     // ==================== 哈希表(Map)操作 ====================
@@ -374,12 +321,12 @@ public final class RedisUtil {
     /**
      * 获得缓存Map（带类型化编解码器）
      *
-     * @param key   缓存的键值
-     * @param clazz 类型
+     * @param key           缓存的键值
+     * @param mapValueClass 类型
      * @return map对象
      */
-    public static <T> RMap<String, T> getRMap(final String key, final Class<T> clazz) {
-        return client.getMap(key, getCodec(clazz));
+    public static <T> RMap<String, T> getRMap(final String key, final Class<T> mapValueClass) {
+        return client.getMap(key, getCodec(mapValueClass));
     }
 
     /**
@@ -407,12 +354,12 @@ public final class RedisUtil {
     /**
      * 获得具有单个key过期时间的缓存Map（带类型化编解码器）
      *
-     * @param key   缓存的键值
-     * @param clazz 类型
+     * @param key           缓存的键值
+     * @param mapValueClass 类型
      * @return map对象
      */
-    public static <T> RMapCache<String, T> getRMapCache(final String key, final Class<T> clazz) {
-        return client.getMapCache(key, getCodec(clazz));
+    public static <T> RMapCache<String, T> getRMapCache(final String key, final Class<T> mapValueClass) {
+        return client.getMapCache(key, getCodec(mapValueClass));
     }
 
     /**
@@ -425,105 +372,6 @@ public final class RedisUtil {
      */
     public static <K, V> RMapCache<K, V> getRMapCache(final String key, final Class<?> mapKeyClass, final Class<?> mapValueClass) {
         return client.getMapCache(key, getCodec(mapKeyClass, mapValueClass));
-    }
-
-    // ==================== 列表(List)操作 ====================
-
-    /**
-     * 获取列表
-     *
-     * @param key 缓存的键值
-     * @return 列表对象
-     */
-    public static <T> RList<T> getRList(final String key) {
-        return client.getList(key);
-    }
-
-    /**
-     * 获取列表（带类型化编解码器）
-     *
-     * @param key   缓存的键值
-     * @param clazz 类型
-     * @return 列表对象
-     */
-    public static <T> RList<T> getRList(final String key, final Class<T> clazz) {
-        return client.getList(key, getCodec(clazz));
-    }
-
-    /**
-     * 向列表头部添加元素
-     *
-     * @param key   缓存的键值
-     * @param value 要添加的值
-     * @return 添加后列表的长度
-     */
-    public static <T> int lpush(final String key, final T value) {
-        RList<T> list = client.getList(key, getCodec(value.getClass()));
-        list.add(0, value);
-        return list.size();
-    }
-
-    /**
-     * 向列表尾部添加元素
-     *
-     * @param key   缓存的键值
-     * @param value 要添加的值
-     * @return 添加后列表的长度
-     */
-    public static <T> int rpush(final String key, final T value) {
-        RList<T> list = client.getList(key, getCodec(value.getClass()));
-        list.add(value);
-        return list.size();
-    }
-
-    /**
-     * 从列表头部弹出元素
-     *
-     * @param key 缓存的键值
-     * @return 弹出的元素
-     */
-    public static <T> T lpop(final String key) {
-        RList<T> list = client.getList(key);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.remove(0);
-    }
-
-    /**
-     * 从列表尾部弹出元素
-     *
-     * @param key 缓存的键值
-     * @return 弹出的元素
-     */
-    public static <T> T rpop(final String key) {
-        RList<T> list = client.getList(key);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.remove(list.size() - 1);
-    }
-
-    /**
-     * 获取列表长度
-     *
-     * @param key 缓存的键值
-     * @return 列表长度
-     */
-    public static int llen(final String key) {
-        return client.getList(key).size();
-    }
-
-    /**
-     * 获取列表指定范围的元素
-     *
-     * @param key   缓存的键值
-     * @param start 开始位置
-     * @param end   结束位置
-     * @return 指定范围的元素列表
-     */
-    public static <T> List<T> lrange(final String key, final int start, final int end) {
-        return (List<T>) client.getList(key).range(start, end);
     }
 
     // ==================== 集合(Set)操作 ====================
@@ -541,12 +389,12 @@ public final class RedisUtil {
     /**
      * 获取集合（带类型化编解码器）
      *
-     * @param key   缓存的键值
-     * @param clazz 类型
+     * @param key           缓存的键值
+     * @param mapValueClass 类型
      * @return 集合对象
      */
-    public static <T> RSet<T> getRSet(final String key, final Class<T> clazz) {
-        return client.getSet(key, getCodec(clazz));
+    public static <T> RSet<T> getRSet(final String key, final Class<T> mapValueClass) {
+        return client.getSet(key, getCodec(mapValueClass));
     }
 
     /**
@@ -567,7 +415,7 @@ public final class RedisUtil {
      * @param value 要移除的值
      * @return 是否移除成功
      */
-    public static <T> boolean srem(final String key, final T value) {
+    public static <T> boolean sremove(final String key, final T value) {
         return client.getSet(key, getCodec(value.getClass())).remove(value);
     }
 
@@ -592,45 +440,20 @@ public final class RedisUtil {
         return client.getSet(key).size();
     }
 
-    /**
-     * 获取集合所有成员
-     *
-     * @param key 缓存的键值
-     * @return 所有成员
-     */
-    public static <T> Set<T> smembers(final String key) {
-        return (Set<T>) client.getSet(key).readAll();
-    }
-
     // ==================== 有序集合(SortedSet)操作 ====================
 
     /**
      * 获取有序集合
      *
-     * @param key 缓存的键值
+     * @param zsetKey 缓存的键值
      * @return 有序集合对象
      */
-    public static <T> RSortedSet<T> getRSortedSet(final String key) {
-        return client.getSortedSet(key);
-    }
-
-    /**
-     * 获取有序集合（带类型化编解码器）
-     *
-     * @param key   缓存的键值
-     * @param clazz 类型
-     * @return 有序集合对象
-     */
-    public static <T> RSortedSet<T> getRSortedSet(final String key, final Class<T> clazz) {
-        return client.getSortedSet(key, getCodec(clazz));
-    }
-
-    public static <T> RScoredSortedSet<T> getScoredSortedSet(String zsetKey) {
+    public static <T> RScoredSortedSet<T> getZset(String zsetKey) {
         return client.getScoredSortedSet(zsetKey);
     }
 
-    public static <T> RScoredSortedSet<T> getScoredSortedSet(String zsetKey, final Class<T> clazz) {
-        return client.getScoredSortedSet(zsetKey, getCodec(clazz));
+    public static <T> RScoredSortedSet<T> getZset(String zsetKey, final Class<T> valueClass) {
+        return client.getScoredSortedSet(zsetKey, getCodec(valueClass));
     }
 
     /**
@@ -640,8 +463,8 @@ public final class RedisUtil {
      * @param value 要移除的值
      * @return 是否移除成功
      */
-    public static <T> boolean zrem(final String key, final T value) {
-        return client.getSortedSet(key, getCodec(value.getClass())).remove(value);
+    public static <T> boolean zremove(final String key, final T value) {
+        return client.getScoredSortedSet(key, getCodec(value.getClass())).remove(value);
     }
 
     /**
@@ -651,21 +474,10 @@ public final class RedisUtil {
      * @return 有序集合大小
      */
     public static int zcard(final String key) {
-        return client.getSortedSet(key).size();
+        return client.getScoredSortedSet(key).size();
     }
 
     // ==================== 发布订阅(Pub/Sub)操作 ====================
-
-    /**
-     * 发布消息
-     *
-     * @param channel 频道
-     * @param message 消息
-     * @return 接收到消息的客户端数量
-     */
-    public static long publish(final String channel, final Object message) {
-        return client.getTopic(channel).publish(message);
-    }
 
     /**
      * 订阅频道
@@ -673,7 +485,7 @@ public final class RedisUtil {
      * @param channel 频道
      * @return 主题对象
      */
-    public static <T> RTopic getRTopic(final String channel) {
+    public static RTopic getRTopic(final String channel) {
         return client.getTopic(channel);
     }
 
@@ -797,11 +609,11 @@ public final class RedisUtil {
     /**
      * 获取桶（带类型化编解码器）
      *
-     * @param key   缓存的键值
-     * @param clazz 类型
+     * @param key        缓存的键值
+     * @param valueClazz 类型
      */
-    public static <T> RBucket<T> getBucket(final String key, final Class<?> clazz) {
-        return client.getBucket(key, getCodec(clazz));
+    public static <T> RBucket<T> getBucket(final String key, final Class<?> valueClazz) {
+        return client.getBucket(key, getCodec(valueClazz));
     }
 
     /**

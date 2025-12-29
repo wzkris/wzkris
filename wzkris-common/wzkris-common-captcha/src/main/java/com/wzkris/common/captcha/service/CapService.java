@@ -57,7 +57,7 @@ public class CapService {
         RedisUtil.setObj(
                 capProperties.getCaptchaPrefix() + key,
                 code,
-                Duration.ofMillis(capProperties.getTokenExpiresMs()));
+                Duration.ofMillis(capProperties.getTokenExpiresMs()).toSeconds());
     }
 
 }

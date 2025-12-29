@@ -28,7 +28,7 @@ public class AuthChecker {
         }
 
         // 2. 验证用户类型
-        if (!principal.getType().equals(requireAuth.authType())) {
+        if (!principal.getType().equals(requireAuth.authType().getValue())) {
             return false;
         }
 
