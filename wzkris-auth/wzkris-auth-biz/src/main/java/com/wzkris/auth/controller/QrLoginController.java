@@ -1,7 +1,7 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.constants.QrCodeConstant;
-import com.wzkris.auth.domain.resp.QrTokenResp;
+import com.wzkris.auth.domain.vo.QrTokenVO;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.MyPrincipal;
@@ -44,7 +44,7 @@ public class QrLoginController {
         params.put("qrcodeId", qrcodeId);
         //存放二维码唯一标识30秒有效
         RedisUtil.setObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId,
-                new QrTokenResp(QrCodeStatusEnum.WAIT.getValue(), null, null), 60);
+                new QrTokenVO(QrCodeStatusEnum.WAIT.getValue(), null, null), 60);
         return Result.ok(params);
     }
 
@@ -52,15 +52,15 @@ public class QrLoginController {
     @PostMapping("/scan")
     public Result<Void> scan(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        QrTokenResp qrTokenResp = RedisUtil.getObj(key, QrTokenResp.class);
-        if (Objects.isNull(qrTokenResp)) {
+        QrTokenVO qrTokenVO = RedisUtil.getObj(key, QrTokenVO.class);
+        if (Objects.isNull(qrTokenVO)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatusEnum.WAIT.getValue())) {
+        if (!StringUtil.equals(qrTokenVO.getStatus(), QrCodeStatusEnum.WAIT.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
-        qrTokenResp.setStatus(QrCodeStatusEnum.SCANED.getValue());
-        RedisUtil.setObj(key, qrTokenResp, 60);
+        qrTokenVO.setStatus(QrCodeStatusEnum.SCANED.getValue());
+        RedisUtil.setObj(key, qrTokenVO, 60);
         return Result.ok();
     }
 
@@ -68,11 +68,11 @@ public class QrLoginController {
     @PostMapping("/confirm")
     public Result<Void> confirm(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        QrTokenResp qrTokenResp = RedisUtil.getObj(key, QrTokenResp.class);
-        if (Objects.isNull(qrTokenResp)) {
+        QrTokenVO qrTokenVO = RedisUtil.getObj(key, QrTokenVO.class);
+        if (Objects.isNull(qrTokenVO)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatusEnum.SCANED.getValue())) {
+        if (!StringUtil.equals(qrTokenVO.getStatus(), QrCodeStatusEnum.SCANED.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
 
@@ -81,24 +81,24 @@ public class QrLoginController {
         String refreshToken = tokenService.generateToken();
         tokenService.save(principal, accessToken, refreshToken);
 
-        qrTokenResp.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
-        qrTokenResp.setAccessToken(accessToken);
-        qrTokenResp.setRefreshToken(refreshToken);
-        RedisUtil.setObj(key, qrTokenResp, 60);
+        qrTokenVO.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
+        qrTokenVO.setAccessToken(accessToken);
+        qrTokenVO.setRefreshToken(refreshToken);
+        RedisUtil.setObj(key, qrTokenVO, 60);
         return Result.ok();
     }
 
     @Operation(summary = "轮询获取扫码结果")
     @GetMapping("/poll-status")
-    public Result<QrTokenResp> pollstatus(
+    public Result<QrTokenVO> pollstatus(
             @NotBlank(message = "{invalidParameter.param.invalid}")
             @RequestParam String qrcodeId
     ) {
-        QrTokenResp qrTokenResp = RedisUtil.getObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId, QrTokenResp.class);
-        if (Objects.isNull(qrTokenResp)) {
-            return Result.ok(QrTokenResp.OVERDUE());
+        QrTokenVO qrTokenVO = RedisUtil.getObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId, QrTokenVO.class);
+        if (Objects.isNull(qrTokenVO)) {
+            return Result.ok(QrTokenVO.OVERDUE());
         }
-        return Result.ok(qrTokenResp);
+        return Result.ok(qrTokenVO);
     }
 
 }

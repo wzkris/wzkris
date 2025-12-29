@@ -1,4 +1,4 @@
-package com.wzkris.auth.domain.resp;
+package com.wzkris.auth.domain.vo;
 
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QrTokenResp {
+public class QrTokenVO {
 
     @Schema(description = "状态值")
     private String status;
@@ -18,12 +18,12 @@ public class QrTokenResp {
 
     private String refreshToken;
 
-    private QrTokenResp(String status) {
+    private QrTokenVO(String status) {
         this.status = status;
     }
 
-    public static QrTokenResp OVERDUE() {
-        return new QrTokenResp(QrCodeStatusEnum.OVERDUE.getValue());
+    public static QrTokenVO OVERDUE() {
+        return new QrTokenVO(QrCodeStatusEnum.OVERDUE.getValue());
     }
 
 }

@@ -1,4 +1,4 @@
-package com.wzkris.auth.domain.resp;
+package com.wzkris.auth.domain.vo;
 
 import com.wzkris.auth.domain.OnlineSession;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class OnlineSessionResp extends OnlineSession {
+public class OnlineSessionVO extends OnlineSession {
 
     /**
      * token
@@ -23,7 +23,7 @@ public class OnlineSessionResp extends OnlineSession {
      */
     private Boolean current = false;
 
-    public OnlineSessionResp(OnlineSession onlineSession) {
+    public OnlineSessionVO(OnlineSession onlineSession) {
         setDevice(onlineSession.getDevice());
         setDeviceBrand(onlineSession.getDeviceBrand());
         setLoginIp(onlineSession.getLoginIp());
