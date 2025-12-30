@@ -6,8 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  * 用户表 数据层
  *
@@ -47,13 +45,5 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
      */
     @Select("select phone_number from biz.admin_info where user_id = #{adminId}")
     String selectPhoneNumberById(Long adminId);
-
-    /**
-     * 根据租户ID删除用户
-     *
-     * @param tenantIds 租户ID
-     * @return 结果
-     */
-    int deleteByTenantIds(List<Long> tenantIds);
 
 }
