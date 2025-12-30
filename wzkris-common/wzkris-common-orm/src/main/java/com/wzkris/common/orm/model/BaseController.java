@@ -2,10 +2,8 @@ package com.wzkris.common.orm.model;
 
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
-import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.enums.BizSqlCodeEnum;
 import com.wzkris.common.orm.utils.PageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
@@ -42,14 +40,6 @@ public abstract class BaseController {
      */
     public static final String ASC = "asc";
 
-    // 支持的日期格式
-    public static final String[] DATE_PATTERNS = {
-            "yyyy-MM-dd",
-            "yyyy-MM-dd HH:mm:ss",
-            "yyyy/MM/dd",
-            "yyyy/MM/dd HH:mm:ss"
-    };
-
     /**
      * 响应请求分页数据
      */
@@ -80,7 +70,7 @@ public abstract class BaseController {
         String orderBys = request.getParameter(ORDER_BY);
         if (StringUtil.isNotBlank(orderBys)) {
             if (SqlInjectionUtils.check(orderBys)) {
-                throw new GenericException(BizSqlCodeEnum.INJECT_SQL.value(), BizSqlCodeEnum.INJECT_SQL.desc());
+                throw new RuntimeException("存在sql注入参数");
             }
             for (String orderBy : orderBys.split(",")) {
                 OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))
