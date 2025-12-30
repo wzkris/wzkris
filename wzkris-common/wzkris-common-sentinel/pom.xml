@@ -32,6 +32,13 @@
             <artifactId>sentinel-datasource-nacos</artifactId>
         </dependency>
 
+        <!-- Notifier for alerts -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-notifier</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>
