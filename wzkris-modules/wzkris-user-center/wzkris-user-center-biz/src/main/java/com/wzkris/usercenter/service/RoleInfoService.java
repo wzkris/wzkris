@@ -52,22 +52,20 @@ public interface RoleInfoService {
     /**
      * 新增角色信息
      *
-     * @param role         角色信息
-     * @param menuIds      菜单组
-     * @param deptIds      部门组
-     * @param inheritedIds 继承角色组
+     * @param role    角色信息
+     * @param menuIds 菜单组
+     * @param deptIds 部门组
      */
-    boolean saveRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds, @Nullable List<Long> inheritedIds);
+    boolean saveRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds);
 
     /**
      * 修改角色信息
      *
-     * @param role         角色信息
-     * @param menuIds      菜单组
-     * @param deptIds      部门组
-     * @param inheritedIds 继承角色组
+     * @param role    角色信息
+     * @param menuIds 菜单组
+     * @param deptIds 部门组
      */
-    boolean modifyRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds, @Nullable List<Long> inheritedIds);
+    boolean modifyRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds);
 
     /**
      * 角色分配管理员
@@ -100,18 +98,10 @@ public interface RoleInfoService {
     boolean existAdmin(List<Long> roleIds);
 
     /**
-     * 校验是否存在继承关系
+     * 校验是否被其他角色继承
      *
      * @param roleIds 角色组
      */
-    void existInherited(List<Long> roleIds);
-
-    /**
-     * 校验角色是否可以被继承
-     *
-     * @param roleId       角色ID
-     * @param inheritedIds 被继承角色ID
-     */
-    void checkInheritedRole(@Nullable Long roleId, @Nullable List<Long> inheritedIds);
+    boolean checkIsChildren(List<Long> roleIds);
 
 }

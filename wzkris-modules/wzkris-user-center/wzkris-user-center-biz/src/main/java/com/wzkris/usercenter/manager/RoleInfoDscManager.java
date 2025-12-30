@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.manager;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
@@ -29,26 +29,22 @@ public class RoleInfoDscManager {
 
     private final RoleInfoDscMapper roleInfoDscMapper;
 
-    public List<RoleInfoDO> list(Wrapper<RoleInfoDO> queryWrapper) {
-        return roleInfoDscMapper.selectLists(queryWrapper);
-    }
-
-    public List<Long> listInheritedIdByRoleId(Long roleId) {
-        return roleInfoDscMapper.listInheritedIdByRoleId(roleId);
-    }
-
     /**
      * 查询可以被继承的角色
      *
-     * @param roleId 继承角色ID
+     * @param roleId 继承角色ID（排除该角色，避免自己继承自己）
+     * @return 可继承的角色列表
      */
-    public List<SelectVO> listInheritedSelect(Long roleId) {
-        return list(Wrappers.query(RoleInfoDO.class)
+    public List<SelectVO> listChildrenSelect(Long roleId) {
+        QueryWrapper<RoleInfoDO> queryWrapper = Wrappers.query(RoleInfoDO.class)
                 .select("role_id", "role_name")
                 .eq("status", CommonConstants.STATUS_ENABLE)
-                .eq("inherited", false)
-                .ne(Objects.nonNull(roleId), "r.role_id", roleId)
-                .orderByAsc("role_id"))
+                .orderByAsc("role_id");
+        // 排除当前角色，避免自己继承自己
+        if (Objects.nonNull(roleId)) {
+            queryWrapper.ne("r.role_id", roleId);
+        }
+        return roleInfoDscMapper.selectLists(queryWrapper)
                 .stream()
                 .map(SelectVO::new)
                 .collect(Collectors.toList());
@@ -60,11 +56,11 @@ public class RoleInfoDscManager {
      * @return 角色列表
      */
     public List<SelectVO> listSelect(String roleName) {
-        return list(Wrappers.lambdaQuery(RoleInfoDO.class)
-                .select(RoleInfoDO::getRoleId, RoleInfoDO::getRoleName)
-                .eq(RoleInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
-                .like(StringUtil.isNotBlank(roleName), RoleInfoDO::getRoleName, roleName)
-                .orderByAsc(RoleInfoDO::getRoleId))
+        return roleInfoDscMapper.selectLists(Wrappers.lambdaQuery(RoleInfoDO.class)
+                        .select(RoleInfoDO::getRoleId, RoleInfoDO::getRoleName)
+                        .eq(RoleInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                        .like(StringUtil.isNotBlank(roleName), RoleInfoDO::getRoleName, roleName)
+                        .orderByAsc(RoleInfoDO::getRoleId))
                 .stream()
                 .map(SelectVO::new)
                 .collect(Collectors.toList());

@@ -26,6 +26,7 @@ import com.wzkris.usercenter.manager.DeptInfoDscManager;
 import com.wzkris.usercenter.manager.RoleInfoDscManager;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToMenuMapper;
+import com.wzkris.usercenter.mapper.datascope.RoleInfoDscMapper;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +34,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,6 +62,8 @@ public class RoleMngController extends BaseController {
 
     private final AdminInfoDscManager adminInfoDscManager;
 
+    private final RoleInfoDscMapper roleInfoDscMapper;
+
     private final RoleInfoDscManager roleInfoDscManager;
 
     private final DeptInfoDscManager deptInfoDscManager;
@@ -71,7 +73,7 @@ public class RoleMngController extends BaseController {
     @CheckAdminPerms("user-mod:role-mng:page")
     public Result<Page<RoleInfoDO>> page(RoleMngQueryReq queryReq) {
         startPage();
-        List<RoleInfoDO> list = roleInfoDscManager.list(this.buildQueryWrapper(queryReq));
+        List<RoleInfoDO> list = roleInfoDscMapper.selectLists(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -131,8 +133,8 @@ public class RoleMngController extends BaseController {
         roleInfoDscManager.checkDataScopes(roleId);
         CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
         checkedSelectVO.setCheckedKeys(roleId == null ?
-                Collections.emptyList() : roleInfoDscManager.listInheritedIdByRoleId(roleId));
-        checkedSelectVO.setSelects(roleInfoDscManager.listInheritedSelect(roleId));
+                Collections.emptyList() : roleInfoDscMapper.listChildrenIdByRoleId(roleId));
+        checkedSelectVO.setSelects(roleInfoDscManager.listChildrenSelect(roleId));
         return ok(checkedSelectVO);
     }
 
@@ -141,16 +143,8 @@ public class RoleMngController extends BaseController {
     @PostMapping("/add")
     @CheckAdminPerms("user-mod:role-mng:add")
     public Result<Void> add(@Validated @RequestBody RoleMngReq req) {
-        if (CollectionUtils.isNotEmpty(req.getInheritedIds())) {
-            if (req.getInherited()) {
-                roleInfoService.checkInheritedRole(null, req.getInheritedIds());
-            } else {
-                return requestFail("非继承角色不允许继承");
-            }
-        }
-
         RoleInfoDO role = BeanUtil.convert(req, RoleInfoDO.class);
-        return toRes(roleInfoService.saveRole(role, req.getMenuIds(), req.getDeptIds(), req.getInheritedIds()));
+        return toRes(roleInfoService.saveRole(role, req.getMenuIds(), req.getDeptIds()));
     }
 
     @Operation(summary = "修改角色")
@@ -158,18 +152,8 @@ public class RoleMngController extends BaseController {
     @PostMapping("/edit")
     @CheckAdminPerms("user-mod:role-mng:edit")
     public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody RoleMngReq req) {
-        // 权限校验
-        roleInfoDscManager.checkDataScopes(req.getRoleId());
-        if (CollectionUtils.isNotEmpty(req.getInheritedIds())) {
-            if (req.getInherited()) {
-                roleInfoService.checkInheritedRole(req.getRoleId(), req.getInheritedIds());
-            } else {
-                return requestFail("非继承角色不允许继承");
-            }
-        }
-
         RoleInfoDO role = BeanUtil.convert(req, RoleInfoDO.class);
-        return toRes(roleInfoService.modifyRole(role, req.getMenuIds(), req.getDeptIds(), req.getInheritedIds()));
+        return toRes(roleInfoService.modifyRole(role, req.getMenuIds(), req.getDeptIds()));
     }
 
     @Operation(summary = "状态修改")
@@ -195,7 +179,9 @@ public class RoleMngController extends BaseController {
         if (roleInfoService.existAdmin(roleIds)) {
             return requestFail("当前角色已被分配用户");
         }
-        roleInfoService.existInherited(roleIds);
+        if (roleInfoService.checkIsChildren(roleIds)) {
+            return requestFail("当前角色已被其他角色继承");
+        }
         return toRes(roleInfoService.removeByIds(roleIds));
     }
 

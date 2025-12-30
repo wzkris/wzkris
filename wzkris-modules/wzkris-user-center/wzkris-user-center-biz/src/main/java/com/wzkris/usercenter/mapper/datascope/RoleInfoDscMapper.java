@@ -34,13 +34,14 @@ public interface RoleInfoDscMapper extends BaseMapperPlus<RoleInfoDO> {
     List<RoleInfoDO> selectLists(@Param(Constants.WRAPPER) Wrapper<RoleInfoDO> queryWrapper);
 
     /**
-     * 带权限查询已继承的角色ID
+     * 带权限查询角色信息（用于获取 childrenId 字段）
      */
     @Select("""
-            SELECT DISTINCT rh.inherited_id FROM biz.role_to_hierarchy rh LEFT JOIN biz.role_to_dept rd ON rh.role_id = rd.role_id
-            WHERE rh.role_id = #{roleId}
+            SELECT DISTINCT unnest(r.children_id) FROM biz.role_info r 
+            LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id
+            WHERE r.role_id = #{roleId}
             """)
-    List<Long> listInheritedIdByRoleId(Long roleId);
+    List<Long> listChildrenIdByRoleId(Long roleId);
 
     /**
      * 校验是否有该角色操作权限

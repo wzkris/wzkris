@@ -1,11 +1,13 @@
 package com.wzkris.usercenter.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.type.ArrayTypeHandler;
 
 /**
  * 角色表
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz", value = "role_info")
+@TableName(schema = "biz", value = "role_info", autoResultMap = true)
 public class RoleInfoDO extends BaseEntity {
 
     @TableId
@@ -29,8 +31,9 @@ public class RoleInfoDO extends BaseEntity {
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;
 
-    @Schema(description = "继承角色")
-    private Boolean inherited;
+    @TableField(typeHandler = ArrayTypeHandler.class)
+    @Schema(description = "子级ID")
+    private Long[] childrenId;
 
     @Schema(description = "角色排序")
     private Integer roleSort;

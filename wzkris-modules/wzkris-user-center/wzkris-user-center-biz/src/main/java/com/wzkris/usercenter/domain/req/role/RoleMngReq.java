@@ -41,10 +41,6 @@ public class RoleMngReq {
     @Schema(description = "状态（0代表正常 1代表停用）")
     private String status;
 
-    @NotNull(message = "继承关系" + "{validate.notnull}")
-    @Schema(description = "继承关系")
-    private Boolean inherited;
-
     @NotNull(message = "{invalidParameter.sort.invalid}")
     @Range(message = "{invalidParameter.sort.invalid}")
     @Schema(description = "角色排序")
@@ -56,7 +52,7 @@ public class RoleMngReq {
     @Schema(description = "部门组")
     private List<Long> deptIds;
 
-    @Schema(description = "继承角色组")
-    private List<Long> inheritedIds;
+    @Schema(description = "子级ID")
+    private Long[] childrenId;
 
 }
