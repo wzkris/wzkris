@@ -145,7 +145,7 @@ public class RoleMngController extends BaseController {
             if (req.getInherited()) {
                 roleInfoService.checkInheritedRole(null, req.getInheritedIds());
             } else {
-                return err40000("非继承角色不允许继承");
+                return requestFail("非继承角色不允许继承");
             }
         }
 
@@ -164,7 +164,7 @@ public class RoleMngController extends BaseController {
             if (req.getInherited()) {
                 roleInfoService.checkInheritedRole(req.getRoleId(), req.getInheritedIds());
             } else {
-                return err40000("非继承角色不允许继承");
+                return requestFail("非继承角色不允许继承");
             }
         }
 
@@ -192,7 +192,9 @@ public class RoleMngController extends BaseController {
             @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> roleIds) {
         // 权限校验
         roleInfoDscManager.checkDataScopes(roleIds);
-        roleInfoService.existAdmin(roleIds);
+        if (roleInfoService.existAdmin(roleIds)) {
+            return requestFail("当前角色已被分配用户");
+        }
         roleInfoService.existInherited(roleIds);
         return toRes(roleInfoService.removeByIds(roleIds));
     }

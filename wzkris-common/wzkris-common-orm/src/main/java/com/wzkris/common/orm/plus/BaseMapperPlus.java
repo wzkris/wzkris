@@ -2,7 +2,6 @@ package com.wzkris.common.orm.plus;
 
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wzkris.common.core.exception.service.GenericException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
@@ -101,7 +100,7 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
                  | IllegalAccessException
                  | InvocationTargetException
                  | NoSuchMethodException e) {
-            throw new GenericException(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
         return c;
     }

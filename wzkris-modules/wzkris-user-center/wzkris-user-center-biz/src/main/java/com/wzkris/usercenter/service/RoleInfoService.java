@@ -97,7 +97,7 @@ public interface RoleInfoService {
      *
      * @param roleIds 角色组
      */
-    void existAdmin(List<Long> roleIds);
+    boolean existAdmin(List<Long> roleIds);
 
     /**
      * 校验是否存在继承关系

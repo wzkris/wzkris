@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.usercenter.domain.PostInfoDO;
@@ -129,12 +128,10 @@ public class PostInfoServiceImpl implements PostInfoService {
     }
 
     @Override
-    public void existMember(List<Long> postIds) {
+    public boolean existMember(List<Long> postIds) {
         postIds = postIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (memberToPostMapper.existByPostIds(postIds)) {
-            throw new GenericException("当前职位已被分配");
-        }
+        return memberToPostMapper.existByPostIds(postIds);
     }
 
 }

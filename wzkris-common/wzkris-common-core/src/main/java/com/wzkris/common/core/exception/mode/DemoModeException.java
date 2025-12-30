@@ -14,4 +14,9 @@ public final class DemoModeException extends BaseException {
         super("演示异常", 403, BizBaseCodeEnum.ACCESS_DENIED.value(), null, null, "演示模式，不允许操作");
     }
 
+    @Override
+    public Throwable fillInStackTrace() {
+        return this;
+    }
+
 }

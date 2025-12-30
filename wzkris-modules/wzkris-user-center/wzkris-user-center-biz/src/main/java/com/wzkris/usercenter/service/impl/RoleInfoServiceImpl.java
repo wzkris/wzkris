@@ -229,12 +229,10 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     @Override
-    public void existAdmin(List<Long> roleIds) {
+    public boolean existAdmin(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
         // 是否被用户使用
-        if (adminToRoleMapper.existByRoleIds(roleIds)) {
-            throw new GenericException("当前角色已被分配用户");
-        }
+        return adminToRoleMapper.existByRoleIds(roleIds);
     }
 
     @Override

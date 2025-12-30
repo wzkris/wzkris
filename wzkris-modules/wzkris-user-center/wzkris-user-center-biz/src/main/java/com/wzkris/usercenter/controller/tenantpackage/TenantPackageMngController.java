@@ -119,7 +119,7 @@ public class TenantPackageMngController extends BaseController {
     public Result<Void> remove(
             @NotEmpty(message = "{invalidParameter.id.invalid}") @RequestBody List<Long> packageIds) {
         if (tenantPackageInfoService.checkPackageUsed(packageIds)) {
-            return err40000("删除失败, 套餐正在使用");
+            return requestFail("删除失败, 套餐正在使用");
         }
         return toRes(tenantPackageInfoMapper.deleteByIds(packageIds));
     }

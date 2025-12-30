@@ -109,7 +109,7 @@ public class TenantMngController extends BaseController {
     @CheckAdminPerms("user-mod:tenant-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody TenantMngReq tenantReq) {
         if (adminInfoService.existByUsername(null, tenantReq.getUsername())) {
-            return err40000("登录账号'" + tenantReq.getUsername() + "'已存在");
+            return requestFail("登录账号'" + tenantReq.getUsername() + "'已存在");
         }
         TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
 
@@ -157,7 +157,7 @@ public class TenantMngController extends BaseController {
     @CheckAdminPerms("user-mod:tenant-mng:reset-operpwd")
     public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
         if (StringUtil.length(req.getPassword()) != 6 || !NumberUtils.isCreatable(req.getPassword())) {
-            return err40000("操作密码必须为6位数字");
+            return requestFail("操作密码必须为6位数字");
         }
         TenantInfoDO update = new TenantInfoDO(req.getId());
         update.setOperPwd(passwordEncoder.encode(req.getPassword()));

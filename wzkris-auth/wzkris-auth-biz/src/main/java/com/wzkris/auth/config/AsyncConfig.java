@@ -1,6 +1,5 @@
 package com.wzkris.auth.config;
 
-import com.wzkris.common.core.exception.service.GenericException;
 import com.wzkris.common.core.threads.TracingIdRunnable;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.ArrayUtils;
@@ -41,7 +40,7 @@ public class AsyncConfig implements AsyncConfigurer {
             if (ArrayUtils.isNotEmpty(objects)) {
                 sb.append(", Parameter value - ").append(Arrays.toString(objects));
             }
-            throw new GenericException(sb.toString());
+            throw new RuntimeException(sb.toString());
         };
     }
 

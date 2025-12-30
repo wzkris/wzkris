@@ -13,7 +13,12 @@ import lombok.Getter;
 public final class TokenExpiredException extends BaseException {
 
     public TokenExpiredException(int biz, String code, Object... args) {
-        super("token异常", 401, biz, code, args, null);
+        super("token过期异常", 401, biz, code, args, null);
+    }
+
+    @Override
+    public Throwable fillInStackTrace() {
+        return this;
     }
 
 }

@@ -85,7 +85,7 @@ public class DeptMngController extends BaseController {
             DeptInfoDO info = deptInfoMapper.selectById(req.getParentId());
             // 如果父节点为停用状态,则不允许新增子节点
             if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
-                return err40000("无法在被禁用的部门下添加下级");
+                return requestFail("无法在被禁用的部门下添加下级");
             }
         }
         return toRes(deptInfoService.saveDept(BeanUtil.convert(req, DeptInfoDO.class)));
@@ -99,10 +99,10 @@ public class DeptMngController extends BaseController {
         // 校验权限
         deptInfoDscManager.checkDataScopes(req.getDeptId());
         if (Objects.equals(req.getParentId(), req.getDeptId())) {
-            return err40000("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
+            return requestFail("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
         } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, req.getStatus())
                 && deptInfoMapper.existNormalSubDept(req.getDeptId())) {
-            return err40000("该部门包含未停用的子部门");
+            return requestFail("该部门包含未停用的子部门");
         }
         return toRes(deptInfoService.modifyDept(BeanUtil.convert(req, DeptInfoDO.class)));
     }
@@ -114,10 +114,10 @@ public class DeptMngController extends BaseController {
     public Result<?> remove(@RequestBody Long deptId) {
         deptInfoDscManager.checkDataScopes(deptId);
         if (deptInfoMapper.existSubDept(deptId)) {
-            return err40000("存在下级部门,不允许删除");
+            return requestFail("存在下级部门,不允许删除");
         }
         if (deptInfoMapper.existAdmin(deptId)) {
-            return err40000("部门存在用户,不允许删除");
+            return requestFail("部门存在用户,不允许删除");
         }
         return toRes(deptInfoService.removeById(deptId));
     }

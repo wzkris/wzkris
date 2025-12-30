@@ -77,11 +77,11 @@ public class TenantInfoController extends BaseController {
         String operPwd = tenantInfoMapper.selectOperPwdById(tenantId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), operPwd)) {
-            return err40000("修改密码失败，旧密码错误");
+            return requestFail("修改密码失败，旧密码错误");
         }
 
         if (passwordEncoder.matches(req.getNewPassword(), operPwd)) {
-            return err40000("新密码不能与旧密码相同");
+            return requestFail("新密码不能与旧密码相同");
         }
 
         TenantInfoDO update = new TenantInfoDO(tenantId);

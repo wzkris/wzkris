@@ -1,6 +1,6 @@
 package com.wzkris.common.excel.core;
 
-import com.wzkris.common.core.exception.service.GenericException;
+import com.alibaba.excel.exception.ExcelCommonException;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -71,7 +71,7 @@ public class DropDownOptions {
         for (int i = 0; i < vars.length; i++) {
             String var = StringUtil.trimToEmpty(String.valueOf(vars[i]));
             if (!var.matches(regex)) {
-                throw new GenericException("选项数据不符合规则，仅允许使用中英文字符以及数字");
+                throw new ExcelCommonException("选项数据不符合规则，仅允许使用中英文字符以及数字");
             }
             stringBuffer.append(var);
             if (i < vars.length - 1) {
@@ -80,7 +80,7 @@ public class DropDownOptions {
             }
         }
         if (stringBuffer.toString().matches("^\\d_*$")) {
-            throw new GenericException("禁止以数字开头");
+            throw new ExcelCommonException("禁止以数字开头");
         }
         return stringBuffer.toString();
     }

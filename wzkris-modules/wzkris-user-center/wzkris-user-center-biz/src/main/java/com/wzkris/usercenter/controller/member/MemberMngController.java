@@ -102,12 +102,12 @@ public class MemberMngController extends BaseController {
     @CheckTenantPerms("user-mod:member-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody MemberMngReq memberReq) {
         if (!tenantInfoService.checkAccountLimit(TenantUtil.getTenantId())) {
-            return err40000("账号数量已达上限，请联系管理员");
+            return requestFail("账号数量已达上限，请联系管理员");
         } else if (memberInfoService.existByUsername(memberReq.getMemberId(), memberReq.getUsername())) {
-            return err40000("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
+            return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(memberReq.getPhoneNumber())
                 && memberInfoService.existByPhoneNumber(memberReq.getMemberId(), memberReq.getPhoneNumber())) {
-            return err40000("添加成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
+            return requestFail("添加成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
         MemberInfoDO member = BeanUtil.convert(memberReq, MemberInfoDO.class);
         String password = RandomStringUtils.secure().nextAlphabetic(8);
@@ -128,10 +128,10 @@ public class MemberMngController extends BaseController {
     public Result<Void> edit(@Validated @RequestBody MemberMngReq memberReq) {
         tenantInfoService.checkAdministrator(memberReq.getMemberId());
         if (memberInfoService.existByUsername(memberReq.getMemberId(), memberReq.getUsername())) {
-            return err40000("修改成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
+            return requestFail("修改成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(memberReq.getPhoneNumber())
                 && memberInfoService.existByPhoneNumber(memberReq.getMemberId(), memberReq.getPhoneNumber())) {
-            return err40000("修改成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
+            return requestFail("修改成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
         MemberInfoDO member = BeanUtil.convert(memberReq, MemberInfoDO.class);
 

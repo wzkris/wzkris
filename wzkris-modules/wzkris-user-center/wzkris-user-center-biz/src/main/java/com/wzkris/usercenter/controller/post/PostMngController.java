@@ -120,9 +120,11 @@ public class PostMngController extends BaseController {
     @OperateLog(title = "职位管理", subTitle = "删除职位", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckTenantPerms("user-mod:post-mng:remove")
-    public Result<Void> remove(
-            @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> postIds) {
-        postInfoService.existMember(postIds);
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}")
+                               List<Long> postIds) {
+        if (postInfoService.existMember(postIds)) {
+            return requestFail("当前职位已被分配");
+        }
         return toRes(postInfoService.removeByIds(postIds));
     }
 

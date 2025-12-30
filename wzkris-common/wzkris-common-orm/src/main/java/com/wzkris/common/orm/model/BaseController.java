@@ -109,7 +109,7 @@ public abstract class BaseController {
     /**
      * 返回失败消息
      */
-    public <T> Result<T> err40000(String errMsg) {
+    public <T> Result<T> requestFail(String errMsg) {
         return Result.requestFail(errMsg);
     }
 
@@ -130,7 +130,7 @@ public abstract class BaseController {
      * @return 操作结果
      */
     protected <T> Result<T> toRes(boolean result) {
-        return result ? ok() : err40000("操作失败");
+        return result ? ok() : requestFail("操作失败");
     }
 
 }

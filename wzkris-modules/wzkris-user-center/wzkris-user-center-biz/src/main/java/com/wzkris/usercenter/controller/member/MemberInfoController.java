@@ -77,12 +77,12 @@ public class MemberInfoController extends BaseController {
         Long memberId = TenantUtil.getId();
 
         if (memberInfoService.existByPhoneNumber(memberId, req.getPhoneNumber())) {
-            return err40000("该手机号已被使用");
+            return requestFail("该手机号已被使用");
         }
         // 验证
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(memberInfoMapper.selectPhoneNumberById(memberId), req.getSmsCode());
         if (!captchaHttpService.validateCaptcha(captchaCheckReq)) {
-            return err40000("验证码错误");
+            return requestFail("验证码错误");
         }
 
         MemberInfoDO member = new MemberInfoDO(memberId);
@@ -99,11 +99,11 @@ public class MemberInfoController extends BaseController {
         String password = memberInfoMapper.selectPwdById(memberId);
 
         if (!passwordEncoder.matches(req.getOldPassword(), password)) {
-            return err40000("修改密码失败，旧密码错误");
+            return requestFail("修改密码失败，旧密码错误");
         }
 
         if (passwordEncoder.matches(req.getNewPassword(), password)) {
-            return err40000("新密码不能与旧密码相同");
+            return requestFail("新密码不能与旧密码相同");
         }
 
         MemberInfoDO update = new MemberInfoDO(memberId);

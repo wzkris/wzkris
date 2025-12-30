@@ -65,7 +65,7 @@ public class DictionaryMngController extends BaseController {
     @CheckAdminPerms("system-mod:dictionary-mng:add")
     public Result<Void> add(@RequestBody DictionaryMngReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
-            return err40000("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
+            return requestFail("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictionaryInfoService.insertDict(BeanUtil.convert(req, DictionaryInfoDO.class)));
     }
@@ -76,7 +76,7 @@ public class DictionaryMngController extends BaseController {
     @CheckAdminPerms("system-mod:dictionary-mng:edit")
     public Result<Void> edit(@RequestBody DictionaryMngReq req) {
         if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
-            return err40000("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
+            return requestFail("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictionaryInfoService.updateDict(BeanUtil.convert(req, DictionaryInfoDO.class)));
     }

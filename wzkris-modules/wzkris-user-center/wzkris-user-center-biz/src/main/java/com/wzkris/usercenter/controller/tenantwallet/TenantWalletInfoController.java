@@ -84,7 +84,7 @@ public class TenantWalletInfoController extends BaseController {
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
         TenantInfoDO sysTenant = tenantInfoMapper.selectById(TenantUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
-            return err40000("密码错误");
+            return requestFail("密码错误");
         }
         // TODO 实际提现
         return ok();

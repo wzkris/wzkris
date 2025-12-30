@@ -75,7 +75,7 @@ public class MenuMngController extends BaseController {
     public Result<Void> add(@Validated @RequestBody MenuManageReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
                 && !StringUtil.ishttp(req.getPath())) {
-            return err40000("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
+            return requestFail("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         return toRes(menuInfoMapper.insert(BeanUtil.convert(req, MenuInfoDO.class)));
     }
@@ -87,9 +87,9 @@ public class MenuMngController extends BaseController {
     public Result<Void> edit(@Validated @RequestBody MenuManageReq req) {
         if (StringUtil.equalsAny(req.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
                 && !StringUtil.ishttp(req.getPath())) {
-            return err40000("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
+            return requestFail("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
         } else if (req.getMenuId().equals(req.getParentId())) {
-            return err40000("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
+            return requestFail("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
         }
         return toRes(menuInfoMapper.updateById(BeanUtil.convert(req, MenuInfoDO.class)));
     }
@@ -100,7 +100,7 @@ public class MenuMngController extends BaseController {
     @CheckAdminPerms("user-mod:menu-mng:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
         if (menuInfoService.existSubMenu(menuId)) {
-            return err40000("存在子菜单,不允许删除");
+            return requestFail("存在子菜单,不允许删除");
         }
         return toRes(menuInfoService.removeById(menuId));
     }

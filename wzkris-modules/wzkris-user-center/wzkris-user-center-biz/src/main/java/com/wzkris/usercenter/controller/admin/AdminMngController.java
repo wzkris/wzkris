@@ -132,10 +132,10 @@ public class AdminMngController extends BaseController {
     @CheckAdminPerms("user-mod:admin-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody AdminMngReq req) {
         if (adminInfoService.existByUsername(req.getAdminId(), req.getUsername())) {
-            return err40000("添加管理员'" + req.getUsername() + "'失败，登录账号已存在");
+            return requestFail("添加管理员'" + req.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(req.getPhoneNumber())
                 && adminInfoService.existByPhoneNumber(req.getAdminId(), req.getPhoneNumber())) {
-            return err40000("添加管理员'" + req.getUsername() + "'失败，手机号码已存在");
+            return requestFail("添加管理员'" + req.getUsername() + "'失败，手机号码已存在");
         }
         AdminInfoDO admin = BeanUtil.convert(req, AdminInfoDO.class);
         String password = RandomStringUtils.secure().nextAlphabetic(8);
@@ -157,10 +157,10 @@ public class AdminMngController extends BaseController {
         // 校验权限
         adminInfoDscManager.checkDataScopes(req.getAdminId());
         if (adminInfoService.existByUsername(req.getAdminId(), req.getUsername())) {
-            return err40000("修改管理员'" + req.getUsername() + "'失败，登录账号已存在");
+            return requestFail("修改管理员'" + req.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(req.getPhoneNumber())
                 && adminInfoService.existByPhoneNumber(req.getAdminId(), req.getPhoneNumber())) {
-            return err40000("修改管理员'" + req.getUsername() + "'失败，手机号码已存在");
+            return requestFail("修改管理员'" + req.getUsername() + "'失败，手机号码已存在");
         }
         AdminInfoDO admin = BeanUtil.convert(req, AdminInfoDO.class);
 

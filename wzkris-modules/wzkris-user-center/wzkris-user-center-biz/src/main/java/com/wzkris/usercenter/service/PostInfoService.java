@@ -55,6 +55,6 @@ public interface PostInfoService {
 
     boolean removeByIds(List<Long> postIds);
 
-    void existMember(List<Long> postIds);
+    boolean existMember(List<Long> postIds);
 
 }

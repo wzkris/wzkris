@@ -74,7 +74,7 @@ public class ConfigMngController extends BaseController {
     @CheckAdminPerms("system-mod:config-mng:add")
     public Result<Void> add(@RequestBody ConfigMngReq req) {
         if (configInfoService.checkUsedByConfigKey(null, req.getConfigKey())) {
-            return err40000("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
+            return requestFail("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
         return toRes(configInfoService.insertConfig(BeanUtil.convert(req, ConfigInfoDO.class)));
     }
@@ -85,7 +85,7 @@ public class ConfigMngController extends BaseController {
     @CheckAdminPerms("system-mod:config-mng:edit")
     public Result<Void> edit(@RequestBody ConfigMngReq req) {
         if (configInfoService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
-            return err40000("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
+            return requestFail("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
         return toRes(configInfoService.updateConfig(BeanUtil.convert(req, ConfigInfoDO.class)));
     }
@@ -97,7 +97,7 @@ public class ConfigMngController extends BaseController {
     public Result<Void> remove(@RequestBody Long configId) {
         ConfigInfoDO config = configInfoMapper.selectById(configId);
         if (config.getBuiltIn()) {
-            return err40000(String.format("内置参数'%s'不能删除", config.getConfigKey()));
+            return requestFail(String.format("内置参数'%s'不能删除", config.getConfigKey()));
         }
         return toRes(configInfoService.deleteById(configId));
     }
