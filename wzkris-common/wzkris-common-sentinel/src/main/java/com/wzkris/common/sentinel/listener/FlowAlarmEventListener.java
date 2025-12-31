@@ -8,12 +8,10 @@ import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import com.wzkris.common.notifier.manager.NotifierManager;
 import com.wzkris.common.sentinel.event.FlowAlarmEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,16 +23,18 @@ import java.util.List;
  * @date 2025/12/30
  */
 @Slf4j
-@Component
 public class FlowAlarmEventListener implements EnvironmentAware {
 
-    @Autowired(required = false)
-    private NotifierManager notifierManager;
+    private final NotifierManager notifierManager;
 
     private Environment environment;
 
     @Value("${sentinel.alarm.dingtalk-recipients:}")
     private List<String> dingtalkRecipients;
+
+    public FlowAlarmEventListener(NotifierManager notifierManager) {
+        this.notifierManager = notifierManager;
+    }
 
     @Override
     public void setEnvironment(Environment environment) {
