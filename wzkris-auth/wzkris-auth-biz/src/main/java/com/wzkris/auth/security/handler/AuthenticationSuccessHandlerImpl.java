@@ -39,6 +39,7 @@ import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessToke
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2TokenIntrospectionAuthenticationToken;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2TokenRevocationAuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.util.CollectionUtils;
 
@@ -87,6 +88,10 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 
             this.sendIntrospectionTokenResponse(response, introspectionAuthenticationToken);
 
+        } else if (authentication instanceof OAuth2TokenRevocationAuthenticationToken revocationAuthenticationToken) {
+            jsonMessageConverter.write(
+                    Result.ok(), STRING_OBJECT_MAP.getType(),
+                    MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
         } else {
             log.warn("use default response info, current authentication type :{}",
                     authentication.getClass().getName());

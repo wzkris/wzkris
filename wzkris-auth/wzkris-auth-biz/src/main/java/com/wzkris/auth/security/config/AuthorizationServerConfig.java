@@ -32,6 +32,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.List;
@@ -50,6 +51,9 @@ public class AuthorizationServerConfig {
 
     private final AuthenticationFailureHandler jsonFailureHandler =
             new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
+
+    private final AuthenticationSuccessHandler authenticationSuccessHandler =
+            new AuthenticationSuccessHandlerImpl();
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -77,15 +81,15 @@ public class AuthorizationServerConfig {
                 )
                 .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
                         .tokenEndpoint(tokenEndpoint -> tokenEndpoint
-                                .accessTokenResponseHandler(new AuthenticationSuccessHandlerImpl()) // 登录成功处理器
+                                .accessTokenResponseHandler(authenticationSuccessHandler) // 登录成功处理器
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .tokenIntrospectionEndpoint(tokenIntrospectionEndpoint -> tokenIntrospectionEndpoint
-                                .introspectionResponseHandler(new AuthenticationSuccessHandlerImpl()) // token验证端点
+                                .introspectionResponseHandler(authenticationSuccessHandler) // token验证端点
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .tokenRevocationEndpoint(tokenRevocationEndpoint -> tokenRevocationEndpoint
-                                .revocationResponseHandler(new AuthenticationSuccessHandlerImpl()) // token撤销端点
+                                .revocationResponseHandler(authenticationSuccessHandler) // token撤销端点
                                 .errorResponseHandler(jsonFailureHandler)
                         )
                         .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -> deviceAuthorizationEndpoint
