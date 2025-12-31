@@ -3,7 +3,7 @@ package com.wzkris.gateway.filter.web;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
 import com.wzkris.common.core.model.UserPrincipal;
-import com.wzkris.gateway.config.PermitAllProperties;
+import com.wzkris.gateway.properties.PermitAllProperties;
 import com.wzkris.gateway.service.TokenExtractionService;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
 import com.wzkris.gateway.utils.WebFluxUtil;

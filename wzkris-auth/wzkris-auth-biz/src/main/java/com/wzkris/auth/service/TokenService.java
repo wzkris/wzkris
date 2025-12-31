@@ -1,7 +1,7 @@
 package com.wzkris.auth.service;
 
-import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.domain.OnlineSession;
+import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.ServletUtil;

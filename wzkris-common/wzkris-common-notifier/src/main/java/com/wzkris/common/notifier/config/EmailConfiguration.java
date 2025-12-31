@@ -1,6 +1,6 @@
-package com.wzkris.common.notifier.config.email;
+package com.wzkris.common.notifier.config;
 
-import com.wzkris.common.notifier.impl.EmailNotifier;
+import com.wzkris.common.notifier.core.impl.EmailNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;

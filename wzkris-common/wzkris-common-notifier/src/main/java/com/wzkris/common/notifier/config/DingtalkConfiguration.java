@@ -1,8 +1,8 @@
-package com.wzkris.common.notifier.config.dingtalk;
+package com.wzkris.common.notifier.config;
 
-import com.wzkris.common.notifier.config.dingtalk.client.DingtalkApiClient;
-import com.wzkris.common.notifier.config.dingtalk.properties.DingtalkProperties;
-import com.wzkris.common.notifier.impl.DingtalkNotifier;
+import com.wzkris.common.notifier.core.impl.DingtalkNotifier;
+import com.wzkris.common.notifier.dingtalk.client.DingtalkApiClient;
+import com.wzkris.common.notifier.properties.DingtalkProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

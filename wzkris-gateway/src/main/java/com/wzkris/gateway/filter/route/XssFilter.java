@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter.route;
 
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.gateway.config.XssProperties;
+import com.wzkris.gateway.properties.XssProperties;
 import io.netty.buffer.ByteBufAllocator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

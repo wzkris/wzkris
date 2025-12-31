@@ -1,4 +1,4 @@
-package com.wzkris.gateway.config;
+package com.wzkris.gateway.properties;
 
 import com.wzkris.common.loadbalancer.enums.RoutePolicyEnum;
 import lombok.Data;

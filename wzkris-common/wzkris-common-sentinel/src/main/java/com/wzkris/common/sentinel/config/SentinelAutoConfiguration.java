@@ -1,6 +1,6 @@
 package com.wzkris.common.sentinel.config;
 
-import com.wzkris.common.notifier.manager.NotifierManager;
+import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.sentinel.handler.SentinelExceptionHandler;
 import com.wzkris.common.sentinel.listener.FlowAlarmEventListener;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

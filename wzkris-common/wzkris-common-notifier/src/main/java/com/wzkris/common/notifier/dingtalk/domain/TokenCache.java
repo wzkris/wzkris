@@ -1,4 +1,4 @@
-package com.wzkris.common.notifier.config.dingtalk.domain;
+package com.wzkris.common.notifier.dingtalk.domain;
 
 /**
  * Token缓存内部类

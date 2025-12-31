@@ -4,7 +4,7 @@ import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.loadbalancer.enums.RoutePolicyEnum;
-import com.wzkris.gateway.config.RoutePolicyProperties;
+import com.wzkris.gateway.properties.RoutePolicyProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;

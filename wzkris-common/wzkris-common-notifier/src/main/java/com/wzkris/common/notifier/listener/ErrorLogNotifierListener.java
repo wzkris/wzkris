@@ -1,7 +1,7 @@
 package com.wzkris.common.notifier.listener;
 
+import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.notifier.event.ErrorLogEvent;
-import com.wzkris.common.notifier.manager.NotifierManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 

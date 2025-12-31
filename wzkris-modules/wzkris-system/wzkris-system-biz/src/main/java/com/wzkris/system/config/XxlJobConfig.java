@@ -1,5 +1,6 @@
 package com.wzkris.system.config;
 
+import com.wzkris.system.properties.XxlJobProperties;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package com.wzkris.auth.service;
 
-import com.wzkris.auth.config.MockProperties;
-import com.wzkris.common.captcha.config.CapProperties;
+import com.wzkris.auth.properties.MockProperties;
+import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.model.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.model.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.service.CapHandler;

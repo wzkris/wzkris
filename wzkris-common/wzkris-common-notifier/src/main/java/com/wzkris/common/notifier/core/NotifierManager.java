@@ -1,6 +1,5 @@
-package com.wzkris.common.notifier.manager;
+package com.wzkris.common.notifier.core;
 
-import com.wzkris.common.notifier.api.Notifier;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import lombok.extern.slf4j.Slf4j;

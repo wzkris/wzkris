@@ -1,4 +1,4 @@
-package com.wzkris.common.notifier.api;
+package com.wzkris.common.notifier.core;
 
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;

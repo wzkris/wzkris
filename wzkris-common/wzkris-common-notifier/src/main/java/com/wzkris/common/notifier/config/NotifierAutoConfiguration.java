@@ -3,10 +3,9 @@ package com.wzkris.common.notifier.config;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.wzkris.common.notifier.appender.ErrorLogEventAppender;
-import com.wzkris.common.notifier.config.dingtalk.DingtalkConfiguration;
-import com.wzkris.common.notifier.config.email.EmailConfiguration;
+import com.wzkris.common.notifier.core.Notifier;
+import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.notifier.listener.ErrorLogNotifierListener;
-import com.wzkris.common.notifier.manager.NotifierManager;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class NotifierAutoConfiguration {
      * 通知管理器
      */
     @Bean
-    public NotifierManager notifierManager(java.util.List<com.wzkris.common.notifier.api.Notifier<?>> notifiers) {
+    public NotifierManager notifierManager(java.util.List<Notifier<?>> notifiers) {
         return new NotifierManager(notifiers);
     }
 

@@ -84,7 +84,7 @@ wzkris:
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
-import com.wzkris.common.notifier.manager.NotifierManager;
+import com.wzkris.common.notifier.core.NotifierManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -92,20 +92,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NoticeService {
 
-    private final NotifierManager notifierManager;
+  private final NotifierManager notifierManager;
 
-    public NotificationResult sendToDingtalk() {
-        DingtalkMessage message = DingtalkMessage.builder()
-                .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
-                .recipients(java.util.List.of("user1", "user2"))
-                .templateParams(java.util.Map.of(
-                        "title", "系统通知",
-                        "content", "这是一个 Markdown 模板内容"
-                ))
-                .build();
+  public NotificationResult sendToDingtalk() {
+    DingtalkMessage message = DingtalkMessage.builder()
+            .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
+            .recipients(java.util.List.of("user1", "user2"))
+            .templateParams(java.util.Map.of(
+                    "title", "系统通知",
+                    "content", "这是一个 Markdown 模板内容"
+            ))
+            .build();
 
-        return notifierManager.send(message);
-    }
+    return notifierManager.send(message);
+  }
 
 }
 ```
@@ -116,7 +116,7 @@ public class NoticeService {
 import com.wzkris.common.notifier.domain.EmailMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;
-import com.wzkris.common.notifier.manager.NotifierManager;
+import com.wzkris.common.notifier.core.NotifierManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -151,7 +151,7 @@ public class MailService {
 1) 定义实现类（示例：企业微信）
 
 ```java
-import com.wzkris.common.notifier.api.Notifier;
+import com.wzkris.common.notifier.core.Notifier;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import org.springframework.stereotype.Component;

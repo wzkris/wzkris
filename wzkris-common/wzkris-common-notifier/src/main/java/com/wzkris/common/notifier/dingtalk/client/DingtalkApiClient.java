@@ -1,10 +1,10 @@
-package com.wzkris.common.notifier.config.dingtalk.client;
+package com.wzkris.common.notifier.dingtalk.client;
 
 import com.wzkris.common.core.enums.BizCallCodeEnum;
 import com.wzkris.common.core.exception.service.ExternalServiceException;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.notifier.config.dingtalk.domain.TokenCache;
-import com.wzkris.common.notifier.config.dingtalk.properties.DingtalkProperties;
+import com.wzkris.common.notifier.dingtalk.domain.TokenCache;
+import com.wzkris.common.notifier.properties.DingtalkProperties;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.util.Assert;

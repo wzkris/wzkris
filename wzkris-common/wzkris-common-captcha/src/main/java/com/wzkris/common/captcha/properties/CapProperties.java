@@ -1,4 +1,4 @@
-package com.wzkris.common.captcha.config;
+package com.wzkris.common.captcha.properties;
 
 import com.wzkris.common.captcha.enums.StoreTypeEnum;
 import lombok.Data;

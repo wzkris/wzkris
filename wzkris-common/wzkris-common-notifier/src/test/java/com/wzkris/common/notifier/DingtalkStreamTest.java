@@ -2,12 +2,12 @@ package com.wzkris.common.notifier;
 
 import com.dingtalk.open.app.api.OpenDingTalkStreamClientBuilder;
 import com.dingtalk.open.app.api.security.AuthClientCredential;
-import com.wzkris.common.notifier.config.dingtalk.client.DingtalkApiClient;
-import com.wzkris.common.notifier.config.dingtalk.properties.DingtalkProperties;
+import com.wzkris.common.notifier.dingtalk.client.DingtalkApiClient;
+import com.wzkris.common.notifier.properties.DingtalkProperties;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
-import com.wzkris.common.notifier.impl.DingtalkNotifier;
+import com.wzkris.common.notifier.core.impl.DingtalkNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import shade.com.alibaba.fastjson2.JSONObject;

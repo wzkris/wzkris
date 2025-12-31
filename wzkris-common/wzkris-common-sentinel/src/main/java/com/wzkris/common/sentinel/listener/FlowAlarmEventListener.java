@@ -5,7 +5,7 @@ import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
-import com.wzkris.common.notifier.manager.NotifierManager;
+import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.sentinel.event.FlowAlarmEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

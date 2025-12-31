@@ -1,6 +1,6 @@
-package com.wzkris.common.notifier.impl;
+package com.wzkris.common.notifier.core.impl;
 
-import com.wzkris.common.notifier.api.Notifier;
+import com.wzkris.common.notifier.core.Notifier;
 import com.wzkris.common.notifier.domain.EmailMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;

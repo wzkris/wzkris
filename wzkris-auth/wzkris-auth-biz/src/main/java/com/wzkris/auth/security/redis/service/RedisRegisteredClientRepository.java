@@ -15,7 +15,7 @@
  */
 package com.wzkris.auth.security.redis.service;
 
-import com.wzkris.auth.config.TokenProperties;
+import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;

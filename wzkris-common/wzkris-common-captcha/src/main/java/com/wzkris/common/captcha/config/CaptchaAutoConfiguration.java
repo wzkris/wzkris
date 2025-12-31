@@ -1,5 +1,6 @@
 package com.wzkris.common.captcha.config;
 
+import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.service.CapHandler;
 import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.captcha.store.CapStore;

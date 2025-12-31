@@ -1,4 +1,4 @@
-package com.wzkris.common.notifier.config.dingtalk.properties;
+package com.wzkris.common.notifier.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

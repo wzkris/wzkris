@@ -4,6 +4,7 @@ import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.httpservice.annotation.EnableHttpServiceClients;
 import com.wzkris.common.httpservice.interceptor.PublishEventInterceptorPostProcessor;
 import com.wzkris.common.httpservice.interceptor.core.HttpServiceClientInterceptor;
+import com.wzkris.common.httpservice.properties.HttpServiceProperties;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -19,7 +20,6 @@ import org.springframework.web.client.RestClient;
 
 import java.net.http.HttpClient;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -34,25 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @EnableHttpServiceClients
 @AutoConfiguration
 public class HttpServiceClientAutoConfiguration {
-
-    @Bean
-    @LoadBalanced
-    @ConditionalOnMissingBean
-    public RestClient.Builder httpServiceRestClientBuilder(
-            HttpServiceProperties httpServiceProperties,
-            ObjectProvider<List<HttpMessageConverter<?>>> messageConvertersObjectProvider,
-            HttpServiceClientInterceptor httpServiceClientInterceptor) {
-        RestClient.Builder builder = RestClient.builder()
-                .requestFactory(buildFactory(httpServiceProperties))
-                .requestInterceptor(httpServiceClientInterceptor);
-
-        List<HttpMessageConverter<?>> messageConverters = messageConvertersObjectProvider.getIfAvailable();
-        if (CollectionUtils.isNotEmpty(messageConverters)) {
-            builder.messageConverters(messageConverters);
-        }
-
-        return builder;
-    }
 
     private static BufferingClientHttpRequestFactory buildFactory(HttpServiceProperties httpServiceProperties) {
         // 根据 connectionPool 配置创建 Executor
@@ -80,6 +61,25 @@ public class HttpServiceClientAutoConfiguration {
         factory.setReadTimeout(httpServiceProperties.getReadTimeout());
 
         return new BufferingClientHttpRequestFactory(factory);
+    }
+
+    @Bean
+    @LoadBalanced
+    @ConditionalOnMissingBean
+    public RestClient.Builder httpServiceRestClientBuilder(
+            HttpServiceProperties httpServiceProperties,
+            ObjectProvider<List<HttpMessageConverter<?>>> messageConvertersObjectProvider,
+            HttpServiceClientInterceptor httpServiceClientInterceptor) {
+        RestClient.Builder builder = RestClient.builder()
+                .requestFactory(buildFactory(httpServiceProperties))
+                .requestInterceptor(httpServiceClientInterceptor);
+
+        List<HttpMessageConverter<?>> messageConverters = messageConvertersObjectProvider.getIfAvailable();
+        if (CollectionUtils.isNotEmpty(messageConverters)) {
+            builder.messageConverters(messageConverters);
+        }
+
+        return builder;
     }
 
 }
