@@ -2,7 +2,7 @@ package com.wzkris.common.notifier.core.impl;
 
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.notifier.core.Notifier;
-import com.wzkris.common.notifier.dingtalk.client.DingtalkApiClient;
+import com.wzkris.common.notifier.dingtalk.client.DingtalkMsgClient;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
@@ -19,18 +19,18 @@ import org.springframework.util.Assert;
 @Slf4j
 public class DingtalkNotifier implements Notifier<DingtalkMessage> {
 
-    private final DingtalkApiClient apiClient;
+    private final DingtalkMsgClient msgClient;
 
-    public DingtalkNotifier(DingtalkApiClient apiClient) {
-        Assert.notNull(apiClient, "钉钉API客户端不能为空");
-        this.apiClient = apiClient;
+    public DingtalkNotifier(DingtalkMsgClient msgClient) {
+        Assert.notNull(msgClient, "钉钉API客户端不能为空");
+        this.msgClient = msgClient;
     }
 
     @Override
     public NotificationResult send(DingtalkMessage message) {
         try {
             // 发送消息
-            String messageId = apiClient.sendMessage(
+            String messageId = msgClient.sendMessage(
                     message.getRecipients(),
                     message.getTemplateKey().value(),
                     JsonUtil.toJsonString(message.getTemplateParams())

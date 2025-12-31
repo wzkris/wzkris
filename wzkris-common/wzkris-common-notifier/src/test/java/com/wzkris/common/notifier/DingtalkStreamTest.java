@@ -2,7 +2,7 @@ package com.wzkris.common.notifier;
 
 import com.dingtalk.open.app.api.OpenDingTalkStreamClientBuilder;
 import com.dingtalk.open.app.api.security.AuthClientCredential;
-import com.wzkris.common.notifier.dingtalk.client.DingtalkApiClient;
+import com.wzkris.common.notifier.dingtalk.client.DingtalkMsgClient;
 import com.wzkris.common.notifier.properties.DingtalkProperties;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
@@ -36,8 +36,8 @@ public class DingtalkStreamTest {
         DingtalkProperties dingtalkProperties = new DingtalkProperties();
         dingtalkProperties.setAppKey("111");
         dingtalkProperties.setAppSecret("222");
-        DingtalkApiClient apiClient = new DingtalkApiClient(dingtalkProperties);
-        DingtalkNotifier robotApi = new DingtalkNotifier(apiClient);
+        DingtalkMsgClient msgClient = new DingtalkMsgClient(dingtalkProperties);
+        DingtalkNotifier robotApi = new DingtalkNotifier(msgClient);
         DingtalkMessage message = DingtalkMessage.builder()
                 .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
                 .recipients(List.of("100"))

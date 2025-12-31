@@ -16,13 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 钉钉 API 客户端
- * 负责钉钉 API 的底层调用，包括配置管理、Token 管理和消息发送
+ * 负责钉钉 API 的消息调用，包括配置管理、Token 管理和消息发送
  *
  * @author wzkris
  * @date 2025/11/06
  */
 @Slf4j
-public class DingtalkApiClient {
+public class DingtalkMsgClient {
 
     private static final String HOST = "https://api.dingtalk.com";
 
@@ -35,7 +35,7 @@ public class DingtalkApiClient {
      */
     private final Map<String, TokenCache> tokenCacheMap = new ConcurrentHashMap<>();
 
-    public DingtalkApiClient(DingtalkProperties dingtalkProperties) {
+    public DingtalkMsgClient(DingtalkProperties dingtalkProperties) {
         Assert.notNull(dingtalkProperties, "钉钉配置不能为空");
         this.dingtalkProperties = dingtalkProperties;
     }

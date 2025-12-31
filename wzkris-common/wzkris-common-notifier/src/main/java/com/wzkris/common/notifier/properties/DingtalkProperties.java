@@ -10,6 +10,11 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 public class DingtalkProperties {
 
     /**
+     * 是否启用
+     */
+    private Boolean enabled = false;
+
+    /**
      * 应用Key
      */
     private String appKey;

@@ -21,10 +21,6 @@ public class NotifierManager {
         }
         for (Notifier<?> n : notifiers) {
             NotificationChannelEnum ch = n.getChannel();
-            if (this.notifiers.containsKey(ch)) {
-                log.warn("发现重复的通知器: {}，使用第一个", ch);
-                continue;
-            }
             this.notifiers.put(ch, n);
         }
         log.info("已加载 {} 个通知器: {}", this.notifiers.size(), this.notifiers.keySet());

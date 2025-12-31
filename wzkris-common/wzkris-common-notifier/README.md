@@ -57,22 +57,46 @@ spring:
 开启错误日志自动通知功能，系统会自动捕获 ERROR 级别的日志并触发通知：
 
 ```yaml
-wzkris:
-  notifier:
-    error-log:
-      enabled: true  # 启用错误日志通知
+notifier:
+  error-log:
+    enabled: true  # 启用错误日志通知
+    channel: DINGTALK  # 指定发送渠道（必须显式配置，如：DINGTALK, EMAIL）
+    dingtalk:      # 钉钉通知配置
+      recipients:  # 接收人列表（钉钉用户ID或手机号）
+        - "user1"
+        - "user2"
+      templateKey: MARKDOWN  # 消息模板类型（TEXT 或 MARKDOWN，默认 MARKDOWN）
+    email:         # 邮件通知配置
+      recipients:  # 接收人列表（邮箱地址）
+        - "admin@example.com"
+        - "dev@example.com"
+      fromEmail: "no-reply@example.com"      # 发件人邮箱
+      fromName: "系统通知"                     # 发件人名称
+      templateKey: PLAINTEXT                  # 邮件模板类型（PLAINTEXT 或 HTML，默认 PLAINTEXT）
 ```
 
 **工作原理**：
 - 自动创建自定义 Logback Appender (`ErrorLogEventAppender`)
 - 捕获所有 ERROR 级别的日志
 - 发布 `ErrorLogEvent` Spring 事件
-- `ErrorLogNotifierListener` 监听事件并处理通知
+- `ErrorLogNotifierListener` 监听事件并根据配置的渠道发送通知
 
-**注意**：
-- 需要在 `ErrorLogNotifierListener` 中实现具体的通知逻辑（发送钉钉、邮件等）
-- 默认情况下仅记录日志，不会实际发送通知
-- 可通过修改 `ErrorLogNotifierListener.onErrorLogEvent()` 方法来实现具体的通知发送
+**配置说明**：
+- `enabled`: 是否启用错误日志通知（默认 false）
+- `channel`: 发送渠道，必须显式配置，支持 `DINGTALK`、`EMAIL` 等
+- `dingtalk.recipients`: 钉钉接收人列表（使用钉钉渠道时必填）
+- `dingtalk.templateKey`: 钉钉消息模板类型，支持 `TEXT`、`MARKDOWN`（默认 `MARKDOWN`）
+- `email.recipients`: 邮件接收人列表（使用邮件渠道时必填）
+- `email.subject`: 邮件主题，支持占位符替换（默认 "系统错误通知"）
+- `email.fromEmail`: 发件人邮箱（可选，建议配置）
+- `email.fromName`: 发件人名称（默认 "系统通知"）
+- `email.templateKey`: 邮件模板类型，支持 `PLAINTEXT`、`HTML`（默认 `PLAINTEXT`）
+
+**注意事项**：
+- 必须配置 `enabled: true` 才会启用错误日志通知
+- 必须显式配置 `channel` 指定发送渠道
+- 根据配置的渠道，必须配置对应的接收人（`recipients`）
+- 通知发送失败不会影响主流程，仅记录警告日志
 
 ## 使用方式
 

@@ -6,11 +6,13 @@ import com.wzkris.common.notifier.appender.ErrorLogEventAppender;
 import com.wzkris.common.notifier.core.Notifier;
 import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.notifier.listener.ErrorLogNotifierListener;
+import com.wzkris.common.notifier.properties.ErrorLogNotifierProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
@@ -22,6 +24,7 @@ import org.springframework.context.annotation.Import;
  */
 @Slf4j
 @Import({DingtalkConfiguration.class, EmailConfiguration.class})
+@EnableConfigurationProperties(ErrorLogNotifierProperties.class)
 @AutoConfiguration
 public class NotifierAutoConfiguration {
 
@@ -38,8 +41,9 @@ public class NotifierAutoConfiguration {
      */
     @Bean
     @ConditionalOnBean(NotifierManager.class)
-    public ErrorLogNotifierListener errorLogNotifierListener(NotifierManager notifierManager) {
-        return new ErrorLogNotifierListener(notifierManager);
+    public ErrorLogNotifierListener errorLogNotifierListener(NotifierManager notifierManager,
+                                                             ErrorLogNotifierProperties properties) {
+        return new ErrorLogNotifierListener(notifierManager, properties);
     }
 
     @PostConstruct

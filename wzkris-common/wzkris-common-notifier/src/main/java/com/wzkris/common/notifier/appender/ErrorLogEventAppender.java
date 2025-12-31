@@ -12,6 +12,7 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.notifier.event.ErrorLogEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import java.util.Iterator;
  *
  * @author wzkris
  */
+@Slf4j
 public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
 
     /**
@@ -65,35 +67,35 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
             return;
         }
 
+        // 过滤掉通知相关的 Logger，避免循环
+        String loggerName = eventObject.getLoggerName();
+        if (loggerName != null && loggerName.startsWith("com.wzkris.common.notifier")) {
+            return;
+        }
+
         // 检查 Spring 上下文是否已初始化
         if (SpringUtil.getContext() == null) {
             return;
         }
 
-        try {
-            // 格式化日志消息
-            String originalMessage = formatLogMessage(eventObject);
+        // 格式化日志消息
+        String originalMessage = formatLogMessage(eventObject);
 
-            // 转换日志级别为 slf4j Level
-            org.slf4j.event.Level level = convertToSlf4jLevel(eventObject.getLevel());
+        // 转换日志级别为 slf4j Level
+        org.slf4j.event.Level level = convertToSlf4jLevel(eventObject.getLevel());
 
-            // 构建错误日志事件（基于 slf4j，不依赖 Logback）
-            ErrorLogEvent errorLogEvent = new ErrorLogEvent(
-                    level,
-                    eventObject.getTimeStamp(),
-                    eventObject.getThreadName(),
-                    eventObject.getLoggerName(),
-                    eventObject.getFormattedMessage(),
-                    originalMessage
-            );
+        // 构建错误日志事件（基于 slf4j，不依赖 Logback）
+        ErrorLogEvent errorLogEvent = new ErrorLogEvent(
+                level,
+                eventObject.getTimeStamp(),
+                eventObject.getThreadName(),
+                eventObject.getLoggerName(),
+                eventObject.getFormattedMessage(),
+                originalMessage
+        );
 
-            // 发布 Spring 事件
-            SpringUtil.getContext().publishEvent(errorLogEvent);
-        } catch (Exception e) {
-            // 避免在日志处理过程中抛出异常导致日志系统崩溃
-            // 使用 System.err 输出，避免循环依赖
-            System.err.println("发布错误日志事件失败: " + e.getMessage());
-        }
+        // 发布 Spring 事件
+        SpringUtil.getContext().publishEvent(errorLogEvent);
     }
 
     /**
@@ -161,18 +163,14 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
                 return cachedPattern;
             }
 
-            try {
-                String pattern = extractPatternFromAppenders();
-                if (pattern != null) {
-                    cachedPattern = pattern;
-                    return pattern;
-                }
-            } catch (Exception e) {
-                System.err.println("警告：获取 pattern 时发生异常，使用默认 pattern: " + e.getMessage());
+            String pattern = extractPatternFromAppenders();
+            if (pattern != null) {
+                cachedPattern = pattern;
+                return pattern;
             }
 
             // 如果找不到 pattern，直接缓存默认值
-            System.err.println("警告：无法获取 appender 的 pattern，使用默认 pattern");
+            log.warn("警告：无法获取 appender 的 pattern，使用默认 pattern");
             cachedPattern = DEFAULT_PATTERN;
             return DEFAULT_PATTERN;
         }
