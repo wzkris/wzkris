@@ -9,6 +9,7 @@
 - ✅ **自动管理**：`NotifierManager` 自动收集并路由到对应渠道
 - ✅ **Spring Boot 自动配置**：上电即用（基于 `@AutoConfiguration`）
 - ✅ **易扩展**：新增渠道仅需实现接口并声明为 Bean
+- ✅ **错误日志自动通知**：自动捕获 ERROR 级别日志并发送通知（可选）
 
 ## 快速开始
 
@@ -50,6 +51,28 @@ spring:
           ssl:
             enable: true
 ```
+
+### 4) 启用错误日志自动通知（可选）
+
+开启错误日志自动通知功能，系统会自动捕获 ERROR 级别的日志并触发通知：
+
+```yaml
+wzkris:
+  notifier:
+    error-log:
+      enabled: true  # 启用错误日志通知
+```
+
+**工作原理**：
+- 自动创建自定义 Logback Appender (`ErrorLogEventAppender`)
+- 捕获所有 ERROR 级别的日志
+- 发布 `ErrorLogEvent` Spring 事件
+- `ErrorLogNotifierListener` 监听事件并处理通知
+
+**注意**：
+- 需要在 `ErrorLogNotifierListener` 中实现具体的通知逻辑（发送钉钉、邮件等）
+- 默认情况下仅记录日志，不会实际发送通知
+- 可通过修改 `ErrorLogNotifierListener.onErrorLogEvent()` 方法来实现具体的通知发送
 
 ## 使用方式
 

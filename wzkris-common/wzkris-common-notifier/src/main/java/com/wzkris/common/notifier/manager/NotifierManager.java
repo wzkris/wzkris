@@ -4,7 +4,6 @@ import com.wzkris.common.notifier.api.Notifier;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Component
 public class NotifierManager {
 
     private final Map<NotificationChannelEnum, Notifier<?>> notifiers = new HashMap<>();
