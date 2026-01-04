@@ -8,7 +8,7 @@ import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import com.wzkris.common.notifier.event.ErrorLogEvent;
-import com.wzkris.common.notifier.properties.ErrorLogNotifierProperties;
+import com.wzkris.common.notifier.properties.NotifierProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.CollectionUtils;
@@ -30,9 +30,9 @@ public class ErrorLogNotifierListener {
 
     private final NotifierManager notifierManager;
 
-    private final ErrorLogNotifierProperties properties;
+    private final NotifierProperties properties;
 
-    public ErrorLogNotifierListener(NotifierManager notifierManager, ErrorLogNotifierProperties properties) {
+    public ErrorLogNotifierListener(NotifierManager notifierManager, NotifierProperties properties) {
         this.notifierManager = notifierManager;
         this.properties = properties;
     }
@@ -84,7 +84,7 @@ public class ErrorLogNotifierListener {
      * 发送钉钉通知
      */
     private void sendDingtalkNotification(ErrorLogEvent event) {
-        ErrorLogNotifierProperties.DingtalkConfig dingtalkConfig = properties.getDingtalk();
+        NotifierProperties.DingtalkConfig dingtalkConfig = properties.getDingtalk();
         if (dingtalkConfig == null || CollectionUtils.isEmpty(dingtalkConfig.getRecipients())) {
             log.debug("钉钉通知未配置接收人，跳过发送");
             return;
@@ -123,7 +123,7 @@ public class ErrorLogNotifierListener {
      * 发送邮件通知
      */
     private void sendEmailNotification(ErrorLogEvent event) {
-        ErrorLogNotifierProperties.EmailConfig emailConfig = properties.getEmail();
+        NotifierProperties.EmailConfig emailConfig = properties.getEmail();
         if (emailConfig == null || CollectionUtils.isEmpty(emailConfig.getRecipients())) {
             return;
         }

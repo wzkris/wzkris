@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @RefreshScope
 @ConfigurationProperties(prefix = "notifier.error-log")
-public class ErrorLogNotifierProperties {
+public class NotifierProperties {
 
     /**
      * 是否启用错误日志通知

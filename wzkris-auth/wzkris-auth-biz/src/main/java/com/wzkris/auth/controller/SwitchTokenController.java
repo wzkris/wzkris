@@ -6,6 +6,8 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.impl.LoginTenantService;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.domain.LoginTenant;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.CustomerUtil;
 import com.wzkris.usercenter.httpservice.member.MemberInfoHttpService;
 import com.wzkris.usercenter.httpservice.member.resp.MemberInfoResp;
 import io.swagger.v3.oas.annotations.Operation;
