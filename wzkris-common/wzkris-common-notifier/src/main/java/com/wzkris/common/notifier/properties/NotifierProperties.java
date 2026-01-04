@@ -46,14 +46,14 @@ public class NotifierProperties {
     public static class DingtalkConfig {
 
         /**
-         * 接收人列表（钉钉用户ID或手机号）
+         * 接收人列表（钉钉用户ID）
          */
         private List<String> recipients = new ArrayList<>();
 
         /**
-         * 消息模板类型（默认使用 MARKDOWN）
+         * 消息模板类型（默认使用 TEXT）
          */
-        private DingtalkTemplateKeyEnum templateKey = DingtalkTemplateKeyEnum.MARKDOWN;
+        private DingtalkTemplateKeyEnum templateKey = DingtalkTemplateKeyEnum.TEXT;
 
     }
 

@@ -86,7 +86,7 @@ public class ErrorLogNotifierListener {
     private void sendDingtalkNotification(ErrorLogEvent event) {
         NotifierProperties.DingtalkConfig dingtalkConfig = properties.getDingtalk();
         if (dingtalkConfig == null || CollectionUtils.isEmpty(dingtalkConfig.getRecipients())) {
-            log.debug("钉钉通知未配置接收人，跳过发送");
+            log.warn("钉钉通知未配置接收人，跳过发送");
             return;
         }
 
@@ -96,10 +96,10 @@ public class ErrorLogNotifierListener {
         // 构建消息参数
         Map<String, Object> templateParams = new HashMap<>();
         if (templateKey == DingtalkTemplateKeyEnum.MARKDOWN) {
-            templateParams.put("title", buildDingtalkTitle(event));
-            templateParams.put("text", buildDingtalkContent(event));
+            templateParams.put("title", "系统异常通知");
+            templateParams.put("text", event.getOriginalMessage());
         } else if (templateKey == DingtalkTemplateKeyEnum.TEXT) {
-            templateParams.put("content", buildDingtalkContent(event));
+            templateParams.put("content", event.getOriginalMessage());
         } else {
             log.warn("错误日志通知暂不支持钉钉模板类型: {}", templateKey);
             return;
@@ -155,30 +155,11 @@ public class ErrorLogNotifierListener {
     }
 
     /**
-     * 构建钉钉通知标题
-     */
-    private String buildDingtalkTitle(ErrorLogEvent event) {
-        return String.format("系统错误通知 - %s", event.getLoggerName());
-    }
-
-    /**
-     * 构建钉钉通知内容
-     */
-    private String buildDingtalkContent(ErrorLogEvent event) {
-        return "**时间**: " + formatTimestamp(event.getTimestamp()) + "\n" +
-                "**级别**: " + event.getLevel() + "\n" +
-                "**线程**: " + event.getThreadName() + "\n" +
-                "**Logger**: " + event.getLoggerName() + "\n" +
-                "**消息**: " + event.getFormattedMessage() + "\n" +
-                "\n**完整日志**:\n```\n" + event.getOriginalMessage() + "\n```";
-    }
-
-    /**
      * 构建邮件主题（支持占位符）
      */
     private String buildEmailSubject(ErrorLogEvent event, String template) {
         if (!StringUtils.hasText(template)) {
-            return "系统错误通知";
+            return "系统异常通知";
         }
         return template
                 .replace("{loggerName}", event.getLoggerName())

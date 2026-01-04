@@ -30,7 +30,7 @@ public class DingtalkNotifier implements Notifier<DingtalkMessage> {
     public NotificationResult send(DingtalkMessage message) {
         try {
             // 发送消息
-            String messageId = msgClient.sendMessage(
+            String messageId = msgClient.sendo2oMessage(
                     message.getRecipients(),
                     message.getTemplateKey().value(),
                     JsonUtil.toJsonString(message.getTemplateParams())

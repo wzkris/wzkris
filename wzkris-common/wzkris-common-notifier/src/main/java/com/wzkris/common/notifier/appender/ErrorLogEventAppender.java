@@ -2,20 +2,17 @@ package com.wzkris.common.notifier.appender;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.notifier.event.ErrorLogEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 错误日志事件 Appender（Logback 实现）
@@ -35,21 +32,6 @@ import java.util.Iterator;
  */
 @Slf4j
 public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
-
-    /**
-     * 默认 pattern（当无法从 appender 获取时使用）
-     */
-    private static final String DEFAULT_PATTERN = "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n";
-
-    /**
-     * 缓存的 pattern（null 表示未初始化，初始化后要么是从 appender 获取的 pattern，要么是默认 pattern）
-     */
-    private volatile String cachedPattern;
-
-    /**
-     * 缓存的 PatternLayout（null 表示未初始化）
-     */
-    private volatile PatternLayout cachedPatternLayout;
 
     public ErrorLogEventAppender() {
         setName("ERROR_LOG_EVENT_APPENDER");
@@ -99,122 +81,45 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
     }
 
     /**
-     * 格式化日志消息
+     * 手动格式化日志消息（不依赖PatternLayout）
      */
     private String formatLogMessage(ILoggingEvent event) {
-        // 获取缓存的 PatternLayout
-        PatternLayout patternLayout = getOrCreatePatternLayout();
+        StringBuilder sb = new StringBuilder();
 
-        // PatternLayout 的 doLayout 方法直接返回格式化后的字符串
-        String formattedMessage = patternLayout.doLayout(event);
+        // 1. 时间戳
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sb.append(sdf.format(new Date(event.getTimeStamp())))
+                .append(" ");
 
-        // 如果有异常，追加异常堆栈信息
+        // 2. 线程名（在方括号中）
+        sb.append("[")
+                .append(event.getThreadName())
+                .append("] ")
+                .append(" ");
+
+        // 3. 日志级别（右对齐，最小宽度5）
+        String levelStr = event.getLevel().toString();
+        sb.append(String.format("%-5s", levelStr))
+                .append(" ");
+
+        // 4. Logger名称
+        sb.append(event.getLoggerName());
+
+        // 5. 分隔符和消息
+        sb.append(" - ")
+                .append(event.getFormattedMessage())
+                .append(CoreConstants.LINE_SEPARATOR);
+
+        // 6. 如果有异常，追加异常堆栈信息（清理ANSI代码并限制堆栈）
         if (event.getThrowableProxy() != null) {
-            StringBuilder sb = new StringBuilder(formattedMessage);
             appendThrowable(sb, event);
-            return sb.toString();
         }
 
-        return formattedMessage;
+        return sb.toString();
     }
 
     /**
-     * 获取或创建 PatternLayout（带缓存）
-     */
-    private PatternLayout getOrCreatePatternLayout() {
-        if (cachedPatternLayout != null) {
-            return cachedPatternLayout;
-        }
-
-        synchronized (this) {
-            if (cachedPatternLayout != null) {
-                return cachedPatternLayout;
-            }
-
-            // 获取 pattern
-            String pattern = getOrCreatePattern();
-
-            // 创建并初始化 PatternLayout
-            LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-            PatternLayout patternLayout = new PatternLayout();
-            patternLayout.setContext(loggerContext);
-            patternLayout.setPattern(pattern);
-            patternLayout.start();
-
-            cachedPatternLayout = patternLayout;
-            return patternLayout;
-        }
-    }
-
-    /**
-     * 获取或创建 pattern（带缓存）
-     * 遍历所有 appender，获取第一个有 PatternLayoutEncoder 的 appender 的 pattern
-     * 如果获取失败，直接缓存默认 pattern，避免重复尝试
-     */
-    private String getOrCreatePattern() {
-        // 如果已缓存（包括失败时缓存的默认 pattern），直接返回
-        if (cachedPattern != null) {
-            return cachedPattern;
-        }
-
-        synchronized (this) {
-            // 双重检查
-            if (cachedPattern != null) {
-                return cachedPattern;
-            }
-
-            String pattern = extractPatternFromAppenders();
-            if (pattern != null) {
-                cachedPattern = pattern;
-                return pattern;
-            }
-
-            // 如果找不到 pattern，直接缓存默认值
-            log.warn("警告：无法获取 appender 的 pattern，使用默认 pattern");
-            cachedPattern = DEFAULT_PATTERN;
-            return DEFAULT_PATTERN;
-        }
-    }
-
-    /**
-     * 从 appender 中提取 pattern
-     */
-    private String extractPatternFromAppenders() {
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        ch.qos.logback.classic.Logger rootLogger = loggerContext.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-
-        Iterator<Appender<ILoggingEvent>> appenderIterator = rootLogger.iteratorForAppenders();
-        while (appenderIterator.hasNext()) {
-            Appender<ILoggingEvent> appender = appenderIterator.next();
-            String pattern = extractPatternFromAppender(appender);
-            if (pattern != null) {
-                return pattern;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 从单个 appender 中提取 pattern
-     */
-    private String extractPatternFromAppender(Appender<ILoggingEvent> appender) {
-        ch.qos.logback.core.encoder.Encoder<?> encoder = null;
-
-        if (appender instanceof ConsoleAppender consoleAppender) {
-            encoder = consoleAppender.getEncoder();
-        } else if (appender instanceof ch.qos.logback.core.rolling.RollingFileAppender fileAppender) {
-            encoder = fileAppender.getEncoder();
-        }
-
-        if (encoder instanceof PatternLayoutEncoder patternEncoder) {
-            return patternEncoder.getPattern();
-        }
-
-        return null;
-    }
-
-    /**
-     * 追加异常堆栈信息
+     * 追加异常堆栈信息（限制堆栈深度）
      */
     private void appendThrowable(StringBuilder sb, ILoggingEvent event) {
         if (event.getThrowableProxy() == null) {
@@ -228,8 +133,20 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
 
         StackTraceElementProxy[] stackTrace = event.getThrowableProxy().getStackTraceElementProxyArray();
         if (stackTrace != null) {
-            for (StackTraceElementProxy element : stackTrace) {
-                sb.append("\tat ").append(element).append(CoreConstants.LINE_SEPARATOR);
+            // 限制堆栈深度
+            int maxDepth = 20;
+
+            for (int i = 0; i < maxDepth; i++) {
+                // 修复：直接使用element.toString()，它已经包含了"at "
+                sb.append("\t").append(stackTrace[i]).append(CoreConstants.LINE_SEPARATOR);
+            }
+
+            // 如果堆栈被截断，添加提示
+            if (stackTrace.length > maxDepth) {
+                sb.append("\t")
+                        .append("... ").append(stackTrace.length - maxDepth)
+                        .append(" 行堆栈已省略，完整信息请查看日志文件")
+                        .append(CoreConstants.LINE_SEPARATOR);
             }
         }
     }

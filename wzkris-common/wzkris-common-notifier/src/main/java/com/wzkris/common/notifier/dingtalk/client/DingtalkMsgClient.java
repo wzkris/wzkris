@@ -87,20 +87,20 @@ public class DingtalkMsgClient {
     }
 
     /**
-     * 发送群消息
+     * 发送机器人单聊消息
      */
-    public String sendMessage(List<String> userIds, String msgKey, String msgParam) {
+    public String sendo2oMessage(List<String> userIds, String msgKey, String msgParam) {
         String appKey = dingtalkProperties.getAppKey();
         String appSecret = dingtalkProperties.getAppSecret();
         Assert.hasText(appKey, "钉钉appKey不能为空");
         Assert.hasText(appSecret, "钉钉appSecret不能为空");
 
         String accessToken = getAccessToken(appKey, appSecret);
-        return sendMessage(accessToken, dingtalkProperties.getRobotCode(), userIds, msgKey, msgParam);
+        return sendo2oMessage(accessToken, dingtalkProperties.getRobotCode(), userIds, msgKey, msgParam);
     }
 
     /**
-     * 发送群消息（底层方法）
+     * 发送机器人单聊消息（底层方法）
      *
      * @param accessToken AccessToken
      * @param robotCode   机器人Code
@@ -108,7 +108,7 @@ public class DingtalkMsgClient {
      * @param msgParam    消息参数（JSON字符串）
      * @return 消息ID（processQueryKey）
      */
-    private String sendMessage(String accessToken, String robotCode, List<String> userIds, String msgKey, String msgParam) {
+    private String sendo2oMessage(String accessToken, String robotCode, List<String> userIds, String msgKey, String msgParam) {
         String requestBody = JsonUtil.toJsonString(Map.of(
                 "msgKey", msgKey,
                 "msgParam", msgParam,

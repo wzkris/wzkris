@@ -62,7 +62,7 @@ notifier:
     enabled: true  # 启用错误日志通知
     channel: DINGTALK  # 指定发送渠道（必须显式配置，如：DINGTALK, EMAIL）
     dingtalk:      # 钉钉通知配置
-      recipients:  # 接收人列表（钉钉用户ID或手机号）
+      recipients:  # 接收人列表（钉钉用户ID）
         - "user1"
         - "user2"
       templateKey: MARKDOWN  # 消息模板类型（TEXT 或 MARKDOWN，默认 MARKDOWN）
