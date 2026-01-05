@@ -64,6 +64,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- Nacos 客户端版本覆盖，解决优雅关闭时的 NullPointerException 问题 -->
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+
             <!-- SpringBoot 依赖配置 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
