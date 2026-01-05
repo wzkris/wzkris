@@ -10,6 +10,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 错误日志通知配置属性
@@ -46,9 +47,11 @@ public class NotifierProperties {
     public static class DingtalkConfig {
 
         /**
-         * 机器人Webhook
+         * 多个机器人Webhook配置
+         * Key: webhook标识（如：default, alarm, business等）
+         * Value: webhook URL
          */
-        private String robotWebhook;
+        private Map<String, String> webhooks;
 
         /**
          * 模板类型

@@ -12,10 +12,7 @@ import com.wzkris.common.notifier.properties.NotifierProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,6 +104,7 @@ public class ErrorNotifierListener {
         DingtalkMessage message = DingtalkMessage.builder()
                 .templateKey(templateKey)
                 .templateParams(templateParams)
+                .webhookKey("error-log")
                 .build();
 
         // 发送通知
@@ -128,18 +126,12 @@ public class ErrorNotifierListener {
         // 解析模板类型
         EmailTemplateKeyEnum templateKey = emailConfig.getTemplateKey();
 
-        // 构建邮件主题（支持占位符替换）
-        String subject = buildEmailSubject(event, event.getLoggerName());
-
-        // 构建邮件内容
-        String content = buildEmailContent(event);
-
         // 构建消息
         EmailMessage message = EmailMessage.builder()
                 .templateKey(templateKey)
                 .recipients(emailConfig.getRecipients())
-                .subject(subject)
-                .content(content)
+                .subject("系统异常通知")
+                .content(event.getOriginalMessage())
                 .fromEmail(emailConfig.getFromEmail())
                 .fromName(emailConfig.getFromName())
                 .build();
@@ -149,39 +141,6 @@ public class ErrorNotifierListener {
         if (!result.getSuccess()) {
             log.warn("错误日志邮件通知发送失败: {}", result.getErrorMessage());
         }
-    }
-
-    /**
-     * 构建邮件主题（支持占位符）
-     */
-    private String buildEmailSubject(ErrorLogEvent event, String template) {
-        if (!StringUtils.hasText(template)) {
-            return "系统异常通知";
-        }
-        return template
-                .replace("{loggerName}", event.getLoggerName())
-                .replace("{level}", event.getLevel().toString())
-                .replace("{timestamp}", formatTimestamp(event.getTimestamp()));
-    }
-
-    /**
-     * 构建邮件内容
-     */
-    private String buildEmailContent(ErrorLogEvent event) {
-        return "时间: " + formatTimestamp(event.getTimestamp()) + "\n" +
-                "级别: " + event.getLevel() + "\n" +
-                "线程: " + event.getThreadName() + "\n" +
-                "Logger: " + event.getLoggerName() + "\n" +
-                "消息: " + event.getFormattedMessage() + "\n" +
-                "\n完整日志:\n" + event.getOriginalMessage();
-    }
-
-    /**
-     * 格式化时间戳
-     */
-    private String formatTimestamp(long timestamp) {
-        return LocalDateTime.ofEpochSecond(timestamp / 1000, 0, java.time.ZoneOffset.of("+8"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
 }

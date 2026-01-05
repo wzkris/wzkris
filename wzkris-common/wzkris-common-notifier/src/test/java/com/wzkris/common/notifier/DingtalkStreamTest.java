@@ -7,6 +7,7 @@ import com.wzkris.common.notifier.core.impl.DingtalkNotifier;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
+import com.wzkris.common.notifier.properties.NotifierProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import shade.com.alibaba.fastjson2.JSONObject;
@@ -29,9 +30,9 @@ public class DingtalkStreamTest {
                 .build().start();
     }
 
-    static DingtalkMsgClient msgClient = new DingtalkMsgClient("https://oapi.dingtalk.com/robot/send?access_token=b63f179ed91b2306c245ddd5381e9fcf804c9e6fc5d57d8e1b7e5269d4d0e0a2");
+    static DingtalkMsgClient msgClient = new DingtalkMsgClient();
 
-    static DingtalkNotifier robotApi = new DingtalkNotifier(msgClient);
+    static DingtalkNotifier robotApi = new DingtalkNotifier(msgClient, new NotifierProperties());
 
     @Test
     public void dingtalkSend() {

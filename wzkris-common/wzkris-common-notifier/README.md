@@ -21,16 +21,19 @@
 
 开启并配置钉钉参数（必须开启 `dingtalk.enabled` 才会装配钉钉通知器）：
 
+支持配置多个webhook，对应不同的群聊，可以发送不同消息到不同的群聊：
+
 ```yaml
-dingtalk:
+notifier:
   enabled: true
-  appKey: your-app-key
-  appSecret: your-app-secret
-  robotCode: your-robot-code
-  # 可选：自定义 AccessToken 获取地址
-  # accessTokenUrl: https://example.com/custom/token
-  # 可选：自定义机器人 webhook（若走自有机器人）
-  # robotWebhook: https://oapi.dingtalk.com/robot/send?access_token=...
+  channel: DINGTALK
+  dingtalk:
+    webhooks:
+      default: https://oapi.dingtalk.com/robot/send?access_token=xxx  # 默认群聊
+      alarm: https://oapi.dingtalk.com/robot/send?access_token=yyy   # 告警群聊
+      business: https://oapi.dingtalk.com/robot/send?access_token=zzz # 业务群聊
+    defaultWebhookKey: default  # 默认webhook标识（可选，不配置则使用第一个）
+    templateKey: MARKDOWN
 ```
 
 ### 3) 配置邮件（可选）
@@ -61,7 +64,8 @@ notifier:
   enabled: true  # 启用错误日志通知
   channel: DINGTALK  # 指定发送渠道（必须显式配置，如：DINGTALK, EMAIL）
   dingtalk:      # 钉钉通知配置
-    robotWebhook:  # 请求地址
+    webhooks:    # Webhook配置
+      default: https://oapi.dingtalk.com/robot/send?access_token=xxx
     templateKey: MARKDOWN  # 消息模板类型（TEXT 或 MARKDOWN，默认 MARKDOWN）
   email:         # 邮件通知配置
     recipients:  # 接收人列表（邮箱地址）
@@ -101,11 +105,14 @@ notifier:
 
 ### 1) 发送钉钉消息
 
+**发送到默认webhook（不指定webhookKey）**
+
 ```java
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import com.wzkris.common.notifier.core.NotifierManager;
+import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -118,17 +125,48 @@ public class NoticeService {
   public NotificationResult sendToDingtalk() {
     DingtalkMessage message = DingtalkMessage.builder()
             .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
-            .recipients(java.util.List.of("user1", "user2"))
             .templateParams(java.util.Map.of(
                     "title", "系统通知",
-                    "content", "这是一个 Markdown 模板内容"
+                    "text", "这是一个 Markdown 模板内容"
             ))
             .build();
 
-    return notifierManager.send(message);
+    return notifierManager.send(NotificationChannelEnum.DINGTALK, message);
   }
 
 }
+```
+
+**发送到指定webhook（多webhook场景）**
+
+```java
+  // 发送到告警群聊
+  public NotificationResult sendToAlarmGroup() {
+    DingtalkMessage message = DingtalkMessage.builder()
+            .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
+            .webhookKey("alarm")  // 指定webhook标识
+            .templateParams(java.util.Map.of(
+                    "title", "🚨 系统告警",
+                    "text", "系统出现异常，请及时处理"
+            ))
+            .build();
+
+    return notifierManager.send(NotificationChannelEnum.DINGTALK, message);
+  }
+
+  // 发送到业务群聊
+  public NotificationResult sendToBusinessGroup() {
+    DingtalkMessage message = DingtalkMessage.builder()
+            .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
+            .webhookKey("business")  // 指定webhook标识
+            .templateParams(java.util.Map.of(
+                    "title", "业务通知",
+                    "text", "业务处理完成"
+            ))
+            .build();
+
+    return notifierManager.send(NotificationChannelEnum.DINGTALK, message);
+  }
 ```
 
 ### 2) 发送邮件
@@ -203,7 +241,7 @@ public class WechatWorkNotifier implements Notifier<YourWechatMessage> {
   - 邮件通知器需存在 `JavaMailSender` Bean（通常由 `spring-boot-starter-mail` 提供）
 - **类型安全**：`Notifier<T>` 为泛型，不同渠道使用各自的消息模型（如 `DingtalkMessage`、`EmailMessage`）
 - **异常与结果**：统一返回 `NotificationResult`，包含是否成功、消息ID与错误信息
-- **多实例路由**：当前钉钉配置为单应用参数集；如需多应用能力，可在业务侧维护多套 `NotifierManager` 或扩展属性结构
+- **多webhook支持**：钉钉通知器支持配置多个webhook，可以通过 `DingtalkMessage.webhookKey()` 指定发送到不同的群聊
 
 ## 组件概览
 
@@ -217,11 +255,13 @@ public class WechatWorkNotifier implements Notifier<YourWechatMessage> {
 
 | 配置项 | 说明 | 是否必填 |
 |---|---|---|
-| `dingtalk.enabled` | 是否启用钉钉通知 | 否（默认不装配） |
-| `dingtalk.appKey` | 应用 Key | 是 |
-| `dingtalk.appSecret` | 应用 Secret | 是 |
-| `dingtalk.robotCode` | 机器人 Code | 是 |
-| `dingtalk.accessTokenUrl` | 自定义 AccessToken 地址 | 否 |
-| `dingtalk.robotWebhook` | 自定义机器人 Webhook | 否 |
+| `notifier.dingtalk.webhooks` | 多个机器人 Webhook 配置（Map结构，key为webhook标识，value为webhook URL） | 是 |
+| `notifier.dingtalk.defaultWebhookKey` | 默认webhook标识（当消息未指定webhookKey时使用） | 否（不配置则使用webhooks中的第一个） |
+| `notifier.dingtalk.templateKey` | 消息模板类型（TEXT 或 MARKDOWN） | 否（默认TEXT） |
+
+**注意**：
+- `webhooks` 必须配置，至少包含一个webhook
+- 使用多webhook时，可以通过 `DingtalkMessage.webhookKey()` 指定发送到哪个webhook
+- 也可以通过 `DingtalkMessage.webhookUrl()` 直接指定webhook URL发送消息
 
 

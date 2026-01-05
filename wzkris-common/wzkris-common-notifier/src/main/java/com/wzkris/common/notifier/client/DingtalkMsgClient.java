@@ -5,14 +5,14 @@ import com.wzkris.common.core.exception.service.ExternalServiceException;
 import com.wzkris.common.core.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.Map;
 
 /**
  * 钉钉 API 客户端
- * 负责钉钉 API 的消息调用，包括配置管理、Token 管理和消息发送
+ * 负责钉钉 API 的消息调用，直接引用NotifierProperties获取webhook配置
+ * webhookUrl作为参数对外暴露，支持动态指定webhook发送消息
  *
  * @author wzkris
  * @date 2025/11/06
@@ -20,23 +20,18 @@ import java.util.Map;
 @Slf4j
 public class DingtalkMsgClient {
 
-    private final String robotWebhook;
-
     private final OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
-    public DingtalkMsgClient(String robotWebhook) {
-        Assert.notNull(robotWebhook, "钉钉配置不能为空");
-        this.robotWebhook = robotWebhook;
-    }
-
     /**
-     * 发送机器人群消息
+     * 发送机器人群消息（直接指定webhookUrl）
+     * webhookUrl作为参数对外暴露，支持动态指定
      *
-     * @param msgtype  消息类型（如：text, markdown）
-     * @param msgParam 消息参数（JSON字符串，将直接作为requestBody）
+     * @param webhookUrl webhook
+     * @param msgtype    消息类型（如：text, markdown）
+     * @param msgParam   消息参数（JSON字符串，将直接作为requestBody）
      * @return 响应消息（成功时返回"ok"）
      */
-    public String sendGroupMessage(String msgtype, String msgParam) {
+    public String sendGroupMessage(String webhookUrl, String msgtype, String msgParam) {
         String requestBody = JsonUtil.toJsonString(Map.of(
                 "msgtype", msgtype,
                 msgtype, msgParam,
@@ -44,7 +39,7 @@ public class DingtalkMsgClient {
         ));
 
         Request request = new Request.Builder()
-                .url(robotWebhook)
+                .url(webhookUrl)
                 .post(RequestBody.create(requestBody, MediaType.parse("application/json; charset=utf-8")))
                 .build();
 

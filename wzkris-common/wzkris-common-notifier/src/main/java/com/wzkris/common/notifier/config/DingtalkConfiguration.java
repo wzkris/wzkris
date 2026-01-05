@@ -4,7 +4,6 @@ import com.wzkris.common.notifier.client.DingtalkMsgClient;
 import com.wzkris.common.notifier.core.impl.DingtalkNotifier;
 import com.wzkris.common.notifier.properties.NotifierProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,25 +14,20 @@ import org.springframework.context.annotation.Configuration;
 public class DingtalkConfiguration {
 
     /**
-     * 钉钉 API 客户端
+     * 钉钉消息客户端
      */
     @Bean
-    @ConditionalOnProperty(prefix = "notifier", name = "channel", havingValue = "DINGTALK")
-    public DingtalkMsgClient dingtalkMsgClient(NotifierProperties notifierProperties) {
-        if (!org.springframework.util.StringUtils.hasText(notifierProperties.getDingtalk().getRobotWebhook())) {
-            throw new IllegalStateException("钉钉机器人配置缺失：robotWebhook 不能为空");
-        }
-        log.info("初始化钉钉API客户端");
-        return new DingtalkMsgClient(notifierProperties.getDingtalk().getRobotWebhook());
+    public DingtalkMsgClient dingtalkMsgClient() {
+        return new DingtalkMsgClient();
     }
 
     /**
      * 钉钉通知器
      */
     @Bean
-    @ConditionalOnBean(DingtalkMsgClient.class)
-    public DingtalkNotifier dingtalkNotifier(DingtalkMsgClient dingtalkMsgClient) {
-        return new DingtalkNotifier(dingtalkMsgClient);
+    @ConditionalOnProperty(prefix = "notifier", name = "channel", havingValue = "DINGTALK")
+    public DingtalkNotifier dingtalkNotifier(DingtalkMsgClient dingtalkMsgClient, NotifierProperties notifierProperties) {
+        return new DingtalkNotifier(dingtalkMsgClient, notifierProperties);
     }
 
 }
