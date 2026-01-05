@@ -1,4 +1,4 @@
-package com.wzkris.common.notifier.domain;
+package com.wzkris.common.notifier.core;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

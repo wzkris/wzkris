@@ -2,10 +2,8 @@ package com.wzkris.common.sentinel.listener;
 
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.wzkris.common.notifier.core.NotifierManager;
-import com.wzkris.common.notifier.domain.DingtalkMessage;
-import com.wzkris.common.notifier.domain.NotificationResult;
-import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
-import com.wzkris.common.notifier.enums.NotificationChannelEnum;
+import com.wzkris.common.notifier.core.NotificationContext;
+import com.wzkris.common.notifier.core.NotificationResult;
 import com.wzkris.common.sentinel.event.FlowAlarmEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.EnvironmentAware;
@@ -47,26 +45,23 @@ public class FlowAlarmEventListener implements EnvironmentAware {
         FlowRule rule = event.rule();
 
         try {
-            // 发送告警通知
-            if (notifierManager != null) {
-                sendDingtalkAlarm(resourceName, rule);
-            }
+            sendAlarmNotification(resourceName, rule);
         } catch (Exception e) {
             log.error("处理限流告警事件失败: resource={}", resourceName, e);
         }
     }
 
     /**
-     * 发送钉钉告警
+     * 发送告警通知（根据配置的渠道自动选择）
      */
-    private void sendDingtalkAlarm(String resourceName, FlowRule rule) {
+    private void sendAlarmNotification(String resourceName, FlowRule rule) {
         try {
             String appName = getApplicationName();
             String strategyDesc = getStrategyDescription(rule.getStrategy());
             String controlBehaviorDesc = getControlBehaviorDescription(rule.getControlBehavior());
 
             String title = "🚨 Sentinel 限流告警";
-            String text = String.format(
+            String content = String.format(
                     """
                             ## %s
                             **应用名称**: %s
@@ -86,24 +81,21 @@ public class FlowAlarmEventListener implements EnvironmentAware {
                     LocalDateTime.now()
             );
 
-            DingtalkMessage message = DingtalkMessage.builder()
-                    .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
-                    .templateParams(java.util.Map.of(
-                            "title", title,
-                            "text", text
-                    ))
+            // 构建通知上下文
+            NotificationContext context = NotificationContext.builder()
+                    .title(title)
+                    .content(content)
+                    .webhookKey("alarm")
                     .build();
 
-            NotificationResult result = notifierManager.send(
-                    NotificationChannelEnum.DINGTALK,
-                    message
-            );
+            // 根据配置的渠道自动构建并发送通知
+            NotificationResult result = notifierManager.send(context);
 
             if (!result.getSuccess()) {
                 log.warn("限流告警发送失败: resource={}, error={}", resourceName, result.getErrorMessage());
             }
         } catch (Exception e) {
-            log.error("发送钉钉告警失败: resource={}", resourceName, e);
+            log.error("发送告警通知失败: resource={}", resourceName, e);
         }
     }
 

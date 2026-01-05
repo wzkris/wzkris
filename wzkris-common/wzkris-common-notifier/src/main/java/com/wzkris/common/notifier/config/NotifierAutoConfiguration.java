@@ -32,8 +32,9 @@ public class NotifierAutoConfiguration {
      * 通知管理器
      */
     @Bean
-    public NotifierManager notifierManager(java.util.List<Notifier<?>> notifiers) {
-        return new NotifierManager(notifiers);
+    public NotifierManager notifierManager(java.util.List<Notifier<?>> notifiers,
+                                           NotifierProperties properties) {
+        return new NotifierManager(notifiers, properties);
     }
 
     /**

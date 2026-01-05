@@ -5,7 +5,7 @@ import com.dingtalk.open.app.api.security.AuthClientCredential;
 import com.wzkris.common.notifier.client.DingtalkMsgClient;
 import com.wzkris.common.notifier.core.impl.DingtalkNotifier;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
-import com.wzkris.common.notifier.domain.NotificationResult;
+import com.wzkris.common.notifier.core.NotificationResult;
 import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import com.wzkris.common.notifier.properties.NotifierProperties;
 import lombok.extern.slf4j.Slf4j;

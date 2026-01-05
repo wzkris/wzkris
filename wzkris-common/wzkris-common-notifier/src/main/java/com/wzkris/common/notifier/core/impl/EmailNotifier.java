@@ -1,10 +1,12 @@
 package com.wzkris.common.notifier.core.impl;
 
+import com.wzkris.common.notifier.core.NotificationContext;
+import com.wzkris.common.notifier.core.NotificationResult;
 import com.wzkris.common.notifier.core.Notifier;
 import com.wzkris.common.notifier.domain.EmailMessage;
-import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
+import com.wzkris.common.notifier.properties.NotifierProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +31,12 @@ public class EmailNotifier implements Notifier<EmailMessage> {
 
     private final JavaMailSender mailSender;
 
-    public EmailNotifier(JavaMailSender mailSender) {
+    private final NotifierProperties notifierProperties;
+
+    public EmailNotifier(JavaMailSender mailSender, NotifierProperties notifierProperties) {
         Assert.notNull(mailSender, "邮件发送器不能为空");
         this.mailSender = mailSender;
+        this.notifierProperties = notifierProperties;
     }
 
     @Override
@@ -56,6 +61,35 @@ public class EmailNotifier implements Notifier<EmailMessage> {
     @Override
     public NotificationChannelEnum getChannel() {
         return NotificationChannelEnum.EMAIL;
+    }
+
+    @Override
+    public EmailMessage buildMessage(NotificationContext context) {
+        Assert.notNull(context, "通知上下文不能为空");
+
+        NotifierProperties.EmailConfig emailConfig = notifierProperties.getEmail();
+
+        EmailTemplateKeyEnum templateKey = emailConfig.getTemplateKey();
+
+        List<String> recipients = emailConfig.getRecipients();
+        Assert.notEmpty(recipients, "邮件接收人不能为空");
+
+        // 获取发件人信息（优先使用配置的）
+        String fromEmail = emailConfig.getFromEmail();
+        String fromName = emailConfig.getFromName();
+
+        // 获取主题和内容
+        String subject = context.getTitle();
+        String content = context.getContent();
+
+        return EmailMessage.builder()
+                .templateKey(templateKey)
+                .recipients(recipients)
+                .subject(subject)
+                .content(content)
+                .fromEmail(fromEmail)
+                .fromName(fromName)
+                .build();
     }
 
     /**
