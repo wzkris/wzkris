@@ -5,7 +5,7 @@ import ch.qos.logback.classic.LoggerContext;
 import com.wzkris.common.notifier.appender.ErrorLogEventAppender;
 import com.wzkris.common.notifier.core.Notifier;
 import com.wzkris.common.notifier.core.NotifierManager;
-import com.wzkris.common.notifier.listener.ErrorLogNotifierListener;
+import com.wzkris.common.notifier.listener.ErrorNotifierListener;
 import com.wzkris.common.notifier.properties.NotifierProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +41,9 @@ public class NotifierAutoConfiguration {
      */
     @Bean
     @ConditionalOnBean(NotifierManager.class)
-    public ErrorLogNotifierListener errorLogNotifierListener(NotifierManager notifierManager,
-                                                             NotifierProperties properties) {
-        return new ErrorLogNotifierListener(notifierManager, properties);
+    public ErrorNotifierListener errorLogNotifierListener(NotifierManager notifierManager,
+                                                          NotifierProperties properties) {
+        return new ErrorNotifierListener(notifierManager, properties);
     }
 
     @PostConstruct

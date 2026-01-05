@@ -8,7 +8,7 @@ spring:
     name: wzkris-auth
   profiles:
     active: @profiles.active@
-    
+
 
 weixin:
   miniapp:

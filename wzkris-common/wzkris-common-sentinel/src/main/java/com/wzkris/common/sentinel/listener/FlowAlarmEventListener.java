@@ -1,20 +1,18 @@
 package com.wzkris.common.sentinel.listener;
 
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.domain.NotificationResult;
 import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
-import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.sentinel.event.FlowAlarmEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 限流告警事件监听器
@@ -28,9 +26,6 @@ public class FlowAlarmEventListener implements EnvironmentAware {
     private final NotifierManager notifierManager;
 
     private Environment environment;
-
-    @Value("${sentinel.alarm.dingtalk-recipients:}")
-    private List<String> dingtalkRecipients;
 
     public FlowAlarmEventListener(NotifierManager notifierManager) {
         this.notifierManager = notifierManager;
@@ -53,7 +48,7 @@ public class FlowAlarmEventListener implements EnvironmentAware {
 
         try {
             // 发送告警通知
-            if (notifierManager != null && dingtalkRecipients != null && !dingtalkRecipients.isEmpty()) {
+            if (notifierManager != null) {
                 sendDingtalkAlarm(resourceName, rule);
             }
         } catch (Exception e) {
@@ -93,7 +88,6 @@ public class FlowAlarmEventListener implements EnvironmentAware {
 
             DingtalkMessage message = DingtalkMessage.builder()
                     .templateKey(DingtalkTemplateKeyEnum.MARKDOWN)
-                    .recipients(dingtalkRecipients)
                     .templateParams(java.util.Map.of(
                             "title", title,
                             "text", text
@@ -105,9 +99,7 @@ public class FlowAlarmEventListener implements EnvironmentAware {
                     message
             );
 
-            if (result.getSuccess()) {
-                log.info("限流告警发送成功: resource={}, messageId={}", resourceName, result.getMessageId());
-            } else {
+            if (!result.getSuccess()) {
                 log.warn("限流告警发送失败: resource={}, error={}", resourceName, result.getErrorMessage());
             }
         } catch (Exception e) {

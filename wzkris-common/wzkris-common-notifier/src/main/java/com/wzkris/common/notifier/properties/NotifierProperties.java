@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Data
 @RefreshScope
-@ConfigurationProperties(prefix = "notifier.error-log")
+@ConfigurationProperties(prefix = "notifier")
 public class NotifierProperties {
 
     /**
@@ -46,12 +46,12 @@ public class NotifierProperties {
     public static class DingtalkConfig {
 
         /**
-         * 接收人列表（钉钉用户ID）
+         * 机器人Webhook
          */
-        private List<String> recipients = new ArrayList<>();
+        private String robotWebhook;
 
         /**
-         * 消息模板类型（默认使用 TEXT）
+         * 模板类型
          */
         private DingtalkTemplateKeyEnum templateKey = DingtalkTemplateKeyEnum.TEXT;
 

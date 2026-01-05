@@ -7,6 +7,7 @@ import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
 import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.notifier.event.ErrorLogEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
@@ -96,6 +97,11 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
                 .append(event.getThreadName())
                 .append("] ")
                 .append(" ");
+
+        if (TraceIdUtil.get() != null) {
+            sb.append(TraceIdUtil.get())
+                    .append(" ");
+        }
 
         // 3. 日志级别（右对齐，最小宽度5）
         String levelStr = event.getLevel().toString();

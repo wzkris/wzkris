@@ -8,6 +8,7 @@ import java.util.Set;
 
 /**
  * 钉钉消息模板Key枚举
+ * 适配钉钉自定义机器人Webhook API
  *
  * @author wzkris
  * @date 2025/11/06
@@ -15,44 +16,24 @@ import java.util.Set;
 @AllArgsConstructor
 public enum DingtalkTemplateKeyEnum {
     TEXT(
-            "sampleText",
+            "text",
             Set.of("content"),
             Set.of("content")
     ),
     MARKDOWN(
-            "sampleMarkdown",
+            "markdown",
             Set.of("title", "text"),
             Set.of("title", "text")
     ),
-    IMAGE(
-            "sampleImageMsg",
-            Set.of("photoURL"),
-            Set.of("photoURL")
-    ),
     LINK(
-            "sampleLink",
+            "link",
             Set.of("text", "title", "picUrl", "messageUrl"),
             Set.of("text", "title", "picUrl", "messageUrl")
     ),
     ACTION_CARD(
-            "sampleActionCard",
+            "actionCard",
             Set.of("title", "text", "singleTitle", "singleURL"),
             Set.of("title", "text", "singleTitle", "singleURL")
-    ),
-    AUDIO(
-            "sampleAudio",
-            Set.of("mediaId", "duration"),
-            Set.of("mediaId", "duration")
-    ),
-    FILE(
-            "sampleFile",
-            Set.of("mediaId", "fileName", "fileType"),
-            Set.of("mediaId", "fileName", "fileType")
-    ),
-    VIDEO(
-            "sampleVideo",
-            Set.of("duration", "videoMediaId", "videoType", "picMediaId"),
-            Set.of("duration", "videoMediaId", "videoType", "picMediaId")
     );
 
     private final String value;

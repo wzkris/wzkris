@@ -20,19 +20,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 错误日志通知监听器
+ * 异常通知监听器
  * 监听 ErrorLogEvent 事件并发送通知
  *
  * @author wzkris
  */
 @Slf4j
-public class ErrorLogNotifierListener {
+public class ErrorNotifierListener {
 
     private final NotifierManager notifierManager;
 
     private final NotifierProperties properties;
 
-    public ErrorLogNotifierListener(NotifierManager notifierManager, NotifierProperties properties) {
+    public ErrorNotifierListener(NotifierManager notifierManager, NotifierProperties properties) {
         this.notifierManager = notifierManager;
         this.properties = properties;
     }
@@ -51,15 +51,13 @@ public class ErrorLogNotifierListener {
         // 检查是否配置了发送渠道（启用时必须配置）
         NotificationChannelEnum channel = properties.getChannel();
         if (channel == null) {
-            log.warn("错误日志通知已启用，但未配置发送渠道，跳过通知。请配置 wzkris.notifier.error-log.channel");
+            log.warn("错误日志通知已启用，但未配置发送渠道，跳过通知。请配置 notifier.channel");
             return;
         }
 
-        // 根据配置的渠道发送通知
         try {
             sendNotification(channel, event);
         } catch (Exception e) {
-            // ErrorLogEventAppender 已过滤通知相关的 Logger，不会导致循环
             log.error("通过渠道 {} 发送错误日志通知失败", channel, e);
         }
     }
@@ -85,7 +83,7 @@ public class ErrorLogNotifierListener {
      */
     private void sendDingtalkNotification(ErrorLogEvent event) {
         NotifierProperties.DingtalkConfig dingtalkConfig = properties.getDingtalk();
-        if (dingtalkConfig == null || CollectionUtils.isEmpty(dingtalkConfig.getRecipients())) {
+        if (dingtalkConfig == null) {
             log.warn("钉钉通知未配置接收人，跳过发送");
             return;
         }
@@ -108,7 +106,6 @@ public class ErrorLogNotifierListener {
         // 构建消息
         DingtalkMessage message = DingtalkMessage.builder()
                 .templateKey(templateKey)
-                .recipients(dingtalkConfig.getRecipients())
                 .templateParams(templateParams)
                 .build();
 

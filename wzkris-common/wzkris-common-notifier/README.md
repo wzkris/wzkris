@@ -58,21 +58,18 @@ spring:
 
 ```yaml
 notifier:
-  error-log:
-    enabled: true  # 启用错误日志通知
-    channel: DINGTALK  # 指定发送渠道（必须显式配置，如：DINGTALK, EMAIL）
-    dingtalk:      # 钉钉通知配置
-      recipients:  # 接收人列表（钉钉用户ID）
-        - "user1"
-        - "user2"
-      templateKey: MARKDOWN  # 消息模板类型（TEXT 或 MARKDOWN，默认 MARKDOWN）
-    email:         # 邮件通知配置
-      recipients:  # 接收人列表（邮箱地址）
-        - "admin@example.com"
-        - "dev@example.com"
-      fromEmail: "no-reply@example.com"      # 发件人邮箱
-      fromName: "系统通知"                     # 发件人名称
-      templateKey: PLAINTEXT                  # 邮件模板类型（PLAINTEXT 或 HTML，默认 PLAINTEXT）
+  enabled: true  # 启用错误日志通知
+  channel: DINGTALK  # 指定发送渠道（必须显式配置，如：DINGTALK, EMAIL）
+  dingtalk:      # 钉钉通知配置
+    robotWebhook:  # 请求地址
+    templateKey: MARKDOWN  # 消息模板类型（TEXT 或 MARKDOWN，默认 MARKDOWN）
+  email:         # 邮件通知配置
+    recipients:  # 接收人列表（邮箱地址）
+      - "admin@example.com"
+      - "dev@example.com"
+    fromEmail: "no-reply@example.com"      # 发件人邮箱
+    fromName: "系统通知"                     # 发件人名称
+    templateKey: PLAINTEXT                  # 邮件模板类型（PLAINTEXT 或 HTML，默认 PLAINTEXT）
 ```
 
 **工作原理**：
