@@ -19,8 +19,6 @@ public class EmailMessage {
 
     private String content;
 
-    private String fromEmail;
-
     private String fromName;
 
 }

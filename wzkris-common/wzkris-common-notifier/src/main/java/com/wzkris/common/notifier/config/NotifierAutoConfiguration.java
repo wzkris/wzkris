@@ -7,9 +7,9 @@ import com.wzkris.common.notifier.core.Notifier;
 import com.wzkris.common.notifier.core.NotifierManager;
 import com.wzkris.common.notifier.listener.ErrorNotifierListener;
 import com.wzkris.common.notifier.properties.NotifierProperties;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Import;
 @Import({DingtalkConfiguration.class, EmailConfiguration.class})
 @EnableConfigurationProperties(NotifierProperties.class)
 @AutoConfiguration
-public class NotifierAutoConfiguration {
+public class NotifierAutoConfiguration implements InitializingBean {
 
     /**
      * 通知管理器
@@ -47,8 +47,8 @@ public class NotifierAutoConfiguration {
         return new ErrorNotifierListener(notifierManager, properties);
     }
 
-    @PostConstruct
-    public void initErrorLogEventAppender() {
+    @Override
+    public void afterPropertiesSet() throws Exception {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 

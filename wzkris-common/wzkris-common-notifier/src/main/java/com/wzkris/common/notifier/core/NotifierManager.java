@@ -18,10 +18,7 @@ public class NotifierManager {
 
     public NotifierManager(List<Notifier<?>> notifiers, NotifierProperties properties) {
         this.properties = properties;
-        if (notifiers == null || notifiers.isEmpty()) {
-            log.warn("未找到任何通知器实现");
-            return;
-        }
+        Assert.notEmpty(notifiers, "未找到任何通知器实现，请检查配置");
         for (Notifier<?> n : notifiers) {
             NotificationChannelEnum ch = n.getChannel();
             this.notifiers.put(ch, n);

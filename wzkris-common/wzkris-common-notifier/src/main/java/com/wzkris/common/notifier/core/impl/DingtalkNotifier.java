@@ -8,9 +8,9 @@ import com.wzkris.common.notifier.core.Notifier;
 import com.wzkris.common.notifier.domain.DingtalkMessage;
 import com.wzkris.common.notifier.enums.NotificationChannelEnum;
 import com.wzkris.common.notifier.properties.NotifierProperties;
-import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;

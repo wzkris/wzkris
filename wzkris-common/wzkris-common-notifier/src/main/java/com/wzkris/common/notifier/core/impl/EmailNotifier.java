@@ -10,6 +10,8 @@ import com.wzkris.common.notifier.properties.NotifierProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -27,16 +29,23 @@ import java.util.Objects;
  * @date 2025/11/06
  */
 @Slf4j
-public class EmailNotifier implements Notifier<EmailMessage> {
+public class EmailNotifier implements Notifier<EmailMessage>, EnvironmentAware {
 
     private final JavaMailSender mailSender;
 
     private final NotifierProperties notifierProperties;
 
+    private Environment environment;
+
     public EmailNotifier(JavaMailSender mailSender, NotifierProperties notifierProperties) {
         Assert.notNull(mailSender, "邮件发送器不能为空");
         this.mailSender = mailSender;
         this.notifierProperties = notifierProperties;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     @Override
@@ -75,7 +84,6 @@ public class EmailNotifier implements Notifier<EmailMessage> {
         Assert.notEmpty(recipients, "邮件接收人不能为空");
 
         // 获取发件人信息（优先使用配置的）
-        String fromEmail = emailConfig.getFromEmail();
         String fromName = emailConfig.getFromName();
 
         // 获取主题和内容
@@ -87,7 +95,6 @@ public class EmailNotifier implements Notifier<EmailMessage> {
                 .recipients(recipients)
                 .subject(subject)
                 .content(content)
-                .fromEmail(fromEmail)
                 .fromName(fromName)
                 .build();
     }
@@ -98,7 +105,7 @@ public class EmailNotifier implements Notifier<EmailMessage> {
     private NotificationResult sendTextEmail(EmailMessage message) {
         try {
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(message.getFromName() + " <" + message.getFromEmail() + ">");
+            simpleMailMessage.setFrom(getFrom(message.getFromName()));
             simpleMailMessage.setTo(message.getRecipients().toArray(new String[0]));
             simpleMailMessage.setSubject(message.getSubject());
             simpleMailMessage.setText(message.getContent());
@@ -121,7 +128,7 @@ public class EmailNotifier implements Notifier<EmailMessage> {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            helper.setFrom(message.getFromName() + " <" + message.getFromEmail() + ">");
+            helper.setFrom(getFrom(message.getFromName()));
             helper.setTo(message.getRecipients().toArray(new String[0]));
             helper.setSubject(message.getSubject());
             helper.setText(message.getContent(), true);
@@ -134,6 +141,10 @@ public class EmailNotifier implements Notifier<EmailMessage> {
             log.error("发送HTML邮件失败", e);
             throw new RuntimeException("发送邮件失败: " + e.getMessage(), e);
         }
+    }
+
+    private String getFrom(String fromName) {
+        return fromName + " <" + environment.resolvePlaceholders("${spring.mail.username}") + ">";
     }
 
 }

@@ -69,11 +69,6 @@ public class NotifierProperties {
         private List<String> recipients = new ArrayList<>();
 
         /**
-         * 发件人邮箱
-         */
-        private String fromEmail;
-
-        /**
          * 发件人名称
          */
         private String fromName = "系统异常通知";

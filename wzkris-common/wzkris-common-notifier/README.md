@@ -38,7 +38,7 @@ notifier:
 
 ### 3) 配置邮件（可选）
 
-模块在存在 `JavaMailSender` Bean 时自动启用邮件通知器。可通过 Spring Boot 邮件配置快速获得：
+模块在存在 `JavaMailSender` Bean 时自动启用邮件通知器。需要配置 Spring 邮件相关配置（`spring.mail.*`），发件人邮箱从 `spring.mail.username` 读取：
 
 ```yaml
 spring:
@@ -61,7 +61,6 @@ notifier:
     recipients:  # 接收人列表（邮箱地址）
       - "admin@example.com"
       - "dev@example.com"
-    fromEmail: "no-reply@example.com"      # 发件人邮箱（可选）
     fromName: "系统通知"                     # 发件人名称（默认 "系统异常通知"）
     templateKey: PLAINTEXT                  # 邮件模板类型：PLAINTEXT 或 HTML（默认 PLAINTEXT）
 ```
@@ -82,8 +81,7 @@ notifier:
     recipients:  # 接收人列表（邮箱地址）
       - "admin@example.com"
       - "dev@example.com"
-    fromEmail: "no-reply@example.com"      # 发件人邮箱
-    fromName: "系统通知"                     # 发件人名称
+    fromName: "系统通知"                     # 发件人名称（默认 "系统异常通知"）
     templateKey: PLAINTEXT                  # 邮件模板类型（PLAINTEXT 或 HTML，默认 PLAINTEXT）
 ```
 
@@ -99,9 +97,9 @@ notifier:
 - `dingtalk.webhooks`: 钉钉 Webhook 配置（使用钉钉渠道时必填）
 - `dingtalk.templateKey`: 钉钉消息模板类型，支持 `TEXT`、`MARKDOWN`、`LINK`、`ACTION_CARD`（默认 `TEXT`）
 - `email.recipients`: 邮件接收人列表（使用邮件渠道时必填）
-- `email.fromEmail`: 发件人邮箱（可选，建议配置）
 - `email.fromName`: 发件人名称（默认 "系统异常通知"）
 - `email.templateKey`: 邮件模板类型，支持 `PLAINTEXT`、`HTML`（默认 `PLAINTEXT`）
+- **发件人邮箱**：从 `spring.mail.username` 配置中读取，无需在 `notifier.email` 中单独配置
 
 **注意事项**：
 - 必须配置 `enabled: true` 才会启用错误日志通知
@@ -253,8 +251,7 @@ public class MailService {
             .recipients(java.util.List.of("to1@example.com", "to2@example.com"))
             .subject("主题")
             .content("正文内容")
-            .fromEmail("no-reply@example.com")
-            .fromName("系统通知")
+            .fromName("系统通知")  // 发件人邮箱从 spring.mail.username 读取
             .build();
 
     return emailNotifier.send(message);
@@ -347,7 +344,7 @@ public class WechatWorkNotifier implements Notifier<WechatWorkMessage> {
 
 - **装配条件**：
   - 钉钉通知器：需 `notifier.enabled=true` 且 `notifier.channel=DINGTALK`，并配置 `notifier.dingtalk.webhooks`
-  - 邮件通知器：需存在 `JavaMailSender` Bean（通常由 `spring-boot-starter-mail` 提供），并配置 `notifier.email.recipients`
+  - 邮件通知器：需存在 `JavaMailSender` Bean（通常由 `spring-context-support` 提供），并配置 `notifier.email.recipients` 和 `spring.mail.username`（作为发件人邮箱）
 - **类型安全**：`Notifier<T>` 为泛型，不同渠道使用各自的消息模型（如 `DingtalkMessage`、`EmailMessage`）
 - **异常与结果**：统一返回 `NotificationResult`，包含是否成功、消息ID与错误信息
 - **多webhook支持**：钉钉通知器支持配置多个webhook，可以通过 `NotificationContext.webhookKey` 或 `DingtalkMessage.webhookKey` 指定发送到不同的群聊
@@ -390,13 +387,13 @@ public class WechatWorkNotifier implements Notifier<WechatWorkMessage> {
 | `notifier.enabled` | 是否启用通知模块 | 是 | false |
 | `notifier.channel` | 通知渠道（使用邮件时设置为 EMAIL） | 是 | - |
 | `notifier.email.recipients` | 接收人列表（邮箱地址） | 是 | - |
-| `notifier.email.fromEmail` | 发件人邮箱 | 否 | - |
 | `notifier.email.fromName` | 发件人名称 | 否 | 系统异常通知 |
 | `notifier.email.templateKey` | 邮件模板类型（PLAINTEXT 或 HTML） | 否 | PLAINTEXT |
 
 **注意**：
-- 邮件通知器需要配置 Spring Boot 邮件相关配置（`spring.mail.*`）
+- 邮件通知器需要配置 Spring Boot 邮件相关配置（`spring.mail.*`），特别是 `spring.mail.username`（作为发件人邮箱）
 - `recipients` 必须配置，至少包含一个接收人
+- 发件人邮箱从 `spring.mail.username` 配置中读取，无需在 `notifier.email` 中单独配置 `fromEmail`
 - 可以通过 `NotificationContext.recipients` 动态指定接收人，会覆盖配置的接收人列表
 
 
