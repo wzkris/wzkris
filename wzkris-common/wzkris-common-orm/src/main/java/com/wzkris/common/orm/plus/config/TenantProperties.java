@@ -15,7 +15,6 @@ import java.util.Set;
  */
 @Data
 @RefreshScope
-@Configuration
 @ConfigurationProperties(prefix = "tenant")
 public class TenantProperties {
 

@@ -3,7 +3,6 @@ package com.wzkris.common.captcha.properties;
 import com.wzkris.common.captcha.enums.StoreTypeEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * cap 属性配置
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
  * @date 2025/06/16 11:16
  **/
 @Data
-@Configuration
 @ConfigurationProperties("captcha")
 public class CapProperties {
 

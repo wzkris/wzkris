@@ -2,13 +2,11 @@ package com.wzkris.common.swagger.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author wzkris
  */
 @Data
-@Configuration
 @ConfigurationProperties(prefix = "springdoc")
 public class SwaggerProperties {
 

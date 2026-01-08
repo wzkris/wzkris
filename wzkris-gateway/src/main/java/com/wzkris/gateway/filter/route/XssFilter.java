@@ -4,7 +4,6 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.properties.XssProperties;
 import io.netty.buffer.ByteBufAllocator;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
@@ -28,7 +27,6 @@ import java.nio.charset.StandardCharsets;
  */
 @Order(-100)
 @Component
-@ConditionalOnProperty(value = "xss.enabled", havingValue = "true")
 public class XssFilter implements GlobalFilter {
 
     public static final String RE_HTML_MARK = "(<[^<]*?>)|(<[\\s]*?/[^<]*?>)|(<[^<]*?/[\\s]*?>)";

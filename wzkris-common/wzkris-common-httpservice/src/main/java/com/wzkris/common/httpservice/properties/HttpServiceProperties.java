@@ -3,7 +3,6 @@ package com.wzkris.common.httpservice.properties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author : wzkris
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
  * @date : 2025/06/10 15:00
  */
 @Data
-@Configuration
 @RefreshScope
 @ConfigurationProperties(prefix = "http-service")
 public class HttpServiceProperties {

@@ -2,7 +2,6 @@ package com.wzkris.common.weixin.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
@@ -12,7 +11,6 @@ import java.util.List;
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
  */
 @Data
-@Configuration
 @ConfigurationProperties(prefix = "weixin.mp")
 public class WxMpProperties {
 
