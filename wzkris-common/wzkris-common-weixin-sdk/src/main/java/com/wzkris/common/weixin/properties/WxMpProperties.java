@@ -20,11 +20,6 @@ public class WxMpProperties {
     private boolean enable = false;
 
     /**
-     * 是否使用redis存储access token
-     */
-    private boolean useRedis = false;
-
-    /**
      * 多个公众号配置信息
      */
     private List<MpConfig> configs;

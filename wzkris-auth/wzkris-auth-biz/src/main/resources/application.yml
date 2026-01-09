@@ -13,7 +13,6 @@ spring:
 weixin:
   miniapp:
     enable: true
-    use-redis: true
     configs:
       - appid: xxx
         secret: xxx

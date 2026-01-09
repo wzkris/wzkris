@@ -18,11 +18,6 @@ public class WxMaProperties {
     private boolean enable = false;
 
     /**
-     * 是否使用redis存储access token
-     */
-    private boolean useRedis = false;
-
-    /**
      * 多个小程序配置信息
      */
     private List<Config> configs;
