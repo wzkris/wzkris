@@ -47,6 +47,7 @@ public class CustomerInfoController extends BaseController {
         customerInfoVO.setPhoneNumber(customerInfoDO.getPhoneNumber());
         customerInfoVO.setGender(customerInfoDO.getGender());
         customerInfoVO.setAvatar(customerInfoDO.getAvatar());
+        customerInfoVO.setLoginDate(customerInfoDO.getLoginDate());
 
         return ok(customerInfoVO);
     }

@@ -5,6 +5,8 @@ import com.wzkris.common.core.enums.SensitiveStrategyEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @Schema(description = "客户信息")
 public class CustomerInfoVO {
@@ -21,5 +23,8 @@ public class CustomerInfoVO {
 
     @Schema(description = "用户性别")
     private String gender;
+
+    @Schema(description = "登录时间")
+    private Date loginDate;
 
 }
