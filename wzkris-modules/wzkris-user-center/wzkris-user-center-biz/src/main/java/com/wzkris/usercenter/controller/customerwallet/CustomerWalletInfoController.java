@@ -7,7 +7,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.CustomerUtil;
 import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
-import com.wzkris.usercenter.domain.req.customer.CustomerWalletRecordQueryReq;
+import com.wzkris.usercenter.domain.req.customerwallet.CustomerWalletRecordQueryReq;
 import com.wzkris.usercenter.domain.vo.customerwallet.CustomerWalletInfoVO;
 import com.wzkris.usercenter.mapper.CustomerWalletInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;

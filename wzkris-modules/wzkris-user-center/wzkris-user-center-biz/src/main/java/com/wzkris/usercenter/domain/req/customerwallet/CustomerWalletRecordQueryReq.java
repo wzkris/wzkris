@@ -1,4 +1,4 @@
-package com.wzkris.usercenter.domain.req.customer;
+package com.wzkris.usercenter.domain.req.customerwallet;
 
 import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.web.model.QueryReq;

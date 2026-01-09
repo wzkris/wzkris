@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.Range;
 @Data
 @AutoMappers({@AutoMapper(target = MenuInfoDO.class)})
 @Schema(description = "菜单管理添加修改参数体")
-public class MenuManageReq {
+public class MenuMngReq {
 
     private Long menuId;
 
