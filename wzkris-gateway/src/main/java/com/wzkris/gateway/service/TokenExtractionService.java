@@ -48,22 +48,22 @@ public class TokenExtractionService {
 
         String adminToken = getAdminToken(request);
         if (StringUtil.isNotBlank(adminToken)) {
-            return validatePrincipal(AuthTypeEnum.ADMIN.getValue(), adminToken);
+            return validate(AuthTypeEnum.ADMIN, adminToken);
         }
 
         String tenantToken = getTenantToken(request);
         if (StringUtil.isNotBlank(tenantToken)) {
-            return validatePrincipal(AuthTypeEnum.TENANT.getValue(), tenantToken);
+            return validate(AuthTypeEnum.TENANT, tenantToken);
         }
 
         String customerToken = getCustomerToken(request);
         if (StringUtil.isNotBlank(customerToken)) {
-            return validatePrincipal(AuthTypeEnum.CUSTOMER.getValue(), customerToken);
+            return validate(AuthTypeEnum.CUSTOMER, customerToken);
         }
 
         String clientToken = getClientToken(request);
         if (StringUtil.isNotBlank(clientToken)) {
-            return validatePrincipal(AuthTypeEnum.CLIENT.getValue(), clientToken);
+            return validate(AuthTypeEnum.CLIENT, clientToken);
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
@@ -73,10 +73,10 @@ public class TokenExtractionService {
     /**
      * 调用认证服务验证Token
      */
-    private Mono<Authentication> validatePrincipal(
-            String authType,
+    private Mono<Authentication> validate(
+            AuthTypeEnum authTypeEnum,
             String token) {
-        TokenReq tokenReq = new TokenReq(authType, token);
+        TokenReq tokenReq = new TokenReq(authTypeEnum.getValue(), token);
 
         return Mono.fromCallable(() -> tokenHttpService.introspect(tokenReq))
                 .subscribeOn(Schedulers.boundedElastic())

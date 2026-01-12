@@ -28,14 +28,14 @@ public class CustomHeaderConstants {
     public static final String X_REQUEST_TIME = "X-Request-Time";
 
     /**
+     * security-context 信息
+     */
+    public static final String X_SECURITY_PRINCIPAL = "X-Security-Principal";
+
+    /**
      * 管理员Token
      */
     public static final String X_ADMIN_TOKEN = "X-Admin-Token";
-
-    /**
-     * 管理员信息
-     */
-    public static final String X_ADMIN_INFO = "X-Admin-Info";
 
     /**
      * 租户Token
@@ -43,28 +43,13 @@ public class CustomHeaderConstants {
     public static final String X_TENANT_TOKEN = "X-Tenant-Token";
 
     /**
-     * 租户信息
-     */
-    public static final String X_TENANT_INFO = "X-Tenant-Info";
-
-    /**
      * 客户Token
      */
     public static final String X_CUSTOMER_TOKEN = "X-Customer-Token";
 
     /**
-     * 客户信息
-     */
-    public static final String X_CUSTOMER_INFO = "X-Customer-Info";
-
-    /**
      * 客户端Token
      */
     public static final String X_CLIENT_TOKEN = "X-Client-Token";
-
-    /**
-     * 客户端信息
-     */
-    public static final String X_CLIENT_INFO = "X-Client-Info";
 
 }

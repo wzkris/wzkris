@@ -1,11 +1,8 @@
 package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.UserPrincipal;
-import com.wzkris.common.core.model.domain.LoginAdmin;
-import com.wzkris.common.core.model.domain.LoginClient;
-import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
@@ -53,70 +49,27 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 
-        if (generateAdmin(request, ctx)) {
-            return ctx;
-        }
-
-        if (generateTenant(request, ctx)) {
-            return ctx;
-        }
-
-        if (generateCustomer(request, ctx)) {
-            return ctx;
-        }
-
-        if (generateClient(request, ctx)) {
-            return ctx;
+        final String context = request.getHeader(CustomHeaderConstants.X_SECURITY_PRINCIPAL);
+        if (StringUtil.isNotBlank(context)) {
+            UserPrincipal userPrincipal = JsonUtil.parseObject(context, UserPrincipal.class);
+            UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(userPrincipal,
+                    getToken(request, userPrincipal.getType()),
+                    AuthorityUtils.createAuthorityList(userPrincipal.getPerms()));
+            authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
+            ctx.setAuthentication(authenticationToken);
         }
 
         return ctx;
     }
 
-    private boolean generateAdmin(HttpServletRequest request, SecurityContext ctx) {
-        final String userinfo = request.getHeader(CustomHeaderConstants.X_ADMIN_INFO);
-        if (StringUtil.isNotBlank(userinfo)) {
-            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(userinfo, LoginAdmin.class), request,
-                    request.getHeader(CustomHeaderConstants.X_ADMIN_TOKEN)));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean generateTenant(HttpServletRequest request, SecurityContext ctx) {
-        final String tenantinfo = request.getHeader(CustomHeaderConstants.X_TENANT_INFO);
-        if (StringUtil.isNotBlank(tenantinfo)) {
-            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(tenantinfo, LoginTenant.class), request,
-                    request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN)));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean generateCustomer(HttpServletRequest request, SecurityContext ctx) {
-        final String customerinfo = request.getHeader(CustomHeaderConstants.X_CUSTOMER_INFO);
-        if (StringUtil.isNotBlank(customerinfo)) {
-            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(customerinfo, LoginCustomer.class), request,
-                    request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN)));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean generateClient(HttpServletRequest request, SecurityContext ctx) {
-        final String clientInfo = request.getHeader(CustomHeaderConstants.X_CLIENT_INFO);
-        if (StringUtil.isNotBlank(clientInfo)) {
-            ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(clientInfo, LoginClient.class), request,
-                    request.getHeader(CustomHeaderConstants.X_CLIENT_TOKEN)));
-            return true;
-        }
-        return false;
-    }
-
-    private Authentication createAuthentication(UserPrincipal principal, HttpServletRequest request, String token) {
-        UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(principal, token,
-                AuthorityUtils.createAuthorityList((principal).getPerms()));
-        authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
-        return authenticationToken;
+    private String getToken(HttpServletRequest request, String type) {
+        return switch (AuthTypeEnum.fromValue(type)) {
+            case ADMIN -> request.getHeader(CustomHeaderConstants.X_ADMIN_TOKEN);
+            case TENANT -> request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN);
+            case CUSTOMER -> request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN);
+            case CLIENT -> request.getHeader(CustomHeaderConstants.X_CLIENT_TOKEN);
+            default -> null;
+        };
     }
 
     @Override

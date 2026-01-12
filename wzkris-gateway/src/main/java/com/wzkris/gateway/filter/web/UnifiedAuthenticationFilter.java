@@ -3,10 +3,6 @@ package com.wzkris.gateway.filter.web;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
-import com.wzkris.common.core.model.domain.LoginAdmin;
-import com.wzkris.common.core.model.domain.LoginClient;
-import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.gateway.properties.PermitAllProperties;
 import com.wzkris.gateway.service.TokenExtractionService;
@@ -78,11 +74,10 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
                     // 根据 principal 类型获取对应的请求头名称并添加身份信息
                     ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
 
-                    requestBuilder.header(getInfoHeader(authentication.getPrincipal()), JsonUtil.toJsonString(authentication.getPrincipal()));
+                    requestBuilder.header(CustomHeaderConstants.X_SECURITY_PRINCIPAL, JsonUtil.toJsonString(authentication.getPrincipal()));
 
                     ServerWebExchange mutatedExchange = exchange.mutate()
                             .request(requestBuilder.build())
-                            .principal(Mono.just(authentication))
                             .build();
 
                     // 将 Authentication 设置到 SecurityContext 并传播到响应式链
@@ -103,25 +98,6 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
                     }
                     return WebFluxUtil.writeResponse(exchangeResponse, BizBaseCodeEnum.SYSTEM_ERROR);
                 });
-    }
-
-    /**
-     * 根据 principal 类型获取对应的请求头名称
-     *
-     * @param principal 用户主体
-     * @return 请求头名称，如果类型不匹配则返回 null
-     */
-    private String getInfoHeader(Object principal) {
-        if (principal instanceof LoginAdmin) {
-            return CustomHeaderConstants.X_ADMIN_INFO;
-        } else if (principal instanceof LoginTenant) {
-            return CustomHeaderConstants.X_TENANT_INFO;
-        } else if (principal instanceof LoginCustomer) {
-            return CustomHeaderConstants.X_CUSTOMER_INFO;
-        } else if (principal instanceof LoginClient) {
-            return CustomHeaderConstants.X_CLIENT_INFO;
-        }
-        return null;
     }
 
     /**
