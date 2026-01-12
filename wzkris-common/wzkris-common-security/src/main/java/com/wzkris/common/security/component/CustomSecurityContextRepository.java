@@ -11,7 +11,6 @@ import com.wzkris.common.core.utils.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -107,7 +106,7 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
         final String clientInfo = request.getHeader(CustomHeaderConstants.X_CLIENT_INFO);
         if (StringUtil.isNotBlank(clientInfo)) {
             ctx.setAuthentication(createAuthentication(JsonUtil.parseObject(clientInfo, LoginClient.class), request,
-                    request.getHeader(HttpHeaders.AUTHORIZATION)));
+                    request.getHeader(CustomHeaderConstants.X_CLIENT_TOKEN)));
             return true;
         }
         return false;

@@ -2,6 +2,7 @@ package com.wzkris.common.redis.aspect;
 
 import com.wzkris.common.core.function.ThrowableSupplier;
 import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.annotation.GlobalCache;
 import com.wzkris.common.redis.util.DistLockTemplate;
 import com.wzkris.common.redis.util.RedisUtil;
@@ -54,39 +55,34 @@ public class GlobalCacheAspect {
     public Object around(ProceedingJoinPoint point, GlobalCache globalCache) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
 
-        try {
-            String globalKey = buildCacheKey(globalCache);
+        String globalKey = buildCacheKey(globalCache, methodSignature.getName());
 
-            if (globalKey == null) {
-                return point.proceed();
-            }
-
-            Object cachedValue = RedisUtil.getObj(globalKey, methodSignature.getReturnType());
-
-            if (cachedValue != null) {
-                return cachedValue;
-            }
-
-            Object result;
-            if (globalCache.sync()) {
-                result = DistLockTemplate.lockAndExecute(globalKey, 1_500,
-                        (ThrowableSupplier<Object, Throwable>) () -> {
-                            Object doubleCheck = RedisUtil.getObj(globalKey, methodSignature.getReturnType());
-                            if (doubleCheck != null) return doubleCheck;
-                            return proceedAndRewrite(point, globalCache.ttl(), globalKey);
-                        });
-            } else {
-                result = proceedAndRewrite(point, globalCache.ttl(), globalKey);
-            }
-            return result;
-        } catch (Exception e) {
-            log.error("缓存切面异常", e);
-            throw e;
+        if (globalKey == null) {
+            return point.proceed();
         }
+
+        Object cachedValue = RedisUtil.getObj(globalKey, methodSignature.getReturnType());
+
+        if (cachedValue != null) {
+            return cachedValue;
+        }
+
+        Object result;
+        if (globalCache.sync()) {
+            result = DistLockTemplate.lockAndExecute(globalKey, 1_500,
+                    (ThrowableSupplier<Object, Throwable>) () -> {
+                        Object doubleCheck = RedisUtil.getObj(globalKey, methodSignature.getReturnType());
+                        if (doubleCheck != null) return doubleCheck;
+                        return proceedAndRewrite(point, globalCache.ttl(), globalKey);
+                    });
+        } else {
+            result = proceedAndRewrite(point, globalCache.ttl(), globalKey);
+        }
+        return result;
     }
 
-    private String buildCacheKey(GlobalCache globalCache) {
-        String globalKey = globalCache.keyPrefix();
+    private String buildCacheKey(GlobalCache globalCache, String methodName) {
+        String globalKey = StringUtil.defaultIfBlank(globalCache.keyPrefix(), methodName);
         if (StringUtils.isNotBlank(globalCache.key())) {
             String key = evaluateExpression(globalCache.key());
             globalKey = globalKey + ":" + key;

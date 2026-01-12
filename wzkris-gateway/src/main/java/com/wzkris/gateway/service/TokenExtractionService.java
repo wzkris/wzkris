@@ -8,14 +8,9 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.UserPrincipal;
-import com.wzkris.common.core.model.domain.LoginAdmin;
-import com.wzkris.common.core.model.domain.LoginClient;
-import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginTenant;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -50,22 +45,22 @@ public class TokenExtractionService {
 
         String adminToken = getAdminToken(request);
         if (StringUtil.isNotBlank(adminToken)) {
-            return validatePrincipal(AuthTypeEnum.ADMIN.getValue(), adminToken, LoginAdmin.class);
+            return validatePrincipal(AuthTypeEnum.ADMIN.getValue(), adminToken);
         }
 
         String tenantToken = getTenantToken(request);
         if (StringUtil.isNotBlank(tenantToken)) {
-            return validatePrincipal(AuthTypeEnum.TENANT.getValue(), tenantToken, LoginTenant.class);
+            return validatePrincipal(AuthTypeEnum.TENANT.getValue(), tenantToken);
         }
 
         String customerToken = getCustomerToken(request);
         if (StringUtil.isNotBlank(customerToken)) {
-            return validatePrincipal(AuthTypeEnum.CUSTOMER.getValue(), customerToken, LoginCustomer.class);
+            return validatePrincipal(AuthTypeEnum.CUSTOMER.getValue(), customerToken);
         }
 
         String clientToken = getClientToken(request);
         if (StringUtil.isNotBlank(clientToken)) {
-            return validatePrincipal(AuthTypeEnum.CLIENT.getValue(), clientToken, LoginClient.class);
+            return validatePrincipal(AuthTypeEnum.CLIENT.getValue(), clientToken);
         }
 
         // 理论上不会执行到这里，因为hasAnyToken已经检查过
@@ -75,17 +70,16 @@ public class TokenExtractionService {
     /**
      * 调用认证服务验证Token
      */
-    private <T extends UserPrincipal> Mono<T> validatePrincipal(
+    private Mono<UserPrincipal> validatePrincipal(
             String authType,
-            String token,
-            Class<T> targetType) {
+            String token) {
         TokenReq tokenReq = new TokenReq(authType, token);
 
         return Mono.fromCallable(() -> tokenHttpService.introspect(tokenReq))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(tokenResponse -> {
                     if (tokenResponse == null || !tokenResponse.isSuccess()) {
-                        log.error("Token validation failed. {}", tokenResponse);
+                        log.info("Token validation failed. {}", tokenResponse);
                         String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
                         return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
                     } else {
@@ -93,11 +87,7 @@ public class TokenExtractionService {
                         if (principal == null) {
                             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Principal not found")));
                         }
-                        if (!targetType.isInstance(principal)) {
-                            log.error("Principal type mismatch. expected: {}, actual: {}", targetType.getSimpleName(), principal.getClass().getSimpleName());
-                            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid principal type")));
-                        }
-                        return Mono.just(targetType.cast(principal));
+                        return Mono.just(principal);
                     }
                 });
     }
@@ -110,11 +100,11 @@ public class TokenExtractionService {
                         request.getHeaders().getFirst(CustomHeaderConstants.X_ADMIN_TOKEN),
                         request.getHeaders().getFirst(CustomHeaderConstants.X_TENANT_TOKEN),
                         request.getHeaders().getFirst(CustomHeaderConstants.X_CUSTOMER_TOKEN),
-                        request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION),
+                        request.getHeaders().getFirst(CustomHeaderConstants.X_CLIENT_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_ADMIN_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_TENANT_TOKEN),
                         request.getQueryParams().getFirst(QueryParamConstants.X_CUSTOMER_TOKEN),
-                        request.getQueryParams().getFirst(HttpHeaders.AUTHORIZATION)
+                        request.getQueryParams().getFirst(QueryParamConstants.X_CLIENT_TOKEN)
                 )
                 .anyMatch(StringUtil::isNotBlank);
     }
@@ -153,11 +143,11 @@ public class TokenExtractionService {
     }
 
     private String getClientToken(ServerHttpRequest request) {
-        String token = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        String token = request.getHeaders().getFirst(CustomHeaderConstants.X_CLIENT_TOKEN);
         if (StringUtil.isNotBlank(token)) {
             return token;
         }
-        return request.getQueryParams().getFirst(HttpHeaders.AUTHORIZATION);
+        return request.getQueryParams().getFirst(QueryParamConstants.X_CLIENT_TOKEN);
     }
 
 }

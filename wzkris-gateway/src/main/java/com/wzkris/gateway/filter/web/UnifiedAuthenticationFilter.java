@@ -70,9 +70,8 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
             return WebFluxUtil.writeResponse(exchange.getResponse(), BizBaseCodeEnum.ACCESS_DENIED);
         }
 
-        // 2) 白名单放行
-        if (isPathPermitted(permitAllProperties.getIgnores(), path)
-                || isPathPermitted(permitAllAnnotations, path)) {
+        // 2) 白名单处理
+        if (isPermitAllPath(path)) {
             return chain.filter(exchange);
         }
 
@@ -124,6 +123,14 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
             return CustomHeaderConstants.X_CLIENT_INFO;
         }
         return null;
+    }
+
+    /**
+     * 判断是否为白名单路径
+     */
+    private boolean isPermitAllPath(String path) {
+        return isPathPermitted(permitAllProperties.getIgnores(), path)
+                || isPathPermitted(permitAllAnnotations, path);
     }
 
     private boolean isPathPermitted(Collection<String> collections, String url) {

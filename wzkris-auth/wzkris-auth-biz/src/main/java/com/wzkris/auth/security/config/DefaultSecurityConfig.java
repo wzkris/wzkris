@@ -28,6 +28,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
  * 授权服务器的安全配置
@@ -44,6 +45,7 @@ public class DefaultSecurityConfig {
     @Order(0)
     public SecurityFilterChain defaultSecurityFilterChain(
             HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
             LoginEndpointFilter loginEndpointFilter,
             TokenService tokenService)
             throws Exception {
@@ -53,6 +55,9 @@ public class DefaultSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .securityContext(securityContextConfigurer -> securityContextConfigurer
+                        .securityContextRepository(securityContextRepository) // SecurityContextHolderFilter
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
                 )

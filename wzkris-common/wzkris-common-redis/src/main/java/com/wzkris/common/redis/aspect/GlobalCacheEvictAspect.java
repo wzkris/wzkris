@@ -1,6 +1,7 @@
 package com.wzkris.common.redis.aspect;
 
 import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.redis.annotation.GlobalCacheEvict;
 import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,19 +28,13 @@ public class GlobalCacheEvictAspect {
 
     @After("@annotation(globalCacheEvict)")
     public void after(JoinPoint point, GlobalCacheEvict globalCacheEvict) {
-        String methodName = point.getSignature().getName();
+        String globalKey = buildCacheKey(globalCacheEvict, point.getSignature().getName());
 
-        try {
-            String globalKey = buildCacheKey(globalCacheEvict);
-
-            RedisUtil.delObj(globalKey);
-        } catch (Exception e) {
-            log.error("缓存驱逐切面执行异常，方法: {}", methodName, e);
-        }
+        RedisUtil.delObj(globalKey);
     }
 
-    private String buildCacheKey(GlobalCacheEvict globalCache) {
-        String globalKey = globalCache.keyPrefix();
+    private String buildCacheKey(GlobalCacheEvict globalCache, String methodName) {
+        String globalKey = StringUtil.defaultIfBlank(globalCache.keyPrefix(), methodName);
         if (StringUtils.isNotBlank(globalCache.key())) {
             String key = evaluateExpression(globalCache.key());
             globalKey = globalKey + ":" + key;

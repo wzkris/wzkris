@@ -58,6 +58,11 @@ public class CustomHeaderConstants {
     public static final String X_CUSTOMER_INFO = "X-Customer-Info";
 
     /**
+     * 客户端Token
+     */
+    public static final String X_CLIENT_TOKEN = "X-Client-Token";
+
+    /**
      * 客户端信息
      */
     public static final String X_CLIENT_INFO = "X-Client-Info";
