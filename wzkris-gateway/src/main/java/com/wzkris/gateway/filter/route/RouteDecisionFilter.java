@@ -11,6 +11,9 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -47,8 +50,11 @@ public class RouteDecisionFilter implements GlobalFilter {
      * 处理OPEN状态：基于用户hint进行路由
      */
     private Mono<Void> handleOpenStatus(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return exchange.getPrincipal()
-                .map(principal -> (UserPrincipal) principal)
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .filter(UserPrincipal.class::isInstance)
+                .cast(UserPrincipal.class)
                 .map(UserPrincipal::getHint)
                 .map(userHint -> {
                     // 如果用户hint为空，则使用默认hint
@@ -62,7 +68,11 @@ public class RouteDecisionFilter implements GlobalFilter {
                     return exchange.mutate().request(request).build();
                 })
                 .defaultIfEmpty(exchange)
-                .flatMap(chain::filter);
+                .flatMap(chain::filter)
+                .onErrorResume(throwable -> {
+                    // 如果获取不到用户信息，静默处理，继续使用原exchange
+                    return chain.filter(exchange);
+                });
     }
 
     /**

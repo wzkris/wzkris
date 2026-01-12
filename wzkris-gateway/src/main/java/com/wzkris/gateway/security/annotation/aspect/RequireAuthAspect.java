@@ -4,7 +4,6 @@ import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
 import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.gateway.filter.web.UnifiedAuthenticationFilter;
 import com.wzkris.gateway.security.annotation.RequireAuth;
 import com.wzkris.gateway.security.checker.AuthChecker;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +12,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.reactivestreams.Publisher;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -64,47 +65,47 @@ public class RequireAuthAspect {
     /**
      * 验证权限
      */
-    private Publisher<Object> validatePermission(ProceedingJoinPoint point, RequireAuth requireAuth) {
-        return Mono.deferContextual(contextView -> {
-            UserPrincipal principal = UnifiedAuthenticationFilter.getPrincipal(contextView)
-                    .orElse(null);
+    private Mono<Object> validatePermission(ProceedingJoinPoint point, RequireAuth requireAuth) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .filter(UserPrincipal.class::isInstance)
+                .cast(UserPrincipal.class)
+                .switchIfEmpty(Mono.error(new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc())))
+                .flatMap(principal -> {
+                    boolean passed = AuthChecker.check(principal, requireAuth);
+                    if (!passed) {
+                        String authType = requireAuth.authType().getValue();
+                        String[] permissions = requireAuth.permissions();
 
-            if (principal == null) {
-                return Mono.error(new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc()));
-            }
+                        log.error("'{}'权限验证失败 - 方法: {}, 要求类型: {}, 要求权限: {}",
+                                principal.getName(),
+                                point.getTarget().getClass().getName() + StringUtil.DOT + ((MethodSignature) point.getSignature()).getMethod().getName(),
+                                authType,
+                                Arrays.toString(permissions));
 
-            boolean passed = AuthChecker.check(principal, requireAuth);
-            if (!passed) {
-                String authType = requireAuth.authType().getValue();
-                String[] permissions = requireAuth.permissions();
+                        return Mono.error(new ResultException(403, BizBaseCodeEnum.ACCESS_DENIED.value(), BizBaseCodeEnum.ACCESS_DENIED.desc()));
+                    }
 
-                log.error("'{}'权限验证失败 - 方法: {}, 要求类型: {}, 要求权限: {}",
-                        principal.getName(),
-                        point.getTarget().getClass().getName() + StringUtil.DOT + ((MethodSignature) point.getSignature()).getMethod().getName(),
-                        authType,
-                        Arrays.toString(permissions));
+                    try {
+                        Object result = point.proceed();
 
-                return Mono.error(new ResultException(403, BizBaseCodeEnum.ACCESS_DENIED.value(), BizBaseCodeEnum.ACCESS_DENIED.desc()));
-            }
-
-            try {
-                Object result = point.proceed();
-
-                if (result instanceof Mono) {
-                    return ((Mono<?>) result).cast(Object.class);
-                }
-                if (result instanceof Flux) {
-                    return ((Flux<?>) result).collectList().cast(Object.class);
-                }
-                if (result instanceof Publisher) {
-                    return Mono.from((Publisher<?>) result).cast(Object.class);
-                }
-                return Mono.justOrEmpty(result);
-            } catch (Throwable e) {
-                log.error("切面发生异常: ", e);
-                return Mono.error(e);
-            }
-        });
+                        if (result instanceof Mono<?> mono) {
+                            return mono.cast(Object.class);
+                        }
+                        if (result instanceof Flux<?> flux) {
+                            return flux.collectList().cast(Object.class);
+                        }
+                        // 处理其他实现了 Publisher 接口的类型（非 Mono/Flux）
+                        if (result instanceof org.reactivestreams.Publisher<?> publisher) {
+                            return Mono.from(publisher).cast(Object.class);
+                        }
+                        return Mono.justOrEmpty(result);
+                    } catch (Throwable e) {
+                        log.error("切面发生异常: ", e);
+                        return Mono.error(e);
+                    }
+                });
     }
 
 }

@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -38,7 +41,7 @@ public class TokenExtractionService {
      * @param request 请求对象
      * @return 用户信息
      */
-    public Mono<? extends UserPrincipal> getCurrentPrincipal(ServerHttpRequest request) {
+    public Mono<? extends Authentication> getCurrentPrincipal(ServerHttpRequest request) {
         if (!hasAnyToken(request)) {
             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
         }
@@ -70,7 +73,7 @@ public class TokenExtractionService {
     /**
      * 调用认证服务验证Token
      */
-    private Mono<UserPrincipal> validatePrincipal(
+    private Mono<Authentication> validatePrincipal(
             String authType,
             String token) {
         TokenReq tokenReq = new TokenReq(authType, token);
@@ -87,7 +90,10 @@ public class TokenExtractionService {
                         if (principal == null) {
                             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Principal not found")));
                         }
-                        return Mono.just(principal);
+                        // 创建 Authentication 对象
+                        Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(
+                                principal, token, AuthorityUtils.createAuthorityList(principal.getPerms()));
+                        return Mono.just(authentication);
                     }
                 });
     }

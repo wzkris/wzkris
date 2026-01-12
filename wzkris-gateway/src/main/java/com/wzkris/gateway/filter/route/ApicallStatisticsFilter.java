@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -37,25 +40,28 @@ public class ApicallStatisticsFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
 
-        // 先获取认证主体并缓存，然后执行过滤链，最后处理统计（*本统计为API调用量*）
-        return exchange.getPrincipal()
-                .map(p -> (UserPrincipal) p)
-                .doOnNext(principal -> exchange.getAttributes().put("STAT_PRINCIPAL", principal))
-                .then(chain.filter(exchange))
-                .then(Mono.defer(() -> {
-                    // 从属性中获取缓存的用户信息
-                    UserPrincipal userInfo = (UserPrincipal) exchange.getAttributes().get("STAT_PRINCIPAL");
-                    if (userInfo != null) {
-                        try {
-                            // 判断请求是否成功（根据响应状态码）
-                            boolean success = exchange.getResponse().getStatusCode().is2xxSuccessful();
-                            recordApiCallStatistics(path, success, userInfo);
-                        } catch (Exception e) {
-                            log.warn("接口调用量统计失败: {}", e.getMessage());
-                        }
-                    }
-                    return Mono.empty();
-                }));
+        // 先执行过滤链，然后从 SecurityContext 获取用户信息进行统计（*本统计为API调用量*）
+        return chain.filter(exchange)
+                .then(ReactiveSecurityContextHolder.getContext()
+                        .map(SecurityContext::getAuthentication)
+                        .map(Authentication::getPrincipal)
+                        .filter(UserPrincipal.class::isInstance)
+                        .cast(UserPrincipal.class)
+                        .doOnNext(principal -> {
+                            try {
+                                // 判断请求是否成功（根据响应状态码）
+                                boolean success = exchange.getResponse().getStatusCode().is2xxSuccessful();
+                                recordApiCallStatistics(path, success, principal);
+                            } catch (Exception e) {
+                                log.warn("接口调用量统计失败: {}", e.getMessage());
+                            }
+                        })
+                        .then()
+                        .onErrorResume(throwable -> {
+                            // 如果获取不到用户信息，静默处理，不影响请求流程
+                            return Mono.empty();
+                        })
+                );
     }
 
     /**

@@ -3,7 +3,6 @@ package com.wzkris.gateway.filter.web;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
-import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.model.domain.LoginAdmin;
 import com.wzkris.common.core.model.domain.LoginClient;
 import com.wzkris.common.core.model.domain.LoginCustomer;
@@ -23,16 +22,16 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import reactor.util.context.ContextView;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -47,8 +46,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner {
 
-    public static final String GATEWAY_PRINCIPAL = "GATEWAY_PRINCIPAL";
-
     static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
     private final TokenExtractionService tokenExtractionService;
@@ -56,10 +53,6 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
     private final PermitAllProperties permitAllProperties;
 
     private final Set<String> permitAllAnnotations;
-
-    public static Optional<UserPrincipal> getPrincipal(ContextView contextView) {
-        return contextView.getOrEmpty(GATEWAY_PRINCIPAL);
-    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -81,18 +74,20 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
 
     private Mono<Void> checkToken(ServerWebExchange exchange, WebFilterChain chain) {
         return tokenExtractionService.getCurrentPrincipal(exchange.getRequest())
-                .flatMap(principal -> {
+                .flatMap(authentication -> {
                     // 根据 principal 类型获取对应的请求头名称并添加身份信息
                     ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
 
-                    requestBuilder.header(getInfoHeader(principal), JsonUtil.toJsonString(principal));
+                    requestBuilder.header(getInfoHeader(authentication.getPrincipal()), JsonUtil.toJsonString(authentication.getPrincipal()));
 
                     ServerWebExchange mutatedExchange = exchange.mutate()
                             .request(requestBuilder.build())
-                            .principal(Mono.just(principal))
+                            .principal(Mono.just(authentication))
                             .build();
+
+                    // 将 Authentication 设置到 SecurityContext 并传播到响应式链
                     return chain.filter(mutatedExchange)
-                            .contextWrite(context -> context.put(GATEWAY_PRINCIPAL, principal));
+                            .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
                 })
                 .onErrorResume(ResultException.class, resultException -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();
@@ -101,7 +96,11 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
                 })
                 .onErrorResume(throwable -> {
                     ServerHttpResponse exchangeResponse = exchange.getResponse();
-                    exchangeResponse.setRawStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    if (throwable instanceof ResponseStatusException statusException) {
+                        exchangeResponse.setRawStatusCode(statusException.getStatusCode().value());
+                    } else {
+                        exchangeResponse.setRawStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    }
                     return WebFluxUtil.writeResponse(exchangeResponse, BizBaseCodeEnum.SYSTEM_ERROR);
                 });
     }
@@ -112,7 +111,7 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
      * @param principal 用户主体
      * @return 请求头名称，如果类型不匹配则返回 null
      */
-    private String getInfoHeader(UserPrincipal principal) {
+    private String getInfoHeader(Object principal) {
         if (principal instanceof LoginAdmin) {
             return CustomHeaderConstants.X_ADMIN_INFO;
         } else if (principal instanceof LoginTenant) {
