@@ -19,16 +19,16 @@ public class ApiCallVO implements Serializable {
     /**
      * API接口调用总次数
      */
-    private Long apiCallCount;
+    private Integer apiCallCount;
 
     /**
      * 调用成功次数
      */
-    private Long successCount;
+    private Integer successCount;
 
     /**
      * 调用失败次数
      */
-    private Long errorCount;
+    private Integer errorCount;
 
 }

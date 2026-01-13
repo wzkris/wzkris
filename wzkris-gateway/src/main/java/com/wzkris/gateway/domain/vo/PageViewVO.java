@@ -19,11 +19,11 @@ public class PageViewVO implements Serializable {
     /**
      * 页面浏览量（PV）
      */
-    private Long pv;
+    private Integer pv;
 
     /**
      * 独立访客数（UV）
      */
-    private Long uv;
+    private Integer uv;
 
 }
