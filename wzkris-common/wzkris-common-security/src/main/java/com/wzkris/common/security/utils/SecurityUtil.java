@@ -2,9 +2,12 @@ package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.UserPrincipal;
-import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 
 import java.util.Collection;
 
@@ -17,28 +20,48 @@ import java.util.Collection;
  */
 public abstract class SecurityUtil {
 
+    private static final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
+            .getContextHolderStrategy();
+
     /**
-     * 获得当前认证信息，可能登录可能未登录
+     * 获取当前登录用户信息,未登录抛出异常
      *
-     * @return 认证信息
+     * @return 当前用户
      */
-    @Nullable
-    public static Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
+    public static UserPrincipal getPrincipal() {
+        try {
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            return (UserPrincipal) authentication.getPrincipal();
+        } catch (Exception e) {
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        }
     }
 
     /**
      * 设置当前认证信息
      */
-    public static void setAuthentication(Authentication authentication) {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    public static void setPrincipal(UserPrincipal userPrincipal) {
+        SecurityContext context = securityContextHolderStrategy.getContext();
+
+        Authentication currentAuth = context.getAuthentication();
+        Object credentials = currentAuth != null ? currentAuth.getCredentials() : null;
+        Object details = currentAuth != null ? currentAuth.getDetails() : null;
+
+        UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.authenticated(
+                userPrincipal,
+                credentials,
+                AuthorityUtils.createAuthorityList(userPrincipal.getPerms())
+        );
+        authentication.setDetails(details);
+
+        context.setAuthentication(authentication);
     }
 
     /**
      * 是否认证
      */
     public static boolean isAuthenticated() {
-        Authentication authentication = getAuthentication();
+        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
                 && authentication.getPrincipal() instanceof UserPrincipal;
@@ -49,22 +72,10 @@ public abstract class SecurityUtil {
      */
     public static String getTokenValue() {
         try {
-            return getAuthentication().getCredentials().toString();
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            return authentication == null ? null : authentication.getCredentials().toString();
         } catch (Exception e) {
             return null;
-        }
-    }
-
-    /**
-     * 获取当前登录用户信息,未登录抛出异常
-     *
-     * @return 当前用户
-     */
-    public static UserPrincipal getPrincipal() {
-        try {
-            return (UserPrincipal) getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
     }
 
@@ -107,7 +118,7 @@ public abstract class SecurityUtil {
     /**
      * 获取权限
      */
-    public static Collection<String> getAuthorities() {
+    public static Collection<String> getPerms() {
         return getPrincipal().getPerms();
     }
 

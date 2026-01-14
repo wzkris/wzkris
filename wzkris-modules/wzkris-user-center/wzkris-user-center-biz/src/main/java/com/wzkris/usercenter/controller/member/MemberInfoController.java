@@ -51,7 +51,7 @@ public class MemberInfoController extends BaseController {
         MemberInfoVO memberInfoVO = new MemberInfoVO();
         memberInfoVO.setAdmin(TenantUtil.isAdmin());
         memberInfoVO.setUsername(TenantUtil.getUsername());
-        memberInfoVO.setAuthorities(TenantUtil.getAuthorities());
+        memberInfoVO.setAuthorities(TenantUtil.getPerms());
         memberInfoVO.setAvatar(member.getAvatar());
         memberInfoVO.setPhoneNumber(member.getPhoneNumber());
         memberInfoVO.setGender(member.getGender());

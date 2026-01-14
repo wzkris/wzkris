@@ -47,7 +47,7 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
     }
 
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
-        SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+        SecurityContext ctx = securityContextHolderStrategy.createEmptyContext();
 
         final String context = request.getHeader(CustomHeaderConstants.X_SECURITY_PRINCIPAL);
         if (StringUtil.isNotBlank(context)) {
