@@ -22,7 +22,7 @@ public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
 
     private final String phoneCode;
 
-    public WexcxAuthenticationToken(
+    private WexcxAuthenticationToken(
             AuthTypeEnum authType,
             String wxCode,
             String phoneCode) {
@@ -32,13 +32,32 @@ public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
         this.phoneCode = phoneCode;
     }
 
-    public WexcxAuthenticationToken(
+    private WexcxAuthenticationToken(
             AuthTypeEnum authType,
             UserPrincipal principal) {
-        super(null, principal);
+        super(principal);
         this.authType = authType;
         this.wxCode = null;
         this.phoneCode = null;
+    }
+
+    /**
+     * 创建未认证状态的Token（用于接收请求参数）
+     */
+    public static WexcxAuthenticationToken unauthenticated(
+            AuthTypeEnum authType,
+            String wxCode,
+            String phoneCode) {
+        return new WexcxAuthenticationToken(authType, wxCode, phoneCode);
+    }
+
+    /**
+     * 创建已认证状态的Token（认证成功后使用）
+     */
+    public static WexcxAuthenticationToken authenticated(
+            AuthTypeEnum authType,
+            UserPrincipal principal) {
+        return new WexcxAuthenticationToken(authType, principal);
     }
 
     @Override

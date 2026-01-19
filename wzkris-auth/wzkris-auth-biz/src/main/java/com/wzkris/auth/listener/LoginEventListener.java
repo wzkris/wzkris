@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author : wzkris
@@ -52,12 +51,12 @@ public class LoginEventListener {
         final UserPrincipal principal = event.getPrincipal();
         log.info("'{}' 发生登录事件", principal);
 
-        if (Objects.equals(principal.getType(), AuthTypeEnum.ADMIN)) {
-            this.handleLoginAdmin(event, (LoginAdmin) principal);
-        } else if (Objects.equals(principal.getType(), AuthTypeEnum.TENANT)) {
-            this.handleLoginTenant(event, (LoginTenant) principal);
-        } else if (Objects.equals(principal.getType(), AuthTypeEnum.CUSTOMER)) {
-            this.handleLoginCustomer(event, (LoginCustomer) principal);
+        if (principal instanceof LoginAdmin admin) {
+            this.handleLoginAdmin(event, admin);
+        } else if (principal instanceof LoginTenant tenant) {
+            this.handleLoginTenant(event, tenant);
+        } else if (principal instanceof LoginCustomer customer) {
+            this.handleLoginCustomer(event, customer);
         }
     }
 

@@ -22,7 +22,7 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
 
     private final String smsCode;
 
-    public SmsAuthenticationToken(
+    private SmsAuthenticationToken(
             AuthTypeEnum authType,
             String phoneNumber,
             String smsCode) {
@@ -32,14 +32,34 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
         this.smsCode = smsCode;
     }
 
-    public SmsAuthenticationToken(
+    private SmsAuthenticationToken(
             AuthTypeEnum authType,
             String phoneNumber,
             UserPrincipal principal) {
-        super(null, principal);
+        super(principal);
         this.authType = authType;
         this.phoneNumber = phoneNumber;
         this.smsCode = null;
+    }
+
+    /**
+     * 创建未认证状态的Token（用于接收请求参数）
+     */
+    public static SmsAuthenticationToken unauthenticated(
+            AuthTypeEnum authType,
+            String phoneNumber,
+            String smsCode) {
+        return new SmsAuthenticationToken(authType, phoneNumber, smsCode);
+    }
+
+    /**
+     * 创建已认证状态的Token（认证成功后使用）
+     */
+    public static SmsAuthenticationToken authenticated(
+            AuthTypeEnum authType,
+            String phoneNumber,
+            UserPrincipal principal) {
+        return new SmsAuthenticationToken(authType, phoneNumber, principal);
     }
 
     @Override

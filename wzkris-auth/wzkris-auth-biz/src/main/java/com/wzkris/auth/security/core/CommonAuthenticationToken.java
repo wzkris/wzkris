@@ -21,12 +21,8 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
     @Setter
     private String credentials;
 
-    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
-        this(authorities, null);
-    }
-
-    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities, UserPrincipal principal) {
-        super(authorities);
+    protected CommonAuthenticationToken(UserPrincipal principal) {
+        super(null);
         this.principal = principal;
         if (principal != null) {
             super.setAuthenticated(true);

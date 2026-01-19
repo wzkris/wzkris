@@ -20,14 +20,28 @@ public final class RefreshAuthenticationToken extends CommonAuthenticationToken 
 
     private final String refreshToken;
 
-    public RefreshAuthenticationToken(AuthTypeEnum authType, String refreshToken) {
+    private RefreshAuthenticationToken(AuthTypeEnum authType, String refreshToken) {
         this(authType, refreshToken, null);
     }
 
-    public RefreshAuthenticationToken(AuthTypeEnum authType, String refreshToken, UserPrincipal principal) {
-        super(null, principal);
+    private RefreshAuthenticationToken(AuthTypeEnum authType, String refreshToken, UserPrincipal principal) {
+        super(principal);
         this.authType = authType;
         this.refreshToken = refreshToken;
+    }
+
+    /**
+     * 创建未认证状态的Token（用于接收请求参数）
+     */
+    public static RefreshAuthenticationToken unauthenticated(AuthTypeEnum authType, String refreshToken) {
+        return new RefreshAuthenticationToken(authType, refreshToken);
+    }
+
+    /**
+     * 创建已认证状态的Token（认证成功后使用）
+     */
+    public static RefreshAuthenticationToken authenticated(AuthTypeEnum authType, String refreshToken, UserPrincipal principal) {
+        return new RefreshAuthenticationToken(authType, refreshToken, principal);
     }
 
     @Override

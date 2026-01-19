@@ -24,7 +24,7 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
 
     private final String captchaId;
 
-    public PasswordAuthenticationToken(
+    private PasswordAuthenticationToken(
             AuthTypeEnum authType,
             String username,
             String password,
@@ -36,15 +36,36 @@ public final class PasswordAuthenticationToken extends CommonAuthenticationToken
         this.captchaId = captchaId;
     }
 
-    public PasswordAuthenticationToken(
+    private PasswordAuthenticationToken(
             AuthTypeEnum authType,
             String username,
             UserPrincipal principal) {
-        super(null, principal);
+        super(principal);
         this.authType = authType;
         this.username = username;
         this.password = null;
         this.captchaId = null;
+    }
+
+    /**
+     * 创建未认证状态的Token（用于接收请求参数）
+     */
+    public static PasswordAuthenticationToken unauthenticated(
+            AuthTypeEnum authType,
+            String username,
+            String password,
+            String captchaId) {
+        return new PasswordAuthenticationToken(authType, username, password, captchaId);
+    }
+
+    /**
+     * 创建已认证状态的Token（认证成功后使用）
+     */
+    public static PasswordAuthenticationToken authenticated(
+            AuthTypeEnum authType,
+            String username,
+            UserPrincipal principal) {
+        return new PasswordAuthenticationToken(authType, username, principal);
     }
 
     @Override

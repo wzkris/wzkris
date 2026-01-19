@@ -45,7 +45,7 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
     @Override
     protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String refreshToken = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.REFRESH_TOKEN));
-        return new RefreshAuthenticationToken(authTypeEnum, refreshToken);
+        return RefreshAuthenticationToken.unauthenticated(authTypeEnum, refreshToken);
     }
 
 }

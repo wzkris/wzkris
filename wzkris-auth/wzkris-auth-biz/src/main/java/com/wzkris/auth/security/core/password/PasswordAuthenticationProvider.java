@@ -77,7 +77,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        return new PasswordAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getUsername(), principal);
+        return PasswordAuthenticationToken.authenticated(authenticationToken.getAuthType(), authenticationToken.getUsername(), principal);
     }
 
     @Override

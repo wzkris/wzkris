@@ -59,7 +59,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
                     BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        return new WexcxAuthenticationToken(authenticationToken.getAuthType(), principal);
+        return WexcxAuthenticationToken.authenticated(authenticationToken.getAuthType(), principal);
     }
 
     @Override

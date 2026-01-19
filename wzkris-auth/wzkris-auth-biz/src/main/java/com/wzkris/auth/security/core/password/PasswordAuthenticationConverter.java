@@ -71,7 +71,7 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
         String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
         String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
         String captchaId = StringUtil.toStringOrNull(additionalParameters.get(CAPTCHA_ID));
-        return new PasswordAuthenticationToken(authTypeEnum, username, password, captchaId);
+        return PasswordAuthenticationToken.unauthenticated(authTypeEnum, username, password, captchaId);
     }
 
 }

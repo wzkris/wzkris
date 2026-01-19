@@ -41,7 +41,7 @@ public final class WexcxAuthenticationConverter extends CommonAuthenticationConv
     protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_CODE));
         String phoneCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_PHONE_CODE));
-        return new WexcxAuthenticationToken(authTypeEnum, wxCode, phoneCode);
+        return WexcxAuthenticationToken.unauthenticated(authTypeEnum, wxCode, phoneCode);
     }
 
 }

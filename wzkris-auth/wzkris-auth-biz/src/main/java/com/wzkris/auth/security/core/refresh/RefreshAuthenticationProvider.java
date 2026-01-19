@@ -38,7 +38,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        return new RefreshAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getRefreshToken(), principal);
+        return RefreshAuthenticationToken.authenticated(authenticationToken.getAuthType(), authenticationToken.getRefreshToken(), principal);
     }
 
     @Override

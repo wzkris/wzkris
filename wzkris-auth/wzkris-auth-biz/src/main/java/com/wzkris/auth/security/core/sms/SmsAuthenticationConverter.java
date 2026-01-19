@@ -57,7 +57,7 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
     protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
         String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
-        return new SmsAuthenticationToken(authTypeEnum, phoneNumber, smsCode);
+        return SmsAuthenticationToken.unauthenticated(authTypeEnum, phoneNumber, smsCode);
     }
 
 }
