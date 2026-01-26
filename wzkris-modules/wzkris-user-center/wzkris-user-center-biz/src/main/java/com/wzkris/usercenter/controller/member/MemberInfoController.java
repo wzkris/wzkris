@@ -6,7 +6,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.utils.TenantUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.req.EditPhoneReq;
 import com.wzkris.usercenter.domain.req.EditPwdReq;
@@ -43,15 +43,15 @@ public class MemberInfoController extends BaseController {
     @Operation(summary = "账户信息")
     @GetMapping
     public Result<MemberInfoVO> userinfo() {
-        MemberInfoDO member = memberInfoMapper.selectById(TenantUtil.getId());
+        MemberInfoDO member = memberInfoMapper.selectById(SecurityUtil.getUid());
 
         if (member == null) {// 降级会走到这
             member = new MemberInfoDO();
         }
         MemberInfoVO memberInfoVO = new MemberInfoVO();
-        memberInfoVO.setAdmin(TenantUtil.isAdmin());
-        memberInfoVO.setUsername(TenantUtil.getUsername());
-        memberInfoVO.setAuthorities(TenantUtil.getPerms());
+        memberInfoVO.setAdmin(SecurityUtil.isSuper());
+        memberInfoVO.setUsername(SecurityUtil.getUsername());
+        memberInfoVO.setAuthorities(SecurityUtil.getPermission());
         memberInfoVO.setAvatar(member.getAvatar());
         memberInfoVO.setPhoneNumber(member.getPhoneNumber());
         memberInfoVO.setGender(member.getGender());
@@ -65,7 +65,7 @@ public class MemberInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping
     public Result<Void> editInfo(@RequestBody MemberInfoReq profileReq) {
-        MemberInfoDO memberInfoDO = new MemberInfoDO(TenantUtil.getId());
+        MemberInfoDO memberInfoDO = new MemberInfoDO(SecurityUtil.getUid());
         memberInfoDO.setGender(profileReq.getGender());
         return toRes(memberInfoMapper.updateById(memberInfoDO));
     }
@@ -74,7 +74,7 @@ public class MemberInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改手机号", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-phonenumber")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
-        Long memberId = TenantUtil.getId();
+        Long memberId = SecurityUtil.getUid();
 
         if (memberInfoService.existByPhoneNumber(memberId, req.getPhoneNumber())) {
             return requestFail("该手机号已被使用");
@@ -94,7 +94,7 @@ public class MemberInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-password")
     public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
-        Long memberId = TenantUtil.getId();
+        Long memberId = SecurityUtil.getUid();
 
         String password = memberInfoMapper.selectPwdById(memberId);
 
@@ -115,7 +115,7 @@ public class MemberInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "更新头像", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-avatar")
     public Result<Void> editAvatar(@RequestBody String url) {
-        MemberInfoDO memberInfoDO = new MemberInfoDO(TenantUtil.getId());
+        MemberInfoDO memberInfoDO = new MemberInfoDO(SecurityUtil.getUid());
         memberInfoDO.setAvatar(url);
         return toRes(memberInfoMapper.updateById(memberInfoDO));
     }

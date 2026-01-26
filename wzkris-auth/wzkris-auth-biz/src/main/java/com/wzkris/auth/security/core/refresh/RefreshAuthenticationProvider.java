@@ -1,15 +1,18 @@
 package com.wzkris.auth.security.core.refresh;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.properties.TokenProperties;
+import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author wzkris
@@ -17,28 +20,39 @@ import org.springframework.stereotype.Component;
  * @description 刷新模式核心处理
  */
 @Component // 注册成bean方便引用
-public final class RefreshAuthenticationProvider extends CommonAuthenticationProvider<CommonAuthenticationToken> {
+public final class RefreshAuthenticationProvider extends CommonAuthenticationProvider {
 
     private final TokenService tokenService;
 
-    public RefreshAuthenticationProvider(TokenProperties tokenProperties,
-                                         TokenService tokenService) {
-        super(tokenProperties, tokenService);
+    public RefreshAuthenticationProvider(TokenService tokenService) {
+        super(tokenService);
         this.tokenService = tokenService;
     }
 
     @Override
-    public RefreshAuthenticationToken doAuthenticate(Authentication authentication) {
+    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         RefreshAuthenticationToken authenticationToken = (RefreshAuthenticationToken) authentication;
 
-        UserPrincipal principal = tokenService.loadByRefreshToken(authenticationToken.getAuthType().getValue(), authenticationToken.getRefreshToken());
-        if (principal == null) {
+        LoginUser loginUser = tokenService.loadByRefreshToken(authenticationToken.getAuthType().getValue(), authenticationToken.getRefreshToken());
+        if (loginUser == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        return RefreshAuthenticationToken.authenticated(authenticationToken.getAuthType(), authenticationToken.getRefreshToken(), principal);
+        // 从存储中加载权限信息
+        Set<String> perms = tokenService.loadPermissionsByRefreshToken(
+                authenticationToken.getAuthType().getValue(),
+                authenticationToken.getRefreshToken());
+
+        // 如果权限不存在，使用空集合
+        if (perms == null) {
+            perms = Collections.emptySet();
+        }
+
+        CommonAuthenticationToken commonAuthenticationToken = new CommonAuthenticationToken(loginUser, perms, LoginTypeEnum.REFRESH);
+        commonAuthenticationToken.setRefreshToken(authenticationToken.getRefreshToken());
+        return commonAuthenticationToken;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class OidcAuthorizationCodeGrantAuthorization extends OAuth2Authorization
             Set<String> authorizedScopes,
             AccessToken accessToken,
             RefreshToken refreshToken,
-            Principal principal,
+            Principal loginUser,
             OAuth2AuthorizationRequest authorizationRequest,
             AuthorizationCode authorizationCode,
             String state,
@@ -49,7 +49,7 @@ public class OidcAuthorizationCodeGrantAuthorization extends OAuth2Authorization
                 authorizedScopes,
                 accessToken,
                 refreshToken,
-                principal,
+                loginUser,
                 authorizationRequest,
                 authorizationCode,
                 state);

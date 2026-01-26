@@ -47,4 +47,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             """)
     TenantInfoVO selectVOById(Long tenantId);
 
+    @Select("SELECT EXISTS(SELECT * FROM biz.tenant_info WHERE administrator = #{memberId})")
+    boolean selectExistAdministrator(Long memberId);
+
 }

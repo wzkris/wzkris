@@ -5,7 +5,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
-import com.wzkris.common.security.utils.TenantUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.req.EditPwdReq;
@@ -47,14 +47,14 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "获取信息")
     @GetMapping
     public Result<TenantInfoVO> tenantInfo() {
-        return ok(tenantInfoMapper.selectVOById(TenantUtil.getTenantId()));
+        return ok(tenantInfoMapper.selectVOById(SecurityUtil.getTenantId()));
     }
 
     @Operation(summary = "修改信息")
     @PostMapping
     @CheckTenantPerms("user-mod:tenant-info:edit")
     public Result<Void> tenantInfo(@RequestBody TenantInfoReq req) {
-        TenantInfoDO tenantInfoDO = BeanUtil.convert(req, new TenantInfoDO(TenantUtil.getTenantId()));
+        TenantInfoDO tenantInfoDO = BeanUtil.convert(req, new TenantInfoDO(SecurityUtil.getTenantId()));
         return toRes(tenantInfoMapper.updateById(tenantInfoDO));
     }
 
@@ -70,9 +70,9 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-operpwd")
-    @PreAuthorize("@tu.isAdmin()") // 只允许租户的超级管理员修改
+    @PreAuthorize("@su.isSuper()")
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
-        Long tenantId = TenantUtil.getTenantId();
+        Long tenantId = SecurityUtil.getTenantId();
 
         String operPwd = tenantInfoMapper.selectOperPwdById(tenantId);
 

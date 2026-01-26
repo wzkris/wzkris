@@ -1,6 +1,5 @@
 package com.wzkris.common.security.utils;
 
-import com.wzkris.common.core.model.UserPrincipal;
 import jakarta.annotation.Nullable;
 import org.springframework.util.PatternMatchUtils;
 
@@ -11,17 +10,7 @@ import java.util.Collection;
  *
  * @author wzkris
  */
-public class PermissionUtil {
-
-    public static boolean hasPerms(String... permissions) {
-        UserPrincipal principal = SecurityUtil.getPrincipal();
-
-        if (principal == null) {
-            return false;
-        }
-
-        return hasPerms(principal.getPerms(), permissions);
-    }
+public final class PermissionUtil {
 
     /**
      * 判断接口是否有权限 AND
@@ -46,16 +35,6 @@ public class PermissionUtil {
         }
 
         return true;
-    }
-
-    public static boolean hasPermsOr(String... permissions) {
-        UserPrincipal principal = SecurityUtil.getPrincipal();
-
-        if (principal == null) {
-            return false;
-        }
-
-        return hasPermsOr(principal.getPerms(), permissions);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.wzkris.gateway.security.checker;
 
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.gateway.security.annotation.RequireAuth;
 import org.springframework.util.PatternMatchUtils;
 
@@ -18,17 +18,18 @@ public class AuthChecker {
     /**
      * 检查权限
      *
-     * @param principal   对象
+     * @param loginUser   对象
+     * @param permissions 权限集合
      * @param requireAuth 权限注解
      * @return 是否有权限
      */
-    public static boolean check(UserPrincipal principal, RequireAuth requireAuth) {
-        if (principal == null) {
+    public static boolean check(LoginUser loginUser, Set<String> permissions, RequireAuth requireAuth) {
+        if (loginUser == null) {
             return false;
         }
 
         // 2. 验证用户类型
-        if (!principal.getType().equals(requireAuth.authType().getValue())) {
+        if (loginUser.getAuthType() != requireAuth.authType()) {
             return false;
         }
 
@@ -38,12 +39,11 @@ public class AuthChecker {
         }
 
         // 4. 验证权限
-        Set<String> grantedPermissions = principal.getPerms();
-        if (grantedPermissions == null || grantedPermissions.isEmpty()) {
+        if (permissions == null || permissions.isEmpty()) {
             return false;
         }
 
-        return checkPermissions(grantedPermissions, requireAuth.permissions(), requireAuth.mode());
+        return checkPermissions(permissions, requireAuth.permissions(), requireAuth.mode());
     }
 
     /**

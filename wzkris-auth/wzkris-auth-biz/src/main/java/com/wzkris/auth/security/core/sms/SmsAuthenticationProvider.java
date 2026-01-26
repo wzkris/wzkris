@@ -2,14 +2,13 @@ package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
+import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
@@ -25,24 +24,23 @@ import java.util.Optional;
  * @description 短信模式核心处理
  */
 @Component
-public final class SmsAuthenticationProvider extends CommonAuthenticationProvider<SmsAuthenticationToken> {
+public final class SmsAuthenticationProvider extends CommonAuthenticationProvider {
 
     private final List<UserInfoTemplate> userInfoTemplates;
 
     private final CaptchaService captchaService;
 
     public SmsAuthenticationProvider(
-            TokenProperties tokenProperties,
             TokenService tokenService,
             List<UserInfoTemplate> userInfoTemplates,
             CaptchaService captchaService) {
-        super(tokenProperties, tokenService);
+        super(tokenService);
         this.userInfoTemplates = userInfoTemplates;
         this.captchaService = captchaService;
     }
 
     @Override
-    public SmsAuthenticationToken doAuthenticate(Authentication authentication) {
+    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
@@ -72,14 +70,14 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
             OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
         }
 
-        UserPrincipal principal = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        CommonAuthenticationToken token = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
-        if (principal == null) {
+        if (token == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        return SmsAuthenticationToken.authenticated(authenticationToken.getAuthType(), authenticationToken.getPhoneNumber(), principal);
+        return token;
     }
 
     @Override

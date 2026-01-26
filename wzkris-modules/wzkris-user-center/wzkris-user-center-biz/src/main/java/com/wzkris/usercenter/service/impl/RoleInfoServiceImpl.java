@@ -3,7 +3,7 @@ package com.wzkris.usercenter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.security.utils.AdminUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.AdminToRoleDO;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.domain.RoleToDeptDO;
@@ -184,10 +184,10 @@ public class RoleInfoServiceImpl implements RoleInfoService {
 
     @Override
     public String getRoleGroup() {
-        if (AdminUtil.isSuperadmin()) {
+        if (SecurityUtil.isSuper()) {
             return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<RoleInfoDO> roles = this.listByAdminId(AdminUtil.getId());
+        List<RoleInfoDO> roles = this.listByAdminId(SecurityUtil.getUid());
         return roles.stream().map(RoleInfoDO::getRoleName).collect(Collectors.joining(","));
     }
 

@@ -7,9 +7,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.redis.annotation.GlobalCache;
-import com.wzkris.common.redis.annotation.GlobalCacheEvict;
-import com.wzkris.common.security.utils.AdminUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.req.EditPhoneReq;
 import com.wzkris.usercenter.domain.req.EditPwdReq;
@@ -24,6 +22,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -58,17 +58,17 @@ public class AdminInfoController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping
-    @GlobalCache(keyPrefix = info_prefix, key = "@au.getId()", ttl = 600_000, sync = true) // TODO 这里缓存的需要在退出时移除
+    @Cacheable(value = info_prefix + "#600_000", key = "@su.getUid()", sync = true) // TODO 这里缓存的需要在退出时移除
     public Result<AdminInfoVO> userinfo() {
-        AdminInfoDO adminInfoDO = adminInfoMapper.selectById(AdminUtil.getId());
+        AdminInfoDO adminInfoDO = adminInfoMapper.selectById(SecurityUtil.getUid());
 
         if (adminInfoDO == null) {// 降级会走到这
             adminInfoDO = new AdminInfoDO();
         }
         AdminInfoVO adminInfoVO = new AdminInfoVO();
-        adminInfoVO.setAdmin(AdminUtil.isSuperadmin());
-        adminInfoVO.setUsername(AdminUtil.getUsername());
-        adminInfoVO.setAuthorities(AdminUtil.getPerms());
+        adminInfoVO.setAdmin(SecurityUtil.isSuper());
+        adminInfoVO.setUsername(SecurityUtil.getUsername());
+        adminInfoVO.setAuthorities(SecurityUtil.getPermission());
         adminInfoVO.setAvatar(adminInfoDO.getAvatar());
         adminInfoVO.setNickname(adminInfoDO.getNickname());
         adminInfoVO.setEmail(adminInfoDO.getEmail());
@@ -86,7 +86,7 @@ public class AdminInfoController extends BaseController {
     public Result<List<ChatPersonVO>> chatPersonList() {
         List<AdminInfoDO> adminInfoDOS = adminInfoMapper.selectList(Wrappers.lambdaQuery(AdminInfoDO.class)
                 .select(AdminInfoDO::getAdminId, AdminInfoDO::getNickname, AdminInfoDO::getAvatar)
-                .ne(AdminInfoDO::getAdminId, AdminUtil.getId()));
+                .ne(AdminInfoDO::getAdminId, SecurityUtil.getUid()));
 
         return ok(cast2ChatVO(adminInfoDOS));
     }
@@ -100,9 +100,9 @@ public class AdminInfoController extends BaseController {
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping
-    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@au.getId()")
+    @CacheEvict(value = info_prefix, key = "@su.getUid()")
     public Result<Void> editInfo(@RequestBody AdminInfoReq profileReq) {
-        AdminInfoDO admin = new AdminInfoDO(AdminUtil.getId());
+        AdminInfoDO admin = new AdminInfoDO(SecurityUtil.getUid());
         admin.setNickname(profileReq.getNickname());
         admin.setGender(profileReq.getGender());
         return toRes(adminInfoMapper.updateById(admin));
@@ -111,9 +111,9 @@ public class AdminInfoController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人信息", subTitle = "修改手机号", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-phonenumber")
-    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@au.getId()")
+    @CacheEvict(value = info_prefix, key = "@su.getUid()")
     public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
-        Long adminId = AdminUtil.getId();
+        Long adminId = SecurityUtil.getUid();
 
         if (adminInfoService.existByPhoneNumber(adminId, req.getPhoneNumber())) {
             return requestFail("该手机号已被使用");
@@ -133,7 +133,7 @@ public class AdminInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-password")
     public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
-        Long adminId = AdminUtil.getId();
+        Long adminId = SecurityUtil.getUid();
 
         String password = adminInfoMapper.selectPwdById(adminId);
 
@@ -153,9 +153,9 @@ public class AdminInfoController extends BaseController {
     @Operation(summary = "更新头像")
     @OperateLog(title = "个人信息", subTitle = "更新头像", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-avatar")
-    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@au.getId()")
+    @CacheEvict(value = info_prefix, key = "@su.getUid()")
     public Result<Void> editAvatar(@RequestBody String url) {
-        AdminInfoDO adminInfoDO = new AdminInfoDO(AdminUtil.getId());
+        AdminInfoDO adminInfoDO = new AdminInfoDO(SecurityUtil.getUid());
         adminInfoDO.setAvatar(url);
         return toRes(adminInfoMapper.updateById(adminInfoDO));
     }

@@ -4,8 +4,8 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.httpservice.admin.req.LoginInfoReq;
 import com.wzkris.usercenter.httpservice.admin.req.QueryAdminPermsReq;
+import com.wzkris.usercenter.httpservice.admin.resp.AdminInfoResp;
 import com.wzkris.usercenter.httpservice.admin.resp.AdminPermissionResp;
-import com.wzkris.usercenter.httpservice.admin.resp.adminInfoResp;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.service.PermissionService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -22,15 +22,15 @@ public class AdminInfoHttpServiceImpl implements AdminInfoHttpService {
     private final PermissionService permissionService;
 
     @Override
-    public adminInfoResp getByUsername(String username) {
+    public AdminInfoResp getByUsername(String username) {
         AdminInfoDO admin = adminInfoMapper.selectByUsername(username);
-        return BeanUtil.convert(admin, adminInfoResp.class);
+        return BeanUtil.convert(admin, AdminInfoResp.class);
     }
 
     @Override
-    public adminInfoResp getByPhoneNumber(String phoneNumber) {
+    public AdminInfoResp getByPhoneNumber(String phoneNumber) {
         AdminInfoDO adminInfoDO = adminInfoMapper.selectByPhoneNumber(phoneNumber);
-        return BeanUtil.convert(adminInfoDO, adminInfoResp.class);
+        return BeanUtil.convert(adminInfoDO, AdminInfoResp.class);
     }
 
     @Override

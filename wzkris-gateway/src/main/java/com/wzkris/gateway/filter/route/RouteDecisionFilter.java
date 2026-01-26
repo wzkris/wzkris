@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter.route;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.loadbalancer.enums.RoutePolicyEnum;
 import com.wzkris.gateway.properties.RoutePolicyProperties;
@@ -53,9 +53,9 @@ public class RouteDecisionFilter implements GlobalFilter {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
                 .map(Authentication::getPrincipal)
-                .filter(UserPrincipal.class::isInstance)
-                .cast(UserPrincipal.class)
-                .map(UserPrincipal::getHint)
+                .filter(LoginUser.class::isInstance)
+                .cast(LoginUser.class)
+                .map(LoginUser::getHint)
                 .map(userHint -> {
                     // 如果用户hint为空，则使用默认hint
                     return StringUtil.isNotBlank(userHint) ? userHint : routePolicyProperties.getOpenConfig().getDefaultHintValue();

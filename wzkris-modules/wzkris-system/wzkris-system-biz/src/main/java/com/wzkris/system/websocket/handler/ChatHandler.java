@@ -1,6 +1,6 @@
 package com.wzkris.system.websocket.handler;
 
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.system.domain.UserChatMessageDO;
 import com.wzkris.system.mapper.UserChatMessageMapper;
 import com.wzkris.system.utils.WebSocketSessionHolder;
@@ -28,17 +28,17 @@ public class ChatHandler extends BaseWebSocketHandler {
 
     public void handle(WebSocketSession session, WsMessage wsMessage, BiConsumer<WebSocketSession, CloseStatus> closeSession) {
         try {
-            UserPrincipal senderInfo = getLoginInfo(session);
+            LoginUser senderInfo = getLoginInfo(session);
 
             // 解析聊天消息
             ChatMessage chatMessage = ChatMessage.fromWsMessage(wsMessage);
-            chatMessage.setSenderId(senderInfo.getId());
+            chatMessage.setSenderId(senderInfo.getUid());
 
             // 根据消息类型处理
             if (chatMessage.isText()) {
-                doHandleTextMessage(senderInfo.getId(), chatMessage);
+                doHandleTextMessage(senderInfo.getUid(), chatMessage);
             } else if (chatMessage.isResource()) {
-                doHandleImageMessage(senderInfo.getId(), chatMessage);
+                doHandleImageMessage(senderInfo.getUid(), chatMessage);
             } else if (chatMessage.isResource()) {
                 // do sth.
             } else {

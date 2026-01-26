@@ -1,5 +1,6 @@
 package com.wzkris.auth.listener.event;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,8 +13,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class LogoutEvent {
 
-    private Serializable id;
+    private Serializable uid;
 
-    private String authType;
+    private AuthTypeEnum authType;
 
 }

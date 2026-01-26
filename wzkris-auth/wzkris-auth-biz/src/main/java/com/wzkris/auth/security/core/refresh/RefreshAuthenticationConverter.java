@@ -2,11 +2,11 @@ package com.wzkris.auth.security.core.refresh;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
@@ -43,7 +43,7 @@ public final class RefreshAuthenticationConverter extends CommonAuthenticationCo
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
+    protected Authentication buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String refreshToken = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.REFRESH_TOKEN));
         return RefreshAuthenticationToken.unauthenticated(authTypeEnum, refreshToken);
     }

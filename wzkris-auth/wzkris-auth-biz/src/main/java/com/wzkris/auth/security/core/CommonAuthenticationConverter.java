@@ -4,6 +4,7 @@ import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  * @date 2024/3/11
  * @description 模式转换器基类，将参数转换为Authentication
  */
-public abstract class CommonAuthenticationConverter<T extends CommonAuthenticationToken>
+public abstract class CommonAuthenticationConverter<T extends Authentication>
         implements AuthenticationConverter {
 
     private final String LOGIN_TYPE = "login_type";
@@ -37,7 +38,7 @@ public abstract class CommonAuthenticationConverter<T extends CommonAuthenticati
     protected abstract void checkParams(MultiValueMap<String, String> parameters);
 
     @Override
-    public final CommonAuthenticationToken convert(HttpServletRequest request) {
+    public final Authentication convert(HttpServletRequest request) {
         // login_type (REQUIRED)
         LoginTypeEnum loginTypeEnum = LoginTypeEnum.fromValue(request.getParameter(LOGIN_TYPE));
         if (loginTypeEnum == null || !this.support(loginTypeEnum)) {
@@ -66,7 +67,7 @@ public abstract class CommonAuthenticationConverter<T extends CommonAuthenticati
     /**
      * 构建AuthenticationToken
      */
-    protected abstract CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters);
+    protected abstract Authentication buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters);
 
     final MultiValueMap<String, String> getParameters(HttpServletRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();

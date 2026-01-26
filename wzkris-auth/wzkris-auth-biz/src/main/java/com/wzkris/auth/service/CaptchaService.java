@@ -1,19 +1,20 @@
 package com.wzkris.auth.service;
 
 import com.wzkris.auth.properties.MockProperties;
-import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.model.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.model.response.RedeemChallengeResponse;
+import com.wzkris.common.captcha.properties.CapProperties;
 import com.wzkris.common.captcha.service.CapHandler;
 import com.wzkris.common.captcha.service.CapService;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.captcha.CaptchaException;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.redis.util.RedisUtil;
-import org.redisson.api.RScript;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
 
@@ -28,9 +29,13 @@ public class CaptchaService extends CapService {
 
     private final MockProperties mockProperties;
 
-    public CaptchaService(CapHandler capHandler, CapProperties capProperties, MockProperties mockProperties) {
-        super(capHandler, capProperties);
+    private final StringRedisTemplate redisTemplate;
+
+    public CaptchaService(CapHandler capHandler, CapProperties capProperties, MockProperties mockProperties,
+                          StringRedisTemplate redisTemplate) {
+        super(capHandler, capProperties, redisTemplate);
         this.mockProperties = mockProperties;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -40,14 +45,15 @@ public class CaptchaService extends CapService {
      * @param timeout 冻结时长（秒）
      */
     public void freezeAccount(String key, int timeout) {
-        RedisUtil.setObj(LOCK_PREFIX + key, "", timeout);
+        redisTemplate.opsForValue().set(LOCK_PREFIX + key, "", Duration.ofSeconds(timeout));
     }
 
     /**
      * 校验账号是否被冻结
      */
     public void validateAccount(String key) {
-        if (RedisUtil.exist(LOCK_PREFIX + key)) {
+        Boolean exists = redisTemplate.hasKey(LOCK_PREFIX + key);
+        if (Boolean.TRUE.equals(exists)) {
             throw new CaptchaException(BizBaseCodeEnum.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
         }
     }
@@ -60,14 +66,15 @@ public class CaptchaService extends CapService {
             return true;
         }
         String fullKey = VALIDATE_PREFIX + key;
-        String realcode = RedisUtil.getObj(fullKey, String.class);
+        String realcode = redisTemplate.opsForValue().get(fullKey);
         if (StringUtil.isBlank(realcode)) {
             return false;
         }
         if (!StringUtil.equals(realcode, code)) {
             return false;
         }
-        return RedisUtil.delObj(fullKey);
+        Boolean deleted = redisTemplate.delete(fullKey);
+        return Boolean.TRUE.equals(deleted);
     }
 
     /**
@@ -95,11 +102,10 @@ public class CaptchaService extends CapService {
                 + "end";
 
         // 执行 Lua 脚本
-        RScript script = RedisUtil.getScript();
-        Long result = script.eval(
-                RScript.Mode.READ_WRITE,
-                luaScript,
-                RScript.ReturnType.INTEGER,
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptText(luaScript);
+        redisScript.setResultType(Long.class);
+        Long result = redisTemplate.execute(redisScript,
                 Collections.singletonList(counterKey),
                 maxTry,
                 timeout);

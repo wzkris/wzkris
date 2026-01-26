@@ -2,7 +2,7 @@ package com.wzkris.auth.security.filter;
 
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.SpringUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,17 +31,17 @@ public class LogoutHandlerImpl implements LogoutHandler {
      *
      * @param request        the HTTP request
      * @param response       the HTTP response
-     * @param authentication the current principal details
+     * @param authentication the current loginUser details
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
         if (authentication == null) return;
 
         UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
-        UserPrincipal userPrincipal = (UserPrincipal) authenticationToken.getPrincipal();
-        Serializable id = tokenService.logoutByAccessToken(userPrincipal.getType(), authenticationToken.getCredentials().toString());
-        if (id != null) {
-            SpringUtil.getContext().publishEvent(new LogoutEvent(id, userPrincipal.getType()));
+        LoginUser loginUser = (LoginUser) authenticationToken.getPrincipal();
+        Serializable uid = tokenService.logoutByAccessToken(loginUser.getAuthType().getValue(), authenticationToken.getCredentials().toString());
+        if (uid != null) {
+            SpringUtil.getContext().publishEvent(new LogoutEvent(uid, loginUser.getAuthType()));
         }
     }
 

@@ -1,6 +1,6 @@
 package com.wzkris.system.websocket.handler;
 
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.system.utils.WebSocketSessionHolder;
 import com.wzkris.system.websocket.BaseWebSocketHandler;
 import com.wzkris.system.websocket.protocol.WsMessage;
@@ -25,17 +25,17 @@ public class HeartBeatHandler extends BaseWebSocketHandler {
         log.info("收到客户端心跳，数据长度: {}", message.getLength());
 
         // 处理多连接检测
-        UserPrincipal principal = getLoginInfo(session);
-        WebSocketSession current = WebSocketSessionHolder.getSession(principal.getId());
+        LoginUser principal = getLoginInfo(session);
+        WebSocketSession current = WebSocketSessionHolder.getSession(principal.getUid());
 
         if (current != null && !current.getId().equals(session.getId())) {
-            log.warn("用户 {} 存在多个连接，关闭新连接 {}", principal.getId(), session.getId());
+            log.warn("用户 {} 存在多个连接，关闭新连接 {}", principal.getUid(), session.getId());
             closeSession.accept(session, CloseStatus.SESSION_NOT_RELIABLE);
             return;
         }
 
         // 更新会话持有器
-        WebSocketSessionHolder.addSession(principal.getId(), session);
+        WebSocketSessionHolder.addSession(principal.getUid(), session);
 
         // 发送心跳响应（下行）
         sendHeartbeatResponse(session);

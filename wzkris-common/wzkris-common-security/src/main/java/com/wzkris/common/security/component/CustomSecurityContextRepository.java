@@ -2,7 +2,7 @@ package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -51,10 +52,26 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
 
         final String context = request.getHeader(CustomHeaderConstants.X_SECURITY_PRINCIPAL);
         if (StringUtil.isNotBlank(context)) {
-            UserPrincipal userPrincipal = JsonUtil.parseObject(context, UserPrincipal.class);
-            UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(userPrincipal,
-                    getToken(request, userPrincipal.getType()),
-                    AuthorityUtils.createAuthorityList(userPrincipal.getPerms()));
+            LoginUser loginUser = JsonUtil.parseObject(context, LoginUser.class);
+
+            // 从请求头读取权限信息
+            Set<String> permissions = null;
+            final String permissionsHeader = request.getHeader(CustomHeaderConstants.X_PERMISSIONS);
+            if (StringUtil.isNotBlank(permissionsHeader)) {
+                try {
+                    permissions = JsonUtil.toColl(permissionsHeader, java.util.Set.class, String.class);
+                } catch (Exception e) {
+                    log.warn("Failed to parse permissions from header: {}", e.getMessage());
+                }
+            }
+
+            // 使用解析的权限创建 Authentication
+            UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(
+                    loginUser,
+                    getToken(request, loginUser.getAuthType().getValue()),
+                    permissions != null && !permissions.isEmpty()
+                            ? AuthorityUtils.createAuthorityList(permissions.toArray(new String[0]))
+                            : AuthorityUtils.NO_AUTHORITIES);
             authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
             ctx.setAuthentication(authenticationToken);
         }

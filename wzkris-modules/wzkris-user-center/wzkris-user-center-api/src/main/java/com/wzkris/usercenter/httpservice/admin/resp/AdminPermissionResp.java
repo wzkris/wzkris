@@ -19,11 +19,6 @@ import java.util.List;
 public class AdminPermissionResp implements Serializable {
 
     /**
-     * 超级管理员
-     */
-    private boolean superadmin;
-
-    /**
      * 已授权限
      */
     private List<String> grantedAuthority;
@@ -32,9 +27,5 @@ public class AdminPermissionResp implements Serializable {
      * 部门数据权限
      */
     private List<Long> deptScopes;
-
-    public boolean getSuperadmin() {
-        return this.superadmin;
-    }
 
 }

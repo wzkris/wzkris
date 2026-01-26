@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
-import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
@@ -121,7 +121,7 @@ public class TenantMngController extends BaseController {
         if (success) {
             SpringUtil.getContext()
                     .publishEvent(new CreateTenantEvent(
-                            AdminUtil.getId(),
+                            SecurityUtil.getUid(),
                             tenantReq.getUsername(),
                             tenantReq.getTenantName(),
                             password,

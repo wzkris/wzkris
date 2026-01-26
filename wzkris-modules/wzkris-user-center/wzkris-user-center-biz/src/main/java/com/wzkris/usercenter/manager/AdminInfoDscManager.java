@@ -3,7 +3,7 @@ package com.wzkris.usercenter.manager;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.security.utils.AdminUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.req.admin.AdminMngQueryReq;
 import com.wzkris.usercenter.domain.vo.SelectVO;
@@ -100,8 +100,9 @@ public class AdminInfoDscManager {
             if (adminIds.contains(SecurityConstants.SUPER_ADMIN_ID)) {
                 throw new AccessDeniedException("禁止访问超级管理员数据");
             }
-            if (adminIds.contains(AdminUtil.getId())) {
-                throw new AccessDeniedException("adminId：‘" + AdminUtil.getId() + "'禁止访问自身数据");
+            Long currentAdminId = SecurityUtil.getUid();
+            if (adminIds.contains(currentAdminId)) {
+                throw new AccessDeniedException("adminId：‘" + currentAdminId + "'禁止访问自身数据");
             }
 
             if (!adminInfoDscMapper.checkDataScopes(adminIds)) {

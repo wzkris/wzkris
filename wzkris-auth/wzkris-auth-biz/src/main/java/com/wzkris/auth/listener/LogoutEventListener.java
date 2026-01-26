@@ -2,7 +2,6 @@ package com.wzkris.auth.listener;
 
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -17,13 +16,14 @@ public class LogoutEventListener {
     @Async
     @EventListener
     public void logoutEvent(LogoutEvent event) {
-        log.info("id '{}'的{}用户退出登录", event.getId(), event.getAuthType());
+        log.info("id '{}'的{}用户退出登录", event.getUid(), event.getAuthType());
 
-        if (StringUtil.equals(event.getAuthType(), AuthTypeEnum.ADMIN.getValue())) {
+        AuthTypeEnum authType = event.getAuthType();
+        if (authType == AuthTypeEnum.ADMIN) {
 
-        } else if (StringUtil.equals(event.getAuthType(), AuthTypeEnum.TENANT.getValue())) {
+        } else if (authType == AuthTypeEnum.TENANT) {
 
-        } else if (StringUtil.equals(event.getAuthType(), AuthTypeEnum.CUSTOMER.getValue())) {
+        } else if (authType == AuthTypeEnum.CUSTOMER) {
 
         }
     }

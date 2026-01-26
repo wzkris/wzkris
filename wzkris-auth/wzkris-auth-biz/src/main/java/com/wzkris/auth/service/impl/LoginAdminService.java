@@ -3,13 +3,15 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.model.UserPrincipal;
-import com.wzkris.common.core.model.domain.LoginAdmin;
+import com.wzkris.common.core.enums.IdentityTypeEnum;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -18,8 +20,8 @@ import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.usercenter.httpservice.admin.AdminInfoHttpService;
 import com.wzkris.usercenter.httpservice.admin.req.QueryAdminPermsReq;
+import com.wzkris.usercenter.httpservice.admin.resp.AdminInfoResp;
 import com.wzkris.usercenter.httpservice.admin.resp.AdminPermissionResp;
-import com.wzkris.usercenter.httpservice.admin.resp.adminInfoResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +49,8 @@ public class LoginAdminService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public UserPrincipal loadUserByPhoneNumber(String phoneNumber) {
-        adminInfoResp userResp = adminInfoHttpService.getByPhoneNumber(phoneNumber);
+    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
+        AdminInfoResp userResp = adminInfoHttpService.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.freezeAccount(phoneNumber, 60);
@@ -55,7 +58,7 @@ public class LoginAdminService extends UserInfoTemplate {
         }
 
         try {
-            return this.buildLoginAdmin(userResp);
+            return this.buildAuthenticationToken(userResp, LoginTypeEnum.SMS);
         } catch (Exception e) {
             this.recordFailedLog(userResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
@@ -64,8 +67,8 @@ public class LoginAdminService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public UserPrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        adminInfoResp userResp = adminInfoHttpService.getByUsername(username);
+    public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+        AdminInfoResp userResp = adminInfoHttpService.getByUsername(username);
 
         if (userResp == null) {
             captchaService.freezeAccount(username, 60);
@@ -78,7 +81,7 @@ public class LoginAdminService extends UserInfoTemplate {
                         BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
-            return this.buildLoginAdmin(userResp);
+            return this.buildAuthenticationToken(userResp, LoginTypeEnum.PASSWORD);
         } catch (Exception e) {
             this.recordFailedLog(userResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
             throw e;
@@ -91,9 +94,9 @@ public class LoginAdminService extends UserInfoTemplate {
     }
 
     /**
-     * 构建登录用户
+     * 构建认证Token
      */
-    private LoginAdmin buildLoginAdmin(adminInfoResp userResp) {
+    private CommonAuthenticationToken buildAuthenticationToken(AdminInfoResp userResp, LoginTypeEnum loginType) {
         // 校验用户状态
         this.checkAccount(userResp);
 
@@ -101,18 +104,26 @@ public class LoginAdminService extends UserInfoTemplate {
         AdminPermissionResp permissions = adminInfoHttpService.getPermission(
                 new QueryAdminPermsReq(userResp.getAdminId(), userResp.getDeptId()));
 
-        LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(), new HashSet<>(permissions.getGrantedAuthority()));
-        loginAdmin.setSuperadmin(permissions.getSuperadmin());
-        loginAdmin.setUsername(userResp.getUsername());
-        loginAdmin.setDeptScopes(permissions.getDeptScopes());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(userResp.getAdminId());
+        loginUser.setAuthType(AuthTypeEnum.ADMIN);
+        loginUser.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getAdminId())
+                ? IdentityTypeEnum.ADMIN_SUPER
+                : IdentityTypeEnum.ADMIN_NORMAL);
+        loginUser.setPhoneNumber(userResp.getPhoneNumber());
+        loginUser.setUsername(userResp.getUsername());
 
-        return loginAdmin;
+        Set<String> perms = permissions.getGrantedAuthority() != null
+                ? new HashSet<>(permissions.getGrantedAuthority())
+                : Collections.emptySet();
+
+        return new CommonAuthenticationToken(loginUser, perms, loginType);
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(adminInfoResp userResp) {
+    private void checkAccount(AdminInfoResp userResp) {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
@@ -122,15 +133,17 @@ public class LoginAdminService extends UserInfoTemplate {
     /**
      * 记录失败日志
      */
-    private void recordFailedLog(adminInfoResp userResp, String loginType, String errorMsg) {
+    private void recordFailedLog(AdminInfoResp userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginAdmin loginAdmin = new LoginAdmin(userResp.getAdminId(), Collections.emptySet());
-        loginAdmin.setSuperadmin(false);
-        loginAdmin.setUsername(userResp.getUsername());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(userResp.getAdminId());
+        loginUser.setAuthType(AuthTypeEnum.ADMIN);
+        loginUser.setIdentityType(IdentityTypeEnum.ADMIN_NORMAL);
+        loginUser.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        loginAdmin,
+                        loginUser,
                         loginType,
                         false,
                         errorMsg,

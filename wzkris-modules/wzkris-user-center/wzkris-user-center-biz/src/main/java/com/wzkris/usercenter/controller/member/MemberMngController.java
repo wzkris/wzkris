@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
-import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.MemberInfoDO;
@@ -101,7 +101,7 @@ public class MemberMngController extends BaseController {
     @PostMapping("/add")
     @CheckTenantPerms("user-mod:member-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody MemberMngReq memberReq) {
-        if (!tenantInfoService.checkAccountLimit(TenantUtil.getTenantId())) {
+        if (!tenantInfoService.checkAccountLimit(SecurityUtil.getTenantId())) {
             return requestFail("账号数量已达上限，请联系管理员");
         } else if (memberInfoService.existByUsername(memberReq.getMemberId(), memberReq.getUsername())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
@@ -116,7 +116,7 @@ public class MemberMngController extends BaseController {
         boolean success = memberInfoService.saveMember(member, memberReq.getPostIds());
         if (success) {
             SpringUtil.getContext()
-                    .publishEvent(new CreateMemberEvent(TenantUtil.getId(), memberReq.getUsername(), password));
+                    .publishEvent(new CreateMemberEvent(SecurityUtil.getUid(), memberReq.getUsername(), password));
         }
         return toRes(success);
     }

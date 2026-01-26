@@ -69,10 +69,7 @@ public class PermissionServiceImpl implements PermissionService {
         List<RoleInfoDO> roles;
         List<String> grantedAuthority;
         List<Long> deptScopes = Collections.emptyList();
-        boolean administrator = false;
         if (AdminInfoDO.isSuperAdmin(adminId)) {
-            // 超级管理员查出所有角色
-            administrator = true;
             grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
         } else {
             // 查询角色
@@ -83,7 +80,7 @@ public class PermissionServiceImpl implements PermissionService {
             // 数据权限
             deptScopes = this.listDeptScope(roles, deptId);
         }
-        return new AdminPermissionResp(administrator, grantedAuthority, deptScopes);
+        return new AdminPermissionResp(grantedAuthority, deptScopes);
     }
 
     @Override

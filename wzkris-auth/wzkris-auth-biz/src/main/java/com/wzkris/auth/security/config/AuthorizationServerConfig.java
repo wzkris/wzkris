@@ -5,7 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.wzkris.auth.properties.JwtSecretProperties;
-import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
+import com.wzkris.auth.security.handler.Oauth2AuthenticationSuccessHandlerImpl;
 import com.wzkris.auth.security.oauth2.customize.CustomTokenClaimsCustomizer;
 import com.wzkris.auth.security.oauth2.device.DeviceClientAuthenticationConverter;
 import com.wzkris.auth.security.oauth2.device.DeviceClientAuthenticationProvider;
@@ -53,7 +53,7 @@ public class AuthorizationServerConfig {
             new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler =
-            new AuthenticationSuccessHandlerImpl();
+            new Oauth2AuthenticationSuccessHandlerImpl();
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)

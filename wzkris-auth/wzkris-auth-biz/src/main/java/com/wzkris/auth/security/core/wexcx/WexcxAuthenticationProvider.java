@@ -2,11 +2,10 @@ package com.wzkris.auth.security.core.wexcx;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
+import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
-import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -21,20 +20,19 @@ import java.util.Optional;
  * @description 微信小程序核心处理
  */
 @Component
-public final class WexcxAuthenticationProvider extends CommonAuthenticationProvider<WexcxAuthenticationToken> {
+public final class WexcxAuthenticationProvider extends CommonAuthenticationProvider {
 
     private final List<UserInfoTemplate> userInfoTemplates;
 
     public WexcxAuthenticationProvider(
-            TokenProperties tokenProperties,
             TokenService tokenService,
             List<UserInfoTemplate> userInfoTemplates) {
-        super(tokenProperties, tokenService);
+        super(tokenService);
         this.userInfoTemplates = userInfoTemplates;
     }
 
     @Override
-    public WexcxAuthenticationToken doAuthenticate(Authentication authentication) {
+    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         WexcxAuthenticationToken authenticationToken = (WexcxAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
@@ -50,16 +48,16 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
             return null; // never run this line
         }
 
-        UserPrincipal principal = templateOptional
+        CommonAuthenticationToken token = templateOptional
                 .get()
                 .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
 
-        if (principal == null) {
+        if (token == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        return WexcxAuthenticationToken.authenticated(authenticationToken.getAuthType(), principal);
+        return token;
     }
 
     @Override

@@ -64,7 +64,7 @@ public class BinaryProtocolWebSocketHandler extends BaseWebSocketHandler {
     private void closeSession(WebSocketSession session, CloseStatus status) {
         try {
             if (session.isOpen()) {
-                WebSocketSessionHolder.removeSession(getLoginInfo(session).getId());
+                WebSocketSessionHolder.removeSession(getLoginInfo(session).getUid());
                 session.close(status);
             }
         } catch (IOException e) {

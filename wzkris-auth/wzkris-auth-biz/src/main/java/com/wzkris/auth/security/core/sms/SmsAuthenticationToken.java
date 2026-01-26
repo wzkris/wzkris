@@ -1,20 +1,20 @@
 package com.wzkris.auth.security.core.sms;
 
-import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.UserPrincipal;
 import lombok.Getter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Transient;
+
+import java.util.Collections;
 
 /**
  * @author wzkris
  * @date 2024/3/11
- * @description 短信验证token
+ * @description 短信验证token（未认证状态，用于接收请求参数）
  */
 @Getter
 @Transient
-public final class SmsAuthenticationToken extends CommonAuthenticationToken {
+public final class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
     private final AuthTypeEnum authType;
 
@@ -26,20 +26,11 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
             AuthTypeEnum authType,
             String phoneNumber,
             String smsCode) {
-        super(null);
+        super(Collections.emptyList());
         this.authType = authType;
         this.phoneNumber = phoneNumber;
         this.smsCode = smsCode;
-    }
-
-    private SmsAuthenticationToken(
-            AuthTypeEnum authType,
-            String phoneNumber,
-            UserPrincipal principal) {
-        super(principal);
-        this.authType = authType;
-        this.phoneNumber = phoneNumber;
-        this.smsCode = null;
+        super.setAuthenticated(false);
     }
 
     /**
@@ -52,19 +43,27 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
         return new SmsAuthenticationToken(authType, phoneNumber, smsCode);
     }
 
-    /**
-     * 创建已认证状态的Token（认证成功后使用）
-     */
-    public static SmsAuthenticationToken authenticated(
-            AuthTypeEnum authType,
-            String phoneNumber,
-            UserPrincipal principal) {
-        return new SmsAuthenticationToken(authType, phoneNumber, principal);
+    @Override
+    public Object getCredentials() {
+        return smsCode;
     }
 
     @Override
-    public LoginTypeEnum getLoginType() {
-        return LoginTypeEnum.SMS;
+    public Object getPrincipal() {
+        return phoneNumber;
+    }
+
+    @Override
+    public void setAuthenticated(boolean authenticated) {
+        if (authenticated) {
+            throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
+        }
+        super.setAuthenticated(false);
+    }
+
+    @Override
+    public void eraseCredentials() {
+        super.eraseCredentials();
     }
 
 }

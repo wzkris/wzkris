@@ -3,7 +3,6 @@ package com.wzkris.auth.httpservice.token;
 import com.wzkris.auth.httpservice.token.fallback.TokenHttpServiceFallback;
 import com.wzkris.auth.httpservice.token.req.TokenReq;
 import com.wzkris.auth.httpservice.token.resp.TokenResponse;
-import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
 import com.wzkris.common.httpservice.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpservice.constants.ServiceIdConstant;
@@ -29,7 +28,7 @@ public interface TokenHttpService {
      * 校验token
      */
     @PostExchange("/introspect")
-    TokenResponse<UserPrincipal> introspect(@RequestBody TokenReq tokenReq);
+    TokenResponse introspect(@RequestBody TokenReq tokenReq);
 
 }
 

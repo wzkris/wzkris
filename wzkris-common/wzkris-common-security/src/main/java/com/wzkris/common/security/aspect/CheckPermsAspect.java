@@ -1,7 +1,7 @@
 package com.wzkris.common.security.aspect;
 
-import com.wzkris.common.core.model.UserPrincipal;
-import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.PermissionUtil;
@@ -16,6 +16,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -67,34 +69,36 @@ public class CheckPermsAspect {
      * 验证权限
      */
     private void validatePermission(CheckPerms checkPerms) {
-        UserPrincipal principal = SecurityUtil.getPrincipal();
-        validatePrincipalType(principal, checkPerms);
+        LoginUser loginUser = SecurityUtil.getLoginUser();
+        validatePrincipalType(loginUser, checkPerms);
 
         String[] fullPerms = buildFullPermissions(checkPerms);
         if (ArrayUtils.isEmpty(fullPerms)) {
             return;
         }
 
-        boolean hasPermission = checkPermission(principal.getPerms(), fullPerms, checkPerms.mode());
+        Authentication authentication = SecurityUtil.getAuthentication();
+
+        boolean hasPermission = checkPermission(AuthorityUtils.authorityListToSet(authentication.getAuthorities()), fullPerms, checkPerms.mode());
         if (!hasPermission) {
-            throw createAccessDeniedException(principal, fullPerms, checkPerms.mode());
+            throw createAccessDeniedException(loginUser, fullPerms, checkPerms.mode());
         }
     }
 
     /**
      * 验证主体类型
      */
-    private void validatePrincipalType(UserPrincipal principal, CheckPerms checkPerms) {
-        if (principal == null) {
+    private void validatePrincipalType(LoginUser loginUser, CheckPerms checkPerms) {
+        if (loginUser == null) {
             throw new AccessDeniedException("未找到认证信息，请先登录");
         }
 
-        String expectedType = checkPerms.checkType().getValue();
-        String actualType = principal.getType();
+        AuthTypeEnum expectedType = checkPerms.checkType();
+        AuthTypeEnum actualType = loginUser.getAuthType();
 
-        if (!StringUtil.equals(actualType, expectedType)) {
+        if (actualType != expectedType) {
             throw new AccessDeniedException(
-                    String.format("认证类型不匹配: 需要[%s]，实际[%s]", expectedType, actualType));
+                    String.format("认证类型不匹配: 需要[%s]，实际[%s]", expectedType.getValue(), actualType.getValue()));
         }
     }
 
@@ -127,9 +131,9 @@ public class CheckPermsAspect {
     /**
      * 创建权限拒绝异常
      */
-    private AccessDeniedException createAccessDeniedException(UserPrincipal principal, String[] perms, CheckMode mode) {
-        String name = principal.getName();
-        String type = principal.getType();
+    private AccessDeniedException createAccessDeniedException(LoginUser loginUser, String[] perms, CheckMode mode) {
+        String name = loginUser.getName();
+        String type = loginUser.getAuthType() != null ? loginUser.getAuthType().getValue() : null;
 
         if (mode == CheckMode.AND) {
             return new AccessDeniedException(

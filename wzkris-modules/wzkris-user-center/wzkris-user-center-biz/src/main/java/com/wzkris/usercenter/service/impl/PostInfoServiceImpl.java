@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.TenantUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.PostToMenuDO;
 import com.wzkris.usercenter.domain.vo.SelectVO;
@@ -74,10 +74,10 @@ public class PostInfoServiceImpl implements PostInfoService {
 
     @Override
     public String getPostGroup() {
-        if (TenantUtil.isAdmin()) {
+        if (SecurityUtil.isSuper()) {
             return SecurityConstants.SUPER_ADMIN_NAME;
         }
-        List<PostInfoDO> posts = this.listByMemberId(TenantUtil.getId());
+        List<PostInfoDO> posts = this.listByMemberId(SecurityUtil.getUid());
         return posts.stream().map(PostInfoDO::getPostName).collect(Collectors.joining(","));
     }
 

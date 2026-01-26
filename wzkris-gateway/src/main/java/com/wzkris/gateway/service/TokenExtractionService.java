@@ -6,11 +6,12 @@ import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -86,13 +88,18 @@ public class TokenExtractionService {
                         String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
                         return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
                     } else {
-                        UserPrincipal principal = tokenResponse.getPrincipal();
-                        if (principal == null) {
+                        LoginUser loginUser = tokenResponse.getLoginUser();
+                        if (loginUser == null) {
                             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Principal not found")));
                         }
+                        // 从 TokenResponse 获取权限信息
+                        Set<String> permissions = tokenResponse.getPermissions();
                         // 创建 Authentication 对象
                         Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(
-                                principal, token, AuthorityUtils.createAuthorityList(principal.getPerms()));
+                                loginUser, token,
+                                CollectionUtils.isNotEmpty(permissions)
+                                        ? AuthorityUtils.createAuthorityList(permissions)
+                                        : AuthorityUtils.NO_AUTHORITIES);
                         return Mono.just(authentication);
                     }
                 });

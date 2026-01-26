@@ -1,8 +1,9 @@
 package com.wzkris.system.service.impl;
 
 import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.security.utils.AdminUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.system.domain.NotificationInfoDO;
 import com.wzkris.system.domain.NotificationToAdminDO;
 import com.wzkris.system.domain.NotificationToTenantDO;
@@ -39,7 +40,7 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.SYSTEM_USER_ID);
+                    SecurityUtil.isAuth(AuthTypeEnum.ADMIN) ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(new Date());
             notificationInfoMapper.insert(notificationInfoDO);
             List<NotificationToAdminDO> list = adminIds.stream()
@@ -58,7 +59,7 @@ public class NotificationInfoServiceImpl implements NotificationInfoService {
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    AdminUtil.isAuthenticated() ? AdminUtil.getId() : SecurityConstants.SYSTEM_USER_ID);
+                    SecurityUtil.isAuth(AuthTypeEnum.ADMIN) ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(new Date());
             notificationInfoMapper.insert(notificationInfoDO);
             List<NotificationToTenantDO> list = memberIds.stream()

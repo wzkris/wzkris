@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.Assert;
 
 /**
@@ -42,8 +43,9 @@ public class CaptchaAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(CapHandler.class)
-    public CapService capService(CapHandler capHandler, CapProperties capProperties) {
-        return new CapService(capHandler, capProperties);
+    public CapService capService(CapHandler capHandler, CapProperties capProperties,
+                                 StringRedisTemplate redisTemplate) {
+        return new CapService(capHandler, capProperties, redisTemplate);
     }
 
 }

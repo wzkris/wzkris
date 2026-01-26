@@ -124,10 +124,10 @@ public abstract class JsonUtil {
         }
     }
 
-    public static <T> T toColl(byte[] parser, Class<? extends Collection> collectionClass, Class<?> elementClass) {
+    public static <T> T toColl(byte[] bytes, Class<? extends Collection> collectionClass, Class<?> elementClass) {
         try {
             return objectMapper.readValue(
-                    parser, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
+                    bytes, TypeFactory.defaultInstance().constructCollectionType(collectionClass, elementClass));
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("utilError.jsonSerialize.error");
@@ -149,9 +149,9 @@ public abstract class JsonUtil {
     /**
      * string 转 Java Bean
      */
-    public static <T> T parseObject(String obj, Class<T> clazz) {
+    public static <T> T parseObject(String str, Class<T> clazz) {
         try {
-            return objectMapper.readValue(obj, clazz);
+            return objectMapper.readValue(str, clazz);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("utilError.jsonSerialize.error");

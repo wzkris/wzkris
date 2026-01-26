@@ -2,8 +2,8 @@ package com.wzkris.system.controller.notification;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.system.domain.vo.notification.NotificationInfoVO;
 import com.wzkris.system.mapper.NotificationInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,20 +25,20 @@ public class TenantNotificationInfoController extends BaseController {
     @GetMapping("/page")
     public Result<Page<NotificationInfoVO>> page(String read, String notificationType) {
         startPage();
-        List<NotificationInfoVO> list = notificationInfoMapper.listTenantNotice(TenantUtil.getId(), notificationType, read);
+        List<NotificationInfoVO> list = notificationInfoMapper.listTenantNotice(SecurityUtil.getUid(), notificationType, read);
         return getDataTable(list);
     }
 
     @Operation(summary = "标记已读")
     @PostMapping("/mark-read")
     public Result<Void> markRead(@RequestBody Long notificationId) {
-        return toRes(notificationInfoMapper.markTenantRead(notificationId, TenantUtil.getId()));
+        return toRes(notificationInfoMapper.markTenantRead(notificationId, SecurityUtil.getUid()));
     }
 
     @Operation(summary = "未读数量")
     @GetMapping("/unread-size")
     public Result<Integer> unreadSize(String notificationType) {
-        int count = notificationInfoMapper.countTenantUnread(TenantUtil.getId(), notificationType);
+        int count = notificationInfoMapper.countTenantUnread(SecurityUtil.getUid(), notificationType);
         return ok(count);
     }
 

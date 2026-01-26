@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author wzkris
  */
 @Data
-public class adminInfoResp implements Serializable {
+public class AdminInfoResp implements Serializable {
 
     private Long adminId;
 

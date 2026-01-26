@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
-import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.PostInfoDO;
@@ -84,7 +84,7 @@ public class PostMngController extends BaseController {
         checkedSelectTreeVO.setCheckedKeys(
                 postId == null ? Collections.emptyList()
                         : postToMenuMapper.listMenuIdByPostIds(Collections.singletonList(postId)));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listTenantSelectTree(TenantUtil.getId()));
+        checkedSelectTreeVO.setSelectTrees(menuInfoService.listTenantSelectTree(SecurityUtil.getUid()));
         return ok(checkedSelectTreeVO);
     }
 

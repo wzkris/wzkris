@@ -2,8 +2,8 @@ package com.wzkris.system.controller.adminlog.operate;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.system.domain.AdminOperateLogDO;
 import com.wzkris.system.domain.req.adminlog.AdminOperateLogQueryReq;
 import com.wzkris.system.service.AdminOperateLogService;
@@ -28,7 +28,7 @@ public class AdminOperateLogInfoController extends BaseController {
     @GetMapping("/page")
     public Result<Page<AdminOperateLogDO>> page(AdminOperateLogQueryReq queryReq) {
         startPage();
-        queryReq.setAdminId(AdminUtil.getId());
+        queryReq.setAdminId(SecurityUtil.getUid());
         List<AdminOperateLogDO> list = adminOperateLogService.list(queryReq);
         return getDataTable(list);
     }

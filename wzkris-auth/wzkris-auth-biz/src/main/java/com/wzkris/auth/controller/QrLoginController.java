@@ -4,10 +4,9 @@ import com.wzkris.auth.constants.QrCodeConstant;
 import com.wzkris.auth.domain.vo.QrTokenVO;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.annotation.ExControllerStat;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,13 +15,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.Duration;
+import java.util.*;
 
 @Tag(name = "二维码登录")
 @Slf4j
@@ -35,6 +33,8 @@ public class QrLoginController {
 
     private final TokenService tokenService;
 
+    private final RedisTemplate<String, Object> redisTemplate;
+
     @Operation(summary = "二维码")
     @GetMapping
     public Result<?> qrcode() {
@@ -43,8 +43,8 @@ public class QrLoginController {
         Map<String, String> params = new HashMap<>(2);
         params.put("qrcodeId", qrcodeId);
         //存放二维码唯一标识30秒有效
-        RedisUtil.setObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId,
-                new QrTokenVO(QrCodeStatusEnum.WAIT.getValue(), null, null), 60);
+        redisTemplate.opsForValue().set(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId,
+                new QrTokenVO(QrCodeStatusEnum.WAIT.getValue(), null, null), Duration.ofSeconds(60));
         return Result.ok(params);
     }
 
@@ -52,7 +52,8 @@ public class QrLoginController {
     @PostMapping("/scan")
     public Result<Void> scan(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        QrTokenVO qrTokenVO = RedisUtil.getObj(key, QrTokenVO.class);
+        Object value = redisTemplate.opsForValue().get(key);
+        QrTokenVO qrTokenVO = value instanceof QrTokenVO ? (QrTokenVO) value : null;
         if (Objects.isNull(qrTokenVO)) {
             return Result.requestFail("二维码已过期");
         }
@@ -60,7 +61,7 @@ public class QrLoginController {
             return Result.requestFail("二维码已被扫描");
         }
         qrTokenVO.setStatus(QrCodeStatusEnum.SCANED.getValue());
-        RedisUtil.setObj(key, qrTokenVO, 60);
+        redisTemplate.opsForValue().set(key, qrTokenVO, Duration.ofSeconds(60));
         return Result.ok();
     }
 
@@ -68,7 +69,8 @@ public class QrLoginController {
     @PostMapping("/confirm")
     public Result<Void> confirm(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        QrTokenVO qrTokenVO = RedisUtil.getObj(key, QrTokenVO.class);
+        Object value = redisTemplate.opsForValue().get(key);
+        QrTokenVO qrTokenVO = value instanceof QrTokenVO ? (QrTokenVO) value : null;
         if (Objects.isNull(qrTokenVO)) {
             return Result.requestFail("二维码已过期");
         }
@@ -76,15 +78,16 @@ public class QrLoginController {
             return Result.requestFail("二维码已被扫描");
         }
 
-        UserPrincipal principal = SecurityUtil.getPrincipal();
-        String accessToken = tokenService.generateAccessToken(principal);
+        LoginUser loginUser = SecurityUtil.getLoginUser();
+        Set<String> permission = SecurityUtil.getPermission();
+        String accessToken = tokenService.generateAccessToken(loginUser);
         String refreshToken = tokenService.generateToken();
-        tokenService.save(principal, accessToken, refreshToken);
+        tokenService.save(loginUser, accessToken, refreshToken, permission);
 
         qrTokenVO.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
         qrTokenVO.setAccessToken(accessToken);
         qrTokenVO.setRefreshToken(refreshToken);
-        RedisUtil.setObj(key, qrTokenVO, 60);
+        redisTemplate.opsForValue().set(key, qrTokenVO, Duration.ofSeconds(60));
         return Result.ok();
     }
 
@@ -94,7 +97,8 @@ public class QrLoginController {
             @NotBlank(message = "{invalidParameter.param.invalid}")
             @RequestParam String qrcodeId
     ) {
-        QrTokenVO qrTokenVO = RedisUtil.getObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId, QrTokenVO.class);
+        Object value = redisTemplate.opsForValue().get(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId);
+        QrTokenVO qrTokenVO = value instanceof QrTokenVO ? (QrTokenVO) value : null;
         if (Objects.isNull(qrTokenVO)) {
             return Result.ok(QrTokenVO.OVERDUE());
         }

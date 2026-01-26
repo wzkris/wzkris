@@ -3,10 +3,7 @@ package com.wzkris.auth.listener;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.UserPrincipal;
-import com.wzkris.common.core.model.domain.LoginAdmin;
-import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginTenant;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.system.httpservice.loginlog.LoginLogHttpService;
 import com.wzkris.system.httpservice.loginlog.req.LoginLogEvent;
@@ -48,19 +45,20 @@ public class LoginEventListener {
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final UserPrincipal principal = event.getPrincipal();
-        log.info("'{}' 发生登录事件", principal);
+        final LoginUser loginUser = event.getLoginUser();
+        log.info("'{}' 发生登录事件", loginUser);
 
-        if (principal instanceof LoginAdmin admin) {
-            this.handleLoginAdmin(event, admin);
-        } else if (principal instanceof LoginTenant tenant) {
-            this.handleLoginTenant(event, tenant);
-        } else if (principal instanceof LoginCustomer customer) {
-            this.handleLoginCustomer(event, customer);
+        AuthTypeEnum authType = loginUser.getAuthType();
+        if (authType == AuthTypeEnum.ADMIN) {
+            this.handleLoginAdmin(event, loginUser);
+        } else if (authType == AuthTypeEnum.TENANT) {
+            this.handleLoginTenant(event, loginUser);
+        } else if (authType == AuthTypeEnum.CUSTOMER) {
+            this.handleLoginCustomer(event, loginUser);
         }
     }
 
-    private void handleLoginAdmin(LoginEvent event, LoginAdmin admin) {
+    private void handleLoginAdmin(LoginEvent event, LoginUser admin) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
@@ -72,7 +70,7 @@ public class LoginEventListener {
         String loginLocation = IpUtil.parseIp(ipAddr);
 
         if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(admin.getId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(admin.getUid());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
             adminInfoHttpService.updateLoginInfo(loginInfoReq);
@@ -80,7 +78,7 @@ public class LoginEventListener {
         // 插入后台登陆日志
         LoginLogEvent loginLogEvent = new LoginLogEvent();
         loginLogEvent.setAuthType(AuthTypeEnum.ADMIN.getValue());
-        loginLogEvent.setOperatorId(admin.getId());
+        loginLogEvent.setOperatorId(admin.getUid());
         loginLogEvent.setUsername(admin.getUsername());
         loginLogEvent.setLoginTime(new Date());
         loginLogEvent.setLoginIp(ipAddr);
@@ -93,7 +91,7 @@ public class LoginEventListener {
         loginLogHttpService.save(Collections.singletonList(loginLogEvent));
     }
 
-    private void handleLoginTenant(LoginEvent event, LoginTenant tenant) {
+    private void handleLoginTenant(LoginEvent event, LoginUser tenant) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
         final String ipAddr = event.getIpAddr();
@@ -105,7 +103,7 @@ public class LoginEventListener {
         String loginLocation = IpUtil.parseIp(ipAddr);
 
         if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(tenant.getId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(tenant.getUid());
             loginInfoReq.setLoginIp(ipAddr);
             loginInfoReq.setLoginDate(new Date());
             memberInfoHttpService.updateLoginInfo(loginInfoReq);
@@ -113,7 +111,7 @@ public class LoginEventListener {
         // 插入租户登陆日志
         LoginLogEvent loginLogEvent = new LoginLogEvent();
         loginLogEvent.setAuthType(AuthTypeEnum.TENANT.getValue());
-        loginLogEvent.setOperatorId(tenant.getId());
+        loginLogEvent.setOperatorId(tenant.getUid());
         loginLogEvent.setUsername(tenant.getUsername());
         loginLogEvent.setTenantId(tenant.getTenantId());
         loginLogEvent.setLoginTime(new Date());
@@ -127,9 +125,9 @@ public class LoginEventListener {
         loginLogHttpService.save(Collections.singletonList(loginLogEvent));
     }
 
-    private void handleLoginCustomer(LoginEvent event, LoginCustomer customer) {
+    private void handleLoginCustomer(LoginEvent event, LoginUser customer) {
         if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(customer.getId());
+            LoginInfoReq loginInfoReq = new LoginInfoReq(customer.getUid());
             loginInfoReq.setLoginIp(event.getIpAddr());
             loginInfoReq.setLoginDate(new Date());
             customerInfoHttpService.updateLoginInfo(loginInfoReq);

@@ -6,8 +6,8 @@ import com.wzkris.common.httpservice.constants.ServiceIdConstant;
 import com.wzkris.usercenter.httpservice.admin.fallback.AdminInfoHttpServiceFallback;
 import com.wzkris.usercenter.httpservice.admin.req.LoginInfoReq;
 import com.wzkris.usercenter.httpservice.admin.req.QueryAdminPermsReq;
+import com.wzkris.usercenter.httpservice.admin.resp.AdminInfoResp;
 import com.wzkris.usercenter.httpservice.admin.resp.AdminPermissionResp;
-import com.wzkris.usercenter.httpservice.admin.resp.adminInfoResp;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -30,13 +30,13 @@ public interface AdminInfoHttpService {
      * 根据用户名查询用户
      */
     @PostExchange("/query-by-username")
-    adminInfoResp getByUsername(@RequestBody String username);
+    AdminInfoResp getByUsername(@RequestBody String username);
 
     /**
      * 根据手机号查询用户
      */
     @PostExchange("/query-by-phonenumber")
-    adminInfoResp getByPhoneNumber(@RequestBody String phoneNumber);
+    AdminInfoResp getByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
      * 查询管理员权限

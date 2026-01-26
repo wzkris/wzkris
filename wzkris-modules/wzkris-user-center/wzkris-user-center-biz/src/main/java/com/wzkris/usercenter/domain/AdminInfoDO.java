@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.usercenter.httpservice.admin.resp.adminInfoResp;
+import com.wzkris.usercenter.httpservice.admin.resp.AdminInfoResp;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +20,7 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-@AutoMappers({@AutoMapper(target = adminInfoResp.class)})
+@AutoMappers({@AutoMapper(target = AdminInfoResp.class)})
 @NoArgsConstructor
 @TableName(schema = "biz", value = "admin_info")
 public class AdminInfoDO extends BaseEntity {

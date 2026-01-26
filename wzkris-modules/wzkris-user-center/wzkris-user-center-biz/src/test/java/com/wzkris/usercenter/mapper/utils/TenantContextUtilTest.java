@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.mapper.utils;
 
-import com.wzkris.common.core.model.domain.LoginAdmin;
+import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
@@ -22,16 +23,16 @@ public class TenantContextUtilTest {
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
     static {
-        LoginAdmin loginAdmin = new LoginAdmin(1L, Collections.singleton("*"));
-        loginAdmin.setSuperadmin(true);
-        loginAdmin.setUsername("admin");
-        loginAdmin.setDeptScopes(Collections.emptyList());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(1L);
+        loginUser.setAuthType(AuthTypeEnum.ADMIN);
+        loginUser.setUsername("admin");
 
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(
                 OAuth2AccessToken.TokenType.BEARER, "xxxxxx", Instant.MIN, Instant.MAX, Collections.emptySet());
         SecurityContextHolder.getContext()
                 .setAuthentication(
-                        new UsernamePasswordAuthenticationToken(loginAdmin, ""));
+                        new UsernamePasswordAuthenticationToken(loginUser, ""));
     }
 
     TenantProperties tenantProperties;

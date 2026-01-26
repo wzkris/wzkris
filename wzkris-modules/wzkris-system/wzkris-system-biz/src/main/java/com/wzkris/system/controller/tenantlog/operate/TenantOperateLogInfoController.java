@@ -2,8 +2,8 @@ package com.wzkris.system.controller.tenantlog.operate;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.system.domain.req.tenantlog.TenantOperateLogQueryReq;
 import com.wzkris.system.domain.vo.tenantlog.TenantOperateLogInfoVO;
 import com.wzkris.system.service.TenantOperateLogService;
@@ -28,7 +28,7 @@ public class TenantOperateLogInfoController extends BaseController {
     @GetMapping("/page")
     public Result<Page<TenantOperateLogInfoVO>> page(TenantOperateLogQueryReq queryReq) {
         startPage();
-        queryReq.setMemberId(TenantUtil.getId());
+        queryReq.setMemberId(SecurityUtil.getUid());
         List<TenantOperateLogInfoVO> list = tenantOperateLogService.listInfoVO(queryReq);
         return getDataTable(list);
     }

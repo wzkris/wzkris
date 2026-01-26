@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
@@ -11,7 +12,6 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
-import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
@@ -144,7 +144,7 @@ public class AdminMngController extends BaseController {
         boolean success = adminInfoService.saveAdmin(admin, req.getRoleIds());
         if (success) {
             SpringUtil.getContext()
-                    .publishEvent(new CreateAdminEvent(AdminUtil.getId(), req.getUsername(), password));
+                    .publishEvent(new CreateAdminEvent(SecurityUtil.getUid(), req.getUsername(), password));
         }
         return toRes(success);
     }

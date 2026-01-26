@@ -3,13 +3,14 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.model.UserPrincipal;
-import com.wzkris.common.core.model.domain.LoginTenant;
+import com.wzkris.common.core.enums.IdentityTypeEnum;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -33,6 +34,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class LoginTenantService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public UserPrincipal loadUserByPhoneNumber(String phoneNumber) {
+    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         MemberInfoResp memberResp = memberInfoHttpService.getByPhoneNumber(phoneNumber);
 
         if (memberResp == null) {
@@ -55,7 +57,7 @@ public class LoginTenantService extends UserInfoTemplate {
         }
 
         try {
-            return this.buildLoginTenant(memberResp);
+            return this.buildAuthenticationToken(memberResp, LoginTypeEnum.SMS);
         } catch (Exception e) {
             this.recordFailedLog(memberResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
@@ -64,7 +66,7 @@ public class LoginTenantService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public UserPrincipal loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+    public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         MemberInfoResp memberResp = memberInfoHttpService.getByUsername(username);
 
         if (memberResp == null) {
@@ -78,7 +80,7 @@ public class LoginTenantService extends UserInfoTemplate {
                         BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
-            return this.buildLoginTenant(memberResp);
+            return this.buildAuthenticationToken(memberResp, LoginTypeEnum.PASSWORD);
         } catch (Exception e) {
             this.recordFailedLog(memberResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
             throw e;
@@ -91,9 +93,9 @@ public class LoginTenantService extends UserInfoTemplate {
     }
 
     /**
-     * 构建登录用户
+     * 构建认证Token
      */
-    public LoginTenant buildLoginTenant(MemberInfoResp memberResp) {
+    private CommonAuthenticationToken buildAuthenticationToken(MemberInfoResp memberResp, LoginTypeEnum loginType) {
         // 校验用户状态
         this.checkAccount(memberResp);
 
@@ -101,11 +103,20 @@ public class LoginTenantService extends UserInfoTemplate {
         MemberPermissionResp permissions = memberInfoHttpService.getPermission(
                 new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
 
-        LoginTenant loginTenant = new LoginTenant(memberResp.getMemberId(), new HashSet<>(permissions.getGrantedAuthority()));
-        loginTenant.setAdmin(permissions.getAdmin());
-        loginTenant.setUsername(memberResp.getUsername());
-        loginTenant.setTenantId(memberResp.getTenantId());
-        return loginTenant;
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(memberResp.getMemberId());
+        loginUser.setAuthType(AuthTypeEnum.TENANT);
+        loginUser.setIdentityType(permissions.getAdmin()
+                ? IdentityTypeEnum.TENANT_SUPER
+                : IdentityTypeEnum.TENANT_NORMAL);
+        loginUser.setUsername(memberResp.getUsername());
+        loginUser.setTenantId(memberResp.getTenantId());
+
+        Set<String> perms = permissions.getGrantedAuthority() != null
+                ? new HashSet<>(permissions.getGrantedAuthority())
+                : Collections.emptySet();
+
+        return new CommonAuthenticationToken(loginUser, perms, loginType);
     }
 
     /**
@@ -128,19 +139,44 @@ public class LoginTenantService extends UserInfoTemplate {
     }
 
     /**
+     * 构建LoginUser
+     */
+    public LoginUser buildLoginTenant(MemberInfoResp memberResp) {
+        // 校验用户状态
+        this.checkAccount(memberResp);
+
+        // 获取权限信息以判断身份类型
+        MemberPermissionResp permissions = memberInfoHttpService.getPermission(
+                new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
+
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(memberResp.getMemberId());
+        loginUser.setAuthType(AuthTypeEnum.TENANT);
+        loginUser.setIdentityType(permissions.getAdmin()
+                ? IdentityTypeEnum.TENANT_SUPER
+                : IdentityTypeEnum.TENANT_NORMAL);
+        loginUser.setUsername(memberResp.getUsername());
+        loginUser.setTenantId(memberResp.getTenantId());
+
+        return loginUser;
+    }
+
+    /**
      * 记录失败日志
      */
     private void recordFailedLog(MemberInfoResp memberResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        LoginTenant loginTenant = new LoginTenant(memberResp.getMemberId(), Collections.emptySet());
-        loginTenant.setAdmin(false);
-        loginTenant.setUsername(memberResp.getUsername());
-        loginTenant.setTenantId(memberResp.getTenantId());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(memberResp.getMemberId());
+        loginUser.setAuthType(AuthTypeEnum.TENANT);
+        loginUser.setIdentityType(IdentityTypeEnum.TENANT_NORMAL);
+        loginUser.setUsername(memberResp.getUsername());
+        loginUser.setTenantId(memberResp.getTenantId());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        loginTenant,
+                        loginUser,
                         loginType,
                         false,
                         errorMsg,

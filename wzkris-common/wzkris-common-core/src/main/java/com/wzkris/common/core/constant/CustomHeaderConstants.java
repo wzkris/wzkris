@@ -52,4 +52,9 @@ public class CustomHeaderConstants {
      */
     public static final String X_CLIENT_TOKEN = "X-Client-Token";
 
+    /**
+     * 权限信息
+     */
+    public static final String X_PERMISSIONS = "X-Permissions";
+
 }

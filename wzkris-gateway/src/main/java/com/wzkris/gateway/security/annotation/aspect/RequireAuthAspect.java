@@ -2,7 +2,7 @@ package com.wzkris.gateway.security.annotation.aspect;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.security.annotation.RequireAuth;
 import com.wzkris.gateway.security.checker.AuthChecker;
@@ -20,7 +20,11 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import org.springframework.security.core.authority.AuthorityUtils;
+
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 权限验证切面
@@ -68,21 +72,26 @@ public class RequireAuthAspect {
     private Mono<Object> validatePermission(ProceedingJoinPoint point, RequireAuth requireAuth) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
-                .map(Authentication::getPrincipal)
-                .filter(UserPrincipal.class::isInstance)
-                .cast(UserPrincipal.class)
                 .switchIfEmpty(Mono.error(new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc())))
-                .flatMap(principal -> {
-                    boolean passed = AuthChecker.check(principal, requireAuth);
+                .flatMap(authentication -> {
+                    Object principalObj = authentication.getPrincipal();
+                    if (!(principalObj instanceof LoginUser loginUser)) {
+                        return Mono.error(new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc()));
+                    }
+
+                    // 从 Authentication 获取权限
+                    Set<String> permissions = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
+                    boolean passed = AuthChecker.check(loginUser, permissions, requireAuth);
                     if (!passed) {
                         String authType = requireAuth.authType().getValue();
-                        String[] permissions = requireAuth.permissions();
+                        String[] requirePermissions = requireAuth.permissions();
 
                         log.error("'{}'权限验证失败 - 方法: {}, 要求类型: {}, 要求权限: {}",
-                                principal.getName(),
+                                loginUser.getName(),
                                 point.getTarget().getClass().getName() + StringUtil.DOT + ((MethodSignature) point.getSignature()).getMethod().getName(),
                                 authType,
-                                Arrays.toString(permissions));
+                                Arrays.toString(requirePermissions));
 
                         return Mono.error(new ResultException(403, BizBaseCodeEnum.ACCESS_DENIED.value(), BizBaseCodeEnum.ACCESS_DENIED.desc()));
                     }

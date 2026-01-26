@@ -16,19 +16,12 @@
 
 package com.wzkris.auth.security.handler;
 
-import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -53,7 +46,7 @@ import java.util.Map;
  * @date 2024-03-01
  */
 @Slf4j
-public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
+public class Oauth2AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
 
     private final MappingJackson2HttpMessageConverter jsonMessageConverter
             = new MappingJackson2HttpMessageConverter();
@@ -80,8 +73,6 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 
         if (authentication instanceof OAuth2AccessTokenAuthenticationToken accessTokenAuthentication) {
 
-            this.recordSuccessLog(request, accessTokenAuthentication);
-
             this.sendAccessTokenResponse(response, accessTokenAuthentication);
 
         } else if (authentication instanceof OAuth2TokenIntrospectionAuthenticationToken introspectionAuthenticationToken) {
@@ -100,22 +91,6 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
                     MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
         }
 
-    }
-
-    private void recordSuccessLog(
-            HttpServletRequest request, OAuth2AccessTokenAuthenticationToken authenticationToken) {
-        if (authenticationToken.getPrincipal() instanceof CommonAuthenticationToken commonAuthenticationToken) {
-            if (!(commonAuthenticationToken instanceof RefreshAuthenticationToken)) {
-                SpringUtil.getContext()
-                        .publishEvent(new LoginEvent(
-                                commonAuthenticationToken.getPrincipal(),
-                                commonAuthenticationToken.getLoginType().getValue(),
-                                true,
-                                "",
-                                ServletUtil.getClientIP(request),
-                                UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
-            }
-        }
     }
 
     private void sendAccessTokenResponse(

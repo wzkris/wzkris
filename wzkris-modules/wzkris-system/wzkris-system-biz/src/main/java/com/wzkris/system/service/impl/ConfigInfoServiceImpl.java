@@ -2,15 +2,14 @@ package com.wzkris.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.system.domain.ConfigInfoDO;
 import com.wzkris.system.mapper.ConfigInfoMapper;
 import com.wzkris.system.service.ConfigInfoService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RMap;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -30,9 +29,7 @@ public class ConfigInfoServiceImpl implements ConfigInfoService, SmartInitializi
 
     private final ConfigInfoMapper configInfoMapper;
 
-    private RMap<String, String> cache() {
-        return RedisUtil.getRMap(DICT_KEY);
-    }
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void afterSingletonsInstantiated() {
@@ -41,27 +38,32 @@ public class ConfigInfoServiceImpl implements ConfigInfoService, SmartInitializi
 
     @Override
     public void loadingConfigCache() {
-        RMap<String, String> rMap = cache();
         Map<String, String> map = configInfoMapper.selectList(null).stream()
                 .collect(Collectors.toMap(ConfigInfoDO::getConfigKey, ConfigInfoDO::getConfigValue));
-        rMap.clear();
-        rMap.putAll(map);
+        redisTemplate.delete(DICT_KEY);
+        if (!map.isEmpty()) {
+            redisTemplate.opsForHash().putAll(DICT_KEY, (Map) map);
+        }
     }
 
     @Override
     public String getValueByKey(String configkey) {
-        String value = cache().get(configkey);
-        if (StringUtil.isNotBlank(value)) return value;
+        Object value = redisTemplate.opsForHash().get(DICT_KEY, configkey);
+        if (value instanceof String && StringUtil.isNotBlank((String) value)) {
+            return (String) value;
+        }
         value = configInfoMapper.selectValueByKey(configkey);
-        cache().put(configkey, value);
-        return value;
+        if (value != null) {
+            redisTemplate.opsForHash().put(DICT_KEY, configkey, value);
+        }
+        return value != null ? value.toString() : null;
     }
 
     @Override
     public boolean insertConfig(ConfigInfoDO config) {
         boolean success = configInfoMapper.insert(config) > 0;
         if (success) {
-            cache().put(config.getConfigKey(), config.getConfigValue());
+            redisTemplate.opsForHash().put(DICT_KEY, config.getConfigKey(), config.getConfigValue());
         }
         return success;
     }
@@ -70,7 +72,7 @@ public class ConfigInfoServiceImpl implements ConfigInfoService, SmartInitializi
     public boolean updateConfig(ConfigInfoDO config) {
         boolean success = configInfoMapper.updateById(config) > 0;
         if (success) {
-            cache().put(config.getConfigKey(), config.getConfigValue());
+            redisTemplate.opsForHash().put(DICT_KEY, config.getConfigKey(), config.getConfigValue());
         }
         return success;
     }
@@ -80,7 +82,7 @@ public class ConfigInfoServiceImpl implements ConfigInfoService, SmartInitializi
         ConfigInfoDO config = configInfoMapper.selectById(configId);
         boolean success = configInfoMapper.deleteById(configId) > 0;
         if (success) {
-            cache().remove(config.getConfigKey());
+            redisTemplate.opsForHash().delete(DICT_KEY, config.getConfigKey());
         }
         return success;
     }

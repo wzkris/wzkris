@@ -12,7 +12,6 @@ import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.system.httpservice.operatelog.req.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -86,13 +85,14 @@ public class OperateLogAspect {
         OperateLogEvent operateLogEvent = new OperateLogEvent();
 
         // 设置用户信息
-        operateLogEvent.setOperatorId(SecurityUtil.getId());
-        operateLogEvent.setAuthType(SecurityUtil.getAuthType());
-        operateLogEvent.setOperName(SecurityUtil.getName());
+        operateLogEvent.setOperatorId(SecurityUtil.getUid());
+        AuthTypeEnum authType = SecurityUtil.getAuthType();
+        operateLogEvent.setAuthType(authType.getValue());
+        operateLogEvent.setOperName(SecurityUtil.getUsername());
 
         // 设置租户ID
-        if (Objects.equals(SecurityUtil.getAuthType(), AuthTypeEnum.TENANT.getValue())) {
-            operateLogEvent.setTenantId(TenantUtil.getTenantId());
+        if (authType == AuthTypeEnum.TENANT) {
+            operateLogEvent.setTenantId(SecurityUtil.getTenantId());
         }
 
         // 设置操作信息

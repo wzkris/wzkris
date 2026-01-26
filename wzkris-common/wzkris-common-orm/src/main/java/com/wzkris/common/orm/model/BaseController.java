@@ -103,6 +103,10 @@ public abstract class BaseController {
         return Result.requestFail(errMsg);
     }
 
+    public <T> Result<T> accessDenied(String errMsg) {
+        return Result.accessDenied(errMsg);
+    }
+
     /**
      * 响应返回结果
      *

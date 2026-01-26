@@ -4,12 +4,12 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.domain.req.WexcxSwitchReq;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.impl.LoginTenantService;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.model.domain.LoginTenant;
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.utils.CustomerUtil;
 import com.wzkris.usercenter.httpservice.member.MemberInfoHttpService;
+import com.wzkris.usercenter.httpservice.member.req.QueryMemberPermsReq;
 import com.wzkris.usercenter.httpservice.member.resp.MemberInfoResp;
+import com.wzkris.usercenter.httpservice.member.resp.MemberPermissionResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -52,21 +52,26 @@ public class SwitchTokenController {
                 .getUserService()
                 .getSessionInfo(switchReq.getWxCode())
                 .getOpenid();
-        if (!StringUtil.equals(CustomerUtil.getWxopenid(), identifier)) {
-            return Result.requestFail("当前用户不允许切换");
-        }
 
         MemberInfoResp memberInfoResp = memberInfoHttpService.getByWexcxIdentifier(identifier);
         if (memberInfoResp == null) {
             return Result.requestFail("微信未绑定商户账号");
         }
 
-        LoginTenant loginTenant = loginTenantService.buildLoginTenant(memberInfoResp);
+        LoginUser loginUser = loginTenantService.buildLoginTenant(memberInfoResp);
 
-        String accessToken = tokenService.generateAccessToken(loginTenant);
+        // 获取权限信息
+        MemberPermissionResp permissions = memberInfoHttpService.getPermission(
+                new QueryMemberPermsReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
+
+        String accessToken = tokenService.generateAccessToken(loginUser);
         String refreshToken = tokenService.generateToken();
 
-        tokenService.save(loginTenant, accessToken, refreshToken);
+        java.util.Set<String> perms = permissions.getGrantedAuthority() != null
+                ? new java.util.HashSet<>(permissions.getGrantedAuthority())
+                : java.util.Collections.emptySet();
+
+        tokenService.save(loginUser, accessToken, refreshToken, perms);
 
         Map<String, Object> parameters = new HashMap();
         parameters.put("access_token", accessToken);

@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.common.security.utils.AdminUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.domain.req.menu.MenuMngReq;
@@ -50,8 +50,8 @@ public class MenuMngController extends BaseController {
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngQueryReq queryReq) {
         List<Long> menuIds = new ArrayList<>();
-        if (!AdminUtil.isSuperadmin()) {
-            menuIds = menuInfoService.listMenuIdByAdminId(AdminUtil.getId());
+        if (!SecurityUtil.isSuper()) {
+            menuIds = menuInfoService.listMenuIdByAdminId(SecurityUtil.getUid());
         }
         return new LambdaQueryWrapper<MenuInfoDO>()
                 .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)

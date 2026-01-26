@@ -1,8 +1,9 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.orm.plus.config.TenantProperties;
-import com.wzkris.common.security.utils.TenantUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -20,12 +21,12 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        return new LongValue(TenantUtil.getTenantId());
+        return new LongValue(SecurityUtil.getTenantId());
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        return !TenantUtil.isLogin() || !tenantProperties.getIncludes().contains(tableName);
+        return !SecurityUtil.isAuth(AuthTypeEnum.TENANT) || !tenantProperties.getIncludes().contains(tableName);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.wzkris.auth.security.filter;
 
-import com.wzkris.auth.security.handler.AuthenticationSuccessHandlerImpl;
+import com.wzkris.auth.security.handler.DefaultAuthenticationSuccessHandlerImpl;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -32,7 +32,7 @@ public class LoginEndpointFilter extends AbstractAuthenticationProcessingFilter 
         super(PathPatternRequestMatcher.withDefaults()
                 .matcher(HttpMethod.POST, "/login"), new ProviderManager(providers));
         setAuthenticationConverter(new DelegatingAuthenticationConverter(converters));
-        setAuthenticationSuccessHandler(new AuthenticationSuccessHandlerImpl());
+        setAuthenticationSuccessHandler(new DefaultAuthenticationSuccessHandlerImpl());
         setAuthenticationFailureHandler(new AuthenticationEntryPointFailureHandler(new AuthenticationEntryPointImpl()));
         setAllowSessionCreation(false);
     }

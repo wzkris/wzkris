@@ -2,9 +2,7 @@ package com.wzkris.usercenter.controller.customer;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.redis.annotation.GlobalCache;
-import com.wzkris.common.redis.annotation.GlobalCacheEvict;
-import com.wzkris.common.security.utils.CustomerUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.req.customer.CustomerInfoReq;
 import com.wzkris.usercenter.domain.vo.customer.CustomerInfoVO;
@@ -14,6 +12,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,9 +38,9 @@ public class CustomerInfoController extends BaseController {
 
     @Operation(summary = "获取信息")
     @GetMapping
-    @GlobalCache(keyPrefix = info_prefix, key = "@cu.getId()", ttl = 3_600_000, sync = true)
+    @Cacheable(value = info_prefix + "#3_600_000", key = "@su.getUid()", sync = true)
     public Result<CustomerInfoVO> customerInfo() {
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(CustomerUtil.getId());
+        CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(SecurityUtil.getUid());
 
         CustomerInfoVO customerInfoVO = new CustomerInfoVO();
         customerInfoVO.setNickname(customerInfoDO.getNickname());
@@ -54,9 +54,9 @@ public class CustomerInfoController extends BaseController {
 
     @Operation(summary = "修改信息")
     @PostMapping
-    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@cu.getId()")
+    @CacheEvict(value = info_prefix, key = "@su.getUid()")
     public Result<?> editInfo(@RequestBody CustomerInfoReq req) {
-        CustomerInfoDO customer = new CustomerInfoDO(CustomerUtil.getId());
+        CustomerInfoDO customer = new CustomerInfoDO(SecurityUtil.getUid());
         customer.setNickname(req.getNickname());
         customer.setGender(req.getGender());
         return toRes(customerInfoMapper.updateById(customer));
@@ -64,9 +64,9 @@ public class CustomerInfoController extends BaseController {
 
     @Operation(summary = "更新头像")
     @PostMapping("/edit-avatar")
-    @GlobalCacheEvict(keyPrefix = info_prefix, key = "@cu.getId()")
+    @CacheEvict(value = info_prefix, key = "@su.getUid()")
     public Result<?> editAvatar(@RequestBody String url) {
-        CustomerInfoDO customerInfoDO = new CustomerInfoDO(CustomerUtil.getId());
+        CustomerInfoDO customerInfoDO = new CustomerInfoDO(SecurityUtil.getUid());
         customerInfoDO.setAvatar(url);
         return toRes(customerInfoMapper.updateById(customerInfoDO));
     }

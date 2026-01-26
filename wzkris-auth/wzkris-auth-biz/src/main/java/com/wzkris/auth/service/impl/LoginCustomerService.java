@@ -4,12 +4,13 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizCallCodeEnum;
-import com.wzkris.common.core.model.domain.LoginCustomer;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -55,7 +56,7 @@ public class LoginCustomerService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public LoginCustomer loadUserByPhoneNumber(String phoneNumber) {
+    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         CustomerResp customerResp = customerInfoHttpService.getByPhoneNumber(phoneNumber);
 
         if (customerResp == null) {
@@ -64,7 +65,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         }
 
         try {
-            return this.buildLoginCustomer(customerResp);
+            return this.buildAuthenticationToken(customerResp, LoginTypeEnum.SMS);
         } catch (Exception e) {
             this.recordFailedLog(customerResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
@@ -73,7 +74,7 @@ public class LoginCustomerService extends UserInfoTemplate {
 
     @Nullable
     @Override
-    public LoginCustomer loadUserByWxXcx(String wxCode, String phoneCode) {
+    public CommonAuthenticationToken loadUserByWxXcx(String wxCode, String phoneCode) {
         String identifier;
         String phoneNumber = null;
         try {
@@ -105,9 +106,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         }
 
         try {
-            LoginCustomer loginCustomer = this.buildLoginCustomer(customerResp);
-            loginCustomer.setWxopenid(identifier);
-            return loginCustomer;
+            return this.buildAuthenticationToken(customerResp, LoginTypeEnum.WE_XCX);
         } catch (Exception e) {
             this.recordFailedLog(customerResp, LoginTypeEnum.WE_XCX.getValue(), e.getMessage());
             throw e;
@@ -120,15 +119,19 @@ public class LoginCustomerService extends UserInfoTemplate {
     }
 
     /**
-     * 构建登录用户
+     * 构建认证Token
      */
-    private LoginCustomer buildLoginCustomer(CustomerResp customerResp) {
+    private CommonAuthenticationToken buildAuthenticationToken(CustomerResp customerResp, LoginTypeEnum loginType) {
         // 校验用户状态
         this.checkAccount(customerResp);
 
-        LoginCustomer loginCustomer = new LoginCustomer(customerResp.getCustomerId(), Collections.emptySet());
-        loginCustomer.setPhoneNumber(customerResp.getPhoneNumber());
-        return loginCustomer;
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(customerResp.getCustomerId());
+        loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
+        loginUser.setPhoneNumber(customerResp.getPhoneNumber());
+
+        // Customer 用户没有权限，使用空集合
+        return new CommonAuthenticationToken(loginUser, Collections.emptySet(), loginType);
     }
 
     /**
@@ -144,12 +147,14 @@ public class LoginCustomerService extends UserInfoTemplate {
     private void recordFailedLog(CustomerResp customerResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        LoginCustomer loginCustomer = new LoginCustomer(customerResp.getCustomerId(), Collections.emptySet());
-        loginCustomer.setPhoneNumber(customerResp.getPhoneNumber());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(customerResp.getCustomerId());
+        loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
+        loginUser.setPhoneNumber(customerResp.getPhoneNumber());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        loginCustomer,
+                        loginUser,
                         loginType,
                         false,
                         errorMsg,

@@ -1,6 +1,6 @@
 package com.wzkris.gateway.filter.route;
 
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
@@ -45,13 +45,13 @@ public class ApicallStatisticsFilter implements GlobalFilter {
                 .then(ReactiveSecurityContextHolder.getContext()
                         .map(SecurityContext::getAuthentication)
                         .map(Authentication::getPrincipal)
-                        .filter(UserPrincipal.class::isInstance)
-                        .cast(UserPrincipal.class)
-                        .doOnNext(principal -> {
+                        .filter(LoginUser.class::isInstance)
+                        .cast(LoginUser.class)
+                        .doOnNext(loginUser -> {
                             try {
                                 // 判断请求是否成功（根据响应状态码）
                                 boolean success = exchange.getResponse().getStatusCode().is2xxSuccessful();
-                                recordApiCallStatistics(path, success, principal);
+                                recordApiCallStatistics(path, success, loginUser);
                             } catch (Exception e) {
                                 log.warn("接口调用量统计失败: {}", e.getMessage());
                             }
@@ -67,15 +67,15 @@ public class ApicallStatisticsFilter implements GlobalFilter {
     /**
      * 记录接口调用量统计
      */
-    private void recordApiCallStatistics(String path, boolean success, UserPrincipal userInfo) {
+    private void recordApiCallStatistics(String path, boolean success, LoginUser userInfo) {
         // 获取时间信息
         LocalDateTime now = LocalDateTime.now();
         String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String hourStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
 
         StatisticsKey key = StatisticsKey.builder()
-                .authType(userInfo.getType())
-                .userId(userInfo.getId())
+                .authType(userInfo.getAuthType().getValue())
+                .userId(userInfo.getUid())
                 .path(path)
                 .date(dateStr)
                 .hour(hourStr)

@@ -2,14 +2,13 @@ package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
+import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.model.UserPrincipal;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -24,24 +23,23 @@ import java.util.Optional;
  * @description 密码模式核心处理
  */
 @Component // 注册成bean方便引用
-public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider<PasswordAuthenticationToken> {
+public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider {
 
     private final List<UserInfoTemplate> userInfoTemplates;
 
     private final CaptchaService captchaService;
 
     public PasswordAuthenticationProvider(
-            TokenProperties tokenProperties,
             TokenService tokenService,
             List<UserInfoTemplate> userInfoTemplates,
             CaptchaService captchaService) {
-        super(tokenProperties, tokenService);
+        super(tokenService);
         this.userInfoTemplates = userInfoTemplates;
         this.captchaService = captchaService;
     }
 
     @Override
-    public PasswordAuthenticationToken doAuthenticate(Authentication authentication) {
+    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
 
         Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
@@ -68,16 +66,16 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), "invalidParameter.captcha.error");
         }
 
-        UserPrincipal principal = templateOptional.get().loadByUsernameAndPassword(
+        CommonAuthenticationToken token = templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
-        if (principal == null) {
+        if (token == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        return PasswordAuthenticationToken.authenticated(authenticationToken.getAuthType(), authenticationToken.getUsername(), principal);
+        return token;
     }
 
     @Override

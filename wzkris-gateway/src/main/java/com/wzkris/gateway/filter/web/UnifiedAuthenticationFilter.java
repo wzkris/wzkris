@@ -11,6 +11,7 @@ import com.wzkris.gateway.utils.WebFluxUtil;
 import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.Ordered;
@@ -18,6 +19,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -71,10 +73,16 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
     private Mono<Void> checkToken(ServerWebExchange exchange, WebFilterChain chain) {
         return tokenExtractionService.getCurrentPrincipal(exchange.getRequest())
                 .flatMap(authentication -> {
-                    // 根据 principal 类型获取对应的请求头名称并添加身份信息
+                    // 根据 loginUser 类型获取对应的请求头名称并添加身份信息
                     ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
 
                     requestBuilder.header(CustomHeaderConstants.X_SECURITY_PRINCIPAL, JsonUtil.toJsonString(authentication.getPrincipal()));
+
+                    // 提取权限信息并透传到请求头
+                    if (CollectionUtils.isNotEmpty(authentication.getAuthorities())) {
+                        Set<String> permissions = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+                        requestBuilder.header(CustomHeaderConstants.X_PERMISSIONS, JsonUtil.toJsonString(permissions));
+                    }
 
                     ServerWebExchange mutatedExchange = exchange.mutate()
                             .request(requestBuilder.build())

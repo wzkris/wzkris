@@ -3,6 +3,7 @@ package com.wzkris.auth.controller;
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.domain.vo.OnlineSessionVO;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -33,9 +34,10 @@ public class OnlineSessionController {
     @GetMapping
     public Result<Collection<OnlineSessionVO>> onlineSession() {
         String accessToken = SecurityUtil.getTokenValue();
-        String refreshToken = tokenService.loadRefreshTokenByAccessToken(SecurityUtil.getAuthType(), accessToken);
+        AuthTypeEnum authType = SecurityUtil.getAuthType();
+        String refreshToken = tokenService.loadRefreshTokenByAccessToken(authType.getValue(), accessToken);
 
-        RMapCache<String, OnlineSession> onlineCache = tokenService.loadSessionCache(SecurityUtil.getAuthType(), SecurityUtil.getId());
+        Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
         List<OnlineSessionVO> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
@@ -53,7 +55,8 @@ public class OnlineSessionController {
     @Operation(summary = "踢出会话")
     @PostMapping("/kickout")
     public Result<Void> kickoutSession(@RequestBody String refreshToken) {
-        tokenService.logoutByRefreshToken(SecurityUtil.getAuthType(), refreshToken);
+        AuthTypeEnum authType = SecurityUtil.getAuthType();
+        tokenService.logoutByRefreshToken(authType.getValue(), refreshToken);
         return ok();
     }
 

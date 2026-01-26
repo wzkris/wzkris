@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
-import com.wzkris.common.security.utils.TenantUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
 import com.wzkris.usercenter.domain.req.tenantwallet.TenantWalletRecordQueryReq;
@@ -51,7 +51,7 @@ public class TenantWalletInfoController extends BaseController {
     @Operation(summary = "余额信息")
     @GetMapping("/info")
     public Result<TenantWalletInfoVO> walletInfo() {
-        return ok(tenantWalletInfoMapper.selectById2VO(TenantUtil.getTenantId(), TenantWalletInfoVO.class));
+        return ok(tenantWalletInfoMapper.selectById2VO(SecurityUtil.getTenantId(), TenantWalletInfoVO.class));
     }
 
     @Operation(summary = "钱包记录分页")
@@ -82,7 +82,7 @@ public class TenantWalletInfoController extends BaseController {
     @PostMapping("/withdrawal")
     @CheckTenantPerms("user-mod:tenant-wallet-info:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
-        TenantInfoDO sysTenant = tenantInfoMapper.selectById(TenantUtil.getTenantId());
+        TenantInfoDO sysTenant = tenantInfoMapper.selectById(SecurityUtil.getTenantId());
         if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
             return requestFail("密码错误");
         }

@@ -6,8 +6,8 @@ import com.wzkris.common.captcha.model.Token;
 import com.wzkris.common.captcha.model.request.RedeemChallengeRequest;
 import com.wzkris.common.captcha.model.response.RedeemChallengeResponse;
 import com.wzkris.common.captcha.properties.CapProperties;
-import com.wzkris.common.redis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
 
@@ -23,9 +23,12 @@ public class CapService {
 
     private final CapProperties capProperties;
 
-    public CapService(CapHandler capHandler, CapProperties capProperties) {
+    private final StringRedisTemplate redisTemplate;
+
+    public CapService(CapHandler capHandler, CapProperties capProperties, StringRedisTemplate redisTemplate) {
         this.capHandler = capHandler;
         this.capProperties = capProperties;
+        this.redisTemplate = redisTemplate;
     }
 
     public ChallengeData createChallenge() throws ChallengeStoreException {
@@ -54,10 +57,10 @@ public class CapService {
      * @param key 前缀
      */
     public void setCaptcha(String key, String code) {
-        RedisUtil.setObj(
+        redisTemplate.opsForValue().set(
                 capProperties.getCaptchaPrefix() + key,
                 code,
-                Duration.ofMillis(capProperties.getTokenExpiresMs()).toSeconds());
+                Duration.ofMillis(capProperties.getTokenExpiresMs()));
     }
 
 }

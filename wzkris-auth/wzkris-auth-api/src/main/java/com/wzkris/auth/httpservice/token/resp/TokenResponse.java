@@ -1,10 +1,11 @@
 package com.wzkris.auth.httpservice.token.resp;
 
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author : wzkris
@@ -14,7 +15,7 @@ import java.io.Serializable;
  */
 @Getter
 @ToString
-public class TokenResponse<T extends UserPrincipal> implements Serializable {
+public class TokenResponse implements Serializable {
 
     static final String SUCCESS = "success";
 
@@ -28,39 +29,50 @@ public class TokenResponse<T extends UserPrincipal> implements Serializable {
 
     private String description;
 
-    private T principal;
+    private LoginUser loginUser;
+
+    private Set<String> permissions;
 
     public TokenResponse() {
     }
 
-    public TokenResponse(String errorCode, String description, T principal) {
+    public TokenResponse(String errorCode, String description, LoginUser loginUser, Set<String> permissions) {
         this.errorCode = errorCode;
         this.description = description;
-        this.principal = principal;
+        this.loginUser = loginUser;
+        this.permissions = permissions;
         this.success = SUCCESS.equals(errorCode);
     }
 
-    static <T extends UserPrincipal> TokenResponse<T> resp(String errorCode, String description, T principal) {
-        return new TokenResponse<>(errorCode, description, principal);
+    static TokenResponse resp(String errorCode, String description, LoginUser loginUser) {
+        return new TokenResponse(errorCode, description, loginUser, null);
     }
 
-    public static <T extends UserPrincipal> TokenResponse<T> ok(T principal) {
-        return resp(SUCCESS, null, principal);
+    static TokenResponse resp(String errorCode, String description, LoginUser loginUser, Set<String> permissions) {
+        return new TokenResponse(errorCode, description, loginUser, permissions);
     }
 
-    public static <T extends UserPrincipal> TokenResponse<T> okAnonymous() {
-        return resp(SUCCESS, null, null);
+    public static TokenResponse ok(LoginUser loginUser) {
+        return resp(SUCCESS, null, loginUser, null);
     }
 
-    public static <T extends UserPrincipal> TokenResponse<T> error(String errorCode, String description) {
-        return resp(errorCode, description, null);
+    public static TokenResponse ok(LoginUser loginUser, Set<String> permissions) {
+        return resp(SUCCESS, null, loginUser, permissions);
     }
 
-    public static <T extends UserPrincipal> TokenResponse<T> unavailable(String description) {
+    public static TokenResponse okAnonymous() {
+        return resp(SUCCESS, null, null, null);
+    }
+
+    public static TokenResponse error(String errorCode, String description) {
+        return resp(errorCode, description, null, null);
+    }
+
+    public static TokenResponse unavailable(String description) {
         return error(TEMPORARILY_UNAVAILABLE, description);
     }
 
-    public static <T extends UserPrincipal> TokenResponse<T> fallback(String description) {
+    public static TokenResponse fallback(String description) {
         return error(FALL_BACK, description);
     }
 

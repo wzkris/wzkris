@@ -1,11 +1,12 @@
 package com.wzkris.common.orm.aspect;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.utils.DataScopeUtil;
-import com.wzkris.common.security.utils.AdminUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -89,7 +90,7 @@ public class DataScopeAspect {
      * 注入数据权限参数
      */
     private void injectParameters(DataScope dataScope) {
-        if (!AdminUtil.isLogin()) {
+        if (!SecurityUtil.isAuth(AuthTypeEnum.ADMIN)) {
             return;
         }
 

@@ -1,6 +1,6 @@
 package com.wzkris.gateway.controller;
 
-import com.wzkris.common.core.model.UserPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.domain.req.PageViewReq;
 import com.wzkris.gateway.service.StatisticsService;
@@ -46,11 +46,11 @@ public class TrackController {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
                 .map(Authentication::getPrincipal)
-                .filter(UserPrincipal.class::isInstance)
-                .cast(UserPrincipal.class)
-                .doOnNext(principal -> {
+                .filter(LoginUser.class::isInstance)
+                .cast(LoginUser.class)
+                .doOnNext(loginUser -> {
                     try {
-                        recordPageview(principal.getType(), principal.getId(), request);
+                        recordPageview(loginUser.getAuthType().getValue(), loginUser.getUid(), request);
                     } catch (Exception e) {
                         log.warn("页面访问统计失败: {}", e.getMessage());
                     }
