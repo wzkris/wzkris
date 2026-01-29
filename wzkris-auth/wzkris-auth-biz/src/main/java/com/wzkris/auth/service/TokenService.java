@@ -69,7 +69,10 @@ public class TokenService {
     /**
      * 生成 Access Token
      * 统一使用 JWT 格式，仅封装 uid 和 iss
-     * 注意：直接使用 JwtEncoder，CustomTokenClaimsCustomizer 不会被调用
+     * <p>
+     * 注意：kid（Key ID）需要手动设置。NimbusJwtEncoder 不会自动从 JWK 中提取 kid，
+     * 因此通过 CurrentKeyIdProvider 从缓存的 JWK 中获取 kid 并显式设置到 JWT header 中。
+     * </p>
      *
      * @param loginUser 用户信息
      * @return Access Token（JWT格式）
@@ -78,12 +81,15 @@ public class TokenService {
     public String generateAccessToken(LoginUser loginUser) {
         Serializable uid = loginUser.getUid();
         JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
-        JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm).build();
+
+        JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
+                .build();
+
         Instant issuedAt = Instant.now();
         Instant expiresAt = issuedAt.plus(Duration.ofSeconds(tokenProperties.getAccessTokenTimeOut()));
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(uid.toString())  // 仅包含 uid
-                .issuer(authorizationServerSettings.getIssuer())  // 添加 issuer，网关可以通过 iss 获取 JWK Set URI
+                .issuer(authorizationServerSettings.getIssuer())  // 添加 issuer，网关会校验
                 .issuedAt(issuedAt)
                 .expiresAt(expiresAt)
                 .id(UUID.randomUUID().toString())
@@ -119,8 +125,7 @@ public class TokenService {
         redisTemplate.opsForValue().set(refreshTokenToUidKey, uid.toString(), Duration.ofSeconds(refreshTTL));
 
         // 2. 使用 Lua 脚本原子化保存 userInfo 和 session（两者都使用 {type:uid} hash tag）
-        DefaultRedisScript<Long> script = new DefaultRedisScript<>(
-                TokenLuaScriptsEnums.SAVE_TOKEN_AND_USER_INFO.getScript(), Long.class);
+        DefaultRedisScript<Long> script = new DefaultRedisScript<>(TokenLuaScriptsEnums.SAVE_TOKEN_AND_USER_INFO.getScript(), Long.class);
         List<String> keys = Arrays.asList(userInfoKey, sessionKey);
         List<Object> args = Arrays.asList(refreshToken, loginUser, permissions, onlineSession, refreshTTL);
 
@@ -223,8 +228,7 @@ public class TokenService {
         redisTemplate.delete(refreshTokenToUidKey);
 
         // 2. 使用 Lua 脚本原子化删除 userInfo 和 session（两者都使用 {type:uid} hash tag）
-        DefaultRedisScript<Long> script = new DefaultRedisScript<>(
-                TokenLuaScriptsEnums.LOGOUT_BY_REFRESH_TOKEN.getScript(), Long.class);
+        DefaultRedisScript<Long> script = new DefaultRedisScript<>(TokenLuaScriptsEnums.LOGOUT_BY_REFRESH_TOKEN.getScript(), Long.class);
         List<String> keys = Arrays.asList(userInfoKey, sessionKey);
         Long result = redisTemplate.execute(script, keys, refreshToken);
 

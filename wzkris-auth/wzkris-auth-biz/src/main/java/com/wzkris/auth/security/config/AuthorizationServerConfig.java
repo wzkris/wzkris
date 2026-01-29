@@ -1,5 +1,6 @@
 package com.wzkris.auth.security.config;
 
+import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -34,7 +35,9 @@ import org.springframework.security.web.authentication.AuthenticationEntryPointF
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -125,25 +128,93 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * 动态 JWKSource（支持密钥轮换）
+     * 缓存的 JWK Set Bean（支持密钥轮换）
+     * <p>
+     * 刷新策略：
+     * <ol>
+     *   <li>JwtSecretProperties 使用 @RefreshScope，配置中心刷新时其属性会更新。</li>
+     *   <li>本 Bean 使用 @RefreshScope，配置刷新时会重新创建，自动加载新的密钥。</li>
+     *   <li>请求路径上大部分时间只是在内存中基于缓存的 JWKSet 做 select，性能开销可控。</li>
+     * </ol>
+     * </p>
+     *
+     * @param properties JWT 密钥配置
+     * @return 缓存的 JWK Set
      */
     @Bean
-    public JWKSource<SecurityContext> jwkSource(JwtSecretProperties properties) throws Exception {
-        // 加载当前活跃的密钥对（可通过配置中心动态切换）
-        RSAKey rsaKey = JwkUtils.load(properties.getPublicKey(), properties.getPrivateKey());
+    @RefreshScope
+    public JWKSet jwkSet(JwtSecretProperties properties) {
+        String publicKey = properties.getPublicKey();
+        String privateKey = properties.getPrivateKey();
+        String previousPublicKey = properties.getPreviousPublicKey();
+        String previousPrivateKey = properties.getPreviousPrivateKey();
 
-        // 历史密钥（用于平滑轮换）
-//        ECKey previousKey = loadECKey("2", publicKeyResource2, privateKeyResource2);
+        Assert.isTrue(publicKey != null && privateKey != null, "JWT 密钥配置不完整：publicKey 和 privateKey 必须配置");
 
-        // 构建 JWK Set（包含当前和历史密钥）
-        JWKSet jwkSet = new JWKSet(List.of(rsaKey));
-        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+        try {
+            List<JWK> keys = new ArrayList<>();
+
+            RSAKey currentKey = JwkUtils.load(publicKey, privateKey);
+            keys.add(currentKey);
+
+            if (previousPublicKey != null && previousPrivateKey != null) {
+                RSAKey previousKey = JwkUtils.load(previousPublicKey, previousPrivateKey);
+                keys.add(previousKey);
+            }
+
+            return new JWKSet(keys);
+        } catch (Exception e) {
+            log.error("加载 JWT 密钥失败: {}", e.getMessage(), e);
+            throw new IllegalStateException("Failed to load JWT keys", e);
+        }
     }
 
+    /**
+     * 动态 JWKSource（支持密钥轮换）
+     * <p>
+     * 使用缓存的 CachedJwkSet Bean，配置刷新时会自动使用新的密钥。
+     * </p>
+     *
+     * @param jwkSet JWK Set
+     * @return 动态 JWKSource
+     */
     @Bean
-    @RefreshScope
+    public JWKSource<SecurityContext> jwkSource(JWKSet jwkSet) {
+        return (jwkSelector, securityContext) -> {
+            return jwkSelector.select(jwkSet);
+        };
+    }
+
+    /**
+     * JWT 编码器配置
+     * <p>
+     * 设置 JwkSelector 以确保签名时使用当前密钥（第一个密钥）。
+     * 这样即使 JWK Set 中包含多个密钥（当前 + 历史），也能明确选择当前密钥进行签名。
+     * </p>
+     * <p>
+     * 注意：kid（Key ID）需要在生成 JWT 时手动设置。
+     * NimbusJwtEncoder 不会自动从选中的 JWK 中提取 kid，因此 TokenService 需要
+     * 从当前密钥中获取 kid 并显式设置到 JWT header 中。
+     * </p>
+     *
+     * @param jwkSource JWK 源
+     * @return JwtEncoder
+     */
+    @Bean
     public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
-        return new NimbusJwtEncoder(jwkSource);
+        NimbusJwtEncoder encoder = new NimbusJwtEncoder(jwkSource);
+
+        // 设置密钥选择器：优先选择第一个密钥（当前密钥）
+        // 这样确保生成新 JWT 时总是使用最新的密钥
+        encoder.setJwkSelector((List<JWK> jwks) -> {
+            if (jwks.isEmpty()) {
+                throw new IllegalStateException("JWK Set 为空，无法选择密钥进行签名");
+            }
+            // 选择第一个密钥（当前密钥）
+            return jwks.get(0);
+        });
+        
+        return encoder;
     }
 
     /**
@@ -160,4 +231,5 @@ public class AuthorizationServerConfig {
                 new OAuth2RefreshTokenGenerator(),
                 jwtGenerator);
     }
+
 }

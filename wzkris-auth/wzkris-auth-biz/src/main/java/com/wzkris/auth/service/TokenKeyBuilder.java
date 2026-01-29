@@ -22,7 +22,7 @@ public class TokenKeyBuilder {
 
     /**
      * Refresh Token 映射 Key 前缀
-     * 格式：auth-token:{type}:refresh:{refreshToken}
+     * 格式：auth-token:refresh:type:refreshToken
      * 注意：refreshToken 是随机生成的，无法使用 hash tag 与用户信息关联
      */
     private static final String REFRESH_TOKEN_PREFIX = "auth-token:refresh:%s:%s";

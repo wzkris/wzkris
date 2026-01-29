@@ -9,8 +9,3 @@ spring:
     name: wzkris-gateway
   profiles:
     active: @profiles.active@
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9000/wzkris-auth-api

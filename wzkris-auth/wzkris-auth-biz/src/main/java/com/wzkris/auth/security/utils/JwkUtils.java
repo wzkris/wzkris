@@ -17,6 +17,18 @@ import java.util.Base64;
  */
 public class JwkUtils {
 
+    /**
+     * 加载 RSA 密钥对
+     * <p>
+     * 注意：使用 keyIDFromThumbprint() 自动生成 kid（Key ID）。
+     * 这会基于 JWK 的 SHA-256 thumbprint（RFC 7638）生成 kid。
+     * </p>
+     *
+     * @param publicKeyStr  公钥字符串（PEM 格式）
+     * @param privateKeyStr 私钥字符串（PEM 格式）
+     * @return RSAKey 实例（包含自动生成的 kid）
+     * @throws Exception 加载失败时抛出异常
+     */
     public static RSAKey load(String publicKeyStr, String privateKeyStr) throws Exception {
         // 从字符串内容加载RSA公钥
         byte[] publicKeyBytes = Base64.getDecoder().decode(
@@ -38,10 +50,13 @@ public class JwkUtils {
         RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
 
         // 使用构建器创建RSAKey实例
-        return new RSAKey.Builder(publicKey)
+        // 使用 keyIDFromThumbprint() 自动生成 kid（基于 JWK 的 SHA-256 thumbprint）
+        RSAKey.Builder builder = new RSAKey.Builder(publicKey)
                 .keyUse(KeyUse.SIGNATURE)
                 .privateKey(privateKey)
-                .build();
+                .keyIDFromThumbprint(); // 自动生成 kid
+
+        return builder.build();
     }
 
 }

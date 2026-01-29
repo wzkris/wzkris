@@ -96,9 +96,6 @@ public class TokenExtractionService {
         } catch (JwtException e) {
             log.warn("JWT validation failed: {}", e.getMessage());
             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: " + e.getMessage())));
-        } catch (Exception e) {
-            log.error("Unexpected error during JWT validation", e);
-            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Token validation error")));
         }
     }
 
