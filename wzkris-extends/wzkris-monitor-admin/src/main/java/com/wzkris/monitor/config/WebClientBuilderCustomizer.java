@@ -4,7 +4,6 @@ import com.wzkris.monitor.request.CapturingClientHttpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.function.BodyInserter;

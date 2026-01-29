@@ -10,12 +10,12 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenReq implements Serializable {
+public class LoginUserReq implements Serializable {
 
     @Nonnull
     private String authType;
 
     @Nonnull
-    private String token;
+    private Long uid;
 
 }

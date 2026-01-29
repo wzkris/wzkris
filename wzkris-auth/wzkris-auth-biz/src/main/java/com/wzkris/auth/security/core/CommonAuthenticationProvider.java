@@ -38,13 +38,13 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
         if (authenticationToken.getLoginType() == LoginTypeEnum.REFRESH) {
             refreshToken = authenticationToken.getRefreshToken();
         } else {
-            refreshToken = tokenService.generateToken();
+            refreshToken = tokenService.generateRefreshToken();
         }
         authenticationToken.setAccessToken(generatedToken);
         authenticationToken.setRefreshToken(refreshToken);
 
         // 保存用户信息和权限信息
-        tokenService.save(authenticationToken.getPrincipal(), generatedToken, refreshToken, authenticationToken.getPerms());
+        tokenService.save(authenticationToken.getPrincipal(), refreshToken, authenticationToken.getPerms());
 
         return authenticationToken;
     }

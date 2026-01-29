@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RMapCache;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,18 +31,16 @@ public class OnlineSessionController {
 
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineSessionVO>> onlineSession() {
-        String accessToken = SecurityUtil.getTokenValue();
+    public Result<Collection<OnlineSessionVO>> onlineSession(@RequestParam(required = false) String refreshToken) {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
-        String refreshToken = tokenService.loadRefreshTokenByAccessToken(authType.getValue(), accessToken);
-
         Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
         List<OnlineSessionVO> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
             OnlineSessionVO userResp = new OnlineSessionVO(entry.getValue());
             userResp.setRefreshToken(entry.getKey());
-            if (StringUtil.equals(refreshToken, entry.getKey())) {
+            // 如果提供了 refreshToken 参数，则标记为当前会话
+            if (StringUtil.isNotBlank(refreshToken) && StringUtil.equals(refreshToken, entry.getKey())) {
                 userResp.setCurrent(true);
             }
             resps.add(userResp);

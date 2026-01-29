@@ -27,7 +27,9 @@ public class LogoutHandlerImpl implements LogoutHandler {
     }
 
     /**
-     * 由于该过滤器链未配置安全上下文解析，authentication必定为null
+     * 退出登录处理
+     * 注意：JWT 是无状态的，无法直接删除。如果需要强制登出，应该通过 refreshToken 登出
+     * 这里仅发布登出事件，实际的 token 清理应该由客户端删除或等待过期
      *
      * @param request        the HTTP request
      * @param response       the HTTP response
@@ -35,14 +37,17 @@ public class LogoutHandlerImpl implements LogoutHandler {
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        if (authentication == null) return;
+        if (authentication == null) {
+            return;
+        }
 
         UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
         LoginUser loginUser = (LoginUser) authenticationToken.getPrincipal();
-        Serializable uid = tokenService.logoutByAccessToken(loginUser.getAuthType().getValue(), authenticationToken.getCredentials().toString());
-        if (uid != null) {
-            SpringUtil.getContext().publishEvent(new LogoutEvent(uid, loginUser.getAuthType()));
-        }
+
+        // JWT 是无状态的，无法直接删除，仅发布登出事件
+        // 如果需要强制登出所有会话，应该通过 refreshToken 调用 logoutByRefreshToken
+        Serializable uid = loginUser.getUid();
+        SpringUtil.getContext().publishEvent(new LogoutEvent(uid, loginUser.getAuthType()));
     }
 
 }

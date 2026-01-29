@@ -7,15 +7,9 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.Set;
 
-/**
- * @author : wzkris
- * @version : V1.0.0
- * @description :  token响应体
- * @date : 2025/01/08 14:55
- */
 @Getter
 @ToString
-public class TokenResponse implements Serializable {
+public class LoginUserResp implements Serializable {
 
     static final String SUCCESS = "success";
 
@@ -33,10 +27,10 @@ public class TokenResponse implements Serializable {
 
     private Set<String> permissions;
 
-    public TokenResponse() {
+    public LoginUserResp() {
     }
 
-    public TokenResponse(String errorCode, String description, LoginUser loginUser, Set<String> permissions) {
+    public LoginUserResp(String errorCode, String description, LoginUser loginUser, Set<String> permissions) {
         this.errorCode = errorCode;
         this.description = description;
         this.loginUser = loginUser;
@@ -44,35 +38,35 @@ public class TokenResponse implements Serializable {
         this.success = SUCCESS.equals(errorCode);
     }
 
-    static TokenResponse resp(String errorCode, String description, LoginUser loginUser) {
-        return new TokenResponse(errorCode, description, loginUser, null);
+    static LoginUserResp resp(String errorCode, String description, LoginUser loginUser) {
+        return new LoginUserResp(errorCode, description, loginUser, null);
     }
 
-    static TokenResponse resp(String errorCode, String description, LoginUser loginUser, Set<String> permissions) {
-        return new TokenResponse(errorCode, description, loginUser, permissions);
+    static LoginUserResp resp(String errorCode, String description, LoginUser loginUser, Set<String> permissions) {
+        return new LoginUserResp(errorCode, description, loginUser, permissions);
     }
 
-    public static TokenResponse ok(LoginUser loginUser) {
+    public static LoginUserResp ok(LoginUser loginUser) {
         return resp(SUCCESS, null, loginUser, null);
     }
 
-    public static TokenResponse ok(LoginUser loginUser, Set<String> permissions) {
+    public static LoginUserResp ok(LoginUser loginUser, Set<String> permissions) {
         return resp(SUCCESS, null, loginUser, permissions);
     }
 
-    public static TokenResponse okAnonymous() {
+    public static LoginUserResp okAnonymous() {
         return resp(SUCCESS, null, null, null);
     }
 
-    public static TokenResponse error(String errorCode, String description) {
+    public static LoginUserResp error(String errorCode, String description) {
         return resp(errorCode, description, null, null);
     }
 
-    public static TokenResponse unavailable(String description) {
+    public static LoginUserResp unavailable(String description) {
         return error(TEMPORARILY_UNAVAILABLE, description);
     }
 
-    public static TokenResponse fallback(String description) {
+    public static LoginUserResp fallback(String description) {
         return error(FALL_BACK, description);
     }
 

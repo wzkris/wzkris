@@ -26,8 +26,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class StatisticsService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
-
     private static final String KEY_DELIM = ":";        // Redis 键分隔符
 
     private static final String STATUS_SUCCESS = "success";
@@ -58,6 +56,8 @@ public class StatisticsService {
     private static final String PV_STATS_DAY = "statistics:pv:day:";      // Hash fields: {auth}
 
     private static final String PV_STATS_HOUR = "statistics:pv:hour:";    // Hash fields: {auth}
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 供 TrackController 使用的复合埋点方法：包括页面PV（PageView）和UV（独立访客数）

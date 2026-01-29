@@ -1,7 +1,7 @@
 package com.wzkris.gateway.service;
 
-import com.wzkris.auth.httpservice.token.TokenHttpService;
-import com.wzkris.auth.httpservice.token.req.TokenReq;
+import com.wzkris.auth.httpservice.token.LoginUserHttpService;
+import com.wzkris.auth.httpservice.token.req.LoginUserReq;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -17,6 +17,9 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -35,7 +38,9 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TokenExtractionService {
 
-    private final TokenHttpService tokenHttpService;
+    private final LoginUserHttpService loginUserHttpService;
+
+    private final JwtDecoder jwtDecoder;
 
     /**
      * 获取当前请求的用户信息
@@ -73,18 +78,37 @@ public class TokenExtractionService {
     }
 
     /**
-     * 调用认证服务验证Token
+     * 验证 JWT Token
+     * 1. 本地验证 JWT（使用 Spring OAuth2 JwtDecoder）
+     * 2. 解析出 uid
+     * 3. 调用 auth 服务获取用户信息（通过 type 和 uid）
      */
-    private Mono<Authentication> validate(
-            AuthTypeEnum authTypeEnum,
-            String token) {
-        TokenReq tokenReq = new TokenReq(authTypeEnum.getValue(), token);
+    private Mono<Authentication> validate(AuthTypeEnum authTypeEnum, String token) {
+        try {
+            Jwt jwt = jwtDecoder.decode(token);
 
-        return Mono.fromCallable(() -> tokenHttpService.introspect(tokenReq))
+            String uidStr = jwt.getSubject();
+            if (StringUtil.isBlank(uidStr)) {
+                return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: missing subject")));
+            }
+
+            return introspect(authTypeEnum, Long.valueOf(uidStr), token);
+        } catch (JwtException e) {
+            log.warn("JWT validation failed: {}", e.getMessage());
+            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: " + e.getMessage())));
+        } catch (Exception e) {
+            log.error("Unexpected error during JWT validation", e);
+            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Token validation error")));
+        }
+    }
+
+    private Mono<Authentication> introspect(AuthTypeEnum authTypeEnum, Long uid, String token) {
+        LoginUserReq loginUserReq = new LoginUserReq(authTypeEnum.getValue(), uid);
+        return Mono.fromCallable(() -> loginUserHttpService.query(loginUserReq))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(tokenResponse -> {
                     if (tokenResponse == null || !tokenResponse.isSuccess()) {
-                        log.info("Token validation failed. {}", tokenResponse);
+                        log.warn("Token validation failed after JWT decode. {}", tokenResponse);
                         String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
                         return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
                     } else {

@@ -81,8 +81,8 @@ public class QrLoginController {
         LoginUser loginUser = SecurityUtil.getLoginUser();
         Set<String> permission = SecurityUtil.getPermission();
         String accessToken = tokenService.generateAccessToken(loginUser);
-        String refreshToken = tokenService.generateToken();
-        tokenService.save(loginUser, accessToken, refreshToken, permission);
+        String refreshToken = tokenService.generateRefreshToken();
+        tokenService.save(loginUser, refreshToken, permission);
 
         qrTokenVO.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
         qrTokenVO.setAccessToken(accessToken);

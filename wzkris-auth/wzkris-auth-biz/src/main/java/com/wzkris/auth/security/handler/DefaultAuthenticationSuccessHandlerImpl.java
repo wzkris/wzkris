@@ -32,6 +32,20 @@ public class DefaultAuthenticationSuccessHandlerImpl implements AuthenticationSu
             = new ParameterizedTypeReference<>() {
     };
 
+    private static void recordLog(
+            HttpServletRequest request, CommonAuthenticationToken authenticationToken) {
+        if (authenticationToken.getLoginType() != LoginTypeEnum.REFRESH) {
+            SpringUtil.getContext()
+                    .publishEvent(new LoginEvent(
+                            authenticationToken.getPrincipal(),
+                            authenticationToken.getLoginType().getValue(),
+                            true,
+                            "",
+                            ServletUtil.getClientIP(request),
+                            UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+        }
+    }
+
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -48,20 +62,6 @@ public class DefaultAuthenticationSuccessHandlerImpl implements AuthenticationSu
                 MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
 
         recordLog(request, authenticationToken);
-    }
-
-    private static void recordLog(
-            HttpServletRequest request, CommonAuthenticationToken authenticationToken) {
-        if (authenticationToken.getLoginType() != LoginTypeEnum.REFRESH) {
-            SpringUtil.getContext()
-                    .publishEvent(new LoginEvent(
-                            authenticationToken.getPrincipal(),
-                            authenticationToken.getLoginType().getValue(),
-                            true,
-                            "",
-                            ServletUtil.getClientIP(request),
-                            UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
-        }
     }
 
 }
