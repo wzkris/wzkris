@@ -21,7 +21,7 @@ import java.util.Map;
  * @description 刷新模式转换器
  */
 @Component
-public final class RefreshAuthenticationConverter extends CommonAuthenticationConverter<RefreshAuthenticationToken> {
+public final class RefreshAuthenticationConverter extends CommonAuthenticationConverter {
 
     @Override
     protected boolean support(LoginTypeEnum loginType) {

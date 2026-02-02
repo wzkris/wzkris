@@ -17,7 +17,6 @@ package com.wzkris.auth.security.config;
 
 import com.wzkris.auth.security.filter.LoginEndpointFilter;
 import com.wzkris.auth.security.filter.LogoutHandlerImpl;
-import com.wzkris.auth.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -47,7 +46,7 @@ public class DefaultSecurityConfig {
             HttpSecurity http,
             SecurityContextRepository securityContextRepository,
             LoginEndpointFilter loginEndpointFilter,
-            TokenService tokenService)
+            LogoutHandlerImpl logoutHandler)
             throws Exception {
         http.securityMatcher(defaultUrl)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -63,7 +62,7 @@ public class DefaultSecurityConfig {
                 )
                 .addFilterAt(loginEndpointFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> {
-                    logout.addLogoutHandler(new LogoutHandlerImpl(tokenService))
+                    logout.addLogoutHandler(logoutHandler)
                             .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT));
                 });
 

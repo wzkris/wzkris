@@ -21,7 +21,7 @@ import java.util.Map;
  * @description 微信小程序登录模式转换器
  */
 @Component
-public final class WexcxAuthenticationConverter extends CommonAuthenticationConverter<WexcxAuthenticationToken> {
+public final class WexcxAuthenticationConverter extends CommonAuthenticationConverter {
 
     @Override
     protected boolean support(LoginTypeEnum loginType) {

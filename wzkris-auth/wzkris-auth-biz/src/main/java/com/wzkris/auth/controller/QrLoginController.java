@@ -80,9 +80,11 @@ public class QrLoginController {
 
         LoginUser loginUser = SecurityUtil.getLoginUser();
         Set<String> permission = SecurityUtil.getPermission();
-        String accessToken = tokenService.generateAccessToken(loginUser);
-        String refreshToken = tokenService.generateRefreshToken();
-        tokenService.save(loginUser, refreshToken, permission);
+        // 生成新的sid
+        String sid = UUID.randomUUID().toString();
+        String accessToken = tokenService.generateAccessToken(loginUser.getUid(), sid);
+        String refreshToken = tokenService.generateRefreshToken(loginUser.getUid(), sid);
+        tokenService.save(loginUser, sid, permission);
 
         qrTokenVO.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
         qrTokenVO.setAccessToken(accessToken);

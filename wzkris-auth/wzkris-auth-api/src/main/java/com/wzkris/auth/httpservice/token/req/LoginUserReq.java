@@ -18,4 +18,7 @@ public class LoginUserReq implements Serializable {
     @Nonnull
     private Long uid;
 
+    @Nonnull
+    private String sid;
+
 }

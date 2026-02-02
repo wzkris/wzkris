@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @date 2024/3/11
  * @description 模式转换器基类，将参数转换为Authentication
  */
-public abstract class CommonAuthenticationConverter<T extends Authentication>
+public abstract class CommonAuthenticationConverter
         implements AuthenticationConverter {
 
     private final String LOGIN_TYPE = "login_type";

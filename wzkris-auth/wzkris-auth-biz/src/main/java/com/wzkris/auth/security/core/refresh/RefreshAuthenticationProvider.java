@@ -15,9 +15,10 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
+ * 刷新模式核心处理
+ *
  * @author wzkris
  * @date 2024/3/11
- * @description 刷新模式核心处理
  */
 @Component // 注册成bean方便引用
 public final class RefreshAuthenticationProvider extends CommonAuthenticationProvider {
@@ -32,8 +33,29 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
     @Override
     public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         RefreshAuthenticationToken authenticationToken = (RefreshAuthenticationToken) authentication;
+        String refreshToken = authenticationToken.getRefreshToken();
+        String authType = authenticationToken.getAuthType().getValue();
 
-        LoginUser loginUser = tokenService.loadByRefreshToken(authenticationToken.getAuthType().getValue(), authenticationToken.getRefreshToken());
+        // 从 refreshToken JWT 中解析 uid 和 sid
+        TokenService.TokenInfo tokenInfo = tokenService.parseJwt(refreshToken);
+        if (tokenInfo == null) {
+            // refreshToken 解析失败
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+        }
+
+        Long uid = tokenInfo.getUid();
+        String sid = tokenInfo.getSid();
+
+        // 检查 sid 是否在黑名单中
+        if (tokenService.isRevoked(authType, uid, sid)) {
+            // sid 已被拉黑
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+        }
+
+        // 从存储中加载用户信息
+        LoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
         if (loginUser == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
@@ -41,9 +63,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         }
 
         // 从存储中加载权限信息
-        Set<String> perms = tokenService.loadPermissionsByRefreshToken(
-                authenticationToken.getAuthType().getValue(),
-                authenticationToken.getRefreshToken());
+        Set<String> perms = tokenService.loadPermissionsByUid(authType, uid);
 
         // 如果权限不存在，使用空集合
         if (perms == null) {
@@ -51,7 +71,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         }
 
         CommonAuthenticationToken commonAuthenticationToken = new CommonAuthenticationToken(loginUser, perms, LoginTypeEnum.REFRESH);
-        commonAuthenticationToken.setRefreshToken(authenticationToken.getRefreshToken());
+        commonAuthenticationToken.setRefreshToken(refreshToken);
         return commonAuthenticationToken;
     }
 

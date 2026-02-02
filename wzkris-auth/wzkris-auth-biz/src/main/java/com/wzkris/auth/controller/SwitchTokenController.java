@@ -64,16 +64,18 @@ public class SwitchTokenController {
         MemberPermissionResp permissions = memberInfoHttpService.getPermission(
                 new QueryMemberPermsReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
 
-        String accessToken = tokenService.generateAccessToken(loginUser);
-        String refreshToken = tokenService.generateRefreshToken();
+        // 生成新的sid
+        String sid = java.util.UUID.randomUUID().toString();
+        String accessToken = tokenService.generateAccessToken(loginUser.getUid(), sid);
+        String refreshToken = tokenService.generateRefreshToken(loginUser.getUid(), sid);
 
         java.util.Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new java.util.HashSet<>(permissions.getGrantedAuthority())
                 : java.util.Collections.emptySet();
 
-        tokenService.save(loginUser, refreshToken, perms);
+        tokenService.save(loginUser, sid, perms);
 
-        Map<String, Object> parameters = new HashMap();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("access_token", accessToken);
         parameters.put("refresh_token", refreshToken);
         return ok(parameters);

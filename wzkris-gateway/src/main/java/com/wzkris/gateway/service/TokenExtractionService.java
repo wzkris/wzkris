@@ -91,16 +91,17 @@ public class TokenExtractionService {
             if (StringUtil.isBlank(uidStr)) {
                 return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: missing subject")));
             }
+            String sid = jwt.getClaimAsString("sid");
 
-            return introspect(authTypeEnum, Long.valueOf(uidStr), token);
+            return introspect(authTypeEnum, Long.valueOf(uidStr), token, sid);
         } catch (JwtException e) {
             log.warn("JWT validation failed: {}", e.getMessage());
             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: " + e.getMessage())));
         }
     }
 
-    private Mono<Authentication> introspect(AuthTypeEnum authTypeEnum, Long uid, String token) {
-        LoginUserReq loginUserReq = new LoginUserReq(authTypeEnum.getValue(), uid);
+    private Mono<Authentication> introspect(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
+        LoginUserReq loginUserReq = new LoginUserReq(authTypeEnum.getValue(), uid, sid);
         return Mono.fromCallable(() -> loginUserHttpService.query(loginUserReq))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(tokenResponse -> {

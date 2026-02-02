@@ -29,18 +29,25 @@ public class OnlineSessionController {
 
     private final TokenService tokenService;
 
+    /**
+     * 获取在线会话列表
+     *
+     * @return 在线会话列表
+     */
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineSessionVO>> onlineSession(@RequestParam(required = false) String refreshToken) {
+    public Result<Collection<OnlineSessionVO>> onlineSession() {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
         Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
+        String sid = tokenService.parseJwt(SecurityUtil.getAuthentication().getCredentials().toString()).getSid();
+
         List<OnlineSessionVO> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
+            String sessionSid = entry.getKey();
             OnlineSessionVO userResp = new OnlineSessionVO(entry.getValue());
-            userResp.setRefreshToken(entry.getKey());
-            // 如果提供了 refreshToken 参数，则标记为当前会话
-            if (StringUtil.isNotBlank(refreshToken) && StringUtil.equals(refreshToken, entry.getKey())) {
+            userResp.setSid(sessionSid);
+            if (StringUtil.equals(sid, sessionSid)) {
                 userResp.setCurrent(true);
             }
             resps.add(userResp);
@@ -49,11 +56,17 @@ public class OnlineSessionController {
         return ok(resps);
     }
 
+    /**
+     * 踢出指定会话（仅删除会话信息，不拉黑sid）
+     *
+     * @param sid 会话ID
+     * @return 操作结果
+     */
     @Operation(summary = "踢出会话")
     @PostMapping("/kickout")
-    public Result<Void> kickoutSession(@RequestBody String refreshToken) {
+    public Result<Void> kickoutSession(@RequestBody String sid) {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
-        tokenService.logoutByRefreshToken(authType.getValue(), refreshToken);
+        tokenService.revoke(authType.getValue(), SecurityUtil.getUid(), sid);
         return ok();
     }
 

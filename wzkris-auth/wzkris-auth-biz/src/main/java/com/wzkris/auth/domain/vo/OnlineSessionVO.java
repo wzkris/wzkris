@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 public class OnlineSessionVO extends OnlineSession {
 
     /**
-     * token
+     * 会话ID
      */
-    private String refreshToken;
+    private String sid;
 
     /**
      * 是否当前会话

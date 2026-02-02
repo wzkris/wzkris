@@ -1,5 +1,6 @@
 package com.wzkris.auth.security.config;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -23,7 +24,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -215,6 +218,20 @@ public class AuthorizationServerConfig {
         });
         
         return encoder;
+    }
+
+    /**
+     * JWT 解码器：用于解析 refresh JWT（与 JwtEncoder 使用同一密钥集）
+     */
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSet jwkSet) throws JOSEException {
+        JWK jwk = jwkSet.getKeys().stream().findFirst()
+                .orElseThrow(() -> new IllegalStateException("JWK Set 为空，无法创建 JwtDecoder"));
+        if (!(jwk instanceof RSAKey rsaKey)) {
+            throw new IllegalStateException("JWK 非 RSA 类型，无法创建 JwtDecoder");
+        }
+
+        return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey()).build();
     }
 
     /**

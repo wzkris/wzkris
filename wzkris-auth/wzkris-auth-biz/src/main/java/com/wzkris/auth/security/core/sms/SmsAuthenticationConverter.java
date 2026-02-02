@@ -21,7 +21,7 @@ import java.util.Map;
  * @description 短信模式转换器
  */
 @Component
-public final class SmsAuthenticationConverter extends CommonAuthenticationConverter<SmsAuthenticationToken> {
+public final class SmsAuthenticationConverter extends CommonAuthenticationConverter {
 
     @Override
     protected boolean support(LoginTypeEnum loginType) {

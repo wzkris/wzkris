@@ -21,7 +21,7 @@ import java.util.Map;
  * @description 密码模式转换器
  */
 @Component
-public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter<PasswordAuthenticationToken> {
+public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter {
 
     private static final String CAPTCHA_ID = "captcha_id";
 
