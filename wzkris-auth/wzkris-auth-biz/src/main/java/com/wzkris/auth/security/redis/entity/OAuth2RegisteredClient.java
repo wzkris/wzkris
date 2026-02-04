@@ -31,7 +31,7 @@ import java.time.Instant;
 import java.util.Set;
 
 @Getter
-@RedisHash("oauth2_registered_client")
+@RedisHash("{oauth2_registered_client}")
 public class OAuth2RegisteredClient {
 
     @Id

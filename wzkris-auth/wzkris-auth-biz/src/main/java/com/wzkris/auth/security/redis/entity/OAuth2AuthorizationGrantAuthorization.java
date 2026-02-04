@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter
-@RedisHash("oauth2_authorization")
+@RedisHash("{oauth2_authorization}")
 public abstract class OAuth2AuthorizationGrantAuthorization {
 
     @Id

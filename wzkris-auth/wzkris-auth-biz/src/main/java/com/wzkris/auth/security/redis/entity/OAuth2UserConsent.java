@@ -26,7 +26,7 @@ import java.time.Duration;
 import java.util.Set;
 
 @Getter
-@RedisHash("oauth2_authorization_consent")
+@RedisHash("{oauth2_authorization_consent}")
 public class OAuth2UserConsent {
 
     @Id
