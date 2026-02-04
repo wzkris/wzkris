@@ -30,7 +30,12 @@ public class CustomHeaderConstants {
     /**
      * security-context 信息
      */
-    public static final String X_SECURITY_PRINCIPAL = "X-Security-Principal";
+    public static final String X_USER_CONTEXT = "X-User-Context";
+
+    /**
+     * client-context 信息
+     */
+    public static final String X_CLIENT_CONTEXT = "X-Client-Context";
 
     /**
      * 管理员Token

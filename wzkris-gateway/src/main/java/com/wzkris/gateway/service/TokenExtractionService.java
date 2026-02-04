@@ -6,6 +6,7 @@ import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
+import com.wzkris.common.core.model.ClientPrincipal;
 import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -48,7 +50,7 @@ public class TokenExtractionService {
      * @param request 请求对象
      * @return 用户信息
      */
-    public Mono<? extends Authentication> getCurrentPrincipal(ServerHttpRequest request) {
+    public Mono<? extends Authentication> getAuthentication(ServerHttpRequest request) {
         if (!hasAnyToken(request)) {
             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!")));
         }
@@ -86,14 +88,25 @@ public class TokenExtractionService {
     private Mono<Authentication> validate(AuthTypeEnum authTypeEnum, String token) {
         try {
             Jwt jwt = jwtDecoder.decode(token);
+            if (authTypeEnum == AuthTypeEnum.CLIENT) {
+                ClientPrincipal clientPrincipal = new ClientPrincipal();
+                clientPrincipal.setClientId(jwt.getSubject());
 
-            String uidStr = jwt.getSubject();
-            if (StringUtil.isBlank(uidStr)) {
-                return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: missing subject")));
+                List<String> scope = jwt.getClaimAsStringList("scope");
+                return Mono.just(UsernamePasswordAuthenticationToken.authenticated(
+                        clientPrincipal, token,
+                        CollectionUtils.isNotEmpty(scope)
+                                ? AuthorityUtils.createAuthorityList(scope)
+                                : AuthorityUtils.NO_AUTHORITIES));
+            } else {
+                String uidStr = jwt.getSubject();
+                if (StringUtil.isBlank(uidStr)) {
+                    return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: missing subject")));
+                }
+                String sid = jwt.getClaimAsString("sid");
+
+                return introspect(authTypeEnum, Long.valueOf(uidStr), token, sid);
             }
-            String sid = jwt.getClaimAsString("sid");
-
-            return introspect(authTypeEnum, Long.valueOf(uidStr), token, sid);
         } catch (JwtException e) {
             log.warn("JWT validation failed: {}", e.getMessage());
             return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: " + e.getMessage())));

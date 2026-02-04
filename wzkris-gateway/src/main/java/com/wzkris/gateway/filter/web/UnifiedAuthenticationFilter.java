@@ -3,6 +3,8 @@ package com.wzkris.gateway.filter.web;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.ResultException;
+import com.wzkris.common.core.model.ClientPrincipal;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.gateway.properties.PermitAllProperties;
 import com.wzkris.gateway.service.TokenExtractionService;
@@ -71,12 +73,19 @@ public class UnifiedAuthenticationFilter implements WebFilter, ApplicationRunner
     }
 
     private Mono<Void> checkToken(ServerWebExchange exchange, WebFilterChain chain) {
-        return tokenExtractionService.getCurrentPrincipal(exchange.getRequest())
+        return tokenExtractionService.getAuthentication(exchange.getRequest())
                 .flatMap(authentication -> {
-                    // 根据 loginUser 类型获取对应的请求头名称并添加身份信息
+                    // 根据 principal 类型获取对应的请求头名称并添加身份信息
                     ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
 
-                    requestBuilder.header(CustomHeaderConstants.X_SECURITY_PRINCIPAL, JsonUtil.toJsonString(authentication.getPrincipal()));
+                    Object principal = authentication.getPrincipal();
+                    if (principal instanceof ClientPrincipal) {
+                        // ClientPrincipal 使用独立的请求头
+                        requestBuilder.header(CustomHeaderConstants.X_CLIENT_CONTEXT, JsonUtil.toJsonString(principal));
+                    } else if (principal instanceof LoginUser) {
+                        // LoginUser 使用原有的请求头
+                        requestBuilder.header(CustomHeaderConstants.X_USER_CONTEXT, JsonUtil.toJsonString(principal));
+                    }
 
                     // 提取权限信息并透传到请求头
                     if (CollectionUtils.isNotEmpty(authentication.getAuthorities())) {
