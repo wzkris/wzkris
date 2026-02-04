@@ -10,6 +10,7 @@ import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.notifier.event.ErrorLogEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
@@ -138,11 +139,14 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
                 .append(CoreConstants.LINE_SEPARATOR);
 
         StackTraceElementProxy[] stackTrace = event.getThrowableProxy().getStackTraceElementProxyArray();
-        if (stackTrace != null) {
+        if (ArrayUtils.isNotEmpty(stackTrace)) {
             // 限制堆栈深度
             int maxDepth = 20;
 
-            for (int i = 0; i < maxDepth; i++) {
+            for (int i = 0; i < stackTrace.length; i++) {
+                if (i > maxDepth) {
+                    break;
+                }
                 // 修复：直接使用element.toString()，它已经包含了"at "
                 sb.append("\t").append(stackTrace[i]).append(CoreConstants.LINE_SEPARATOR);
             }
