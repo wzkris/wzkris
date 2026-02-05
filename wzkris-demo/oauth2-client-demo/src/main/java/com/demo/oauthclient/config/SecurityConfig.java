@@ -34,6 +34,11 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated()
                 )
+                // 启用 OAuth2 登录
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/user/me", true)
+                        .failureUrl("/login?error")
+                )
                 // 启用登出
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
