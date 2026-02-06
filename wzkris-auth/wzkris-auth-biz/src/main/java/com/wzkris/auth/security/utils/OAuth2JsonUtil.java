@@ -1,5 +1,6 @@
 package com.wzkris.auth.security.utils;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.common.core.utils.JsonUtil;
@@ -25,6 +26,9 @@ public final class OAuth2JsonUtil {
         List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
         objectMapper.registerModules(securityModules);
         objectMapper.registerModules(new OAuth2AuthorizationServerJackson2Module());
-        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator());// 允许反序列化不可变集合
+        objectMapper.activateDefaultTyping(
+                objectMapper.getPolymorphicTypeValidator(),
+                ObjectMapper.DefaultTyping.NON_FINAL,
+                JsonTypeInfo.As.PROPERTY);
     }
 }
