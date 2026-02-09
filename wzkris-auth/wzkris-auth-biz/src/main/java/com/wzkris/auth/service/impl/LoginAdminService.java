@@ -108,8 +108,8 @@ public class LoginAdminService extends UserInfoTemplate {
         loginUser.setUid(userResp.getAdminId());
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
         loginUser.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getAdminId())
-                ? IdentityTypeEnum.ADMIN_SUPER
-                : IdentityTypeEnum.ADMIN_NORMAL);
+                ? IdentityTypeEnum.SUPER
+                : IdentityTypeEnum.NORMAL);
         loginUser.setPhoneNumber(userResp.getPhoneNumber());
         loginUser.setUsername(userResp.getUsername());
 
@@ -138,7 +138,7 @@ public class LoginAdminService extends UserInfoTemplate {
         LoginUser loginUser = new LoginUser();
         loginUser.setUid(userResp.getAdminId());
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
-        loginUser.setIdentityType(IdentityTypeEnum.ADMIN_NORMAL);
+        loginUser.setIdentityType(IdentityTypeEnum.NORMAL);
         loginUser.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()

@@ -78,7 +78,7 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
             TokenService.TokenInfo tokenInfo = tokenService.parseJwt(oldRefreshToken);
             sid = tokenInfo.getSid();
             Instant exp = tokenInfo.getExp();
-            if (ChronoUnit.HOURS.between(exp, Instant.now()) < 1) {
+            if (ChronoUnit.HOURS.between(Instant.now(), exp) < 2) {
                 // 使用原sid生成新的refreshToken
                 refreshToken = tokenService.generateRefreshToken(uid, sid);
             }

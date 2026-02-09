@@ -2,6 +2,7 @@ package com.wzkris.auth.httpservice.token.fallback;
 
 import com.wzkris.auth.httpservice.token.LoginUserHttpService;
 import com.wzkris.auth.httpservice.token.req.LoginUserReq;
+import com.wzkris.auth.httpservice.token.req.OAuth2TokenReq;
 import com.wzkris.auth.httpservice.token.resp.LoginUserResp;
 import com.wzkris.common.httpservice.fallback.HttpServiceFallback;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +19,13 @@ public class LoginUserHttpServiceFallback implements HttpServiceFallback<LoginUs
                 log.error("query => req: {}", loginUserReq, cause);
                 return LoginUserResp.fallback(cause.getMessage());
             }
+
+            @Override
+            public LoginUserResp queryByToken(OAuth2TokenReq request) {
+                log.error("queryByToken => req: {}", request, cause);
+                return LoginUserResp.fallback(cause.getMessage());
+            }
         };
     }
 
 }
-

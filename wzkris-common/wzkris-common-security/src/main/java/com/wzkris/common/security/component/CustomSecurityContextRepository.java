@@ -101,7 +101,6 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
             case TENANT -> request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN);
             case CUSTOMER -> request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN);
             case CLIENT -> request.getHeader(CustomHeaderConstants.X_CLIENT_TOKEN);
-            default -> null;
         };
     }
 

@@ -2,6 +2,7 @@ package com.wzkris.auth.httpservice.token;
 
 import com.wzkris.auth.httpservice.token.fallback.LoginUserHttpServiceFallback;
 import com.wzkris.auth.httpservice.token.req.LoginUserReq;
+import com.wzkris.auth.httpservice.token.req.OAuth2TokenReq;
 import com.wzkris.auth.httpservice.token.resp.LoginUserResp;
 import com.wzkris.common.httpservice.annotation.HttpServiceClient;
 import com.wzkris.common.httpservice.constants.ServiceContextPathConstant;
@@ -29,6 +30,12 @@ public interface LoginUserHttpService {
      */
     @PostExchange("/query")
     LoginUserResp query(@RequestBody LoginUserReq loginUserReq);
+
+    /**
+     * 通过OAuth2 token获取用户信息
+     */
+    @PostExchange("/query-by-token")
+    LoginUserResp queryByToken(@RequestBody OAuth2TokenReq request);
 
 }
 

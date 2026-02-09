@@ -154,9 +154,9 @@ public final class SecurityUtil {
     public static boolean isSuper() {
         IdentityTypeEnum identityType = getIdentityType();
         if (isAuth(AuthTypeEnum.ADMIN)) {
-            return identityType == IdentityTypeEnum.ADMIN_SUPER;
+            return identityType == IdentityTypeEnum.SUPER;
         } else if (isAuth(AuthTypeEnum.TENANT)) {
-            return identityType == IdentityTypeEnum.TENANT_SUPER;
+            return identityType == IdentityTypeEnum.SUPER;
         } else {
             return false;
         }

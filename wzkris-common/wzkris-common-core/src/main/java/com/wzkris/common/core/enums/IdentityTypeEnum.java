@@ -12,24 +12,14 @@ import org.springframework.lang.Nullable;
 public enum IdentityTypeEnum {
 
     /**
-     * 普通管理员
+     * 普通身份
      */
-    ADMIN_NORMAL("admin_normal"),
+    NORMAL("NORMAL"),
 
     /**
-     * 超级管理员
+     * 超级身份
      */
-    ADMIN_SUPER("admin_super"),
-
-    /**
-     * 普通租户用户
-     */
-    TENANT_NORMAL("tenant_normal"),
-
-    /**
-     * 超级租户用户
-     */
-    TENANT_SUPER("tenant_super");
+    SUPER("SUPER");
 
     private final String value;
 

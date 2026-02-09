@@ -11,8 +11,6 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 public enum AuthTypeEnum {
 
-    ANONYMOUS("anonymous"),
-
     ADMIN("admin"),
 
     TENANT("tenant"),

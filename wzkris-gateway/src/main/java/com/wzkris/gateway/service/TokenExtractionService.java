@@ -2,6 +2,7 @@ package com.wzkris.gateway.service;
 
 import com.wzkris.auth.httpservice.token.LoginUserHttpService;
 import com.wzkris.auth.httpservice.token.req.LoginUserReq;
+import com.wzkris.auth.httpservice.token.req.OAuth2TokenReq;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -18,6 +19,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
@@ -92,7 +94,7 @@ public class TokenExtractionService {
                 ClientPrincipal clientPrincipal = new ClientPrincipal();
                 clientPrincipal.setClientId(jwt.getSubject());
 
-                List<String> scope = jwt.getClaimAsStringList("scope");
+                List<String> scope = jwt.getClaimAsStringList(OAuth2ParameterNames.SCOPE);
                 return Mono.just(UsernamePasswordAuthenticationToken.authenticated(
                         clientPrincipal, token,
                         CollectionUtils.isNotEmpty(scope)
@@ -105,7 +107,11 @@ public class TokenExtractionService {
                 }
                 String sid = jwt.getClaimAsString("sid");
 
-                return introspect(authTypeEnum, Long.valueOf(uidStr), token, sid);
+                if (StringUtil.isBlank(sid)) {
+                    return introspectOAuth2(token);
+                } else {
+                    return introspectCustom(authTypeEnum, Long.valueOf(uidStr), token, sid);
+                }
             }
         } catch (JwtException e) {
             log.warn("JWT validation failed: {}", e.getMessage());
@@ -113,7 +119,7 @@ public class TokenExtractionService {
         }
     }
 
-    private Mono<Authentication> introspect(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
+    private Mono<Authentication> introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
         LoginUserReq loginUserReq = new LoginUserReq(authTypeEnum.getValue(), uid, sid);
         return Mono.fromCallable(() -> loginUserHttpService.query(loginUserReq))
                 .subscribeOn(Schedulers.boundedElastic())
@@ -136,6 +142,39 @@ public class TokenExtractionService {
                                         ? AuthorityUtils.createAuthorityList(permissions)
                                         : AuthorityUtils.NO_AUTHORITIES);
                         return Mono.just(authentication);
+                    }
+                });
+    }
+
+    /**
+     * OAuth2类型token的验证流程
+     * 调用auth服务的新接口，通过OAuth2AuthorizationService.findByToken()查询
+     */
+    private Mono<Authentication> introspectOAuth2(String token) {
+        OAuth2TokenReq oAuth2TokenReq = new OAuth2TokenReq(token);
+        return Mono.fromCallable(() -> loginUserHttpService.queryByToken(oAuth2TokenReq))
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMap(tokenResponse -> {
+                    if (tokenResponse == null || !tokenResponse.isSuccess()) {
+                        log.warn("OAuth2 token validation failed. {}", tokenResponse);
+                        String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "OAuth2 token validation failed";
+                        return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(errMsg)));
+                    } else {
+                        // 根据返回的Principal类型创建对应的Authentication
+                        Set<String> permissions = tokenResponse.getPermissions();
+
+                        if (tokenResponse.getLoginUser() != null) {
+                            // 返回LoginUser
+                            LoginUser loginUser = tokenResponse.getLoginUser();
+                            Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(
+                                    loginUser, token,
+                                    CollectionUtils.isNotEmpty(permissions)
+                                            ? AuthorityUtils.createAuthorityList(permissions)
+                                            : AuthorityUtils.NO_AUTHORITIES);
+                            return Mono.just(authentication);
+                        } else {
+                            return Mono.error(new ResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Principal not found in OAuth2 token response")));
+                        }
                     }
                 });
     }

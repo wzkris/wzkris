@@ -1,6 +1,7 @@
 package com.wzkris.auth.httpservice.token;
 
 import com.wzkris.auth.httpservice.token.req.LoginUserReq;
+import com.wzkris.auth.httpservice.token.req.OAuth2TokenReq;
 import com.wzkris.auth.httpservice.token.resp.LoginUserResp;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.LoginUser;
@@ -8,8 +9,12 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.Set;
 
 @Slf4j
@@ -19,6 +24,8 @@ import java.util.Set;
 public class LoginUserHttpServiceImpl implements LoginUserHttpService {
 
     private final TokenService tokenService;
+
+    private final OAuth2AuthorizationService authorizationService;
 
     /**
      * 查询用户信息
@@ -52,6 +59,50 @@ public class LoginUserHttpServiceImpl implements LoginUserHttpService {
 
         Set<String> permissions = tokenService.loadPermissionsByUid(authType, uid);
         return LoginUserResp.ok(loginUser, permissions);
+    }
+
+    /**
+     * 通过OAuth2 token查询用户信息
+     * <p>
+     * 网关在验证OAuth2 token后调用此方法，通过token查询OAuth2Authorization，提取用户信息和权限。
+     * </p>
+     *
+     * @param request 查询请求，包含token字符串
+     * @return 用户信息和权限，如果token无效或不存在则返回错误
+     */
+    @Override
+    public LoginUserResp queryByToken(OAuth2TokenReq request) {
+        final String token = request.getToken();
+
+        if (token == null || token.isBlank()) {
+            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Invalid token: token is empty");
+        }
+
+        // 通过token查询OAuth2Authorization
+        OAuth2Authorization authorization = authorizationService.findByToken(token, OAuth2TokenType.ACCESS_TOKEN);
+        if (authorization == null) {
+            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Token not found or expired");
+        }
+
+        // 提取权限信息（从authorizedScopes）
+        Set<String> permissions = authorization.getAuthorizedScopes() != null
+                ? authorization.getAuthorizedScopes()
+                : Set.of();
+
+        // 从OAuth2Authorization中提取Principal
+        Principal principal = authorization.getAttribute(Principal.class.getName());
+        if (principal == null) {
+            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Principal not found in authorization");
+        }
+
+        if (principal instanceof LoginUser loginUser) {
+            return LoginUserResp.ok(loginUser, permissions);
+        } else {
+            // 尝试从Principal中提取信息构造LoginUser
+            // 这里可以根据实际需求扩展，比如从UserDetails转换
+            log.warn("Unsupported principal type: {}, principalName: {}", principal.getClass().getName(), authorization.getPrincipalName());
+            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Unsupported principal type: " + principal.getClass().getName());
+        }
     }
 
 }

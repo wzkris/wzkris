@@ -107,8 +107,8 @@ public class LoginTenantService extends UserInfoTemplate {
         loginUser.setUid(memberResp.getMemberId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
         loginUser.setIdentityType(permissions.getAdmin()
-                ? IdentityTypeEnum.TENANT_SUPER
-                : IdentityTypeEnum.TENANT_NORMAL);
+                ? IdentityTypeEnum.SUPER
+                : IdentityTypeEnum.NORMAL);
         loginUser.setUsername(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 
@@ -153,8 +153,8 @@ public class LoginTenantService extends UserInfoTemplate {
         loginUser.setUid(memberResp.getMemberId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
         loginUser.setIdentityType(permissions.getAdmin()
-                ? IdentityTypeEnum.TENANT_SUPER
-                : IdentityTypeEnum.TENANT_NORMAL);
+                ? IdentityTypeEnum.SUPER
+                : IdentityTypeEnum.NORMAL);
         loginUser.setUsername(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 
@@ -170,7 +170,7 @@ public class LoginTenantService extends UserInfoTemplate {
         LoginUser loginUser = new LoginUser();
         loginUser.setUid(memberResp.getMemberId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(IdentityTypeEnum.TENANT_NORMAL);
+        loginUser.setIdentityType(IdentityTypeEnum.NORMAL);
         loginUser.setUsername(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 
