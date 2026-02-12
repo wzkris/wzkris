@@ -47,12 +47,6 @@
             <artifactId>wzkris-common-captcha</artifactId>
         </dependency>
 
-        <!--动态线程池-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-thread</artifactId>
-        </dependency>
-
         <!-- Sentinel -->
         <dependency>
             <groupId>com.wzkris</groupId>

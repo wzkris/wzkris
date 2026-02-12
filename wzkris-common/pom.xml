@@ -30,7 +30,6 @@
         <module>wzkris-common-security</module>
         <module>wzkris-common-sentinel</module>
         <module>wzkris-common-swagger</module>
-        <module>wzkris-common-thread</module>
         <module>wzkris-common-validator</module>
         <module>wzkris-common-web</module>
         <module>wzkris-common-weixin-sdk</module>

@@ -51,7 +51,6 @@ wzkris
 │   ├── wzkris-common-security      // 安全模块
 │   ├── wzkris-common-sentinel      // 限流熔断
 │   ├── wzkris-common-swagger       // API文档
-│   ├── wzkris-common-thread        // 线程池
 │   ├── wzkris-common-validator     // 数据校验
 │   ├── wzkris-common-web           // Web基础
 │   └── wzkris-common-weixin-sdk    // 微信SDK
