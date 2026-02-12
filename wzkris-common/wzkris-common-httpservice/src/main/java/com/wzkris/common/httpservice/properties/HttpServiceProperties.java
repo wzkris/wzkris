@@ -21,20 +21,4 @@ public class HttpServiceProperties {
 
     private int readTimeout = 10_000;
 
-    private ConnectionPool connectionPool = new ConnectionPool();
-
-    /**
-     * 连接池配置
-     */
-    @Data
-    public static class ConnectionPool {
-
-        private int maxIdleConnections = 20;
-
-        private String timeUnit = "MINUTES";
-
-        private int keepAliveDuration = 5;
-
-    }
-
 }

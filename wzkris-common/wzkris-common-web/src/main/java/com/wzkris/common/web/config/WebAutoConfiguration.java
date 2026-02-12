@@ -10,8 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableAsync(proxyTargetClass = true)
 @EnableScheduling
 @EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
 @Import({ControllerStatisticAspect.class, RestExceptionHandler.class,

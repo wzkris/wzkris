@@ -1,10 +1,10 @@
 package com.wzkris.common.httpservice.config;
 
-import com.wzkris.common.core.threads.TracingIdRunnable;
 import com.wzkris.common.httpservice.annotation.EnableHttpServiceClients;
 import com.wzkris.common.httpservice.interceptor.PublishEventInterceptorPostProcessor;
 import com.wzkris.common.httpservice.interceptor.core.HttpServiceClientInterceptor;
 import com.wzkris.common.httpservice.properties.HttpServiceProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 自动配置 HTTP service clients.
  */
+@Slf4j
 @Import({HttpServiceClientInterceptor.class, PublishEventInterceptorPostProcessor.class})
 @EnableConfigurationProperties({HttpServiceProperties.class})
 @EnableHttpServiceClients
@@ -37,22 +37,19 @@ public class HttpServiceClientAutoConfiguration {
 
     private static BufferingClientHttpRequestFactory buildFactory(HttpServiceProperties httpServiceProperties) {
         // 根据 connectionPool 配置创建 Executor
-        HttpServiceProperties.ConnectionPool connectionPool = httpServiceProperties.getConnectionPool();
-        ThreadFactory threadFactory = new ThreadFactory() {
-            private final AtomicInteger threadNumber = new AtomicInteger(1);
-
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(new TracingIdRunnable(r), "http-service-client-" + threadNumber.getAndIncrement());
-                t.setDaemon(true);
-                return t;
-            }
-        };
+        ThreadFactory threadFactory = Thread.ofVirtual().name("http-service-client-", 0)
+                .uncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                    @Override
+                    public void uncaughtException(Thread t, Throwable e) {
+                        log.error("http-service调用发生异常", e);
+                    }
+                })
+                .factory();
 
         HttpClient httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.of(httpServiceProperties.getConnectTimeout(), TimeUnit.valueOf(httpServiceProperties.getTimeUnit()).toChronoUnit()))
                 .followRedirects(HttpClient.Redirect.NORMAL)
-                .executor(Executors.newFixedThreadPool(connectionPool.getMaxIdleConnections(), threadFactory))
+                .executor(Executors.newThreadPerTaskExecutor(threadFactory))
                 .build();
 
         // 使用自定义 HttpClient 创建 JdkClientHttpRequestFactory
