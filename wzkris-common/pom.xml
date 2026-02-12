@@ -27,14 +27,13 @@
         <module>wzkris-common-httpservice</module>
         <module>wzkris-common-orm</module>
         <module>wzkris-common-redis</module>
-        <module>wzkris-common-seata</module>
         <module>wzkris-common-security</module>
         <module>wzkris-common-sentinel</module>
-        <module>wzkris-common-statemachine</module>
         <module>wzkris-common-swagger</module>
         <module>wzkris-common-thread</module>
         <module>wzkris-common-validator</module>
         <module>wzkris-common-web</module>
         <module>wzkris-common-weixin-sdk</module>
     </modules>
+
 </project>

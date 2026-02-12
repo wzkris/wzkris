@@ -86,13 +86,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 分布式事务 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-seata</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- 安全模块 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
@@ -104,13 +97,6 @@
             <dependency>
                 <groupId>com.wzkris</groupId>
                 <artifactId>wzkris-common-sentinel</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 状态机-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-statemachine</artifactId>
                 <version>${revision}</version>
             </dependency>
 

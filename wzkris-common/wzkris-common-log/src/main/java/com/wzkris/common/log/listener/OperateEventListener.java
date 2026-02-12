@@ -1,4 +1,4 @@
-package com.wzkris.common.log.event.listener;
+package com.wzkris.common.log.listener;
 
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.StringUtil;
