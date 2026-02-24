@@ -21,7 +21,6 @@ public class EmailConfiguration {
      * 邮件通知器（使用 Spring Boot 自动配置的单实例 JavaMailSender）
      */
     @Bean
-    @ConditionalOnProperty("spring.mail.host")
     @ConditionalOnProperty(prefix = "notifier", name = "channel", havingValue = "EMAIL")
     public EmailNotifier emailNotifier(JavaMailSender mailSender, NotifierProperties notifierProperties) {
         log.info("启用基于 Spring Boot 自动配置的邮件通知器");
