@@ -1,2 +1,2 @@
-com.wzkris.auth.httpservice.captcha.fallback.CaptchaHttpServiceFallback
-com.wzkris.auth.httpservice.token.fallback.LoginUserHttpServiceFallback
+com.wzkris.auth.httpclient.captcha.fallback.CaptchaClientFallback
+com.wzkris.auth.httpclient.token.fallback.LoginUserClientFallback

@@ -42,7 +42,7 @@ public class ConfigInfoServiceImpl implements ConfigInfoService, SmartInitializi
                 .collect(Collectors.toMap(ConfigInfoDO::getConfigKey, ConfigInfoDO::getConfigValue));
         redisTemplate.delete(DICT_KEY);
         if (!map.isEmpty()) {
-            redisTemplate.opsForHash().putAll(DICT_KEY, (Map) map);
+            redisTemplate.opsForHash().putAll(DICT_KEY, map);
         }
     }
 

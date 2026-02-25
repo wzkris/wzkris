@@ -2,8 +2,8 @@ package com.wzkris.system.controller.notification;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.system.domain.vo.notification.NotificationInfoVO;
 import com.wzkris.system.mapper.NotificationInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;

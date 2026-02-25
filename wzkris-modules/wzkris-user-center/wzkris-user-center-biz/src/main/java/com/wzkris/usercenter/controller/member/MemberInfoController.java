@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.controller.member;
 
-import com.wzkris.auth.httpservice.captcha.CaptchaHttpService;
-import com.wzkris.auth.httpservice.captcha.req.CaptchaCheckReq;
+import com.wzkris.auth.httpclient.captcha.CaptchaClient;
+import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
@@ -36,7 +36,7 @@ public class MemberInfoController extends BaseController {
 
     private final PostInfoService postInfoService;
 
-    private final CaptchaHttpService captchaHttpService;
+    private final CaptchaClient captchaClient;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -81,7 +81,7 @@ public class MemberInfoController extends BaseController {
         }
         // 验证
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(memberInfoMapper.selectPhoneNumberById(memberId), req.getSmsCode());
-        if (!captchaHttpService.validateCaptcha(captchaCheckReq)) {
+        if (!captchaClient.validateCaptcha(captchaCheckReq)) {
             return requestFail("验证码错误");
         }
 

@@ -3,8 +3,8 @@ package com.wzkris.common.log.listener;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.report.AsyncBatchReporter;
-import com.wzkris.system.httpservice.operatelog.OperateLogHttpService;
-import com.wzkris.system.httpservice.operatelog.req.OperateLogEvent;
+import com.wzkris.system.httpclient.operatelog.OperateLogClient;
+import com.wzkris.system.httpclient.operatelog.req.OperateLogEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 
@@ -16,7 +16,7 @@ public class OperateEventListener {
 
     private final AsyncBatchReporter<OperateLogEvent> reporter;
 
-    public OperateEventListener(OperateLogHttpService operateLogHttpService) {
+    public OperateEventListener(OperateLogClient operateLogClient) {
         this.reporter = new AsyncBatchReporter<>(
                 30,   // 批量大小
                 3,    // 定时刷出间隔（秒）
@@ -27,7 +27,7 @@ public class OperateEventListener {
                             event.setOperLocation(IpUtil.parseIp(event.getOperIp()));
                         }
                     });
-                    operateLogHttpService.save(events);
+                    operateLogClient.save(events);
                 }
         );
     }

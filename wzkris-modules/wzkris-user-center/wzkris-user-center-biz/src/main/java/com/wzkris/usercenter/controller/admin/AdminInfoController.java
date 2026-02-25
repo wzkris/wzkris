@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.controller.admin;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.auth.httpservice.captcha.CaptchaHttpService;
-import com.wzkris.auth.httpservice.captcha.req.CaptchaCheckReq;
+import com.wzkris.auth.httpclient.captcha.CaptchaClient;
+import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
@@ -52,7 +52,7 @@ public class AdminInfoController extends BaseController {
 
     private final DeptInfoMapper deptInfoMapper;
 
-    private final CaptchaHttpService captchaHttpService;
+    private final CaptchaClient captchaClient;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -120,7 +120,7 @@ public class AdminInfoController extends BaseController {
         }
         // 验证
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(adminInfoMapper.selectPhoneNumberById(adminId), req.getSmsCode());
-        if (!captchaHttpService.validateCaptcha(captchaCheckReq)) {
+        if (!captchaClient.validateCaptcha(captchaCheckReq)) {
             return requestFail("验证码错误");
         }
 

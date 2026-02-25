@@ -34,7 +34,7 @@ public class DictionaryInfoServiceImpl implements DictionaryInfoService, SmartIn
                 .collect(Collectors.toMap(DictionaryInfoDO::getDictKey, DictionaryInfoDO::getDictValue));
         redisTemplate.delete(DICT_KEY);
         if (!map.isEmpty()) {
-            redisTemplate.opsForHash().putAll(DICT_KEY, (Map) map);
+            redisTemplate.opsForHash().putAll(DICT_KEY, map);
         }
     }
 

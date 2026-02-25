@@ -18,10 +18,10 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
-import com.wzkris.usercenter.httpservice.admin.AdminInfoHttpService;
-import com.wzkris.usercenter.httpservice.admin.req.QueryAdminPermsReq;
-import com.wzkris.usercenter.httpservice.admin.resp.AdminInfoResp;
-import com.wzkris.usercenter.httpservice.admin.resp.AdminPermissionResp;
+import com.wzkris.usercenter.httpclient.admin.AdminInfoClient;
+import com.wzkris.usercenter.httpclient.admin.req.QueryAdminPermsReq;
+import com.wzkris.usercenter.httpclient.admin.resp.AdminInfoResp;
+import com.wzkris.usercenter.httpclient.admin.resp.AdminPermissionResp;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -43,14 +43,14 @@ public class LoginAdminService extends UserInfoTemplate {
 
     private final CaptchaService captchaService;
 
-    private final AdminInfoHttpService adminInfoHttpService;
+    private final AdminInfoClient adminInfoClient;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        AdminInfoResp userResp = adminInfoHttpService.getByPhoneNumber(phoneNumber);
+        AdminInfoResp userResp = adminInfoClient.getByPhoneNumber(phoneNumber);
 
         if (userResp == null) {
             captchaService.freezeAccount(phoneNumber, 60);
@@ -68,7 +68,7 @@ public class LoginAdminService extends UserInfoTemplate {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        AdminInfoResp userResp = adminInfoHttpService.getByUsername(username);
+        AdminInfoResp userResp = adminInfoClient.getByUsername(username);
 
         if (userResp == null) {
             captchaService.freezeAccount(username, 60);
@@ -101,7 +101,7 @@ public class LoginAdminService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        AdminPermissionResp permissions = adminInfoHttpService.getPermission(
+        AdminPermissionResp permissions = adminInfoClient.getPermission(
                 new QueryAdminPermsReq(userResp.getAdminId(), userResp.getDeptId()));
 
         LoginUser loginUser = new LoginUser();

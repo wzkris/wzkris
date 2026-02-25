@@ -15,7 +15,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-httpservice</artifactId>
+            <artifactId>wzkris-common-httpclient</artifactId>
         </dependency>
 
     </dependencies>

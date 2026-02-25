@@ -68,7 +68,7 @@
             <!-- feign调用 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-httpservice</artifactId>
+                <artifactId>wzkris-common-httpclient</artifactId>
                 <version>${revision}</version>
             </dependency>
 

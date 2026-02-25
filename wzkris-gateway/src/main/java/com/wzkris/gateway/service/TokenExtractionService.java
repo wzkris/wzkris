@@ -1,8 +1,8 @@
 package com.wzkris.gateway.service;
 
-import com.wzkris.auth.httpservice.token.LoginUserHttpService;
-import com.wzkris.auth.httpservice.token.req.LoginUserReq;
-import com.wzkris.auth.httpservice.token.req.OAuth2TokenReq;
+import com.wzkris.auth.httpclient.token.LoginUserClient;
+import com.wzkris.auth.httpclient.token.req.LoginUserReq;
+import com.wzkris.auth.httpclient.token.req.OAuth2TokenReq;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.constant.QueryParamConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TokenExtractionService {
 
-    private final LoginUserHttpService loginUserHttpService;
+    private final LoginUserClient loginUserClient;
 
     private final JwtDecoder jwtDecoder;
 
@@ -119,7 +119,7 @@ public class TokenExtractionService {
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
         LoginUserReq loginUserReq = new LoginUserReq(authTypeEnum.getValue(), uid, sid);
-        var tokenResponse = loginUserHttpService.query(loginUserReq);
+        var tokenResponse = loginUserClient.query(loginUserReq);
         if (tokenResponse == null || !tokenResponse.isSuccess()) {
             log.warn("Token validation failed after JWT decode. {}", tokenResponse);
             String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "Token validation failed";
@@ -146,7 +146,7 @@ public class TokenExtractionService {
      */
     private Authentication introspectOAuth2(String token) {
         OAuth2TokenReq oAuth2TokenReq = new OAuth2TokenReq(token);
-        var tokenResponse = loginUserHttpService.queryByToken(oAuth2TokenReq);
+        var tokenResponse = loginUserClient.queryByToken(oAuth2TokenReq);
         if (tokenResponse == null || !tokenResponse.isSuccess()) {
             log.warn("OAuth2 token validation failed. {}", tokenResponse);
             String errMsg = (tokenResponse != null) ? tokenResponse.getDescription() : "OAuth2 token validation failed";

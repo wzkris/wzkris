@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.listener;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.system.httpservice.notification.NotificationInfoHttpService;
-import com.wzkris.system.httpservice.notification.req.NotificationReq;
+import com.wzkris.system.httpclient.notification.NotificationInfoClient;
+import com.wzkris.system.httpclient.notification.req.NotificationReq;
 import com.wzkris.usercenter.listener.event.CreateAdminEvent;
 import com.wzkris.usercenter.listener.event.CreateMemberEvent;
 import com.wzkris.usercenter.listener.event.CreateTenantEvent;
@@ -22,7 +22,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class NotificationEventListener {
 
-    private final NotificationInfoHttpService notificationInfoHttpService;
+    private final NotificationInfoClient notificationInfoClient;
 
     @Async
     @EventListener
@@ -37,7 +37,7 @@ public class NotificationEventListener {
                         event.getLoginPwd(),
                         event.getOperPwd()));
 
-        notificationInfoHttpService.send2Users(req);
+        notificationInfoClient.send2Users(req);
     }
 
     @Async
@@ -48,7 +48,7 @@ public class NotificationEventListener {
                 "管理员创建成功",
                 String.format("管理员账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
-        notificationInfoHttpService.send2Users(req);
+        notificationInfoClient.send2Users(req);
     }
 
     @Async
@@ -59,7 +59,7 @@ public class NotificationEventListener {
                 "租户账号创建成功",
                 String.format("租户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
-        notificationInfoHttpService.send2Users(req);
+        notificationInfoClient.send2Users(req);
     }
 
 }

@@ -6,10 +6,10 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.impl.LoginTenantService;
 import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.httpservice.member.MemberInfoHttpService;
-import com.wzkris.usercenter.httpservice.member.req.QueryMemberPermsReq;
-import com.wzkris.usercenter.httpservice.member.resp.MemberInfoResp;
-import com.wzkris.usercenter.httpservice.member.resp.MemberPermissionResp;
+import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
+import com.wzkris.usercenter.httpclient.member.req.QueryMemberPermsReq;
+import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
+import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ import static com.wzkris.common.core.model.Result.ok;
 @RequiredArgsConstructor
 public class SwitchTokenController {
 
-    private final MemberInfoHttpService memberInfoHttpService;
+    private final MemberInfoClient memberInfoClient;
 
     private final TokenService tokenService;
 
@@ -53,7 +53,7 @@ public class SwitchTokenController {
                 .getSessionInfo(switchReq.getWxCode())
                 .getOpenid();
 
-        MemberInfoResp memberInfoResp = memberInfoHttpService.getByWexcxIdentifier(identifier);
+        MemberInfoResp memberInfoResp = memberInfoClient.getByWexcxIdentifier(identifier);
         if (memberInfoResp == null) {
             return Result.requestFail("微信未绑定商户账号");
         }
@@ -61,7 +61,7 @@ public class SwitchTokenController {
         LoginUser loginUser = loginTenantService.buildLoginTenant(memberInfoResp);
 
         // 获取权限信息
-        MemberPermissionResp permissions = memberInfoHttpService.getPermission(
+        MemberPermissionResp permissions = memberInfoClient.getPermission(
                 new QueryMemberPermsReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
 
         // 生成新的sid

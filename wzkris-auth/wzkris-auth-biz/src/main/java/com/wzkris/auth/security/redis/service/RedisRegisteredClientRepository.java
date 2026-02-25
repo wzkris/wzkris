@@ -20,8 +20,8 @@ import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.I18nUtil;
-import com.wzkris.usercenter.httpservice.oauth2.OAuth2ClientHttpService;
-import com.wzkris.usercenter.httpservice.oauth2.resp.OAuth2ClientResp;
+import com.wzkris.usercenter.httpclient.oauth2.OAuth2ClientClient;
+import com.wzkris.usercenter.httpclient.oauth2.resp.OAuth2ClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -46,7 +46,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
 
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 
-    private final OAuth2ClientHttpService oAuth2ClientHttpService;
+    private final OAuth2ClientClient oAuth2ClientClient;
 
     private final TokenProperties tokenProperties;
 
@@ -67,7 +67,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        OAuth2ClientResp oauth2Client = oAuth2ClientHttpService.getById(id);
+        OAuth2ClientResp oauth2Client = oAuth2ClientClient.getById(id);
 
         return checkAndSave(oauth2Client);
     }
@@ -83,7 +83,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        OAuth2ClientResp oauth2Client = oAuth2ClientHttpService.getByClientId(clientId);
+        OAuth2ClientResp oauth2Client = oAuth2ClientClient.getByClientId(clientId);
 
         return checkAndSave(oauth2Client);
     }

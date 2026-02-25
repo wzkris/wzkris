@@ -24,7 +24,7 @@
         <module>wzkris-common-loadbalancer</module>
         <module>wzkris-common-log</module>
         <module>wzkris-common-notifier</module>
-        <module>wzkris-common-httpservice</module>
+        <module>wzkris-common-httpclient</module>
         <module>wzkris-common-orm</module>
         <module>wzkris-common-redis</module>
         <module>wzkris-common-security</module>
