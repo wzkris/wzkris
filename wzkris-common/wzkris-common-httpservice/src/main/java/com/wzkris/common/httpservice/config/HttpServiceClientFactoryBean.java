@@ -52,7 +52,7 @@ public class HttpServiceClientFactoryBean<T> implements FactoryBean<T>, Initiali
     }
 
     private RestClient.Builder getRestClientBuilder() {
-        return applicationContext.getBean(RestClient.Builder.class);
+        return applicationContext.getBean("customRestClientBuilder", RestClient.Builder.class);
     }
 
     private String buildBaseUrl() {

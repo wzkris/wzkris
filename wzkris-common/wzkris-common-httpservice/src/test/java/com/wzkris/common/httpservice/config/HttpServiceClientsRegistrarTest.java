@@ -40,40 +40,6 @@ class HttpServiceClientsRegistrarTest {
 
     private HttpServiceClientsRegistrar registrar;
 
-    /**
-     * 测试用的服务接口 - 使用url
-     */
-    @HttpServiceClient(url = "http://test-service.com")
-    interface TestServiceWithUrl {
-        String getData();
-    }
-
-    /**
-     * 测试用的服务接口 - 使用serviceId
-     */
-    @HttpServiceClient(serviceId = "test-service")
-    interface TestServiceWithServiceId {
-        String getData();
-    }
-
-    /**
-     * 测试用的服务接口 - 使用fallback
-     */
-    @HttpServiceClient(url = "http://test-service.com", fallbackFactory = TestFallback.class)
-    interface TestServiceWithFallback {
-        String getData();
-    }
-
-    /**
-     * 测试用的Fallback实现
-     */
-    static class TestFallback implements HttpServiceFallback<TestServiceWithFallback> {
-        @Override
-        public TestServiceWithFallback create(Throwable cause) {
-            return () -> "fallback";
-        }
-    }
-
     @BeforeEach
     void setUp() {
         registrar = new HttpServiceClientsRegistrar();
@@ -183,6 +149,7 @@ class HttpServiceClientsRegistrarTest {
     void testRegisterHttpServiceClient_MissingUrlAndServiceId() {
         @HttpServiceClient
         interface InvalidService {
+
         }
 
         when(resourceLoader.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
@@ -203,5 +170,48 @@ class HttpServiceClientsRegistrarTest {
             // 如果反射失败，这是预期的，因为InvalidService可能无法正确解析
         }
     }
+
+    /**
+     * 测试用的服务接口 - 使用url
+     */
+    @HttpServiceClient(url = "http://test-service.com")
+    interface TestServiceWithUrl {
+
+        String getData();
+
+    }
+
+    /**
+     * 测试用的服务接口 - 使用serviceId
+     */
+    @HttpServiceClient(serviceId = "test-service")
+    interface TestServiceWithServiceId {
+
+        String getData();
+
+    }
+
+    /**
+     * 测试用的服务接口 - 使用fallback
+     */
+    @HttpServiceClient(url = "http://test-service.com", fallbackFactory = TestFallback.class)
+    interface TestServiceWithFallback {
+
+        String getData();
+
+    }
+
+    /**
+     * 测试用的Fallback实现
+     */
+    static class TestFallback implements HttpServiceFallback<TestServiceWithFallback> {
+
+        @Override
+        public TestServiceWithFallback create(Throwable cause) {
+            return () -> "fallback";
+        }
+
+    }
+
 }
 

@@ -1,1 +1,2 @@
 com.wzkris.common.httpservice.config.HttpServiceClientAutoConfiguration
+com.wzkris.common.httpservice.config.CustomRestClientAutoConfiguration

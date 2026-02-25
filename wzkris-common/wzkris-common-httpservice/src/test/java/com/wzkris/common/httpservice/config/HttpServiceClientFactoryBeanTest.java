@@ -14,7 +14,6 @@ import org.springframework.web.client.RestClient;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.lenient;
 
 /**
@@ -42,13 +41,6 @@ class HttpServiceClientFactoryBeanTest {
     private RestClient restClient;
 
     private HttpServiceClientFactoryBean<TestService> factoryBean;
-
-    /**
-     * 测试用的服务接口
-     */
-    interface TestService {
-        String testMethod();
-    }
 
     @BeforeEach
     void setUp() {
@@ -183,5 +175,15 @@ class HttpServiceClientFactoryBeanTest {
 
         assertEquals(TestService.class, factoryBean.getObjectType());
     }
+
+    /**
+     * 测试用的服务接口
+     */
+    interface TestService {
+
+        String testMethod();
+
+    }
+
 }
 

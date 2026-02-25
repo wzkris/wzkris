@@ -13,12 +13,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -47,7 +45,7 @@ public class RequireAuthAspect {
      * 类级别的权限验证
      */
     @Around("pointCutClass()")
-    public Object beforeClass(ProceedingJoinPoint point) {
+    public Object beforeClass(ProceedingJoinPoint point) throws Throwable {
         RequireAuth requireAuth = point.getTarget().getClass().getAnnotation(RequireAuth.class);
         return validatePermission(point, requireAuth);
     }
@@ -56,7 +54,7 @@ public class RequireAuthAspect {
      * 方法级别的权限验证（优先级高于类级别）
      */
     @Around("pointCutMethod()")
-    public Object beforeMethod(ProceedingJoinPoint point) {
+    public Object beforeMethod(ProceedingJoinPoint point) throws Throwable {
         RequireAuth requireAuth = ((MethodSignature) point.getSignature())
                 .getMethod()
                 .getAnnotation(RequireAuth.class);
@@ -64,54 +62,37 @@ public class RequireAuthAspect {
     }
 
     /**
-     * 验证权限
+     * 验证权限（同步）
      */
-    private Mono<Object> validatePermission(ProceedingJoinPoint point, RequireAuth requireAuth) {
-        return ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication)
-                .switchIfEmpty(Mono.error(new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc())))
-                .flatMap(authentication -> {
-                    Object principalObj = authentication.getPrincipal();
-                    if (!(principalObj instanceof LoginUser loginUser)) {
-                        return Mono.error(new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc()));
-                    }
+    private Object validatePermission(ProceedingJoinPoint point, RequireAuth requireAuth) throws Throwable {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc());
+        }
 
-                    // 从 Authentication 获取权限
-                    Set<String> permissions = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+        Object principalObj = authentication.getPrincipal();
+        if (!(principalObj instanceof LoginUser loginUser)) {
+            throw new ResultException(401, BizBaseCodeEnum.AUTHENTICATION_ERROR.value(), BizBaseCodeEnum.AUTHENTICATION_ERROR.desc());
+        }
 
-                    boolean passed = AuthChecker.check(loginUser, permissions, requireAuth);
-                    if (!passed) {
-                        String authType = requireAuth.authType().getValue();
-                        String[] requirePermissions = requireAuth.permissions();
+        // 从 Authentication 获取权限
+        Set<String> permissions = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
-                        log.error("'{}'权限验证失败 - 方法: {}, 要求类型: {}, 要求权限: {}",
-                                loginUser.getName(),
-                                point.getTarget().getClass().getName() + StringUtil.DOT + ((MethodSignature) point.getSignature()).getMethod().getName(),
-                                authType,
-                                Arrays.toString(requirePermissions));
+        boolean passed = AuthChecker.check(loginUser, permissions, requireAuth);
+        if (!passed) {
+            String authType = requireAuth.authType().getValue();
+            String[] requirePermissions = requireAuth.permissions();
 
-                        return Mono.error(new ResultException(403, BizBaseCodeEnum.ACCESS_DENIED.value(), BizBaseCodeEnum.ACCESS_DENIED.desc()));
-                    }
+            log.error("'{}'权限验证失败 - 方法: {}, 要求类型: {}, 要求权限: {}",
+                    loginUser.getName(),
+                    point.getTarget().getClass().getName() + StringUtil.DOT + ((MethodSignature) point.getSignature()).getMethod().getName(),
+                    authType,
+                    Arrays.toString(requirePermissions));
 
-                    try {
-                        Object result = point.proceed();
+            throw new ResultException(403, BizBaseCodeEnum.ACCESS_DENIED.value(), BizBaseCodeEnum.ACCESS_DENIED.desc());
+        }
 
-                        if (result instanceof Mono<?> mono) {
-                            return mono.cast(Object.class);
-                        }
-                        if (result instanceof Flux<?> flux) {
-                            return flux.collectList().cast(Object.class);
-                        }
-                        // 处理其他实现了 Publisher 接口的类型（非 Mono/Flux）
-                        if (result instanceof org.reactivestreams.Publisher<?> publisher) {
-                            return Mono.from(publisher).cast(Object.class);
-                        }
-                        return Mono.justOrEmpty(result);
-                    } catch (Throwable e) {
-                        log.error("切面发生异常: ", e);
-                        return Mono.error(e);
-                    }
-                });
+        return point.proceed();
     }
 
 }

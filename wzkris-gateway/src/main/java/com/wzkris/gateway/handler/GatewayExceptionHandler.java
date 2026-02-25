@@ -1,47 +1,44 @@
 package com.wzkris.gateway.handler;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.gateway.utils.WebFluxUtil;
+import com.wzkris.common.core.exception.service.ResultException;
+import com.wzkris.common.core.model.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.web.reactive.handler.WebFluxResponseStatusExceptionHandler;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * 网关统一异常处理
+ * 网关统一异常处理（Servlet / MVC 版本）
  *
  * @author wzkris
  */
 @Slf4j
-@Order(-1)
-@Configuration
-public class GatewayExceptionHandler extends WebFluxResponseStatusExceptionHandler {
+@RestControllerAdvice
+public class GatewayExceptionHandler {
 
-    /**
-     * 异常处理
-     *
-     * @param exchange the current exchange
-     * @param ex       the exception to handle
-     */
-    @Override
-    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        ServerHttpResponse response = exchange.getResponse();
-        if (exchange.getResponse().isCommitted()) {
-            return Mono.error(ex);
-        }
-
-        log.error("[网关异常处理]请求路径:'{} {}',异常信息:{}",
-                exchange.getRequest().getMethod(),
-                exchange.getRequest().getPath(),
+    @ExceptionHandler(ResultException.class)
+    public ResponseEntity<Result<?>> handleResultException(ResultException ex, HttpServletRequest request) {
+        log.error("[网关业务异常] 请求路径:'{} {}', 异常信息:{}",
+                request.getMethod(),
+                request.getRequestURI(),
                 ex.getMessage(), ex);
 
-        HttpStatusCode httpStatusCode = determineStatus(ex);
-        response.setStatusCode(httpStatusCode);
-        return WebFluxUtil.writeResponse(response, BizBaseCodeEnum.SYSTEM_ERROR.value(), ex.getMessage());
+        int status = ex.getHttpStatusCode();
+        return ResponseEntity.status(status).body(ex.getResult());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Result<?>> handleException(Exception ex, HttpServletRequest request) {
+        log.error("[网关系统异常] 请求路径:'{} {}', 异常信息:{}",
+                request.getMethod(),
+                request.getRequestURI(),
+                ex.getMessage(), ex);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Result.init(BizBaseCodeEnum.SYSTEM_ERROR.value(), null, ex.getMessage()));
     }
 
 }
