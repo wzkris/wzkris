@@ -38,6 +38,6 @@ public class SwaggerProperties {
     /**
      * 服务条款URL
      **/
-    private String termsOfServiceUrl = "内部接口，禁止外泄";
+    private String termsOfServiceUrl = "内部文档，禁止外泄";
 
 }

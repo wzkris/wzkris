@@ -33,7 +33,8 @@ public class ApicallStatisticsFilter implements HandlerFilterFunction<ServerResp
                 || path.startsWith("/health")
                 || path.startsWith("/metrics")
                 || path.startsWith("/swagger")
-                || path.startsWith("/doc.html")
+                || path.startsWith("/doc")
+                || path.startsWith("/v3/api-docs")
                 || path.startsWith("/webjars");
     }
 
