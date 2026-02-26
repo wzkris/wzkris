@@ -6,7 +6,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
-@Import({ResourceServerConfig.class, SecurityUtil.class,
+@Import({ResourceServerConfiguration.class, SecurityUtil.class,
         CheckPermsAspect.class, SecurityExceptionHandler.class})
 @AutoConfiguration
 public class SecurityAutoConfiguration {

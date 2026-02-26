@@ -1,14 +1,13 @@
-package com.wzkris.gateway.filter;
+package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.loadbalancer.enums.RoutePolicyEnum;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.properties.RoutePolicyProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.HandlerFilterFunction;
 import org.springframework.web.servlet.function.HandlerFunction;
@@ -24,7 +23,7 @@ import org.springframework.web.servlet.function.ServerResponse;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RouteDecisionFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
+public class RouteDecisionFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
     private final RoutePolicyProperties routePolicyProperties;
 
@@ -49,10 +48,11 @@ public class RouteDecisionFilter implements HandlerFilterFunction<ServerResponse
 
     private ServerResponse handleOpen(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !(authentication.getPrincipal() instanceof LoginUser loginUser)) {
+            if (!SecurityUtil.isAuth()) {
                 return next.handle(request);
             }
+
+            LoginUser loginUser = SecurityUtil.getLoginUser();
 
             String userHint = loginUser.getHint();
             String hint = StringUtil.isNotBlank(userHint)

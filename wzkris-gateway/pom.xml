@@ -55,10 +55,10 @@
             <artifactId>wzkris-common-sentinel</artifactId>
         </dependency>
 
-        <!-- 核心包 -->
+        <!-- 安全包 -->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-core</artifactId>
+            <artifactId>wzkris-common-security</artifactId>
         </dependency>
 
         <!-- Redis支持 -->

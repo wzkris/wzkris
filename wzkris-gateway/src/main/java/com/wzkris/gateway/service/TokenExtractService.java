@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TokenExtractionService {
+public class TokenExtractService {
 
     private final LoginUserClient loginUserClient;
 

@@ -1,12 +1,11 @@
-package com.wzkris.gateway.filter;
+package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.HandlerFilterFunction;
 import org.springframework.web.servlet.function.HandlerFunction;
@@ -24,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ApicallStatisticsFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
+public class ApicallStatFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
     private final StatisticsService statisticsService;
 
@@ -49,10 +48,10 @@ public class ApicallStatisticsFilter implements HandlerFilterFunction<ServerResp
         ServerResponse response = next.handle(request);
 
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.getPrincipal() instanceof LoginUser loginUser) {
+            if (SecurityUtil.isAuth()) {
                 int status = response.statusCode().value();
                 boolean success = status >= 200 && status < 300;
+                LoginUser loginUser = SecurityUtil.getLoginUser();
                 recordApiCallStatistics(path, success, loginUser);
             }
         } catch (Exception e) {

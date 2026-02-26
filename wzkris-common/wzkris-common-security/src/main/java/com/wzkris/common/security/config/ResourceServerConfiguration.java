@@ -6,7 +6,7 @@ import com.wzkris.common.security.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -27,10 +27,9 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 @RequiredArgsConstructor
-public class ResourceServerConfig {
+public class ResourceServerConfiguration {
 
     @Bean
-    @RefreshScope
     public SecurityFilterChain resourceSecurityFilterChain(
             HttpSecurity http,
             SecurityContextRepository securityContextRepository)
@@ -55,11 +54,13 @@ public class ResourceServerConfig {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public SecurityContextRepository securityContextRepository() {
         return new CustomSecurityContextRepository();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public PasswordEncoderDelegate passwordEncoder() {
         return new PasswordEncoderDelegate();
     }

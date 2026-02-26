@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoders;
  */
 @Slf4j
 @Configuration
-public class JwtConfig {
+public class JwtConfiguration {
 
     /**
      * 配置 JwtDecoder

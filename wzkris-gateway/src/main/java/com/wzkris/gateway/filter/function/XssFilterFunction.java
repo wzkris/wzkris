@@ -1,4 +1,4 @@
-package com.wzkris.gateway.filter;
+package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.properties.XssProperties;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @RequiredArgsConstructor
-public class XssFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
+public class XssFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
     public static final String RE_HTML_MARK = "(<[^<]*?>)|(<[\\s]*?/[^<]*?>)|(<[^<]*?/[\\s]*?>)";
 

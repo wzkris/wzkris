@@ -1,6 +1,7 @@
 package com.wzkris.gateway.controller;
 
 import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.domain.req.PageViewReq;
 import com.wzkris.gateway.service.StatisticsService;
@@ -8,8 +9,6 @@ import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +35,8 @@ public class TrackController {
     @PostMapping("/pageview")
     public ResponseEntity<Object> recordPageview(@RequestBody PageViewReq request) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.getPrincipal() instanceof LoginUser loginUser) {
+            if (SecurityUtil.isAuth()) {
+                LoginUser loginUser = SecurityUtil.getLoginUser();
                 recordPageview(loginUser.getAuthType().getValue(), loginUser.getUid(), request);
             }
         } catch (Exception e) {
