@@ -34,10 +34,6 @@ public class StatisticsService {
 
     // 统计键前缀（Hash/Set 聚合）
     // API调用统计相关
-    private static final String STATS_API_CALL_DAY = "statistics:api:day:";                 // Hash fields: {auth}
-
-    private static final String STATS_API_CALL_DAY_STATUS = "statistics:api:status:day:";   // Hash fields: {auth}:success/error
-
     private static final String STATS_API_PATH_CALL_DAY = "statistics:api:path:day:";       // Hash fields: {auth}:{path}
 
     private static final String STATS_API_PATH_CALL_DAY_STATUS = "statistics:api:pathstatus:day:"; // Hash fields: {auth}:{path}:success/error
@@ -53,8 +49,6 @@ public class StatisticsService {
     private static final String STATS_UV_USERS_HOUR = "statistics:uv:users:hour:";   // Set key: statistics:uv:users:hour:{hour}:{auth}
 
     // 页面真实PV埋点专用key（仅供页面埋点/TrackController使用！）
-    private static final String PV_STATS_DAY = "statistics:pv:day:";      // Hash fields: {auth}
-
     private static final String PV_STATS_HOUR = "statistics:pv:hour:";    // Hash fields: {auth}
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -119,13 +113,8 @@ public class StatisticsService {
      * 仅供 TrackController 上报调用
      */
     public void recordPV(StatisticsKey key) {
-        String date = key.getDate();
         String authType = key.getAuthType();
         String hour = key.getHour();
-        // 每日PV计数
-        String dayPvKey = PV_STATS_DAY + date;
-        incrementMapField(dayPvKey, authType, 1);
-        expireMapIfNeeded(dayPvKey, java.time.Duration.ofDays(90));
         // 每小时PV计数
         String hourPvKey = PV_STATS_HOUR + hour;
         incrementMapField(hourPvKey, authType, 1);
@@ -140,17 +129,9 @@ public class StatisticsService {
         String authType = key.getAuthType();
         String path = key.getPath();
 
-        // 按日API调用（auth 维度）
-        String dayApiCallHashKey = STATS_API_CALL_DAY + date;
-        incrementMapField(dayApiCallHashKey, authType, 1);
-
         // 按日路径API调用量（ZSET：member=path，score=apiCall），键包含 auth
         String dayApiPathCallZsetKey = STATS_API_PATH_CALL_DAY + date + KEY_DELIM + authType;
         redisTemplate.opsForZSet().incrementScore(dayApiPathCallZsetKey, path, 1D);
-
-        // 按日成功/失败统计（键包含 auth，field 为状态）
-        String dayStatusHashKey = STATS_API_CALL_DAY_STATUS + date + KEY_DELIM + authType;
-        incrementMapField(dayStatusHashKey, success ? STATUS_SUCCESS : STATUS_ERROR, 1);
 
         // 按日路径成功/失败统计（键包含 auth 与 path，field 为状态）
         String dayPathStatusHashKey = STATS_API_PATH_CALL_DAY_STATUS + date + KEY_DELIM + authType + KEY_DELIM + path;
@@ -164,11 +145,8 @@ public class StatisticsService {
         String hourStatusHashKey = STATS_API_CALL_HOUR_STATUS + hour + KEY_DELIM + authType;
         incrementMapField(hourStatusHashKey, success ? STATUS_SUCCESS : STATUS_ERROR, 1);
 
-        // 过期策略：Hash 键级过期
-        expireMapIfNeeded(dayApiCallHashKey, Duration.ofDays(90));
-        // ZSET 过期
+        // 过期策略
         expireZsetIfNeeded(dayApiPathCallZsetKey, Duration.ofDays(30));
-        expireMapIfNeeded(dayStatusHashKey, Duration.ofDays(90));
         expireMapIfNeeded(dayPathStatusHashKey, Duration.ofDays(30));
         expireMapIfNeeded(hourApiCallHashKey, Duration.ofDays(7));
         expireMapIfNeeded(hourStatusHashKey, Duration.ofDays(7));
@@ -179,14 +157,16 @@ public class StatisticsService {
      * 仅供页面统计调用
      */
     public int getDailyPV(String authType, String date) {
-        String key = PV_STATS_DAY + date;
-        Object value = redisTemplate.opsForHash().get(key, authType);
-        if (value instanceof Integer) {
-            return (Integer) value;
-        } else if (value instanceof Number) {
-            return ((Number) value).intValue();
+        int total = 0;
+        for (int h = 0; h < 24; h++) {
+            String hourStr = String.format("%s-%02d", date, h);
+            String key = PV_STATS_HOUR + hourStr;
+            Object value = redisTemplate.opsForHash().get(key, authType);
+            if (value instanceof Number) {
+                total += ((Number) value).intValue();
+            }
         }
-        return 0;
+        return total;
     }
 
     /**
@@ -247,25 +227,6 @@ public class StatisticsService {
         if (ttl == null || ttl <= 0) {
             redisTemplate.expire(key, duration);
         }
-    }
-
-    /**
-     * 获取 API 调用次数统计（日）
-     */
-    public ApiCallVO getDailyApiCall(String authType, String date) {
-        String key = STATS_API_CALL_DAY + date;
-        String statusKey = STATS_API_CALL_DAY_STATUS + date + KEY_DELIM + authType;
-        Object apiCallCountObj = redisTemplate.opsForHash().get(key, authType);
-        int apiCallCount = apiCallCountObj instanceof Number ? ((Number) apiCallCountObj).intValue() : 0;
-        Object successObj = redisTemplate.opsForHash().get(statusKey, STATUS_SUCCESS);
-        int success = successObj instanceof Number ? ((Number) successObj).intValue() : 0;
-        Object errorObj = redisTemplate.opsForHash().get(statusKey, STATUS_ERROR);
-        int error = errorObj instanceof Number ? ((Number) errorObj).intValue() : 0;
-        return ApiCallVO.builder()
-                .apiCallCount(apiCallCount)
-                .successCount(success)
-                .errorCount(error)
-                .build();
     }
 
     /**
@@ -350,7 +311,21 @@ public class StatisticsService {
                     .errorCount(error)
                     .build());
         }
-        ApiCallVO total = getDailyApiCall(authType, date);
+        int totalApiCnt = 0;
+        int totalSuccess = 0;
+        int totalError = 0;
+        for (ApiCallVO vo : hoursMap.values()) {
+            if (vo != null) {
+                totalApiCnt += vo.getApiCallCount();
+                totalSuccess += vo.getSuccessCount();
+                totalError += vo.getErrorCount();
+            }
+        }
+        ApiCallVO total = ApiCallVO.builder()
+                .apiCallCount(totalApiCnt)
+                .successCount(totalSuccess)
+                .errorCount(totalError)
+                .build();
 
         // 按路径（日）总计：来自 ZSET + 状态HASH
         String zsetKey = STATS_API_PATH_CALL_DAY + date + KEY_DELIM + authType;
