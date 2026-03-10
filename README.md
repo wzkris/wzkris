@@ -36,33 +36,38 @@ wzkris
 ├── sql                    // 数据库脚本(MySQL/PostgreSQL)
 ├── wzkris-auth            // OAuth2认证授权服务
 │   ├── wzkris-auth-biz    // 认证业务实现
-│   └── wzkris-auth-rmi    // 认证远程接口
+│   └── wzkris-auth-api    // 认证远程接口
 ├── wzkris-bom             // 依赖版本管理
 ├── wzkris-common          // 公共模块集合
 │   ├── wzkris-common-captcha       // 验证码模块
 │   ├── wzkris-common-core          // 核心工具包
 │   ├── wzkris-common-excel         // Excel处理
+│   ├── wzkris-common-httpclient    // HTTP远程调用封装
 │   ├── wzkris-common-loadbalancer  // 负载均衡
 │   ├── wzkris-common-log           // 日志记录
-│   ├── wzkris-common-notifier      // 通知SDK集成
-│   ├── wzkris-common-httpservice   // 远程调用
-│   ├── wzkris-common-orm           // 持久层框架
-│   ├── wzkris-common-redis         // Redis缓存
-│   ├── wzkris-common-security      // 安全模块
-│   ├── wzkris-common-sentinel      // 限流熔断
-│   ├── wzkris-common-swagger       // API文档
-│   ├── wzkris-common-validator     // 数据校验
-│   ├── wzkris-common-web           // Web基础
-│   └── wzkris-common-weixin-sdk    // 微信SDK
+│   ├── wzkris-common-notifier      // 通知SDK集成(钉钉/企业微信等)
+│   ├── wzkris-common-orm           // 持久层框架封装(MyBatis-Plus)
+│   ├── wzkris-common-redis         // Redis缓存封装
+│   ├── wzkris-common-security      // 安全模块(权限校验、数据脱敏等)
+│   ├── wzkris-common-sentinel      // 限流熔断(Sentinel集成)
+│   ├── wzkris-common-swagger       // API文档封装(Knife4j集成)
+│   ├── wzkris-common-validator     // 数据校验扩展
+│   ├── wzkris-common-web           // Web基础组件封装
+│   └── wzkris-common-weixin-sdk    // 微信开放平台SDK封装
 ├── wzkris-demo            // 示例模块
+│   ├── oauth2-client-demo     // OAuth2客户端示例
 │   ├── wzkris-mq-demo         // RocketMQ Stream 示例
-│   └── wzkris-pg-bus-demo     // PostgreSQL LISTEN/NOTIFY + MyBatis-Plus 示例
+│   └── wzkris-pg-bus-demo     // PostgreSQL LISTEN/NOTIFY + MyBatis-Plus 轻量级消息总线示例
 ├── wzkris-extends         // 扩展模块
-│   └── wzkris-monitor-admin  // 监控中心
-├── wzkris-gateway         // API网关
+│   └── wzkris-monitor-admin  // 监控中心(Spring Boot Admin集成)
+├── wzkris-gateway         // API网关(Spring Cloud Gateway)
 ├── wzkris-modules         // 业务功能模块
-│   ├── wzkris-system     // 系统服务
-│   └── wzkris-user-center // 用户中心服务
+│   ├── wzkris-system          // 系统服务
+│   │   ├── wzkris-system-api  // 系统服务远程接口
+│   │   └── wzkris-system-biz  // 系统服务业务实现
+│   └── wzkris-user-center     // 用户中心服务
+│       ├── wzkris-user-center-api  // 用户中心服务远程接口
+│       └── wzkris-user-center-biz  // 用户中心服务业务实现
 └── pom.xml                // 项目依赖管理
 ```
 
