@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.listener;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.system.httpclient.notification.NotificationInfoClient;
 import com.wzkris.system.httpclient.notification.req.NotificationReq;
 import com.wzkris.usercenter.listener.event.CreateAdminEvent;
@@ -37,7 +38,9 @@ public class NotificationEventListener {
                         event.getLoginPwd(),
                         event.getOperPwd()));
 
-        notificationInfoClient.send2Users(req);
+        if (!ResultUtil.checkNoData(notificationInfoClient.send2Users(req))) {
+            log.warn("发送租户创建通知失败: {}", req);
+        }
     }
 
     @Async
@@ -48,7 +51,9 @@ public class NotificationEventListener {
                 "管理员创建成功",
                 String.format("管理员账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
-        notificationInfoClient.send2Users(req);
+        if (!ResultUtil.checkNoData(notificationInfoClient.send2Users(req))) {
+            log.warn("发送管理员创建通知失败: {}", req);
+        }
     }
 
     @Async
@@ -59,7 +64,9 @@ public class NotificationEventListener {
                 "租户账号创建成功",
                 String.format("租户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
-        notificationInfoClient.send2Users(req);
+        if (!ResultUtil.checkNoData(notificationInfoClient.send2Users(req))) {
+            log.warn("发送租户账号创建通知失败: {}", req);
+        }
     }
 
 }

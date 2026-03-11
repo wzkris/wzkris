@@ -2,7 +2,7 @@ package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -67,8 +67,7 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
      * @return 构建完成的认证token，包含accessToken和refreshToken
      */
     final CommonAuthenticationToken buildAuthenticationToken(CommonAuthenticationToken authenticationToken) {
-        LoginUser loginUser = authenticationToken.getPrincipal();
-        Long uid = loginUser.getUid();
+        BaseLoginUser loginUser = authenticationToken.getPrincipal();
         String sid;
         String refreshToken = authenticationToken.getRefreshToken();
 
@@ -76,20 +75,20 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
             // 刷新token时，从原refreshToken中解析sid，保持使用相同的sid
             String oldRefreshToken = authenticationToken.getRefreshToken();
             TokenService.TokenInfo tokenInfo = tokenService.parseJwt(oldRefreshToken);
-            sid = tokenInfo.getSid();
-            Instant exp = tokenInfo.getExp();
+            sid = tokenInfo.sid();
+            Instant exp = tokenInfo.exp();
             if (ChronoUnit.HOURS.between(Instant.now(), exp) < 2) {
                 // 使用原sid生成新的refreshToken
-                refreshToken = tokenService.generateRefreshToken(uid, sid);
+                refreshToken = tokenService.generateRefreshToken(loginUser, sid);
             }
         } else {
             // 首次登录时，生成新的sid
             sid = UUID.randomUUID().toString();
-            refreshToken = tokenService.generateRefreshToken(uid, sid);
+            refreshToken = tokenService.generateRefreshToken(loginUser, sid);
         }
 
         // 生成accessToken，使用相同的sid
-        String generatedToken = tokenService.generateAccessToken(uid, sid);
+        String generatedToken = tokenService.generateAccessToken(loginUser, sid);
         authenticationToken.setAccessToken(generatedToken);
         authenticationToken.setRefreshToken(refreshToken);
 

@@ -1,5 +1,6 @@
 package com.wzkris.system.httpclient.loginlog;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.system.domain.AdminLoginLogDO;
 import com.wzkris.system.domain.TenantLoginLogDO;
@@ -28,14 +29,15 @@ public class LoginLogClientImpl implements LoginLogClient {
     private final TenantLoginLogMapper tenantLoginLogMapper;
 
     @Override
-    public void save(@RequestBody List<LoginLogEvent> loginLogEvents) {
+    public Result<Void> save(@RequestBody List<LoginLogEvent> loginLogEvents) {
         if (CollectionUtils.isEmpty(loginLogEvents)) {
-            return;
+            return Result.ok();
         }
         Map<String, List<LoginLogEvent>> listMap =
                 loginLogEvents.stream().collect(Collectors.groupingBy(LoginLogEvent::getAuthType));
         saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN.getValue(), Collections.emptyList()));
         saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT.getValue(), Collections.emptyList()));
+        return Result.ok();
     }
 
     private void saveAdminLogs(List<LoginLogEvent> loginLogEvents) {

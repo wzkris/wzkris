@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.httpclient.customer;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
@@ -30,13 +31,13 @@ public class CustomerInfoClientImpl implements CustomerInfoClient {
     private final TransactionTemplate transactionTemplate;
 
     @Override
-    public CustomerResp getByPhoneNumber(String phoneNumber) {
+    public Result<CustomerResp> getByPhoneNumber(String phoneNumber) {
         CustomerInfoDO customerInfoDO = customerInfoMapper.selectByPhoneNumber(phoneNumber);
-        return BeanUtil.convert(customerInfoDO, CustomerResp.class);
+        return Result.ok(BeanUtil.convert(customerInfoDO, CustomerResp.class));
     }
 
     @Override
-    public CustomerResp wexcxLogin(WexcxLoginReq req) {
+    public Result<CustomerResp> wexcxLogin(WexcxLoginReq req) {
         Long customerId;
         CustomerSocialInfoDO thirdinfo = customerSocialInfoMapper.selectByIdentifier(req.getIdentifier());
         if (thirdinfo == null) {
@@ -60,16 +61,17 @@ public class CustomerInfoClientImpl implements CustomerInfoClient {
         }
         CustomerInfoDO customerInfo = customerInfoMapper.selectById(customerId);
 
-        return BeanUtil.convert(customerInfo, CustomerResp.class);
+        return Result.ok(BeanUtil.convert(customerInfo, CustomerResp.class));
     }
 
     @Override
-    public void updateLoginInfo(LoginInfoReq loginInfoReq) {
+    public Result<Void> updateLoginInfo(LoginInfoReq loginInfoReq) {
         CustomerInfoDO customerInfoDO = new CustomerInfoDO(loginInfoReq.getId());
         customerInfoDO.setLoginIp(loginInfoReq.getLoginIp());
         customerInfoDO.setLoginDate(loginInfoReq.getLoginDate());
 
         customerInfoMapper.updateById(customerInfoDO);
+        return Result.ok();
     }
 
 }

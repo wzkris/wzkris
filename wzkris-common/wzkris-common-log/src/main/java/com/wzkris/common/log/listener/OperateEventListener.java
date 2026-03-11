@@ -1,6 +1,7 @@
 package com.wzkris.common.log.listener;
 
 import com.wzkris.common.core.utils.IpUtil;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.report.AsyncBatchReporter;
 import com.wzkris.system.httpclient.operatelog.OperateLogClient;
@@ -27,7 +28,9 @@ public class OperateEventListener {
                             event.setOperLocation(IpUtil.parseIp(event.getOperIp()));
                         }
                     });
-                    operateLogClient.save(events);
+                    if (!ResultUtil.checkNoData(operateLogClient.save(events))) {
+                        log.warn("批量上报操作日志失败, size={}", events.size());
+                    }
                 }
         );
     }

@@ -10,11 +10,13 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
+import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
@@ -49,12 +51,13 @@ public class LoginTenantService extends UserInfoTemplate {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        MemberInfoResp memberResp = memberInfoClient.getByPhoneNumber(phoneNumber);
+        Result<MemberInfoResp> memberResult = memberInfoClient.getByPhoneNumber(phoneNumber);
 
-        if (memberResp == null) {
+        if (!ResultUtil.check(memberResult)) {
             captchaService.freezeAccount(phoneNumber, 60);
             return null;
         }
+        MemberInfoResp memberResp = memberResult.getData();
 
         try {
             return this.buildAuthenticationToken(memberResp, LoginTypeEnum.SMS);
@@ -67,12 +70,13 @@ public class LoginTenantService extends UserInfoTemplate {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        MemberInfoResp memberResp = memberInfoClient.getByUsername(username);
+        Result<MemberInfoResp> memberResult = memberInfoClient.getByUsername(username);
 
-        if (memberResp == null) {
+        if (!ResultUtil.check(memberResult)) {
             captchaService.freezeAccount(username, 60);
             return null;
         }
+        MemberInfoResp memberResp = memberResult.getData();
 
         try {
             if (!passwordEncoder.matches(password, memberResp.getPassword())) {
@@ -100,15 +104,21 @@ public class LoginTenantService extends UserInfoTemplate {
         this.checkAccount(memberResp);
 
         // 获取权限信息
-        MemberPermissionResp permissions = memberInfoClient.getPermission(
+        Result<MemberPermissionResp> permissionsResult = memberInfoClient.getPermission(
                 new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
+        if (!ResultUtil.check(permissionsResult)) {
+            OAuth2ExceptionUtil.throwError(
+                    BizBaseCodeEnum.API_REQUEST_ERROR.value(),
+                    permissionsResult != null ? permissionsResult.getMessage() : "query permission failed");
+        }
+        MemberPermissionResp permissions = permissionsResult.getData();
 
-        LoginUser loginUser = new LoginUser();
+        TenantLoginUser loginUser = new TenantLoginUser();
         loginUser.setUid(memberResp.getMemberId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
         loginUser.setIdentityType(permissions.getAdmin()
                 ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NORMAL);
+                : IdentityTypeEnum.NONE);
         loginUser.setUsername(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 
@@ -139,22 +149,28 @@ public class LoginTenantService extends UserInfoTemplate {
     }
 
     /**
-     * 构建LoginUser
+     * 构建租户登录用户视图
      */
-    public LoginUser buildLoginTenant(MemberInfoResp memberResp) {
+    public TenantLoginUser buildLoginTenant(MemberInfoResp memberResp) {
         // 校验用户状态
         this.checkAccount(memberResp);
 
         // 获取权限信息以判断身份类型
-        MemberPermissionResp permissions = memberInfoClient.getPermission(
+        Result<MemberPermissionResp> permissionsResult = memberInfoClient.getPermission(
                 new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
+        if (!ResultUtil.check(permissionsResult)) {
+            OAuth2ExceptionUtil.throwError(
+                    BizBaseCodeEnum.API_REQUEST_ERROR.value(),
+                    permissionsResult != null ? permissionsResult.getMessage() : "query permission failed");
+        }
+        MemberPermissionResp permissions = permissionsResult.getData();
 
-        LoginUser loginUser = new LoginUser();
+        TenantLoginUser loginUser = new TenantLoginUser();
         loginUser.setUid(memberResp.getMemberId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
         loginUser.setIdentityType(permissions.getAdmin()
                 ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NORMAL);
+                : IdentityTypeEnum.NONE);
         loginUser.setUsername(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 
@@ -167,10 +183,10 @@ public class LoginTenantService extends UserInfoTemplate {
     private void recordFailedLog(MemberInfoResp memberResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        LoginUser loginUser = new LoginUser();
+        TenantLoginUser loginUser = new TenantLoginUser();
         loginUser.setUid(memberResp.getMemberId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(IdentityTypeEnum.NORMAL);
+        loginUser.setIdentityType(IdentityTypeEnum.NONE);
         loginUser.setUsername(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 

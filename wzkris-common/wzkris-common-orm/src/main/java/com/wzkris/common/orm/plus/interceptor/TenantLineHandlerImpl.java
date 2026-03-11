@@ -3,6 +3,7 @@ package com.wzkris.common.orm.plus.interceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.orm.plus.config.TenantProperties;
+import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
@@ -21,7 +22,8 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        return new LongValue(SecurityUtil.getTenantId());
+        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
+        return new LongValue(tenantId);
     }
 
     @Override

@@ -2,11 +2,12 @@ package com.wzkris.common.httpclient.interceptor;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.httpclient.event.HttpClientCallEvent;
-import com.wzkris.common.httpclient.interceptor.core.InterceptorPostProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StreamUtils;
 
@@ -14,27 +15,23 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-/**
- * 发布事件和打印日志
- */
 @Slf4j
-public class PublishEventInterceptorPostProcessor implements InterceptorPostProcessor {
+public class DefaultInterceptor implements ClientHttpRequestInterceptor, Ordered {
 
     private final ApplicationEventPublisher publisher;
 
-    public PublishEventInterceptorPostProcessor(ApplicationEventPublisher publisher) {
+    public DefaultInterceptor(ApplicationEventPublisher publisher) {
         this.publisher = publisher;
     }
 
     @Override
-    public void postHandleBeforeRequest(HttpRequest request, byte[] body) {
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         if (!request.getHeaders().containsKey(CustomHeaderConstants.X_REQUEST_TIME)) {
             request.getHeaders().add(CustomHeaderConstants.X_REQUEST_TIME, String.valueOf(System.currentTimeMillis()));
         }
-    }
 
-    @Override
-    public void postHandleAfterResponse(HttpRequest request, byte[] body, ClientHttpResponse response) throws IOException {
+        ClientHttpResponse response = execution.execute(request, body);
+
         final HttpClientCallEvent event = new HttpClientCallEvent();
         int httpStatusCode = response.getStatusCode().value();
         event.setHttpStatusCode(httpStatusCode);
@@ -48,7 +45,7 @@ public class PublishEventInterceptorPostProcessor implements InterceptorPostProc
         event.setResponseBody(responseBody);
 
         String first = request.getHeaders().getFirst(CustomHeaderConstants.X_REQUEST_TIME);
-        long costTime = System.currentTimeMillis() - Long.parseLong(first);
+        long costTime = first == null ? -1L : System.currentTimeMillis() - Long.parseLong(first);
         event.setCostTime(costTime);
 
         log.info("""
@@ -65,6 +62,7 @@ public class PublishEventInterceptorPostProcessor implements InterceptorPostProc
                 httpStatusCode, responseHeaders, responseBody, costTime);
 
         publisher.publishEvent(event);
+        return response;
     }
 
     @Override

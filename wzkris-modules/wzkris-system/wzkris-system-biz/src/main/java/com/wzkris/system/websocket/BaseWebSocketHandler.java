@@ -1,6 +1,6 @@
 package com.wzkris.system.websocket;
 
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.system.utils.WebSocketSessionHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,13 +12,13 @@ import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 @Slf4j
 public abstract class BaseWebSocketHandler extends BinaryWebSocketHandler {
 
-    public static LoginUser getLoginInfo(WebSocketSession session) {
-        return (LoginUser) ((UsernamePasswordAuthenticationToken) session.getPrincipal()).getPrincipal();
+    public static BaseLoginUser getLoginInfo(WebSocketSession session) {
+        return (BaseLoginUser) ((UsernamePasswordAuthenticationToken) session.getPrincipal()).getPrincipal();
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        LoginUser principal = getLoginInfo(session);
+        BaseLoginUser principal = getLoginInfo(session);
 
         WebSocketSession previous = WebSocketSessionHolder.addSession(principal.getUid(), session);
         if (previous != null) {
@@ -32,7 +32,7 @@ public abstract class BaseWebSocketHandler extends BinaryWebSocketHandler {
 
     @Override
     protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
-        LoginUser principal = getLoginInfo(session);
+        BaseLoginUser principal = getLoginInfo(session);
 
         log.info("WebSocket处理pong心跳, 用户: {}, 会话ID: {}, 当前连接数: {}",
                 principal.getUid(), session.getId(), WebSocketSessionHolder.getSessionCount());
@@ -40,7 +40,7 @@ public abstract class BaseWebSocketHandler extends BinaryWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        LoginUser loginInfo = getLoginInfo(session);
+        BaseLoginUser loginInfo = getLoginInfo(session);
 
         WebSocketSessionHolder.removeSession(loginInfo.getUid());
         log.info("WebSocket连接关闭 - 状态: {}, 当前连接数: {}", status, WebSocketSessionHolder.getSessionCount());

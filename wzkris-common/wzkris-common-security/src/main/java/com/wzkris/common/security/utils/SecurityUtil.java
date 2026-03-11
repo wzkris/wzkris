@@ -3,7 +3,7 @@ package com.wzkris.common.security.utils;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -38,15 +39,27 @@ public final class SecurityUtil {
     /**
      * 获取当前登录用户信息,未登录抛出异常
      *
-     * @return 当前用户
+     * @return 当前用户（实际运行时类型可能为具体 BaseUser 子类）
      */
-    public static LoginUser getLoginUser() {
+    public static BaseLoginUser getLoginUser() {
         try {
             Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-            return (LoginUser) authentication.getPrincipal();
+            return (BaseLoginUser) authentication.getPrincipal();
         } catch (Exception e) {
             throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
+    }
+
+    /**
+     * 获取当前登录用户并转换为指定子类，类型不匹配时抛出异常。
+     */
+    public static <T extends BaseLoginUser> T getLoginUser(Class<T> loginUserClass) {
+        Objects.requireNonNull(loginUserClass, "loginUserClass must not be null");
+        BaseLoginUser loginUser = getLoginUser();
+        if (loginUserClass.isInstance(loginUser)) {
+            return loginUserClass.cast(loginUser);
+        }
+        throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
     }
 
     /**
@@ -70,7 +83,8 @@ public final class SecurityUtil {
         Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof LoginUser;
+                && authentication.getPrincipal() instanceof BaseLoginUser
+                && ((BaseLoginUser) authentication.getPrincipal()).getAuthType() != AuthTypeEnum.CLIENT;
     }
 
     /**
@@ -80,8 +94,8 @@ public final class SecurityUtil {
         Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof LoginUser
-                && ((LoginUser) authentication.getPrincipal()).getAuthType() == authTypeEnum;
+                && authentication.getPrincipal() instanceof BaseLoginUser
+                && ((BaseLoginUser) authentication.getPrincipal()).getAuthType() == authTypeEnum;
     }
 
     /**
@@ -112,21 +126,6 @@ public final class SecurityUtil {
      */
     public static AuthTypeEnum getAuthType() {
         return getLoginUser().getAuthType();
-    }
-
-    @Nullable
-    public static String getPhoneNumber() {
-        return getLoginUser().getPhoneNumber();
-    }
-
-    @Nullable
-    public static String getUsername() {
-        return getLoginUser().getUsername();
-    }
-
-    @Nullable
-    public static Long getTenantId() {
-        return getLoginUser().getTenantId();
     }
 
     /**

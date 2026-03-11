@@ -30,4 +30,12 @@ public class PermitAllProperties {
      */
     private List<String> denys = new ArrayList<>();
 
+    /**
+     * 是否允许 WebSocket 握手阶段通过 query 参数 access_token 传递 token。
+     * <p>
+     * 说明：浏览器 WebSocket 无法自定义请求头，若关闭该开关则需要其它传递方式（例如子协议/首帧认证）。
+     * </p>
+     */
+    private boolean wsQueryTokenEnabled = true;
+
 }

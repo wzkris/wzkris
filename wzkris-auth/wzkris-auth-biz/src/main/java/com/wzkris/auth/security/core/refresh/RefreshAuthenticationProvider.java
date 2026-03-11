@@ -5,7 +5,7 @@ import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -44,8 +44,8 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        Long uid = tokenInfo.getUid();
-        String sid = tokenInfo.getSid();
+        Long uid = tokenInfo.uid();
+        String sid = tokenInfo.sid();
 
         // 检查 sid 是否在黑名单中
         if (tokenService.isRevoked(authType, uid, sid)) {
@@ -55,7 +55,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         }
 
         // 从存储中加载用户信息
-        LoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
+        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
         if (loginUser == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(

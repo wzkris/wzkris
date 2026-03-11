@@ -1,7 +1,7 @@
 package com.wzkris.gateway.handler;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.exception.service.ResultException;
+import com.wzkris.common.core.exception.service.ApiResultException;
 import com.wzkris.common.core.model.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GatewayExceptionHandler {
 
-    @ExceptionHandler(ResultException.class)
-    public ResponseEntity<Result<?>> handleResultException(ResultException ex, HttpServletRequest request) {
+    @ExceptionHandler(ApiResultException.class)
+    public ResponseEntity<Result<?>> handleResultException(ApiResultException ex, HttpServletRequest request) {
         log.error("[网关业务异常] 请求路径:'{} {}', 异常信息:{}",
                 request.getMethod(),
                 request.getRequestURI(),

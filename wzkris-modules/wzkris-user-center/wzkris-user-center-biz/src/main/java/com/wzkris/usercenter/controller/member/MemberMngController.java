@@ -10,6 +10,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
+import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
@@ -101,7 +102,8 @@ public class MemberMngController extends BaseController {
     @PostMapping("/add")
     @CheckTenantPerms("user-mod:member-mng:add")
     public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody MemberMngReq memberReq) {
-        if (!tenantInfoService.checkAccountLimit(SecurityUtil.getTenantId())) {
+        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
+        if (!tenantInfoService.checkAccountLimit(tenantId)) {
             return requestFail("账号数量已达上限，请联系管理员");
         } else if (memberInfoService.existByUsername(memberReq.getMemberId(), memberReq.getUsername())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");

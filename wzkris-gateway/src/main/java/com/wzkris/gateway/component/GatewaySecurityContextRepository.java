@@ -3,7 +3,7 @@ package com.wzkris.gateway.component;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.component.SupplierDeferredSecurityContext;
 import com.wzkris.gateway.properties.PermitAllProperties;
-import com.wzkris.gateway.service.TokenExtractService;
+import com.wzkris.gateway.service.TokenValidateService;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
 import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * Gateway 专用 SecurityContextRepository。
  * <p>
  * - 不再根据自定义请求头还原用户信息，避免外部伪造请求头绕过认证；
- * - 直接复用网关的 {@link TokenExtractService} 做 Token 校验，并构建 SecurityContext；
+ * - 直接复用网关的 {@link TokenValidateService} 做 Token 校验，并构建 SecurityContext；
  * - 复用网关的白名单/黑名单配置，白名单直接返回空上下文，黑名单交给下游 Filter 处理。
  *
  * @author wzkris
@@ -51,7 +51,7 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
     private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource =
             new WebAuthenticationDetailsSource();
 
-    private final TokenExtractService tokenExtractService;
+    private final TokenValidateService tokenValidateService;
 
     private final PermitAllProperties permitAllProperties;
 
@@ -81,7 +81,7 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
         }
 
         try {
-            Authentication authentication = this.tokenExtractService.getAuthentication(request);
+            Authentication authentication = this.tokenValidateService.check(request);
             if (authentication instanceof UsernamePasswordAuthenticationToken authenticationToken) {
                 authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
             }

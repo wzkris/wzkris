@@ -53,7 +53,7 @@ public class CaptchaService extends CapService {
      */
     public void validateAccount(String key) {
         Boolean exists = redisTemplate.hasKey(LOCK_PREFIX + key);
-        if (Boolean.TRUE.equals(exists)) {
+        if (exists) {
             throw new CaptchaException(BizBaseCodeEnum.TOO_MANY_REQUESTS.value(), "service.internalError.busy");
         }
     }
@@ -74,7 +74,7 @@ public class CaptchaService extends CapService {
             return false;
         }
         Boolean deleted = redisTemplate.delete(fullKey);
-        return Boolean.TRUE.equals(deleted);
+        return deleted;
     }
 
     /**

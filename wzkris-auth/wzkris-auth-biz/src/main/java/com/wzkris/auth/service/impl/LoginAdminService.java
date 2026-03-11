@@ -11,11 +11,13 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
+import com.wzkris.common.security.model.AdminLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.usercenter.httpclient.admin.AdminInfoClient;
@@ -50,12 +52,13 @@ public class LoginAdminService extends UserInfoTemplate {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        AdminInfoResp userResp = adminInfoClient.getByPhoneNumber(phoneNumber);
+        Result<AdminInfoResp> userResult = adminInfoClient.getByPhoneNumber(phoneNumber);
 
-        if (userResp == null) {
+        if (!ResultUtil.check(userResult)) {
             captchaService.freezeAccount(phoneNumber, 60);
             return null;
         }
+        AdminInfoResp userResp = userResult.getData();
 
         try {
             return this.buildAuthenticationToken(userResp, LoginTypeEnum.SMS);
@@ -68,12 +71,13 @@ public class LoginAdminService extends UserInfoTemplate {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        AdminInfoResp userResp = adminInfoClient.getByUsername(username);
+        Result<AdminInfoResp> userResult = adminInfoClient.getByUsername(username);
 
-        if (userResp == null) {
+        if (!ResultUtil.check(userResult)) {
             captchaService.freezeAccount(username, 60);
             return null;
         }
+        AdminInfoResp userResp = userResult.getData();
 
         try {
             if (!passwordEncoder.matches(password, userResp.getPassword())) {
@@ -101,23 +105,29 @@ public class LoginAdminService extends UserInfoTemplate {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        AdminPermissionResp permissions = adminInfoClient.getPermission(
+        Result<AdminPermissionResp> permissionsResult = adminInfoClient.getPermission(
                 new QueryAdminPermsReq(userResp.getAdminId(), userResp.getDeptId()));
+        if (!ResultUtil.check(permissionsResult)) {
+            OAuth2ExceptionUtil.throwError(
+                    BizBaseCodeEnum.API_REQUEST_ERROR.value(),
+                    permissionsResult != null ? permissionsResult.getMessage() : "query permission failed");
+        }
+        AdminPermissionResp permissions = permissionsResult.getData();
 
-        LoginUser loginUser = new LoginUser();
-        loginUser.setUid(userResp.getAdminId());
-        loginUser.setAuthType(AuthTypeEnum.ADMIN);
-        loginUser.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getAdminId())
+        AdminLoginUser user = new AdminLoginUser();
+        user.setUid(userResp.getAdminId());
+        user.setAuthType(AuthTypeEnum.ADMIN);
+        user.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getAdminId())
                 ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NORMAL);
-        loginUser.setPhoneNumber(userResp.getPhoneNumber());
-        loginUser.setUsername(userResp.getUsername());
+                : IdentityTypeEnum.NONE);
+        user.setPhoneNumber(userResp.getPhoneNumber());
+        user.setUsername(userResp.getUsername());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())
                 : Collections.emptySet();
 
-        return new CommonAuthenticationToken(loginUser, perms, loginType);
+        return new CommonAuthenticationToken(user, perms, loginType);
     }
 
     /**
@@ -135,15 +145,15 @@ public class LoginAdminService extends UserInfoTemplate {
      */
     private void recordFailedLog(AdminInfoResp userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginUser loginUser = new LoginUser();
-        loginUser.setUid(userResp.getAdminId());
-        loginUser.setAuthType(AuthTypeEnum.ADMIN);
-        loginUser.setIdentityType(IdentityTypeEnum.NORMAL);
-        loginUser.setUsername(userResp.getUsername());
+        AdminLoginUser user = new AdminLoginUser();
+        user.setUid(userResp.getAdminId());
+        user.setAuthType(AuthTypeEnum.ADMIN);
+        user.setIdentityType(IdentityTypeEnum.NONE);
+        user.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        loginUser,
+                        user,
                         loginType,
                         false,
                         errorMsg,

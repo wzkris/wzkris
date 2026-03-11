@@ -1,6 +1,6 @@
 package com.wzkris.gateway.controller;
 
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.domain.req.PageViewReq;
@@ -36,7 +36,7 @@ public class TrackController {
     public ResponseEntity<Object> recordPageview(@RequestBody PageViewReq request) {
         try {
             if (SecurityUtil.isAuth()) {
-                LoginUser loginUser = SecurityUtil.getLoginUser();
+                BaseLoginUser loginUser = SecurityUtil.getLoginUser();
                 recordPageview(loginUser.getAuthType().getValue(), loginUser.getUid(), request);
             }
         } catch (Exception e) {

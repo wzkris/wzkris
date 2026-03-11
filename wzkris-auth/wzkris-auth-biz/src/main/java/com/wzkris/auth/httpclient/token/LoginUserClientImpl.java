@@ -4,11 +4,11 @@ import com.wzkris.auth.httpclient.token.req.LoginUserReq;
 import com.wzkris.auth.httpclient.token.req.OAuth2TokenReq;
 import com.wzkris.auth.httpclient.token.resp.LoginUserResp;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.Result;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
@@ -37,28 +37,28 @@ public class LoginUserClientImpl implements LoginUserClient {
      * @return 用户信息和权限，如果sid被拉黑或用户不存在则返回错误
      */
     @Override
-    public LoginUserResp query(LoginUserReq loginUserReq) {
+    public Result<LoginUserResp> queryInfo(LoginUserReq loginUserReq) {
         final Long uid = loginUserReq.getUid();
         final String sid = loginUserReq.getSid();
         final String authType = loginUserReq.getAuthType();
 
         if (uid == null || authType == null || sid == null) {
-            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Invalid token: missing subject");
+            return Result.unauth("Invalid token: missing subject");
         }
 
         // 检查 sid 是否不在会话中
         if (tokenService.isRevoked(authType, uid, sid)) {
-            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Token has been revoked");
+            return Result.unauth("Token has been revoked");
         }
 
         // 通过 uid 获取用户信息和权限
-        LoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
+        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
         if (loginUser == null) {
-            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Token has been expired");
+            return Result.unauth("Token has been expired");
         }
 
         Set<String> permissions = tokenService.loadPermissionsByUid(authType, uid);
-        return LoginUserResp.ok(loginUser, permissions);
+        return Result.ok(new LoginUserResp(loginUser, permissions));
     }
 
     /**
@@ -71,17 +71,17 @@ public class LoginUserClientImpl implements LoginUserClient {
      * @return 用户信息和权限，如果token无效或不存在则返回错误
      */
     @Override
-    public LoginUserResp queryByToken(OAuth2TokenReq request) {
+    public Result<LoginUserResp> queryOAuth2(OAuth2TokenReq request) {
         final String token = request.getToken();
 
         if (token == null || token.isBlank()) {
-            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Invalid token: token is empty");
+            return Result.unauth("Invalid token: token is empty");
         }
 
         // 通过token查询OAuth2Authorization
         OAuth2Authorization authorization = authorizationService.findByToken(token, OAuth2TokenType.ACCESS_TOKEN);
         if (authorization == null) {
-            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Token not found or expired");
+            return Result.unauth("Token not found or expired");
         }
 
         // 提取权限信息（从authorizedScopes）
@@ -92,16 +92,16 @@ public class LoginUserClientImpl implements LoginUserClient {
         // 从OAuth2Authorization中提取Principal
         Principal principal = authorization.getAttribute(Principal.class.getName());
         if (principal == null) {
-            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Principal not found in authorization");
+            return Result.unauth("Principal not found in authorization");
         }
 
-        if (principal instanceof LoginUser loginUser) {
-            return LoginUserResp.ok(loginUser, permissions);
+        if (principal instanceof BaseLoginUser loginUser) {
+            return Result.ok(new LoginUserResp(loginUser, permissions));
         } else {
             // 尝试从Principal中提取信息构造LoginUser
             // 这里可以根据实际需求扩展，比如从UserDetails转换
             log.warn("Unsupported principal type: {}, principalName: {}", principal.getClass().getName(), authorization.getPrincipalName());
-            return LoginUserResp.error(OAuth2ErrorCodes.INVALID_TOKEN, "Unsupported principal type: " + principal.getClass().getName());
+            return Result.unauth("Unsupported principal type: " + principal.getClass().getName());
         }
     }
 

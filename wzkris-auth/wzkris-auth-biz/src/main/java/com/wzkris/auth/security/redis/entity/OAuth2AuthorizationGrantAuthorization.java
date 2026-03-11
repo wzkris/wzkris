@@ -99,14 +99,7 @@ public abstract class OAuth2AuthorizationGrantAuthorization {
 
     }
 
-    @Getter
-    public static class ClaimsHolder {
-
-        private final Map<String, Object> claims;
-
-        public ClaimsHolder(Map<String, Object> claims) {
-            this.claims = claims;
-        }
+    public record ClaimsHolder(Map<String, Object> claims) {
 
     }
 

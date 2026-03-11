@@ -4,7 +4,7 @@ import com.wzkris.auth.constants.QrCodeConstant;
 import com.wzkris.auth.domain.vo.QrTokenVO;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -78,12 +78,12 @@ public class QrLoginController {
             return Result.requestFail("二维码已被扫描");
         }
 
-        LoginUser loginUser = SecurityUtil.getLoginUser();
+        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         Set<String> permission = SecurityUtil.getPermission();
         // 生成新的sid
         String sid = UUID.randomUUID().toString();
-        String accessToken = tokenService.generateAccessToken(loginUser.getUid(), sid);
-        String refreshToken = tokenService.generateRefreshToken(loginUser.getUid(), sid);
+        String accessToken = tokenService.generateAccessToken(loginUser, sid);
+        String refreshToken = tokenService.generateRefreshToken(loginUser, sid);
         tokenService.save(loginUser, sid, permission);
 
         qrTokenVO.setStatus(QrCodeStatusEnum.CONFIRM.getValue());

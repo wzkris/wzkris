@@ -1,10 +1,10 @@
 package com.wzkris.usercenter.httpclient.member;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.HttpClient;
 import com.wzkris.common.httpclient.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpclient.constants.ServiceIdConstant;
 import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
-import com.wzkris.usercenter.httpclient.member.fallback.MemberInfoClientFallback;
 import com.wzkris.usercenter.httpclient.member.req.QueryMemberPermsReq;
 import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
 import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
@@ -20,8 +20,7 @@ import org.springframework.web.service.annotation.PostExchange;
  */
 @HttpClient(
         serviceId = ServiceIdConstant.USER_CENTER,
-        path = ServiceContextPathConstant.USER_CENTER,
-        fallbackFactory = MemberInfoClientFallback.class
+        path = ServiceContextPathConstant.USER_CENTER
 )
 @HttpExchange(url = "/member-info-client")
 public interface MemberInfoClient {
@@ -30,30 +29,30 @@ public interface MemberInfoClient {
      * 根据用户名查询用户
      */
     @PostExchange("/query-by-username")
-    MemberInfoResp getByUsername(@RequestBody String username);
+    Result<MemberInfoResp> getByUsername(@RequestBody String username);
 
     /**
      * 根据手机号查询用户
      */
     @PostExchange("/query-by-phonenumber")
-    MemberInfoResp getByPhoneNumber(@RequestBody String phoneNumber);
+    Result<MemberInfoResp> getByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
      * 根据微信小程序code查询用户
      */
     @PostExchange("/query-by-wexcx-identifier")
-    MemberInfoResp getByWexcxIdentifier(@RequestBody String xcxIdentifier);
+    Result<MemberInfoResp> getByWexcxIdentifier(@RequestBody String xcxIdentifier);
 
     /**
      * 查询管理员权限
      */
     @PostExchange("/query-permission")
-    MemberPermissionResp getPermission(@RequestBody QueryMemberPermsReq memberPermsReq);
+    Result<MemberPermissionResp> getPermission(@RequestBody QueryMemberPermsReq memberPermsReq);
 
     /**
      * 更新用户登录信息
      */
     @PostExchange("/update-logininfo")
-    void updateLoginInfo(@RequestBody LoginInfoReq loginInfoReq);
+    Result<Void> updateLoginInfo(@RequestBody LoginInfoReq loginInfoReq);
 
 }

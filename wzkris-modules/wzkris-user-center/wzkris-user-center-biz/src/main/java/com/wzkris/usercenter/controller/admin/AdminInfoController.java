@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.auth.httpclient.captcha.CaptchaClient;
 import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
@@ -67,7 +68,7 @@ public class AdminInfoController extends BaseController {
         }
         AdminInfoVO adminInfoVO = new AdminInfoVO();
         adminInfoVO.setAdmin(SecurityUtil.isSuper());
-        adminInfoVO.setUsername(SecurityUtil.getUsername());
+        adminInfoVO.setUsername(adminInfoDO.getUsername());
         adminInfoVO.setAuthorities(SecurityUtil.getPermission());
         adminInfoVO.setAvatar(adminInfoDO.getAvatar());
         adminInfoVO.setNickname(adminInfoDO.getNickname());
@@ -120,7 +121,8 @@ public class AdminInfoController extends BaseController {
         }
         // 验证
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(adminInfoMapper.selectPhoneNumberById(adminId), req.getSmsCode());
-        if (!captchaClient.validateCaptcha(captchaCheckReq)) {
+        Result<Boolean> captchaResult = captchaClient.validateCaptcha(captchaCheckReq);
+        if (!ResultUtil.check(captchaResult) || !Boolean.TRUE.equals(captchaResult.getData())) {
             return requestFail("验证码错误");
         }
 

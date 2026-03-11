@@ -1,5 +1,6 @@
 package com.wzkris.system.httpclient.notification;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.enums.NotificationTypeEnum;
@@ -19,7 +20,7 @@ public class NotificationInfoClientImpl implements NotificationInfoClient {
     private final NotificationInfoService notificationInfoService;
 
     @Override
-    public void send2Users(NotificationReq req) {
+    public Result<Void> send2Users(NotificationReq req) {
         if (Objects.equals(req.getAuthType(), AuthTypeEnum.ADMIN)) {
             notificationInfoService.save2Admin(
                     req.getReceiverIds(),
@@ -29,6 +30,7 @@ public class NotificationInfoClientImpl implements NotificationInfoClient {
                     req.getReceiverIds(),
                     new SimpleMessageDTO(req.getTitle(), NotificationTypeEnum.SYSTEM.getValue(), req.getContent()));
         }
+        return Result.ok();
     }
 
 }

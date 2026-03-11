@@ -1,5 +1,6 @@
 package com.wzkris.system.httpclient.operatelog;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.system.domain.AdminOperateLogDO;
 import com.wzkris.system.domain.TenantOperateLogDO;
@@ -27,15 +28,16 @@ public class OperateLogClientImpl implements OperateLogClient {
     private final TenantOperateLogMapper tenantOperateLogMapper;
 
     @Override
-    public void save(List<OperateLogEvent> operateLogEvents) {
+    public Result<Void> save(List<OperateLogEvent> operateLogEvents) {
         if (CollectionUtils.isEmpty(operateLogEvents)) {
-            return;
+            return Result.ok();
         }
         Map<String, List<OperateLogEvent>> listMap =
                 operateLogEvents.stream()
                         .collect(Collectors.groupingBy(OperateLogEvent::getAuthType));
         saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN.getValue(), Collections.emptyList()));
         saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT.getValue(), Collections.emptyList()));
+        return Result.ok();
     }
 
     private void saveAdminLogs(List<OperateLogEvent> operateLogEvents) {

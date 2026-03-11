@@ -6,11 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.system.httpclient.operatelog.req.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
@@ -88,11 +86,11 @@ public class OperateLogAspect {
         operateLogEvent.setOperatorId(SecurityUtil.getUid());
         AuthTypeEnum authType = SecurityUtil.getAuthType();
         operateLogEvent.setAuthType(authType.getValue());
-        operateLogEvent.setOperName(SecurityUtil.getUsername());
+        operateLogEvent.setOperName(SecurityUtil.getLoginUser().getName());
 
         // 设置租户ID
         if (authType == AuthTypeEnum.TENANT) {
-            operateLogEvent.setTenantId(SecurityUtil.getTenantId());
+            operateLogEvent.setTenantId(SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId());
         }
 
         // 设置操作信息
@@ -112,7 +110,7 @@ public class OperateLogAspect {
         if (exception != null) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
-        } else if (jsonResult instanceof Result<?> result && !result.isSuccess()) {
+        } else if (jsonResult instanceof Result<?> result && ResultUtil.checkNoData(result)) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
         }

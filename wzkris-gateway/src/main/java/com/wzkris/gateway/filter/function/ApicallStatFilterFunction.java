@@ -1,6 +1,6 @@
 package com.wzkris.gateway.filter.function;
 
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.domain.StatisticsKey;
 import com.wzkris.gateway.service.StatisticsService;
@@ -51,7 +51,7 @@ public class ApicallStatFilterFunction implements HandlerFilterFunction<ServerRe
             if (SecurityUtil.isAuth()) {
                 int status = response.statusCode().value();
                 boolean success = status >= 200 && status < 300;
-                LoginUser loginUser = SecurityUtil.getLoginUser();
+                BaseLoginUser loginUser = SecurityUtil.getLoginUser();
                 recordApiCallStatistics(path, success, loginUser);
             }
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class ApicallStatFilterFunction implements HandlerFilterFunction<ServerRe
         return response;
     }
 
-    private void recordApiCallStatistics(String path, boolean success, LoginUser userInfo) {
+    private void recordApiCallStatistics(String path, boolean success, BaseLoginUser userInfo) {
         LocalDateTime now = LocalDateTime.now();
         String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String hourStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));

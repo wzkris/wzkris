@@ -1,12 +1,13 @@
 package com.wzkris.auth.httpclient.token;
 
-import com.wzkris.auth.httpclient.token.fallback.LoginUserClientFallback;
 import com.wzkris.auth.httpclient.token.req.LoginUserReq;
 import com.wzkris.auth.httpclient.token.req.OAuth2TokenReq;
 import com.wzkris.auth.httpclient.token.resp.LoginUserResp;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.HttpClient;
 import com.wzkris.common.httpclient.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpclient.constants.ServiceIdConstant;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -19,8 +20,7 @@ import org.springframework.web.service.annotation.PostExchange;
  */
 @HttpClient(
         serviceId = ServiceIdConstant.AUTH,
-        path = ServiceContextPathConstant.AUTH,
-        fallbackFactory = LoginUserClientFallback.class
+        path = ServiceContextPathConstant.AUTH
 )
 @HttpExchange(url = "/login-user-client")
 public interface LoginUserClient {
@@ -28,14 +28,13 @@ public interface LoginUserClient {
     /**
      * 获取登录信息
      */
-    @PostExchange("/query")
-    LoginUserResp query(@RequestBody LoginUserReq loginUserReq);
+    @PostExchange("/query-info")
+    Result<LoginUserResp> queryInfo(@Validated @RequestBody LoginUserReq loginUserReq);
 
     /**
      * 通过OAuth2 token获取用户信息
      */
-    @PostExchange("/query-by-token")
-    LoginUserResp queryByToken(@RequestBody OAuth2TokenReq request);
+    @PostExchange("/query-oauth2")
+    Result<LoginUserResp> queryOAuth2(@Validated @RequestBody OAuth2TokenReq request);
 
 }
-

@@ -2,7 +2,7 @@ package com.wzkris.auth.security.filter;
 
 import com.wzkris.auth.listener.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.SpringUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,14 +42,14 @@ public class LogoutHandlerImpl implements LogoutHandler {
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
-        LoginUser loginUser = (LoginUser) authenticationToken.getPrincipal();
+        BaseLoginUser loginUser = (BaseLoginUser) authenticationToken.getPrincipal();
         Long uid = loginUser.getUid();
         String authType = loginUser.getAuthType().getValue();
         String accessToken = authenticationToken.getCredentials().toString();
 
         // 解析 accessToken 获取 sid
         TokenService.TokenInfo tokenInfo = tokenService.parseJwt(accessToken);
-        String sid = tokenInfo.getSid();
+        String sid = tokenInfo.sid();
 
         // 移除会话
         tokenService.revoke(authType, uid, sid);

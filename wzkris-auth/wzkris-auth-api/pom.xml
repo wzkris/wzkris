@@ -18,5 +18,10 @@
             <artifactId>wzkris-common-httpclient</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-validator</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

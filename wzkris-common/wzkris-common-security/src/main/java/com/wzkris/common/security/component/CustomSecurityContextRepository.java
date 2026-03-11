@@ -1,11 +1,10 @@
 package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.ClientPrincipal;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.utils.BearerTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -62,46 +60,20 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
             permissions = Collections.emptySet();
         }
 
-        // 先尝试读取 LoginUser（从 X_SECURITY_PRINCIPAL 请求头）
+        // 从统一身份头读取主体（X_USER_CONTEXT）
         final String loginUserHeader = request.getHeader(CustomHeaderConstants.X_USER_CONTEXT);
-        if (StringUtil.isNotBlank(loginUserHeader)) {
-            LoginUser loginUser = JsonUtil.parseObject(loginUserHeader, LoginUser.class);
-            if (Objects.nonNull(loginUser)) {
-                UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(
-                        loginUser,
-                        getToken(request, loginUser.getAuthType().getValue()),
-                        AuthorityUtils.createAuthorityList(permissions));
-                authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
-                ctx.setAuthentication(authenticationToken);
-                return ctx;
-            }
+        if (StringUtil.isBlank(loginUserHeader)) {
+            return ctx;
         }
 
-        // 再尝试读取 ClientPrincipal（从 X_CLIENT_PRINCIPAL 请求头）
-        final String clientHeader = request.getHeader(CustomHeaderConstants.X_CLIENT_CONTEXT);
-        if (StringUtil.isNotBlank(clientHeader)) {
-            ClientPrincipal clientPrincipal = JsonUtil.parseObject(clientHeader, ClientPrincipal.class);
-            if (Objects.nonNull(clientPrincipal)) {
-                UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(
-                        clientPrincipal,
-                        getToken(request, AuthTypeEnum.CLIENT.getValue()),
-                        AuthorityUtils.createAuthorityList(permissions));
-                authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
-                ctx.setAuthentication(authenticationToken);
-                return ctx;
-            }
-        }
-
+        BaseLoginUser baseLoginUser = JsonUtil.parseObject(loginUserHeader, BaseLoginUser.class);
+        UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(
+                baseLoginUser,
+                BearerTokenUtil.extractBearerToken(request),
+                AuthorityUtils.createAuthorityList(permissions));
+        authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
+        ctx.setAuthentication(authenticationToken);
         return ctx;
-    }
-
-    private String getToken(HttpServletRequest request, String type) {
-        return switch (AuthTypeEnum.fromValue(type)) {
-            case ADMIN -> request.getHeader(CustomHeaderConstants.X_ADMIN_TOKEN);
-            case TENANT -> request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN);
-            case CUSTOMER -> request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN);
-            case CLIENT -> request.getHeader(CustomHeaderConstants.X_CLIENT_TOKEN);
-        };
     }
 
     @Override

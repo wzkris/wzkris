@@ -1,7 +1,7 @@
 package com.wzkris.auth.httpclient.captcha;
 
-import com.wzkris.auth.httpclient.captcha.fallback.CaptchaClientFallback;
 import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.HttpClient;
 import com.wzkris.common.httpclient.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpclient.constants.ServiceIdConstant;
@@ -17,8 +17,7 @@ import org.springframework.web.service.annotation.PostExchange;
  */
 @HttpClient(
         serviceId = ServiceIdConstant.AUTH,
-        path = ServiceContextPathConstant.AUTH,
-        fallbackFactory = CaptchaClientFallback.class
+        path = ServiceContextPathConstant.AUTH
 )
 @HttpExchange(url = "/feign-captcha")
 public interface CaptchaClient {
@@ -27,6 +26,6 @@ public interface CaptchaClient {
      * 校验手机号验证码
      */
     @PostExchange("/validate")
-    boolean validateCaptcha(@RequestBody CaptchaCheckReq captchaCheckReq);
+    Result<Boolean> validateCaptcha(@RequestBody CaptchaCheckReq captchaCheckReq);
 
 }

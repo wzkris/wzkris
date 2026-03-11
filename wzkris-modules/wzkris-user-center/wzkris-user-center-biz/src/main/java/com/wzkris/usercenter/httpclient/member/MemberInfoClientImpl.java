@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.httpclient.member;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.MemberSocialInfoDO;
@@ -36,30 +37,32 @@ public class MemberInfoClientImpl implements MemberInfoClient {
     private final PermissionService permissionService;
 
     @Override
-    public MemberInfoResp getByUsername(String username) {
+    public Result<MemberInfoResp> getByUsername(String username) {
         MemberInfoDO member = memberInfoMapper.selectByUsername(username);
         MemberInfoResp memberResp = BeanUtil.convert(member, MemberInfoResp.class);
         this.retrieveAllStatus(memberResp);
-        return memberResp;
+        return Result.ok(memberResp);
     }
 
     @Override
-    public MemberInfoResp getByPhoneNumber(String phoneNumber) {
+    public Result<MemberInfoResp> getByPhoneNumber(String phoneNumber) {
         MemberInfoDO member = memberInfoMapper.selectByPhoneNumber(phoneNumber);
         MemberInfoResp memberResp = BeanUtil.convert(member, MemberInfoResp.class);
         this.retrieveAllStatus(memberResp);
-        return memberResp;
+        return Result.ok(memberResp);
     }
 
     @Override
-    public MemberInfoResp getByWexcxIdentifier(String xcxIdentifier) {
+    public Result<MemberInfoResp> getByWexcxIdentifier(String xcxIdentifier) {
         MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectByIdentifier(xcxIdentifier);
-        if (ObjectUtils.isEmpty(memberSocialInfoDO)) return null;
+        if (ObjectUtils.isEmpty(memberSocialInfoDO)) {
+            return Result.ok(null);
+        }
 
         MemberInfoDO member = memberInfoMapper.selectById(memberSocialInfoDO.getMemberId());
         MemberInfoResp memberResp = BeanUtil.convert(member, MemberInfoResp.class);
         this.retrieveAllStatus(memberResp);
-        return memberResp;
+        return Result.ok(memberResp);
     }
 
     /**
@@ -75,18 +78,19 @@ public class MemberInfoClientImpl implements MemberInfoClient {
     }
 
     @Override
-    public MemberPermissionResp getPermission(QueryMemberPermsReq memberPermsReq) {
-        return permissionService.getTenantPermission(
-                memberPermsReq.getMemberId(), memberPermsReq.getTenantId());
+    public Result<MemberPermissionResp> getPermission(QueryMemberPermsReq memberPermsReq) {
+        return Result.ok(permissionService.getTenantPermission(
+                memberPermsReq.getMemberId(), memberPermsReq.getTenantId()));
     }
 
     @Override
-    public void updateLoginInfo(LoginInfoReq loginInfoReq) {
+    public Result<Void> updateLoginInfo(LoginInfoReq loginInfoReq) {
         MemberInfoDO memberInfoDO = new MemberInfoDO(loginInfoReq.getId());
         memberInfoDO.setLoginIp(loginInfoReq.getLoginIp());
         memberInfoDO.setLoginDate(loginInfoReq.getLoginDate());
 
         memberInfoMapper.updateById(memberInfoDO);
+        return Result.ok();
     }
 
 }

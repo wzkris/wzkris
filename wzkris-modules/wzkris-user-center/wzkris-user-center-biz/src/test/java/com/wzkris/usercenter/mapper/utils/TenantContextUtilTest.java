@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.mapper.utils;
 
-import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.AbsBaseLoginUser;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
@@ -11,10 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-
-import java.time.Instant;
-import java.util.Collections;
 
 @DisplayName("租户工具测试用例")
 @SpringBootTest
@@ -23,13 +19,10 @@ public class TenantContextUtilTest {
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
     static {
-        LoginUser loginUser = new LoginUser();
+        TestLoginUser loginUser = new TestLoginUser();
         loginUser.setUid(1L);
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
         loginUser.setUsername("admin");
-
-        OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(
-                OAuth2AccessToken.TokenType.BEARER, "xxxxxx", Instant.MIN, Instant.MAX, Collections.emptySet());
         SecurityContextHolder.getContext()
                 .setAuthentication(
                         new UsernamePasswordAuthenticationToken(loginUser, ""));
@@ -59,6 +52,25 @@ public class TenantContextUtilTest {
 
     void list() {
         tenantMapper.selectList(null);
+    }
+
+    private static final class TestLoginUser extends AbsBaseLoginUser {
+
+        private String username;
+
+        @Override
+        public String getUsername() {
+            return username;
+        }
+
+        @Override
+        public String getName() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
     }
 
 }

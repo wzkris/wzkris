@@ -19,7 +19,9 @@ import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.usercenter.httpclient.oauth2.OAuth2ClientClient;
 import com.wzkris.usercenter.httpclient.oauth2.resp.OAuth2ClientResp;
 import lombok.RequiredArgsConstructor;
@@ -67,8 +69,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        OAuth2ClientResp oauth2Client = oAuth2ClientClient.getById(id);
-
+        Result<OAuth2ClientResp> oauth2Client = oAuth2ClientClient.getById(id);
         return checkAndSave(oauth2Client);
     }
 
@@ -83,12 +84,18 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        OAuth2ClientResp oauth2Client = oAuth2ClientClient.getByClientId(clientId);
-
+        Result<OAuth2ClientResp> oauth2Client = oAuth2ClientClient.getByClientId(clientId);
         return checkAndSave(oauth2Client);
     }
 
-    private RegisteredClient checkAndSave(OAuth2ClientResp oauth2Client) {
+    private RegisteredClient checkAndSave(Result<OAuth2ClientResp> oauth2ClientResult) {
+        if (!ResultUtil.check(oauth2ClientResult)) {
+            // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
+            throw new OAuth2AuthorizationCodeRequestAuthenticationException(
+                    new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, I18nUtil.message("oauth2.client.invalid"), null),
+                    null);
+        }
+        OAuth2ClientResp oauth2Client = oauth2ClientResult.getData();
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(

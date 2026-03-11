@@ -33,31 +33,6 @@ public class CustomHeaderConstants {
     public static final String X_USER_CONTEXT = "X-User-Context";
 
     /**
-     * client-context 信息
-     */
-    public static final String X_CLIENT_CONTEXT = "X-Client-Context";
-
-    /**
-     * 管理员Token
-     */
-    public static final String X_ADMIN_TOKEN = "X-Admin-Token";
-
-    /**
-     * 租户Token
-     */
-    public static final String X_TENANT_TOKEN = "X-Tenant-Token";
-
-    /**
-     * 客户Token
-     */
-    public static final String X_CUSTOMER_TOKEN = "X-Customer-Token";
-
-    /**
-     * 客户端Token
-     */
-    public static final String X_CLIENT_TOKEN = "X-Client-Token";
-
-    /**
      * 权限信息
      */
     public static final String X_PERMISSIONS = "X-Permissions";

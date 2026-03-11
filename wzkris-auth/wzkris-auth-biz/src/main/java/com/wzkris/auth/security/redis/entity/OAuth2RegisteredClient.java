@@ -97,71 +97,17 @@ public class OAuth2RegisteredClient {
         return Duration.ofMinutes(30).getSeconds();
     }
 
-    @Getter
-    public static class ClientSettings {
-
-        private final boolean requireProofKey;
-
-        private final boolean requireAuthorizationConsent;
-
-        private final String jwkSetUrl;
-
-        private final JwsAlgorithm tokenEndpointAuthenticationSigningAlgorithm;
-
-        private final String x509CertificateSubjectDN;
-
-        public ClientSettings(
-                boolean requireProofKey,
-                boolean requireAuthorizationConsent,
-                String jwkSetUrl,
-                JwsAlgorithm tokenEndpointAuthenticationSigningAlgorithm,
-                String x509CertificateSubjectDN) {
-            this.requireProofKey = requireProofKey;
-            this.requireAuthorizationConsent = requireAuthorizationConsent;
-            this.jwkSetUrl = jwkSetUrl;
-            this.tokenEndpointAuthenticationSigningAlgorithm = tokenEndpointAuthenticationSigningAlgorithm;
-            this.x509CertificateSubjectDN = x509CertificateSubjectDN;
-        }
+    public record ClientSettings(boolean requireProofKey, boolean requireAuthorizationConsent, String jwkSetUrl,
+                                 JwsAlgorithm tokenEndpointAuthenticationSigningAlgorithm,
+                                 String x509CertificateSubjectDN) {
 
     }
 
-    @Getter
-    public static class TokenSettings {
-
-        private final Duration authorizationCodeTimeToLive;
-
-        private final Duration accessTokenTimeToLive;
-
-        private final OAuth2TokenFormat accessTokenFormat;
-
-        private final Duration deviceCodeTimeToLive;
-
-        private final boolean reuseRefreshTokens;
-
-        private final Duration refreshTokenTimeToLive;
-
-        private final SignatureAlgorithm idTokenSignatureAlgorithm;
-
-        private final boolean x509CertificateBoundAccessTokens;
-
-        public TokenSettings(
-                Duration authorizationCodeTimeToLive,
-                Duration accessTokenTimeToLive,
-                OAuth2TokenFormat accessTokenFormat,
-                Duration deviceCodeTimeToLive,
-                boolean reuseRefreshTokens,
-                Duration refreshTokenTimeToLive,
-                SignatureAlgorithm idTokenSignatureAlgorithm,
-                boolean x509CertificateBoundAccessTokens) {
-            this.authorizationCodeTimeToLive = authorizationCodeTimeToLive;
-            this.accessTokenTimeToLive = accessTokenTimeToLive;
-            this.accessTokenFormat = accessTokenFormat;
-            this.deviceCodeTimeToLive = deviceCodeTimeToLive;
-            this.reuseRefreshTokens = reuseRefreshTokens;
-            this.refreshTokenTimeToLive = refreshTokenTimeToLive;
-            this.idTokenSignatureAlgorithm = idTokenSignatureAlgorithm;
-            this.x509CertificateBoundAccessTokens = x509CertificateBoundAccessTokens;
-        }
+    public record TokenSettings(Duration authorizationCodeTimeToLive, Duration accessTokenTimeToLive,
+                                OAuth2TokenFormat accessTokenFormat, Duration deviceCodeTimeToLive,
+                                boolean reuseRefreshTokens, Duration refreshTokenTimeToLive,
+                                SignatureAlgorithm idTokenSignatureAlgorithm,
+                                boolean x509CertificateBoundAccessTokens) {
 
     }
     // @fold:off

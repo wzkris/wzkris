@@ -9,7 +9,6 @@ spring:
   profiles:
     active: @profiles.active@
 
-
 weixin:
   miniapp:
     enable: true

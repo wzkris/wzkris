@@ -2,19 +2,20 @@ package com.wzkris.common.core.model;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.lang.Nullable;
 
-import java.security.Principal;
-import java.util.Date;
+import java.time.Instant;
 
 /**
- * 核心信息
- *
- * @author wzkris
+ * BaseLoginUser 的通用基础实现，仅承载所有用户类型共享字段。
  */
-@Data
-public class LoginUser implements Principal {
+@Getter
+@Setter
+@ToString
+public abstract class AbsBaseLoginUser implements BaseLoginUser {
 
     private Long uid;
 
@@ -23,26 +24,12 @@ public class LoginUser implements Principal {
     private IdentityTypeEnum identityType;
 
     @Nullable
-    private String phoneNumber;
-
-    @Nullable
-    private String username;
-
-    @Nullable
-    private Long tenantId;
-
-    @Nullable
     private String hint;
 
     @Nullable
-    private Date userExpiredTime;
+    private Instant userExpiredTime;
 
     @Nullable
     private String userExpiredReason;
-
-    @Override
-    public String getName() {
-        return username;
-    }
 
 }

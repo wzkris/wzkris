@@ -4,8 +4,9 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.domain.req.WexcxSwitchReq;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.service.impl.LoginTenantService;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
 import com.wzkris.usercenter.httpclient.member.req.QueryMemberPermsReq;
 import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
@@ -53,21 +54,26 @@ public class SwitchTokenController {
                 .getSessionInfo(switchReq.getWxCode())
                 .getOpenid();
 
-        MemberInfoResp memberInfoResp = memberInfoClient.getByWexcxIdentifier(identifier);
-        if (memberInfoResp == null) {
+        Result<MemberInfoResp> memberResult = memberInfoClient.getByWexcxIdentifier(identifier);
+        if (!ResultUtil.check(memberResult)) {
             return Result.requestFail("微信未绑定商户账号");
         }
+        MemberInfoResp memberInfoResp = memberResult.getData();
 
-        LoginUser loginUser = loginTenantService.buildLoginTenant(memberInfoResp);
+        BaseLoginUser loginUser = loginTenantService.buildLoginTenant(memberInfoResp);
 
         // 获取权限信息
-        MemberPermissionResp permissions = memberInfoClient.getPermission(
+        Result<MemberPermissionResp> permissionResult = memberInfoClient.getPermission(
                 new QueryMemberPermsReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
+        if (!ResultUtil.check(permissionResult)) {
+            return Result.requestFail(permissionResult != null ? permissionResult.getMessage() : "查询权限失败");
+        }
+        MemberPermissionResp permissions = permissionResult.getData();
 
         // 生成新的sid
         String sid = java.util.UUID.randomUUID().toString();
-        String accessToken = tokenService.generateAccessToken(loginUser.getUid(), sid);
-        String refreshToken = tokenService.generateRefreshToken(loginUser.getUid(), sid);
+        String accessToken = tokenService.generateAccessToken(loginUser, sid);
+        String refreshToken = tokenService.generateRefreshToken(loginUser, sid);
 
         java.util.Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new java.util.HashSet<>(permissions.getGrantedAuthority())

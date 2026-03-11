@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class CommonAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final LoginUser loginUser;
+    private final BaseLoginUser baseLoginUser;
 
     @Getter
     private final Set<String> perms;
@@ -34,12 +34,12 @@ public class CommonAuthenticationToken extends AbstractAuthenticationToken {
     @Setter
     private String refreshToken;
 
-    public CommonAuthenticationToken(LoginUser loginUser, Set<String> perms, LoginTypeEnum loginType) {
+    public CommonAuthenticationToken(BaseLoginUser baseLoginUser, Set<String> perms, LoginTypeEnum loginType) {
         super(null);
-        this.loginUser = loginUser;
+        this.baseLoginUser = baseLoginUser;
         this.perms = perms;
         this.loginType = loginType;
-        if (loginUser != null) {
+        if (baseLoginUser != null) {
             super.setAuthenticated(true);
         }
     }
@@ -50,8 +50,8 @@ public class CommonAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public final LoginUser getPrincipal() {
-        return this.loginUser;
+    public final BaseLoginUser getPrincipal() {
+        return this.baseLoginUser;
     }
 
     @Override

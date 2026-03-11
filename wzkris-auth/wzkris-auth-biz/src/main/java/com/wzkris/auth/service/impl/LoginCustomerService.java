@@ -10,11 +10,13 @@ import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizCallCodeEnum;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.exception.CustomOAuth2Error;
+import com.wzkris.common.security.model.CustomerLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.usercenter.httpclient.customer.CustomerInfoClient;
@@ -57,12 +59,13 @@ public class LoginCustomerService extends UserInfoTemplate {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        CustomerResp customerResp = customerInfoClient.getByPhoneNumber(phoneNumber);
+        Result<CustomerResp> customerResult = customerInfoClient.getByPhoneNumber(phoneNumber);
 
-        if (customerResp == null) {
+        if (!ResultUtil.check(customerResult)) {
             captchaService.freezeAccount(phoneNumber, 60);
             return null;
         }
+        CustomerResp customerResp = customerResult.getData();
 
         try {
             return this.buildAuthenticationToken(customerResp, LoginTypeEnum.SMS);
@@ -99,11 +102,12 @@ public class LoginCustomerService extends UserInfoTemplate {
         WexcxLoginReq wexcxLoginReq = new WexcxLoginReq();
         wexcxLoginReq.setIdentifier(identifier);
         wexcxLoginReq.setPhoneNumber(phoneNumber);
-        CustomerResp customerResp = customerInfoClient.wexcxLogin(wexcxLoginReq);
+        Result<CustomerResp> customerResult = customerInfoClient.wexcxLogin(wexcxLoginReq);
 
-        if (customerResp == null) {
+        if (!ResultUtil.check(customerResult)) {
             return null;
         }
+        CustomerResp customerResp = customerResult.getData();
 
         try {
             return this.buildAuthenticationToken(customerResp, LoginTypeEnum.WE_XCX);
@@ -125,7 +129,7 @@ public class LoginCustomerService extends UserInfoTemplate {
         // 校验用户状态
         this.checkAccount(customerResp);
 
-        LoginUser loginUser = new LoginUser();
+        CustomerLoginUser loginUser = new CustomerLoginUser();
         loginUser.setUid(customerResp.getCustomerId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
         loginUser.setPhoneNumber(customerResp.getPhoneNumber());
@@ -147,7 +151,7 @@ public class LoginCustomerService extends UserInfoTemplate {
     private void recordFailedLog(CustomerResp customerResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        LoginUser loginUser = new LoginUser();
+        CustomerLoginUser loginUser = new CustomerLoginUser();
         loginUser.setUid(customerResp.getCustomerId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
         loginUser.setPhoneNumber(customerResp.getPhoneNumber());

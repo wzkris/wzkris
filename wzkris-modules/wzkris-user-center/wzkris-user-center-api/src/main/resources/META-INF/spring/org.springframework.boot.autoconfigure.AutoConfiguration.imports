@@ -1,4 +1,0 @@
-com.wzkris.usercenter.httpclient.admin.fallback.AdminInfoClientFallback
-com.wzkris.usercenter.httpclient.customer.fallback.CustomerInfoClientFallback
-com.wzkris.usercenter.httpclient.member.fallback.MemberInfoClientFallback
-com.wzkris.usercenter.httpclient.oauth2.fallback.OAuth2ClientHttpClientFallback

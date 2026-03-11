@@ -1,6 +1,9 @@
 package com.wzkris.auth.httpclient.token.req;
 
-import jakarta.annotation.Nonnull;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.validator.annotation.EnumsCheck;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,13 +15,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class LoginUserReq implements Serializable {
 
-    @Nonnull
+    @EnumsCheck(value = AuthTypeEnum.class, property = "value", message = "认证类型不正确")
     private String authType;
 
-    @Nonnull
+    @NotNull(message = "用户ID不能为空")
     private Long uid;
 
-    @Nonnull
+    @NotBlank(message = "sid不能为空")
     private String sid;
 
 }

@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.httpclient.admin;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
@@ -22,30 +23,31 @@ public class AdminInfoClientImpl implements AdminInfoClient {
     private final PermissionService permissionService;
 
     @Override
-    public AdminInfoResp getByUsername(String username) {
+    public Result<AdminInfoResp> getByUsername(String username) {
         AdminInfoDO admin = adminInfoMapper.selectByUsername(username);
-        return BeanUtil.convert(admin, AdminInfoResp.class);
+        return Result.ok(BeanUtil.convert(admin, AdminInfoResp.class));
     }
 
     @Override
-    public AdminInfoResp getByPhoneNumber(String phoneNumber) {
+    public Result<AdminInfoResp> getByPhoneNumber(String phoneNumber) {
         AdminInfoDO adminInfoDO = adminInfoMapper.selectByPhoneNumber(phoneNumber);
-        return BeanUtil.convert(adminInfoDO, AdminInfoResp.class);
+        return Result.ok(BeanUtil.convert(adminInfoDO, AdminInfoResp.class));
     }
 
     @Override
-    public AdminPermissionResp getPermission(QueryAdminPermsReq queryAdminPermsReq) {
-        return permissionService.getAdminPermission(
-                queryAdminPermsReq.getAdminId(), queryAdminPermsReq.getDeptId());
+    public Result<AdminPermissionResp> getPermission(QueryAdminPermsReq queryAdminPermsReq) {
+        return Result.ok(permissionService.getAdminPermission(
+                queryAdminPermsReq.getAdminId(), queryAdminPermsReq.getDeptId()));
     }
 
     @Override
-    public void updateLoginInfo(LoginInfoReq loginInfoReq) {
+    public Result<Void> updateLoginInfo(LoginInfoReq loginInfoReq) {
         AdminInfoDO adminInfoDO = new AdminInfoDO(loginInfoReq.getId());
         adminInfoDO.setLoginIp(loginInfoReq.getLoginIp());
         adminInfoDO.setLoginDate(loginInfoReq.getLoginDate());
 
         adminInfoMapper.updateById(adminInfoDO);
+        return Result.ok();
     }
 
 }

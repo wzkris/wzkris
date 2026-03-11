@@ -1,8 +1,7 @@
 package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.model.ClientPrincipal;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.filter.BlacklistUrlsFilter;
@@ -43,10 +42,8 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
         return ServerRequest.from(request)
                 .headers(h -> {
                     Object principal = authentication.getPrincipal();
-                    if (principal instanceof ClientPrincipal) {
-                        h.set(CustomHeaderConstants.X_CLIENT_CONTEXT, JsonUtil.toJsonString(principal));
-                    } else if (principal instanceof LoginUser) {
-                        h.set(CustomHeaderConstants.X_USER_CONTEXT, JsonUtil.toJsonString(principal));
+                    if (principal instanceof BaseLoginUser baseLoginUser) {
+                        h.set(CustomHeaderConstants.X_USER_CONTEXT, JsonUtil.toJsonString(baseLoginUser));
                     }
                     if (CollectionUtils.isNotEmpty(authentication.getAuthorities())) {
                         Set<String> permissions = AuthorityUtils.authorityListToSet(authentication.getAuthorities());

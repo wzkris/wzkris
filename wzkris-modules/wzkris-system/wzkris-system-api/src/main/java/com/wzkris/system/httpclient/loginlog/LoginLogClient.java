@@ -1,9 +1,9 @@
 package com.wzkris.system.httpclient.loginlog;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.HttpClient;
 import com.wzkris.common.httpclient.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpclient.constants.ServiceIdConstant;
-import com.wzkris.system.httpclient.loginlog.fallback.LoginLogClientFallback;
 import com.wzkris.system.httpclient.loginlog.req.LoginLogEvent;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -16,8 +16,7 @@ import java.util.List;
  */
 @HttpClient(
         serviceId = ServiceIdConstant.SYSTEM,
-        path = ServiceContextPathConstant.SYSTEM,
-        fallbackFactory = LoginLogClientFallback.class
+        path = ServiceContextPathConstant.SYSTEM
 )
 @HttpExchange(url = "/login-log-client")
 public interface LoginLogClient {
@@ -26,7 +25,7 @@ public interface LoginLogClient {
      * 批量保存登录日志
      */
     @PostExchange("/save")
-    void save(@RequestBody List<LoginLogEvent> loginLogEvents);
+    Result<Void> save(@RequestBody List<LoginLogEvent> loginLogEvents);
 
 }
 

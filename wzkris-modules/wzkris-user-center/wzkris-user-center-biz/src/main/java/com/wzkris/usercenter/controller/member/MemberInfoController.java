@@ -3,6 +3,7 @@ package com.wzkris.usercenter.controller.member;
 import com.wzkris.auth.httpclient.captcha.CaptchaClient;
 import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
@@ -50,7 +51,7 @@ public class MemberInfoController extends BaseController {
         }
         MemberInfoVO memberInfoVO = new MemberInfoVO();
         memberInfoVO.setAdmin(SecurityUtil.isSuper());
-        memberInfoVO.setUsername(SecurityUtil.getUsername());
+        memberInfoVO.setUsername(member.getUsername());
         memberInfoVO.setAuthorities(SecurityUtil.getPermission());
         memberInfoVO.setAvatar(member.getAvatar());
         memberInfoVO.setPhoneNumber(member.getPhoneNumber());
@@ -81,7 +82,8 @@ public class MemberInfoController extends BaseController {
         }
         // 验证
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(memberInfoMapper.selectPhoneNumberById(memberId), req.getSmsCode());
-        if (!captchaClient.validateCaptcha(captchaCheckReq)) {
+        Result<Boolean> captchaResult = captchaClient.validateCaptcha(captchaCheckReq);
+        if (!ResultUtil.check(captchaResult) || !Boolean.TRUE.equals(captchaResult.getData())) {
             return requestFail("验证码错误");
         }
 

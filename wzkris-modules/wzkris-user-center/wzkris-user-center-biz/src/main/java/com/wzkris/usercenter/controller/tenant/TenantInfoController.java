@@ -5,6 +5,7 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
@@ -47,14 +48,16 @@ public class TenantInfoController extends BaseController {
     @Operation(summary = "获取信息")
     @GetMapping
     public Result<TenantInfoVO> tenantInfo() {
-        return ok(tenantInfoMapper.selectVOById(SecurityUtil.getTenantId()));
+        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
+        return ok(tenantInfoMapper.selectVOById(tenantId));
     }
 
     @Operation(summary = "修改信息")
     @PostMapping
     @CheckTenantPerms("user-mod:tenant-info:edit")
     public Result<Void> tenantInfo(@RequestBody TenantInfoReq req) {
-        TenantInfoDO tenantInfoDO = BeanUtil.convert(req, new TenantInfoDO(SecurityUtil.getTenantId()));
+        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
+        TenantInfoDO tenantInfoDO = BeanUtil.convert(req, new TenantInfoDO(tenantId));
         return toRes(tenantInfoMapper.updateById(tenantInfoDO));
     }
 
@@ -72,7 +75,7 @@ public class TenantInfoController extends BaseController {
     @PostMapping("/edit-operpwd")
     @PreAuthorize("@su.isSuper()")
     public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
-        Long tenantId = SecurityUtil.getTenantId();
+        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
 
         String operPwd = tenantInfoMapper.selectOperPwdById(tenantId);
 

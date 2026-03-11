@@ -1,9 +1,9 @@
 package com.wzkris.system.httpclient.operatelog;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.HttpClient;
 import com.wzkris.common.httpclient.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpclient.constants.ServiceIdConstant;
-import com.wzkris.system.httpclient.operatelog.fallback.OperateLogClientFallback;
 import com.wzkris.system.httpclient.operatelog.req.OperateLogEvent;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -19,8 +19,7 @@ import java.util.List;
  */
 @HttpClient(
         serviceId = ServiceIdConstant.SYSTEM,
-        path = ServiceContextPathConstant.SYSTEM,
-        fallbackFactory = OperateLogClientFallback.class
+        path = ServiceContextPathConstant.SYSTEM
 )
 @HttpExchange(url = "/operate-log-client")
 public interface OperateLogClient {
@@ -29,6 +28,6 @@ public interface OperateLogClient {
      * 新增操作日志
      */
     @PostExchange("/save")
-    void save(@RequestBody List<OperateLogEvent> operateLogEvents);
+    Result<Void> save(@RequestBody List<OperateLogEvent> operateLogEvents);
 
 }

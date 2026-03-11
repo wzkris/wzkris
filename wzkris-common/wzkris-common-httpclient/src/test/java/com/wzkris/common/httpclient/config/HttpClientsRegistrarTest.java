@@ -1,6 +1,7 @@
 package com.wzkris.common.httpclient.config;
 
 import com.wzkris.common.httpclient.annotation.HttpClient;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.fallback.HttpClientFallback;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -177,7 +178,7 @@ class HttpClientsRegistrarTest {
     @HttpClient(url = "http://test-service.com")
     interface TestServiceWithUrl {
 
-        String getData();
+        Result<String> getData();
 
     }
 
@@ -187,7 +188,7 @@ class HttpClientsRegistrarTest {
     @HttpClient(serviceId = "test-service")
     interface TestServiceWithServiceId {
 
-        String getData();
+        Result<String> getData();
 
     }
 
@@ -197,7 +198,7 @@ class HttpClientsRegistrarTest {
     @HttpClient(url = "http://test-service.com", fallbackFactory = TestFallback.class)
     interface TestServiceWithFallback {
 
-        String getData();
+        Result<String> getData();
 
     }
 
@@ -208,7 +209,7 @@ class HttpClientsRegistrarTest {
 
         @Override
         public TestServiceWithFallback create(Throwable cause) {
-            return () -> "fallback";
+            return () -> Result.requestFail("fallback");
         }
 
     }

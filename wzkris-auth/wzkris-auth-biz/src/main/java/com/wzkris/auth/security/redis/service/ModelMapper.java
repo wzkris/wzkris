@@ -291,52 +291,52 @@ final class ModelMapper {
 
     static RegisteredClient convertRegisteredClient(OAuth2RegisteredClient oauth2RegisteredClient) {
         ClientSettings.Builder clientSettingsBuilder = ClientSettings.builder()
-                .requireProofKey(oauth2RegisteredClient.getClientSettings().isRequireProofKey())
+                .requireProofKey(oauth2RegisteredClient.getClientSettings().requireProofKey())
                 .requireAuthorizationConsent(
-                        oauth2RegisteredClient.getClientSettings().isRequireAuthorizationConsent());
-        if (StringUtils.hasText(oauth2RegisteredClient.getClientSettings().getJwkSetUrl())) {
+                        oauth2RegisteredClient.getClientSettings().requireAuthorizationConsent());
+        if (StringUtils.hasText(oauth2RegisteredClient.getClientSettings().jwkSetUrl())) {
             clientSettingsBuilder.jwkSetUrl(
-                    oauth2RegisteredClient.getClientSettings().getJwkSetUrl());
+                    oauth2RegisteredClient.getClientSettings().jwkSetUrl());
         }
-        if (oauth2RegisteredClient.getClientSettings().getTokenEndpointAuthenticationSigningAlgorithm() != null) {
+        if (oauth2RegisteredClient.getClientSettings().tokenEndpointAuthenticationSigningAlgorithm() != null) {
             clientSettingsBuilder.tokenEndpointAuthenticationSigningAlgorithm(
-                    oauth2RegisteredClient.getClientSettings().getTokenEndpointAuthenticationSigningAlgorithm());
+                    oauth2RegisteredClient.getClientSettings().tokenEndpointAuthenticationSigningAlgorithm());
         }
-        if (StringUtils.hasText(oauth2RegisteredClient.getClientSettings().getX509CertificateSubjectDN())) {
+        if (StringUtils.hasText(oauth2RegisteredClient.getClientSettings().x509CertificateSubjectDN())) {
             clientSettingsBuilder.x509CertificateSubjectDN(
-                    oauth2RegisteredClient.getClientSettings().getX509CertificateSubjectDN());
+                    oauth2RegisteredClient.getClientSettings().x509CertificateSubjectDN());
         }
         ClientSettings clientSettings = clientSettingsBuilder.build();
 
         TokenSettings.Builder tokenSettingsBuilder = TokenSettings.builder();
-        if (oauth2RegisteredClient.getTokenSettings().getAuthorizationCodeTimeToLive() != null) {
+        if (oauth2RegisteredClient.getTokenSettings().authorizationCodeTimeToLive() != null) {
             tokenSettingsBuilder.authorizationCodeTimeToLive(
-                    oauth2RegisteredClient.getTokenSettings().getAuthorizationCodeTimeToLive());
+                    oauth2RegisteredClient.getTokenSettings().authorizationCodeTimeToLive());
         }
-        if (oauth2RegisteredClient.getTokenSettings().getAccessTokenTimeToLive() != null) {
+        if (oauth2RegisteredClient.getTokenSettings().accessTokenTimeToLive() != null) {
             tokenSettingsBuilder.accessTokenTimeToLive(
-                    oauth2RegisteredClient.getTokenSettings().getAccessTokenTimeToLive());
+                    oauth2RegisteredClient.getTokenSettings().accessTokenTimeToLive());
         }
-        if (oauth2RegisteredClient.getTokenSettings().getAccessTokenFormat() != null) {
+        if (oauth2RegisteredClient.getTokenSettings().accessTokenFormat() != null) {
             tokenSettingsBuilder.accessTokenFormat(
-                    oauth2RegisteredClient.getTokenSettings().getAccessTokenFormat());
+                    oauth2RegisteredClient.getTokenSettings().accessTokenFormat());
         }
-        if (oauth2RegisteredClient.getTokenSettings().getDeviceCodeTimeToLive() != null) {
+        if (oauth2RegisteredClient.getTokenSettings().deviceCodeTimeToLive() != null) {
             tokenSettingsBuilder.deviceCodeTimeToLive(
-                    oauth2RegisteredClient.getTokenSettings().getDeviceCodeTimeToLive());
+                    oauth2RegisteredClient.getTokenSettings().deviceCodeTimeToLive());
         }
         tokenSettingsBuilder.reuseRefreshTokens(
-                oauth2RegisteredClient.getTokenSettings().isReuseRefreshTokens());
-        if (oauth2RegisteredClient.getTokenSettings().getRefreshTokenTimeToLive() != null) {
+                oauth2RegisteredClient.getTokenSettings().reuseRefreshTokens());
+        if (oauth2RegisteredClient.getTokenSettings().refreshTokenTimeToLive() != null) {
             tokenSettingsBuilder.refreshTokenTimeToLive(
-                    oauth2RegisteredClient.getTokenSettings().getRefreshTokenTimeToLive());
+                    oauth2RegisteredClient.getTokenSettings().refreshTokenTimeToLive());
         }
-        if (oauth2RegisteredClient.getTokenSettings().getIdTokenSignatureAlgorithm() != null) {
+        if (oauth2RegisteredClient.getTokenSettings().idTokenSignatureAlgorithm() != null) {
             tokenSettingsBuilder.idTokenSignatureAlgorithm(
-                    oauth2RegisteredClient.getTokenSettings().getIdTokenSignatureAlgorithm());
+                    oauth2RegisteredClient.getTokenSettings().idTokenSignatureAlgorithm());
         }
         tokenSettingsBuilder.x509CertificateBoundAccessTokens(
-                oauth2RegisteredClient.getTokenSettings().isX509CertificateBoundAccessTokens());
+                oauth2RegisteredClient.getTokenSettings().x509CertificateBoundAccessTokens());
         TokenSettings tokenSettings = tokenSettingsBuilder.build();
 
         RegisteredClient.Builder registeredClientBuilder = RegisteredClient.withId(oauth2RegisteredClient.getId())
@@ -497,7 +497,7 @@ final class ModelMapper {
             metadata.put(OAuth2Authorization.Token.INVALIDATED_METADATA_NAME, accessToken.isInvalidated());
             metadata.put(
                     OAuth2Authorization.Token.CLAIMS_METADATA_NAME,
-                    accessToken.getClaims().getClaims());
+                    accessToken.getClaims().claims());
             metadata.put(
                     OAuth2TokenFormat.class.getName(),
                     accessToken.getTokenFormat().getValue());
@@ -526,12 +526,12 @@ final class ModelMapper {
                 idToken.getTokenValue(),
                 idToken.getIssuedAt(),
                 idToken.getExpiresAt(),
-                idToken.getClaims().getClaims());
+                idToken.getClaims().claims());
         builder.token(oidcIdToken, (metadata) -> {
             metadata.put(OAuth2Authorization.Token.INVALIDATED_METADATA_NAME, idToken.isInvalidated());
             metadata.put(
                     OAuth2Authorization.Token.CLAIMS_METADATA_NAME,
-                    idToken.getClaims().getClaims());
+                    idToken.getClaims().claims());
         });
     }
 

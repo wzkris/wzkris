@@ -40,7 +40,7 @@ public class OnlineSessionController {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
         Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
-        String sid = tokenService.parseJwt(SecurityUtil.getAuthentication().getCredentials().toString()).getSid();
+        String sid = tokenService.parseJwt(SecurityUtil.getAuthentication().getCredentials().toString()).sid();
 
         List<OnlineSessionVO> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {

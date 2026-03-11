@@ -12,9 +12,9 @@ import org.springframework.lang.Nullable;
 public enum IdentityTypeEnum {
 
     /**
-     * 普通身份
+     * 无身份
      */
-    NORMAL("NORMAL"),
+    NONE("NONE"),
 
     /**
      * 超级身份

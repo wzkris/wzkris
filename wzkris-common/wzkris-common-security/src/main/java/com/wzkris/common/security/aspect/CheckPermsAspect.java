@@ -1,7 +1,7 @@
 package com.wzkris.common.security.aspect;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.PermissionUtil;
@@ -69,7 +69,7 @@ public class CheckPermsAspect {
      * 验证权限
      */
     private void validatePermission(CheckPerms checkPerms) {
-        LoginUser loginUser = SecurityUtil.getLoginUser();
+        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         validatePrincipalType(loginUser, checkPerms);
 
         String[] fullPerms = buildFullPermissions(checkPerms);
@@ -88,7 +88,7 @@ public class CheckPermsAspect {
     /**
      * 验证主体类型
      */
-    private void validatePrincipalType(LoginUser loginUser, CheckPerms checkPerms) {
+    private void validatePrincipalType(BaseLoginUser loginUser, CheckPerms checkPerms) {
         if (loginUser == null) {
             throw new AccessDeniedException("未找到认证信息，请先登录");
         }
@@ -131,7 +131,7 @@ public class CheckPermsAspect {
     /**
      * 创建权限拒绝异常
      */
-    private AccessDeniedException createAccessDeniedException(LoginUser loginUser, String[] perms, CheckMode mode) {
+    private AccessDeniedException createAccessDeniedException(BaseLoginUser loginUser, String[] perms, CheckMode mode) {
         String name = loginUser.getName();
         String type = loginUser.getAuthType() != null ? loginUser.getAuthType().getValue() : null;
 
