@@ -3,6 +3,7 @@ package com.wzkris.gateway.filter;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.gateway.properties.PermitAllProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -48,7 +48,13 @@ public class BlacklistUrlsFilter extends OncePerRequestFilter {
             return;
         }
 
-        filterChain.doFilter(request, response);
+        String traceId = TraceIdUtil.generate();
+        TraceIdUtil.set(traceId);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            TraceIdUtil.clear();
+        }
     }
 
     private static void writeJsonResponse(HttpServletResponse response, HttpStatus status, Object body)

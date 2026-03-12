@@ -3,6 +3,7 @@ package com.wzkris.gateway.filter.function;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.filter.BlacklistUrlsFilter;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,7 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
                         Set<String> permissions = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
                         h.set(CustomHeaderConstants.X_PERMISSIONS, JsonUtil.toJsonString(permissions));
                     }
+                    h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
                 })
                 .build();
     }

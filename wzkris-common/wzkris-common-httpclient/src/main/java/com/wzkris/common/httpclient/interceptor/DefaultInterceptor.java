@@ -1,6 +1,7 @@
 package com.wzkris.common.httpclient.interceptor;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.httpclient.event.HttpClientCallEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,12 +27,24 @@ public class DefaultInterceptor implements ClientHttpRequestInterceptor, Ordered
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        if (!request.getHeaders().containsKey(CustomHeaderConstants.X_REQUEST_TIME)) {
-            request.getHeaders().add(CustomHeaderConstants.X_REQUEST_TIME, String.valueOf(System.currentTimeMillis()));
-        }
+        buildRequestHeaders(request);
 
         ClientHttpResponse response = execution.execute(request, body);
 
+        doAfterResponse(request, body, response);
+        return response;
+    }
+
+    private void buildRequestHeaders(HttpRequest request) {
+        if (!request.getHeaders().containsKey(CustomHeaderConstants.X_REQUEST_TIME)) {
+            request.getHeaders().add(CustomHeaderConstants.X_REQUEST_TIME, String.valueOf(System.currentTimeMillis()));
+        }
+        if (!request.getHeaders().containsKey(CustomHeaderConstants.X_TRACING_ID)) {
+            request.getHeaders().add(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.getOrGenerate());
+        }
+    }
+
+    private void doAfterResponse(HttpRequest request, byte[] body, ClientHttpResponse response) throws IOException {
         final HttpClientCallEvent event = new HttpClientCallEvent();
         int httpStatusCode = response.getStatusCode().value();
         event.setHttpStatusCode(httpStatusCode);
@@ -62,7 +75,6 @@ public class DefaultInterceptor implements ClientHttpRequestInterceptor, Ordered
                 httpStatusCode, responseHeaders, responseBody, costTime);
 
         publisher.publishEvent(event);
-        return response;
     }
 
     @Override
