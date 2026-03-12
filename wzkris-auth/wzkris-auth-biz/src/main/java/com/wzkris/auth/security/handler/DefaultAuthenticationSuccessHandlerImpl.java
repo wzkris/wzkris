@@ -6,6 +6,7 @@ import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +43,8 @@ public class DefaultAuthenticationSuccessHandlerImpl implements AuthenticationSu
                             true,
                             "",
                             ServletUtil.getClientIP(request),
-                            UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+                            UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT)),
+                            TraceIdUtil.getOrGenerate()));
         }
     }
 

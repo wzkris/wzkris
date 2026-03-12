@@ -1,6 +1,7 @@
 package com.wzkris.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.enums.RiskLevelEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.system.domain.AdminLoginLogDO;
 import com.wzkris.system.domain.req.adminlog.AdminLoginLogQueryReq;
@@ -33,11 +34,21 @@ public class AdminLoginLogServiceImpl implements AdminLoginLogService {
         return new LambdaQueryWrapper<AdminLoginLogDO>()
                 .eq(ObjectUtils.isNotEmpty(queryReq.getAdminId()), AdminLoginLogDO::getAdminId, queryReq.getAdminId())
                 .eq(ObjectUtils.isNotEmpty(queryReq.getSuccess()), AdminLoginLogDO::getSuccess, queryReq.getSuccess())
+                .eq(StringUtil.isNotEmpty(queryReq.getTraceId()), AdminLoginLogDO::getTraceId, queryReq.getTraceId())
+                .eq(StringUtil.isNotEmpty(queryReq.getRiskLevel()), AdminLoginLogDO::getRiskLevel, queryReq.getRiskLevel())
                 .like(StringUtil.isNotEmpty(queryReq.getUsername()), AdminLoginLogDO::getUsername, queryReq.getUsername())
                 .like(
                         StringUtil.isNotEmpty(queryReq.getLoginLocation()),
                         AdminLoginLogDO::getLoginLocation,
                         queryReq.getLoginLocation())
+                .like(
+                        StringUtil.isNotEmpty(queryReq.getAbnormalTag()),
+                        AdminLoginLogDO::getAbnormalTags,
+                        queryReq.getAbnormalTag())
+                .ne(
+                        Boolean.TRUE.equals(queryReq.getAbnormalOnly()),
+                        AdminLoginLogDO::getRiskLevel,
+                        RiskLevelEnum.LOW.getValue())
                 .between(
                         queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
                         AdminLoginLogDO::getLoginTime,

@@ -16,6 +16,7 @@ import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.model.AdminLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -158,7 +159,8 @@ public class LoginAdminService extends UserInfoTemplate {
                         false,
                         errorMsg,
                         ServletUtil.getClientIP(request),
-                        UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT))));
+                        UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT)),
+                        TraceIdUtil.getOrGenerate()));
     }
 
 }

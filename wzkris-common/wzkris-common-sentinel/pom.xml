@@ -36,7 +36,6 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-notifier</artifactId>
-            <optional>true</optional>
         </dependency>
 
     </dependencies>

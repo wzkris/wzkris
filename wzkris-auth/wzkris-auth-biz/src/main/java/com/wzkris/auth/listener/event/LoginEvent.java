@@ -27,4 +27,6 @@ public class LoginEvent {
 
     private UserAgent userAgent;
 
+    private String traceId;
+
 }

@@ -46,6 +46,16 @@ public class LoginLogEvent {
     private String loginLocation;
 
     /**
+     * 链路追踪ID
+     */
+    private String traceId;
+
+    /**
+     * 原始UA
+     */
+    private String userAgent;
+
+    /**
      * 登录状态
      */
     private Boolean success;
@@ -56,19 +66,24 @@ public class LoginLogEvent {
     private String errorMsg;
 
     /**
-     * 浏览器
-     */
-    private String browser;
-
-    /**
-     * 操作系统
-     */
-    private String os;
-
-    /**
      * 登录时间
      */
     private Date loginTime;
+
+    /**
+     * 异常标签
+     */
+    private String abnormalTags;
+
+    /**
+     * 风险等级（LOW/MEDIUM/HIGH）
+     */
+    private String riskLevel;
+
+    /**
+     * 风险分（0-100）
+     */
+    private Integer riskScore;
 
 }
 

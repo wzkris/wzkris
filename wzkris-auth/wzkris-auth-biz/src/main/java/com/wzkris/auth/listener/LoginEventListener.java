@@ -1,11 +1,14 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.service.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
+import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.security.model.AdminLoginUser;
+import com.wzkris.common.security.model.CustomerLoginUser;
 import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.system.httpclient.loginlog.LoginLogClient;
 import com.wzkris.system.httpclient.loginlog.req.LoginLogEvent;
@@ -36,6 +39,8 @@ public class LoginEventListener {
 
     private final LoginLogClient loginLogClient;
 
+    private final LoginRiskAnalyzeService loginRiskAnalyzeService;
+
     private final AdminInfoClient adminInfoClient;
 
     private final MemberInfoClient memberInfoClient;
@@ -49,99 +54,89 @@ public class LoginEventListener {
         log.info("'{}' 发生登录事件", loginUser);
 
         AuthTypeEnum authType = loginUser.getAuthType();
-        if (authType == AuthTypeEnum.ADMIN && loginUser instanceof AdminLoginUser admin) {
-            this.handleLoginAdmin(event, admin);
-        } else if (authType == AuthTypeEnum.TENANT && loginUser instanceof TenantLoginUser tenant) {
-            this.handleLoginTenant(event, tenant);
+        if (authType == AuthTypeEnum.ADMIN || authType == AuthTypeEnum.TENANT || authType == AuthTypeEnum.CUSTOMER) {
+            this.handleLogin(event, loginUser);
+        }
+    }
+
+    private void handleLogin(LoginEvent event, BaseLoginUser loginUser) {
+        final String loginType = event.getLoginType();
+        final String errorMsg = event.getErrorMsg();
+        String ipAddr = event.getIpAddr();
+        UserAgent userAgent = event.getUserAgent();
+        String userAgentText = JsonUtil.toJsonString(userAgent);
+        String loginLocation = IpUtil.parseIp(ipAddr);
+        String traceId = event.getTraceId();
+        Date now = new Date();
+        LoginRiskAnalyzeService.RiskResult riskResult =
+                loginRiskAnalyzeService.analyze(loginUser, ipAddr, userAgentText, event.getSuccess(), now);
+
+        updateLoginInfoIfSuccess(loginUser, ipAddr, event.getSuccess(), now);
+
+        LoginLogEvent loginLogEvent = new LoginLogEvent();
+        loginLogEvent.setAuthType(loginUser.getAuthType().getValue());
+        loginLogEvent.setOperatorId(loginUser.getUid());
+        loginLogEvent.setUsername(resolveUsername(loginUser));
+        loginLogEvent.setTenantId(resolveTenantId(loginUser));
+        loginLogEvent.setLoginTime(now);
+        loginLogEvent.setLoginIp(ipAddr);
+        loginLogEvent.setLoginType(loginType);
+        loginLogEvent.setSuccess(event.getSuccess());
+        loginLogEvent.setErrorMsg(errorMsg);
+        loginLogEvent.setLoginLocation(loginLocation);
+        loginLogEvent.setTraceId(traceId);
+        loginLogEvent.setUserAgent(userAgentText);
+        loginLogEvent.setAbnormalTags(riskResult.getAbnormalTags());
+        loginLogEvent.setRiskLevel(riskResult.getRiskLevel().getValue());
+        loginLogEvent.setRiskScore(riskResult.getRiskScore());
+        loginLogClient.save(Collections.singletonList(loginLogEvent));
+        reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
+    }
+
+    private void updateLoginInfoIfSuccess(BaseLoginUser loginUser, String ipAddr, Boolean success, Date loginDate) {
+        if (!Boolean.TRUE.equals(success)) {
+            return;
+        }
+        LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUid());
+        loginInfoReq.setLoginIp(ipAddr);
+        loginInfoReq.setLoginDate(loginDate);
+        AuthTypeEnum authType = loginUser.getAuthType();
+        if (authType == AuthTypeEnum.ADMIN) {
+            ResultUtil.checkNoData(adminInfoClient.updateLoginInfo(loginInfoReq));
+        } else if (authType == AuthTypeEnum.TENANT) {
+            ResultUtil.checkNoData(memberInfoClient.updateLoginInfo(loginInfoReq));
         } else if (authType == AuthTypeEnum.CUSTOMER) {
-            this.handleLoginCustomer(event, loginUser);
+            ResultUtil.checkNoData(customerInfoClient.updateLoginInfo(loginInfoReq));
         }
     }
 
-    private void handleLoginAdmin(LoginEvent event, AdminLoginUser admin) {
-        final String loginType = event.getLoginType();
-        final String errorMsg = event.getErrorMsg();
-        final String ipAddr = event.getIpAddr();
-        final UserAgent userAgent = event.getUserAgent();
-
-        // 获取客户端浏览器
-        String browser = userAgent.getValue(UserAgent.AGENT_NAME);
-        // 获取登录地址
-        String loginLocation = IpUtil.parseIp(ipAddr);
-
-        if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(admin.getUid());
-            loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(new Date());
-            if (!ResultUtil.checkNoData(adminInfoClient.updateLoginInfo(loginInfoReq))) {
-                log.warn("更新管理员登录信息失败: {}", loginInfoReq);
-            }
+    private String resolveUsername(BaseLoginUser loginUser) {
+        if (loginUser instanceof AdminLoginUser admin) {
+            return admin.getUsername();
         }
-        // 插入后台登陆日志
-        LoginLogEvent loginLogEvent = new LoginLogEvent();
-        loginLogEvent.setAuthType(AuthTypeEnum.ADMIN.getValue());
-        loginLogEvent.setOperatorId(admin.getUid());
-        loginLogEvent.setUsername(admin.getUsername());
-        loginLogEvent.setLoginTime(new Date());
-        loginLogEvent.setLoginIp(ipAddr);
-        loginLogEvent.setLoginType(loginType);
-        loginLogEvent.setSuccess(event.getSuccess());
-        loginLogEvent.setErrorMsg(errorMsg);
-        loginLogEvent.setLoginLocation(loginLocation);
-        loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-        loginLogEvent.setBrowser(browser);
-        if (!ResultUtil.checkNoData(loginLogClient.save(Collections.singletonList(loginLogEvent)))) {
-            log.warn("记录管理员登录日志失败: {}", loginLogEvent);
+        if (loginUser instanceof TenantLoginUser tenant) {
+            return tenant.getUsername();
         }
+        if (loginUser instanceof CustomerLoginUser customer) {
+            return customer.getPhoneNumber();
+        }
+        return String.valueOf(loginUser.getUid());
     }
 
-    private void handleLoginTenant(LoginEvent event, TenantLoginUser tenant) {
-        final String loginType = event.getLoginType();
-        final String errorMsg = event.getErrorMsg();
-        final String ipAddr = event.getIpAddr();
-        final UserAgent userAgent = event.getUserAgent();
-
-        // 获取客户端浏览器
-        String browser = userAgent.getValue(UserAgent.AGENT_NAME);
-        // 获取登录地址
-        String loginLocation = IpUtil.parseIp(ipAddr);
-
-        if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(tenant.getUid());
-            loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(new Date());
-            if (!ResultUtil.checkNoData(memberInfoClient.updateLoginInfo(loginInfoReq))) {
-                log.warn("更新租户成员登录信息失败: {}", loginInfoReq);
-            }
+    private Long resolveTenantId(BaseLoginUser loginUser) {
+        if (loginUser instanceof TenantLoginUser tenant) {
+            return tenant.getTenantId();
         }
-        // 插入租户登陆日志
-        LoginLogEvent loginLogEvent = new LoginLogEvent();
-        loginLogEvent.setAuthType(AuthTypeEnum.TENANT.getValue());
-        loginLogEvent.setOperatorId(tenant.getUid());
-        loginLogEvent.setUsername(tenant.getUsername());
-        loginLogEvent.setTenantId(tenant.getTenantId());
-        loginLogEvent.setLoginTime(new Date());
-        loginLogEvent.setLoginIp(ipAddr);
-        loginLogEvent.setLoginType(loginType);
-        loginLogEvent.setSuccess(event.getSuccess());
-        loginLogEvent.setErrorMsg(errorMsg);
-        loginLogEvent.setLoginLocation(loginLocation);
-        loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-        loginLogEvent.setBrowser(browser);
-        if (!ResultUtil.checkNoData(loginLogClient.save(Collections.singletonList(loginLogEvent)))) {
-            log.warn("记录租户成员登录日志失败: {}", loginLogEvent);
-        }
+        return null;
     }
 
-    private void handleLoginCustomer(LoginEvent event, BaseLoginUser customer) {
-        if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(customer.getUid());
-            loginInfoReq.setLoginIp(event.getIpAddr());
-            loginInfoReq.setLoginDate(new Date());
-            if (!ResultUtil.checkNoData(customerInfoClient.updateLoginInfo(loginInfoReq))) {
-                log.warn("更新客户登录信息失败: {}", loginInfoReq);
-            }
+    private void reportRiskAlertIfNecessary(BaseLoginUser loginUser, LoginLogEvent event, LoginRiskAnalyzeService.RiskResult riskResult) {
+        if (!loginRiskAnalyzeService.shouldAlert(loginUser, riskResult)) {
+            return;
         }
+        log.warn("登录风险告警 authType={}, uid={}, riskLevel={}, score={}, tags={}, ip={}, traceId={}",
+                loginUser.getAuthType(), loginUser.getUid(), riskResult.getRiskLevel(), riskResult.getRiskScore(),
+                riskResult.getAbnormalTags(), event.getLoginIp(), event.getTraceId());
     }
 
 }

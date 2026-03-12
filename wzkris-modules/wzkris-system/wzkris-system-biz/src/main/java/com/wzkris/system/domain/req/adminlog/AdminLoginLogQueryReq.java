@@ -20,4 +20,16 @@ public class AdminLoginLogQueryReq extends QueryReq {
     @Schema(description = "登录地址")
     private String loginLocation;
 
+    @Schema(description = "链路追踪ID")
+    private String traceId;
+
+    @Schema(description = "风险等级（LOW/MEDIUM/HIGH）")
+    private String riskLevel;
+
+    @Schema(description = "异常标签（支持模糊匹配）")
+    private String abnormalTag;
+
+    @Schema(description = "仅异常记录（true 时过滤风险等级非 LOW）")
+    private Boolean abnormalOnly;
+
 }

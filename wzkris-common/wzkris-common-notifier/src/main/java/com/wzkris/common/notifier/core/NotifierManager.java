@@ -18,7 +18,6 @@ public class NotifierManager {
 
     public NotifierManager(List<Notifier<?>> notifiers, NotifierProperties properties) {
         this.properties = properties;
-        Assert.notEmpty(notifiers, "未找到任何通知器实现，请检查配置");
         for (Notifier<?> n : notifiers) {
             NotificationChannelEnum ch = n.getChannel();
             this.notifiers.put(ch, n);

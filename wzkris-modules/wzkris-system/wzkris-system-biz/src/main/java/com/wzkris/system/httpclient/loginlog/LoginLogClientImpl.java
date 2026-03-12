@@ -36,6 +36,7 @@ public class LoginLogClientImpl implements LoginLogClient {
         Map<String, List<LoginLogEvent>> listMap =
                 loginLogEvents.stream().collect(Collectors.groupingBy(LoginLogEvent::getAuthType));
         saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN.getValue(), Collections.emptyList()));
+        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.CUSTOMER.getValue(), Collections.emptyList()));
         saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT.getValue(), Collections.emptyList()));
         return Result.ok();
     }
@@ -52,11 +53,14 @@ public class LoginLogClientImpl implements LoginLogClient {
             adminLoginLogDO.setLoginType(loginLogEvent.getLoginType());
             adminLoginLogDO.setLoginIp(loginLogEvent.getLoginIp());
             adminLoginLogDO.setLoginLocation(loginLogEvent.getLoginLocation());
+            adminLoginLogDO.setTraceId(loginLogEvent.getTraceId());
+            adminLoginLogDO.setUserAgent(loginLogEvent.getUserAgent());
             adminLoginLogDO.setSuccess(loginLogEvent.getSuccess());
             adminLoginLogDO.setErrorMsg(loginLogEvent.getErrorMsg());
-            adminLoginLogDO.setBrowser(loginLogEvent.getBrowser());
-            adminLoginLogDO.setOs(loginLogEvent.getOs());
             adminLoginLogDO.setLoginTime(loginLogEvent.getLoginTime());
+            adminLoginLogDO.setAbnormalTags(loginLogEvent.getAbnormalTags());
+            adminLoginLogDO.setRiskLevel(loginLogEvent.getRiskLevel());
+            adminLoginLogDO.setRiskScore(loginLogEvent.getRiskScore());
             loginLogs.add(adminLoginLogDO);
         }
         adminLoginLogMapper.insert(loginLogs, 1000);
@@ -75,11 +79,14 @@ public class LoginLogClientImpl implements LoginLogClient {
             tenantLoginLogDO.setLoginType(loginLogEvent.getLoginType());
             tenantLoginLogDO.setLoginIp(loginLogEvent.getLoginIp());
             tenantLoginLogDO.setLoginLocation(loginLogEvent.getLoginLocation());
+            tenantLoginLogDO.setTraceId(loginLogEvent.getTraceId());
+            tenantLoginLogDO.setUserAgent(loginLogEvent.getUserAgent());
             tenantLoginLogDO.setSuccess(loginLogEvent.getSuccess());
             tenantLoginLogDO.setErrorMsg(loginLogEvent.getErrorMsg());
-            tenantLoginLogDO.setBrowser(loginLogEvent.getBrowser());
-            tenantLoginLogDO.setOs(loginLogEvent.getOs());
             tenantLoginLogDO.setLoginTime(loginLogEvent.getLoginTime());
+            tenantLoginLogDO.setAbnormalTags(loginLogEvent.getAbnormalTags());
+            tenantLoginLogDO.setRiskLevel(loginLogEvent.getRiskLevel());
+            tenantLoginLogDO.setRiskScore(loginLogEvent.getRiskScore());
             loginLogs.add(tenantLoginLogDO);
         }
         tenantLoginLogMapper.insert(loginLogs, 1000);
