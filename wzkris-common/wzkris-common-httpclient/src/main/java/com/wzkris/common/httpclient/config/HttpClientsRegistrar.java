@@ -1,5 +1,6 @@
 package com.wzkris.common.httpclient.config;
 
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.EnableHttpClients;
 import com.wzkris.common.httpclient.annotation.HttpClient;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -19,6 +20,8 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -82,6 +85,7 @@ public class HttpClientsRegistrar implements ImportBeanDefinitionRegistrar,
                 throw new IllegalStateException(
                         "@HttpServiceClient must specify either 'url' or 'serviceId': " + className);
             }
+            validateResultReturnType(beanClass);
 
             BeanDefinitionBuilder builder =
                     BeanDefinitionBuilder.genericBeanDefinition(HttpClientFactoryBean.class);
@@ -102,6 +106,22 @@ public class HttpClientsRegistrar implements ImportBeanDefinitionRegistrar,
 
     private String determineBeanName(Class<?> beanClass) {
         return StringUtils.uncapitalize(ClassUtils.getShortName(beanClass));
+    }
+
+    private void validateResultReturnType(Class<?> beanClass) {
+        for (Method method : beanClass.getMethods()) {
+            if (method.getDeclaringClass() == Object.class) {
+                continue;
+            }
+            if (Modifier.isStatic(method.getModifiers()) || method.isDefault()) {
+                continue;
+            }
+            if (!Result.class.equals(method.getReturnType())) {
+                throw new IllegalStateException(
+                        "@HttpClient interface method return type must be Result: "
+                                + beanClass.getName() + "#" + method.getName());
+            }
+        }
     }
 
     private Set<String> getBasePackages(AnnotationMetadata metadata) {
