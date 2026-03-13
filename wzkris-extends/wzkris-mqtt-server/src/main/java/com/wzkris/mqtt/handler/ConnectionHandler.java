@@ -1,9 +1,9 @@
 package com.wzkris.mqtt.handler;
 
-import com.wzkris.mqtt.session.MqttSession;
-import com.wzkris.mqtt.session.MqttSessionManager;
-import com.wzkris.mqtt.subscription.SubscriptionManager;
-import com.wzkris.mqtt.system.SystemEventPublisher;
+import com.wzkris.mqtt.model.MqttSession;
+import com.wzkris.mqtt.session.SessionRegistry;
+import com.wzkris.mqtt.subscription.SubscriptionRegistry;
+import com.wzkris.mqtt.system.SystemEventNotifier;
 import io.vertx.mqtt.messages.MqttDisconnectMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,25 +20,25 @@ public class ConnectionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionHandler.class);
 
-    private final MqttSessionManager sessionManager;
+    private final SessionRegistry sessionRegistry;
 
-    private final SubscriptionManager subscriptionManager;
+    private final SubscriptionRegistry subscriptionRegistry;
 
-    private final SystemEventPublisher systemEventPublisher;
+    private final SystemEventNotifier systemEventNotifier;
 
-    public ConnectionHandler(MqttSessionManager sessionManager,
-                             SubscriptionManager subscriptionManager,
-                             SystemEventPublisher systemEventPublisher) {
-        this.sessionManager = sessionManager;
-        this.subscriptionManager = subscriptionManager;
-        this.systemEventPublisher = systemEventPublisher;
+    public ConnectionHandler(SessionRegistry sessionRegistry,
+                             SubscriptionRegistry subscriptionRegistry,
+                             SystemEventNotifier systemEventNotifier) {
+        this.sessionRegistry = sessionRegistry;
+        this.subscriptionRegistry = subscriptionRegistry;
+        this.systemEventNotifier = systemEventNotifier;
     }
 
     /**
      * 新连接建立后调用，发布“客户端已连接”的系统事件。
      */
     public void onConnected(MqttSession session) {
-        systemEventPublisher.clientConnected(session);
+        systemEventNotifier.clientConnected(session);
         LOGGER.info("Client [{}] connected on node [{}]", session.getClientId(), session.getNodeId());
     }
 
@@ -71,13 +71,13 @@ public class ConnectionHandler {
 
     private void tryPublishDisconnectOnce(MqttSession session, String reason) {
         if (session.tryMarkDisconnectEventSent()) {
-            systemEventPublisher.clientDisconnected(session, reason);
+            systemEventNotifier.clientDisconnected(session, reason);
         }
     }
 
     private void cleanupSession(MqttSession session) {
-        subscriptionManager.removeAll(session);
-        sessionManager.unregister(session);
+        subscriptionRegistry.removeAll(session);
+        sessionRegistry.unregister(session);
     }
 
 }

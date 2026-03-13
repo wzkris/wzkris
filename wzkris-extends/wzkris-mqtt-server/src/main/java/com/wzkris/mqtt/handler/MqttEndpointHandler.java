@@ -1,10 +1,10 @@
 package com.wzkris.mqtt.handler;
 
-import com.wzkris.mqtt.routing.MessageRouter;
-import com.wzkris.mqtt.session.MqttSession;
-import com.wzkris.mqtt.session.MqttSessionManager;
-import com.wzkris.mqtt.subscription.SubscriptionManager;
-import com.wzkris.mqtt.system.SystemEventPublisher;
+import com.wzkris.mqtt.model.MqttSession;
+import com.wzkris.mqtt.router.MessageRouter;
+import com.wzkris.mqtt.session.SessionRegistry;
+import com.wzkris.mqtt.subscription.SubscriptionRegistry;
+import com.wzkris.mqtt.system.SystemEventNotifier;
 import io.vertx.mqtt.MqttEndpoint;
 
 /**
@@ -18,19 +18,19 @@ public class MqttEndpointHandler {
 
     private final PublishHandler publishHandler;
 
-    public MqttEndpointHandler(MqttSessionManager sessionManager,
-                               SubscriptionManager subscriptionManager,
-                               SystemEventPublisher systemEventPublisher,
+    public MqttEndpointHandler(SessionRegistry sessionRegistry,
+                               SubscriptionRegistry subscriptionRegistry,
+                               SystemEventNotifier systemEventNotifier,
                                MessageRouter messageRouter) {
-        this.connectionHandler = new ConnectionHandler(sessionManager, subscriptionManager, systemEventPublisher);
-        this.subscriptionHandler = new SubscriptionHandler(subscriptionManager);
+        this.connectionHandler = new ConnectionHandler(sessionRegistry, subscriptionRegistry, systemEventNotifier);
+        this.subscriptionHandler = new SubscriptionHandler(subscriptionRegistry);
         this.publishHandler = new PublishHandler(messageRouter);
     }
 
     /**
      * 将连接、断联、订阅、发布等 handler 挂载到 endpoint。
      *
-     * @param session  已注册的会话
+     * @param session 已注册的会话
      */
     public void attachTo(MqttSession session) {
         connectionHandler.onConnected(session);

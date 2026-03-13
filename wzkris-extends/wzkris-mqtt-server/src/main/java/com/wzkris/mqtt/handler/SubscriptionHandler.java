@@ -1,7 +1,7 @@
 package com.wzkris.mqtt.handler;
 
-import com.wzkris.mqtt.session.MqttSession;
-import com.wzkris.mqtt.subscription.SubscriptionManager;
+import com.wzkris.mqtt.model.MqttSession;
+import com.wzkris.mqtt.subscription.SubscriptionRegistry;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.vertx.mqtt.MqttTopicSubscription;
 import io.vertx.mqtt.messages.MqttSubscribeMessage;
@@ -19,10 +19,10 @@ public class SubscriptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionHandler.class);
 
-    private final SubscriptionManager subscriptionManager;
+    private final SubscriptionRegistry subscriptionRegistry;
 
-    public SubscriptionHandler(SubscriptionManager subscriptionManager) {
-        this.subscriptionManager = subscriptionManager;
+    public SubscriptionHandler(SubscriptionRegistry subscriptionRegistry) {
+        this.subscriptionRegistry = subscriptionRegistry;
     }
 
     public void onSubscribe(MqttSession session, MqttSubscribeMessage subscribe) {
@@ -34,7 +34,7 @@ public class SubscriptionHandler {
 
         LOGGER.info("Client [{}] subscribe topics: {}", session.getClientId(), topics);
 
-        subscriptionManager.addSubscriptions(session, subscriptions);
+        subscriptionRegistry.addSubscriptions(session, subscriptions);
 
         List<MqttQoS> grantedQosLevels = subscriptions.stream()
                 .map(MqttTopicSubscription::qualityOfService)
@@ -47,7 +47,7 @@ public class SubscriptionHandler {
                               MqttUnsubscribeMessage unsubscribe) {
         LOGGER.info("Client [{}] unsubscribe topics {}",
                 session.getClientId(), unsubscribe.topics());
-        subscriptionManager.removeSubscriptions(session, unsubscribe.topics());
+        subscriptionRegistry.removeSubscriptions(session, unsubscribe.topics());
     }
 
 }

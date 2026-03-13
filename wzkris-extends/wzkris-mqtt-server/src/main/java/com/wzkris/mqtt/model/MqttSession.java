@@ -1,4 +1,4 @@
-package com.wzkris.mqtt.session;
+package com.wzkris.mqtt.model;
 
 import io.vertx.core.net.SocketAddress;
 import io.vertx.mqtt.MqttEndpoint;

@@ -1,5 +1,6 @@
-package com.wzkris.mqtt.server;
+package com.wzkris.mqtt;
 
+import com.wzkris.mqtt.server.MqttServerVerticle;
 import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,4 +22,3 @@ public final class MqttServerApplication {
     }
 
 }
-

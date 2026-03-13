@@ -1,11 +1,16 @@
 package com.wzkris.mqtt.server;
 
 import com.wzkris.mqtt.handler.MqttEndpointHandler;
-import com.wzkris.mqtt.routing.MessageRouter;
-import com.wzkris.mqtt.session.MqttSession;
-import com.wzkris.mqtt.session.MqttSessionManager;
-import com.wzkris.mqtt.subscription.SubscriptionManager;
+import com.wzkris.mqtt.model.MqttSession;
+import com.wzkris.mqtt.model.SessionRegistration;
+import com.wzkris.mqtt.router.DefaultMessageRouter;
+import com.wzkris.mqtt.router.MessageRouter;
+import com.wzkris.mqtt.session.DefaultSessionRegistry;
+import com.wzkris.mqtt.session.SessionRegistry;
+import com.wzkris.mqtt.subscription.DefaultSubscriptionRegistry;
+import com.wzkris.mqtt.subscription.SubscriptionRegistry;
 import com.wzkris.mqtt.subscription.TopicMatcher;
+import com.wzkris.mqtt.system.SystemEventNotifier;
 import com.wzkris.mqtt.system.SystemEventPublisher;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
@@ -31,11 +36,11 @@ public class MqttServerVerticle extends AbstractVerticle {
      */
     private String nodeId;
 
-    private MqttSessionManager sessionManager;
+    private SessionRegistry sessionRegistry;
 
-    private SubscriptionManager subscriptionManager;
+    private SubscriptionRegistry subscriptionRegistry;
 
-    private SystemEventPublisher systemEventPublisher;
+    private SystemEventNotifier systemEventNotifier;
 
     private MessageRouter messageRouter;
 
@@ -43,12 +48,12 @@ public class MqttServerVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) {
-        this.sessionManager = new MqttSessionManager();
-        this.subscriptionManager = new SubscriptionManager(new TopicMatcher());
-        this.systemEventPublisher = new SystemEventPublisher(subscriptionManager);
-        this.messageRouter = new MessageRouter();
+        this.sessionRegistry = new DefaultSessionRegistry();
+        this.subscriptionRegistry = new DefaultSubscriptionRegistry(new TopicMatcher());
+        this.systemEventNotifier = new SystemEventPublisher(subscriptionRegistry);
+        this.messageRouter = new DefaultMessageRouter(subscriptionRegistry);
         this.endpointHandler = new MqttEndpointHandler(
-                sessionManager, subscriptionManager, systemEventPublisher, messageRouter);
+                sessionRegistry, subscriptionRegistry, systemEventNotifier, messageRouter);
 
         MqttServerOptions options = new MqttServerOptions()
                 .setPort(DEFAULT_PORT)
@@ -96,7 +101,15 @@ public class MqttServerVerticle extends AbstractVerticle {
 
         endpoint.accept(endpoint.isCleanSession());
 
-        MqttSession session = sessionManager.register(nodeId, endpoint);
+        SessionRegistration sessionRegistration = sessionRegistry.register(nodeId, endpoint);
+        MqttSession previousSession = sessionRegistration.getPreviousSession();
+        if (previousSession != null) {
+            subscriptionRegistry.removeAll(previousSession);
+            previousSession.getEndpoint().close();
+            LOGGER.warn("Replaced previous session for client [{}]", previousSession.getClientId());
+        }
+
+        MqttSession session = sessionRegistration.getCurrentSession();
         endpointHandler.attachTo(session);
     }
 

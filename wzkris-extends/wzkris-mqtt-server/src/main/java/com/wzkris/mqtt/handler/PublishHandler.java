@@ -1,7 +1,8 @@
 package com.wzkris.mqtt.handler;
 
-import com.wzkris.mqtt.routing.MessageRouter;
-import com.wzkris.mqtt.session.MqttSession;
+import com.wzkris.mqtt.model.MqttSession;
+import com.wzkris.mqtt.model.RouteResult;
+import com.wzkris.mqtt.router.MessageRouter;
 import io.vertx.mqtt.messages.MqttPublishMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +22,16 @@ public class PublishHandler {
 
     public void onPublish(MqttSession session, MqttPublishMessage message) {
         String topic = message.topicName();
+        RouteResult routeResult = messageRouter.route(session, message);
         LOGGER.info(
-                "Received message on topic [{}] from client [{}], QoS = {}, payload size = {}",
-                topic,
+                "mqtt.publish clientId={} topic={} qos={} payloadSize={} normalCount={} sharedMatched={} deliveredCount={}",
                 session.getClientId(),
+                topic,
                 message.qosLevel(),
-                message.payload() != null ? message.payload().length() : 0);
-
-        // 业务路由
-        messageRouter.route(session, message);
+                message.payload() != null ? message.payload().length() : 0,
+                routeResult.getNormalTargetCount(),
+                routeResult.isSharedTargetMatched(),
+                routeResult.getDeliveredCount());
 
         // ACK 行为
         int qos = message.qosLevel().value();
