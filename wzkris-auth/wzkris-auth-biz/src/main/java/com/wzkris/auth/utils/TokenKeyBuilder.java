@@ -1,4 +1,4 @@
-package com.wzkris.auth.service;
+package com.wzkris.auth.utils;
 
 import java.io.Serializable;
 

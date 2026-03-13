@@ -1,9 +1,10 @@
-package com.wzkris.system.httpclient.notification;
+package com.wzkris.system.httpclientimpl.notification;
 
-import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.system.domain.dto.SimpleMessageDTO;
 import com.wzkris.system.enums.NotificationTypeEnum;
+import com.wzkris.system.httpclient.notification.NotificationInfoClient;
 import com.wzkris.system.httpclient.notification.req.NotificationReq;
 import com.wzkris.system.service.NotificationInfoService;
 import io.swagger.v3.oas.annotations.Hidden;

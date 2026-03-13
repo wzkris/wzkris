@@ -1,4 +1,4 @@
-package com.wzkris.usercenter.httpclient.member;
+package com.wzkris.usercenter.httpclientimpl.member;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.web.utils.BeanUtil;
@@ -7,6 +7,7 @@ import com.wzkris.usercenter.domain.MemberSocialInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
+import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
 import com.wzkris.usercenter.httpclient.member.req.QueryMemberPermsReq;
 import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
 import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;

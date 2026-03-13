@@ -6,16 +6,12 @@ import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizCallCodeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.core.utils.TraceIdUtil;
+import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.exception.CustomOAuth2Error;
 import com.wzkris.common.security.model.CustomerLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -43,7 +39,7 @@ import java.util.Collections;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LoginCustomerService extends UserInfoTemplate {
+public class LoginCustomerUserService implements LoginUserService {
 
     private final CaptchaService captchaService;
 

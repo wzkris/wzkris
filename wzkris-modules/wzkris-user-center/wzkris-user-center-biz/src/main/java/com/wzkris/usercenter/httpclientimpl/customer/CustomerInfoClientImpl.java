@@ -1,4 +1,4 @@
-package com.wzkris.usercenter.httpclient.customer;
+package com.wzkris.usercenter.httpclientimpl.customer;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
@@ -7,6 +7,7 @@ import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
 import com.wzkris.usercenter.enums.IdentifierTypeEnum;
 import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
+import com.wzkris.usercenter.httpclient.customer.CustomerInfoClient;
 import com.wzkris.usercenter.httpclient.customer.req.WexcxLoginReq;
 import com.wzkris.usercenter.httpclient.customer.resp.CustomerResp;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;

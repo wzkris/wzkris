@@ -4,8 +4,8 @@ import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
+import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -22,20 +22,20 @@ import java.util.Optional;
 @Component
 public final class WexcxAuthenticationProvider extends CommonAuthenticationProvider {
 
-    private final List<UserInfoTemplate> userInfoTemplates;
+    private final List<LoginUserService> loginUserServices;
 
     public WexcxAuthenticationProvider(
             TokenService tokenService,
-            List<UserInfoTemplate> userInfoTemplates) {
+            List<LoginUserService> loginUserServices) {
         super(tokenService);
-        this.userInfoTemplates = userInfoTemplates;
+        this.loginUserServices = loginUserServices;
     }
 
     @Override
     public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         WexcxAuthenticationToken authenticationToken = (WexcxAuthenticationToken) authentication;
 
-        Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
+        Optional<LoginUserService> templateOptional = loginUserServices.stream()
                 .filter(t -> t.checkAuthType(authenticationToken.getAuthType()))
                 .findFirst();
 

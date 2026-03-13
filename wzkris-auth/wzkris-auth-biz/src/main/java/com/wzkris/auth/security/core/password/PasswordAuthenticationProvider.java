@@ -5,8 +5,8 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
 import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -25,16 +25,16 @@ import java.util.Optional;
 @Component // 注册成bean方便引用
 public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider {
 
-    private final List<UserInfoTemplate> userInfoTemplates;
+    private final List<LoginUserService> loginUserServices;
 
     private final CaptchaService captchaService;
 
     public PasswordAuthenticationProvider(
             TokenService tokenService,
-            List<UserInfoTemplate> userInfoTemplates,
+            List<LoginUserService> loginUserServices,
             CaptchaService captchaService) {
         super(tokenService);
-        this.userInfoTemplates = userInfoTemplates;
+        this.loginUserServices = loginUserServices;
         this.captchaService = captchaService;
     }
 
@@ -42,7 +42,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
 
-        Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
+        Optional<LoginUserService> templateOptional = loginUserServices.stream()
                 .filter(t -> t.checkAuthType(authenticationToken.getAuthType()))
                 .findFirst();
 

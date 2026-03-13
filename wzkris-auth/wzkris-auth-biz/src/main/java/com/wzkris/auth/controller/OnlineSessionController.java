@@ -2,6 +2,7 @@ package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.domain.vo.OnlineSessionVO;
+import com.wzkris.auth.security.oauth2.customize.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
@@ -40,7 +41,8 @@ public class OnlineSessionController {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
         Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
-        String sid = tokenService.parseJwt(SecurityUtil.getAuthentication().getCredentials().toString()).sid();
+        TokenClaims claims = tokenService.parseJwt(SecurityUtil.getTokenValue());
+        String sid = claims.getSid();
 
         List<OnlineSessionVO> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {

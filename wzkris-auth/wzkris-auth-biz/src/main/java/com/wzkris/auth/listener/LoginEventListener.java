@@ -1,7 +1,7 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.service.LoginRiskAnalyzeService;
+import com.wzkris.auth.service.impl.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
@@ -86,9 +86,9 @@ public class LoginEventListener {
         loginLogEvent.setLoginLocation(loginLocation);
         loginLogEvent.setTraceId(traceId);
         loginLogEvent.setUserAgent(userAgentText);
-        loginLogEvent.setAbnormalTags(riskResult.getAbnormalTags());
-        loginLogEvent.setRiskLevel(riskResult.getRiskLevel().getValue());
-        loginLogEvent.setRiskScore(riskResult.getRiskScore());
+        loginLogEvent.setAbnormalTags(riskResult.abnormalTags());
+        loginLogEvent.setRiskLevel(riskResult.riskLevel().getValue());
+        loginLogEvent.setRiskScore(riskResult.riskScore());
         loginLogClient.save(Collections.singletonList(loginLogEvent));
         reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
     }
@@ -135,8 +135,8 @@ public class LoginEventListener {
             return;
         }
         log.warn("登录风险告警 authType={}, uid={}, riskLevel={}, score={}, tags={}, ip={}, traceId={}",
-                loginUser.getAuthType(), loginUser.getUid(), riskResult.getRiskLevel(), riskResult.getRiskScore(),
-                riskResult.getAbnormalTags(), event.getLoginIp(), event.getTraceId());
+                loginUser.getAuthType(), loginUser.getUid(), riskResult.riskLevel(), riskResult.riskScore(),
+                riskResult.abnormalTags(), event.getLoginIp(), event.getTraceId());
     }
 
 }

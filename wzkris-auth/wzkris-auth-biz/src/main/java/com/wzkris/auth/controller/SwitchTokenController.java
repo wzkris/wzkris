@@ -3,7 +3,7 @@ package com.wzkris.auth.controller;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.domain.req.WexcxSwitchReq;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.auth.service.impl.LoginTenantService;
+import com.wzkris.auth.service.impl.LoginTenantUserService;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -40,7 +40,7 @@ public class SwitchTokenController {
 
     private final TokenService tokenService;
 
-    private final LoginTenantService loginTenantService;
+    private final LoginTenantUserService loginTenantUserService;
 
     @Autowired
     @Lazy
@@ -60,7 +60,7 @@ public class SwitchTokenController {
         }
         MemberInfoResp memberInfoResp = memberResult.getData();
 
-        BaseLoginUser loginUser = loginTenantService.buildLoginTenant(memberInfoResp);
+        BaseLoginUser loginUser = loginTenantUserService.buildLoginTenant(memberInfoResp);
 
         // 获取权限信息
         Result<MemberPermissionResp> permissionResult = memberInfoClient.getPermission(

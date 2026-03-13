@@ -2,6 +2,8 @@ package com.wzkris.auth.service;
 
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.properties.TokenProperties;
+import com.wzkris.auth.security.oauth2.customize.TokenClaims;
+import com.wzkris.auth.utils.TokenKeyBuilder;
 import com.wzkris.common.core.constant.JwtClaimConstants;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
@@ -36,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class TokenService {
+public final class TokenService {
 
     /**
      * 用户信息 Hash 字段：用户对象
@@ -66,39 +68,27 @@ public class TokenService {
     /**
      * 生成 Access Token（JWT，含 uid、sid）。
      *
-     * @param uid      用户ID
-     * @param sid      会话ID
-     * @param authType 认证类型（用于下游鉴别用户类型）
+     * @param baseLoginUser 用户
+     * @param sid           会话ID
      * @return Access Token（JWT），失败返回 null
      */
     @Nullable
-    public String generateAccessToken(Long uid, String sid, String authType) {
-        Jwt jwt = getJwt(tokenProperties.getAccessTokenTimeOut(), uid, sid, authType);
-        return jwt.getTokenValue();
-    }
-
-    @Nullable
     public String generateAccessToken(BaseLoginUser baseLoginUser, String sid) {
-        return generateAccessToken(baseLoginUser.getUid(), sid, baseLoginUser.getAuthType().getValue());
+        Jwt jwt = getJwt(tokenProperties.getAccessTokenTimeOut(), baseLoginUser.getUid(), sid, baseLoginUser.getAuthType().getValue());
+        return jwt.getTokenValue();
     }
 
     /**
      * 生成 Refresh Token（JWT，与 accessToken 同 sid）。
      *
-     * @param uid      用户ID
-     * @param sid      会话ID
-     * @param authType 认证类型（用于下游鉴别用户类型）
+     * @param baseLoginUser 用户
+     * @param sid           会话ID
      * @return Refresh Token（JWT），失败返回 null
      */
     @Nullable
-    public String generateRefreshToken(Long uid, String sid, String authType) {
-        Jwt jwt = getJwt(tokenProperties.getRefreshTokenTimeOut(), uid, sid, authType);
-        return jwt.getTokenValue();
-    }
-
-    @Nullable
     public String generateRefreshToken(BaseLoginUser baseLoginUser, String sid) {
-        return generateRefreshToken(baseLoginUser.getUid(), sid, baseLoginUser.getAuthType().getValue());
+        Jwt jwt = getJwt(tokenProperties.getRefreshTokenTimeOut(), baseLoginUser.getUid(), sid, baseLoginUser.getAuthType().getValue());
+        return jwt.getTokenValue();
     }
 
     private Jwt getJwt(int timeout, Long uid, String sid, String authType) {
@@ -123,17 +113,13 @@ public class TokenService {
     }
 
     /**
-     * 从 JWT 解析 uid、sid。
+     * 从 JWT 解析 claims（统一 TokenClaims 访问模型）。
      *
      * @param token JWT（access 或 refresh）
-     * @return TokenInfo（uid、sid），解析失败返回 null
+     * @return TokenClaims
      */
-    public TokenInfo parseJwt(String token) {
-        Jwt jwt = jwtDecoder.decode(token);
-        String uidStr = jwt.getSubject();
-        String sid = jwt.getClaimAsString(JwtClaimConstants.SID);
-        Instant exp = jwt.getExpiresAt();
-        return new TokenInfo(Long.valueOf(uidStr), sid, exp);
+    public TokenClaims parseJwt(String token) {
+        return TokenClaims.from(jwtDecoder.decode(token));
     }
 
     /**
@@ -143,7 +129,7 @@ public class TokenService {
      * @param sid           会话ID
      * @param permissions   权限集合
      */
-    public final void save(BaseLoginUser baseLoginUser, String sid, Set<String> permissions) {
+    public void save(BaseLoginUser baseLoginUser, String sid, Set<String> permissions) {
         Serializable uid = baseLoginUser.getUid();
         String type = baseLoginUser.getAuthType().getValue();
         long refreshTTL = tokenProperties.getRefreshTokenTimeOut();
@@ -175,7 +161,7 @@ public class TokenService {
      * @return 用户信息，不存在返回 null
      */
     @Nullable
-    public final BaseLoginUser loadLoginUserByUid(String type, Serializable uid) {
+    public BaseLoginUser loadLoginUserByUid(String type, Serializable uid) {
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
         return (BaseLoginUser) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_USER);
     }
@@ -189,7 +175,7 @@ public class TokenService {
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public final Set<String> loadPermissionsByUid(String type, Serializable uid) {
+    public Set<String> loadPermissionsByUid(String type, Serializable uid) {
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
         return (Set<String>) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_PERMISSIONS);
     }
@@ -201,7 +187,7 @@ public class TokenService {
      * @param uid  用户ID
      * @param sid  会话ID
      */
-    public final void revoke(String type, Serializable uid, String sid) {
+    public void revoke(String type, Serializable uid, String sid) {
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
         String sessionKey = TokenKeyBuilder.buildSessionKey(type, uid);
 
@@ -256,7 +242,7 @@ public class TokenService {
      * @param uid  用户ID
      * @return sid -> OnlineSession，无会话返回空 Map
      */
-    public final Map<String, OnlineSession> loadSessionCache(String type, Serializable uid) {
+    public Map<String, OnlineSession> loadSessionCache(String type, Serializable uid) {
         String sessionKey = TokenKeyBuilder.buildSessionKey(type, uid);
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(sessionKey);
         Map<String, OnlineSession> result = new HashMap<>();
@@ -264,13 +250,6 @@ public class TokenService {
             result.put((String) entry.getKey(), (OnlineSession) entry.getValue());
         }
         return result;
-    }
-
-    /**
-         * JWT 解析结果（uid、sid）。
-         */
-        public record TokenInfo(Long uid, String sid, Instant exp) {
-
     }
 
 }

@@ -4,8 +4,10 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
+import com.wzkris.auth.security.oauth2.customize.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -37,15 +39,25 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         String authType = authenticationToken.getAuthType().getValue();
 
         // 从 refreshToken JWT 中解析 uid 和 sid
-        TokenService.TokenInfo tokenInfo = tokenService.parseJwt(refreshToken);
-        if (tokenInfo == null) {
+        TokenClaims claims;
+        try {
+            claims = tokenService.parseJwt(refreshToken);
+        } catch (Exception e) {
+            claims = null;
+        }
+        if (claims == null) {
             // refreshToken 解析失败
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        Long uid = tokenInfo.uid();
-        String sid = tokenInfo.sid();
+        if (!StringUtil.equals(authType, claims.getAuthType())) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+        }
+
+        Long uid = claims.getUid();
+        String sid = claims.getSid();
 
         // 检查 sid 是否在黑名单中
         if (tokenService.isRevoked(authType, uid, sid)) {

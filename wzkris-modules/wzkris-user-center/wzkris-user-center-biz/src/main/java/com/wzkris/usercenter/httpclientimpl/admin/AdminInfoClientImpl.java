@@ -1,8 +1,9 @@
-package com.wzkris.usercenter.httpclient.admin;
+package com.wzkris.usercenter.httpclientimpl.admin;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
+import com.wzkris.usercenter.httpclient.admin.AdminInfoClient;
 import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
 import com.wzkris.usercenter.httpclient.admin.req.QueryAdminPermsReq;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminInfoResp;

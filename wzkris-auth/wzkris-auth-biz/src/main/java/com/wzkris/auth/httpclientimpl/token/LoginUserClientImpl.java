@@ -1,5 +1,6 @@
-package com.wzkris.auth.httpclient.token;
+package com.wzkris.auth.httpclientimpl.token;
 
+import com.wzkris.auth.httpclient.token.LoginUserClient;
 import com.wzkris.auth.httpclient.token.req.LoginUserReq;
 import com.wzkris.auth.httpclient.token.req.OAuth2TokenReq;
 import com.wzkris.auth.httpclient.token.resp.LoginUserResp;

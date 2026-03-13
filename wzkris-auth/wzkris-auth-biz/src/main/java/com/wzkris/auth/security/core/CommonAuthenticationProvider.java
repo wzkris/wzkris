@@ -1,6 +1,7 @@
 package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
+import com.wzkris.auth.security.oauth2.customize.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -74,9 +75,9 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
         if (authenticationToken.getLoginType() == LoginTypeEnum.REFRESH) {
             // 刷新token时，从原refreshToken中解析sid，保持使用相同的sid
             String oldRefreshToken = authenticationToken.getRefreshToken();
-            TokenService.TokenInfo tokenInfo = tokenService.parseJwt(oldRefreshToken);
-            sid = tokenInfo.sid();
-            Instant exp = tokenInfo.exp();
+            TokenClaims claims = tokenService.parseJwt(oldRefreshToken);
+            sid = claims.getSid();
+            Instant exp = claims.getExpiresAt();
             if (ChronoUnit.HOURS.between(Instant.now(), exp) < 2) {
                 // 使用原sid生成新的refreshToken
                 refreshToken = tokenService.generateRefreshToken(loginUser, sid);

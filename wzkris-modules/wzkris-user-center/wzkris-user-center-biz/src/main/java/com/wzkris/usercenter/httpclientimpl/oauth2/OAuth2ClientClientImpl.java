@@ -1,8 +1,9 @@
-package com.wzkris.usercenter.httpclient.oauth2;
+package com.wzkris.usercenter.httpclientimpl.oauth2;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
+import com.wzkris.usercenter.httpclient.oauth2.OAuth2ClientClient;
 import com.wzkris.usercenter.httpclient.oauth2.resp.OAuth2ClientResp;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import io.swagger.v3.oas.annotations.Hidden;

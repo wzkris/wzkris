@@ -1,10 +1,9 @@
-package com.wzkris.auth.service;
+package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.properties.LoginRiskProperties;
 import com.wzkris.common.core.enums.RiskLevelEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -97,19 +96,19 @@ public class LoginRiskAnalyzeService {
         if (!shouldAlert(result)) {
             return false;
         }
-        String dedupeKey = RISK_KEY_PREFIX + "alert:" + buildUserKey(loginUser) + ":" + result.getRiskLevel().getValue();
+        String dedupeKey = RISK_KEY_PREFIX + "alert:" + buildUserKey(loginUser) + ":" + result.riskLevel().getValue();
         Boolean absent = redisTemplate.opsForValue()
                 .setIfAbsent(dedupeKey, "1", Duration.ofMinutes(loginRiskProperties.getAlertSuppressMinutes()));
         return Boolean.TRUE.equals(absent);
     }
 
     public boolean shouldAlert(RiskResult result) {
-        if (RiskLevelEnum.HIGH == result.getRiskLevel()) {
+        if (RiskLevelEnum.HIGH == result.riskLevel()) {
             return true;
         }
-        if (RiskLevelEnum.MEDIUM == result.getRiskLevel()) {
-            return StringUtil.contains(result.getAbnormalTags(), TAG_HIGH_FAIL_FREQ)
-                    || StringUtil.contains(result.getAbnormalTags(), TAG_IP_DRIFT);
+        if (RiskLevelEnum.MEDIUM == result.riskLevel()) {
+            return StringUtil.contains(result.abnormalTags(), TAG_HIGH_FAIL_FREQ)
+                    || StringUtil.contains(result.abnormalTags(), TAG_IP_DRIFT);
         }
         return false;
     }
@@ -146,20 +145,7 @@ public class LoginRiskAnalyzeService {
         return parts[0] + "." + parts[1] + "." + parts[2];
     }
 
-    @Getter
-    public static class RiskResult {
-
-        private final String abnormalTags;
-
-        private final RiskLevelEnum riskLevel;
-
-        private final Integer riskScore;
-
-        public RiskResult(String abnormalTags, RiskLevelEnum riskLevel, Integer riskScore) {
-            this.abnormalTags = abnormalTags;
-            this.riskLevel = riskLevel;
-            this.riskScore = riskScore;
-        }
+    public record RiskResult(String abnormalTags, RiskLevelEnum riskLevel, Integer riskScore) {
 
     }
 

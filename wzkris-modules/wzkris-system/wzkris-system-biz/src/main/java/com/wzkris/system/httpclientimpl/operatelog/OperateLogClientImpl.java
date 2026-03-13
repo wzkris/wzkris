@@ -1,9 +1,10 @@
-package com.wzkris.system.httpclient.operatelog;
+package com.wzkris.system.httpclientimpl.operatelog;
 
-import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.system.domain.AdminOperateLogDO;
 import com.wzkris.system.domain.TenantOperateLogDO;
+import com.wzkris.system.httpclient.operatelog.OperateLogClient;
 import com.wzkris.system.httpclient.operatelog.req.OperateLogEvent;
 import com.wzkris.system.mapper.AdminOperateLogMapper;
 import com.wzkris.system.mapper.TenantOperateLogMapper;

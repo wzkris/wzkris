@@ -5,18 +5,14 @@ import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.CaptchaService;
-import com.wzkris.auth.service.UserInfoTemplate;
+import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.core.utils.TraceIdUtil;
+import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.model.AdminLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -42,7 +38,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class LoginAdminService extends UserInfoTemplate {
+public class LoginAdminUserService implements LoginUserService {
 
     private final CaptchaService captchaService;
 
