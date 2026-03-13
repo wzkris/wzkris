@@ -64,7 +64,7 @@ public class LoginEventListener {
         final String errorMsg = event.getErrorMsg();
         String ipAddr = event.getIpAddr();
         UserAgent userAgent = event.getUserAgent();
-        String userAgentText = JsonUtil.toJsonString(userAgent);
+        String userAgentText = JsonUtil.toJsonString(userAgent.getHeaders());
         String loginLocation = IpUtil.parseIp(ipAddr);
         String traceId = event.getTraceId();
         Date now = new Date();
