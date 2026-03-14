@@ -41,12 +41,6 @@
             <artifactId>wzkris-common-redis</artifactId>
         </dependency>
 
-        <!-- 验证码-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-captcha</artifactId>
-        </dependency>
-
         <!-- Sentinel -->
         <dependency>
             <groupId>com.wzkris</groupId>
@@ -68,6 +62,12 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-auth-api</artifactId>
+        </dependency>
+
+        <!--风控rpc服务-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-risk-api</artifactId>
         </dependency>
 
         <!--用户rpc服务-->

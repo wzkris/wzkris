@@ -134,6 +134,13 @@
                 <version>${revision}</version>
             </dependency>
 
+            <!--风控rpc服务-->
+            <dependency>
+                <groupId>com.wzkris</groupId>
+                <artifactId>wzkris-risk-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -147,6 +154,7 @@
         <module>wzkris-extends</module>
         <module>wzkris-modules</module>
         <module>wzkris-common</module>
+        <module>wzkris-risk</module>
     </modules>
 
     <profiles>

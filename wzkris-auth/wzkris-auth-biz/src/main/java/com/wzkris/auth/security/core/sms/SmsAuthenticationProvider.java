@@ -4,13 +4,14 @@ import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.auth.service.AuthRiskFacade;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
-import com.wzkris.common.core.exception.BaseException;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.risk.httpclient.riskctl.resp.RiskDecisionResp;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -26,17 +27,21 @@ import java.util.Optional;
 @Component
 public final class SmsAuthenticationProvider extends CommonAuthenticationProvider {
 
+    private static final int BIZ_RISK_CAPTCHA_REQUIRED = 409_001;
+
+    private static final int BIZ_RISK_BLOCKED = 409_004;
+
     private final List<LoginUserService> loginUserServices;
 
-    private final CaptchaService captchaService;
+    private final AuthRiskFacade authRiskFacade;
 
     public SmsAuthenticationProvider(
             TokenService tokenService,
             List<LoginUserService> loginUserServices,
-            CaptchaService captchaService) {
+            AuthRiskFacade authRiskFacade) {
         super(tokenService);
         this.loginUserServices = loginUserServices;
-        this.captchaService = captchaService;
+        this.authRiskFacade = authRiskFacade;
     }
 
     @Override
@@ -55,19 +60,20 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        // 校验验证码
-        boolean pass = captchaService.validateCaptcha(
-                authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
+        RiskDecisionResp decision = authRiskFacade.decideSms(authenticationToken);
+        if (decision == null) {
+            OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.SYSTEM_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "service.internalError.error");
+        }
+        if ("BLOCK".equals(decision.getDecision())) {
+            OAuth2ExceptionUtil.throwError(BIZ_RISK_BLOCKED, CustomErrorCodes.VALIDATE_ERROR, decision.getMessage());
+        }
+        if ("CAPTCHA".equals(decision.getDecision())) {
+            OAuth2ExceptionUtil.throwError(BIZ_RISK_CAPTCHA_REQUIRED, CustomErrorCodes.VALIDATE_ERROR, decision.getMessage());
+        }
+        boolean pass = authRiskFacade.validateSmsCode(authenticationToken.getPhoneNumber(), authenticationToken.getSmsCode());
         if (!pass) {
             OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
                     "invalidParameter.captcha.error");
-        }
-
-        try {
-            // 校验是否被冻结
-            captchaService.validateAccount(authenticationToken.getAuthType().getValue() + ":" + authenticationToken.getPhoneNumber());
-        } catch (BaseException e) {
-            OAuth2ExceptionUtil.throwError(e.getBiz(), CustomErrorCodes.VALIDATE_ERROR, e.getMessage());
         }
 
         CommonAuthenticationToken token = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
@@ -84,5 +90,4 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     public boolean supports(Class<?> authentication) {
         return SmsAuthenticationToken.class.isAssignableFrom(authentication);
     }
-
 }

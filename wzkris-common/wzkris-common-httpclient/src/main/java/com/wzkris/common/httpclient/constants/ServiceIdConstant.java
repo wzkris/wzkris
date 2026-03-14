@@ -13,4 +13,6 @@ public class ServiceIdConstant {
 
     public static final String SYSTEM = "wzkris-system";
 
+    public static final String RISK = "wzkris-risk";
+
 }
