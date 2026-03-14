@@ -90,4 +90,5 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     public boolean supports(Class<?> authentication) {
         return SmsAuthenticationToken.class.isAssignableFrom(authentication);
     }
+
 }

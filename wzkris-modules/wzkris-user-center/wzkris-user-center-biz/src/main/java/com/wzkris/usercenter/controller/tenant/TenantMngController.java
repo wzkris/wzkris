@@ -18,8 +18,8 @@ import com.wzkris.usercenter.domain.req.EditStatusReq;
 import com.wzkris.usercenter.domain.req.ResetPwdReq;
 import com.wzkris.usercenter.domain.req.tenant.TenantMngQueryReq;
 import com.wzkris.usercenter.domain.req.tenant.TenantMngReq;
-import com.wzkris.usercenter.domain.vo.SelectVO;
-import com.wzkris.usercenter.domain.vo.tenant.TenantMngVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
+import com.wzkris.usercenter.domain.resp.tenant.TenantMngResp;
 import com.wzkris.usercenter.listener.event.CreateTenantEvent;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.service.AdminInfoService;
@@ -64,9 +64,9 @@ public class TenantMngController extends BaseController {
     @Operation(summary = "租户分页")
     @GetMapping("/page")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<Page<TenantMngVO>> page(TenantMngQueryReq queryReq) {
+    public Result<Page<TenantMngResp>> page(TenantMngQueryReq queryReq) {
         startPage();
-        List<TenantMngVO> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(queryReq));
+        List<TenantMngResp> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -87,9 +87,9 @@ public class TenantMngController extends BaseController {
 
     @Operation(summary = "租户选择列表(带分页)")
     @GetMapping("/selectpage")
-    public Result<Page<SelectVO>> selectlist(String tenantName) {
+    public Result<Page<SelectResp>> selectlist(String tenantName) {
         startPage();
-        List<SelectVO> list = tenantInfoService.listSelect(tenantName);
+        List<SelectResp> list = tenantInfoService.listSelect(tenantName);
         return getDataTable(list);
     }
 
@@ -98,8 +98,8 @@ public class TenantMngController extends BaseController {
     @CheckAdminPerms(
             value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
             mode = CheckMode.OR)
-    public Result<List<SelectVO>> packageSelect(String packageName) {
-        List<SelectVO> selectVOS = tenantPackageInfoService.listSelect(packageName);
+    public Result<List<SelectResp>> packageSelect(String packageName) {
+        List<SelectResp> selectVOS = tenantPackageInfoService.listSelect(packageName);
         return ok(selectVOS);
     }
 

@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.menu;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.usercenter.domain.vo.RouterVO;
+import com.wzkris.usercenter.domain.resp.RouterResp;
 import com.wzkris.usercenter.service.MenuInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,15 +29,15 @@ public class MenuRouterController extends BaseController {
 
     @Operation(summary = "系统路由")
     @GetMapping("/system-routes")
-    public Result<List<RouterVO>> systemRoute() {
-        List<RouterVO> routerVOS = menuInfoService.listSystemRoutes(SecurityUtil.getUid());
+    public Result<List<RouterResp>> systemRoute() {
+        List<RouterResp> routerVOS = menuInfoService.listSystemRoutes(SecurityUtil.getUid());
         return ok(routerVOS);
     }
 
     @Operation(summary = "租户路由")
     @GetMapping("/tenant-routes")
-    public Result<List<RouterVO>> tenantRoute() {
-        List<RouterVO> routerVOS = menuInfoService.listTenantRoutes(SecurityUtil.getUid());
+    public Result<List<RouterResp>> tenantRoute() {
+        List<RouterResp> routerVOS = menuInfoService.listTenantRoutes(SecurityUtil.getUid());
         return ok(routerVOS);
     }
 

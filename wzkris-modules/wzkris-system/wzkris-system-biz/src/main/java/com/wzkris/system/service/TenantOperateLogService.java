@@ -2,7 +2,7 @@ package com.wzkris.system.service;
 
 import com.wzkris.system.domain.TenantOperateLogDO;
 import com.wzkris.system.domain.req.tenantlog.TenantOperateLogQueryReq;
-import com.wzkris.system.domain.vo.tenantlog.TenantOperateLogInfoVO;
+import com.wzkris.system.domain.resp.tenantlog.TenantOperateLogInfoResp;
 
 import java.util.List;
 
@@ -15,6 +15,6 @@ public interface TenantOperateLogService {
 
     List<TenantOperateLogDO> list(TenantOperateLogQueryReq queryReq);
 
-    List<TenantOperateLogInfoVO> listInfoVO(TenantOperateLogQueryReq queryReq);
+    List<TenantOperateLogInfoResp> listInfoVO(TenantOperateLogQueryReq queryReq);
 
 }

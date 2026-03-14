@@ -5,7 +5,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.system.domain.req.tenantlog.TenantOperateLogQueryReq;
-import com.wzkris.system.domain.vo.tenantlog.TenantOperateLogInfoVO;
+import com.wzkris.system.domain.resp.tenantlog.TenantOperateLogInfoResp;
 import com.wzkris.system.mapper.TenantOperateLogMapper;
 import com.wzkris.system.service.TenantOperateLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +35,9 @@ public class TenantOperateLogMngController extends BaseController {
     @Operation(summary = "分页")
     @GetMapping("/page")
     @CheckTenantPerms("system-mod:tenant-operatelog-mng:page")
-    public Result<Page<TenantOperateLogInfoVO>> page(TenantOperateLogQueryReq queryReq) {
+    public Result<Page<TenantOperateLogInfoResp>> page(TenantOperateLogQueryReq queryReq) {
         startPage();
-        List<TenantOperateLogInfoVO> list = tenantOperateLogService.listInfoVO(queryReq);
+        List<TenantOperateLogInfoResp> list = tenantOperateLogService.listInfoVO(queryReq);
         return getDataTable(list);
     }
 

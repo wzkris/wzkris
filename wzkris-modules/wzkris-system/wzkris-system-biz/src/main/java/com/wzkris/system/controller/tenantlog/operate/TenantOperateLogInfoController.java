@@ -5,7 +5,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.system.domain.req.tenantlog.TenantOperateLogQueryReq;
-import com.wzkris.system.domain.vo.tenantlog.TenantOperateLogInfoVO;
+import com.wzkris.system.domain.resp.tenantlog.TenantOperateLogInfoResp;
 import com.wzkris.system.service.TenantOperateLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,10 +26,10 @@ public class TenantOperateLogInfoController extends BaseController {
 
     @Operation(summary = "分页")
     @GetMapping("/page")
-    public Result<Page<TenantOperateLogInfoVO>> page(TenantOperateLogQueryReq queryReq) {
+    public Result<Page<TenantOperateLogInfoResp>> page(TenantOperateLogQueryReq queryReq) {
         startPage();
         queryReq.setMemberId(SecurityUtil.getUid());
-        List<TenantOperateLogInfoVO> list = tenantOperateLogService.listInfoVO(queryReq);
+        List<TenantOperateLogInfoResp> list = tenantOperateLogService.listInfoVO(queryReq);
         return getDataTable(list);
     }
 

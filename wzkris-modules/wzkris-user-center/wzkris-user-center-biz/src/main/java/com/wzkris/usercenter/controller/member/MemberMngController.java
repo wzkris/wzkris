@@ -20,8 +20,8 @@ import com.wzkris.usercenter.domain.req.ResetPwdReq;
 import com.wzkris.usercenter.domain.req.member.MemberMngQueryReq;
 import com.wzkris.usercenter.domain.req.member.MemberMngReq;
 import com.wzkris.usercenter.domain.req.member.MemberToPostsReq;
-import com.wzkris.usercenter.domain.vo.CheckedSelectVO;
-import com.wzkris.usercenter.domain.vo.member.MemberMngVO;
+import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
+import com.wzkris.usercenter.domain.resp.member.MemberMngResp;
 import com.wzkris.usercenter.listener.event.CreateMemberEvent;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.service.MemberInfoService;
@@ -60,9 +60,9 @@ public class MemberMngController extends BaseController {
     @Operation(summary = "分页列表")
     @GetMapping("/page")
     @CheckTenantPerms("user-mod:member-mng:page")
-    public Result<Page<MemberMngVO>> page(MemberMngQueryReq queryReq) {
+    public Result<Page<MemberMngResp>> page(MemberMngQueryReq queryReq) {
         startPage();
-        List<MemberMngVO> list = memberInfoMapper.listVO(this.buildPageWrapper(queryReq));
+        List<MemberMngResp> list = memberInfoMapper.listVO(this.buildPageWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -90,11 +90,11 @@ public class MemberMngController extends BaseController {
     @CheckTenantPerms(
             value = {"user-mod:member-mng:edit", "user-mod:member-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectVO> postSelect(@PathVariable(required = false) Long memberId, String postName) {
-        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
-        checkedSelectVO.setCheckedKeys(memberId == null ? Collections.emptyList() : postInfoService.listIdByMemberId(memberId));
-        checkedSelectVO.setSelects(postInfoService.listSelect(postName));
-        return ok(checkedSelectVO);
+    public Result<CheckedSelectResp> postSelect(@PathVariable(required = false) Long memberId, String postName) {
+        CheckedSelectResp checkedSelectResp = new CheckedSelectResp();
+        checkedSelectResp.setCheckedKeys(memberId == null ? Collections.emptyList() : postInfoService.listIdByMemberId(memberId));
+        checkedSelectResp.setSelects(postInfoService.listSelect(postName));
+        return ok(checkedSelectResp);
     }
 
     @Operation(summary = "新增成员")

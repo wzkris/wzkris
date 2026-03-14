@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service;
 
 import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import org.springframework.lang.Nullable;
 
 import java.util.Collections;
@@ -19,7 +19,7 @@ public interface TenantInfoService {
      *
      * @param tenantName 租户名称
      */
-    List<SelectVO> listSelect(@Nullable String tenantName);
+    List<SelectResp> listSelect(@Nullable String tenantName);
 
     /**
      * 添加租户, 会创建租户管理员账号

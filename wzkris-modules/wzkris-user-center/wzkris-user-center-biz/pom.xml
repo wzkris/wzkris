@@ -65,10 +65,10 @@
             <artifactId>wzkris-system-api</artifactId>
         </dependency>
 
-        <!-- 认证rpc服务-->
+        <!-- 风控rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-api</artifactId>
+            <artifactId>wzkris-risk-api</artifactId>
         </dependency>
 
         <!-- wzkris Common Security-->

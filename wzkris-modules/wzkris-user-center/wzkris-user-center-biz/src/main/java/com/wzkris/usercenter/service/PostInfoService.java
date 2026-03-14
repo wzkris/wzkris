@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service;
 
 import com.wzkris.usercenter.domain.PostInfoDO;
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public interface PostInfoService {
      * @param postName 职位名称
      * @return 职位选择列表
      */
-    List<SelectVO> listSelect(@Nullable String postName);
+    List<SelectResp> listSelect(@Nullable String postName);
 
     /**
      * 获取当前职位组

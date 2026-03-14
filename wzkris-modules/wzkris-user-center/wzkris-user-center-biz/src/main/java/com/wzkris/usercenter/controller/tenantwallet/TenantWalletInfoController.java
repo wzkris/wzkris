@@ -14,7 +14,7 @@ import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
 import com.wzkris.usercenter.domain.req.tenantwallet.TenantWalletRecordQueryReq;
 import com.wzkris.usercenter.domain.req.tenantwallet.WalletWithdrawalReq;
-import com.wzkris.usercenter.domain.vo.tenantwallet.TenantWalletInfoVO;
+import com.wzkris.usercenter.domain.resp.tenantwallet.TenantWalletInfoResp;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
@@ -51,9 +51,9 @@ public class TenantWalletInfoController extends BaseController {
 
     @Operation(summary = "余额信息")
     @GetMapping("/info")
-    public Result<TenantWalletInfoVO> walletInfo() {
+    public Result<TenantWalletInfoResp> walletInfo() {
         Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
-        return ok(tenantWalletInfoMapper.selectById2VO(tenantId, TenantWalletInfoVO.class));
+        return ok(tenantWalletInfoMapper.selectById2VO(tenantId, TenantWalletInfoResp.class));
     }
 
     @Operation(summary = "钱包记录分页")

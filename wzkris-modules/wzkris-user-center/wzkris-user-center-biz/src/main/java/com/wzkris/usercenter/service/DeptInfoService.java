@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service;
 
 import com.wzkris.usercenter.domain.DeptInfoDO;
-import com.wzkris.usercenter.domain.vo.SelectTreeVO;
+import com.wzkris.usercenter.domain.resp.SelectTreeResp;
 
 import java.util.List;
 
@@ -39,6 +39,6 @@ public interface DeptInfoService {
      * @param depts 部门列表
      * @return 选择树结构列表
      */
-    List<SelectTreeVO> buildSelectTree(List<DeptInfoDO> depts);
+    List<SelectTreeResp> buildSelectTree(List<DeptInfoDO> depts);
 
 }

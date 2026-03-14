@@ -11,8 +11,8 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.req.EditPwdReq;
 import com.wzkris.usercenter.domain.req.tenant.TenantInfoReq;
-import com.wzkris.usercenter.domain.vo.tenant.TenantInfoVO;
-import com.wzkris.usercenter.domain.vo.tenant.TenantUsedQuotaVO;
+import com.wzkris.usercenter.domain.resp.tenant.TenantInfoResp;
+import com.wzkris.usercenter.domain.resp.tenant.TenantUsedQuotaResp;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.mapper.PostInfoMapper;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
@@ -47,7 +47,7 @@ public class TenantInfoController extends BaseController {
 
     @Operation(summary = "获取信息")
     @GetMapping
-    public Result<TenantInfoVO> tenantInfo() {
+    public Result<TenantInfoResp> tenantInfo() {
         Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
         return ok(tenantInfoMapper.selectVOById(tenantId));
     }
@@ -63,8 +63,8 @@ public class TenantInfoController extends BaseController {
 
     @Operation(summary = "获取已使用配额")
     @GetMapping("/used-quota")
-    public Result<TenantUsedQuotaVO> limitInfo() {
-        TenantUsedQuotaVO usedQuotaVO = new TenantUsedQuotaVO();
+    public Result<TenantUsedQuotaResp> limitInfo() {
+        TenantUsedQuotaResp usedQuotaVO = new TenantUsedQuotaResp();
         usedQuotaVO.setAccountHas(Math.toIntExact(adminInfoMapper.selectCount(null)));
         usedQuotaVO.setPostHas(Math.toIntExact(postInfoMapper.selectCount(null)));
         return ok(usedQuotaVO);

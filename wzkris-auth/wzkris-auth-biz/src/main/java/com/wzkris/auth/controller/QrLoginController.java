@@ -1,7 +1,7 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.constants.QrCodeConstant;
-import com.wzkris.auth.domain.vo.QrTokenVO;
+import com.wzkris.auth.domain.resp.QrTokenResp;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
@@ -44,7 +44,7 @@ public class QrLoginController {
         params.put("qrcodeId", qrcodeId);
         //存放二维码唯一标识30秒有效
         redisTemplate.opsForValue().set(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId,
-                new QrTokenVO(QrCodeStatusEnum.WAIT.getValue(), null, null), Duration.ofSeconds(60));
+                new QrTokenResp(QrCodeStatusEnum.WAIT.getValue(), null, null), Duration.ofSeconds(60));
         return Result.ok(params);
     }
 
@@ -53,15 +53,15 @@ public class QrLoginController {
     public Result<Void> scan(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
         Object value = redisTemplate.opsForValue().get(key);
-        QrTokenVO qrTokenVO = value instanceof QrTokenVO ? (QrTokenVO) value : null;
-        if (Objects.isNull(qrTokenVO)) {
+        QrTokenResp qrTokenResp = value instanceof QrTokenResp ? (QrTokenResp) value : null;
+        if (Objects.isNull(qrTokenResp)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenVO.getStatus(), QrCodeStatusEnum.WAIT.getValue())) {
+        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatusEnum.WAIT.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
-        qrTokenVO.setStatus(QrCodeStatusEnum.SCANED.getValue());
-        redisTemplate.opsForValue().set(key, qrTokenVO, Duration.ofSeconds(60));
+        qrTokenResp.setStatus(QrCodeStatusEnum.SCANED.getValue());
+        redisTemplate.opsForValue().set(key, qrTokenResp, Duration.ofSeconds(60));
         return Result.ok();
     }
 
@@ -70,11 +70,11 @@ public class QrLoginController {
     public Result<Void> confirm(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
         Object value = redisTemplate.opsForValue().get(key);
-        QrTokenVO qrTokenVO = value instanceof QrTokenVO ? (QrTokenVO) value : null;
-        if (Objects.isNull(qrTokenVO)) {
+        QrTokenResp qrTokenResp = value instanceof QrTokenResp ? (QrTokenResp) value : null;
+        if (Objects.isNull(qrTokenResp)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenVO.getStatus(), QrCodeStatusEnum.SCANED.getValue())) {
+        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatusEnum.SCANED.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
 
@@ -86,25 +86,25 @@ public class QrLoginController {
         String refreshToken = tokenService.generateRefreshToken(loginUser, sid);
         tokenService.save(loginUser, sid, permission);
 
-        qrTokenVO.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
-        qrTokenVO.setAccessToken(accessToken);
-        qrTokenVO.setRefreshToken(refreshToken);
-        redisTemplate.opsForValue().set(key, qrTokenVO, Duration.ofSeconds(60));
+        qrTokenResp.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
+        qrTokenResp.setAccessToken(accessToken);
+        qrTokenResp.setRefreshToken(refreshToken);
+        redisTemplate.opsForValue().set(key, qrTokenResp, Duration.ofSeconds(60));
         return Result.ok();
     }
 
     @Operation(summary = "轮询获取扫码结果")
     @GetMapping("/poll-status")
-    public Result<QrTokenVO> pollstatus(
+    public Result<QrTokenResp> pollstatus(
             @NotBlank(message = "{invalidParameter.param.invalid}")
             @RequestParam String qrcodeId
     ) {
         Object value = redisTemplate.opsForValue().get(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId);
-        QrTokenVO qrTokenVO = value instanceof QrTokenVO ? (QrTokenVO) value : null;
-        if (Objects.isNull(qrTokenVO)) {
-            return Result.ok(QrTokenVO.OVERDUE());
+        QrTokenResp qrTokenResp = value instanceof QrTokenResp ? (QrTokenResp) value : null;
+        if (Objects.isNull(qrTokenResp)) {
+            return Result.ok(QrTokenResp.OVERDUE());
         }
-        return Result.ok(qrTokenVO);
+        return Result.ok(qrTokenResp);
     }
 
 }

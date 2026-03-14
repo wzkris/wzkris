@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.system.domain.TenantOperateLogDO;
 import com.wzkris.system.domain.req.tenantlog.TenantOperateLogQueryReq;
-import com.wzkris.system.domain.vo.tenantlog.TenantOperateLogInfoVO;
+import com.wzkris.system.domain.resp.tenantlog.TenantOperateLogInfoResp;
 import com.wzkris.system.mapper.TenantOperateLogMapper;
 import com.wzkris.system.service.TenantOperateLogService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class TenantOperateLogServiceImpl implements TenantOperateLogService {
     }
 
     @Override
-    public List<TenantOperateLogInfoVO> listInfoVO(TenantOperateLogQueryReq queryReq) {
+    public List<TenantOperateLogInfoResp> listInfoVO(TenantOperateLogQueryReq queryReq) {
         return tenantOperateLogMapper.selectListInfoVO(this.buildQueryWrapper(queryReq));
     }
 

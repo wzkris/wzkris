@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public interface TenantPackageInfoService {
      *
      * @return 套餐列表
      */
-    List<SelectVO> listSelect(@Nullable String packageName);
+    List<SelectResp> listSelect(@Nullable String packageName);
 
     /**
      * 校验套餐是否被使用

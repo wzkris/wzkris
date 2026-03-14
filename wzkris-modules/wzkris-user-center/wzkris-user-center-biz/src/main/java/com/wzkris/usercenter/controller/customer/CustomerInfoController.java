@@ -5,7 +5,7 @@ import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.req.customer.CustomerInfoReq;
-import com.wzkris.usercenter.domain.vo.customer.CustomerInfoVO;
+import com.wzkris.usercenter.domain.resp.customer.CustomerInfoResp;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import com.wzkris.usercenter.service.CustomerInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,10 +39,10 @@ public class CustomerInfoController extends BaseController {
     @Operation(summary = "获取信息")
     @GetMapping
     @Cacheable(value = info_prefix + "#3_600_000", key = "@su.getUid()", sync = true)
-    public Result<CustomerInfoVO> customerInfo() {
+    public Result<CustomerInfoResp> customerInfo() {
         CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(SecurityUtil.getUid());
 
-        CustomerInfoVO customerInfoVO = new CustomerInfoVO();
+        CustomerInfoResp customerInfoVO = new CustomerInfoResp();
         customerInfoVO.setNickname(customerInfoDO.getNickname());
         customerInfoVO.setPhoneNumber(customerInfoDO.getPhoneNumber());
         customerInfoVO.setGender(customerInfoDO.getGender());

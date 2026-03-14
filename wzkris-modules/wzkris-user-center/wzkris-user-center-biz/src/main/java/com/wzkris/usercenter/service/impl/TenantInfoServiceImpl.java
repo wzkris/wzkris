@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.usercenter.domain.*;
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.mapper.*;
 import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
@@ -47,12 +47,12 @@ public class TenantInfoServiceImpl implements TenantInfoService {
     private final TenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override
-    public List<SelectVO> listSelect(String tenantName) {
+    public List<SelectResp> listSelect(String tenantName) {
         LambdaQueryWrapper<TenantInfoDO> lqw = new LambdaQueryWrapper<TenantInfoDO>()
                 .select(TenantInfoDO::getTenantId, TenantInfoDO::getTenantName)
                 .like(StringUtil.isNotBlank(tenantName), TenantInfoDO::getTenantName, tenantName)
                 .orderByAsc(TenantInfoDO::getTenantId);
-        return tenantInfoMapper.selectList(lqw).stream().map(SelectVO::new).collect(Collectors.toList());
+        return tenantInfoMapper.selectList(lqw).stream().map(SelectResp::new).collect(Collectors.toList());
     }
 
     @Override

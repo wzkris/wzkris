@@ -14,7 +14,7 @@ import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 import com.wzkris.usercenter.domain.req.EditStatusReq;
 import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngQueryReq;
 import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngReq;
-import com.wzkris.usercenter.domain.vo.CheckedSelectTreeVO;
+import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
 import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
@@ -79,11 +79,11 @@ public class TenantPackageMngController extends BaseController {
     @CheckAdminPerms(
             value = {"user-mod:tenantpackage-mng:add", "user-mod:tenantpackage-mng:edit"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeVO> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
-        CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
-        checkedSelectTreeVO.setCheckedKeys(tenantPackageInfoMapper.listMenuIdByPackageId(packageId));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listAllTenantSelectTree());
-        return ok(checkedSelectTreeVO);
+    public Result<CheckedSelectTreeResp> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
+        CheckedSelectTreeResp checkedSelectTreeResp = new CheckedSelectTreeResp();
+        checkedSelectTreeResp.setCheckedKeys(tenantPackageInfoMapper.listMenuIdByPackageId(packageId));
+        checkedSelectTreeResp.setSelectTrees(menuInfoService.listAllTenantSelectTree());
+        return ok(checkedSelectTreeResp);
     }
 
     @Operation(summary = "新增租户套餐")

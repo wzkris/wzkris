@@ -1,20 +1,20 @@
 package com.wzkris.usercenter.controller.admin;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.auth.httpclient.captcha.CaptchaClient;
-import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.risk.httpclient.captcha.CaptchaClient;
+import com.wzkris.risk.httpclient.captcha.req.CaptchaSmsValidateReq;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.req.EditPhoneReq;
 import com.wzkris.usercenter.domain.req.EditPwdReq;
 import com.wzkris.usercenter.domain.req.admin.AdminInfoReq;
-import com.wzkris.usercenter.domain.vo.admin.AdminInfoVO;
-import com.wzkris.usercenter.domain.vo.admin.ChatPersonVO;
+import com.wzkris.usercenter.domain.resp.admin.AdminInfoResp;
+import com.wzkris.usercenter.domain.resp.admin.ChatPersonResp;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.service.AdminInfoService;
@@ -60,13 +60,13 @@ public class AdminInfoController extends BaseController {
     @Operation(summary = "账户信息")
     @GetMapping
     @Cacheable(value = info_prefix + "#600_000", key = "@su.getUid()", sync = true) // TODO 这里缓存的需要在退出时移除
-    public Result<AdminInfoVO> userinfo() {
+    public Result<AdminInfoResp> userinfo() {
         AdminInfoDO adminInfoDO = adminInfoMapper.selectById(SecurityUtil.getUid());
 
         if (adminInfoDO == null) {// 降级会走到这
             adminInfoDO = new AdminInfoDO();
         }
-        AdminInfoVO adminInfoVO = new AdminInfoVO();
+        AdminInfoResp adminInfoVO = new AdminInfoResp();
         adminInfoVO.setAdmin(SecurityUtil.isSuper());
         adminInfoVO.setUsername(adminInfoDO.getUsername());
         adminInfoVO.setAuthorities(SecurityUtil.getPermission());
@@ -84,7 +84,7 @@ public class AdminInfoController extends BaseController {
 
     @Operation(summary = "聊天人员列表")
     @GetMapping("/chat-person-list")
-    public Result<List<ChatPersonVO>> chatPersonList() {
+    public Result<List<ChatPersonResp>> chatPersonList() {
         List<AdminInfoDO> adminInfoDOS = adminInfoMapper.selectList(Wrappers.lambdaQuery(AdminInfoDO.class)
                 .select(AdminInfoDO::getAdminId, AdminInfoDO::getNickname, AdminInfoDO::getAvatar)
                 .ne(AdminInfoDO::getAdminId, SecurityUtil.getUid()));
@@ -92,9 +92,9 @@ public class AdminInfoController extends BaseController {
         return ok(cast2ChatVO(adminInfoDOS));
     }
 
-    private List<ChatPersonVO> cast2ChatVO(List<AdminInfoDO> adminInfoDOS) {
+    private List<ChatPersonResp> cast2ChatVO(List<AdminInfoDO> adminInfoDOS) {
         return adminInfoDOS.stream().map(userInfoDO ->
-                        new ChatPersonVO(userInfoDO.getAdminId(), userInfoDO.getNickname(), userInfoDO.getAvatar()))
+                        new ChatPersonResp(userInfoDO.getAdminId(), userInfoDO.getNickname(), userInfoDO.getAvatar()))
                 .collect(Collectors.toList());
     }
 
@@ -102,10 +102,10 @@ public class AdminInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping
     @CacheEvict(value = info_prefix, key = "@su.getUid()")
-    public Result<Void> editInfo(@RequestBody AdminInfoReq profileReq) {
+    public Result<Void> editInfo(@RequestBody AdminInfoReq req) {
         AdminInfoDO admin = new AdminInfoDO(SecurityUtil.getUid());
-        admin.setNickname(profileReq.getNickname());
-        admin.setGender(profileReq.getGender());
+        admin.setNickname(req.getNickname());
+        admin.setGender(req.getGender());
         return toRes(adminInfoMapper.updateById(admin));
     }
 
@@ -120,8 +120,10 @@ public class AdminInfoController extends BaseController {
             return requestFail("该手机号已被使用");
         }
         // 验证
-        CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(adminInfoMapper.selectPhoneNumberById(adminId), req.getSmsCode());
-        Result<Boolean> captchaResult = captchaClient.validateCaptcha(captchaCheckReq);
+        CaptchaSmsValidateReq captchaCheckReq = new CaptchaSmsValidateReq();
+        captchaCheckReq.setPhone(adminInfoMapper.selectPhoneNumberById(adminId));
+        captchaCheckReq.setCode(req.getSmsCode());
+        Result<Boolean> captchaResult = captchaClient.validateSms(captchaCheckReq);
         if (!ResultUtil.check(captchaResult) || !Boolean.TRUE.equals(captchaResult.getData())) {
             return requestFail("验证码错误");
         }

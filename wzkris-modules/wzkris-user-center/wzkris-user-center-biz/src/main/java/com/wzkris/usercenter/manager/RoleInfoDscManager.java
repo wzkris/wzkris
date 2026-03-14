@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.RoleInfoDO;
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.mapper.datascope.RoleInfoDscMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,7 +35,7 @@ public class RoleInfoDscManager {
      * @param roleId 继承角色ID（排除该角色，避免自己继承自己）
      * @return 可继承的角色列表
      */
-    public List<SelectVO> listChildrenSelect(Long roleId) {
+    public List<SelectResp> listChildrenSelect(Long roleId) {
         QueryWrapper<RoleInfoDO> queryWrapper = Wrappers.query(RoleInfoDO.class)
                 .select("role_id", "role_name")
                 .eq("status", CommonConstants.STATUS_ENABLE)
@@ -46,7 +46,7 @@ public class RoleInfoDscManager {
         }
         return roleInfoDscMapper.selectLists(queryWrapper)
                 .stream()
-                .map(SelectVO::new)
+                .map(SelectResp::new)
                 .collect(Collectors.toList());
     }
 
@@ -55,14 +55,14 @@ public class RoleInfoDscManager {
      *
      * @return 角色列表
      */
-    public List<SelectVO> listSelect(String roleName) {
+    public List<SelectResp> listSelect(String roleName) {
         return roleInfoDscMapper.selectLists(Wrappers.lambdaQuery(RoleInfoDO.class)
                         .select(RoleInfoDO::getRoleId, RoleInfoDO::getRoleName)
                         .eq(RoleInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
                         .like(StringUtil.isNotBlank(roleName), RoleInfoDO::getRoleName, roleName)
                         .orderByAsc(RoleInfoDO::getRoleId))
                 .stream()
-                .map(SelectVO::new)
+                .map(SelectResp::new)
                 .collect(Collectors.toList());
     }
 

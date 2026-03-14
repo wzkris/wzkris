@@ -6,8 +6,8 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.req.admin.AdminMngQueryReq;
-import com.wzkris.usercenter.domain.vo.SelectVO;
-import com.wzkris.usercenter.domain.vo.admin.AdminMngVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
+import com.wzkris.usercenter.domain.resp.admin.AdminMngResp;
 import com.wzkris.usercenter.mapper.AdminToRoleMapper;
 import com.wzkris.usercenter.mapper.datascope.AdminInfoDscMapper;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class AdminInfoDscManager {
         return adminInfoDscMapper.selectLists(queryWrapper);
     }
 
-    public List<AdminMngVO> listVO(Wrapper<AdminInfoDO> queryWrapper) {
+    public List<AdminMngResp> listVO(Wrapper<AdminInfoDO> queryWrapper) {
         return adminInfoDscMapper.selectVOList(queryWrapper);
     }
 
@@ -48,14 +48,14 @@ public class AdminInfoDscManager {
      * @param roleId   角色ID
      * @return 用户选择列表
      */
-    public List<SelectVO> listAllocated(AdminMngQueryReq queryReq, Long roleId) {
+    public List<SelectResp> listAllocated(AdminMngQueryReq queryReq, Long roleId) {
         List<Long> adminIds = adminToRoleMapper.listAdminIdByRoleId(roleId);
         if (CollectionUtils.isEmpty(adminIds)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<AdminInfoDO> lqw = this.buildQueryWrapper(queryReq);
         lqw.in(AdminInfoDO::getAdminId, adminIds);
-        return list(lqw).stream().map(SelectVO::new).toList();
+        return list(lqw).stream().map(SelectResp::new).toList();
     }
 
     /**
@@ -65,14 +65,14 @@ public class AdminInfoDscManager {
      * @param roleId   角色ID
      * @return 用户选择列表
      */
-    public List<SelectVO> listUnallocated(AdminMngQueryReq queryReq, Long roleId) {
+    public List<SelectResp> listUnallocated(AdminMngQueryReq queryReq, Long roleId) {
         List<Long> adminIds = adminToRoleMapper.listAdminIdByRoleId(roleId);
 
         LambdaQueryWrapper<AdminInfoDO> lqw = this.buildQueryWrapper(queryReq);
         if (!CollectionUtils.isEmpty(adminIds)) {
             lqw.notIn(AdminInfoDO::getAdminId, adminIds);
         }
-        return list(lqw).stream().map(SelectVO::new).toList();
+        return list(lqw).stream().map(SelectResp::new).toList();
     }
 
     private LambdaQueryWrapper<AdminInfoDO> buildQueryWrapper(AdminMngQueryReq queryReq) {

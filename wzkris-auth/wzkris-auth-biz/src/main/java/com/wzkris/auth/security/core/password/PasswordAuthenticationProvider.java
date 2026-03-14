@@ -85,4 +85,5 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     public boolean supports(Class<?> authentication) {
         return PasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
+
 }

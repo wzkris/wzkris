@@ -6,7 +6,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.domain.AnnouncementInfoDO;
-import com.wzkris.system.domain.vo.announcement.AnnouncementInfoVO;
+import com.wzkris.system.domain.resp.announcement.AnnouncementInfoResp;
 import com.wzkris.system.enums.AnncStatusEnum;
 import com.wzkris.system.mapper.AnnouncementInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,12 +28,12 @@ public class AnnouncementInfoController extends BaseController {
 
     @Operation(summary = "公告分页")
     @GetMapping("/page")
-    public Result<Page<AnnouncementInfoVO>> page() {
+    public Result<Page<AnnouncementInfoResp>> page() {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
                 .eq(AnnouncementInfoDO::getStatus, AnncStatusEnum.PUBLISH.getValue())
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
         startPage();
-        List<AnnouncementInfoVO> list = announcementInfoMapper.selectList2VO(lqw, AnnouncementInfoVO.class);
+        List<AnnouncementInfoResp> list = announcementInfoMapper.selectList2VO(lqw, AnnouncementInfoResp.class);
         return getDataTable(list);
     }
 

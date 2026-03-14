@@ -6,9 +6,9 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.MenuInfoDO;
-import com.wzkris.usercenter.domain.vo.MetaVO;
-import com.wzkris.usercenter.domain.vo.RouterVO;
-import com.wzkris.usercenter.domain.vo.SelectTreeVO;
+import com.wzkris.usercenter.domain.resp.MetaResp;
+import com.wzkris.usercenter.domain.resp.RouterResp;
+import com.wzkris.usercenter.domain.resp.SelectTreeResp;
 import com.wzkris.usercenter.enums.MenuScopeEnum;
 import com.wzkris.usercenter.enums.MenuTypeEnum;
 import com.wzkris.usercenter.mapper.*;
@@ -143,7 +143,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<SelectTreeVO> listSystemSelectTree(Long adminId) {
+    public List<SelectTreeResp> listSystemSelectTree(Long adminId) {
         List<Long> menuIds = null;
         if (!AdminInfoDO.isSuperAdmin(adminId)) {
             menuIds = this.listMenuIdByAdminId(adminId);
@@ -160,7 +160,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<SelectTreeVO> listTenantSelectTree(Long memberId) {
+    public List<SelectTreeResp> listTenantSelectTree(Long memberId) {
         List<Long> menuIds;
         Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
         if (tenantPackageId != null) {
@@ -181,7 +181,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<SelectTreeVO> listAllTenantSelectTree() {
+    public List<SelectTreeResp> listAllTenantSelectTree() {
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT.getValue())
@@ -190,7 +190,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<RouterVO> listSystemRoutes(Long adminId) {
+    public List<RouterResp> listSystemRoutes(Long adminId) {
         List<Long> menuIds = null;
         if (!AdminInfoDO.isSuperAdmin(adminId)) {
             menuIds = this.listMenuIdByAdminId(adminId);
@@ -203,7 +203,7 @@ public class MenuInfoServiceImpl implements MenuInfoService {
     }
 
     @Override
-    public List<RouterVO> listTenantRoutes(Long memberId) {
+    public List<RouterResp> listTenantRoutes(Long memberId) {
         // 去关联表中查绑定的菜单ID
         List<Long> menuIds;
         Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
@@ -246,8 +246,8 @@ public class MenuInfoServiceImpl implements MenuInfoService {
      * @param menus 菜单列表
      * @return 路由列表
      */
-    private List<RouterVO> buildRouter(@Nullable List<MenuInfoDO> menus) {
-        List<RouterVO> routers = new LinkedList<>();
+    private List<RouterResp> buildRouter(@Nullable List<MenuInfoDO> menus) {
+        List<RouterResp> routers = new LinkedList<>();
 
         if (CollectionUtils.isEmpty(menus)) {
             return routers;
@@ -260,12 +260,12 @@ public class MenuInfoServiceImpl implements MenuInfoService {
                 .toList();
 
         for (MenuInfoDO menu : sortedMenus) {
-            RouterVO router = new RouterVO();
+            RouterResp router = new RouterResp();
             router.setPath(menu.getPath());
             router.setComponent(menu.getComponent());
 
             // 构建meta信息
-            MetaVO meta = new MetaVO(
+            MetaResp meta = new MetaResp(
                     menu.getMenuName(),
                     menu.getMenuType(),
                     menu.getIcon(),
@@ -290,9 +290,9 @@ public class MenuInfoServiceImpl implements MenuInfoService {
         return routers;
     }
 
-    private List<SelectTreeVO> buildSelectTree(List<MenuInfoDO> menus) {
+    private List<SelectTreeResp> buildSelectTree(List<MenuInfoDO> menus) {
         List<MenuInfoDO> menuTrees = this.buildTree(menus);
-        return menuTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
+        return menuTrees.stream().map(SelectTreeResp::new).collect(Collectors.toList());
     }
 
     /**

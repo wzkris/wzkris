@@ -16,7 +16,7 @@ import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.req.EditStatusReq;
 import com.wzkris.usercenter.domain.req.post.PostMngQueryReq;
 import com.wzkris.usercenter.domain.req.post.PostMngReq;
-import com.wzkris.usercenter.domain.vo.CheckedSelectTreeVO;
+import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
 import com.wzkris.usercenter.mapper.PostInfoMapper;
 import com.wzkris.usercenter.mapper.PostToMenuMapper;
 import com.wzkris.usercenter.service.MenuInfoService;
@@ -79,13 +79,13 @@ public class PostMngController extends BaseController {
     @CheckTenantPerms(
             value = {"user-mod:post-mng:edit", "user-mod:post-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long postId) {
-        CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
-        checkedSelectTreeVO.setCheckedKeys(
+    public Result<CheckedSelectTreeResp> roleMenuSelectTree(@PathVariable(required = false) Long postId) {
+        CheckedSelectTreeResp checkedSelectTreeResp = new CheckedSelectTreeResp();
+        checkedSelectTreeResp.setCheckedKeys(
                 postId == null ? Collections.emptyList()
                         : postToMenuMapper.listMenuIdByPostIds(Collections.singletonList(postId)));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listTenantSelectTree(SecurityUtil.getUid()));
-        return ok(checkedSelectTreeVO);
+        checkedSelectTreeResp.setSelectTrees(menuInfoService.listTenantSelectTree(SecurityUtil.getUid()));
+        return ok(checkedSelectTreeResp);
     }
 
     @Operation(summary = "新增职位")

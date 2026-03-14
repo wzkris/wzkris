@@ -1,18 +1,18 @@
 package com.wzkris.usercenter.controller.member;
 
-import com.wzkris.auth.httpclient.captcha.CaptchaClient;
-import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.risk.httpclient.captcha.CaptchaClient;
+import com.wzkris.risk.httpclient.captcha.req.CaptchaSmsValidateReq;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.req.EditPhoneReq;
 import com.wzkris.usercenter.domain.req.EditPwdReq;
 import com.wzkris.usercenter.domain.req.member.MemberInfoReq;
-import com.wzkris.usercenter.domain.vo.member.MemberInfoVO;
+import com.wzkris.usercenter.domain.resp.member.MemberInfoResp;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
@@ -43,13 +43,13 @@ public class MemberInfoController extends BaseController {
 
     @Operation(summary = "账户信息")
     @GetMapping
-    public Result<MemberInfoVO> userinfo() {
+    public Result<MemberInfoResp> userinfo() {
         MemberInfoDO member = memberInfoMapper.selectById(SecurityUtil.getUid());
 
         if (member == null) {// 降级会走到这
             member = new MemberInfoDO();
         }
-        MemberInfoVO memberInfoVO = new MemberInfoVO();
+        MemberInfoResp memberInfoVO = new MemberInfoResp();
         memberInfoVO.setAdmin(SecurityUtil.isSuper());
         memberInfoVO.setUsername(member.getUsername());
         memberInfoVO.setAuthorities(SecurityUtil.getPermission());
@@ -65,9 +65,9 @@ public class MemberInfoController extends BaseController {
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping
-    public Result<Void> editInfo(@RequestBody MemberInfoReq profileReq) {
+    public Result<Void> editInfo(@RequestBody MemberInfoReq req) {
         MemberInfoDO memberInfoDO = new MemberInfoDO(SecurityUtil.getUid());
-        memberInfoDO.setGender(profileReq.getGender());
+        memberInfoDO.setGender(req.getGender());
         return toRes(memberInfoMapper.updateById(memberInfoDO));
     }
 
@@ -81,8 +81,10 @@ public class MemberInfoController extends BaseController {
             return requestFail("该手机号已被使用");
         }
         // 验证
-        CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq(memberInfoMapper.selectPhoneNumberById(memberId), req.getSmsCode());
-        Result<Boolean> captchaResult = captchaClient.validateCaptcha(captchaCheckReq);
+        CaptchaSmsValidateReq captchaCheckReq = new CaptchaSmsValidateReq();
+        captchaCheckReq.setPhone(memberInfoMapper.selectPhoneNumberById(memberId));
+        captchaCheckReq.setCode(req.getSmsCode());
+        Result<Boolean> captchaResult = captchaClient.validateSms(captchaCheckReq);
         if (!ResultUtil.check(captchaResult) || !Boolean.TRUE.equals(captchaResult.getData())) {
             return requestFail("验证码错误");
         }

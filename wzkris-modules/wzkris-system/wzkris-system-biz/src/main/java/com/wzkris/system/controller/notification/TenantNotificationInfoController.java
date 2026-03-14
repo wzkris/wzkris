@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.system.domain.vo.notification.NotificationInfoVO;
+import com.wzkris.system.domain.resp.notification.NotificationInfoResp;
 import com.wzkris.system.mapper.NotificationInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,9 +23,9 @@ public class TenantNotificationInfoController extends BaseController {
 
     @Operation(summary = "通知分页")
     @GetMapping("/page")
-    public Result<Page<NotificationInfoVO>> page(String read, String notificationType) {
+    public Result<Page<NotificationInfoResp>> page(String read, String notificationType) {
         startPage();
-        List<NotificationInfoVO> list = notificationInfoMapper.listTenantNotice(SecurityUtil.getUid(), notificationType, read);
+        List<NotificationInfoResp> list = notificationInfoMapper.listTenantNotice(SecurityUtil.getUid(), notificationType, read);
         return getDataTable(list);
     }
 

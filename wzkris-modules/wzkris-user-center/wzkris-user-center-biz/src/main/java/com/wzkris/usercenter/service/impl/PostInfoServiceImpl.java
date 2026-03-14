@@ -8,7 +8,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.PostToMenuDO;
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.mapper.MemberToPostMapper;
 import com.wzkris.usercenter.mapper.PostInfoMapper;
 import com.wzkris.usercenter.mapper.PostToMenuMapper;
@@ -61,14 +61,14 @@ public class PostInfoServiceImpl implements PostInfoService {
     }
 
     @Override
-    public List<SelectVO> listSelect(String postName) {
+    public List<SelectResp> listSelect(String postName) {
         return postInfoMapper.selectList(Wrappers.lambdaQuery(PostInfoDO.class)
                         .select(PostInfoDO::getPostId, PostInfoDO::getPostName)
                         .eq(PostInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
                         .like(StringUtil.isNotBlank(postName), PostInfoDO::getPostName, postName)
                         .orderByAsc(PostInfoDO::getPostId))
                 .stream()
-                .map(SelectVO::new)
+                .map(SelectResp::new)
                 .collect(Collectors.toList());
     }
 

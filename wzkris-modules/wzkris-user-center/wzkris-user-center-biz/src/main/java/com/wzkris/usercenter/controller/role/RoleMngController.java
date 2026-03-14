@@ -18,9 +18,9 @@ import com.wzkris.usercenter.domain.req.admin.AdminMngQueryReq;
 import com.wzkris.usercenter.domain.req.role.RoleMngQueryReq;
 import com.wzkris.usercenter.domain.req.role.RoleMngReq;
 import com.wzkris.usercenter.domain.req.role.RoleToAdminsReq;
-import com.wzkris.usercenter.domain.vo.CheckedSelectTreeVO;
-import com.wzkris.usercenter.domain.vo.CheckedSelectVO;
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
+import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.manager.AdminInfoDscManager;
 import com.wzkris.usercenter.manager.DeptInfoDscManager;
 import com.wzkris.usercenter.manager.RoleInfoDscManager;
@@ -98,15 +98,15 @@ public class RoleMngController extends BaseController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeVO> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
+    public Result<CheckedSelectTreeResp> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleInfoDscManager.checkDataScopes(roleId);
-        CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
-        checkedSelectTreeVO.setCheckedKeys(
+        CheckedSelectTreeResp checkedSelectTreeResp = new CheckedSelectTreeResp();
+        checkedSelectTreeResp.setCheckedKeys(
                 roleId == null ? Collections.emptyList()
                         : roleToMenuMapper.listMenuIdByRoleIds(Collections.singletonList(roleId)));
-        checkedSelectTreeVO.setSelectTrees(menuInfoService.listSystemSelectTree(SecurityUtil.getUid()));
-        return ok(checkedSelectTreeVO);
+        checkedSelectTreeResp.setSelectTrees(menuInfoService.listSystemSelectTree(SecurityUtil.getUid()));
+        return ok(checkedSelectTreeResp);
     }
 
     @Operation(summary = "角色-部门选择树")
@@ -114,14 +114,14 @@ public class RoleMngController extends BaseController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeVO> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
+    public Result<CheckedSelectTreeResp> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
         // 权限校验
         roleInfoDscManager.checkDataScopes(roleId);
-        CheckedSelectTreeVO checkedSelectTreeVO = new CheckedSelectTreeVO();
-        checkedSelectTreeVO.setCheckedKeys(
+        CheckedSelectTreeResp checkedSelectTreeResp = new CheckedSelectTreeResp();
+        checkedSelectTreeResp.setCheckedKeys(
                 roleId == null ? Collections.emptyList() : deptInfoDscManager.listDeptIdByRoleId(roleId));
-        checkedSelectTreeVO.setSelectTrees(deptInfoDscManager.listSelectTree(null));
-        return ok(checkedSelectTreeVO);
+        checkedSelectTreeResp.setSelectTrees(deptInfoDscManager.listSelectTree(null));
+        return ok(checkedSelectTreeResp);
     }
 
     @Operation(summary = "角色-继承选择列表")
@@ -129,13 +129,13 @@ public class RoleMngController extends BaseController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectVO> roleInheritedSelect(@PathVariable(required = false) Long roleId) {
+    public Result<CheckedSelectResp> roleInheritedSelect(@PathVariable(required = false) Long roleId) {
         roleInfoDscManager.checkDataScopes(roleId);
-        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
-        checkedSelectVO.setCheckedKeys(roleId == null ?
+        CheckedSelectResp checkedSelectResp = new CheckedSelectResp();
+        checkedSelectResp.setCheckedKeys(roleId == null ?
                 Collections.emptyList() : roleInfoDscMapper.listChildrenIdByRoleId(roleId));
-        checkedSelectVO.setSelects(roleInfoDscManager.listChildrenSelect(roleId));
-        return ok(checkedSelectVO);
+        checkedSelectResp.setSelects(roleInfoDscManager.listChildrenSelect(roleId));
+        return ok(checkedSelectResp);
     }
 
     @Operation(summary = "新增角色")
@@ -188,22 +188,22 @@ public class RoleMngController extends BaseController {
     @Operation(summary = "已授权的用户列表")
     @GetMapping("/authorized-admin-list")
     @CheckAdminPerms("user-mod:role-mng:grant-admin")
-    public Result<Page<SelectVO>> allocatedList(AdminMngQueryReq queryReq, Long roleId) {
+    public Result<Page<SelectResp>> allocatedList(AdminMngQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleInfoDscManager.checkDataScopes(roleId);
         startPage();
-        List<SelectVO> list = adminInfoDscManager.listAllocated(queryReq, roleId);
+        List<SelectResp> list = adminInfoDscManager.listAllocated(queryReq, roleId);
         return getDataTable(list);
     }
 
     @Operation(summary = "未授权的用户列表")
     @GetMapping("/unauthorized-admin-list")
     @CheckAdminPerms("user-mod:role-mng:grant-admin")
-    public Result<Page<SelectVO>> unallocatedList(AdminMngQueryReq queryReq, Long roleId) {
+    public Result<Page<SelectResp>> unallocatedList(AdminMngQueryReq queryReq, Long roleId) {
         // 校验角色权限
         roleInfoDscManager.checkDataScopes(roleId);
         startPage();
-        List<SelectVO> list = adminInfoDscManager.listUnallocated(queryReq, roleId);
+        List<SelectResp> list = adminInfoDscManager.listUnallocated(queryReq, roleId);
         return getDataTable(list);
     }
 

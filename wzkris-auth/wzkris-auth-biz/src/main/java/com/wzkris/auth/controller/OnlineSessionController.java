@@ -1,7 +1,7 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.OnlineSession;
-import com.wzkris.auth.domain.vo.OnlineSessionVO;
+import com.wzkris.auth.domain.resp.OnlineSessionResp;
 import com.wzkris.auth.security.oauth2.customize.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -37,17 +37,17 @@ public class OnlineSessionController {
      */
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineSessionVO>> onlineSession() {
+    public Result<Collection<OnlineSessionResp>> onlineSession() {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
         Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
         TokenClaims claims = tokenService.parseJwt(SecurityUtil.getTokenValue());
         String sid = claims.getSid();
 
-        List<OnlineSessionVO> resps = new ArrayList<>();
+        List<OnlineSessionResp> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
             String sessionSid = entry.getKey();
-            OnlineSessionVO userResp = new OnlineSessionVO(entry.getValue());
+            OnlineSessionResp userResp = new OnlineSessionResp(entry.getValue());
             userResp.setSid(sessionSid);
             if (StringUtil.equals(sid, sessionSid)) {
                 userResp.setCurrent(true);

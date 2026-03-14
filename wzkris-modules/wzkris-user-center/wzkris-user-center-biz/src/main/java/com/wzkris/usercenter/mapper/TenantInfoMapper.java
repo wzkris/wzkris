@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.domain.vo.tenant.TenantInfoVO;
-import com.wzkris.usercenter.domain.vo.tenant.TenantMngVO;
+import com.wzkris.usercenter.domain.resp.tenant.TenantInfoResp;
+import com.wzkris.usercenter.domain.resp.tenant.TenantMngResp;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -30,7 +30,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             LEFT JOIN biz.tenant_wallet_info w ON t.tenant_id = w.tenant_id
             ${ew.customSqlSegment}
             """)
-    List<TenantMngVO> selectVOList(@Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
+    List<TenantMngResp> selectVOList(@Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
 
     /**
      * 根据用户ID查询套餐ID，如果查到则说明是租户最高管理员
@@ -45,7 +45,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
              SELECT t.*, p.package_name FROM biz.tenant_info t LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
                         WHERE t.tenant_id = #{tenantId}
             """)
-    TenantInfoVO selectVOById(Long tenantId);
+    TenantInfoResp selectVOById(Long tenantId);
 
     @Select("SELECT EXISTS(SELECT * FROM biz.tenant_info WHERE administrator = #{memberId})")
     boolean selectExistAdministrator(Long memberId);

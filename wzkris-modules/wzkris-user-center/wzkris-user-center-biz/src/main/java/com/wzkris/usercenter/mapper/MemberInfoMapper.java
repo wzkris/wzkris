@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.MemberInfoDO;
-import com.wzkris.usercenter.domain.vo.member.MemberMngVO;
+import com.wzkris.usercenter.domain.resp.member.MemberMngResp;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -22,7 +22,7 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
                     		 LEFT JOIN biz.post_info p ON sp.post_id = p.post_id AND p.status = '0'
                     ${ew.customSqlSegment} GROUP BY s.member_id ORDER BY s.member_id DESC
             """)
-    List<MemberMngVO> listVO(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
+    List<MemberMngResp> listVO(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
 
     /**
      * 通过用户名查询租户成员

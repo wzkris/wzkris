@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service;
 
-import com.wzkris.usercenter.domain.vo.RouterVO;
-import com.wzkris.usercenter.domain.vo.SelectTreeVO;
+import com.wzkris.usercenter.domain.resp.RouterResp;
+import com.wzkris.usercenter.domain.resp.SelectTreeResp;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public interface MenuInfoService {
      * @param adminId 管理员ID
      * @return 菜单列表
      */
-    List<SelectTreeVO> listSystemSelectTree(Long adminId);
+    List<SelectTreeResp> listSystemSelectTree(Long adminId);
 
     /**
      * 查询租户菜单选择树
@@ -59,14 +59,14 @@ public interface MenuInfoService {
      * @param memberId 成员ID
      * @return 菜单列表
      */
-    List<SelectTreeVO> listTenantSelectTree(Long memberId);
+    List<SelectTreeResp> listTenantSelectTree(Long memberId);
 
     /**
      * 查询所有租户菜单选择树
      *
      * @return 菜单列表
      */
-    List<SelectTreeVO> listAllTenantSelectTree();
+    List<SelectTreeResp> listAllTenantSelectTree();
 
     /**
      * 根据管理员ID查询系统路由
@@ -74,7 +74,7 @@ public interface MenuInfoService {
      * @param adminId 管理员ID
      * @return 前端路由
      */
-    List<RouterVO> listSystemRoutes(Long adminId);
+    List<RouterResp> listSystemRoutes(Long adminId);
 
     /**
      * 根据租户成员ID查询租户路由
@@ -82,7 +82,7 @@ public interface MenuInfoService {
      * @param memberId 成员ID
      * @return 前端路由
      */
-    List<RouterVO> listTenantRoutes(Long memberId);
+    List<RouterResp> listTenantRoutes(Long memberId);
 
     /**
      * 查询管理员对应菜单id

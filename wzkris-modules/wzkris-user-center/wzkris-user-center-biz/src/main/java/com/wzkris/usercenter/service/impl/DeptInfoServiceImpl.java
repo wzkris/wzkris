@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service.impl;
 
 import com.wzkris.usercenter.domain.DeptInfoDO;
-import com.wzkris.usercenter.domain.vo.SelectTreeVO;
+import com.wzkris.usercenter.domain.resp.SelectTreeResp;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
 import com.wzkris.usercenter.service.DeptInfoService;
@@ -30,9 +30,9 @@ public class DeptInfoServiceImpl implements DeptInfoService {
 
     private final RoleToDeptMapper roleToDeptMapper;
 
-    public List<SelectTreeVO> buildSelectTree(List<DeptInfoDO> depts) {
+    public List<SelectTreeResp> buildSelectTree(List<DeptInfoDO> depts) {
         List<DeptInfoDO> deptTrees = this.buildDeptTree(depts);
-        return deptTrees.stream().map(SelectTreeVO::new).collect(Collectors.toList());
+        return deptTrees.stream().map(SelectTreeResp::new).collect(Collectors.toList());
     }
 
     /**

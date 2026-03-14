@@ -21,9 +21,9 @@ import com.wzkris.usercenter.domain.req.ResetPwdReq;
 import com.wzkris.usercenter.domain.req.admin.AdminMngQueryReq;
 import com.wzkris.usercenter.domain.req.admin.AdminMngReq;
 import com.wzkris.usercenter.domain.req.admin.AdminToRolesReq;
-import com.wzkris.usercenter.domain.vo.CheckedSelectVO;
-import com.wzkris.usercenter.domain.vo.SelectTreeVO;
-import com.wzkris.usercenter.domain.vo.admin.AdminMngVO;
+import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
+import com.wzkris.usercenter.domain.resp.SelectTreeResp;
+import com.wzkris.usercenter.domain.resp.admin.AdminMngResp;
 import com.wzkris.usercenter.listener.event.CreateAdminEvent;
 import com.wzkris.usercenter.manager.AdminInfoDscManager;
 import com.wzkris.usercenter.manager.DeptInfoDscManager;
@@ -74,9 +74,9 @@ public class AdminMngController extends BaseController {
     @Operation(summary = "管理员分页列表")
     @GetMapping("/page")
     @CheckAdminPerms("user-mod:admin-mng:page")
-    public Result<Page<AdminMngVO>> page(AdminMngQueryReq queryReq) {
+    public Result<Page<AdminMngResp>> page(AdminMngQueryReq queryReq) {
         startPage();
-        List<AdminMngVO> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
+        List<AdminMngResp> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -100,7 +100,7 @@ public class AdminMngController extends BaseController {
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
-    public Result<List<SelectTreeVO>> deptSelectTree(String deptName) {
+    public Result<List<SelectTreeResp>> deptSelectTree(String deptName) {
         return ok(deptInfoDscManager.listSelectTree(deptName));
     }
 
@@ -109,12 +109,12 @@ public class AdminMngController extends BaseController {
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectVO> roleSelect(@PathVariable(required = false) Long adminId, String roleName) {
+    public Result<CheckedSelectResp> roleSelect(@PathVariable(required = false) Long adminId, String roleName) {
         adminInfoDscManager.checkDataScopes(adminId);
-        CheckedSelectVO checkedSelectVO = new CheckedSelectVO();
-        checkedSelectVO.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listIdByAdminId(adminId));
-        checkedSelectVO.setSelects(roleInfoDscManager.listSelect(roleName));
-        return ok(checkedSelectVO);
+        CheckedSelectResp checkedSelectResp = new CheckedSelectResp();
+        checkedSelectResp.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listIdByAdminId(adminId));
+        checkedSelectResp.setSelects(roleInfoDscManager.listSelect(roleName));
+        return ok(checkedSelectResp);
     }
 
     @Operation(summary = "管理员详细信息")
@@ -219,7 +219,7 @@ public class AdminMngController extends BaseController {
     @GetMapping("/export")
     @CheckAdminPerms("user-mod:admin-mng:export")
     public void export(HttpServletResponse response, AdminMngQueryReq queryReq) {
-        List<AdminMngVO> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
+        List<AdminMngResp> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
         List<AdminInfoExport> convert = BeanUtil.convert(list, AdminInfoExport.class);
         ExcelUtil.exportExcel(convert, "后台管理员数据", AdminInfoExport.class, false, response, null);
     }

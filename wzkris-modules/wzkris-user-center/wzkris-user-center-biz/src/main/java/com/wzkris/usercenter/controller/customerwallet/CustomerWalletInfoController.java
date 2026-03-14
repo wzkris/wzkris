@@ -8,7 +8,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
 import com.wzkris.usercenter.domain.req.customerwallet.CustomerWalletRecordQueryReq;
-import com.wzkris.usercenter.domain.vo.customerwallet.CustomerWalletInfoVO;
+import com.wzkris.usercenter.domain.resp.customerwallet.CustomerWalletInfoResp;
 import com.wzkris.usercenter.mapper.CustomerWalletInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,8 +41,8 @@ public class CustomerWalletInfoController extends BaseController {
 
     @Operation(summary = "余额信息")
     @GetMapping
-    public Result<CustomerWalletInfoVO> walletInfo() {
-        return ok(customerWalletInfoMapper.selectById2VO(SecurityUtil.getUid(), CustomerWalletInfoVO.class));
+    public Result<CustomerWalletInfoResp> walletInfo() {
+        return ok(customerWalletInfoMapper.selectById2VO(SecurityUtil.getUid(), CustomerWalletInfoResp.class));
     }
 
     @Operation(summary = "钱包记录")

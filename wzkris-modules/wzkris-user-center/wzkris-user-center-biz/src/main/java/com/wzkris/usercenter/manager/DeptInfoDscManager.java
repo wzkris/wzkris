@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.DeptInfoDO;
-import com.wzkris.usercenter.domain.vo.SelectTreeVO;
+import com.wzkris.usercenter.domain.resp.SelectTreeResp;
 import com.wzkris.usercenter.mapper.datascope.DeptInfoDscMapper;
 import com.wzkris.usercenter.service.DeptInfoService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class DeptInfoDscManager {
      * @param deptName 筛选条件
      * @return 部门树信息集合
      */
-    public List<SelectTreeVO> listSelectTree(String deptName) {
+    public List<SelectTreeResp> listSelectTree(String deptName) {
         LambdaQueryWrapper<DeptInfoDO> lqw = Wrappers.lambdaQuery(DeptInfoDO.class)
                 .select(DeptInfoDO::getDeptId, DeptInfoDO::getParentId, DeptInfoDO::getDeptName)
                 .like(StringUtil.isNotEmpty(deptName), DeptInfoDO::getDeptName, deptName);

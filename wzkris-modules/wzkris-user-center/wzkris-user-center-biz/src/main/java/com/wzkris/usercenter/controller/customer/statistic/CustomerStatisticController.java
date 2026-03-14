@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.customer.statistic;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.usercenter.domain.req.customer.CustomerIncryQueryReq;
-import com.wzkris.usercenter.domain.vo.customer.CustomerIncryVO;
+import com.wzkris.usercenter.domain.resp.customer.CustomerIncryResp;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ public class CustomerStatisticController extends BaseController {
 
     @Operation(summary = "查询增长速度")
     @GetMapping("/customer/increase_rate")
-    public Result<List<CustomerIncryVO>> increase_rate_per_day(@Valid CustomerIncryQueryReq queryReq) {
+    public Result<List<CustomerIncryResp>> increase_rate_per_day(@Valid CustomerIncryQueryReq queryReq) {
         return ok(customerInfoMapper.listIncryVO(queryReq));
     }
 

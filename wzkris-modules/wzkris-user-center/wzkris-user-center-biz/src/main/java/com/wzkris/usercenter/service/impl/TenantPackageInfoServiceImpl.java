@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
-import com.wzkris.usercenter.domain.vo.SelectVO;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
@@ -25,13 +25,13 @@ public class TenantPackageInfoServiceImpl implements TenantPackageInfoService {
     private final TenantPackageInfoMapper tenantPackageInfoMapper;
 
     @Override
-    public List<SelectVO> listSelect(String packageName) {
+    public List<SelectResp> listSelect(String packageName) {
         LambdaQueryWrapper<TenantPackageInfoDO> lqw = new LambdaQueryWrapper<TenantPackageInfoDO>()
                 .select(TenantPackageInfoDO::getPackageId, TenantPackageInfoDO::getPackageName)
                 .eq(TenantPackageInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
                 .like(StringUtil.isNotBlank(packageName), TenantPackageInfoDO::getPackageName, packageName)
                 .orderByAsc(TenantPackageInfoDO::getPackageId);
-        return tenantPackageInfoMapper.selectList(lqw).stream().map(SelectVO::new).toList();
+        return tenantPackageInfoMapper.selectList(lqw).stream().map(SelectResp::new).toList();
     }
 
     @Override
