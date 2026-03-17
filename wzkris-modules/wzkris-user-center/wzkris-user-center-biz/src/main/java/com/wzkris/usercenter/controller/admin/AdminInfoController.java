@@ -7,8 +7,8 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.risk.httpclient.captcha.CaptchaClient;
-import com.wzkris.risk.httpclient.captcha.req.CaptchaSmsValidateReq;
+import com.wzkris.captcha.httpclient.common.CaptchaClient;
+import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.req.EditPhoneReq;
 import com.wzkris.usercenter.domain.req.EditPwdReq;
@@ -120,10 +120,10 @@ public class AdminInfoController extends BaseController {
             return requestFail("该手机号已被使用");
         }
         // 验证
-        CaptchaSmsValidateReq captchaCheckReq = new CaptchaSmsValidateReq();
-        captchaCheckReq.setPhone(adminInfoMapper.selectPhoneNumberById(adminId));
-        captchaCheckReq.setCode(req.getSmsCode());
-        Result<Boolean> captchaResult = captchaClient.validateSms(captchaCheckReq);
+        CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq();
+        captchaCheckReq.setKey(adminInfoMapper.selectPhoneNumberById(adminId));
+        captchaCheckReq.setValue(req.getSmsCode());
+        Result<Boolean> captchaResult = captchaClient.check(captchaCheckReq);
         if (!ResultUtil.check(captchaResult) || !Boolean.TRUE.equals(captchaResult.getData())) {
             return requestFail("验证码错误");
         }

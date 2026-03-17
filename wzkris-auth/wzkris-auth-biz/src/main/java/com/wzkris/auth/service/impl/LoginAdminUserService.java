@@ -4,7 +4,6 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.listener.event.LoginEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.auth.service.AuthRiskFacade;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -40,8 +39,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LoginAdminUserService implements LoginUserService {
 
-    private final AuthRiskFacade authRiskFacade;
-
     private final AdminInfoClient adminInfoClient;
 
     private final PasswordEncoder passwordEncoder;
@@ -52,7 +49,6 @@ public class LoginAdminUserService implements LoginUserService {
         Result<AdminInfoResp> userResult = adminInfoClient.getByPhoneNumber(phoneNumber);
 
         if (!ResultUtil.check(userResult)) {
-            authRiskFacade.recordLookupFailed(AuthTypeEnum.ADMIN, phoneNumber);
             return null;
         }
         AdminInfoResp userResp = userResult.getData();
@@ -71,7 +67,6 @@ public class LoginAdminUserService implements LoginUserService {
         Result<AdminInfoResp> userResult = adminInfoClient.getByUsername(username);
 
         if (!ResultUtil.check(userResult)) {
-            authRiskFacade.recordLookupFailed(AuthTypeEnum.ADMIN, username);
             return null;
         }
         AdminInfoResp userResp = userResult.getData();

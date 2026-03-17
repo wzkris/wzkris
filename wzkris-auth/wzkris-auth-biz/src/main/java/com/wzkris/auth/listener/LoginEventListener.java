@@ -1,7 +1,6 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.service.AuthRiskFacade;
 import com.wzkris.auth.service.impl.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
@@ -48,8 +47,6 @@ public class LoginEventListener {
 
     private final CustomerInfoClient customerInfoClient;
 
-    private final AuthRiskFacade authRiskFacade;
-
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
@@ -93,7 +90,6 @@ public class LoginEventListener {
         loginLogEvent.setRiskLevel(riskResult.riskLevel().getValue());
         loginLogEvent.setRiskScore(riskResult.riskScore());
         loginLogClient.save(Collections.singletonList(loginLogEvent));
-        authRiskFacade.reportLoginEvent(event, loginUser, resolveUsername(loginUser));
         reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
     }
 

@@ -64,10 +64,10 @@
             <artifactId>wzkris-auth-api</artifactId>
         </dependency>
 
-        <!--风控rpc服务-->
+        <!--rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-risk-api</artifactId>
+            <artifactId>wzkris-captcha-api</artifactId>
         </dependency>
 
         <!--用户rpc服务-->

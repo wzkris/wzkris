@@ -13,6 +13,6 @@ public class ServiceContextPathConstant {
 
     public static final String SYSTEM = "/wzkris-system-api";
 
-    public static final String RISK = "/wzkris-risk-api";
+    public static final String RISK = "/wzkris-captcha-api";
 
 }

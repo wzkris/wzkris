@@ -4,12 +4,15 @@ import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.auth.service.AuthRiskFacade;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.enums.BizBaseCodeEnum;
+import com.wzkris.captcha.httpclient.challenge.CaptchaChallengeClient;
+import com.wzkris.captcha.httpclient.challenge.req.ValidateChallengeReq;
+import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
+import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
-import com.wzkris.risk.httpclient.riskctl.resp.RiskDecisionResp;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -25,21 +28,17 @@ import java.util.Optional;
 @Component // 注册成bean方便引用
 public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider {
 
-    private static final int BIZ_RISK_CAPTCHA_REQUIRED = 409_001;
-
-    private static final int BIZ_RISK_BLOCKED = 409_004;
-
     private final List<LoginUserService> loginUserServices;
 
-    private final AuthRiskFacade authRiskFacade;
+    private final CaptchaChallengeClient captchaChallengeClient;
 
     public PasswordAuthenticationProvider(
             TokenService tokenService,
             List<LoginUserService> loginUserServices,
-            AuthRiskFacade authRiskFacade) {
+            CaptchaChallengeClient captchaChallengeClient) {
         super(tokenService);
         this.loginUserServices = loginUserServices;
-        this.authRiskFacade = authRiskFacade;
+        this.captchaChallengeClient = captchaChallengeClient;
     }
 
     @Override
@@ -58,15 +57,12 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        RiskDecisionResp decision = authRiskFacade.decidePassword(authenticationToken);
-        if (decision == null) {
-            OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.SYSTEM_ERROR.value(), "service.internalError.error");
-        }
-        if ("BLOCK".equals(decision.getDecision())) {
-            OAuth2ExceptionUtil.throwError(BIZ_RISK_BLOCKED, decision.getMessage());
-        }
-        if ("CAPTCHA".equals(decision.getDecision())) {
-            OAuth2ExceptionUtil.throwError(BIZ_RISK_CAPTCHA_REQUIRED, decision.getMessage());
+        Result<Boolean> booleanResult = captchaChallengeClient.validateChallenge(new ValidateChallengeReq(authenticationToken.getCaptchaId()));
+        boolean pass = ResultUtil.check(booleanResult) && Boolean.TRUE.equals(booleanResult.getData());
+
+        if (!pass) {
+            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
+                    "invalidParameter.captcha.error");
         }
 
         CommonAuthenticationToken token = templateOptional.get().loadByUsernameAndPassword(
