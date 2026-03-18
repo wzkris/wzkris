@@ -3,7 +3,6 @@ package com.wzkris.gateway.config;
 import com.wzkris.gateway.filter.function.ApicallStatFilterFunction;
 import com.wzkris.gateway.filter.function.RouteDecisionFilterFunction;
 import com.wzkris.gateway.filter.function.SecurityContextFilterFunction;
-import com.wzkris.gateway.filter.function.XssFilterFunction;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +26,6 @@ public class GatewayConfiguration {
             ObjectProvider<RouterFunction<ServerResponse>> routerProvider,
             SecurityContextFilterFunction securityContextFilterFunction,
             RouteDecisionFilterFunction routeDecisionFilterFunction,
-            XssFilterFunction xssFilterFunction,
             ApicallStatFilterFunction apicallStatFilterFunction) {
         RouterFunction<ServerResponse> router = routerProvider.getIfUnique();
         if (router == null) {
@@ -36,7 +34,6 @@ public class GatewayConfiguration {
         return router
                 .filter(securityContextFilterFunction)
                 .filter(routeDecisionFilterFunction)
-                .filter(xssFilterFunction)
                 .filter(apicallStatFilterFunction);
     }
 

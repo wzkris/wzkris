@@ -5,7 +5,6 @@ import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.gateway.filter.BlacklistUrlsFilter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.Authentication;
@@ -20,7 +19,6 @@ import java.util.Set;
 
 /**
  * 仅负责将 SecurityContext 中的身份/权限追加为请求头，供下游使用。
- * 白名单与 Token 校验已由 Servlet 层 {@link BlacklistUrlsFilter} 完成并设置 SecurityContext。
  *
  * @author wzkris
  */

@@ -9,19 +9,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "验证码")
 @Validated
 @RestController
-@RequestMapping("/captcha/challenge")
+@RequestMapping("/captcha")
 @RequiredArgsConstructor
 public class CaptchaChallengeController {
 
     private final ChallengeService challengeService;
 
     @Operation(summary = "获取挑战")
-    @GetMapping
+    @PostMapping("/challenge")
     public ChallengeData challenge() {
         return challengeService.createChallenge();
     }

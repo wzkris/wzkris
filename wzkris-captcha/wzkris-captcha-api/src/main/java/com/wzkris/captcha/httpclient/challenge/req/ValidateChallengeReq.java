@@ -2,8 +2,10 @@ package com.wzkris.captcha.httpclient.challenge.req;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ValidateChallengeReq {
 
     @NotBlank

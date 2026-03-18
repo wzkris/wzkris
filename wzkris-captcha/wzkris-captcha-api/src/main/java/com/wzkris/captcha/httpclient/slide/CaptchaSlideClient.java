@@ -6,7 +6,9 @@ import com.wzkris.common.httpclient.annotation.HttpClient;
 import com.wzkris.common.httpclient.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpclient.constants.ServiceIdConstant;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
+import org.springframework.web.service.annotation.PostExchange;
 
 @HttpClient(
         serviceId = ServiceIdConstant.CAPTCHA,
@@ -15,6 +17,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 @HttpExchange(url = "/captcha-slide-client")
 public interface CaptchaSlideClient {
 
-    Result<Boolean> validateSlide(@Validated SlideCaptchaReq req);
+    @PostExchange("/validate")
+    Result<Boolean> validateSlide(@Validated @RequestBody SlideCaptchaReq req);
 
 }
