@@ -46,7 +46,7 @@ CREATE TABLE biz.admin_login_log (
     error_msg character varying(50) NOT NULL,
     login_ip inet NOT NULL,
     login_location character varying(50) NOT NULL,
-    login_time timestamp(6) with time zone NOT NULL,
+    login_time timestamp(0) with time zone NOT NULL,
     trace_id character varying(64) NOT NULL,
     user_agent character varying(200) NOT NULL,
     abnormal_tags character varying(64) NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE biz.admin_operate_log (
     json_result text,
     success boolean NOT NULL,
     error_msg text,
-    oper_time timestamp with time zone NOT NULL
+    oper_time timestamp(0) with time zone NOT NULL
 );
 
 
@@ -330,8 +330,8 @@ CREATE TABLE biz.announcement_info (
     status character(1) NOT NULL,
     creator_id bigint NOT NULL,
     updater_id bigint,
-    create_at timestamp with time zone,
-    update_at timestamp with time zone,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -441,9 +441,9 @@ CREATE TABLE biz.config_info (
     config_type character(1) NOT NULL,
     built_in boolean DEFAULT false NOT NULL,
     creator_id bigint NOT NULL,
-    create_at timestamp with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     updater_id bigint,
-    update_at timestamp with time zone,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -535,8 +535,8 @@ CREATE TABLE biz.dictionary_info (
     remark text,
     creator_id bigint NOT NULL,
     updater_id bigint,
-    create_at timestamp(6) with time zone NOT NULL,
-    update_at timestamp(6) with time zone,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -643,7 +643,7 @@ CREATE TABLE biz.notification_info (
     notification_type character(1) NOT NULL,
     title character varying(32) NOT NULL,
     content text NOT NULL,
-    create_at timestamp with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     creator_id bigint NOT NULL
 );
 
@@ -819,7 +819,7 @@ CREATE TABLE biz.tenant_login_log (
     error_msg character varying(50) NOT NULL,
     login_ip inet NOT NULL,
     login_location character varying(50) NOT NULL,
-    login_time timestamp(6) with time zone NOT NULL,
+    login_time timestamp(0) with time zone NOT NULL,
     trace_id character varying(64) NOT NULL,
     user_agent character varying(200) NOT NULL,
     abnormal_tags character varying(64) NOT NULL,
@@ -942,7 +942,7 @@ CREATE TABLE biz.tenant_operate_log (
     json_result text,
     success boolean NOT NULL,
     error_msg text,
-    oper_time timestamp(6) with time zone NOT NULL
+    oper_time timestamp(0) with time zone NOT NULL
 );
 
 
@@ -1119,8 +1119,8 @@ CREATE TABLE biz.user_chat_message (
     chat_id bigint NOT NULL,
     receiver_id bigint NOT NULL,
     sender_id bigint NOT NULL,
-    send_time timestamp with time zone NOT NULL,
-    receive_time timestamp with time zone,
+    send_time timestamp(0) with time zone NOT NULL,
+    receive_time timestamp(0) with time zone,
     read boolean DEFAULT false NOT NULL,
     message_type character varying(10) NOT NULL,
     content bytea NOT NULL,

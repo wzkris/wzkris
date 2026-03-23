@@ -58,12 +58,12 @@ CREATE TABLE biz.admin_info (
     avatar character varying(150),
     password character varying(100),
     login_ip inet,
-    login_date timestamp with time zone,
+    login_date timestamp(0) with time zone,
     remark character varying(64),
     creator_id bigint NOT NULL,
     updater_id bigint,
-    create_at timestamp with time zone NOT NULL,
-    update_at timestamp with time zone,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -276,11 +276,11 @@ CREATE TABLE biz.customer_info (
     gender character(1) DEFAULT 2 NOT NULL,
     avatar character varying(150),
     login_ip inet,
-    login_date timestamp(6) with time zone,
+    login_date timestamp(0) with time zone,
     creator_id bigint NOT NULL,
     updater_id bigint,
-    create_at timestamp(6) with time zone NOT NULL,
-    update_at timestamp(6) with time zone,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -487,7 +487,7 @@ CREATE TABLE biz.customer_wallet_record (
     customer_id bigint NOT NULL,
     amount numeric(10,2) NOT NULL,
     record_type character(1) NOT NULL,
-    create_at timestamp(6) with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     remark character varying(100)
 );
 
@@ -564,8 +564,8 @@ CREATE TABLE biz.dept_info (
     email character varying(50),
     creator_id bigint NOT NULL,
     updater_id bigint,
-    create_at timestamp with time zone NOT NULL,
-    update_at timestamp with time zone,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -695,12 +695,12 @@ CREATE TABLE biz.member_info (
     avatar character varying(150),
     password character varying(100),
     login_ip inet,
-    login_date timestamp(6) with time zone,
+    login_date timestamp(0) with time zone,
     remark character varying(64),
     creator_id bigint NOT NULL,
     updater_id bigint,
-    create_at timestamp(6) with time zone NOT NULL,
-    update_at timestamp(6) with time zone,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -945,8 +945,8 @@ CREATE TABLE biz.menu_info (
     scope character varying(10) NOT NULL,
     creator_id bigint,
     updater_id bigint,
-    create_at timestamp with time zone,
-    update_at timestamp with time zone,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -1121,9 +1121,9 @@ CREATE TABLE biz.oauth2_client (
     redirect_uris text[] DEFAULT '{}'::text[] NOT NULL,
     status character(1) NOT NULL,
     auto_approve boolean NOT NULL,
-    create_at timestamp(6) with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     creator_id bigint NOT NULL,
-    update_at timestamp(6) with time zone,
+    update_at timestamp(0) with time zone,
     updater_id bigint,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
@@ -1232,9 +1232,9 @@ CREATE TABLE biz.post_info (
     post_name character varying(20) NOT NULL,
     status character(1) NOT NULL,
     post_sort smallint NOT NULL,
-    create_at timestamp(6) with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     creator_id bigint NOT NULL,
-    update_at timestamp(6) with time zone,
+    update_at timestamp(0) with time zone,
     updater_id bigint,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
@@ -1357,9 +1357,9 @@ CREATE TABLE biz.role_info (
     status character(1) NOT NULL,
     children_id bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     role_sort smallint NOT NULL,
-    create_at timestamp(6) with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     creator_id bigint NOT NULL,
-    update_at timestamp(6) with time zone,
+    update_at timestamp(0) with time zone,
     updater_id bigint,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
@@ -1526,13 +1526,13 @@ CREATE TABLE biz.tenant_info (
     domain character varying(100),
     remark character varying(200),
     package_id bigint,
-    expire_time timestamp(6) with time zone NOT NULL,
+    expire_time timestamp(0) with time zone NOT NULL,
     account_limit smallint NOT NULL,
     post_limit smallint NOT NULL,
     creator_id bigint NOT NULL,
-    create_at timestamp with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     updater_id bigint,
-    update_at timestamp with time zone,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -1722,9 +1722,9 @@ CREATE TABLE biz.tenant_package_info (
     menu_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     remark character varying(200),
     creator_id bigint NOT NULL,
-    create_at timestamp with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     updater_id bigint,
-    update_at timestamp with time zone,
+    update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
 
@@ -1883,7 +1883,7 @@ CREATE TABLE biz.tenant_wallet_record (
     record_type character(1) NOT NULL,
     biz_type character(1) NOT NULL,
     biz_no character varying(32) NOT NULL,
-    create_at timestamp with time zone NOT NULL,
+    create_at timestamp(0) with time zone NOT NULL,
     remark character varying(100)
 );
 
@@ -1976,8 +1976,8 @@ CREATE TABLE biz.tenant_wallet_withdrawal_record (
     amount money NOT NULL,
     error_msg character varying(100),
     creator_id bigint NOT NULL,
-    create_at timestamp(6) with time zone NOT NULL,
-    complete_at timestamp with time zone,
+    create_at timestamp(0) with time zone NOT NULL,
+    complete_at timestamp(0) with time zone,
     remark character varying(100),
     hint character varying(10) DEFAULT ''::character varying NOT NULL
 );
