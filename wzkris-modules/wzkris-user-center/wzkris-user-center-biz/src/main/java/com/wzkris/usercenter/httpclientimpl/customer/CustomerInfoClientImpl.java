@@ -6,7 +6,7 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
 import com.wzkris.usercenter.enums.IdentifierTypeEnum;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
+import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
 import com.wzkris.usercenter.httpclient.customer.CustomerInfoClient;
 import com.wzkris.usercenter.httpclient.customer.req.WexcxLoginReq;
 import com.wzkris.usercenter.httpclient.customer.resp.CustomerResp;
@@ -66,10 +66,10 @@ public class CustomerInfoClientImpl implements CustomerInfoClient {
     }
 
     @Override
-    public Result<Void> updateLoginInfo(LoginInfoReq loginInfoReq) {
-        CustomerInfoDO customerInfoDO = new CustomerInfoDO(loginInfoReq.getId());
-        customerInfoDO.setLoginIp(loginInfoReq.getLoginIp());
-        customerInfoDO.setLoginDate(loginInfoReq.getLoginDate());
+    public Result<Void> updateLoginInfo(LoginInfoUpdateReq loginInfoUpdateReq) {
+        CustomerInfoDO customerInfoDO = new CustomerInfoDO(loginInfoUpdateReq.getId());
+        customerInfoDO.setLoginIp(loginInfoUpdateReq.getLoginIp());
+        customerInfoDO.setLoginDate(loginInfoUpdateReq.getLoginDate());
 
         customerInfoMapper.updateById(customerInfoDO);
         return Result.ok();

@@ -10,8 +10,9 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.domain.DictionaryInfoDO;
+import com.wzkris.system.domain.req.dictionary.DictionaryMngAddReq;
 import com.wzkris.system.domain.req.dictionary.DictionaryMngQueryReq;
-import com.wzkris.system.domain.req.dictionary.DictionaryMngReq;
+import com.wzkris.system.domain.req.dictionary.DictionaryMngEditReq;
 import com.wzkris.system.mapper.DictionaryInfoMapper;
 import com.wzkris.system.service.DictionaryInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,22 +64,22 @@ public class DictionaryMngController extends BaseController {
     @OperateLog(title = "数据字典", subTitle = "添加字典", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("system-mod:dictionary-mng:add")
-    public Result<Void> add(@RequestBody DictionaryMngReq req) {
-        if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
-            return requestFail("新增字典'" + req.getDictName() + "'失败，字典类型已存在");
+    public Result<Void> add(@RequestBody DictionaryMngAddReq addReq) {
+        if (dictionaryInfoService.checkUsedByDictKey(addReq.getDictId(), addReq.getDictKey())) {
+            return requestFail("新增字典'" + addReq.getDictName() + "'失败，字典类型已存在");
         }
-        return toRes(dictionaryInfoService.insertDict(BeanUtil.convert(req, DictionaryInfoDO.class)));
+        return toRes(dictionaryInfoService.insertDict(BeanUtil.convert(addReq, DictionaryInfoDO.class)));
     }
 
     @Operation(summary = "修改")
     @OperateLog(title = "数据字典", subTitle = "修改字典", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("system-mod:dictionary-mng:edit")
-    public Result<Void> edit(@RequestBody DictionaryMngReq req) {
-        if (dictionaryInfoService.checkUsedByDictKey(req.getDictId(), req.getDictKey())) {
-            return requestFail("修改字典'" + req.getDictName() + "'失败，字典类型已存在");
+    public Result<Void> edit(@RequestBody DictionaryMngEditReq editReq) {
+        if (dictionaryInfoService.checkUsedByDictKey(editReq.getDictId(), editReq.getDictKey())) {
+            return requestFail("修改字典'" + editReq.getDictName() + "'失败，字典类型已存在");
         }
-        return toRes(dictionaryInfoService.updateDict(BeanUtil.convert(req, DictionaryInfoDO.class)));
+        return toRes(dictionaryInfoService.updateDict(BeanUtil.convert(editReq, DictionaryInfoDO.class)));
     }
 
     @Operation(summary = "删除")

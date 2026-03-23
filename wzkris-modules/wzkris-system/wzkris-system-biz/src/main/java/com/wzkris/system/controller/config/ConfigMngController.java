@@ -10,8 +10,9 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.domain.ConfigInfoDO;
+import com.wzkris.system.domain.req.config.ConfigMngAddReq;
+import com.wzkris.system.domain.req.config.ConfigMngEditReq;
 import com.wzkris.system.domain.req.config.ConfigMngQueryReq;
-import com.wzkris.system.domain.req.config.ConfigMngReq;
 import com.wzkris.system.mapper.ConfigInfoMapper;
 import com.wzkris.system.service.ConfigInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +73,7 @@ public class ConfigMngController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "添加参数", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("system-mod:config-mng:add")
-    public Result<Void> add(@RequestBody ConfigMngReq req) {
+    public Result<Void> add(@RequestBody ConfigMngAddReq req) {
         if (configInfoService.checkUsedByConfigKey(null, req.getConfigKey())) {
             return requestFail("新增参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }
@@ -83,7 +84,7 @@ public class ConfigMngController extends BaseController {
     @OperateLog(title = "参数管理", subTitle = "修改参数", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("system-mod:config-mng:edit")
-    public Result<Void> edit(@RequestBody ConfigMngReq req) {
+    public Result<Void> edit(@RequestBody ConfigMngEditReq req) {
         if (configInfoService.checkUsedByConfigKey(req.getConfigId(), req.getConfigKey())) {
             return requestFail("修改参数'" + req.getConfigName() + "'失败，参数键名已存在");
         }

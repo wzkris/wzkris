@@ -1,0 +1,23 @@
+package com.wzkris.usercenter.domain.req.admin;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+import java.util.List;
+
+/**
+ * 管理员授权角色请求体
+ */
+@Data
+@Schema(description = "管理员授权参数体")
+public class AdminMngGrantReq {
+
+    @NotNull(message = "{invalidParameter.id.invalid}")
+    @Schema(description = "管理员 ID")
+    private Long adminId;
+
+    @Schema(description = "角色 ID 列表")
+    private List<Long> roleIds;
+
+}

@@ -1,8 +1,8 @@
 package com.wzkris.auth.httpclientimpl.token;
 
 import com.wzkris.auth.httpclient.token.LoginUserClient;
-import com.wzkris.auth.httpclient.token.req.LoginUserReq;
-import com.wzkris.auth.httpclient.token.req.OAuth2TokenReq;
+import com.wzkris.auth.httpclient.token.req.LoginUserQueryReq;
+import com.wzkris.auth.httpclient.token.req.OAuth2TokenQueryReq;
 import com.wzkris.auth.httpclient.token.resp.LoginUserResp;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
@@ -34,14 +34,14 @@ public class LoginUserClientImpl implements LoginUserClient {
      * 网关在验证JWT后调用此方法，传递uid和sid，查询用户信息和权限。
      * </p>
      *
-     * @param loginUserReq 查询请求，包含authType、uid和sid
+     * @param loginUserQueryReq 查询请求，包含authType、uid和sid
      * @return 用户信息和权限，如果sid被拉黑或用户不存在则返回错误
      */
     @Override
-    public Result<LoginUserResp> queryInfo(LoginUserReq loginUserReq) {
-        final Long uid = loginUserReq.getUid();
-        final String sid = loginUserReq.getSid();
-        final String authType = loginUserReq.getAuthType();
+    public Result<LoginUserResp> queryInfo(LoginUserQueryReq loginUserQueryReq) {
+        final Long uid = loginUserQueryReq.getUid();
+        final String sid = loginUserQueryReq.getSid();
+        final String authType = loginUserQueryReq.getAuthType();
 
         if (uid == null || authType == null || sid == null) {
             return Result.unauth("Invalid token: missing subject");
@@ -72,7 +72,7 @@ public class LoginUserClientImpl implements LoginUserClient {
      * @return 用户信息和权限，如果token无效或不存在则返回错误
      */
     @Override
-    public Result<LoginUserResp> queryOAuth2(OAuth2TokenReq request) {
+    public Result<LoginUserResp> queryOAuth2(OAuth2TokenQueryReq request) {
         final String token = request.getToken();
 
         if (token == null || token.isBlank()) {

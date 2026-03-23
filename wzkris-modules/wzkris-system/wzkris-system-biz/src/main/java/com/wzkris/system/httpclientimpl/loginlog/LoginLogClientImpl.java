@@ -1,7 +1,7 @@
 package com.wzkris.system.httpclientimpl.loginlog;
 
-import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.system.domain.AdminLoginLogDO;
 import com.wzkris.system.domain.TenantLoginLogDO;
 import com.wzkris.system.httpclient.loginlog.LoginLogClient;

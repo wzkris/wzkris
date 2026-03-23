@@ -12,23 +12,23 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.export.admin.AdminInfoExport;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
-import com.wzkris.usercenter.domain.req.ResetPwdReq;
+import com.wzkris.usercenter.domain.req.PwdResetReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
+import com.wzkris.usercenter.domain.req.admin.AdminMngAddReq;
+import com.wzkris.usercenter.domain.req.admin.AdminMngEditReq;
+import com.wzkris.usercenter.domain.req.admin.AdminMngGrantReq;
 import com.wzkris.usercenter.domain.req.admin.AdminMngQueryReq;
-import com.wzkris.usercenter.domain.req.admin.AdminMngReq;
-import com.wzkris.usercenter.domain.req.admin.AdminToRolesReq;
 import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
+import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.domain.resp.SelectTreeResp;
 import com.wzkris.usercenter.domain.resp.admin.AdminMngResp;
 import com.wzkris.usercenter.listener.event.CreateAdminEvent;
-import com.wzkris.usercenter.manager.AdminInfoDscManager;
-import com.wzkris.usercenter.manager.DeptInfoDscManager;
-import com.wzkris.usercenter.manager.RoleInfoDscManager;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
+import com.wzkris.usercenter.mapper.DeptInfoMapper;
+import com.wzkris.usercenter.mapper.RoleInfoMapper;
 import com.wzkris.usercenter.service.AdminInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,18 +65,16 @@ public class AdminMngController extends BaseController {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final AdminInfoDscManager adminInfoDscManager;
+    private final DeptInfoMapper deptInfoMapper;
 
-    private final DeptInfoDscManager deptInfoDscManager;
-
-    private final RoleInfoDscManager roleInfoDscManager;
+    private final RoleInfoMapper roleInfoMapper;
 
     @Operation(summary = "管理员分页列表")
     @GetMapping("/page")
     @CheckAdminPerms("user-mod:admin-mng:page")
     public Result<Page<AdminMngResp>> page(AdminMngQueryReq queryReq) {
         startPage();
-        List<AdminMngResp> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
+        List<AdminMngResp> list = adminInfoMapper.selectVOList(this.buildPageWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -95,25 +93,31 @@ public class AdminMngController extends BaseController {
                 .orderByDesc("u.admin_id");
     }
 
-    @Operation(summary = "管理员-部门选择树")
+    @Operation(summary = "管理员 - 部门选择树")
     @GetMapping("/dept-selecttree")
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
     public Result<List<SelectTreeResp>> deptSelectTree(String deptName) {
-        return ok(deptInfoDscManager.listSelectTree(deptName));
+        return ok(deptInfoMapper.selectLists(null).stream()
+                .filter(dept -> StringUtil.isBlank(deptName) || dept.getDeptName().contains(deptName))
+                .map(SelectTreeResp::new)
+                .toList());
     }
 
-    @Operation(summary = "管理员-角色选择列表")
+    @Operation(summary = "管理员 - 角色选择列表")
     @GetMapping({"/role-checked-select/", "/role-checked-select/{adminId}"})
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectResp> roleSelect(@PathVariable(required = false) Long adminId, String roleName) {
-        adminInfoDscManager.checkDataScopes(adminId);
+        adminInfoMapper.checkDataScopes(adminId);
         CheckedSelectResp checkedSelectResp = new CheckedSelectResp();
         checkedSelectResp.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listIdByAdminId(adminId));
-        checkedSelectResp.setSelects(roleInfoDscManager.listSelect(roleName));
+        checkedSelectResp.setSelects(roleInfoMapper.selectLists(null).stream()
+                .filter(role -> StringUtil.isBlank(roleName) || role.getRoleName().contains(roleName))
+                .map(SelectResp::new)
+                .toList());
         return ok(checkedSelectResp);
     }
 
@@ -121,8 +125,7 @@ public class AdminMngController extends BaseController {
     @GetMapping("/{adminId}")
     @CheckAdminPerms("user-mod:admin-mng:query")
     public Result<AdminInfoDO> getInfo(@PathVariable Long adminId) {
-        // 校验权限
-        adminInfoDscManager.checkDataScopes(adminId);
+        adminInfoMapper.checkDataScopes(adminId);
         return ok(adminInfoMapper.selectById(adminId));
     }
 
@@ -130,11 +133,11 @@ public class AdminMngController extends BaseController {
     @OperateLog(title = "管理员管理", subTitle = "新增管理员", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("user-mod:admin-mng:add")
-    public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody AdminMngReq req) {
-        if (adminInfoService.existByUsername(req.getAdminId(), req.getUsername())) {
+    public Result<Void> add(@Validated @RequestBody AdminMngAddReq req) {
+        if (adminInfoService.existByUsername(null, req.getUsername())) {
             return requestFail("添加管理员'" + req.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(req.getPhoneNumber())
-                && adminInfoService.existByPhoneNumber(req.getAdminId(), req.getPhoneNumber())) {
+                && adminInfoService.existByPhoneNumber(null, req.getPhoneNumber())) {
             return requestFail("添加管理员'" + req.getUsername() + "'失败，手机号码已存在");
         }
         AdminInfoDO admin = BeanUtil.convert(req, AdminInfoDO.class);
@@ -153,9 +156,8 @@ public class AdminMngController extends BaseController {
     @OperateLog(title = "管理员管理", subTitle = "修改管理员", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("user-mod:admin-mng:edit")
-    public Result<Void> edit(@Validated @RequestBody AdminMngReq req) {
-        // 校验权限
-        adminInfoDscManager.checkDataScopes(req.getAdminId());
+    public Result<Void> edit(@Validated @RequestBody AdminMngEditReq req) {
+        adminInfoMapper.checkDataScopes(req.getAdminId());
         if (adminInfoService.existByUsername(req.getAdminId(), req.getUsername())) {
             return requestFail("修改管理员'" + req.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(req.getPhoneNumber())
@@ -171,11 +173,9 @@ public class AdminMngController extends BaseController {
     @OperateLog(title = "管理员管理", subTitle = "授权管理员角色", type = OperateTypeEnum.GRANT)
     @PostMapping("/grant-role")
     @CheckAdminPerms("user-mod:admin-mng:grant-role")
-    public Result<Void> grantRoles(@RequestBody @Valid AdminToRolesReq req) {
-        // 校验管理员可操作权限
-        adminInfoDscManager.checkDataScopes(req.getAdminId());
-        // 校验角色可操作权限
-        roleInfoDscManager.checkDataScopes(req.getRoleIds());
+    public Result<Void> grantRoles(@RequestBody @Valid AdminMngGrantReq req) {
+        adminInfoMapper.checkDataScopes(req.getAdminId());
+        roleInfoMapper.checkDataScopes(req.getRoleIds());
         return toRes(adminInfoService.grantRoles(req.getAdminId(), req.getRoleIds()));
     }
 
@@ -184,8 +184,7 @@ public class AdminMngController extends BaseController {
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:admin-mng:remove")
     public Result<Void> remove(@RequestBody List<Long> userIds) {
-        // 校验权限
-        adminInfoDscManager.checkDataScopes(userIds);
+        adminInfoMapper.checkDataScopes(userIds);
         return toRes(adminInfoService.removeByIds(userIds));
     }
 
@@ -193,10 +192,8 @@ public class AdminMngController extends BaseController {
     @OperateLog(title = "管理员管理", subTitle = "重置密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-password")
     @CheckAdminPerms("user-mod:admin-mng:edit")
-    public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
-        // 校验权限
-        adminInfoDscManager.checkDataScopes(req.getId());
-
+    public Result<Void> resetPwd(@RequestBody @Valid PwdResetReq req) {
+        adminInfoMapper.checkDataScopes(req.getId());
         AdminInfoDO update = new AdminInfoDO(req.getId());
         update.setPassword(passwordEncoder.encode(req.getPassword()));
         return toRes(adminInfoMapper.updateById(update));
@@ -206,11 +203,10 @@ public class AdminMngController extends BaseController {
     @OperateLog(title = "管理员管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("user-mod:admin-mng:edit")
-    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
-        // 校验权限
-        adminInfoDscManager.checkDataScopes(statusReq.getId());
-        AdminInfoDO update = new AdminInfoDO(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+    public Result<Void> editStatus(@RequestBody StatusEditReq editReq) {
+        adminInfoMapper.checkDataScopes(editReq.getId());
+        AdminInfoDO update = new AdminInfoDO(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(adminInfoMapper.updateById(update));
     }
 
@@ -219,7 +215,7 @@ public class AdminMngController extends BaseController {
     @GetMapping("/export")
     @CheckAdminPerms("user-mod:admin-mng:export")
     public void export(HttpServletResponse response, AdminMngQueryReq queryReq) {
-        List<AdminMngResp> list = adminInfoDscManager.listVO(this.buildPageWrapper(queryReq));
+        List<AdminMngResp> list = adminInfoMapper.selectVOList(this.buildPageWrapper(queryReq));
         List<AdminInfoExport> convert = BeanUtil.convert(list, AdminInfoExport.class);
         ExcelUtil.exportExcel(convert, "后台管理员数据", AdminInfoExport.class, false, response, null);
     }

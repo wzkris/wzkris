@@ -6,9 +6,9 @@ import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.MemberSocialInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
+import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
 import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
-import com.wzkris.usercenter.httpclient.member.req.QueryMemberPermsReq;
+import com.wzkris.usercenter.httpclient.member.req.MemberPermsQueryReq;
 import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
 import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
@@ -79,16 +79,16 @@ public class MemberInfoClientImpl implements MemberInfoClient {
     }
 
     @Override
-    public Result<MemberPermissionResp> getPermission(QueryMemberPermsReq memberPermsReq) {
+    public Result<MemberPermissionResp> getPermission(MemberPermsQueryReq memberPermsReq) {
         return Result.ok(permissionService.getTenantPermission(
                 memberPermsReq.getMemberId(), memberPermsReq.getTenantId()));
     }
 
     @Override
-    public Result<Void> updateLoginInfo(LoginInfoReq loginInfoReq) {
-        MemberInfoDO memberInfoDO = new MemberInfoDO(loginInfoReq.getId());
-        memberInfoDO.setLoginIp(loginInfoReq.getLoginIp());
-        memberInfoDO.setLoginDate(loginInfoReq.getLoginDate());
+    public Result<Void> updateLoginInfo(LoginInfoUpdateReq loginInfoUpdateReq) {
+        MemberInfoDO memberInfoDO = new MemberInfoDO(loginInfoUpdateReq.getId());
+        memberInfoDO.setLoginIp(loginInfoUpdateReq.getLoginIp());
+        memberInfoDO.setLoginDate(loginInfoUpdateReq.getLoginDate());
 
         memberInfoMapper.updateById(memberInfoDO);
         return Result.ok();

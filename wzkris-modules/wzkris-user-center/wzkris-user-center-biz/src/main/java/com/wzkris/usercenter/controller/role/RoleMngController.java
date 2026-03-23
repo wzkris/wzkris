@@ -10,28 +10,24 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.RoleInfoDO;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
-import com.wzkris.usercenter.domain.req.admin.AdminMngQueryReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
+import com.wzkris.usercenter.domain.req.role.RoleMngAddReq;
+import com.wzkris.usercenter.domain.req.role.RoleMngEditReq;
 import com.wzkris.usercenter.domain.req.role.RoleMngQueryReq;
-import com.wzkris.usercenter.domain.req.role.RoleMngReq;
-import com.wzkris.usercenter.domain.req.role.RoleToAdminsReq;
-import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
 import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
+import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
 import com.wzkris.usercenter.domain.resp.SelectResp;
-import com.wzkris.usercenter.manager.AdminInfoDscManager;
-import com.wzkris.usercenter.manager.DeptInfoDscManager;
-import com.wzkris.usercenter.manager.RoleInfoDscManager;
+import com.wzkris.usercenter.domain.resp.SelectTreeResp;
+import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
+import com.wzkris.usercenter.mapper.RoleInheritanceMapper;
 import com.wzkris.usercenter.mapper.RoleToMenuMapper;
-import com.wzkris.usercenter.mapper.datascope.RoleInfoDscMapper;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 角色信息
@@ -60,20 +57,16 @@ public class RoleMngController extends BaseController {
 
     private final MenuInfoService menuInfoService;
 
-    private final AdminInfoDscManager adminInfoDscManager;
+    private final DeptInfoMapper deptInfoMapper;
 
-    private final RoleInfoDscMapper roleInfoDscMapper;
-
-    private final RoleInfoDscManager roleInfoDscManager;
-
-    private final DeptInfoDscManager deptInfoDscManager;
+    private final RoleInheritanceMapper roleInheritanceMapper;
 
     @Operation(summary = "角色分页")
     @GetMapping("/page")
     @CheckAdminPerms("user-mod:role-mng:page")
     public Result<Page<RoleInfoDO>> page(RoleMngQueryReq queryReq) {
         startPage();
-        List<RoleInfoDO> list = roleInfoDscMapper.selectLists(this.buildQueryWrapper(queryReq));
+        List<RoleInfoDO> list = roleInfoMapper.selectLists(this.buildQueryWrapper(queryReq));
         return getDataTable(list);
     }
 
@@ -88,19 +81,17 @@ public class RoleMngController extends BaseController {
     @GetMapping("/{roleId}")
     @CheckAdminPerms("user-mod:role-mng:query")
     public Result<RoleInfoDO> getInfo(@PathVariable Long roleId) {
-        // 权限校验
-        roleInfoDscManager.checkDataScopes(roleId);
+        roleInfoMapper.checkDataScopes(roleId);
         return ok(roleInfoMapper.selectById(roleId));
     }
 
-    @Operation(summary = "角色-菜单选择树")
+    @Operation(summary = "角色 - 菜单选择树")
     @GetMapping({"/menu-checked-selecttree/", "/menu-checked-selecttree/{roleId}"})
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeResp> roleMenuSelectTree(@PathVariable(required = false) Long roleId) {
-        // 权限校验
-        roleInfoDscManager.checkDataScopes(roleId);
+        roleInfoMapper.checkDataScopes(roleId);
         CheckedSelectTreeResp checkedSelectTreeResp = new CheckedSelectTreeResp();
         checkedSelectTreeResp.setCheckedKeys(
                 roleId == null ? Collections.emptyList()
@@ -109,32 +100,34 @@ public class RoleMngController extends BaseController {
         return ok(checkedSelectTreeResp);
     }
 
-    @Operation(summary = "角色-部门选择树")
+    @Operation(summary = "角色 - 部门选择树")
     @GetMapping({"/dept-checked-selecttree/", "/dept-checked-selecttree/{roleId}"})
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeResp> roleDeptSelectTree(@PathVariable(required = false) Long roleId) {
-        // 权限校验
-        roleInfoDscManager.checkDataScopes(roleId);
+        roleInfoMapper.checkDataScopes(roleId);
         CheckedSelectTreeResp checkedSelectTreeResp = new CheckedSelectTreeResp();
         checkedSelectTreeResp.setCheckedKeys(
-                roleId == null ? Collections.emptyList() : deptInfoDscManager.listDeptIdByRoleId(roleId));
-        checkedSelectTreeResp.setSelectTrees(deptInfoDscManager.listSelectTree(null));
+                roleId == null ? Collections.emptyList() : deptInfoMapper.listDeptIdByRoleIds(Collections.singletonList(roleId)));
+        checkedSelectTreeResp.setSelectTrees(deptInfoMapper.selectLists(null).stream().map(SelectTreeResp::new).toList());
         return ok(checkedSelectTreeResp);
     }
 
-    @Operation(summary = "角色-继承选择列表")
+    @Operation(summary = "角色 - 继承选择列表")
     @GetMapping({"/hierarchy-checked-select/", "/hierarchy-checked-select/{roleId}"})
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectResp> roleInheritedSelect(@PathVariable(required = false) Long roleId) {
-        roleInfoDscManager.checkDataScopes(roleId);
+        roleInfoMapper.checkDataScopes(roleId);
         CheckedSelectResp checkedSelectResp = new CheckedSelectResp();
         checkedSelectResp.setCheckedKeys(roleId == null ?
-                Collections.emptyList() : roleInfoDscMapper.listChildrenIdByRoleId(roleId));
-        checkedSelectResp.setSelects(roleInfoDscManager.listChildrenSelect(roleId));
+                Collections.emptyList() : roleInheritanceMapper.listChildIdsByRoleId(roleId));
+        checkedSelectResp.setSelects(roleInfoMapper.selectLists(null).stream()
+                .filter(role -> !Objects.equals(role.getRoleId(), roleId))
+                .map(SelectResp::new)
+                .toList());
         return ok(checkedSelectResp);
     }
 
@@ -142,29 +135,36 @@ public class RoleMngController extends BaseController {
     @OperateLog(title = "角色管理", subTitle = "新增角色", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("user-mod:role-mng:add")
-    public Result<Void> add(@Validated @RequestBody RoleMngReq req) {
+    public Result<Void> add(@Validated @RequestBody RoleMngAddReq req) {
         RoleInfoDO role = BeanUtil.convert(req, RoleInfoDO.class);
-        return toRes(roleInfoService.saveRole(role, req.getMenuIds(), req.getDeptIds()));
+        return toRes(roleInfoService.saveRole(role, req.getMenuIds(), req.getDeptIds(), req.getChildIds()));
     }
 
     @Operation(summary = "修改角色")
     @OperateLog(title = "角色管理", subTitle = "修改角色", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("user-mod:role-mng:edit")
-    public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody RoleMngReq req) {
+    public Result<Void> edit(@Validated @RequestBody RoleMngEditReq req) {
+        if (req.getChildIds() != null && req.getChildIds().contains(req.getRoleId())) {
+            return requestFail("角色不能继承自身");
+        }
+        if (req.getChildIds() != null && roleInheritanceMapper
+                .listChildIdsRecursive(req.getChildIds())
+                .contains(req.getRoleId())) {
+            return requestFail("角色继承关系存在循环");
+        }
         RoleInfoDO role = BeanUtil.convert(req, RoleInfoDO.class);
-        return toRes(roleInfoService.modifyRole(role, req.getMenuIds(), req.getDeptIds()));
+        return toRes(roleInfoService.modifyRole(role, req.getMenuIds(), req.getDeptIds(), req.getChildIds()));
     }
 
     @Operation(summary = "状态修改")
     @OperateLog(title = "用户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("user-mod:role-mng:edit")
-    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
-        // 校验权限
-        roleInfoDscManager.checkDataScopes(statusReq.getId());
-        RoleInfoDO update = new RoleInfoDO(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+    public Result<Void> editStatus(@RequestBody StatusEditReq editReq) {
+        roleInfoMapper.checkDataScopes(editReq.getId());
+        RoleInfoDO update = new RoleInfoDO(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(roleInfoMapper.updateById(update));
     }
 
@@ -172,63 +172,18 @@ public class RoleMngController extends BaseController {
     @OperateLog(title = "角色管理", subTitle = "删除角色", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:role-mng:remove")
-    public Result<Void> remove(
-            @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> roleIds) {
-        // 权限校验
-        roleInfoDscManager.checkDataScopes(roleIds);
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> roleIds) {
+        roleInfoMapper.checkDataScopes(roleIds);
         if (roleInfoService.existAdmin(roleIds)) {
             return requestFail("当前角色已被分配用户");
         }
-        if (roleInfoService.checkIsChildren(roleIds)) {
+        if (roleInfoService.existChildRole(roleIds)) {
             return requestFail("当前角色已被其他角色继承");
         }
         return toRes(roleInfoService.removeByIds(roleIds));
     }
 
-    @Operation(summary = "已授权的用户列表")
-    @GetMapping("/authorized-admin-list")
-    @CheckAdminPerms("user-mod:role-mng:grant-admin")
-    public Result<Page<SelectResp>> allocatedList(AdminMngQueryReq queryReq, Long roleId) {
-        // 校验角色权限
-        roleInfoDscManager.checkDataScopes(roleId);
-        startPage();
-        List<SelectResp> list = adminInfoDscManager.listAllocated(queryReq, roleId);
-        return getDataTable(list);
-    }
-
-    @Operation(summary = "未授权的用户列表")
-    @GetMapping("/unauthorized-admin-list")
-    @CheckAdminPerms("user-mod:role-mng:grant-admin")
-    public Result<Page<SelectResp>> unallocatedList(AdminMngQueryReq queryReq, Long roleId) {
-        // 校验角色权限
-        roleInfoDscManager.checkDataScopes(roleId);
-        startPage();
-        List<SelectResp> list = adminInfoDscManager.listUnallocated(queryReq, roleId);
-        return getDataTable(list);
-    }
-
-    @Operation(summary = "取消授权")
-    @OperateLog(title = "角色管理", subTitle = "取消授权", type = OperateTypeEnum.GRANT)
-    @PostMapping("/cancel-authorize-admin")
-    @CheckAdminPerms("user-mod:role-mng:grant-admin")
-    public Result<Void> cancelAuth(@RequestBody @Valid RoleToAdminsReq req) {
-        // 权限校验
-        roleInfoDscManager.checkDataScopes(req.getRoleId());
-        // 校验用户权限
-        adminInfoDscManager.checkDataScopes(req.getAdminIds());
-        return toRes(roleInfoService.ungrantAdmins(req.getRoleId(), req.getAdminIds()));
-    }
-
-    @Operation(summary = "角色授权")
-    @OperateLog(title = "角色管理", subTitle = "授权用户", type = OperateTypeEnum.GRANT)
-    @PostMapping("/authorize-admin")
-    @CheckAdminPerms("user-mod:role-mng:grant-admin")
-    public Result<Void> batchAuth(@RequestBody @Valid RoleToAdminsReq req) {
-        // 权限校验
-        roleInfoDscManager.checkDataScopes(req.getRoleId());
-        // 校验用户权限
-        adminInfoDscManager.checkDataScopes(req.getAdminIds());
-        return toRes(roleInfoService.grantAdmins(req.getRoleId(), req.getAdminIds()));
-    }
-
 }
+
+
+

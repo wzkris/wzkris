@@ -1,7 +1,7 @@
 package com.wzkris.auth.httpclient.token;
 
-import com.wzkris.auth.httpclient.token.req.LoginUserReq;
-import com.wzkris.auth.httpclient.token.req.OAuth2TokenReq;
+import com.wzkris.auth.httpclient.token.req.LoginUserQueryReq;
+import com.wzkris.auth.httpclient.token.req.OAuth2TokenQueryReq;
 import com.wzkris.auth.httpclient.token.resp.LoginUserResp;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.HttpClient;
@@ -29,12 +29,12 @@ public interface LoginUserClient {
      * 获取登录信息
      */
     @PostExchange("/query-info")
-    Result<LoginUserResp> queryInfo(@Validated @RequestBody LoginUserReq loginUserReq);
+    Result<LoginUserResp> queryInfo(@Validated @RequestBody LoginUserQueryReq loginUserQueryReq);
 
     /**
      * 通过OAuth2 token获取用户信息
      */
     @PostExchange("/query-oauth2")
-    Result<LoginUserResp> queryOAuth2(@Validated @RequestBody OAuth2TokenReq request);
+    Result<LoginUserResp> queryOAuth2(@Validated @RequestBody OAuth2TokenQueryReq request);
 
 }

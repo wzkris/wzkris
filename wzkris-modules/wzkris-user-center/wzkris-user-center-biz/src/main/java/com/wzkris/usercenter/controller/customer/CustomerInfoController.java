@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
-import com.wzkris.usercenter.domain.req.customer.CustomerInfoReq;
+import com.wzkris.usercenter.domain.req.customer.CustomerInfoEditReq;
 import com.wzkris.usercenter.domain.resp.customer.CustomerInfoResp;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import com.wzkris.usercenter.service.CustomerInfoService;
@@ -55,7 +55,7 @@ public class CustomerInfoController extends BaseController {
     @Operation(summary = "修改信息")
     @PostMapping
     @CacheEvict(value = info_prefix, key = "@su.getUid()")
-    public Result<?> editInfo(@RequestBody CustomerInfoReq req) {
+    public Result<?> editInfo(@RequestBody CustomerInfoEditReq req) {
         CustomerInfoDO customer = new CustomerInfoDO(SecurityUtil.getUid());
         customer.setNickname(req.getNickname());
         customer.setGender(req.getGender());

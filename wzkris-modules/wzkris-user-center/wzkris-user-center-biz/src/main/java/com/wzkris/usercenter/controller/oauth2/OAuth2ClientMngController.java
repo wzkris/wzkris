@@ -12,10 +12,11 @@ import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.domain.export.oauth2.OAuth2ClientExport;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
 import com.wzkris.usercenter.domain.req.oauth2.EditClientSecretReq;
+import com.wzkris.usercenter.domain.req.oauth2.OAuth2ClientMngAddReq;
+import com.wzkris.usercenter.domain.req.oauth2.OAuth2ClientMngEditReq;
 import com.wzkris.usercenter.domain.req.oauth2.OAuth2ClientMngQueryReq;
-import com.wzkris.usercenter.domain.req.oauth2.OAuth2ClientMngReq;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.service.OAuth2ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +73,7 @@ public class OAuth2ClientMngController extends BaseController {
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("user-mod:oauth2client-mng:edit")
-    public Result<Void> edit(@RequestBody OAuth2ClientMngReq clientReq) {
+    public Result<Void> edit(@RequestBody @Valid OAuth2ClientMngEditReq clientReq) {
         return toRes(oauth2ClientMapper.updateById(BeanUtil.convert(clientReq, OAuth2ClientDO.class)));
     }
 
@@ -91,11 +92,11 @@ public class OAuth2ClientMngController extends BaseController {
     @OperateLog(title = "OAuth2客户端管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("user-mod:oauth2client-mng:edit")
-    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
+    public Result<Void> editStatus(@RequestBody StatusEditReq editReq) {
         // 校验权限
         OAuth2ClientDO update = new OAuth2ClientDO();
-        update.setId(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+        update.setId(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(oauth2ClientMapper.updateById(update));
     }
 
@@ -103,7 +104,7 @@ public class OAuth2ClientMngController extends BaseController {
     @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("user-mod:oauth2client-mng:add")
-    public Result<String> add(@RequestBody @Valid OAuth2ClientMngReq clientReq) {
+    public Result<String> add(@RequestBody @Valid OAuth2ClientMngAddReq clientReq) {
         OAuth2ClientDO client = BeanUtil.convert(clientReq, OAuth2ClientDO.class);
 
         String secret = RandomStringUtils.secure().nextAlphabetic(16);

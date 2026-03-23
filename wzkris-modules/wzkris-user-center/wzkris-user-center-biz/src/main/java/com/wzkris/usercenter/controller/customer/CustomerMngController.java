@@ -12,7 +12,7 @@ import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.export.customer.CustomerInfoExport;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
 import com.wzkris.usercenter.domain.req.customer.CustomerMngQueryReq;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import com.wzkris.usercenter.service.CustomerInfoService;
@@ -75,10 +75,10 @@ public class CustomerMngController extends BaseController {
     @OperateLog(title = "客户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("user-mod:customer-mng:edit")
-    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
+    public Result<Void> editStatus(@RequestBody StatusEditReq editReq) {
         // 校验权限
-        CustomerInfoDO update = new CustomerInfoDO(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+        CustomerInfoDO update = new CustomerInfoDO(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(customerInfoMapper.updateById(update));
     }
 

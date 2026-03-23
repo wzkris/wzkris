@@ -9,7 +9,7 @@ import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.domain.req.EditPwdReq;
+import com.wzkris.usercenter.domain.req.PwdEditReq;
 import com.wzkris.usercenter.domain.req.tenant.TenantInfoReq;
 import com.wzkris.usercenter.domain.resp.tenant.TenantInfoResp;
 import com.wzkris.usercenter.domain.resp.tenant.TenantUsedQuotaResp;
@@ -74,7 +74,7 @@ public class TenantInfoController extends BaseController {
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-operpwd")
     @PreAuthorize("@su.isSuper()")
-    public Result<Void> editOperPwd(@RequestBody @Validated(EditPwdReq.OperPwd.class) EditPwdReq req) {
+    public Result<Void> editOperPwd(@RequestBody @Validated(PwdEditReq.OperPwd.class) PwdEditReq req) {
         Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
 
         String operPwd = tenantInfoMapper.selectOperPwdById(tenantId);

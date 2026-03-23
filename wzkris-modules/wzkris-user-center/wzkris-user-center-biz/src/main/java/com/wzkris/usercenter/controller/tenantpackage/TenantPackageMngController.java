@@ -11,9 +11,10 @@ import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
+import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngAddReq;
+import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngEditReq;
 import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngQueryReq;
-import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngReq;
 import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
 import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.service.MenuInfoService;
@@ -90,7 +91,7 @@ public class TenantPackageMngController extends BaseController {
     @OperateLog(title = "租户套餐", subTitle = "新增套餐", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("user-mod:tenantpackage-mng:add")
-    public Result<Void> add(@Valid @RequestBody TenantPackageMngReq req) {
+    public Result<Void> add(@Valid @RequestBody TenantPackageMngAddReq req) {
         return toRes(tenantPackageInfoMapper.insert(BeanUtil.convert(req, TenantPackageInfoDO.class)));
     }
 
@@ -98,7 +99,7 @@ public class TenantPackageMngController extends BaseController {
     @OperateLog(title = "租户套餐", subTitle = "修改套餐", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("user-mod:tenantpackage-mng:edit")
-    public Result<Void> edit(@Valid @RequestBody TenantPackageMngReq req) {
+    public Result<Void> edit(@Valid @RequestBody TenantPackageMngEditReq req) {
         return toRes(tenantPackageInfoMapper.updateById(BeanUtil.convert(req, TenantPackageInfoDO.class)));
     }
 
@@ -106,9 +107,9 @@ public class TenantPackageMngController extends BaseController {
     @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("user-mod:tenantpackage-mng:edit")
-    public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
-        TenantPackageInfoDO update = new TenantPackageInfoDO(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+    public Result<Void> editStatus(@RequestBody @Valid StatusEditReq editReq) {
+        TenantPackageInfoDO update = new TenantPackageInfoDO(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(tenantPackageInfoMapper.updateById(update));
     }
 

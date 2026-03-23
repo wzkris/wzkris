@@ -8,7 +8,7 @@ import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
-import com.wzkris.usercenter.httpclient.member.req.QueryMemberPermsReq;
+import com.wzkris.usercenter.httpclient.member.req.MemberPermsQueryReq;
 import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
 import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,7 +64,7 @@ public class SwitchTokenController {
 
         // 获取权限信息
         Result<MemberPermissionResp> permissionResult = memberInfoClient.getPermission(
-                new QueryMemberPermsReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
+                new MemberPermsQueryReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
         if (!ResultUtil.check(permissionResult)) {
             return Result.requestFail(permissionResult != null ? permissionResult.getMessage() : "查询权限失败");
         }

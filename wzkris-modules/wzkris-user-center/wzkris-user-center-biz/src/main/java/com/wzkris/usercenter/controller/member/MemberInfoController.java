@@ -1,17 +1,17 @@
 package com.wzkris.usercenter.controller.member;
 
+import com.wzkris.captcha.httpclient.common.CaptchaClient;
+import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.captcha.httpclient.common.CaptchaClient;
-import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import com.wzkris.usercenter.domain.MemberInfoDO;
-import com.wzkris.usercenter.domain.req.EditPhoneReq;
-import com.wzkris.usercenter.domain.req.EditPwdReq;
-import com.wzkris.usercenter.domain.req.member.MemberInfoReq;
+import com.wzkris.usercenter.domain.req.PhoneEditReq;
+import com.wzkris.usercenter.domain.req.PwdEditReq;
+import com.wzkris.usercenter.domain.req.member.MemberInfoEditReq;
 import com.wzkris.usercenter.domain.resp.member.MemberInfoResp;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.service.MemberInfoService;
@@ -65,7 +65,7 @@ public class MemberInfoController extends BaseController {
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping
-    public Result<Void> editInfo(@RequestBody MemberInfoReq req) {
+    public Result<Void> editInfo(@RequestBody MemberInfoEditReq req) {
         MemberInfoDO memberInfoDO = new MemberInfoDO(SecurityUtil.getUid());
         memberInfoDO.setGender(req.getGender());
         return toRes(memberInfoMapper.updateById(memberInfoDO));
@@ -74,7 +74,7 @@ public class MemberInfoController extends BaseController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人信息", subTitle = "修改手机号", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-phonenumber")
-    public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
+    public Result<Void> editPhoneNumber(@RequestBody @Valid PhoneEditReq req) {
         Long memberId = SecurityUtil.getUid();
 
         if (memberInfoService.existByPhoneNumber(memberId, req.getPhoneNumber())) {
@@ -97,7 +97,7 @@ public class MemberInfoController extends BaseController {
     @Operation(summary = "修改密码")
     @OperateLog(title = "个人信息", subTitle = "修改密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-password")
-    public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
+    public Result<Void> editPwd(@RequestBody @Validated(PwdEditReq.LoginPwd.class) PwdEditReq req) {
         Long memberId = SecurityUtil.getUid();
 
         String password = memberInfoMapper.selectPwdById(memberId);

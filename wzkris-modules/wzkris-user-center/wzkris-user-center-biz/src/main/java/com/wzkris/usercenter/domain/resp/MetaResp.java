@@ -38,8 +38,8 @@ public class MetaResp implements Serializable {
     private String link;
 
     public MetaResp(String title, String type, String icon,
-                  boolean hidden, boolean keepAlive,
-                  Map<String, String> query) {
+                    boolean hidden, boolean keepAlive,
+                    Map<String, String> query) {
         this.title = title;
         this.type = type;
         this.icon = icon;

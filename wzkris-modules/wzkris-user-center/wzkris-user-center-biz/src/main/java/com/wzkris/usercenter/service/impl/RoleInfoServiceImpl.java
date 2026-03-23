@@ -4,21 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.usercenter.domain.AdminToRoleDO;
-import com.wzkris.usercenter.domain.RoleInfoDO;
-import com.wzkris.usercenter.domain.RoleToDeptDO;
-import com.wzkris.usercenter.domain.RoleToMenuDO;
-import com.wzkris.usercenter.mapper.AdminToRoleMapper;
-import com.wzkris.usercenter.mapper.RoleInfoMapper;
-import com.wzkris.usercenter.mapper.RoleToDeptMapper;
-import com.wzkris.usercenter.mapper.RoleToMenuMapper;
+import com.wzkris.usercenter.domain.*;
+import com.wzkris.usercenter.mapper.*;
 import com.wzkris.usercenter.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +33,8 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     private final AdminToRoleMapper adminToRoleMapper;
 
     private final RoleToDeptMapper roleToDeptMapper;
+
+    private final RoleInheritanceMapper roleInheritanceMapper;
 
     @Override
     public List<RoleInfoDO> listByAdminId(Long adminId) {
@@ -63,11 +61,11 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     /**
-     * 根据管理员ID获取角色ID列表（可选包含继承角色）
+     * 根据管理员 ID 获取角色 ID 列表（可选包含继承角色）
      *
-     * @param adminId          管理员ID
+     * @param adminId          管理员 ID
      * @param includeInherited 是否包含继承角色
-     * @return 角色ID列表
+     * @return 角色 ID 列表
      */
     private List<Long> listRoleIdsByAdminId(Long adminId, boolean includeInherited) {
         List<Long> roleIds = adminToRoleMapper.listRoleIdByAdminId(adminId);
@@ -75,7 +73,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
             return Collections.emptyList();
         }
         if (includeInherited) {
-            List<Long> childRoleIds = getChildrenIdsByRoleIds(roleIds);
+            List<Long> childRoleIds = roleInheritanceMapper.listChildIdsRecursive(roleIds);
             if (CollectionUtils.isNotEmpty(childRoleIds)) {
                 roleIds.addAll(childRoleIds);
             }
@@ -84,75 +82,9 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     /**
-     * 根据角色ID列表获取所有子角色ID（从 childrenId 字段，递归查询所有层级的子角色）
+     * 根据角色 ID 列表查询角色信息（仅返回正常状态的）
      *
-     * @param roleIds 角色ID列表
-     * @return 所有子角色ID列表（包含直接和间接子角色）
-     */
-    private List<Long> getChildrenIdsByRoleIds(List<Long> roleIds) {
-        if (CollectionUtils.isEmpty(roleIds)) {
-            return Collections.emptyList();
-        }
-        // 使用 Set 收集所有子角色ID，自动去重
-        Set<Long> allChildrenIds = new HashSet<>();
-        // 使用 Set 记录已访问的角色ID，防止循环依赖导致无限递归
-        Set<Long> visitedRoleIds = new HashSet<>(roleIds);
-        // 递归查询所有子角色
-        getChildrenIdsRecursive(roleIds, allChildrenIds, visitedRoleIds);
-        return new ArrayList<>(allChildrenIds);
-    }
-
-    /**
-     * 递归查询所有子角色ID
-     *
-     * @param roleIds        当前层级的角色ID列表
-     * @param allChildrenIds 收集所有子角色ID的集合
-     * @param visitedRoleIds 已访问的角色ID集合，用于防止循环依赖
-     */
-    private void getChildrenIdsRecursive(List<Long> roleIds, Set<Long> allChildrenIds, Set<Long> visitedRoleIds) {
-        if (CollectionUtils.isEmpty(roleIds)) {
-            return;
-        }
-        // 查询当前层级的直接子角色
-        LambdaQueryWrapper<RoleInfoDO> lqw = new LambdaQueryWrapper<RoleInfoDO>()
-                .select(RoleInfoDO::getChildrenId)
-                .in(RoleInfoDO::getRoleId, roleIds)
-                .isNotNull(RoleInfoDO::getChildrenId);
-        List<RoleInfoDO> roles = roleInfoMapper.selectList(lqw);
-
-        // 提取当前层级的子角色ID
-        List<Long> currentLevelChildren = roles.stream()
-                .filter(role -> role.getChildrenId() != null && role.getChildrenId().length > 0)
-                .flatMap(role -> Arrays.stream(role.getChildrenId()))
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(currentLevelChildren)) {
-            return;
-        }
-
-        // 过滤掉已访问的角色，避免循环依赖
-        List<Long> newChildren = currentLevelChildren.stream()
-                .filter(childId -> !visitedRoleIds.contains(childId))
-                .collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(newChildren)) {
-            return;
-        }
-
-        // 将新的子角色ID添加到结果集和已访问集合
-        allChildrenIds.addAll(newChildren);
-        visitedRoleIds.addAll(newChildren);
-
-        // 递归查询下一层级的子角色
-        getChildrenIdsRecursive(newChildren, allChildrenIds, visitedRoleIds);
-    }
-
-    /**
-     * 根据角色ID列表查询角色信息（仅返回正常状态的）
-     *
-     * @param roleIds 角色ID列表
+     * @param roleIds 角色 ID 列表
      * @return 角色列表
      */
     private List<RoleInfoDO> listByIds(List<Long> roleIds) {
@@ -166,10 +98,10 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     }
 
     /**
-     * 根据角色ID列表查询角色ID列表（仅返回正常状态的）
+     * 根据角色 ID 列表查询角色 ID 列表（仅返回正常状态的）
      *
-     * @param roleIds 角色ID列表
-     * @return 角色ID列表
+     * @param roleIds 角色 ID 列表
+     * @return 角色 ID 列表
      */
     private List<Long> listRoleIdsByIds(List<Long> roleIds) {
         if (CollectionUtils.isEmpty(roleIds)) {
@@ -193,7 +125,7 @@ public class RoleInfoServiceImpl implements RoleInfoService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveRole(RoleInfoDO role, List<Long> menuIds, List<Long> deptIds) {
+    public boolean saveRole(RoleInfoDO role, List<Long> menuIds, List<Long> deptIds, List<Long> childIds) {
         // 新增角色信息
         boolean success = roleInfoMapper.insert(role) > 0;
         if (success) {
@@ -201,26 +133,33 @@ public class RoleInfoServiceImpl implements RoleInfoService {
             this.insertRoleMenu(role.getRoleId(), menuIds);
             // 新增角色和部门信息（数据权限）
             this.insertRoleDept(role.getRoleId(), deptIds);
+            // 新增角色继承关系
+            this.insertRoleInheritance(role.getRoleId(), childIds);
         }
         return success;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean modifyRole(RoleInfoDO role, List<Long> menuIds, List<Long> deptIds) {
+    public boolean modifyRole(RoleInfoDO role, List<Long> menuIds, List<Long> deptIds, List<Long> childIds) {
         // 修改角色信息
         boolean success = roleInfoMapper.updateById(role) > 0;
-        if (success && menuIds != null) {
+        if (success) {
+            // 删除并重新设置角色继承关系
+            if (childIds != null) {
+                roleInheritanceMapper.deleteByRoleId(role.getRoleId());
+                this.insertRoleInheritance(role.getRoleId(), childIds);
+            }
             // 删除角色与菜单关联
-            roleToMenuMapper.deleteByRoleId(role.getRoleId());
-            // 插入角色菜单信息
-            this.insertRoleMenu(role.getRoleId(), menuIds);
-        }
-        if (success && deptIds != null) {
+            if (menuIds != null) {
+                roleToMenuMapper.deleteByRoleId(role.getRoleId());
+                this.insertRoleMenu(role.getRoleId(), menuIds);
+            }
             // 删除角色与部门关联
-            roleToDeptMapper.deleteByRoleId(role.getRoleId());
-            // 插入角色和部门信息（数据权限）
-            this.insertRoleDept(role.getRoleId(), deptIds);
+            if (deptIds != null) {
+                roleToDeptMapper.deleteByRoleId(role.getRoleId());
+                this.insertRoleDept(role.getRoleId(), deptIds);
+            }
         }
         return success;
     }
@@ -248,8 +187,8 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     /**
      * 新增角色菜单信息
      *
-     * @param roleId  角色id
-     * @param menuIds 菜单id集合
+     * @param roleId  角色 id
+     * @param menuIds 菜单 id 集合
      */
     public void insertRoleMenu(Long roleId, List<Long> menuIds) {
         if (CollectionUtils.isNotEmpty(menuIds)) {
@@ -263,8 +202,8 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     /**
      * 新增角色部门信息(数据权限)
      *
-     * @param roleId  角色id
-     * @param deptIds 部门id集合
+     * @param roleId  角色 id
+     * @param deptIds 部门 id 集合
      */
     public void insertRoleDept(Long roleId, List<Long> deptIds) {
         if (CollectionUtils.isNotEmpty(deptIds)) {
@@ -286,6 +225,9 @@ public class RoleInfoServiceImpl implements RoleInfoService {
             roleToDeptMapper.deleteByRoleIds(roleIds);
             // 删除角色与用户关联
             adminToRoleMapper.deleteByRoleIds(roleIds);
+            // 删除角色继承关系（作为角色和子角色）
+            roleInheritanceMapper.deleteByRoleIds(roleIds);
+            roleInheritanceMapper.deleteByChildIds(roleIds);
         }
         return success;
     }
@@ -293,26 +235,30 @@ public class RoleInfoServiceImpl implements RoleInfoService {
     @Override
     public boolean existAdmin(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
-        // 是否被用户使用
         return adminToRoleMapper.existByRoleIds(roleIds);
     }
 
     @Override
-    public boolean checkIsChildren(List<Long> roleIds) {
+    public boolean existChildRole(List<Long> roleIds) {
         if (CollectionUtils.isEmpty(roleIds)) {
             return false;
         }
-        // 检查是否有其他角色的 childrenId 包含这些角色ID
-        LambdaQueryWrapper<RoleInfoDO> lqw = new LambdaQueryWrapper<RoleInfoDO>()
-                .select(RoleInfoDO::getRoleId, RoleInfoDO::getChildrenId)
-                .isNotNull(RoleInfoDO::getChildrenId);
-        List<RoleInfoDO> roles = roleInfoMapper.selectList(lqw);
-        return roles.stream()
-                .filter(role -> role.getChildrenId() != null && role.getChildrenId().length > 0)
-                .anyMatch(role -> {
-                    List<Long> childrenIds = Arrays.asList(role.getChildrenId());
-                    return roleIds.stream().anyMatch(childrenIds::contains);
-                });
+        return roleInheritanceMapper.existChildRole(roleIds) > 0;
+    }
+
+    /**
+     * 新增角色继承关系
+     *
+     * @param roleId   角色 ID
+     * @param childIds 子角色 ID 列表
+     */
+    private void insertRoleInheritance(Long roleId, List<Long> childIds) {
+        if (CollectionUtils.isNotEmpty(childIds)) {
+            List<RoleInheritanceDO> list = childIds.stream()
+                    .map(childId -> new RoleInheritanceDO(roleId, childId))
+                    .toList();
+            roleInheritanceMapper.insert(list);
+        }
     }
 
 }

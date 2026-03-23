@@ -17,7 +17,7 @@ import com.wzkris.common.security.model.AdminLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.usercenter.httpclient.admin.AdminInfoClient;
-import com.wzkris.usercenter.httpclient.admin.req.QueryAdminPermsReq;
+import com.wzkris.usercenter.httpclient.admin.req.AdminPermsQueryReq;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminInfoResp;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminPermissionResp;
 import jakarta.annotation.Nullable;
@@ -98,7 +98,7 @@ public class LoginAdminUserService implements LoginUserService {
 
         // 获取权限信息
         Result<AdminPermissionResp> permissionsResult = adminInfoClient.getPermission(
-                new QueryAdminPermsReq(userResp.getAdminId(), userResp.getDeptId()));
+                new AdminPermsQueryReq(userResp.getAdminId(), userResp.getDeptId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(
                     BizBaseCodeEnum.API_REQUEST_ERROR.value(),

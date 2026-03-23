@@ -10,12 +10,12 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.PostInfoDO;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
+import com.wzkris.usercenter.domain.req.post.PostMngAddReq;
+import com.wzkris.usercenter.domain.req.post.PostMngEditReq;
 import com.wzkris.usercenter.domain.req.post.PostMngQueryReq;
-import com.wzkris.usercenter.domain.req.post.PostMngReq;
 import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
 import com.wzkris.usercenter.mapper.PostInfoMapper;
 import com.wzkris.usercenter.mapper.PostToMenuMapper;
@@ -92,7 +92,7 @@ public class PostMngController extends BaseController {
     @OperateLog(title = "职位管理", subTitle = "新增职位", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckTenantPerms("user-mod:post-mng:add")
-    public Result<Void> add(@Validated @RequestBody PostMngReq req) {
+    public Result<Void> add(@Validated @RequestBody PostMngAddReq req) {
         PostInfoDO post = BeanUtil.convert(req, PostInfoDO.class);
         return toRes(postInfoService.savePost(post, req.getMenuIds()));
     }
@@ -101,7 +101,7 @@ public class PostMngController extends BaseController {
     @OperateLog(title = "职位管理", subTitle = "修改职位", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckTenantPerms("user-mod:post-mng:edit")
-    public Result<Void> edit(@Validated(value = ValidationGroups.Update.class) @RequestBody PostMngReq req) {
+    public Result<Void> edit(@Validated @RequestBody PostMngEditReq req) {
         PostInfoDO post = BeanUtil.convert(req, PostInfoDO.class);
         return toRes(postInfoService.modifyPost(post, req.getMenuIds()));
     }
@@ -110,9 +110,9 @@ public class PostMngController extends BaseController {
     @OperateLog(title = "用户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckTenantPerms("user-mod:post-mng:edit")
-    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
-        PostInfoDO update = new PostInfoDO(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+    public Result<Void> editStatus(@RequestBody StatusEditReq editReq) {
+        PostInfoDO update = new PostInfoDO(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(postInfoMapper.updateById(update));
     }
 

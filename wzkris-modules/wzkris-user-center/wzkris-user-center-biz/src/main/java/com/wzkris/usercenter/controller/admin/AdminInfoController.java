@@ -1,18 +1,18 @@
 package com.wzkris.usercenter.controller.admin;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wzkris.captcha.httpclient.common.CaptchaClient;
+import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.captcha.httpclient.common.CaptchaClient;
-import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import com.wzkris.usercenter.domain.AdminInfoDO;
-import com.wzkris.usercenter.domain.req.EditPhoneReq;
-import com.wzkris.usercenter.domain.req.EditPwdReq;
-import com.wzkris.usercenter.domain.req.admin.AdminInfoReq;
+import com.wzkris.usercenter.domain.req.PhoneEditReq;
+import com.wzkris.usercenter.domain.req.PwdEditReq;
+import com.wzkris.usercenter.domain.req.admin.AdminInfoEditReq;
 import com.wzkris.usercenter.domain.resp.admin.AdminInfoResp;
 import com.wzkris.usercenter.domain.resp.admin.ChatPersonResp;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
@@ -102,7 +102,7 @@ public class AdminInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping
     @CacheEvict(value = info_prefix, key = "@su.getUid()")
-    public Result<Void> editInfo(@RequestBody AdminInfoReq req) {
+    public Result<Void> editInfo(@RequestBody AdminInfoEditReq req) {
         AdminInfoDO admin = new AdminInfoDO(SecurityUtil.getUid());
         admin.setNickname(req.getNickname());
         admin.setGender(req.getGender());
@@ -113,7 +113,7 @@ public class AdminInfoController extends BaseController {
     @OperateLog(title = "个人信息", subTitle = "修改手机号", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-phonenumber")
     @CacheEvict(value = info_prefix, key = "@su.getUid()")
-    public Result<Void> editPhoneNumber(@RequestBody @Valid EditPhoneReq req) {
+    public Result<Void> editPhoneNumber(@RequestBody @Valid PhoneEditReq req) {
         Long adminId = SecurityUtil.getUid();
 
         if (adminInfoService.existByPhoneNumber(adminId, req.getPhoneNumber())) {
@@ -136,7 +136,7 @@ public class AdminInfoController extends BaseController {
     @Operation(summary = "修改密码")
     @OperateLog(title = "个人信息", subTitle = "修改密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-password")
-    public Result<Void> editPwd(@RequestBody @Validated(EditPwdReq.LoginPwd.class) EditPwdReq req) {
+    public Result<Void> editPwd(@RequestBody @Validated(PwdEditReq.LoginPwd.class) PwdEditReq req) {
         Long adminId = SecurityUtil.getUid();
 
         String password = adminInfoMapper.selectPwdById(adminId);

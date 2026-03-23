@@ -11,13 +11,13 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
-import com.wzkris.usercenter.domain.req.ResetPwdReq;
+import com.wzkris.usercenter.domain.req.PwdResetReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
+import com.wzkris.usercenter.domain.req.tenant.TenantMngAddReq;
+import com.wzkris.usercenter.domain.req.tenant.TenantMngEditReq;
 import com.wzkris.usercenter.domain.req.tenant.TenantMngQueryReq;
-import com.wzkris.usercenter.domain.req.tenant.TenantMngReq;
 import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.domain.resp.tenant.TenantMngResp;
 import com.wzkris.usercenter.listener.event.CreateTenantEvent;
@@ -107,7 +107,7 @@ public class TenantMngController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "新增租户", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckAdminPerms("user-mod:tenant-mng:add")
-    public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody TenantMngReq tenantReq) {
+    public Result<Void> add(@Validated @RequestBody TenantMngAddReq tenantReq) {
         if (adminInfoService.existByUsername(null, tenantReq.getUsername())) {
             return requestFail("登录账号'" + tenantReq.getUsername() + "'已存在");
         }
@@ -134,7 +134,7 @@ public class TenantMngController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "修改租户", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckAdminPerms("user-mod:tenant-mng:edit")
-    public Result<Void> edit(@Validated @RequestBody TenantMngReq tenantReq) {
+    public Result<Void> edit(@Validated @RequestBody TenantMngEditReq tenantReq) {
         TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
         tenant.setAdministrator(null);
         tenant.setOperPwd(null);
@@ -145,9 +145,9 @@ public class TenantMngController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "修改租户状态", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckAdminPerms("user-mod:tenant-mng:edit")
-    public Result<Void> editStatus(@RequestBody @Valid EditStatusReq statusReq) {
-        TenantInfoDO update = new TenantInfoDO(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+    public Result<Void> editStatus(@RequestBody @Valid StatusEditReq editReq) {
+        TenantInfoDO update = new TenantInfoDO(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(tenantInfoMapper.updateById(update));
     }
 
@@ -155,7 +155,7 @@ public class TenantMngController extends BaseController {
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-operpwd")
     @CheckAdminPerms("user-mod:tenant-mng:reset-operpwd")
-    public Result<Void> resetOperPwd(@RequestBody ResetPwdReq req) {
+    public Result<Void> resetOperPwd(@RequestBody PwdResetReq req) {
         if (StringUtil.length(req.getPassword()) != 6 || !NumberUtils.isCreatable(req.getPassword())) {
             return requestFail("操作密码必须为6位数字");
         }

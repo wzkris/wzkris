@@ -56,16 +56,17 @@ public interface RoleInfoService {
      * @param menuIds 菜单组
      * @param deptIds 部门组
      */
-    boolean saveRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds);
+    boolean saveRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds, @Nullable List<Long> childIds);
 
     /**
      * 修改角色信息
      *
-     * @param role    角色信息
-     * @param menuIds 菜单组
-     * @param deptIds 部门组
+     * @param role     角色信息
+     * @param menuIds  菜单组
+     * @param deptIds  部门组
+     * @param childIds 子角色 ID 列表
      */
-    boolean modifyRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds);
+    boolean modifyRole(RoleInfoDO role, @Nullable List<Long> menuIds, @Nullable List<Long> deptIds, @Nullable List<Long> childIds);
 
     /**
      * 角色分配管理员
@@ -102,6 +103,6 @@ public interface RoleInfoService {
      *
      * @param roleIds 角色组
      */
-    boolean checkIsChildren(List<Long> roleIds);
+    boolean existChildRole(List<Long> roleIds);
 
 }

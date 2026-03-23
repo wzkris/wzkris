@@ -13,7 +13,7 @@ import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.system.httpclient.loginlog.LoginLogClient;
 import com.wzkris.system.httpclient.loginlog.req.LoginLogEvent;
 import com.wzkris.usercenter.httpclient.admin.AdminInfoClient;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
+import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
 import com.wzkris.usercenter.httpclient.customer.CustomerInfoClient;
 import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
 import lombok.RequiredArgsConstructor;
@@ -97,16 +97,16 @@ public class LoginEventListener {
         if (!Boolean.TRUE.equals(success)) {
             return;
         }
-        LoginInfoReq loginInfoReq = new LoginInfoReq(loginUser.getUid());
-        loginInfoReq.setLoginIp(ipAddr);
-        loginInfoReq.setLoginDate(loginDate);
+        LoginInfoUpdateReq loginInfoUpdateReq = new LoginInfoUpdateReq(loginUser.getUid());
+        loginInfoUpdateReq.setLoginIp(ipAddr);
+        loginInfoUpdateReq.setLoginDate(loginDate);
         AuthTypeEnum authType = loginUser.getAuthType();
         if (authType == AuthTypeEnum.ADMIN) {
-            ResultUtil.checkNoData(adminInfoClient.updateLoginInfo(loginInfoReq));
+            ResultUtil.checkNoData(adminInfoClient.updateLoginInfo(loginInfoUpdateReq));
         } else if (authType == AuthTypeEnum.TENANT) {
-            ResultUtil.checkNoData(memberInfoClient.updateLoginInfo(loginInfoReq));
+            ResultUtil.checkNoData(memberInfoClient.updateLoginInfo(loginInfoUpdateReq));
         } else if (authType == AuthTypeEnum.CUSTOMER) {
-            ResultUtil.checkNoData(customerInfoClient.updateLoginInfo(loginInfoReq));
+            ResultUtil.checkNoData(customerInfoClient.updateLoginInfo(loginInfoUpdateReq));
         }
     }
 

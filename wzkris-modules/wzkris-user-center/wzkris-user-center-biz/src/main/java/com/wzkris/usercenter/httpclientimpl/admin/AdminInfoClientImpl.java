@@ -4,8 +4,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.httpclient.admin.AdminInfoClient;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
-import com.wzkris.usercenter.httpclient.admin.req.QueryAdminPermsReq;
+import com.wzkris.usercenter.httpclient.admin.req.AdminPermsQueryReq;
+import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminInfoResp;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminPermissionResp;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
@@ -36,16 +36,16 @@ public class AdminInfoClientImpl implements AdminInfoClient {
     }
 
     @Override
-    public Result<AdminPermissionResp> getPermission(QueryAdminPermsReq queryAdminPermsReq) {
+    public Result<AdminPermissionResp> getPermission(AdminPermsQueryReq adminPermsQueryReq) {
         return Result.ok(permissionService.getAdminPermission(
-                queryAdminPermsReq.getAdminId(), queryAdminPermsReq.getDeptId()));
+                adminPermsQueryReq.getAdminId(), adminPermsQueryReq.getDeptId()));
     }
 
     @Override
-    public Result<Void> updateLoginInfo(LoginInfoReq loginInfoReq) {
-        AdminInfoDO adminInfoDO = new AdminInfoDO(loginInfoReq.getId());
-        adminInfoDO.setLoginIp(loginInfoReq.getLoginIp());
-        adminInfoDO.setLoginDate(loginInfoReq.getLoginDate());
+    public Result<Void> updateLoginInfo(LoginInfoUpdateReq loginInfoUpdateReq) {
+        AdminInfoDO adminInfoDO = new AdminInfoDO(loginInfoUpdateReq.getId());
+        adminInfoDO.setLoginIp(loginInfoUpdateReq.getLoginIp());
+        adminInfoDO.setLoginDate(loginInfoUpdateReq.getLoginDate());
 
         adminInfoMapper.updateById(adminInfoDO);
         return Result.ok();

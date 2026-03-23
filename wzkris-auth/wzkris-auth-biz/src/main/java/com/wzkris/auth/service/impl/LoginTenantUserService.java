@@ -16,7 +16,7 @@ import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
-import com.wzkris.usercenter.httpclient.member.req.QueryMemberPermsReq;
+import com.wzkris.usercenter.httpclient.member.req.MemberPermsQueryReq;
 import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
 import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
 import jakarta.annotation.Nullable;
@@ -97,7 +97,7 @@ public class LoginTenantUserService implements LoginUserService {
 
         // 获取权限信息
         Result<MemberPermissionResp> permissionsResult = memberInfoClient.getPermission(
-                new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
+                new MemberPermsQueryReq(memberResp.getMemberId(), memberResp.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(
                     BizBaseCodeEnum.API_REQUEST_ERROR.value(),
@@ -149,7 +149,7 @@ public class LoginTenantUserService implements LoginUserService {
 
         // 获取权限信息以判断身份类型
         Result<MemberPermissionResp> permissionsResult = memberInfoClient.getPermission(
-                new QueryMemberPermsReq(memberResp.getMemberId(), memberResp.getTenantId()));
+                new MemberPermsQueryReq(memberResp.getMemberId(), memberResp.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(
                     BizBaseCodeEnum.API_REQUEST_ERROR.value(),

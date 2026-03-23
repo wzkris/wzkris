@@ -12,14 +12,14 @@ import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.validator.group.ValidationGroups;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.MemberInfoDO;
-import com.wzkris.usercenter.domain.req.EditStatusReq;
-import com.wzkris.usercenter.domain.req.ResetPwdReq;
+import com.wzkris.usercenter.domain.req.PwdResetReq;
+import com.wzkris.usercenter.domain.req.StatusEditReq;
+import com.wzkris.usercenter.domain.req.member.MemberMngAddReq;
+import com.wzkris.usercenter.domain.req.member.MemberMngEditReq;
+import com.wzkris.usercenter.domain.req.member.MemberMngGrantPostReq;
 import com.wzkris.usercenter.domain.req.member.MemberMngQueryReq;
-import com.wzkris.usercenter.domain.req.member.MemberMngReq;
-import com.wzkris.usercenter.domain.req.member.MemberToPostsReq;
 import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
 import com.wzkris.usercenter.domain.resp.member.MemberMngResp;
 import com.wzkris.usercenter.listener.event.CreateMemberEvent;
@@ -101,14 +101,14 @@ public class MemberMngController extends BaseController {
     @OperateLog(title = "成员管理", subTitle = "新增成员", type = OperateTypeEnum.INSERT)
     @PostMapping("/add")
     @CheckTenantPerms("user-mod:member-mng:add")
-    public Result<Void> add(@Validated(ValidationGroups.Insert.class) @RequestBody MemberMngReq memberReq) {
+    public Result<Void> add(@Validated @RequestBody MemberMngAddReq memberReq) {
         Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
         if (!tenantInfoService.checkAccountLimit(tenantId)) {
             return requestFail("账号数量已达上限，请联系管理员");
-        } else if (memberInfoService.existByUsername(memberReq.getMemberId(), memberReq.getUsername())) {
+        } else if (memberInfoService.existByUsername(null, memberReq.getUsername())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(memberReq.getPhoneNumber())
-                && memberInfoService.existByPhoneNumber(memberReq.getMemberId(), memberReq.getPhoneNumber())) {
+                && memberInfoService.existByPhoneNumber(null, memberReq.getPhoneNumber())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
         MemberInfoDO member = BeanUtil.convert(memberReq, MemberInfoDO.class);
@@ -127,7 +127,7 @@ public class MemberMngController extends BaseController {
     @OperateLog(title = "成员管理", subTitle = "修改成员", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit")
     @CheckTenantPerms("user-mod:member-mng:edit")
-    public Result<Void> edit(@Validated @RequestBody MemberMngReq memberReq) {
+    public Result<Void> edit(@Validated @RequestBody MemberMngEditReq memberReq) {
         tenantInfoService.checkAdministrator(memberReq.getMemberId());
         if (memberInfoService.existByUsername(memberReq.getMemberId(), memberReq.getUsername())) {
             return requestFail("修改成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
@@ -144,7 +144,7 @@ public class MemberMngController extends BaseController {
     @OperateLog(title = "成员管理", subTitle = "重置密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-password")
     @CheckTenantPerms("user-mod:member-mng:edit")
-    public Result<Void> resetPwd(@RequestBody @Valid ResetPwdReq req) {
+    public Result<Void> resetPwd(@RequestBody @Valid PwdResetReq req) {
         tenantInfoService.checkAdministrator(req.getId());
         MemberInfoDO update = new MemberInfoDO(req.getId());
         update.setPassword(passwordEncoder.encode(req.getPassword()));
@@ -155,10 +155,10 @@ public class MemberMngController extends BaseController {
     @OperateLog(title = "成员管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
     @PostMapping("/edit-status")
     @CheckTenantPerms("user-mod:member-mng:edit")
-    public Result<Void> editStatus(@RequestBody EditStatusReq statusReq) {
-        tenantInfoService.checkAdministrator(statusReq.getId());
-        MemberInfoDO update = new MemberInfoDO(statusReq.getId());
-        update.setStatus(statusReq.getStatus());
+    public Result<Void> editStatus(@RequestBody StatusEditReq editReq) {
+        tenantInfoService.checkAdministrator(editReq.getId());
+        MemberInfoDO update = new MemberInfoDO(editReq.getId());
+        update.setStatus(editReq.getStatus());
         return toRes(memberInfoMapper.updateById(update));
     }
 
@@ -166,7 +166,7 @@ public class MemberMngController extends BaseController {
     @OperateLog(title = "成员管理", subTitle = "授权成员职位", type = OperateTypeEnum.GRANT)
     @PostMapping("/grant-post")
     @CheckTenantPerms("user-mod:member-mng:grant-post")
-    public Result<Void> grantPosts(@RequestBody @Valid MemberToPostsReq req) {
+    public Result<Void> grantPosts(@RequestBody @Valid MemberMngGrantPostReq req) {
         tenantInfoService.checkAdministrator(req.getMemberId());
         return toRes(memberInfoService.grantPosts(req.getMemberId(), req.getPostIds()));
     }

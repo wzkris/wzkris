@@ -9,7 +9,6 @@ import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminPermissionResp;
 import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
-import com.wzkris.usercenter.manager.DeptInfoDscManager;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.service.MenuInfoService;
@@ -61,8 +60,6 @@ public class PermissionServiceImpl implements PermissionService {
     private final PostInfoService postInfoService;
 
     private final TenantInfoMapper tenantInfoMapper;
-
-    private final DeptInfoDscManager deptInfoDscManager;
 
     @Override
     public AdminPermissionResp getAdminPermission(Long adminId, Long deptId) {
@@ -132,7 +129,7 @@ public class PermissionServiceImpl implements PermissionService {
                 break;
             } else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
                 // 自定义部门权限
-                deptIds.addAll(deptInfoDscManager.listDeptIdByRoleIds(entry.getValue()));
+                deptIds.addAll(deptInfoMapper.listDeptIdByRoleIds(entry.getValue()));
             } else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
                 // 部门自身数据权限
                 deptIds.add(deptId);

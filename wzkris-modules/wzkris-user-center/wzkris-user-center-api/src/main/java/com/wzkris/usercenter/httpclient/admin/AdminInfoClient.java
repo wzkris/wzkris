@@ -4,8 +4,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.httpclient.annotation.HttpClient;
 import com.wzkris.common.httpclient.constants.ServiceContextPathConstant;
 import com.wzkris.common.httpclient.constants.ServiceIdConstant;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoReq;
-import com.wzkris.usercenter.httpclient.admin.req.QueryAdminPermsReq;
+import com.wzkris.usercenter.httpclient.admin.req.AdminPermsQueryReq;
+import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminInfoResp;
 import com.wzkris.usercenter.httpclient.admin.resp.AdminPermissionResp;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,12 +41,12 @@ public interface AdminInfoClient {
      * 查询管理员权限
      */
     @PostExchange("/query-permission")
-    Result<AdminPermissionResp> getPermission(@RequestBody QueryAdminPermsReq queryAdminPermsReq);
+    Result<AdminPermissionResp> getPermission(@RequestBody AdminPermsQueryReq adminPermsQueryReq);
 
     /**
      * 更新用户登录信息
      */
     @PostExchange("/update-logininfo")
-    Result<Void> updateLoginInfo(@RequestBody LoginInfoReq loginInfoReq);
+    Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateReq loginInfoUpdateReq);
 
 }

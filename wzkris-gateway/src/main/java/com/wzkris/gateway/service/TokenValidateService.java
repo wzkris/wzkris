@@ -1,8 +1,8 @@
 package com.wzkris.gateway.service;
 
 import com.wzkris.auth.httpclient.token.LoginUserClient;
-import com.wzkris.auth.httpclient.token.req.LoginUserReq;
-import com.wzkris.auth.httpclient.token.req.OAuth2TokenReq;
+import com.wzkris.auth.httpclient.token.req.LoginUserQueryReq;
+import com.wzkris.auth.httpclient.token.req.OAuth2TokenQueryReq;
 import com.wzkris.auth.httpclient.token.resp.LoginUserResp;
 import com.wzkris.common.core.constant.JwtClaimConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -107,8 +107,8 @@ public class TokenValidateService {
     }
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
-        LoginUserReq loginUserReq = new LoginUserReq(authTypeEnum.getValue(), uid, sid);
-        Result<LoginUserResp> r = loginUserClient.queryInfo(loginUserReq);
+        LoginUserQueryReq loginUserQueryReq = new LoginUserQueryReq(authTypeEnum.getValue(), uid, sid);
+        Result<LoginUserResp> r = loginUserClient.queryInfo(loginUserQueryReq);
         if (!ResultUtil.check(r)) {
             throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
         }
@@ -122,8 +122,8 @@ public class TokenValidateService {
      * 调用auth服务的新接口，通过OAuth2AuthorizationService.findByToken()查询
      */
     private Authentication introspectOAuth2(String token) {
-        OAuth2TokenReq oAuth2TokenReq = new OAuth2TokenReq(token);
-        Result<LoginUserResp> r = loginUserClient.queryOAuth2(oAuth2TokenReq);
+        OAuth2TokenQueryReq oAuth2TokenQueryReq = new OAuth2TokenQueryReq(token);
+        Result<LoginUserResp> r = loginUserClient.queryOAuth2(oAuth2TokenQueryReq);
         if (!ResultUtil.check(r)) {
             throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
         }
