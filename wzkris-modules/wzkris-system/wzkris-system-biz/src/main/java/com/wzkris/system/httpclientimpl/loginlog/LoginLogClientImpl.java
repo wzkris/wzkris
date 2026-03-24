@@ -4,14 +4,15 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.system.domain.AdminLoginLogDO;
 import com.wzkris.system.domain.TenantLoginLogDO;
-import com.wzkris.system.httpclient.loginlog.LoginLogClient;
-import com.wzkris.system.httpclient.loginlog.req.LoginLogEvent;
+import com.wzkris.system.httpclientimpl.loginlog.req.LoginLogEvent;
 import com.wzkris.system.mapper.AdminLoginLogMapper;
 import com.wzkris.system.mapper.TenantLoginLogMapper;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -22,14 +23,18 @@ import java.util.stream.Collectors;
 
 @Hidden
 @RestController
+@RequestMapping("/login-log-client")
 @RequiredArgsConstructor
-public class LoginLogClientImpl implements LoginLogClient {
+public class LoginLogClientImpl {
 
     private final AdminLoginLogMapper adminLoginLogMapper;
 
     private final TenantLoginLogMapper tenantLoginLogMapper;
 
-    @Override
+    /**
+     * 批量保存登录日志
+     */
+    @PostMapping("/save")
     public Result<Void> save(@RequestBody List<LoginLogEvent> loginLogEvents) {
         if (CollectionUtils.isEmpty(loginLogEvents)) {
             return Result.ok();
@@ -94,4 +99,3 @@ public class LoginLogClientImpl implements LoginLogClient {
     }
 
 }
-

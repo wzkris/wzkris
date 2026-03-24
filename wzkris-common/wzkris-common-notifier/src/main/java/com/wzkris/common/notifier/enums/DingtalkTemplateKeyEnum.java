@@ -68,5 +68,3 @@ public enum DingtalkTemplateKeyEnum {
         }
     }
 }
-
-

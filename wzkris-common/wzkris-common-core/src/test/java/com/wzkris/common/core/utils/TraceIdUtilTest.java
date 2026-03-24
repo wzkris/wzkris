@@ -219,4 +219,3 @@ class TraceIdUtilTest {
         assertNotEquals(traceId, newTraceId);
     }
 }
-

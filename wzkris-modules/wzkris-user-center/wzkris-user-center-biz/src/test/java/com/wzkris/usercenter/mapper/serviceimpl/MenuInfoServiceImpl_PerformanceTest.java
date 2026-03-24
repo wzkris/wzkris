@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.mapper.serviceimpl;
 
 import com.wzkris.usercenter.domain.MenuInfoDO;
-import com.wzkris.usercenter.service.impl.MenuInfoServiceImpl;
+import com.wzkris.usercenter.serviceimpl.MenuInfoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

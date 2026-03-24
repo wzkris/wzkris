@@ -2,7 +2,7 @@ package com.wzkris.captcha.slide.config;
 
 import com.wzkris.captcha.slide.properties.SlideCaptchaProperties;
 import com.wzkris.captcha.slide.service.SlideCaptchaService;
-import com.wzkris.captcha.slide.service.impl.SlideCaptchaServiceImpl;
+import com.wzkris.captcha.slide.serviceimpl.SlideCaptchaServiceImpl;
 import com.wzkris.captcha.slide.store.SlideCaptchaStore;
 import com.wzkris.captcha.slide.store.impl.RedisSlideCaptchaStore;
 import org.springframework.context.annotation.Bean;

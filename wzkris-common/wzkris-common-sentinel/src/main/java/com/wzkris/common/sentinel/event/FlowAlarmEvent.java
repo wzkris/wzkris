@@ -13,4 +13,3 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 public record FlowAlarmEvent(String resourceName, FlowRule rule) {
 
 }
-

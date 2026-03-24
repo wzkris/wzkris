@@ -42,4 +42,3 @@ public class NotificationContext {
     private Map<String, Object> extras;
 
 }
-

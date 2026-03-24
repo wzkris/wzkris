@@ -11,4 +11,3 @@ public interface BusMessageService extends IService<BusMessage> {
     void markDelivered(Long messageId);
 
 }
-

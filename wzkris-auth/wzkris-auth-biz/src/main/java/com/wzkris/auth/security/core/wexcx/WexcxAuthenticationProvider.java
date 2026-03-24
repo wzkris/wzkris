@@ -48,7 +48,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
             return null; // never run this line
         }
 
-        CommonAuthenticationToken token = templateOptional
+        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional
                 .get()
                 .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
 

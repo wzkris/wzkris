@@ -8,4 +8,3 @@ spring:
     name: wzkris-user-center
   profiles:
     active: @profiles.active@
-    

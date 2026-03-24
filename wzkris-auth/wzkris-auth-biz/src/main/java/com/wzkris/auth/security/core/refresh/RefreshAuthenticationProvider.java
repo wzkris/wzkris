@@ -1,10 +1,10 @@
 package com.wzkris.auth.security.core.refresh;
 
+import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
-import com.wzkris.auth.security.oauth2.customize.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;

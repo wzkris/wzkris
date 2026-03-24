@@ -1,13 +1,14 @@
 package com.wzkris.captcha.httpclientimpl.common;
 
-import com.wzkris.captcha.httpclient.common.CaptchaClient;
-import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
+import com.wzkris.captcha.httpclientimpl.common.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
@@ -15,12 +16,13 @@ import java.time.Duration;
 @Hidden
 @Validated
 @RestController
+@RequestMapping("/captcha-client")
 @RequiredArgsConstructor
-public class CaptchaClientImpl implements CaptchaClient {
+public class CaptchaClientImpl {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    @Override
+    @PostMapping("/check")
     public Result<Boolean> check(CaptchaCheckReq captchaCheckReq) {
         String key = captchaCheckReq.getKey();
         String expected = captchaCheckReq.getValue();

@@ -113,34 +113,6 @@
                 <version>${netty.version}</version>
             </dependency>
 
-            <!--认证rpc服务-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-auth-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!--认证rpc服务-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-user-center-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!--系统rpc服务-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-system-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!--验证码rpc服务-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-captcha-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 

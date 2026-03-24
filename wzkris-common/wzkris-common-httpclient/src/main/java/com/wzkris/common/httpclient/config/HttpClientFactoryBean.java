@@ -171,4 +171,3 @@ public class HttpClientFactoryBean<T> implements FactoryBean<T>, InitializingBea
     }
 
 }
-

@@ -189,4 +189,3 @@ public class DefaultSubscriptionRegistry implements SubscriptionRegistry {
     }
 
 }
-

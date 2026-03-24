@@ -2,7 +2,7 @@ package com.wzkris.captcha.image.config;
 
 import com.wzkris.captcha.image.properties.ImageCaptchaProperties;
 import com.wzkris.captcha.image.service.ImageCaptchaService;
-import com.wzkris.captcha.image.service.impl.ImageCaptchaServiceImpl;
+import com.wzkris.captcha.image.serviceimpl.ImageCaptchaServiceImpl;
 import com.wzkris.captcha.image.store.ImageCaptchaStore;
 import com.wzkris.captcha.image.store.impl.RedisImageCaptchaStore;
 import org.springframework.context.annotation.Bean;

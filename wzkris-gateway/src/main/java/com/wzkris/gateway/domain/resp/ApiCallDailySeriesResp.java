@@ -38,5 +38,3 @@ public class ApiCallDailySeriesResp implements Serializable {
     private Map<String, ApiCallResp> paths;
 
 }
-
-

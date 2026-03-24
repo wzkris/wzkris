@@ -1,7 +1,13 @@
 package com.wzkris.auth.listener;
 
-import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.service.impl.LoginRiskAnalyzeService;
+import com.wzkris.auth.event.LoginEvent;
+import com.wzkris.auth.httpclient.admin.AdminInfoClient;
+import com.wzkris.auth.httpclient.admin.req.LoginInfoUpdateReq;
+import com.wzkris.auth.httpclient.customer.CustomerInfoClient;
+import com.wzkris.auth.httpclient.loginlog.LoginLogClient;
+import com.wzkris.auth.httpclient.loginlog.req.LoginLogEvent;
+import com.wzkris.auth.httpclient.member.MemberInfoClient;
+import com.wzkris.auth.serviceimpl.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
@@ -10,12 +16,6 @@ import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.security.model.AdminLoginUser;
 import com.wzkris.common.security.model.CustomerLoginUser;
 import com.wzkris.common.security.model.TenantLoginUser;
-import com.wzkris.system.httpclient.loginlog.LoginLogClient;
-import com.wzkris.system.httpclient.loginlog.req.LoginLogEvent;
-import com.wzkris.usercenter.httpclient.admin.AdminInfoClient;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
-import com.wzkris.usercenter.httpclient.customer.CustomerInfoClient;
-import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.basjes.parse.useragent.UserAgent;

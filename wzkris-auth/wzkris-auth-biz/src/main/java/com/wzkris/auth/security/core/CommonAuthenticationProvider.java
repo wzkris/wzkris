@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.core;
 
+import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.auth.security.oauth2.customize.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
 import org.springframework.security.authentication.AuthenticationProvider;

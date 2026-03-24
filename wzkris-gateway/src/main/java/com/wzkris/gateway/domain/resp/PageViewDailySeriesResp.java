@@ -34,5 +34,3 @@ public class PageViewDailySeriesResp implements Serializable {
     private Map<String, PageViewResp> hours;
 
 }
-
-

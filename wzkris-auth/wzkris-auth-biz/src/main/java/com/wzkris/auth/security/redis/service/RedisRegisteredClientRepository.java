@@ -15,6 +15,8 @@
  */
 package com.wzkris.auth.security.redis.service;
 
+import com.wzkris.auth.httpclient.oauth2.OAuth2ClientClient;
+import com.wzkris.auth.httpclient.oauth2.resp.OAuth2ClientResp;
 import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
@@ -22,8 +24,6 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.I18nUtil;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.usercenter.httpclient.oauth2.OAuth2ClientClient;
-import com.wzkris.usercenter.httpclient.oauth2.resp.OAuth2ClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;

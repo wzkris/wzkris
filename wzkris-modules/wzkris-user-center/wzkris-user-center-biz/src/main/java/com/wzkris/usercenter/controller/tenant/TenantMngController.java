@@ -20,7 +20,7 @@ import com.wzkris.usercenter.domain.req.tenant.TenantMngEditReq;
 import com.wzkris.usercenter.domain.req.tenant.TenantMngQueryReq;
 import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.domain.resp.tenant.TenantMngResp;
-import com.wzkris.usercenter.listener.event.CreateTenantEvent;
+import com.wzkris.usercenter.event.CreateTenantEvent;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.service.AdminInfoService;
 import com.wzkris.usercenter.service.TenantInfoService;

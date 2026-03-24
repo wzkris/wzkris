@@ -22,5 +22,3 @@ public class EmailMessage {
     private String fromName;
 
 }
-
-

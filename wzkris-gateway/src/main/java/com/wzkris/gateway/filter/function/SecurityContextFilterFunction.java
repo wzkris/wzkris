@@ -26,17 +26,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SecurityContextFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
-    @Override
-    public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
-        Authentication authentication = SecurityUtil.getAuthentication();
-        if (authentication == null) {
-            return next.handle(request);
-        }
-
-        ServerRequest requestWithHeaders = addAuthHeaders(request, authentication);
-        return next.handle(requestWithHeaders);
-    }
-
     private static ServerRequest addAuthHeaders(ServerRequest request, Authentication authentication) {
         return ServerRequest.from(request)
                 .headers(h -> {
@@ -51,6 +40,17 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
                     h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
                 })
                 .build();
+    }
+
+    @Override
+    public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
+        Authentication authentication = SecurityUtil.getAuthentication();
+        if (authentication == null) {
+            return next.handle(request);
+        }
+
+        ServerRequest requestWithHeaders = addAuthHeaders(request, authentication);
+        return next.handle(requestWithHeaders);
     }
 
 }

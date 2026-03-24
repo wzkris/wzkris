@@ -60,6 +60,18 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
      */
     private final Set<String> permitAllAnnotations = new HashSet<>();
 
+    private static boolean isPathMatched(Iterable<String> patterns, String path) {
+        if (patterns == null) {
+            return false;
+        }
+        for (String pattern : patterns) {
+            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         return loadDeferredContext(requestResponseHolder.getRequest()).get();
@@ -111,18 +123,6 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
     private boolean isPathPermitted(String path) {
         return isPathMatched(permitAllProperties.getIgnores(), path)
                 || isPathMatched(permitAllAnnotations, path);
-    }
-
-    private static boolean isPathMatched(Iterable<String> patterns, String path) {
-        if (patterns == null) {
-            return false;
-        }
-        for (String pattern : patterns) {
-            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

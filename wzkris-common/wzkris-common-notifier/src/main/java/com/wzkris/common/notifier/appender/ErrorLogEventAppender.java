@@ -184,4 +184,3 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
     }
 
 }
-

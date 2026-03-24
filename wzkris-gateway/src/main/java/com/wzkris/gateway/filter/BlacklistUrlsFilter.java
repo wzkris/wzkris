@@ -37,6 +37,13 @@ public class BlacklistUrlsFilter extends OncePerRequestFilter {
 
     private final PermitAllProperties permitAllProperties;
 
+    private static void writeJsonResponse(HttpServletResponse response, HttpStatus status, Object body)
+            throws IOException {
+        response.setStatus(status.value());
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(JsonUtil.toJsonString(body));
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -55,13 +62,6 @@ public class BlacklistUrlsFilter extends OncePerRequestFilter {
         } finally {
             TraceIdUtil.clear();
         }
-    }
-
-    private static void writeJsonResponse(HttpServletResponse response, HttpStatus status, Object body)
-            throws IOException {
-        response.setStatus(status.value());
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JsonUtil.toJsonString(body));
     }
 
     private boolean isPathDenied(String path) {

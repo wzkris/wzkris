@@ -6,11 +6,10 @@ import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.MemberSocialInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
-import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
-import com.wzkris.usercenter.httpclient.member.req.MemberPermsQueryReq;
-import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
-import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
+import com.wzkris.usercenter.domain.resp.permission.MemberPermissionResp;
+import com.wzkris.usercenter.httpclientimpl.admin.req.LoginInfoUpdateReq;
+import com.wzkris.usercenter.httpclientimpl.member.req.MemberPermsQueryReq;
+import com.wzkris.usercenter.httpclientimpl.member.resp.MemberInfoResp;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.mapper.MemberSocialInfoMapper;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
@@ -20,12 +19,15 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Hidden
 @RestController
+@RequestMapping("/member-info-client")
 @RequiredArgsConstructor
-public class MemberInfoClientImpl implements MemberInfoClient {
+public class MemberInfoClientImpl {
 
     private final MemberInfoMapper memberInfoMapper;
 
@@ -37,7 +39,7 @@ public class MemberInfoClientImpl implements MemberInfoClient {
 
     private final PermissionService permissionService;
 
-    @Override
+    @PostMapping("/query-by-username")
     public Result<MemberInfoResp> getByUsername(String username) {
         MemberInfoDO member = memberInfoMapper.selectByUsername(username);
         MemberInfoResp memberResp = BeanUtil.convert(member, MemberInfoResp.class);
@@ -45,7 +47,7 @@ public class MemberInfoClientImpl implements MemberInfoClient {
         return Result.ok(memberResp);
     }
 
-    @Override
+    @PostMapping("/query-by-phonenumber")
     public Result<MemberInfoResp> getByPhoneNumber(String phoneNumber) {
         MemberInfoDO member = memberInfoMapper.selectByPhoneNumber(phoneNumber);
         MemberInfoResp memberResp = BeanUtil.convert(member, MemberInfoResp.class);
@@ -53,7 +55,7 @@ public class MemberInfoClientImpl implements MemberInfoClient {
         return Result.ok(memberResp);
     }
 
-    @Override
+    @PostMapping("/query-by-wexcx-identifier")
     public Result<MemberInfoResp> getByWexcxIdentifier(String xcxIdentifier) {
         MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectByIdentifier(xcxIdentifier);
         if (ObjectUtils.isEmpty(memberSocialInfoDO)) {
@@ -78,13 +80,13 @@ public class MemberInfoClientImpl implements MemberInfoClient {
         memberResp.setPackageStatus(tenantPackage.getStatus());
     }
 
-    @Override
+    @PostMapping("/query-permission")
     public Result<MemberPermissionResp> getPermission(MemberPermsQueryReq memberPermsReq) {
         return Result.ok(permissionService.getTenantPermission(
                 memberPermsReq.getMemberId(), memberPermsReq.getTenantId()));
     }
 
-    @Override
+    @PostMapping("/update-logininfo")
     public Result<Void> updateLoginInfo(LoginInfoUpdateReq loginInfoUpdateReq) {
         MemberInfoDO memberInfoDO = new MemberInfoDO(loginInfoUpdateReq.getId());
         memberInfoDO.setLoginIp(loginInfoUpdateReq.getLoginIp());

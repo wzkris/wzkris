@@ -2,6 +2,8 @@ package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.auth.httpclient.captcha.CaptchaClient;
+import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
@@ -11,8 +13,6 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
-import com.wzkris.captcha.httpclient.common.CaptchaClient;
-import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -68,7 +68,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     "invalidParameter.captcha.error");
         }
 
-        CommonAuthenticationToken token = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
         if (token == null) {
             OAuth2ExceptionUtil.throwErrorI18n(

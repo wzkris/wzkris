@@ -6,22 +6,24 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
 import com.wzkris.usercenter.enums.IdentifierTypeEnum;
-import com.wzkris.usercenter.httpclient.admin.req.LoginInfoUpdateReq;
-import com.wzkris.usercenter.httpclient.customer.CustomerInfoClient;
-import com.wzkris.usercenter.httpclient.customer.req.WexcxLoginReq;
-import com.wzkris.usercenter.httpclient.customer.resp.CustomerResp;
+import com.wzkris.usercenter.httpclientimpl.admin.req.LoginInfoUpdateReq;
+import com.wzkris.usercenter.httpclientimpl.customer.req.WexcxLoginReq;
+import com.wzkris.usercenter.httpclientimpl.customer.resp.CustomerResp;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerSocialInfoMapper;
 import com.wzkris.usercenter.service.CustomerInfoService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Hidden
 @RestController
+@RequestMapping("/customer-info-client")
 @RequiredArgsConstructor
-public class CustomerInfoClientImpl implements CustomerInfoClient {
+public class CustomerInfoClientImpl {
 
     private final CustomerInfoMapper customerInfoMapper;
 
@@ -31,13 +33,13 @@ public class CustomerInfoClientImpl implements CustomerInfoClient {
 
     private final TransactionTemplate transactionTemplate;
 
-    @Override
+    @PostMapping("/query-by-phonenumber")
     public Result<CustomerResp> getByPhoneNumber(String phoneNumber) {
         CustomerInfoDO customerInfoDO = customerInfoMapper.selectByPhoneNumber(phoneNumber);
         return Result.ok(BeanUtil.convert(customerInfoDO, CustomerResp.class));
     }
 
-    @Override
+    @PostMapping("/wexcx-login")
     public Result<CustomerResp> wexcxLogin(WexcxLoginReq req) {
         Long customerId;
         CustomerSocialInfoDO thirdinfo = customerSocialInfoMapper.selectByIdentifier(req.getIdentifier());
@@ -65,7 +67,7 @@ public class CustomerInfoClientImpl implements CustomerInfoClient {
         return Result.ok(BeanUtil.convert(customerInfo, CustomerResp.class));
     }
 
-    @Override
+    @PostMapping("/update-logininfo")
     public Result<Void> updateLoginInfo(LoginInfoUpdateReq loginInfoUpdateReq) {
         CustomerInfoDO customerInfoDO = new CustomerInfoDO(loginInfoUpdateReq.getId());
         customerInfoDO.setLoginIp(loginInfoUpdateReq.getLoginIp());

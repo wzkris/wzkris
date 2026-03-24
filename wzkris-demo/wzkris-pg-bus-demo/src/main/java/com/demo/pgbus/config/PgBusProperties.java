@@ -32,4 +32,3 @@ public class PgBusProperties {
     private Duration reconnectDelay = Duration.ofSeconds(3);
 
 }
-

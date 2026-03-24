@@ -1,9 +1,5 @@
 package com.wzkris.gateway.service;
 
-import com.wzkris.auth.httpclient.token.LoginUserClient;
-import com.wzkris.auth.httpclient.token.req.LoginUserQueryReq;
-import com.wzkris.auth.httpclient.token.req.OAuth2TokenQueryReq;
-import com.wzkris.auth.httpclient.token.resp.LoginUserResp;
 import com.wzkris.common.core.constant.JwtClaimConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.service.ApiResultException;
@@ -13,6 +9,10 @@ import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.ClientLoginUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
+import com.wzkris.gateway.httpclient.loginuser.LoginUserClient;
+import com.wzkris.gateway.httpclient.loginuser.req.LoginUserQueryReq;
+import com.wzkris.gateway.httpclient.loginuser.req.OAuth2TokenQueryReq;
+import com.wzkris.gateway.httpclient.loginuser.resp.LoginUserResp;
 import com.wzkris.gateway.properties.PermitAllProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +82,7 @@ public class TokenValidateService {
             }
             return introspectCustom(authTypeEnum, Long.valueOf(uidStr), token, sid);
         } catch (JwtException e) {
-            log.warn("JWT validation failed: {}", e.getMessage());
+            log.info("JWT validation failed: {}", e.getMessage());
             throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: " + e.getMessage()));
         }
     }

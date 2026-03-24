@@ -2,15 +2,15 @@ package com.wzkris.auth.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.domain.req.WexcxSwitchReq;
+import com.wzkris.auth.httpclient.member.MemberInfoClient;
+import com.wzkris.auth.httpclient.member.req.MemberPermsQueryReq;
+import com.wzkris.auth.httpclient.member.resp.MemberInfoResp;
+import com.wzkris.auth.httpclient.member.resp.MemberPermissionResp;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.auth.service.impl.LoginTenantUserService;
+import com.wzkris.auth.serviceimpl.LoginTenantUserServiceImpl;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.usercenter.httpclient.member.MemberInfoClient;
-import com.wzkris.usercenter.httpclient.member.req.MemberPermsQueryReq;
-import com.wzkris.usercenter.httpclient.member.resp.MemberInfoResp;
-import com.wzkris.usercenter.httpclient.member.resp.MemberPermissionResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class SwitchTokenController {
 
     private final TokenService tokenService;
 
-    private final LoginTenantUserService loginTenantUserService;
+    private final LoginTenantUserServiceImpl loginTenantUserServiceImpl;
 
     @Autowired
     @Lazy
@@ -60,7 +60,7 @@ public class SwitchTokenController {
         }
         MemberInfoResp memberInfoResp = memberResult.getData();
 
-        BaseLoginUser loginUser = loginTenantUserService.buildLoginTenant(memberInfoResp);
+        BaseLoginUser loginUser = loginTenantUserServiceImpl.buildLoginTenant(memberInfoResp);
 
         // 获取权限信息
         Result<MemberPermissionResp> permissionResult = memberInfoClient.getPermission(

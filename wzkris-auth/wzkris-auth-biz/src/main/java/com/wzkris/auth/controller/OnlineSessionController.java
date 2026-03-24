@@ -1,8 +1,8 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.OnlineSession;
+import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.domain.resp.OnlineSessionResp;
-import com.wzkris.auth.security.oauth2.customize.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;

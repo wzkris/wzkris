@@ -8,4 +8,3 @@ spring:
     name: wzkris-system
   profiles:
     active: @profiles.active@
-    

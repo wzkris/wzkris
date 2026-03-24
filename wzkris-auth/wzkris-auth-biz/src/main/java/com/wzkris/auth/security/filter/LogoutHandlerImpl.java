@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.filter;
 
-import com.wzkris.auth.listener.event.LogoutEvent;
-import com.wzkris.auth.security.oauth2.customize.TokenClaims;
+import com.wzkris.auth.domain.TokenClaims;
+import com.wzkris.auth.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.SpringUtil;

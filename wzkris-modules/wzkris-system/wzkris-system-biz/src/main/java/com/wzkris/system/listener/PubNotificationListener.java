@@ -1,6 +1,6 @@
 package com.wzkris.system.listener;
 
-import com.wzkris.system.listener.event.PubNotificationEvent;
+import com.wzkris.system.event.PubNotificationEvent;
 import com.wzkris.system.utils.WebSocketSessionHolder;
 import com.wzkris.system.websocket.protocol.WsMessage;
 import lombok.RequiredArgsConstructor;

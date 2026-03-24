@@ -43,4 +43,3 @@ public class TenantNotificationInfoController extends BaseController {
     }
 
 }
-

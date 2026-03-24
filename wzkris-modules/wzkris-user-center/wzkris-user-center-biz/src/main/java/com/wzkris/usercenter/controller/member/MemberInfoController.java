@@ -1,7 +1,5 @@
 package com.wzkris.usercenter.controller.member;
 
-import com.wzkris.captcha.httpclient.common.CaptchaClient;
-import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -13,6 +11,8 @@ import com.wzkris.usercenter.domain.req.PhoneEditReq;
 import com.wzkris.usercenter.domain.req.PwdEditReq;
 import com.wzkris.usercenter.domain.req.member.MemberInfoEditReq;
 import com.wzkris.usercenter.domain.resp.member.MemberInfoResp;
+import com.wzkris.usercenter.httpclient.captcha.CaptchaClient;
+import com.wzkris.usercenter.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PostInfoService;

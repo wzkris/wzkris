@@ -30,4 +30,3 @@ public @interface EnableHttpClients {
     Class<?>[] basePackageClasses() default {};
 
 }
-

@@ -1,7 +1,7 @@
 package com.wzkris.captcha.challenge.config;
 
 import com.wzkris.captcha.challenge.properties.ChallengeCaptchaProperties;
-import com.wzkris.captcha.challenge.service.impl.ChallengeServiceImpl;
+import com.wzkris.captcha.challenge.serviceimpl.ChallengeServiceImpl;
 import com.wzkris.captcha.challenge.store.ChallengeStore;
 import com.wzkris.captcha.challenge.store.impl.RedisChallengeStore;
 import org.springframework.context.annotation.Bean;

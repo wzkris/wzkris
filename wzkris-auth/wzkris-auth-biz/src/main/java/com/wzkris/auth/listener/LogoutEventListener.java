@@ -1,6 +1,6 @@
 package com.wzkris.auth.listener;
 
-import com.wzkris.auth.listener.event.LogoutEvent;
+import com.wzkris.auth.event.LogoutEvent;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

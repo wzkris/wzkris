@@ -1,7 +1,7 @@
 package com.wzkris.auth.security.handler;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.auth.listener.event.LoginEvent;
+import com.wzkris.auth.event.LoginEvent;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ServletUtil;

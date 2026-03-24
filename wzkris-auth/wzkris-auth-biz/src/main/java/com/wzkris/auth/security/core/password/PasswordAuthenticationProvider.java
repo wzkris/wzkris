@@ -2,12 +2,12 @@ package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.auth.httpclient.captchachallenge.CaptchaChallengeClient;
+import com.wzkris.auth.httpclient.captchachallenge.req.ValidateChallengeReq;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.captcha.httpclient.challenge.CaptchaChallengeClient;
-import com.wzkris.captcha.httpclient.challenge.req.ValidateChallengeReq;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -65,7 +65,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     "invalidParameter.captcha.error");
         }
 
-        CommonAuthenticationToken token = templateOptional.get().loadByUsernameAndPassword(
+        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
         if (token == null) {

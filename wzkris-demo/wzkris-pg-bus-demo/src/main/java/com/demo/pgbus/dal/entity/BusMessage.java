@@ -25,4 +25,3 @@ public class BusMessage extends BaseEntity {
     private MessageStatus status;
 
 }
-

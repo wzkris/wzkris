@@ -300,4 +300,3 @@ class XssValidatorTest {
         assertFalse(validator.isValid(multilineAttack, context), "多行HTML攻击应该被检测到");
     }
 }
-

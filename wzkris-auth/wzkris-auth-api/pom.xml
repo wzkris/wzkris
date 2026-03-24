@@ -13,14 +13,21 @@
 
     <dependencies>
 
+        <!-- 接口文档 -->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-httpclient</artifactId>
+            <artifactId>wzkris-common-swagger</artifactId>
+        </dependency>
+
+        <!-- web服务-->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-validator</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
         </dependency>
 
     </dependencies>

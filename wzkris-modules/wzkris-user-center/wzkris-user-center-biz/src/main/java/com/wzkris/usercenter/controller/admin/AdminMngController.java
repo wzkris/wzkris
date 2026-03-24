@@ -25,7 +25,7 @@ import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
 import com.wzkris.usercenter.domain.resp.SelectResp;
 import com.wzkris.usercenter.domain.resp.SelectTreeResp;
 import com.wzkris.usercenter.domain.resp.admin.AdminMngResp;
-import com.wzkris.usercenter.listener.event.CreateAdminEvent;
+import com.wzkris.usercenter.event.CreateAdminEvent;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;

@@ -1,8 +1,6 @@
 package com.wzkris.usercenter.controller.admin;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.captcha.httpclient.common.CaptchaClient;
-import com.wzkris.captcha.httpclient.common.req.CaptchaCheckReq;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -15,6 +13,8 @@ import com.wzkris.usercenter.domain.req.PwdEditReq;
 import com.wzkris.usercenter.domain.req.admin.AdminInfoEditReq;
 import com.wzkris.usercenter.domain.resp.admin.AdminInfoResp;
 import com.wzkris.usercenter.domain.resp.admin.ChatPersonResp;
+import com.wzkris.usercenter.httpclient.captcha.CaptchaClient;
+import com.wzkris.usercenter.httpclient.captcha.req.CaptchaCheckReq;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.service.AdminInfoService;

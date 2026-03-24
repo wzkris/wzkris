@@ -22,7 +22,7 @@ import com.wzkris.usercenter.domain.req.member.MemberMngGrantPostReq;
 import com.wzkris.usercenter.domain.req.member.MemberMngQueryReq;
 import com.wzkris.usercenter.domain.resp.CheckedSelectResp;
 import com.wzkris.usercenter.domain.resp.member.MemberMngResp;
-import com.wzkris.usercenter.listener.event.CreateMemberEvent;
+import com.wzkris.usercenter.event.CreateMemberEvent;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PostInfoService;

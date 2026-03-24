@@ -2,11 +2,11 @@ package com.wzkris.usercenter.listener;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.system.httpclient.notification.NotificationInfoClient;
-import com.wzkris.system.httpclient.notification.req.NotificationReq;
-import com.wzkris.usercenter.listener.event.CreateAdminEvent;
-import com.wzkris.usercenter.listener.event.CreateMemberEvent;
-import com.wzkris.usercenter.listener.event.CreateTenantEvent;
+import com.wzkris.usercenter.event.CreateAdminEvent;
+import com.wzkris.usercenter.event.CreateMemberEvent;
+import com.wzkris.usercenter.event.CreateTenantEvent;
+import com.wzkris.usercenter.httpclient.notification.NotificationInfoClient;
+import com.wzkris.usercenter.httpclient.notification.req.NotificationReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

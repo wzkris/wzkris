@@ -13,12 +13,20 @@
     <artifactId>wzkris-system-api</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-swagger</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-httpclient</artifactId>
+            <artifactId>wzkris-common-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-orm</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -37,23 +37,13 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-security</artifactId>
+            <artifactId>wzkris-common-httpclient</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-system-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-web</artifactId>
-        </dependency>
-
-        <!-- wzkris Common ORM -->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-orm</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <!--websocket-->
@@ -72,12 +62,6 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-log</artifactId>
-        </dependency>
-
-        <!-- wzkris Common Swagger -->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-swagger</artifactId>
         </dependency>
 
         <dependency>

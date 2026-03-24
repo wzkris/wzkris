@@ -212,4 +212,3 @@ class PhoneNumberValidatorTest {
         assertFalse(PhoneNumberValidator.isPhoneNumber("10086")); // 客服号码
     }
 }
-

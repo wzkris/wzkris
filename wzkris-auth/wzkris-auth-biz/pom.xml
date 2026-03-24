@@ -47,45 +47,20 @@
             <artifactId>wzkris-common-sentinel</artifactId>
         </dependency>
 
-        <!-- web服务-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-web</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-weixin-sdk</artifactId>
         </dependency>
 
-        <!--本地rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-auth-api</artifactId>
+            <version>${revision}</version>
         </dependency>
 
-        <!--rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-captcha-api</artifactId>
-        </dependency>
-
-        <!--用户rpc服务-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-user-center-api</artifactId>
-        </dependency>
-
-        <!--系统rpc服务-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-system-api</artifactId>
-        </dependency>
-
-        <!-- 接口文档 -->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-swagger</artifactId>
+            <artifactId>wzkris-common-httpclient</artifactId>
         </dependency>
 
         <!-- springBoot test-->
@@ -114,3 +89,6 @@
         </plugins>
     </build>
 </project>
+
+
+
