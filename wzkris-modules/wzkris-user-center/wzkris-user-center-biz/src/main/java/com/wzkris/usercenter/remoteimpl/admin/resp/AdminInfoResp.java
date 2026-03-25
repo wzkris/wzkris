@@ -1,0 +1,35 @@
+package com.wzkris.usercenter.remoteimpl.admin.resp;
+
+import com.wzkris.usercenter.domain.AdminInfoDO;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * sys用户信息
+ *
+ * @author wzkris
+ */
+@Data
+@AutoMappers({@AutoMapper(target = AdminInfoDO.class)})
+public class AdminInfoResp implements Serializable {
+
+    private Long adminId;
+
+    private Long deptId;
+
+    private String username;
+
+    private String nickname;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private String status;
+
+    private String password;
+
+}

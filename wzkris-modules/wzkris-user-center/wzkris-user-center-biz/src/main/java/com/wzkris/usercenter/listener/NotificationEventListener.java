@@ -5,8 +5,8 @@ import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.usercenter.event.CreateAdminEvent;
 import com.wzkris.usercenter.event.CreateMemberEvent;
 import com.wzkris.usercenter.event.CreateTenantEvent;
-import com.wzkris.usercenter.httpclient.notification.NotificationInfoClient;
-import com.wzkris.usercenter.httpclient.notification.req.NotificationReq;
+import com.wzkris.usercenter.remote.notification.INotificationInfoRemote;
+import com.wzkris.usercenter.remote.notification.req.NotificationReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -23,7 +23,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class NotificationEventListener {
 
-    private final NotificationInfoClient notificationInfoClient;
+    private final INotificationInfoRemote notificationInfoRemote;
 
     @Async
     @EventListener
@@ -38,7 +38,7 @@ public class NotificationEventListener {
                         event.getLoginPwd(),
                         event.getOperPwd()));
 
-        if (!ResultUtil.checkNoData(notificationInfoClient.send2Users(req))) {
+        if (!ResultUtil.checkNoData(notificationInfoRemote.send2Users(req))) {
             log.warn("发送租户创建通知失败: {}", req);
         }
     }
@@ -51,7 +51,7 @@ public class NotificationEventListener {
                 "管理员创建成功",
                 String.format("管理员账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
-        if (!ResultUtil.checkNoData(notificationInfoClient.send2Users(req))) {
+        if (!ResultUtil.checkNoData(notificationInfoRemote.send2Users(req))) {
             log.warn("发送管理员创建通知失败: {}", req);
         }
     }
@@ -64,7 +64,7 @@ public class NotificationEventListener {
                 "租户账号创建成功",
                 String.format("租户账号：%s创建成功，临时登录密码：%s", event.getUsername(), event.getPassword()));
 
-        if (!ResultUtil.checkNoData(notificationInfoClient.send2Users(req))) {
+        if (!ResultUtil.checkNoData(notificationInfoRemote.send2Users(req))) {
             log.warn("发送租户账号创建通知失败: {}", req);
         }
     }

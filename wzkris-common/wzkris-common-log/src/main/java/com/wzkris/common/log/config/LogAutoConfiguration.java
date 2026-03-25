@@ -1,7 +1,7 @@
 package com.wzkris.common.log.config;
 
 import com.wzkris.common.log.aspect.OperateLogAspect;
-import com.wzkris.common.log.httpclient.OperateLogClient;
+import com.wzkris.common.log.remote.IOperateLogRemote;
 import com.wzkris.common.log.listener.OperateEventListener;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Bean;
 public class LogAutoConfiguration {
 
     @Bean
-    @ConditionalOnClass(OperateLogClient.class)
-    @ConditionalOnBean(OperateLogClient.class)
-    public OperateEventListener operateEventListener(OperateLogClient operateLogClient) {
-        return new OperateEventListener(operateLogClient);
+    @ConditionalOnClass(IOperateLogRemote.class)
+    @ConditionalOnBean(IOperateLogRemote.class)
+    public OperateEventListener operateEventListener(IOperateLogRemote operateLogRemote) {
+        return new OperateEventListener(operateLogRemote);
     }
 
     @Bean

@@ -1,12 +1,12 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.httpclient.admin.AdminInfoClient;
-import com.wzkris.auth.httpclient.admin.req.LoginInfoUpdateReq;
-import com.wzkris.auth.httpclient.customer.CustomerInfoClient;
-import com.wzkris.auth.httpclient.loginlog.LoginLogClient;
-import com.wzkris.auth.httpclient.loginlog.req.LoginLogEvent;
-import com.wzkris.auth.httpclient.member.MemberInfoClient;
+import com.wzkris.auth.remote.admin.IAdminInfoRemote;
+import com.wzkris.auth.remote.admin.req.LoginInfoUpdateReq;
+import com.wzkris.auth.remote.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.loginlog.ILoginLogRemote;
+import com.wzkris.auth.remote.loginlog.req.LoginLogEvent;
+import com.wzkris.auth.remote.member.IMemberInfoRemote;
 import com.wzkris.auth.serviceimpl.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
@@ -37,15 +37,15 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class LoginEventListener {
 
-    private final LoginLogClient loginLogClient;
+    private final ILoginLogRemote loginLogRemote;
 
     private final LoginRiskAnalyzeService loginRiskAnalyzeService;
 
-    private final AdminInfoClient adminInfoClient;
+    private final IAdminInfoRemote adminInfoRemote;
 
-    private final MemberInfoClient memberInfoClient;
+    private final IMemberInfoRemote memberInfoRemote;
 
-    private final CustomerInfoClient customerInfoClient;
+    private final ICustomerInfoRemote customerInfoRemote;
 
     @Async
     @EventListener
@@ -89,7 +89,7 @@ public class LoginEventListener {
         loginLogEvent.setAbnormalTags(riskResult.abnormalTags());
         loginLogEvent.setRiskLevel(riskResult.riskLevel().getValue());
         loginLogEvent.setRiskScore(riskResult.riskScore());
-        loginLogClient.save(Collections.singletonList(loginLogEvent));
+        loginLogRemote.save(Collections.singletonList(loginLogEvent));
         reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
     }
 
@@ -102,11 +102,11 @@ public class LoginEventListener {
         loginInfoUpdateReq.setLoginDate(loginDate);
         AuthTypeEnum authType = loginUser.getAuthType();
         if (authType == AuthTypeEnum.ADMIN) {
-            ResultUtil.checkNoData(adminInfoClient.updateLoginInfo(loginInfoUpdateReq));
+            ResultUtil.checkNoData(adminInfoRemote.updateLoginInfo(loginInfoUpdateReq));
         } else if (authType == AuthTypeEnum.TENANT) {
-            ResultUtil.checkNoData(memberInfoClient.updateLoginInfo(loginInfoUpdateReq));
+            ResultUtil.checkNoData(memberInfoRemote.updateLoginInfo(loginInfoUpdateReq));
         } else if (authType == AuthTypeEnum.CUSTOMER) {
-            ResultUtil.checkNoData(customerInfoClient.updateLoginInfo(loginInfoUpdateReq));
+            ResultUtil.checkNoData(customerInfoRemote.updateLoginInfo(loginInfoUpdateReq));
         }
     }
 

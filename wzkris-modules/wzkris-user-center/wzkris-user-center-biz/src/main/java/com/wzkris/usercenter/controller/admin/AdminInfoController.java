@@ -13,8 +13,8 @@ import com.wzkris.usercenter.domain.req.PwdEditReq;
 import com.wzkris.usercenter.domain.req.admin.AdminInfoEditReq;
 import com.wzkris.usercenter.domain.resp.admin.AdminInfoResp;
 import com.wzkris.usercenter.domain.resp.admin.ChatPersonResp;
-import com.wzkris.usercenter.httpclient.captcha.CaptchaClient;
-import com.wzkris.usercenter.httpclient.captcha.req.CaptchaCheckReq;
+import com.wzkris.usercenter.remote.captcha.ICaptchaRemote;
+import com.wzkris.usercenter.remote.captcha.req.CaptchaCheckReq;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.service.AdminInfoService;
@@ -53,7 +53,7 @@ public class AdminInfoController extends BaseController {
 
     private final DeptInfoMapper deptInfoMapper;
 
-    private final CaptchaClient captchaClient;
+    private final ICaptchaRemote captchaRemote;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -123,7 +123,7 @@ public class AdminInfoController extends BaseController {
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq();
         captchaCheckReq.setKey(adminInfoMapper.selectPhoneNumberById(adminId));
         captchaCheckReq.setValue(req.getSmsCode());
-        Result<Boolean> captchaResult = captchaClient.check(captchaCheckReq);
+        Result<Boolean> captchaResult = captchaRemote.check(captchaCheckReq);
         if (!ResultUtil.check(captchaResult) || !Boolean.TRUE.equals(captchaResult.getData())) {
             return requestFail("验证码错误");
         }

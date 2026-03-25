@@ -9,10 +9,10 @@ import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.ClientLoginUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
-import com.wzkris.gateway.httpclient.loginuser.LoginUserClient;
-import com.wzkris.gateway.httpclient.loginuser.req.LoginUserQueryReq;
-import com.wzkris.gateway.httpclient.loginuser.req.OAuth2TokenQueryReq;
-import com.wzkris.gateway.httpclient.loginuser.resp.LoginUserResp;
+import com.wzkris.gateway.remote.loginuser.ILoginUserRemote;
+import com.wzkris.gateway.remote.loginuser.req.LoginUserQueryReq;
+import com.wzkris.gateway.remote.loginuser.req.OAuth2TokenQueryReq;
+import com.wzkris.gateway.remote.loginuser.resp.LoginUserResp;
 import com.wzkris.gateway.properties.PermitAllProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class TokenValidateService {
 
-    private final LoginUserClient loginUserClient;
+    private final ILoginUserRemote loginUserRemote;
 
     private final JwtDecoder jwtDecoder;
 
@@ -108,7 +108,7 @@ public class TokenValidateService {
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
         LoginUserQueryReq loginUserQueryReq = new LoginUserQueryReq(authTypeEnum.getValue(), uid, sid);
-        Result<LoginUserResp> r = loginUserClient.queryInfo(loginUserQueryReq);
+        Result<LoginUserResp> r = loginUserRemote.queryInfo(loginUserQueryReq);
         if (!ResultUtil.check(r)) {
             throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
         }
@@ -123,7 +123,7 @@ public class TokenValidateService {
      */
     private Authentication introspectOAuth2(String token) {
         OAuth2TokenQueryReq oAuth2TokenQueryReq = new OAuth2TokenQueryReq(token);
-        Result<LoginUserResp> r = loginUserClient.queryOAuth2(oAuth2TokenQueryReq);
+        Result<LoginUserResp> r = loginUserRemote.queryOAuth2(oAuth2TokenQueryReq);
         if (!ResultUtil.check(r)) {
             throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
         }

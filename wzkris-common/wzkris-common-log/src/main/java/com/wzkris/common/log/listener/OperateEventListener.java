@@ -4,8 +4,8 @@ import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.report.AsyncBatchReporter;
-import com.wzkris.common.log.httpclient.OperateLogClient;
-import com.wzkris.common.log.httpclient.req.OperateLogEvent;
+import com.wzkris.common.log.remote.IOperateLogRemote;
+import com.wzkris.common.log.remote.req.OperateLogEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 
@@ -17,7 +17,7 @@ public class OperateEventListener {
 
     private final AsyncBatchReporter<OperateLogEvent> reporter;
 
-    public OperateEventListener(OperateLogClient operateLogClient) {
+    public OperateEventListener(IOperateLogRemote operateLogRemote) {
         this.reporter = new AsyncBatchReporter<>(
                 30,   // 批量大小
                 3,    // 定时刷出间隔（秒）
@@ -28,7 +28,7 @@ public class OperateEventListener {
                             event.setOperLocation(IpUtil.parseIp(event.getOperIp()));
                         }
                     });
-                    if (!ResultUtil.checkNoData(operateLogClient.save(events))) {
+                    if (!ResultUtil.checkNoData(operateLogRemote.save(events))) {
                         log.warn("批量上报操作日志失败, size={}", events.size());
                     }
                 }

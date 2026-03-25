@@ -2,8 +2,8 @@ package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.httpclient.captchachallenge.CaptchaChallengeClient;
-import com.wzkris.auth.httpclient.captchachallenge.req.ValidateChallengeReq;
+import com.wzkris.auth.remote.captchachallenge.ICaptchaChallengeRemote;
+import com.wzkris.auth.remote.captchachallenge.req.ValidateChallengeReq;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
@@ -30,15 +30,15 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     private final List<LoginUserService> loginUserServices;
 
-    private final CaptchaChallengeClient captchaChallengeClient;
+    private final ICaptchaChallengeRemote captchaChallengeRemote;
 
     public PasswordAuthenticationProvider(
             TokenService tokenService,
             List<LoginUserService> loginUserServices,
-            CaptchaChallengeClient captchaChallengeClient) {
+            ICaptchaChallengeRemote captchaChallengeRemote) {
         super(tokenService);
         this.loginUserServices = loginUserServices;
-        this.captchaChallengeClient = captchaChallengeClient;
+        this.captchaChallengeRemote = captchaChallengeRemote;
     }
 
     @Override
@@ -57,7 +57,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        Result<Boolean> booleanResult = captchaChallengeClient.validateChallenge(new ValidateChallengeReq(authenticationToken.getCaptchaId()));
+        Result<Boolean> booleanResult = captchaChallengeRemote.validateChallenge(new ValidateChallengeReq(authenticationToken.getCaptchaId()));
         boolean pass = ResultUtil.check(booleanResult) && Boolean.TRUE.equals(booleanResult.getData());
 
         if (!pass) {

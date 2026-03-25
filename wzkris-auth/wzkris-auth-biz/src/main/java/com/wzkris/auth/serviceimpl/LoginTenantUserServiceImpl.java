@@ -3,10 +3,10 @@ package com.wzkris.auth.serviceimpl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.httpclient.member.MemberInfoClient;
-import com.wzkris.auth.httpclient.member.req.MemberPermsQueryReq;
-import com.wzkris.auth.httpclient.member.resp.MemberInfoResp;
-import com.wzkris.auth.httpclient.member.resp.MemberPermissionResp;
+import com.wzkris.auth.remote.member.IMemberInfoRemote;
+import com.wzkris.auth.remote.member.req.MemberPermsQueryReq;
+import com.wzkris.auth.remote.member.resp.MemberInfoResp;
+import com.wzkris.auth.remote.member.resp.MemberPermissionResp;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -38,14 +38,14 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LoginTenantUserServiceImpl implements LoginUserService {
 
-    private final MemberInfoClient memberInfoClient;
+    private final IMemberInfoRemote memberInfoRemote;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<MemberInfoResp> memberResult = memberInfoClient.getByPhoneNumber(phoneNumber);
+        Result<MemberInfoResp> memberResult = memberInfoRemote.getByPhoneNumber(phoneNumber);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
@@ -63,7 +63,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<MemberInfoResp> memberResult = memberInfoClient.getByUsername(username);
+        Result<MemberInfoResp> memberResult = memberInfoRemote.getByUsername(username);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
@@ -96,7 +96,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         this.checkAccount(memberResp);
 
         // 获取权限信息
-        Result<MemberPermissionResp> permissionsResult = memberInfoClient.getPermission(
+        Result<MemberPermissionResp> permissionsResult = memberInfoRemote.getPermission(
                 new MemberPermsQueryReq(memberResp.getMemberId(), memberResp.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(
@@ -148,7 +148,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         this.checkAccount(memberResp);
 
         // 获取权限信息以判断身份类型
-        Result<MemberPermissionResp> permissionsResult = memberInfoClient.getPermission(
+        Result<MemberPermissionResp> permissionsResult = memberInfoRemote.getPermission(
                 new MemberPermsQueryReq(memberResp.getMemberId(), memberResp.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(

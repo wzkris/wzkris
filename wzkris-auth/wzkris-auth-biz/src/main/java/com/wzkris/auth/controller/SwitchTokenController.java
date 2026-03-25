@@ -2,10 +2,10 @@ package com.wzkris.auth.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.domain.req.WexcxSwitchReq;
-import com.wzkris.auth.httpclient.member.MemberInfoClient;
-import com.wzkris.auth.httpclient.member.req.MemberPermsQueryReq;
-import com.wzkris.auth.httpclient.member.resp.MemberInfoResp;
-import com.wzkris.auth.httpclient.member.resp.MemberPermissionResp;
+import com.wzkris.auth.remote.member.IMemberInfoRemote;
+import com.wzkris.auth.remote.member.req.MemberPermsQueryReq;
+import com.wzkris.auth.remote.member.resp.MemberInfoResp;
+import com.wzkris.auth.remote.member.resp.MemberPermissionResp;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.serviceimpl.LoginTenantUserServiceImpl;
 import com.wzkris.common.core.model.BaseLoginUser;
@@ -36,7 +36,7 @@ import static com.wzkris.common.core.model.Result.ok;
 @RequiredArgsConstructor
 public class SwitchTokenController {
 
-    private final MemberInfoClient memberInfoClient;
+    private final IMemberInfoRemote memberInfoRemote;
 
     private final TokenService tokenService;
 
@@ -54,7 +54,7 @@ public class SwitchTokenController {
                 .getSessionInfo(switchReq.getWxCode())
                 .getOpenid();
 
-        Result<MemberInfoResp> memberResult = memberInfoClient.getByWexcxIdentifier(identifier);
+        Result<MemberInfoResp> memberResult = memberInfoRemote.getByWexcxIdentifier(identifier);
         if (!ResultUtil.check(memberResult)) {
             return Result.requestFail("微信未绑定商户账号");
         }
@@ -63,7 +63,7 @@ public class SwitchTokenController {
         BaseLoginUser loginUser = loginTenantUserServiceImpl.buildLoginTenant(memberInfoResp);
 
         // 获取权限信息
-        Result<MemberPermissionResp> permissionResult = memberInfoClient.getPermission(
+        Result<MemberPermissionResp> permissionResult = memberInfoRemote.getPermission(
                 new MemberPermsQueryReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
         if (!ResultUtil.check(permissionResult)) {
             return Result.requestFail(permissionResult != null ? permissionResult.getMessage() : "查询权限失败");

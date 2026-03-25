@@ -32,10 +32,11 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-httpclient</artifactId>
+            <artifactId>wzkris-common-remote</artifactId>
             <optional>true</optional>
         </dependency>
 
     </dependencies>
 </project>
+
 

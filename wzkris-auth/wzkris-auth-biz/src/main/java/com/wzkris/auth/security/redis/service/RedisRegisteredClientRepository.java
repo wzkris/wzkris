@@ -15,9 +15,9 @@
  */
 package com.wzkris.auth.security.redis.service;
 
-import com.wzkris.auth.httpclient.oauth2.OAuth2ClientClient;
-import com.wzkris.auth.httpclient.oauth2.resp.OAuth2ClientResp;
 import com.wzkris.auth.properties.TokenProperties;
+import com.wzkris.auth.remote.oauth2.IOAuth2ClientRemote;
+import com.wzkris.auth.remote.oauth2.resp.OAuth2ClientResp;
 import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -48,7 +48,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
 
     private final OAuth2RegisteredClientRepository registeredClientRepository;
 
-    private final OAuth2ClientClient oAuth2ClientClient;
+    private final IOAuth2ClientRemote oAuth2ClientRemote;
 
     private final TokenProperties tokenProperties;
 
@@ -69,7 +69,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        Result<OAuth2ClientResp> oauth2Client = oAuth2ClientClient.getById(id);
+        Result<OAuth2ClientResp> oauth2Client = oAuth2ClientRemote.getById(id);
         return checkAndSave(oauth2Client);
     }
 
@@ -84,7 +84,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        Result<OAuth2ClientResp> oauth2Client = oAuth2ClientClient.getByClientId(clientId);
+        Result<OAuth2ClientResp> oauth2Client = oAuth2ClientRemote.getByClientId(clientId);
         return checkAndSave(oauth2Client);
     }
 

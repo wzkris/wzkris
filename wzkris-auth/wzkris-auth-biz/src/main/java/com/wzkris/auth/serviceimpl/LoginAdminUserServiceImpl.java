@@ -3,10 +3,10 @@ package com.wzkris.auth.serviceimpl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.httpclient.admin.AdminInfoClient;
-import com.wzkris.auth.httpclient.admin.req.AdminPermsQueryReq;
-import com.wzkris.auth.httpclient.admin.resp.AdminInfoResp;
-import com.wzkris.auth.httpclient.admin.resp.AdminPermissionResp;
+import com.wzkris.auth.remote.admin.IAdminInfoRemote;
+import com.wzkris.auth.remote.admin.req.AdminPermsQueryReq;
+import com.wzkris.auth.remote.admin.resp.AdminInfoResp;
+import com.wzkris.auth.remote.admin.resp.AdminPermissionResp;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -39,14 +39,14 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LoginAdminUserServiceImpl implements LoginUserService {
 
-    private final AdminInfoClient adminInfoClient;
+    private final IAdminInfoRemote adminInfoRemote;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<AdminInfoResp> userResult = adminInfoClient.getByPhoneNumber(phoneNumber);
+        Result<AdminInfoResp> userResult = adminInfoRemote.getByPhoneNumber(phoneNumber);
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -64,7 +64,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<AdminInfoResp> userResult = adminInfoClient.getByUsername(username);
+        Result<AdminInfoResp> userResult = adminInfoRemote.getByUsername(username);
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -97,7 +97,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<AdminPermissionResp> permissionsResult = adminInfoClient.getPermission(
+        Result<AdminPermissionResp> permissionsResult = adminInfoRemote.getPermission(
                 new AdminPermsQueryReq(userResp.getAdminId(), userResp.getDeptId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(

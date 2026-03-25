@@ -11,8 +11,8 @@ import com.wzkris.usercenter.domain.req.PhoneEditReq;
 import com.wzkris.usercenter.domain.req.PwdEditReq;
 import com.wzkris.usercenter.domain.req.member.MemberInfoEditReq;
 import com.wzkris.usercenter.domain.resp.member.MemberInfoResp;
-import com.wzkris.usercenter.httpclient.captcha.CaptchaClient;
-import com.wzkris.usercenter.httpclient.captcha.req.CaptchaCheckReq;
+import com.wzkris.usercenter.remote.captcha.ICaptchaRemote;
+import com.wzkris.usercenter.remote.captcha.req.CaptchaCheckReq;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
@@ -37,7 +37,7 @@ public class MemberInfoController extends BaseController {
 
     private final PostInfoService postInfoService;
 
-    private final CaptchaClient captchaClient;
+    private final ICaptchaRemote captchaRemote;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -84,7 +84,7 @@ public class MemberInfoController extends BaseController {
         CaptchaCheckReq captchaCheckReq = new CaptchaCheckReq();
         captchaCheckReq.setKey(memberInfoMapper.selectPhoneNumberById(memberId));
         captchaCheckReq.setValue(req.getSmsCode());
-        Result<Boolean> captchaResult = captchaClient.check(captchaCheckReq);
+        Result<Boolean> captchaResult = captchaRemote.check(captchaCheckReq);
         if (!ResultUtil.check(captchaResult) || !Boolean.TRUE.equals(captchaResult.getData())) {
             return requestFail("验证码错误");
         }

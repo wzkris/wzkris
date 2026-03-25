@@ -4,9 +4,9 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.httpclient.customer.CustomerInfoClient;
-import com.wzkris.auth.httpclient.customer.req.WexcxLoginReq;
-import com.wzkris.auth.httpclient.customer.resp.CustomerResp;
+import com.wzkris.auth.remote.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.customer.req.WexcxLoginReq;
+import com.wzkris.auth.remote.customer.resp.CustomerResp;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -40,7 +40,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class LoginCustomerUserServiceImpl implements LoginUserService {
 
-    private final CustomerInfoClient customerInfoClient;
+    private final ICustomerInfoRemote customerInfoRemote;
 
     @Autowired
     @Lazy
@@ -53,7 +53,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<CustomerResp> customerResult = customerInfoClient.getByPhoneNumber(phoneNumber);
+        Result<CustomerResp> customerResult = customerInfoRemote.getByPhoneNumber(phoneNumber);
 
         if (!ResultUtil.check(customerResult)) {
             return null;
@@ -95,7 +95,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         WexcxLoginReq wexcxLoginReq = new WexcxLoginReq();
         wexcxLoginReq.setIdentifier(identifier);
         wexcxLoginReq.setPhoneNumber(phoneNumber);
-        Result<CustomerResp> customerResult = customerInfoClient.wexcxLogin(wexcxLoginReq);
+        Result<CustomerResp> customerResult = customerInfoRemote.wexcxLogin(wexcxLoginReq);
 
         if (!ResultUtil.check(customerResult)) {
             return null;

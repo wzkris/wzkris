@@ -18,8 +18,8 @@ class NoCrossServiceHttpclientImportTest {
     private static final Path SRC = Path.of("src/main/java");
 
     private static final List<Pattern> FORBIDDEN = List.of(
-            Pattern.compile("^\\s*import\\s+com\\.wzkris\\.system\\.httpclient\\..*;\\s*$"),
-            Pattern.compile("^\\s*import\\s+com\\.wzkris\\.captcha\\.httpclient\\..*;\\s*$")
+            Pattern.compile("^\\s*import\\s+com\\.wzkris\\.system\\.remote\\..*;\\s*$"),
+            Pattern.compile("^\\s*import\\s+com\\.wzkris\\.captcha\\.remote\\..*;\\s*$")
     );
 
     @Test

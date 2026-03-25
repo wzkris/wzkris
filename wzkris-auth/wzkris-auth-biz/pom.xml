@@ -60,7 +60,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-httpclient</artifactId>
+            <artifactId>wzkris-common-remote</artifactId>
         </dependency>
 
         <!-- springBoot test-->
@@ -89,6 +89,7 @@
         </plugins>
     </build>
 </project>
+
 
 
 

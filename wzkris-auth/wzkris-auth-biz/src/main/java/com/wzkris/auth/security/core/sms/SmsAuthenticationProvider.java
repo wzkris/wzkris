@@ -2,8 +2,8 @@ package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.httpclient.captcha.CaptchaClient;
-import com.wzkris.auth.httpclient.captcha.req.CaptchaCheckReq;
+import com.wzkris.auth.remote.captcha.ICaptchaRemote;
+import com.wzkris.auth.remote.captcha.req.CaptchaCheckReq;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
@@ -30,15 +30,15 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
     private final List<LoginUserService> loginUserServices;
 
-    private final CaptchaClient captchaClient;
+    private final ICaptchaRemote captchaRemote;
 
     public SmsAuthenticationProvider(
             TokenService tokenService,
             List<LoginUserService> loginUserServices,
-            CaptchaClient captchaClient) {
+            ICaptchaRemote captchaRemote) {
         super(tokenService);
         this.loginUserServices = loginUserServices;
-        this.captchaClient = captchaClient;
+        this.captchaRemote = captchaRemote;
     }
 
     @Override
@@ -60,7 +60,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
         CaptchaCheckReq req = new CaptchaCheckReq();
         req.setKey(authenticationToken.getPhoneNumber());
         req.setValue(authenticationToken.getSmsCode());
-        Result<Boolean> result = captchaClient.check(req);
+        Result<Boolean> result = captchaRemote.check(req);
         boolean pass = ResultUtil.check(result) && Boolean.TRUE.equals(result.getData());
 
         if (!pass) {
