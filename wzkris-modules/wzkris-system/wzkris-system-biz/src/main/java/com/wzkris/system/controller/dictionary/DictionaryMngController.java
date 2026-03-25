@@ -1,20 +1,16 @@
 package com.wzkris.system.controller.dictionary;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.common.web.utils.BeanUtil;
-import com.wzkris.system.domain.DictionaryInfoDO;
-import com.wzkris.system.domain.req.dictionary.DictionaryMngAddReq;
-import com.wzkris.system.domain.req.dictionary.DictionaryMngEditReq;
-import com.wzkris.system.domain.req.dictionary.DictionaryMngQueryReq;
-import com.wzkris.system.mapper.DictionaryInfoMapper;
-import com.wzkris.system.service.DictionaryInfoService;
+import com.wzkris.system.api.dictionary.DictionaryMngApi;
+import com.wzkris.system.request.dictionary.DictionaryMngQueryRequest;
+import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
+import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;
+import com.wzkris.system.response.dictionary.DictionaryInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -33,53 +29,36 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DictionaryMngController extends BaseController {
 
-    private final DictionaryInfoMapper dictionaryInfoMapper;
-
-    private final DictionaryInfoService dictionaryInfoService;
+    private final DictionaryMngApi dictionaryMngApi;
 
     @Operation(summary = "分页")
-    @GetMapping("/page")
+    @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:dictionary-mng:page")
-    public Result<Page<DictionaryInfoDO>> page(DictionaryMngQueryReq queryReq) {
-        startPage();
-        LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(queryReq);
-        return getDataTable(dictionaryInfoMapper.selectList(lqw));
-    }
-
-    private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngQueryReq queryReq) {
-        return new LambdaQueryWrapper<DictionaryInfoDO>()
-                .like(StringUtil.isNotBlank(queryReq.getDictName()), DictionaryInfoDO::getDictName, queryReq.getDictName())
-                .like(StringUtil.isNotBlank(queryReq.getDictKey()), DictionaryInfoDO::getDictKey, queryReq.getDictKey())
-                .orderByDesc(DictionaryInfoDO::getDictId);
+    public Result<Page<DictionaryInfoResponse>> queryPage(DictionaryMngQueryRequest request) {
+        return dictionaryMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/{dictId}")
+    @GetMapping("/query-info/{dictId}")
     @CheckAdminPerms("system-mod:dictionary-mng:page")
-    public Result<DictionaryInfoDO> getInfo(@PathVariable Long dictId) {
-        return ok(dictionaryInfoMapper.selectById(dictId));
+    public Result<DictionaryInfoResponse> queryInfo(@PathVariable Long dictId) {
+        return dictionaryMngApi.queryInfo(dictId);
     }
 
     @Operation(summary = "新增")
     @OperateLog(title = "数据字典", subTitle = "添加字典", type = OperateTypeEnum.INSERT)
-    @PostMapping("/add")
+    @PostMapping("/save")
     @CheckAdminPerms("system-mod:dictionary-mng:add")
-    public Result<Void> add(@RequestBody DictionaryMngAddReq addReq) {
-        if (dictionaryInfoService.checkUsedByDictKey(addReq.getDictId(), addReq.getDictKey())) {
-            return requestFail("新增字典'" + addReq.getDictName() + "'失败，字典类型已存在");
-        }
-        return toRes(dictionaryInfoService.insertDict(BeanUtil.convert(addReq, DictionaryInfoDO.class)));
+    public Result<Void> save(@RequestBody DictionaryMngSaveRequest addReq) {
+        return dictionaryMngApi.save(addReq);
     }
 
     @Operation(summary = "修改")
     @OperateLog(title = "数据字典", subTitle = "修改字典", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/edit")
+    @PostMapping("/update")
     @CheckAdminPerms("system-mod:dictionary-mng:edit")
-    public Result<Void> edit(@RequestBody DictionaryMngEditReq editReq) {
-        if (dictionaryInfoService.checkUsedByDictKey(editReq.getDictId(), editReq.getDictKey())) {
-            return requestFail("修改字典'" + editReq.getDictName() + "'失败，字典类型已存在");
-        }
-        return toRes(dictionaryInfoService.updateDict(BeanUtil.convert(editReq, DictionaryInfoDO.class)));
+    public Result<Void> update(@RequestBody DictionaryMngUpdateRequest request) {
+        return dictionaryMngApi.update(request);
     }
 
     @Operation(summary = "删除")
@@ -87,15 +66,15 @@ public class DictionaryMngController extends BaseController {
     @PostMapping("/remove")
     @CheckAdminPerms("system-mod:dictionary-mng:remove")
     public Result<Void> remove(@RequestBody Long dictId) {
-        return toRes(dictionaryInfoService.deleteById(dictId));
+        return dictionaryMngApi.remove(dictId);
     }
 
     @Operation(summary = "刷新字典缓存")
     @PostMapping("/refresh-cache")
     @CheckAdminPerms("system-mod:dictionary-mng:remove")
     public Result<?> refreshCache() {
-        dictionaryInfoService.loadingDictCache();
-        return ok();
+        return dictionaryMngApi.refreshCache();
     }
 
 }
+

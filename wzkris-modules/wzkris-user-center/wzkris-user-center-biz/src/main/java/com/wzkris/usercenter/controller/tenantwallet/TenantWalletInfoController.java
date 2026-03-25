@@ -1,32 +1,22 @@
 package com.wzkris.usercenter.controller.tenantwallet;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
-import com.wzkris.common.security.model.TenantLoginUser;
-import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.domain.TenantWalletRecordDO;
-import com.wzkris.usercenter.domain.req.tenantwallet.TenantWalletRecordQueryReq;
-import com.wzkris.usercenter.domain.req.tenantwallet.WalletWithdrawalReq;
-import com.wzkris.usercenter.domain.resp.tenantwallet.TenantWalletInfoResp;
-import com.wzkris.usercenter.mapper.TenantInfoMapper;
-import com.wzkris.usercenter.mapper.TenantWalletInfoMapper;
-import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
+import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
+import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordQueryRequest;
+import com.wzkris.usercenter.request.tenantwallet.WalletWithdrawalRequest;
+import com.wzkris.usercenter.response.tenantwallet.TenantWalletInfoResponse;
+import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 租户钱包信息
@@ -41,56 +31,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TenantWalletInfoController extends BaseController {
 
-    private final TenantInfoMapper tenantInfoMapper;
-
-    private final TenantWalletInfoMapper tenantWalletInfoMapper;
-
-    private final TenantWalletRecordMapper tenantWalletRecordMapper;
-
-    private final PasswordEncoder passwordEncoder;
+    private final TenantWalletInfoApi tenantWalletInfoApi;
 
     @Operation(summary = "余额信息")
-    @GetMapping("/info")
-    public Result<TenantWalletInfoResp> walletInfo() {
-        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
-        return ok(tenantWalletInfoMapper.selectById2VO(tenantId, TenantWalletInfoResp.class));
+    @GetMapping("/query-info")
+    public Result<TenantWalletInfoResponse> queryInfo() {
+        return ok(tenantWalletInfoApi.queryInfo());
     }
 
     @Operation(summary = "钱包记录分页")
-    @GetMapping("/record/page")
-    public Result<Page<TenantWalletRecordDO>> pageRecord(TenantWalletRecordQueryReq queryReq) {
-        startPage();
-        List<TenantWalletRecordDO> recordList =
-                tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
-        return getDataTable(recordList);
-    }
-
-    private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordQueryReq queryReq) {
-        return new LambdaQueryWrapper<TenantWalletRecordDO>()
-                .like(
-                        StringUtil.isNotBlank(queryReq.getRecordType()),
-                        TenantWalletRecordDO::getRecordType,
-                        queryReq.getRecordType())
-                .between(
-                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        TenantWalletRecordDO::getCreateAt,
-                        queryReq.getParam("beginTime"),
-                        queryReq.getParam("endTime"))
-                .orderByDesc(TenantWalletRecordDO::getRecordId);
+    @GetMapping("/query-record-page")
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordQueryRequest request) {
+        return tenantWalletInfoApi.queryRecordPage(request);
     }
 
     @Operation(summary = "提现")
     @OperateLog(title = "商户信息", subTitle = "提现", type = OperateTypeEnum.OTHER)
     @PostMapping("/withdrawal")
     @CheckTenantPerms("user-mod:tenant-wallet-info:withdrawal")
-    public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalReq req) {
-        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
-        TenantInfoDO sysTenant = tenantInfoMapper.selectById(tenantId);
-        if (!passwordEncoder.matches(req.getOperPwd(), sysTenant.getOperPwd())) {
-            return requestFail("密码错误");
-        }
-        // TODO 实际提现
-        return ok();
+    public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalRequest request) {
+        return tenantWalletInfoApi.withdrawal(request);
     }
 
 }
+

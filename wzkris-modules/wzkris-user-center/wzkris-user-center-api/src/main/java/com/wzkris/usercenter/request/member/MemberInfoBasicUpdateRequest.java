@@ -1,0 +1,20 @@
+package com.wzkris.usercenter.request.member;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+/**
+ * 修改成员个人信息请求体
+ */
+@Data
+@Schema(description = "修改成员个人信息参数体")
+public class MemberInfoBasicUpdateRequest {
+
+    @Schema(description = "用户性别")
+    private String gender;
+
+    @Schema(description = "头像")
+    private String avatar;
+
+}
+

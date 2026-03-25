@@ -1,29 +1,23 @@
 package com.wzkris.usercenter.controller.tenantpackage;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
-import com.wzkris.common.web.utils.BeanUtil;
-import com.wzkris.usercenter.domain.TenantPackageInfoDO;
-import com.wzkris.usercenter.domain.req.StatusEditReq;
-import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngAddReq;
-import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngEditReq;
-import com.wzkris.usercenter.domain.req.tenantpackage.TenantPackageMngQueryReq;
-import com.wzkris.usercenter.domain.resp.CheckedSelectTreeResp;
-import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
-import com.wzkris.usercenter.service.MenuInfoService;
-import com.wzkris.usercenter.service.TenantPackageInfoService;
+import com.wzkris.usercenter.api.tenantpackage.TenantPackageMngApi;
+import com.wzkris.usercenter.request.StatusUpdateRequest;
+import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngQueryRequest;
+import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
+import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
+import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,75 +36,53 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TenantPackageMngController extends BaseController {
 
-    private final TenantPackageInfoMapper tenantPackageInfoMapper;
-
-    private final TenantPackageInfoService tenantPackageInfoService;
-
-    private final MenuInfoService menuInfoService;
+    private final TenantPackageMngApi tenantPackageMngApi;
 
     @Operation(summary = "套餐分页")
-    @GetMapping("/page")
+    @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<Page<TenantPackageInfoDO>> page(TenantPackageMngQueryReq queryReq) {
-        startPage();
-        List<TenantPackageInfoDO> list = tenantPackageInfoMapper.selectList(this.buildQueryWrapper(queryReq));
-        return getDataTable(list);
-    }
-
-    private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngQueryReq queryReq) {
-        return new LambdaQueryWrapper<TenantPackageInfoDO>()
-                .select(TenantPackageInfoDO.class, q -> !q.getColumn().equals("menu_ids"))
-                .like(StringUtil.isNotEmpty(queryReq.getPackageName()),
-                        TenantPackageInfoDO::getPackageName,
-                        queryReq.getPackageName())
-                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), TenantPackageInfoDO::getStatus, queryReq.getStatus())
-                .orderByDesc(TenantPackageInfoDO::getPackageId);
+    public Result<Page<TenantPackageInfoResponse>> queryPage(TenantPackageMngQueryRequest request) {
+        return tenantPackageMngApi.queryPage(request);
     }
 
     @Operation(summary = "套餐详细信息")
-    @GetMapping("/{packageId}")
+    @GetMapping("/query-info/{packageId}")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<TenantPackageInfoDO> getInfo(
-            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long packageId) {
-        return ok(tenantPackageInfoMapper.selectById(packageId));
+    public Result<TenantPackageInfoResponse> queryInfo(@PathVariable Long packageId) {
+        return tenantPackageMngApi.queryInfo(packageId);
     }
 
     @Operation(summary = "套餐菜单选择树")
-    @GetMapping({"/menu-checked-selecttree/", "/menu-checked-selecttree/{packageId}"})
+    @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{packageId}"})
     @CheckAdminPerms(
             value = {"user-mod:tenantpackage-mng:add", "user-mod:tenantpackage-mng:edit"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResp> tenantPackageMenuTreeList(@PathVariable(required = false) Long packageId) {
-        CheckedSelectTreeResp checkedSelectTreeResp = new CheckedSelectTreeResp();
-        checkedSelectTreeResp.setCheckedKeys(tenantPackageInfoMapper.listMenuIdByPackageId(packageId));
-        checkedSelectTreeResp.setSelectTrees(menuInfoService.listAllTenantSelectTree());
-        return ok(checkedSelectTreeResp);
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@PathVariable(required = false) Long packageId) {
+        return tenantPackageMngApi.queryMenuSelectTree(packageId);
     }
 
     @Operation(summary = "新增租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "新增套餐", type = OperateTypeEnum.INSERT)
-    @PostMapping("/add")
+    @PostMapping("/save")
     @CheckAdminPerms("user-mod:tenantpackage-mng:add")
-    public Result<Void> add(@Valid @RequestBody TenantPackageMngAddReq req) {
-        return toRes(tenantPackageInfoMapper.insert(BeanUtil.convert(req, TenantPackageInfoDO.class)));
+    public Result<Void> save(@Valid @RequestBody TenantPackageMngSaveRequest request) {
+        return tenantPackageMngApi.save(request);
     }
 
     @Operation(summary = "修改租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "修改套餐", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/edit")
+    @PostMapping("/update")
     @CheckAdminPerms("user-mod:tenantpackage-mng:edit")
-    public Result<Void> edit(@Valid @RequestBody TenantPackageMngEditReq req) {
-        return toRes(tenantPackageInfoMapper.updateById(BeanUtil.convert(req, TenantPackageInfoDO.class)));
+    public Result<Void> update(@Valid @RequestBody TenantPackageMngUpdateRequest request) {
+        return tenantPackageMngApi.update(request);
     }
 
     @Operation(summary = "修改租户套餐状态")
     @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/edit-status")
+    @PostMapping("/update-status")
     @CheckAdminPerms("user-mod:tenantpackage-mng:edit")
-    public Result<Void> editStatus(@RequestBody @Valid StatusEditReq editReq) {
-        TenantPackageInfoDO update = new TenantPackageInfoDO(editReq.getId());
-        update.setStatus(editReq.getStatus());
-        return toRes(tenantPackageInfoMapper.updateById(update));
+    public Result<Void> updateStatus(@RequestBody @Valid StatusUpdateRequest request) {
+        return tenantPackageMngApi.updateStatus(request);
     }
 
     @Operation(summary = "删除租户套餐")
@@ -119,10 +91,8 @@ public class TenantPackageMngController extends BaseController {
     @CheckAdminPerms("user-mod:tenantpackage-mng:remove")
     public Result<Void> remove(
             @NotEmpty(message = "{invalidParameter.id.invalid}") @RequestBody List<Long> packageIds) {
-        if (tenantPackageInfoService.checkPackageUsed(packageIds)) {
-            return requestFail("删除失败, 套餐正在使用");
-        }
-        return toRes(tenantPackageInfoMapper.deleteByIds(packageIds));
+        return tenantPackageMngApi.remove(packageIds);
     }
 
 }
+

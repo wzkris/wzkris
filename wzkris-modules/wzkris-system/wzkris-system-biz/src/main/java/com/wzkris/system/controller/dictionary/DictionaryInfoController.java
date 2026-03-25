@@ -2,8 +2,8 @@ package com.wzkris.system.controller.dictionary;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.system.domain.DictionaryInfoDO;
-import com.wzkris.system.service.DictionaryInfoService;
+import com.wzkris.system.api.dictionary.DictionaryInfoApi;
+import com.wzkris.system.response.dictionary.DictionaryDataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,18 +12,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "字典信息")
 @RestController
 @RequestMapping("/dictionary-info")
 @RequiredArgsConstructor
 public class DictionaryInfoController extends BaseController {
 
-    private final DictionaryInfoService dictService;
+    private final DictionaryInfoApi dictionaryInfoApi;
 
     @Operation(summary = "查询字典")
     @GetMapping("/{dictKey}")
-    public Result<DictionaryInfoDO.DictData[]> queryValue(@PathVariable String dictKey) {
-        return ok(dictService.getValueByKey(dictKey));
+    public Result<List<DictionaryDataResponse>> queryValue(@PathVariable String dictKey) {
+        return dictionaryInfoApi.queryValue(dictKey);
     }
 
 }

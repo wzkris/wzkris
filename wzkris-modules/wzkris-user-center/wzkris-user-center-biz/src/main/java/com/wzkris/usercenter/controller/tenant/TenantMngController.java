@@ -1,39 +1,25 @@
 package com.wzkris.usercenter.controller.tenant;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
-import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
-import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.domain.req.PwdResetReq;
-import com.wzkris.usercenter.domain.req.StatusEditReq;
-import com.wzkris.usercenter.domain.req.tenant.TenantMngAddReq;
-import com.wzkris.usercenter.domain.req.tenant.TenantMngEditReq;
-import com.wzkris.usercenter.domain.req.tenant.TenantMngQueryReq;
-import com.wzkris.usercenter.domain.resp.SelectResp;
-import com.wzkris.usercenter.domain.resp.tenant.TenantMngResp;
-import com.wzkris.usercenter.event.CreateTenantEvent;
-import com.wzkris.usercenter.mapper.TenantInfoMapper;
-import com.wzkris.usercenter.service.AdminInfoService;
-import com.wzkris.usercenter.service.TenantInfoService;
-import com.wzkris.usercenter.service.TenantPackageInfoService;
+import com.wzkris.usercenter.api.tenant.TenantMngApi;
+import com.wzkris.usercenter.request.PwdResetRequest;
+import com.wzkris.usercenter.request.StatusUpdateRequest;
+import com.wzkris.usercenter.request.tenant.TenantMngQueryRequest;
+import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;
+import com.wzkris.usercenter.request.tenant.TenantMngUpdateRequest;
+import com.wzkris.usercenter.response.SelectResponse;
+import com.wzkris.usercenter.response.tenant.TenantMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,117 +37,67 @@ import java.util.List;
 @RequestMapping("/tenant-manage")
 public class TenantMngController extends BaseController {
 
-    private final TenantInfoMapper tenantInfoMapper;
-
-    private final TenantInfoService tenantInfoService;
-
-    private final AdminInfoService adminInfoService;
-
-    private final TenantPackageInfoService tenantPackageInfoService;
-
-    private final PasswordEncoder passwordEncoder;
+    private final TenantMngApi tenantMngApi;
 
     @Operation(summary = "租户分页")
-    @GetMapping("/page")
+    @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<Page<TenantMngResp>> page(TenantMngQueryReq queryReq) {
-        startPage();
-        List<TenantMngResp> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(queryReq));
-        return getDataTable(list);
-    }
-
-    private QueryWrapper<TenantInfoDO> buildQueryWrapper(TenantMngQueryReq queryReq) {
-        return new QueryWrapper<TenantInfoDO>()
-                .like(StringUtil.isNotEmpty(queryReq.getTenantName()), "tenant_name", queryReq.getTenantName())
-                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), "t.status", queryReq.getStatus())
-                .orderByDesc("t.tenant_id");
+    public Result<Page<TenantMngResponse>> queryPage(TenantMngQueryRequest request) {
+        return tenantMngApi.queryPage(request);
     }
 
     @Operation(summary = "ID获取租户详细信息")
-    @GetMapping("/{tenantId}")
+    @GetMapping("/query-info/{tenantId}")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<TenantInfoDO> queryByid(
-            @NotNull(message = "{invalidParameter.id.invalid}") @PathVariable Long tenantId) {
-        return ok(tenantInfoMapper.selectById(tenantId));
+    public Result<TenantMngResponse> queryInfo(@PathVariable Long tenantId) {
+        return tenantMngApi.queryInfo(tenantId);
     }
 
     @Operation(summary = "租户选择列表(带分页)")
-    @GetMapping("/selectpage")
-    public Result<Page<SelectResp>> selectlist(String tenantName) {
-        startPage();
-        List<SelectResp> list = tenantInfoService.listSelect(tenantName);
-        return getDataTable(list);
+    @GetMapping("/query-selectpage")
+    public Result<Page<SelectResponse>> querySelectPage(String tenantName) {
+        return tenantMngApi.querySelectPage(tenantName);
     }
 
     @Operation(summary = "套餐选择列表")
-    @GetMapping("/package-select")
+    @GetMapping("/query-package-select")
     @CheckAdminPerms(
             value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
             mode = CheckMode.OR)
-    public Result<List<SelectResp>> packageSelect(String packageName) {
-        List<SelectResp> selectVOS = tenantPackageInfoService.listSelect(packageName);
-        return ok(selectVOS);
+    public Result<List<SelectResponse>> queryPackageSelect(String packageName) {
+        return tenantMngApi.queryPackageSelect(packageName);
     }
 
     @Operation(summary = "新增租户")
     @OperateLog(title = "租户管理", subTitle = "新增租户", type = OperateTypeEnum.INSERT)
-    @PostMapping("/add")
+    @PostMapping("/save")
     @CheckAdminPerms("user-mod:tenant-mng:add")
-    public Result<Void> add(@Validated @RequestBody TenantMngAddReq tenantReq) {
-        if (adminInfoService.existByUsername(null, tenantReq.getUsername())) {
-            return requestFail("登录账号'" + tenantReq.getUsername() + "'已存在");
-        }
-        TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
-
-        String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
-        tenant.setOperPwd(operPwd);
-
-        String password = RandomStringUtils.secure().nextAlphabetic(8);
-        boolean success = tenantInfoService.saveTenant(tenant, tenantReq.getUsername(), password);
-        if (success) {
-            SpringUtil.getContext()
-                    .publishEvent(new CreateTenantEvent(
-                            SecurityUtil.getUid(),
-                            tenantReq.getUsername(),
-                            tenantReq.getTenantName(),
-                            password,
-                            operPwd));
-        }
-        return toRes(success);
+    public Result<Void> save(@Validated @RequestBody TenantMngSaveRequest tenantReq) {
+        return tenantMngApi.save(tenantReq);
     }
 
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/edit")
+    @PostMapping("/update")
     @CheckAdminPerms("user-mod:tenant-mng:edit")
-    public Result<Void> edit(@Validated @RequestBody TenantMngEditReq tenantReq) {
-        TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
-        tenant.setAdministrator(null);
-        tenant.setOperPwd(null);
-        return toRes(tenantInfoMapper.updateById(tenant));
+    public Result<Void> update(@Validated @RequestBody TenantMngUpdateRequest tenantReq) {
+        return tenantMngApi.update(tenantReq);
     }
 
     @Operation(summary = "修改租户状态")
     @OperateLog(title = "租户管理", subTitle = "修改租户状态", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/edit-status")
+    @PostMapping("/update-status")
     @CheckAdminPerms("user-mod:tenant-mng:edit")
-    public Result<Void> editStatus(@RequestBody @Valid StatusEditReq editReq) {
-        TenantInfoDO update = new TenantInfoDO(editReq.getId());
-        update.setStatus(editReq.getStatus());
-        return toRes(tenantInfoMapper.updateById(update));
+    public Result<Void> updateStatus(@RequestBody @Valid StatusUpdateRequest request) {
+        return tenantMngApi.updateStatus(request);
     }
 
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-operpwd")
     @CheckAdminPerms("user-mod:tenant-mng:reset-operpwd")
-    public Result<Void> resetOperPwd(@RequestBody PwdResetReq req) {
-        if (StringUtil.length(req.getPassword()) != 6 || !NumberUtils.isCreatable(req.getPassword())) {
-            return requestFail("操作密码必须为6位数字");
-        }
-        TenantInfoDO update = new TenantInfoDO(req.getId());
-        update.setOperPwd(passwordEncoder.encode(req.getPassword()));
-        return toRes(tenantInfoMapper.updateById(update));
+    public Result<Void> resetOperPwd(@RequestBody PwdResetRequest request) {
+        return tenantMngApi.resetOperPwd(request);
     }
 
     @Operation(summary = "删除租户")
@@ -169,7 +105,8 @@ public class TenantMngController extends BaseController {
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:tenant-mng:remove")
     public Result<Void> remove(@RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {
-        return toRes(tenantInfoService.removeById(tenantId));
+        return tenantMngApi.remove(tenantId);
     }
 
 }
+

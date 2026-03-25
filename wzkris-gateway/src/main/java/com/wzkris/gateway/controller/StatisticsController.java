@@ -2,8 +2,8 @@ package com.wzkris.gateway.controller;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.gateway.domain.resp.ApiCallDailySeriesResp;
-import com.wzkris.gateway.domain.resp.PageViewDailySeriesResp;
+import com.wzkris.gateway.domain.response.ApiCallDailySeriesResponse;
+import com.wzkris.gateway.domain.response.PageViewDailySeriesResponse;
 import com.wzkris.gateway.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class StatisticsController {
      * 获取页面PV及UV统计（日）
      */
     @GetMapping("/pageview/daily")
-    public Result<PageViewDailySeriesResp> getPageViewDaily(
+    public Result<PageViewDailySeriesResponse> getPageViewDaily(
             @RequestParam String authType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         String dateStr = date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
@@ -47,7 +47,7 @@ public class StatisticsController {
      * 获取 API 调用次数统计（日）
      */
     @GetMapping("/apicall/daily")
-    public Result<ApiCallDailySeriesResp> getApiCallDaily(
+    public Result<ApiCallDailySeriesResponse> getApiCallDaily(
             @RequestParam String authType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         String dateStr = date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
@@ -56,3 +56,4 @@ public class StatisticsController {
     }
 
 }
+

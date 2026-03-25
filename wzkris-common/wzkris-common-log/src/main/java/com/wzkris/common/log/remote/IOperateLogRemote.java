@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;
 import com.wzkris.common.remote.constants.ServiceIdConstant;
-import com.wzkris.common.log.remote.req.OperateLogEvent;
+import com.wzkris.common.log.remote.request.OperateLogEvent;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -21,7 +21,7 @@ import java.util.List;
         serviceId = ServiceIdConstant.SYSTEM,
         path = ServiceContextPathConstant.SYSTEM
 )
-@HttpExchange(url = "/operate-log-client")
+@HttpExchange(url = "/operate-log-remote")
 public interface IOperateLogRemote {
 
     /**

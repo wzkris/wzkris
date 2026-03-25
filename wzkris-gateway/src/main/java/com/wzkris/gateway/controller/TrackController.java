@@ -3,7 +3,7 @@ package com.wzkris.gateway.controller;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.domain.StatisticsKey;
-import com.wzkris.gateway.domain.req.PageViewReq;
+import com.wzkris.gateway.domain.request.PageViewRequest;
 import com.wzkris.gateway.service.StatisticsService;
 import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class TrackController {
      * pageview 上报
      */
     @PostMapping("/pageview")
-    public ResponseEntity<Object> recordPageview(@RequestBody PageViewReq request) {
+    public ResponseEntity<Object> recordPageview(@RequestBody PageViewRequest request) {
         try {
             if (SecurityUtil.isAuth()) {
                 BaseLoginUser loginUser = SecurityUtil.getLoginUser();
@@ -45,7 +45,7 @@ public class TrackController {
         return ResponseEntity.noContent().build();
     }
 
-    private void recordPageview(String authType, Long userId, PageViewReq request) {
+    private void recordPageview(String authType, Long userId, PageViewRequest request) {
         LocalDateTime now = LocalDateTime.now();
         String dateStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String hourStr = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
@@ -62,3 +62,4 @@ public class TrackController {
     }
 
 }
+

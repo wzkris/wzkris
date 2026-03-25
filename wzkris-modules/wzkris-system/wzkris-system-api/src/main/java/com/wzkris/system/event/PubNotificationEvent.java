@@ -1,6 +1,6 @@
 package com.wzkris.system.event;
 
-import com.wzkris.system.domain.dto.SimpleMessageDTO;
+import com.wzkris.system.request.message.SimpleMessageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +19,6 @@ public class PubNotificationEvent {
     @Nullable
     private List<? extends Serializable> ids;
 
-    private SimpleMessageDTO message;
+    private SimpleMessageRequest message;
 
 }

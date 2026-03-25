@@ -4,9 +4,9 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;
 import com.wzkris.common.remote.constants.ServiceIdConstant;
-import com.wzkris.gateway.remote.loginuser.req.LoginUserQueryReq;
-import com.wzkris.gateway.remote.loginuser.req.OAuth2TokenQueryReq;
-import com.wzkris.gateway.remote.loginuser.resp.LoginUserResp;
+import com.wzkris.gateway.remote.loginuser.request.LoginUserQueryRequest;
+import com.wzkris.gateway.remote.loginuser.request.OAuth2TokenQueryRequest;
+import com.wzkris.gateway.remote.loginuser.response.LoginUserResponse;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -22,19 +22,20 @@ import org.springframework.web.service.annotation.PostExchange;
         serviceId = ServiceIdConstant.AUTH,
         path = ServiceContextPathConstant.AUTH
 )
-@HttpExchange(url = "/login-user-client")
+@HttpExchange(url = "/login-user-remote")
 public interface ILoginUserRemote {
 
     /**
      * 获取登录信息
      */
     @PostExchange("/query-info")
-    Result<LoginUserResp> queryInfo(@Validated @RequestBody LoginUserQueryReq loginUserQueryReq);
+    Result<LoginUserResponse> queryInfo(@Validated @RequestBody LoginUserQueryRequest LoginUserQueryRequest);
 
     /**
      * 通过OAuth2 token获取用户信息
      */
     @PostExchange("/query-oauth2")
-    Result<LoginUserResp> queryOAuth2(@Validated @RequestBody OAuth2TokenQueryReq request);
+    Result<LoginUserResponse> queryOAuth2(@Validated @RequestBody OAuth2TokenQueryRequest request);
 
 }
+

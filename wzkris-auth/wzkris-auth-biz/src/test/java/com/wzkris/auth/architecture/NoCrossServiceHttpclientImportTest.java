@@ -23,18 +23,6 @@ class NoCrossServiceHttpclientImportTest {
             Pattern.compile("^\\s*import\\s+com\\.wzkris\\.captcha\\.remote\\..*;\\s*$")
     );
 
-    @Test
-    void shouldNotImportHttpclientFromOtherServices() throws IOException {
-        try (Stream<Path> files = Files.walk(SRC)) {
-            List<String> violations = files
-                    .filter(p -> p.toString().endsWith(".java"))
-                    .flatMap(NoCrossServiceHttpclientImportTest::scanFile)
-                    .collect(Collectors.toList());
-
-            assertTrue(violations.isEmpty(), "Forbidden cross-service httpclient imports found:\n" + String.join("\n", violations));
-        }
-    }
-
     private static Stream<String> scanFile(Path path) {
         try {
             List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -48,6 +36,18 @@ class NoCrossServiceHttpclientImportTest {
 
     private static boolean isForbiddenImport(String line) {
         return FORBIDDEN.stream().anyMatch(p -> p.matcher(line).matches());
+    }
+
+    @Test
+    void shouldNotImportHttpclientFromOtherServices() throws IOException {
+        try (Stream<Path> files = Files.walk(SRC)) {
+            List<String> violations = files
+                    .filter(p -> p.toString().endsWith(".java"))
+                    .flatMap(NoCrossServiceHttpclientImportTest::scanFile)
+                    .collect(Collectors.toList());
+
+            assertTrue(violations.isEmpty(), "Forbidden cross-service httpclient imports found:\n" + String.join("\n", violations));
+        }
     }
 
 }

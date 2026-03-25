@@ -4,18 +4,15 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
-import com.wzkris.system.domain.req.tenantlog.TenantOperateLogQueryReq;
-import com.wzkris.system.domain.resp.tenantlog.TenantOperateLogInfoResp;
-import com.wzkris.system.mapper.TenantOperateLogMapper;
-import com.wzkris.system.service.TenantOperateLogService;
+import com.wzkris.system.api.tenantlog.operate.TenantOperateLogMngApi;
+import com.wzkris.system.request.tenantlog.TenantOperateLogQueryRequest;
+import com.wzkris.system.response.tenantlog.TenantOperateLogInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 操作日志记录
@@ -28,17 +25,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TenantOperateLogMngController extends BaseController {
 
-    private final TenantOperateLogMapper tenantOperateLogMapper;
-
-    private final TenantOperateLogService tenantOperateLogService;
+    private final TenantOperateLogMngApi tenantOperateLogMngApi;
 
     @Operation(summary = "分页")
     @GetMapping("/page")
     @CheckTenantPerms("system-mod:tenant-operatelog-mng:page")
-    public Result<Page<TenantOperateLogInfoResp>> page(TenantOperateLogQueryReq queryReq) {
-        startPage();
-        List<TenantOperateLogInfoResp> list = tenantOperateLogService.listInfoVO(queryReq);
-        return getDataTable(list);
+    public Result<Page<TenantOperateLogInfoResponse>> page(TenantOperateLogQueryRequest request) {
+        return tenantOperateLogMngApi.page(request);
     }
 
 }
+

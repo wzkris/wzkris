@@ -92,15 +92,11 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
             return context;
         }
 
-        try {
-            Authentication authentication = this.tokenValidateService.check(request);
-            if (authentication instanceof UsernamePasswordAuthenticationToken authenticationToken) {
-                authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
-            }
-            context.setAuthentication(authentication);
-        } catch (Exception ex) {
-            log.error("GatewaySecurityContextRepository error", ex);
+        Authentication authentication = this.tokenValidateService.check(request);
+        if (authentication instanceof UsernamePasswordAuthenticationToken authenticationToken) {
+            authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
         }
+        context.setAuthentication(authentication);
 
         return context;
     }

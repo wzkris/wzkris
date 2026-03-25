@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.MemberInfoDO;
-import com.wzkris.usercenter.domain.resp.member.MemberMngResp;
+import com.wzkris.usercenter.response.member.MemberMngResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -22,7 +22,7 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
                     		 LEFT JOIN biz.post_info p ON sp.post_id = p.post_id AND p.status = '0'
                     ${ew.customSqlSegment} GROUP BY s.member_id ORDER BY s.member_id DESC
             """)
-    List<MemberMngResp> listVO(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
+    List<MemberMngResponse> listVO(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
 
     /**
      * 通过用户名查询租户成员
@@ -42,10 +42,5 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
     @Select("SELECT * FROM biz.member_info WHERE phone_number = #{phoneNumber}")
     MemberInfoDO selectByPhoneNumber(String phoneNumber);
 
-    @Select("SELECT password FROM biz.member_info WHERE member_id = #{memberId}")
-    String selectPwdById(Long memberId);
-
-    @Select("SELECT phone_number FROM biz.member_info WHERE member_id = #{memberId}")
-    String selectPhoneNumberById(Long memberId);
-
 }
+

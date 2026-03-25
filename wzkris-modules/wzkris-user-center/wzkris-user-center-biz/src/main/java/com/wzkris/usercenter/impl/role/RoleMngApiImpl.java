@@ -1,0 +1,153 @@
+package com.wzkris.usercenter.impl.role;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.usercenter.api.role.RoleMngApi;
+import com.wzkris.usercenter.domain.RoleInfoDO;
+import com.wzkris.usercenter.mapper.RoleInfoMapper;
+import com.wzkris.usercenter.mapper.RoleInheritanceMapper;
+import com.wzkris.usercenter.mapper.RoleToDeptMapper;
+import com.wzkris.usercenter.request.StatusUpdateRequest;
+import com.wzkris.usercenter.request.role.RoleMngQueryRequest;
+import com.wzkris.usercenter.request.role.RoleMngSaveRequest;
+import com.wzkris.usercenter.request.role.RoleMngUpdateRequest;
+import com.wzkris.usercenter.response.CheckedSelectResponse;
+import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
+import com.wzkris.usercenter.response.SelectResponse;
+import com.wzkris.usercenter.response.role.RoleInfoResponse;
+import com.wzkris.usercenter.service.DeptInfoService;
+import com.wzkris.usercenter.service.MenuInfoService;
+import com.wzkris.usercenter.service.RoleInfoService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+@Service
+@RequiredArgsConstructor
+public class RoleMngApiImpl extends BaseController implements RoleMngApi {
+
+    private final RoleInfoMapper roleInfoMapper;
+
+    private final RoleInfoService roleInfoService;
+
+    private final MenuInfoService menuInfoService;
+
+    private final RoleToDeptMapper roleToDeptMapper;
+
+    private final DeptInfoService deptInfoService;
+
+    private final RoleInheritanceMapper roleInheritanceMapper;
+
+    @Override
+    public Result<Page<RoleInfoResponse>> queryPage(RoleMngQueryRequest request) {
+        startPage();
+        List<RoleInfoDO> list = roleInfoMapper.selectLists(this.buildQueryWrapper(request));
+        return getDataTable(BeanUtil.convert(list, RoleInfoResponse.class));
+    }
+
+    private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngQueryRequest request) {
+        return new LambdaQueryWrapper<RoleInfoDO>()
+                .like(StringUtil.isNotEmpty(request.getRoleName()), RoleInfoDO::getRoleName, request.getRoleName())
+                .eq(StringUtil.isNotEmpty(request.getStatus()), RoleInfoDO::getStatus, request.getStatus())
+                .orderByDesc(RoleInfoDO::getRoleSort, RoleInfoDO::getRoleId);
+    }
+
+    @Override
+    public Result<RoleInfoResponse> queryInfo(Long roleId) {
+        if (!roleInfoMapper.checkDataScopes(roleId)) {
+            return accessDenied("数据权限不足");
+        }
+        return ok(BeanUtil.convert(roleInfoMapper.selectById(roleId), RoleInfoResponse.class));
+    }
+
+    @Override
+    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(Long roleId) {
+        if (!roleInfoMapper.checkDataScopes(roleId)) {
+            return accessDenied("数据权限不足");
+        }
+        CheckedSelectTreeResponse checkedSelectTreeResponse = new CheckedSelectTreeResponse();
+        checkedSelectTreeResponse.setCheckedKeys(menuInfoService.listMenuIdByRoleId(roleId));
+        checkedSelectTreeResponse.setSelectTrees(menuInfoService.listSystemSelectTree(SecurityUtil.getUid()));
+        return ok(checkedSelectTreeResponse);
+    }
+
+    @Override
+    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(Long roleId) {
+        if (!roleInfoMapper.checkDataScopes(roleId)) {
+            return accessDenied("数据权限不足");
+        }
+        CheckedSelectTreeResponse checkedSelectTreeResponse = new CheckedSelectTreeResponse();
+        checkedSelectTreeResponse.setCheckedKeys(
+                roleId == null ? Collections.emptyList() : roleToDeptMapper.listDeptIdByRoleIds(Collections.singletonList(roleId)));
+        checkedSelectTreeResponse.setSelectTrees(deptInfoService.listSelectTree(null));
+        return ok(checkedSelectTreeResponse);
+    }
+
+    @Override
+    public Result<CheckedSelectResponse> queryRoleInheritedSelect(Long roleId) {
+        if (!roleInfoMapper.checkDataScopes(roleId)) {
+            return accessDenied("数据权限不足");
+        }
+        CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
+        checkedSelectResponse.setCheckedKeys(roleId == null
+                ? Collections.emptyList()
+                : roleInheritanceMapper.listChildIdsByRoleId(roleId));
+        List<SelectResponse> selectResponses = roleInfoService.listRoleSelect(null)
+                .stream().filter(role -> !Objects.equals(role.getId(), roleId)).toList();
+        checkedSelectResponse.setSelects(selectResponses);
+        return ok(checkedSelectResponse);
+    }
+
+    @Override
+    public Result<Void> save(RoleMngSaveRequest request) {
+        RoleInfoDO role = BeanUtil.convert(request, RoleInfoDO.class);
+        return toRes(roleInfoService.saveRole(role, request.getMenuIds(), request.getDeptIds(), request.getChildIds()));
+    }
+
+    @Override
+    public Result<Void> update(RoleMngUpdateRequest request) {
+        if (request.getChildIds() != null && request.getChildIds().contains(request.getRoleId())) {
+            return requestFail("角色不能继承自身");
+        }
+        if (request.getChildIds() != null && roleInheritanceMapper
+                .listChildIdsRecursive(request.getChildIds())
+                .contains(request.getRoleId())) {
+            return requestFail("角色继承关系存在循环");
+        }
+        RoleInfoDO role = BeanUtil.convert(request, RoleInfoDO.class);
+        return toRes(roleInfoService.updateRole(role, request.getMenuIds(), request.getDeptIds(), request.getChildIds()));
+    }
+
+    @Override
+    public Result<Void> updateStatus(StatusUpdateRequest request) {
+        if (!roleInfoMapper.checkDataScopes(request.getId())) {
+            return accessDenied("数据权限不足");
+        }
+        RoleInfoDO update = new RoleInfoDO(request.getId());
+        update.setStatus(request.getStatus());
+        return toRes(roleInfoMapper.updateById(update));
+    }
+
+    @Override
+    public Result<Void> remove(List<Long> roleIds) {
+        if (!roleInfoMapper.checkDataScopes(roleIds)) {
+            return accessDenied("数据权限不足");
+        }
+        if (roleInfoService.existAdmin(roleIds)) {
+            return requestFail("当前角色已被分配用户");
+        }
+        if (roleInfoService.existChildRole(roleIds)) {
+            return requestFail("当前角色已被其他角色继承");
+        }
+        return toRes(roleInfoService.removeRoles(roleIds));
+    }
+
+}

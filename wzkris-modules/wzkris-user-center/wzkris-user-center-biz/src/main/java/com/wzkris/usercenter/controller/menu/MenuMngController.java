@@ -1,29 +1,21 @@
 package com.wzkris.usercenter.controller.menu;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
-import com.wzkris.usercenter.domain.MenuInfoDO;
-import com.wzkris.usercenter.domain.req.menu.MenuMngAddReq;
-import com.wzkris.usercenter.domain.req.menu.MenuMngEditReq;
-import com.wzkris.usercenter.domain.req.menu.MenuMngQueryReq;
-import com.wzkris.usercenter.enums.MenuTypeEnum;
-import com.wzkris.usercenter.mapper.MenuInfoMapper;
-import com.wzkris.usercenter.service.MenuInfoService;
+import com.wzkris.usercenter.api.menu.MenuMngApi;
+import com.wzkris.usercenter.request.menu.MenuMngQueryRequest;
+import com.wzkris.usercenter.request.menu.MenuMngSaveRequest;
+import com.wzkris.usercenter.request.menu.MenuMngUpdateRequest;
+import com.wzkris.usercenter.response.menu.MenuInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,62 +29,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuMngController extends BaseController {
 
-    private final MenuInfoMapper menuInfoMapper;
-
-    private final MenuInfoService menuInfoService;
+    private final MenuMngApi menuMngApi;
 
     @Operation(summary = "菜单列表（无分页）")
-    @GetMapping("/list")
+    @GetMapping("/query-list")
     @CheckAdminPerms("user-mod:menu-mng:list")
-    public Result<List<MenuInfoDO>> list(MenuMngQueryReq queryReq) {
-        List<MenuInfoDO> menus = menuInfoMapper.selectList(this.buildQueryWrapper(queryReq));
-        return ok(menus);
-    }
-
-    private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngQueryReq queryReq) {
-        List<Long> menuIds = new ArrayList<>();
-        if (!SecurityUtil.isSuper()) {
-            menuIds = menuInfoService.listMenuIdByAdminId(SecurityUtil.getUid());
-        }
-        return new LambdaQueryWrapper<MenuInfoDO>()
-                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
-                .like(StringUtil.isNotEmpty(queryReq.getMenuName()), MenuInfoDO::getMenuName, queryReq.getMenuName())
-                .eq(StringUtil.isNotEmpty(queryReq.getStatus()), MenuInfoDO::getStatus, queryReq.getStatus())
-                .eq(StringUtil.isNotEmpty(queryReq.getScope()), MenuInfoDO::getScope, queryReq.getScope())
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+    public Result<List<MenuInfoResponse>> queryList(MenuMngQueryRequest request) {
+        return menuMngApi.queryList(request);
     }
 
     @Operation(summary = "菜单详细信息")
-    @GetMapping("/{menuId}")
+    @GetMapping("/query-info/{menuId}")
     @CheckAdminPerms("user-mod:menu-mng:list")
-    public Result<MenuInfoDO> getInfo(@PathVariable Long menuId) {
-        return ok(menuInfoMapper.selectById(menuId));
+    public Result<MenuInfoResponse> queryInfo(@PathVariable Long menuId) {
+        return menuMngApi.queryInfo(menuId);
     }
 
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", type = OperateTypeEnum.INSERT)
-    @PostMapping("/add")
+    @PostMapping("/save")
     @CheckAdminPerms("user-mod:menu-mng:add")
-    public Result<Void> add(@Validated @RequestBody MenuMngAddReq req) {
-        if (StringUtil.equalsAny(req.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
-                && !StringUtil.ishttp(req.getPath())) {
-            return requestFail("新增菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
-        }
-        return toRes(menuInfoMapper.insert(BeanUtil.convert(req, MenuInfoDO.class)));
+    public Result<Void> save(@Validated @RequestBody MenuMngSaveRequest request) {
+        return menuMngApi.save(request);
     }
 
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/edit")
+    @PostMapping("/update")
     @CheckAdminPerms("user-mod:menu-mng:edit")
-    public Result<Void> edit(@Validated @RequestBody MenuMngEditReq req) {
-        if (StringUtil.equalsAny(req.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
-                && !StringUtil.ishttp(req.getPath())) {
-            return requestFail("修改菜单'" + req.getMenuName() + "'失败，地址必须以http(s)://开头");
-        } else if (req.getMenuId().equals(req.getParentId())) {
-            return requestFail("修改菜单'" + req.getMenuName() + "'失败，上级菜单不能选择自己");
-        }
-        return toRes(menuInfoMapper.updateById(BeanUtil.convert(req, MenuInfoDO.class)));
+    public Result<Void> update(@Validated @RequestBody MenuMngUpdateRequest request) {
+        return menuMngApi.update(request);
     }
 
     @Operation(summary = "删除菜单")
@@ -100,10 +66,7 @@ public class MenuMngController extends BaseController {
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:menu-mng:remove")
     public Result<Void> remove(@RequestBody Long menuId) {
-        if (menuInfoService.existSubMenu(menuId)) {
-            return requestFail("存在子菜单,不允许删除");
-        }
-        return toRes(menuInfoService.removeById(menuId));
+        return menuMngApi.remove(menuId);
     }
 
 }

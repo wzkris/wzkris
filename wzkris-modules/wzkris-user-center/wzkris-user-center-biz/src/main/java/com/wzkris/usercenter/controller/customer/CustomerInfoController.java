@@ -2,12 +2,9 @@ package com.wzkris.usercenter.controller.customer;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.usercenter.domain.CustomerInfoDO;
-import com.wzkris.usercenter.domain.req.customer.CustomerInfoEditReq;
-import com.wzkris.usercenter.domain.resp.customer.CustomerInfoResp;
-import com.wzkris.usercenter.mapper.CustomerInfoMapper;
-import com.wzkris.usercenter.service.CustomerInfoService;
+import com.wzkris.usercenter.api.customer.CustomerInfoApi;
+import com.wzkris.usercenter.request.customer.CustomerInfoBasicUpdateRequest;
+import com.wzkris.usercenter.response.customer.CustomerInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,43 +29,21 @@ public class CustomerInfoController extends BaseController {
 
     private final String info_prefix = "customer-info";
 
-    private final CustomerInfoMapper customerInfoMapper;
-
-    private final CustomerInfoService customerInfoService;
+    private final CustomerInfoApi customerInfoApi;
 
     @Operation(summary = "获取信息")
-    @GetMapping
+    @GetMapping("/query-info")
     @Cacheable(value = info_prefix + "#3_600_000", key = "@su.getUid()", sync = true)
-    public Result<CustomerInfoResp> customerInfo() {
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(SecurityUtil.getUid());
-
-        CustomerInfoResp customerInfoVO = new CustomerInfoResp();
-        customerInfoVO.setNickname(customerInfoDO.getNickname());
-        customerInfoVO.setPhoneNumber(customerInfoDO.getPhoneNumber());
-        customerInfoVO.setGender(customerInfoDO.getGender());
-        customerInfoVO.setAvatar(customerInfoDO.getAvatar());
-        customerInfoVO.setLoginDate(customerInfoDO.getLoginDate());
-
-        return ok(customerInfoVO);
+    public Result<CustomerInfoResponse> queryInfo() {
+        return customerInfoApi.queryInfo();
     }
 
     @Operation(summary = "修改信息")
-    @PostMapping
+    @PostMapping("/update-basic")
     @CacheEvict(value = info_prefix, key = "@su.getUid()")
-    public Result<?> editInfo(@RequestBody CustomerInfoEditReq req) {
-        CustomerInfoDO customer = new CustomerInfoDO(SecurityUtil.getUid());
-        customer.setNickname(req.getNickname());
-        customer.setGender(req.getGender());
-        return toRes(customerInfoMapper.updateById(customer));
-    }
-
-    @Operation(summary = "更新头像")
-    @PostMapping("/edit-avatar")
-    @CacheEvict(value = info_prefix, key = "@su.getUid()")
-    public Result<?> editAvatar(@RequestBody String url) {
-        CustomerInfoDO customerInfoDO = new CustomerInfoDO(SecurityUtil.getUid());
-        customerInfoDO.setAvatar(url);
-        return toRes(customerInfoMapper.updateById(customerInfoDO));
+    public Result<?> updateBasicInfo(@RequestBody CustomerInfoBasicUpdateRequest request) {
+        return customerInfoApi.updateBasicInfo(request);
     }
 
 }
+

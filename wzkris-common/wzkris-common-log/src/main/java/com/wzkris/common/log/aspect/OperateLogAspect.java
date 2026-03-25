@@ -10,7 +10,7 @@ import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.log.remote.req.OperateLogEvent;
+import com.wzkris.common.log.remote.request.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

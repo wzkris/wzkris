@@ -6,7 +6,7 @@ import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.AdminInfoDO;
-import com.wzkris.usercenter.domain.resp.admin.AdminMngResp;
+import com.wzkris.usercenter.response.admin.AdminMngResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -45,18 +45,6 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     AdminInfoDO selectByUsername(String username);
 
     /**
-     * 根据 ID 获取密码
-     */
-    @Select("select password from biz.admin_info where user_id = #{adminId}")
-    String selectPwdById(Long adminId);
-
-    /**
-     * 根据用户 id 获取手机号
-     */
-    @Select("select phone_number from biz.admin_info where user_id = #{adminId}")
-    String selectPhoneNumberById(Long adminId);
-
-    /**
      * 带权限查询分页数据
      */
     @DataScope(value = {@DataColumn(alias = "d", column = "dept_id")})
@@ -65,7 +53,7 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
                     		FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
                     ${ew.customSqlSegment}
             """)
-    List<AdminMngResp> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
+    List<AdminMngResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
 
     /**
      * 带权限查询列表
@@ -105,3 +93,4 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     }
 
 }
+

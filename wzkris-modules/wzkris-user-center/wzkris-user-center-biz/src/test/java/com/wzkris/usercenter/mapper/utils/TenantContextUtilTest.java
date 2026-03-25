@@ -63,14 +63,15 @@ public class TenantContextUtilTest {
             return username;
         }
 
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
         @Override
         public String getName() {
             return username;
         }
 
-        public void setUsername(String username) {
-            this.username = username;
-        }
     }
 
 }

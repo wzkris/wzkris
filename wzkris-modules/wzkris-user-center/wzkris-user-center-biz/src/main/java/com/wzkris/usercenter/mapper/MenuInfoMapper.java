@@ -23,22 +23,19 @@ public interface MenuInfoMapper extends BaseMapperPlus<MenuInfoDO> {
      *
      * @return 菜单列表
      */
-    List<MenuInfoDO> listMenuRoutes(@Nullable List<Long> menuIds, String scope);
-
-    /**
-     * 根据ID集合查询权限
-     *
-     * @param menuIds 角色ID集合
-     * @return 权限列表
-     */
     @Select("""
             <script>
-                SELECT perms FROM biz.menu_info WHERE status = '0' AND menu_id IN
+                SELECT * FROM biz.menu_info
+                WHERE menu_type IN ('D', 'M', 'I', 'O') AND status = '0'
+                    AND scope = #{scope}
+                <if test="menuIds != null and !menuIds.isEmpty()">
+                    AND menu_id IN
                     <foreach collection="menuIds" item="menuId" separator="," open="(" close=")">
                         #{menuId}
                     </foreach>
+                </if>
             </script>
             """)
-    List<String> listPermsByMenuIds(List<Long> menuIds);
+    List<MenuInfoDO> listMenuRoutes(@Nullable List<Long> menuIds, String scope);
 
 }

@@ -2,8 +2,8 @@ package com.wzkris.auth.security.core.sms;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.remote.captcha.ICaptchaRemote;
-import com.wzkris.auth.remote.captcha.req.CaptchaCheckReq;
+import com.wzkris.auth.remote.interfaces.captcha.ICaptchaRemote;
+import com.wzkris.auth.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
@@ -57,10 +57,10 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        CaptchaCheckReq req = new CaptchaCheckReq();
-        req.setKey(authenticationToken.getPhoneNumber());
-        req.setValue(authenticationToken.getSmsCode());
-        Result<Boolean> result = captchaRemote.check(req);
+        CaptchaCheckRequest request = new CaptchaCheckRequest();
+        request.setKey(authenticationToken.getPhoneNumber());
+        request.setValue(authenticationToken.getSmsCode());
+        Result<Boolean> result = captchaRemote.check(request);
         boolean pass = ResultUtil.check(result) && Boolean.TRUE.equals(result.getData());
 
         if (!pass) {
@@ -84,3 +84,4 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     }
 
 }
+

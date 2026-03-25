@@ -1,0 +1,32 @@
+package com.wzkris.system.impl.adminlog.login;
+
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.system.api.adminlog.login.AdminLoginlogInfoApi;
+import com.wzkris.system.domain.AdminLoginLogDO;
+import com.wzkris.system.request.adminlog.AdminLoginLogQueryRequest;
+import com.wzkris.system.response.adminlog.AdminLoginLogResponse;
+import com.wzkris.system.service.AdminLoginLogService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AdminLoginlogInfoApiImpl extends BaseController implements AdminLoginlogInfoApi {
+
+    private final AdminLoginLogService adminLoginLogService;
+
+    @Override
+    public Result<Page<AdminLoginLogResponse>> queryPage(AdminLoginLogQueryRequest request) {
+        startPage();
+        request.setAdminId(SecurityUtil.getUid());
+        List<AdminLoginLogDO> list = adminLoginLogService.list(request);
+        return getDataTable(BeanUtil.convert(list, AdminLoginLogResponse.class));
+    }
+
+}

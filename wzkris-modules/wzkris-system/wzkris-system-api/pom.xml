@@ -25,6 +25,11 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-remote</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-orm</artifactId>
         </dependency>
     </dependencies>

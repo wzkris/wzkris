@@ -1,8 +1,8 @@
 package com.wzkris.captcha.controller;
 
-import com.wzkris.captcha.image.domain.ImageCaptchaData;
-import com.wzkris.captcha.image.domain.req.CaptchaImageReq;
-import com.wzkris.captcha.image.service.ImageCaptchaService;
+import com.wzkris.captcha.request.CaptchaImageRequest;
+import com.wzkris.captcha.response.ImageCaptchaDataResponse;
+import com.wzkris.captcha.service.ImageCaptchaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +23,15 @@ public class CaptchaImageController {
 
     @Operation(summary = "获取图片验证码")
     @PostMapping
-    public ImageCaptchaData getCaptcha() {
+    public ImageCaptchaDataResponse getCaptcha() {
         return imageCaptchaService.createCaptcha();
     }
 
     @Operation(summary = "验证图片验证码")
     @PostMapping("/redeem")
-    public String redeem(@Validated @RequestBody CaptchaImageReq req) {
-        return imageCaptchaService.redeem(req.getToken(), req.getCode());
+    public String redeem(@Validated @RequestBody CaptchaImageRequest request) {
+        return imageCaptchaService.redeem(request.getToken(), request.getCode());
     }
 
 }
+

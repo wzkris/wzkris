@@ -2,7 +2,7 @@ package com.wzkris.system.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.system.domain.NotificationInfoDO;
-import com.wzkris.system.domain.resp.notification.NotificationInfoResp;
+import com.wzkris.system.response.notification.NotificationInfoResponse;
 import jakarta.annotation.Nullable;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -29,7 +29,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 ORDER BY s.notification_id DESC
             </script>
             """)
-    List<NotificationInfoResp> listAdminNotice(
+    List<NotificationInfoResponse> listAdminNotice(
             @Param("adminId") Long adminId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") String read);
@@ -47,7 +47,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 ORDER BY s.notification_id DESC
             </script>
             """)
-    List<NotificationInfoResp> listTenantNotice(
+    List<NotificationInfoResponse> listTenantNotice(
             @Param("memberId") Long memberId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") String read);
@@ -97,3 +97,4 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     int countTenantUnread(@Param("memberId") Long memberId, @Nullable @Param("notificationType") String notificationType);
 
 }
+

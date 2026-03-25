@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.system.domain.TenantOperateLogDO;
-import com.wzkris.system.domain.resp.tenantlog.TenantOperateLogInfoResp;
+import com.wzkris.system.response.tenantlog.TenantOperateLogInfoResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -21,6 +21,7 @@ public interface TenantOperateLogMapper extends BaseMapperPlus<TenantOperateLogD
                 FROM biz.tenant_operate_log
                         ${ew.customSqlSegment}
             """)
-    List<TenantOperateLogInfoResp> selectListInfoVO(@Param(Constants.WRAPPER) Wrapper<TenantOperateLogDO> wrapper);
+    List<TenantOperateLogInfoResponse> selectListInfoVO(@Param(Constants.WRAPPER) Wrapper<TenantOperateLogDO> wrapper);
 
 }
+

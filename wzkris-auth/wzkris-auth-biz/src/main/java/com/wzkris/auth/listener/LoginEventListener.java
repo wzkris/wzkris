@@ -1,13 +1,13 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.admin.IAdminInfoRemote;
-import com.wzkris.auth.remote.admin.req.LoginInfoUpdateReq;
-import com.wzkris.auth.remote.customer.ICustomerInfoRemote;
-import com.wzkris.auth.remote.loginlog.ILoginLogRemote;
-import com.wzkris.auth.remote.loginlog.req.LoginLogEvent;
-import com.wzkris.auth.remote.member.IMemberInfoRemote;
-import com.wzkris.auth.serviceimpl.LoginRiskAnalyzeService;
+import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
+import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
+import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
+import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
+import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
+import com.wzkris.auth.service.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
@@ -97,16 +97,16 @@ public class LoginEventListener {
         if (!Boolean.TRUE.equals(success)) {
             return;
         }
-        LoginInfoUpdateReq loginInfoUpdateReq = new LoginInfoUpdateReq(loginUser.getUid());
-        loginInfoUpdateReq.setLoginIp(ipAddr);
-        loginInfoUpdateReq.setLoginDate(loginDate);
+        LoginInfoUpdateRequest LoginInfoUpdateRequest = new LoginInfoUpdateRequest(loginUser.getUid());
+        LoginInfoUpdateRequest.setLoginIp(ipAddr);
+        LoginInfoUpdateRequest.setLoginDate(loginDate);
         AuthTypeEnum authType = loginUser.getAuthType();
         if (authType == AuthTypeEnum.ADMIN) {
-            ResultUtil.checkNoData(adminInfoRemote.updateLoginInfo(loginInfoUpdateReq));
+            ResultUtil.checkNoData(adminInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
         } else if (authType == AuthTypeEnum.TENANT) {
-            ResultUtil.checkNoData(memberInfoRemote.updateLoginInfo(loginInfoUpdateReq));
+            ResultUtil.checkNoData(memberInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
         } else if (authType == AuthTypeEnum.CUSTOMER) {
-            ResultUtil.checkNoData(customerInfoRemote.updateLoginInfo(loginInfoUpdateReq));
+            ResultUtil.checkNoData(customerInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
         }
     }
 
@@ -140,3 +140,4 @@ public class LoginEventListener {
     }
 
 }
+

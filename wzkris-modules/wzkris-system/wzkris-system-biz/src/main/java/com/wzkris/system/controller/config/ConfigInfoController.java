@@ -2,7 +2,7 @@ package com.wzkris.system.controller.config;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
-import com.wzkris.system.service.ConfigInfoService;
+import com.wzkris.system.api.config.ConfigInfoApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ConfigInfoController extends BaseController {
 
-    private final ConfigInfoService configInfoService;
+    private final ConfigInfoApi configInfoApi;
 
     @Operation(summary = "查询配置值")
     @GetMapping("/{configKey}")
     public Result<String> queryValue(@PathVariable String configKey) {
-        return ok(configInfoService.getValueByKey(configKey));
+        return configInfoApi.queryValue(configKey);
     }
 
 }

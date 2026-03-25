@@ -2,12 +2,13 @@ package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.domain.TokenClaims;
-import com.wzkris.auth.domain.resp.OnlineSessionResp;
+import com.wzkris.auth.response.OnlineSessionResponse;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -37,22 +38,23 @@ public class OnlineSessionController {
      */
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineSessionResp>> onlineSession() {
+    public Result<Collection<OnlineSessionResponse>> onlineSession() {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
         Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
         TokenClaims claims = tokenService.parseJwt(SecurityUtil.getTokenValue());
         String sid = claims.getSid();
 
-        List<OnlineSessionResp> resps = new ArrayList<>();
+        List<OnlineSessionResponse> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
             String sessionSid = entry.getKey();
-            OnlineSessionResp userResp = new OnlineSessionResp(entry.getValue());
-            userResp.setSid(sessionSid);
+            OnlineSessionResponse sessionResp = new OnlineSessionResponse();
+            BeanUtil.convert(entry.getValue(), sessionResp);
+            sessionResp.setSid(sessionSid);
             if (StringUtil.equals(sid, sessionSid)) {
-                userResp.setCurrent(true);
+                sessionResp.setCurrent(true);
             }
-            resps.add(userResp);
+            resps.add(sessionResp);
         }
 
         return ok(resps);

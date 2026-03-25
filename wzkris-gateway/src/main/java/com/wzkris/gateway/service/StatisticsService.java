@@ -1,10 +1,10 @@
 package com.wzkris.gateway.service;
 
 import com.wzkris.gateway.domain.StatisticsKey;
-import com.wzkris.gateway.domain.resp.ApiCallDailySeriesResp;
-import com.wzkris.gateway.domain.resp.ApiCallResp;
-import com.wzkris.gateway.domain.resp.PageViewDailySeriesResp;
-import com.wzkris.gateway.domain.resp.PageViewResp;
+import com.wzkris.gateway.domain.response.ApiCallDailySeriesResponse;
+import com.wzkris.gateway.domain.response.ApiCallResponse;
+import com.wzkris.gateway.domain.response.PageViewDailySeriesResponse;
+import com.wzkris.gateway.domain.response.PageViewResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisCallback;
@@ -232,8 +232,8 @@ public class StatisticsService {
     /**
      * 获取页面PV/UV（日）含24小时序列
      */
-    public PageViewDailySeriesResp getDailyPageViewSeries(String authType, String date) {
-        java.util.Map<String, PageViewResp> hoursMap = new java.util.LinkedHashMap<>(24);
+    public PageViewDailySeriesResponse getDailyPageViewSeries(String authType, String date) {
+        java.util.Map<String, PageViewResponse> hoursMap = new java.util.LinkedHashMap<>(24);
 
         java.util.List<String> hourStrList = new java.util.ArrayList<>(24);
         for (int h = 0; h < 24; h++) {
@@ -259,13 +259,13 @@ public class StatisticsService {
             int pv = pvObj instanceof Number ? ((Number) pvObj).intValue() : 0;
             Object uvObj = results.get(i * 2 + 1);
             int uv = uvObj instanceof Number ? ((Number) uvObj).intValue() : 0;
-            hoursMap.put(hourStr, PageViewResp.builder().pv(pv).uv(uv).build());
+            hoursMap.put(hourStr, PageViewResponse.builder().pv(pv).uv(uv).build());
         }
-        PageViewResp total = PageViewResp.builder()
+        PageViewResponse total = PageViewResponse.builder()
                 .pv(getDailyPV(authType, date))
                 .uv(getDailyUV(authType, date))
                 .build();
-        return PageViewDailySeriesResp.builder()
+        return PageViewDailySeriesResponse.builder()
                 .date(date)
                 .total(total)
                 .hours(hoursMap)
@@ -275,8 +275,8 @@ public class StatisticsService {
     /**
      * 获取API调用（日）含24小时序列
      */
-    public ApiCallDailySeriesResp getDailyApiCallSeries(String authType, String date) {
-        java.util.Map<String, ApiCallResp> hoursMap = new java.util.LinkedHashMap<>(24);
+    public ApiCallDailySeriesResponse getDailyApiCallSeries(String authType, String date) {
+        java.util.Map<String, ApiCallResponse> hoursMap = new java.util.LinkedHashMap<>(24);
 
         java.util.List<String> hourStrList = new java.util.ArrayList<>(24);
         for (int h = 0; h < 24; h++) {
@@ -305,7 +305,7 @@ public class StatisticsService {
             int success = successObj instanceof Number ? ((Number) successObj).intValue() : 0;
             Object errorObj = results.get(i * 3 + 2);
             int error = errorObj instanceof Number ? ((Number) errorObj).intValue() : 0;
-            hoursMap.put(hourStr, ApiCallResp.builder()
+            hoursMap.put(hourStr, ApiCallResponse.builder()
                     .apiCallCount(apiCnt)
                     .successCount(success)
                     .errorCount(error)
@@ -314,14 +314,14 @@ public class StatisticsService {
         int totalApiCnt = 0;
         int totalSuccess = 0;
         int totalError = 0;
-        for (ApiCallResp vo : hoursMap.values()) {
+        for (ApiCallResponse vo : hoursMap.values()) {
             if (vo != null) {
                 totalApiCnt += vo.getApiCallCount();
                 totalSuccess += vo.getSuccessCount();
                 totalError += vo.getErrorCount();
             }
         }
-        ApiCallResp total = ApiCallResp.builder()
+        ApiCallResponse total = ApiCallResponse.builder()
                 .apiCallCount(totalApiCnt)
                 .successCount(totalSuccess)
                 .errorCount(totalError)
@@ -330,7 +330,7 @@ public class StatisticsService {
         // 按路径（日）总计：来自 ZSET + 状态HASH
         String zsetKey = STATS_API_PATH_CALL_DAY + date + KEY_DELIM + authType;
         Set<ZSetOperations.TypedTuple<Object>> entries = redisTemplate.opsForZSet().rangeWithScores(zsetKey, 0, -1);
-        java.util.Map<String, ApiCallResp> pathTotals = new java.util.LinkedHashMap<>();
+        java.util.Map<String, ApiCallResponse> pathTotals = new java.util.LinkedHashMap<>();
 
         // 如果路径数量为0，直接返回空Map，避免不必要的批量操作
         if (entries != null && !entries.isEmpty()) {
@@ -362,7 +362,7 @@ public class StatisticsService {
                 int success = successObj instanceof Number ? ((Number) successObj).intValue() : 0;
                 Object errorObj = pathResults.get(i * 2 + 1);
                 int error = errorObj instanceof Number ? ((Number) errorObj).intValue() : 0;
-                pathTotals.put(path, ApiCallResp.builder()
+                pathTotals.put(path, ApiCallResponse.builder()
                         .apiCallCount(apiCount)
                         .successCount(success)
                         .errorCount(error)
@@ -370,7 +370,7 @@ public class StatisticsService {
             }
         }
 
-        return ApiCallDailySeriesResp.builder()
+        return ApiCallDailySeriesResponse.builder()
                 .date(date)
                 .total(total)
                 .hours(hoursMap)
@@ -379,3 +379,4 @@ public class StatisticsService {
     }
 
 }
+

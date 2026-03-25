@@ -1,26 +1,19 @@
 package com.wzkris.usercenter.controller.customerwallet;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
-import com.wzkris.usercenter.domain.req.customerwallet.CustomerWalletRecordQueryReq;
-import com.wzkris.usercenter.domain.resp.customerwallet.CustomerWalletInfoResp;
-import com.wzkris.usercenter.mapper.CustomerWalletInfoMapper;
-import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;
+import com.wzkris.usercenter.api.customerwallet.CustomerWalletInfoApi;
+import com.wzkris.usercenter.request.customerwallet.CustomerWalletRecordQueryRequest;
+import com.wzkris.usercenter.response.customerwallet.CustomerWalletInfoResponse;
+import com.wzkris.usercenter.response.customerwallet.CustomerWalletRecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 用户钱包信息
@@ -28,44 +21,25 @@ import java.util.List;
  * @author wzkris
  */
 @Tag(name = "客户钱包信息")
-@Slf4j
 @Validated
 @RestController
 @RequestMapping("/customer-wallet-info")
 @RequiredArgsConstructor
 public class CustomerWalletInfoController extends BaseController {
 
-    private final CustomerWalletInfoMapper customerWalletInfoMapper;
-
-    private final CustomerWalletRecordMapper customerWalletRecordMapper;
+    private final CustomerWalletInfoApi customerWalletInfoApi;
 
     @Operation(summary = "余额信息")
-    @GetMapping
-    public Result<CustomerWalletInfoResp> walletInfo() {
-        return ok(customerWalletInfoMapper.selectById2VO(SecurityUtil.getUid(), CustomerWalletInfoResp.class));
+    @GetMapping("/query-info")
+    public Result<CustomerWalletInfoResponse> queryInfo() {
+        return customerWalletInfoApi.queryInfo();
     }
 
     @Operation(summary = "钱包记录")
-    @GetMapping("/record")
-    public Result<Page<CustomerWalletRecordDO>> listWalletPage(CustomerWalletRecordQueryReq queryReq) {
-        startPage();
-        List<CustomerWalletRecordDO> recordList =
-                customerWalletRecordMapper.selectList(this.buildWalletQueryWrapper(queryReq));
-        return getDataTable(recordList);
-    }
-
-    private LambdaQueryWrapper<CustomerWalletRecordDO> buildWalletQueryWrapper(CustomerWalletRecordQueryReq queryReq) {
-        return new LambdaQueryWrapper<CustomerWalletRecordDO>()
-                .like(
-                        StringUtil.isNotBlank(queryReq.getRecordType()),
-                        CustomerWalletRecordDO::getRecordType,
-                        queryReq.getRecordType())
-                .between(
-                        queryReq.getParam("beginTime") != null && queryReq.getParam("endTime") != null,
-                        CustomerWalletRecordDO::getCreateAt,
-                        queryReq.getParam("beginTime"),
-                        queryReq.getParam("endTime"))
-                .orderByDesc(CustomerWalletRecordDO::getRecordId);
+    @GetMapping("/query-record-page")
+    public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(CustomerWalletRecordQueryRequest request) {
+        return customerWalletInfoApi.queryRecordPage(request);
     }
 
 }
+

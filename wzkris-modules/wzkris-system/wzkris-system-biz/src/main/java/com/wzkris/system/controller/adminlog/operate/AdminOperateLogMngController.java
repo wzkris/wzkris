@@ -4,18 +4,15 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.system.domain.AdminOperateLogDO;
-import com.wzkris.system.domain.req.adminlog.AdminOperateLogQueryReq;
-import com.wzkris.system.mapper.AdminOperateLogMapper;
-import com.wzkris.system.service.AdminOperateLogService;
+import com.wzkris.system.api.adminlog.operate.AdminOperateLogMngApi;
+import com.wzkris.system.request.adminlog.AdminOperateLogQueryRequest;
+import com.wzkris.system.response.adminlog.AdminOperateLogResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 操作日志记录
@@ -28,17 +25,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminOperateLogMngController extends BaseController {
 
-    private final AdminOperateLogMapper adminOperateLogMapper;
-
-    private final AdminOperateLogService adminOperateLogService;
+    private final AdminOperateLogMngApi adminOperateLogMngApi;
 
     @Operation(summary = "分页")
-    @GetMapping("/page")
+    @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:admin-operatelog-mng:page")
-    public Result<Page<AdminOperateLogDO>> page(AdminOperateLogQueryReq queryReq) {
-        startPage();
-        List<AdminOperateLogDO> list = adminOperateLogService.list(queryReq);
-        return getDataTable(list);
+    public Result<Page<AdminOperateLogResponse>> queryPage(AdminOperateLogQueryRequest request) {
+        return adminOperateLogMngApi.queryPage(request);
     }
 
 }
+

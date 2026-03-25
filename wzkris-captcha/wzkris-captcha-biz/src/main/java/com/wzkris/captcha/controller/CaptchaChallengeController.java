@@ -1,18 +1,15 @@
 package com.wzkris.captcha.controller;
 
-import com.wzkris.captcha.challenge.domain.ChallengeData;
-import com.wzkris.captcha.challenge.domain.RedeemChallengeResult;
-import com.wzkris.captcha.challenge.domain.req.RedeemChallengeReq;
-import com.wzkris.captcha.challenge.service.ChallengeService;
+import com.wzkris.captcha.domain.ChallengeCaptchaInfo;
+import com.wzkris.captcha.request.RedeemChallengeRequest;
+import com.wzkris.captcha.response.RedeemChallengeResponse;
+import com.wzkris.captcha.service.ChallengeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "验证码")
 @Validated
@@ -25,14 +22,15 @@ public class CaptchaChallengeController {
 
     @Operation(summary = "获取挑战")
     @PostMapping("/challenge")
-    public ChallengeData challenge() {
+    public ChallengeCaptchaInfo challenge() {
         return challengeService.createChallenge();
     }
 
     @Operation(summary = "验证挑战")
     @PostMapping("/redeem")
-    public RedeemChallengeResult redeem(@RequestBody @Valid RedeemChallengeReq request) {
+    public RedeemChallengeResponse redeem(@RequestBody @Valid RedeemChallengeRequest request) {
         return challengeService.redeem(request.getToken(), request.getSolutions());
     }
 
 }
+

@@ -1,8 +1,8 @@
 package com.wzkris.captcha.controller;
 
-import com.wzkris.captcha.slide.domain.SlideCaptchaData;
-import com.wzkris.captcha.slide.domain.req.CaptchaSlideReq;
-import com.wzkris.captcha.slide.service.SlideCaptchaService;
+import com.wzkris.captcha.request.CaptchaSlideRequest;
+import com.wzkris.captcha.response.SlideCaptchaDataResponse;
+import com.wzkris.captcha.service.SlideCaptchaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +23,15 @@ public class CaptchaSlideController {
 
     @Operation(summary = "获取滑动验证码")
     @PostMapping
-    public SlideCaptchaData getCaptcha() {
+    public SlideCaptchaDataResponse getCaptcha() {
         return slideCaptchaService.createCaptcha();
     }
 
     @Operation(summary = "验证滑动验证码")
     @PostMapping("/redeem")
-    public String redeem(@Validated @RequestBody CaptchaSlideReq req) {
-        return slideCaptchaService.redeem(req.getToken(), req.getX());
+    public String redeem(@Validated @RequestBody CaptchaSlideRequest request) {
+        return slideCaptchaService.redeem(request.getToken(), request.getX());
     }
 
 }
+

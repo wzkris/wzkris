@@ -1,13 +1,13 @@
 package com.wzkris.auth.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
-import com.wzkris.auth.domain.req.WexcxSwitchReq;
-import com.wzkris.auth.remote.member.IMemberInfoRemote;
-import com.wzkris.auth.remote.member.req.MemberPermsQueryReq;
-import com.wzkris.auth.remote.member.resp.MemberInfoResp;
-import com.wzkris.auth.remote.member.resp.MemberPermissionResp;
+import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
+import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
+import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
+import com.wzkris.auth.request.WexcxSwitchRequest;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.auth.serviceimpl.LoginTenantUserServiceImpl;
+import com.wzkris.auth.service.impl.LoginTenantUserServiceImpl;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -48,27 +48,27 @@ public class SwitchTokenController {
 
     @Operation(summary = "微信小程序-切换到租户Token")
     @PostMapping("/wexcx/to-tenant")
-    public Result<?> tenantToken(@RequestBody @Validated WexcxSwitchReq switchReq) throws WxErrorException {
+    public Result<?> tenantToken(@RequestBody @Validated WexcxSwitchRequest switchReq) throws WxErrorException {
         String identifier = wxMaService
                 .getUserService()
                 .getSessionInfo(switchReq.getWxCode())
                 .getOpenid();
 
-        Result<MemberInfoResp> memberResult = memberInfoRemote.getByWexcxIdentifier(identifier);
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.getByWexcxIdentifier(identifier);
         if (!ResultUtil.check(memberResult)) {
             return Result.requestFail("微信未绑定商户账号");
         }
-        MemberInfoResp memberInfoResp = memberResult.getData();
+        MemberInfoResponse MemberInfoResponse = memberResult.getData();
 
-        BaseLoginUser loginUser = loginTenantUserServiceImpl.buildLoginTenant(memberInfoResp);
+        BaseLoginUser loginUser = loginTenantUserServiceImpl.buildLoginTenant(MemberInfoResponse);
 
         // 获取权限信息
-        Result<MemberPermissionResp> permissionResult = memberInfoRemote.getPermission(
-                new MemberPermsQueryReq(memberInfoResp.getMemberId(), memberInfoResp.getTenantId()));
+        Result<MemberPermissionResponse> permissionResult = memberInfoRemote.getPermission(
+                new MemberPermsQueryRequest(MemberInfoResponse.getMemberId(), MemberInfoResponse.getTenantId()));
         if (!ResultUtil.check(permissionResult)) {
             return Result.requestFail(permissionResult != null ? permissionResult.getMessage() : "查询权限失败");
         }
-        MemberPermissionResp permissions = permissionResult.getData();
+        MemberPermissionResponse permissions = permissionResult.getData();
 
         // 生成新的sid
         String sid = java.util.UUID.randomUUID().toString();
@@ -88,3 +88,4 @@ public class SwitchTokenController {
     }
 
 }
+

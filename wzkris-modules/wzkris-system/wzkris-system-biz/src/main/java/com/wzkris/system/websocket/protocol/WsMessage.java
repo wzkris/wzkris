@@ -1,7 +1,7 @@
 package com.wzkris.system.websocket.protocol;
 
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.system.domain.dto.SimpleMessageDTO;
+import com.wzkris.system.request.message.SimpleMessageRequest;
 import lombok.Getter;
 import org.springframework.web.socket.BinaryMessage;
 
@@ -61,7 +61,7 @@ public class WsMessage implements WsProtocol {
         );
     }
 
-    public static WsMessage newNotification(SimpleMessageDTO messageDTO) {
+    public static WsMessage newNotification(SimpleMessageRequest messageDTO) {
         byte[] data = JsonUtil.toJsonString(messageDTO).getBytes(StandardCharsets.UTF_8);
         return new WsMessage(
                 TYPE_NOTIFICATION,

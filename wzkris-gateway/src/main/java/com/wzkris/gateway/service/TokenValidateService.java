@@ -10,9 +10,9 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.ClientLoginUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.remote.loginuser.ILoginUserRemote;
-import com.wzkris.gateway.remote.loginuser.req.LoginUserQueryReq;
-import com.wzkris.gateway.remote.loginuser.req.OAuth2TokenQueryReq;
-import com.wzkris.gateway.remote.loginuser.resp.LoginUserResp;
+import com.wzkris.gateway.remote.loginuser.request.LoginUserQueryRequest;
+import com.wzkris.gateway.remote.loginuser.request.OAuth2TokenQueryRequest;
+import com.wzkris.gateway.remote.loginuser.response.LoginUserResponse;
 import com.wzkris.gateway.properties.PermitAllProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -107,14 +107,14 @@ public class TokenValidateService {
     }
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
-        LoginUserQueryReq loginUserQueryReq = new LoginUserQueryReq(authTypeEnum.getValue(), uid, sid);
-        Result<LoginUserResp> r = loginUserRemote.queryInfo(loginUserQueryReq);
+        LoginUserQueryRequest LoginUserQueryRequest = new LoginUserQueryRequest(authTypeEnum.getValue(), uid, sid);
+        Result<LoginUserResponse> r = loginUserRemote.queryInfo(LoginUserQueryRequest);
         if (!ResultUtil.check(r)) {
             throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
         }
 
-        LoginUserResp loginUserResp = r.getData();
-        return buildAuthentication(loginUserResp.getLoginUser(), token, loginUserResp.getPermissions());
+        LoginUserResponse LoginUserResponse = r.getData();
+        return buildAuthentication(LoginUserResponse.getLoginUser(), token, LoginUserResponse.getPermissions());
     }
 
     /**
@@ -122,15 +122,15 @@ public class TokenValidateService {
      * 调用auth服务的新接口，通过OAuth2AuthorizationService.findByToken()查询
      */
     private Authentication introspectOAuth2(String token) {
-        OAuth2TokenQueryReq oAuth2TokenQueryReq = new OAuth2TokenQueryReq(token);
-        Result<LoginUserResp> r = loginUserRemote.queryOAuth2(oAuth2TokenQueryReq);
+        OAuth2TokenQueryRequest OAuth2TokenQueryRequest = new OAuth2TokenQueryRequest(token);
+        Result<LoginUserResponse> r = loginUserRemote.queryOAuth2(OAuth2TokenQueryRequest);
         if (!ResultUtil.check(r)) {
             throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
         }
 
-        LoginUserResp loginUserResp = r.getData();
+        LoginUserResponse LoginUserResponse = r.getData();
 
-        return buildAuthentication(loginUserResp.getLoginUser(), token, loginUserResp.getPermissions());
+        return buildAuthentication(LoginUserResponse.getLoginUser(), token, LoginUserResponse.getPermissions());
     }
 
     private Authentication buildAuthentication(BaseLoginUser baseLoginUser, String token, Set<String> permissions) {
@@ -142,3 +142,4 @@ public class TokenValidateService {
     }
 
 }
+

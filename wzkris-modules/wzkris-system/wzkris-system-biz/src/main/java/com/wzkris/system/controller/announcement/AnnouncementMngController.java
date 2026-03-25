@@ -1,19 +1,15 @@
 package com.wzkris.system.controller.announcement;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.common.web.utils.BeanUtil;
-import com.wzkris.system.domain.AnnouncementInfoDO;
-import com.wzkris.system.domain.req.announcement.AnnouncementMngQueryReq;
-import com.wzkris.system.domain.req.announcement.AnnouncementMngReq;
-import com.wzkris.system.mapper.AnnouncementInfoMapper;
-import com.wzkris.system.service.AnnouncementInfoService;
+import com.wzkris.system.api.announcement.AnnouncementMngApi;
+import com.wzkris.system.request.announcement.AnnouncementMngQueryRequest;
+import com.wzkris.system.request.announcement.AnnouncementMngSaveUpdateRequest;
+import com.wzkris.system.response.announcement.AnnouncementMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,56 +32,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnnouncementMngController extends BaseController {
 
-    private final AnnouncementInfoMapper announcementInfoMapper;
-
-    private final AnnouncementInfoService announcementInfoService;
+    private final AnnouncementMngApi announcementMngApi;
 
     @Operation(summary = "分页")
-    @GetMapping("/page")
+    @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:announcement-mng:page")
-    public Result<Page<AnnouncementInfoDO>> page(AnnouncementMngQueryReq queryReq) {
-        startPage();
-        List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(queryReq));
-        return getDataTable(list);
-    }
-
-    private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngQueryReq queryReq) {
-        return new LambdaQueryWrapper<AnnouncementInfoDO>()
-                .like(StringUtil.isNotBlank(queryReq.getTitle()), AnnouncementInfoDO::getTitle, queryReq.getTitle())
-                .eq(StringUtil.isNotBlank(queryReq.getStatus()), AnnouncementInfoDO::getStatus, queryReq.getStatus())
-                .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
+    public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngQueryRequest request) {
+        return announcementMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/{announcementId}")
+    @GetMapping("/query-info/{announcementId}")
     @CheckAdminPerms("system-mod:announcement-mng:page")
-    public Result<AnnouncementInfoDO> query(@PathVariable Long announcementId) {
-        return ok(announcementInfoMapper.selectById(announcementId));
+    public Result<AnnouncementMngResponse> queryInfo(@PathVariable Long announcementId) {
+        return announcementMngApi.queryInfo(announcementId);
     }
 
     @Operation(summary = "添加草稿")
     @OperateLog(title = "系统消息", subTitle = "添加草稿", type = OperateTypeEnum.INSERT)
-    @PostMapping("/add")
+    @PostMapping("/save")
     @CheckAdminPerms("system-mod:announcement-mng:add")
-    public Result<Void> add(@Valid @RequestBody AnnouncementMngReq req) {
-        return toRes(announcementInfoMapper.insert(BeanUtil.convert(req, AnnouncementInfoDO.class)));
+    public Result<Void> save(@Valid @RequestBody AnnouncementMngSaveUpdateRequest request) {
+        return announcementMngApi.save(request);
     }
 
     @Operation(summary = "修改草稿")
     @OperateLog(title = "系统消息", subTitle = "修改草稿", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/edit")
+    @PostMapping("/update")
     @CheckAdminPerms("system-mod:announcement-mng:edit")
-    public Result<Void> edit(@RequestBody AnnouncementMngReq req) {
-        return toRes(announcementInfoMapper.updateById(BeanUtil.convert(req, AnnouncementInfoDO.class)));
+    public Result<Void> update(@RequestBody AnnouncementMngSaveUpdateRequest request) {
+        return announcementMngApi.update(request);
     }
 
     @Operation(summary = "删除草稿")
     @OperateLog(title = "系统消息", subTitle = "删除草稿", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("system-mod:announcement-mng:remove")
-    public Result<Void> remove(
-            @RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> msgIds) {
-        return toRes(announcementInfoMapper.deleteByIds(msgIds));
+    public Result<Void> remove(@RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> msgIds) {
+        return announcementMngApi.remove(msgIds);
     }
 
 }
+
