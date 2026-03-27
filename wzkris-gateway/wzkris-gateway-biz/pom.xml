@@ -1,0 +1,111 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-gateway</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>wzkris-gateway-biz</artifactId>
+
+    <description>
+        wzkris-gateway网关模块业务实现
+    </description>
+
+    <properties>
+        <caffeine.version>3.2.0</caffeine.version>
+    </properties>
+
+    <dependencies>
+        <!-- SpringCloud Gateway MVC -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway-mvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel Gateway -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-gateway-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 限流 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-sentinel</artifactId>
+        </dependency>
+
+        <!-- 安全包 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-security</artifactId>
+        </dependency>
+
+        <!-- Redis支持 -->
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+
+        <!-- 本地缓存 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+        </dependency>
+
+        <!-- SpringBoot Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+

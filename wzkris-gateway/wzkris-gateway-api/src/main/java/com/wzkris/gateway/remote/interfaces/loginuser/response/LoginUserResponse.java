@@ -1,4 +1,4 @@
-package com.wzkris.gateway.remote.loginuser.response;
+package com.wzkris.gateway.remote.interfaces.loginuser.response;
 
 import com.wzkris.common.core.model.BaseLoginUser;
 import lombok.Data;

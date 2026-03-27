@@ -1,4 +1,4 @@
-package com.wzkris.gateway.remote.loginuser.request;
+package com.wzkris.gateway.remote.interfaces.loginuser.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
