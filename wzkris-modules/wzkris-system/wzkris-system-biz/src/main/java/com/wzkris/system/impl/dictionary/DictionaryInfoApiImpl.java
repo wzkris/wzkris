@@ -1,7 +1,7 @@
 package com.wzkris.system.impl.dictionary;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.dictionary.DictionaryInfoApi;
 import com.wzkris.system.domain.DictionaryInfoDO;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DictionaryInfoApiImpl extends BaseController implements DictionaryInfoApi {
+public class DictionaryInfoApiImpl extends AbstractApi implements DictionaryInfoApi {
 
     private final DictionaryInfoService dictService;
 

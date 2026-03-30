@@ -3,7 +3,7 @@ package com.wzkris.system.impl.dictionary;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.dictionary.DictionaryMngApi;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DictionaryMngApiImpl extends BaseController implements DictionaryMngApi {
+public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngApi {
 
     private final DictionaryInfoMapper dictionaryInfoMapper;
 

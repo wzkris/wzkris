@@ -22,8 +22,8 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
-        return new LongValue(tenantId);
+        TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
+        return new LongValue(loginUser.getTenantId());
     }
 
     @Override

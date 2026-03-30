@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.tenantlog.operate;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.system.api.tenantlog.operate.TenantOperateLogMngApi;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tenant-operatelog-manage")
 @RequiredArgsConstructor
-public class TenantOperateLogMngController extends BaseController {
+public class TenantOperateLogMngController {
 
     private final TenantOperateLogMngApi tenantOperateLogMngApi;
 

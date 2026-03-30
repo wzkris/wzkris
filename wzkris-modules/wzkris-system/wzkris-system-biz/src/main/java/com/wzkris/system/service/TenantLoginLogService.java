@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface TenantLoginLogService extends IService<TenantLoginLogDO> {
 
-    List<TenantLoginLogDO> list(TenantLoginLogQueryRequest QueryRequest);
+    List<TenantLoginLogDO> list(TenantLoginLogQueryRequest request);
 
 }
 

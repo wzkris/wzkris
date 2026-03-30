@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.adminlog.operate;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.adminlog.operate.AdminOperateLogMngApi;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin-operatelog-manage")
 @RequiredArgsConstructor
-public class AdminOperateLogMngController extends BaseController {
+public class AdminOperateLogMngController {
 
     private final AdminOperateLogMngApi adminOperateLogMngApi;
 

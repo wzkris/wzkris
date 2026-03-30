@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.tenantlog.login;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.tenantlog.login.TenantLoginlogInfoApi;
 import com.wzkris.system.request.tenantlog.TenantLoginLogQueryRequest;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tenant-loginlog-info")
 @RequiredArgsConstructor
-public class TenantLoginlogInfoController extends BaseController {
+public class TenantLoginlogInfoController {
 
     private final TenantLoginlogInfoApi tenantLoginlogInfoApi;
 

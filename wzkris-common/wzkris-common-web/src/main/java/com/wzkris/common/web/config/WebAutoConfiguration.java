@@ -22,7 +22,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class WebAutoConfiguration {
 
     @Bean
-    public FilterRegistrationBean<TraceIdFilter> commonRequestAndResponseFilter() {
+    public FilterRegistrationBean<TraceIdFilter> traceIdFilter() {
         FilterRegistrationBean<TraceIdFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new TraceIdFilter());
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);

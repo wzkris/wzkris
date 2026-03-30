@@ -18,9 +18,4 @@ public @interface DataColumn {
      */
     String column();
 
-    /**
-     * 参数来源，支持 SpEL 表达式，用于指定从哪个字段或方法获取权限范围值
-     */
-    String source() default "@au.getDeptScopes()";
-
 }

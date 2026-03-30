@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.controller.customer;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.usercenter.api.customer.CustomerInfoApi;
 import com.wzkris.usercenter.request.customer.CustomerInfoBasicUpdateRequest;
 import com.wzkris.usercenter.response.customer.CustomerInfoResponse;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/customer-info")
 @RequiredArgsConstructor
-public class CustomerInfoController extends BaseController {
+public class CustomerInfoController {
 
     private final String info_prefix = "customer-info";
 

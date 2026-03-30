@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.config;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.api.config.ConfigInfoApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/config-info")
 @RequiredArgsConstructor
-public class ConfigInfoController extends BaseController {
+public class ConfigInfoController {
 
     private final ConfigInfoApi configInfoApi;
 

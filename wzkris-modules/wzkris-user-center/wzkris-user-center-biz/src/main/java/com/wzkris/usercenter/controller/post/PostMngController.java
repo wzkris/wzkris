@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.post;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
@@ -33,7 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/post-manage")
 @RequiredArgsConstructor
-public class PostMngController extends BaseController {
+public class PostMngController {
 
     private final PostMngApi postMngApi;
 

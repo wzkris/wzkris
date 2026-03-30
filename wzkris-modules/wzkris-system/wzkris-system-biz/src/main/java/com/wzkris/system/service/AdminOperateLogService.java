@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface AdminOperateLogService extends IService<AdminOperateLogDO> {
 
-    List<AdminOperateLogDO> list(AdminOperateLogQueryRequest QueryRequest);
+    List<AdminOperateLogDO> list(AdminOperateLogQueryRequest request);
 
 }
 

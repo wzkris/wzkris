@@ -3,7 +3,7 @@ package com.wzkris.usercenter.impl.post;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PostMngApiImpl extends BaseController implements PostMngApi {
+public class PostMngApiImpl extends AbstractApi implements PostMngApi {
 
     private final TenantInfoService tenantInfoService;
 

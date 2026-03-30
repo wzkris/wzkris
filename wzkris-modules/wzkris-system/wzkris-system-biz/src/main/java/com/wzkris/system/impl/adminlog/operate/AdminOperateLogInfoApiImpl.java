@@ -1,7 +1,7 @@
 package com.wzkris.system.impl.adminlog.operate;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminOperateLogInfoApiImpl extends BaseController implements AdminOperateLogInfoApi {
+public class AdminOperateLogInfoApiImpl extends AbstractApi implements AdminOperateLogInfoApi {
 
     private final AdminOperateLogService adminOperateLogService;
 

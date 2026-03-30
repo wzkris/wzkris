@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.dictionary;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.system.api.dictionary.DictionaryInfoApi;
 import com.wzkris.system.response.dictionary.DictionaryDataResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/dictionary-info")
 @RequiredArgsConstructor
-public class DictionaryInfoController extends BaseController {
+public class DictionaryInfoController {
 
     private final DictionaryInfoApi dictionaryInfoApi;
 

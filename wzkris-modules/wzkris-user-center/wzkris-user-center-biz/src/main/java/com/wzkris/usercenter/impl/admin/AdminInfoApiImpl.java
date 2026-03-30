@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.domain.AdminInfoDO;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminInfoApiImpl extends BaseController implements AdminInfoApi {
+public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
 
     private final AdminInfoService adminInfoService;
 

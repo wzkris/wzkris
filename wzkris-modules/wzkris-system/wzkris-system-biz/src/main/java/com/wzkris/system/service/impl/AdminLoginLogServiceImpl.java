@@ -27,34 +27,30 @@ public class AdminLoginLogServiceImpl
         implements AdminLoginLogService {
 
     @Override
-    public List<AdminLoginLogDO> list(AdminLoginLogQueryRequest QueryRequest) {
-        return baseMapper.selectList(this.buildQueryWrapper(QueryRequest));
+    public List<AdminLoginLogDO> list(AdminLoginLogQueryRequest request) {
+        return baseMapper.selectList(this.buildQueryWrapper(request));
     }
 
-    private LambdaQueryWrapper<AdminLoginLogDO> buildQueryWrapper(AdminLoginLogQueryRequest QueryRequest) {
+    private LambdaQueryWrapper<AdminLoginLogDO> buildQueryWrapper(AdminLoginLogQueryRequest request) {
         return new LambdaQueryWrapper<AdminLoginLogDO>()
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getAdminId()), AdminLoginLogDO::getAdminId, QueryRequest.getAdminId())
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getSuccess()), AdminLoginLogDO::getSuccess, QueryRequest.getSuccess())
-                .eq(StringUtil.isNotEmpty(QueryRequest.getTraceId()), AdminLoginLogDO::getTraceId, QueryRequest.getTraceId())
-                .eq(StringUtil.isNotEmpty(QueryRequest.getRiskLevel()), AdminLoginLogDO::getRiskLevel, QueryRequest.getRiskLevel())
-                .like(StringUtil.isNotEmpty(QueryRequest.getUsername()), AdminLoginLogDO::getUsername, QueryRequest.getUsername())
-                .like(
-                        StringUtil.isNotEmpty(QueryRequest.getLoginLocation()),
+                .eq(ObjectUtils.isNotEmpty(request.getAdminId()), AdminLoginLogDO::getAdminId, request.getAdminId())
+                .eq(ObjectUtils.isNotEmpty(request.getSuccess()), AdminLoginLogDO::getSuccess, request.getSuccess())
+                .eq(StringUtil.isNotEmpty(request.getTraceId()), AdminLoginLogDO::getTraceId, request.getTraceId())
+                .eq(StringUtil.isNotEmpty(request.getRiskLevel()), AdminLoginLogDO::getRiskLevel, request.getRiskLevel())
+                .like(StringUtil.isNotEmpty(request.getUsername()), AdminLoginLogDO::getUsername, request.getUsername())
+                .like(StringUtil.isNotEmpty(request.getLoginLocation()),
                         AdminLoginLogDO::getLoginLocation,
-                        QueryRequest.getLoginLocation())
-                .like(
-                        StringUtil.isNotEmpty(QueryRequest.getAbnormalTag()),
+                        request.getLoginLocation())
+                .like(StringUtil.isNotEmpty(request.getAbnormalTag()),
                         AdminLoginLogDO::getAbnormalTags,
-                        QueryRequest.getAbnormalTag())
-                .ne(
-                        Boolean.TRUE.equals(QueryRequest.getAbnormalOnly()),
+                        request.getAbnormalTag())
+                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()),
                         AdminLoginLogDO::getRiskLevel,
                         RiskLevelEnum.LOW.getValue())
-                .between(
-                        QueryRequest.getParam("beginTime") != null && QueryRequest.getParam("endTime") != null,
+                .between(request.getBeginTime() != null && request.getEndTime() != null,
                         AdminLoginLogDO::getLoginTime,
-                        QueryRequest.getParam("beginTime"),
-                        QueryRequest.getParam("endTime"))
+                        request.getBeginTime(),
+                        request.getEndTime())
                 .orderByDesc(AdminLoginLogDO::getLogId);
     }
 

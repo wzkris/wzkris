@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.admin;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
@@ -30,7 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin-info")
 @RequiredArgsConstructor
-public class AdminInfoController extends BaseController {
+public class AdminInfoController {
 
     private final String info_prefix = "userinfo";
 

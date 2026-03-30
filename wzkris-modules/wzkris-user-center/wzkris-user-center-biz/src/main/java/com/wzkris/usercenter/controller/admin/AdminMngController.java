@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.admin;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
@@ -37,7 +36,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin-manage")
 @RequiredArgsConstructor
-public class AdminMngController extends BaseController {
+public class AdminMngController {
 
     private final AdminMngApi adminMngApi;
 

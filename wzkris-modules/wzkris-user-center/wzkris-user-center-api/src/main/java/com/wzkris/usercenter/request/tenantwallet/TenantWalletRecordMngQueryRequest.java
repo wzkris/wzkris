@@ -8,7 +8,7 @@ import lombok.Data;
  * 钱包记录筛选条件
  */
 @Data
-public class TenantWalletRecordQueryRequest extends QueryRequest {
+public class TenantWalletRecordMngQueryRequest extends QueryRequest {
 
     private Long tenantId;
 

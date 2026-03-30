@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -35,7 +35,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberMngApiImpl extends BaseController implements MemberMngApi {
+public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     private final MemberInfoMapper memberInfoMapper;
 
@@ -59,10 +59,10 @@ public class MemberMngApiImpl extends BaseController implements MemberMngApi {
                 .like(ObjectUtils.isNotEmpty(request.getUsername()), "username", request.getUsername())
                 .like(ObjectUtils.isNotEmpty(request.getPhoneNumber()), "phone_number", request.getPhoneNumber())
                 .eq(ObjectUtils.isNotEmpty(request.getStatus()), "s.status", request.getStatus())
-                .between(request.getParam("beginTime") != null && request.getParam("endTime") != null,
+                .between(request.getBeginTime() != null && request.getEndTime() != null,
                         "s.create_at",
-                        request.getParam("beginTime"),
-                        request.getParam("endTime"));
+                        request.getBeginTime(),
+                        request.getEndTime());
     }
 
     @Override
@@ -83,8 +83,8 @@ public class MemberMngApiImpl extends BaseController implements MemberMngApi {
 
     @Override
     public Result<Void> save(MemberMngSaveRequest memberReq) {
-        Long tenantId = SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId();
-        if (!tenantInfoService.checkAccountLimit(tenantId)) {
+        TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
+        if (!tenantInfoService.checkAccountLimit(loginUser.getTenantId())) {
             return requestFail("账号数量已达上限，请联系管理员");
         } else if (memberInfoService.existByUsername(null, memberReq.getUsername())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
@@ -98,7 +98,7 @@ public class MemberMngApiImpl extends BaseController implements MemberMngApi {
         boolean success = memberInfoService.saveMember(member, memberReq.getPostIds());
         if (success) {
             SpringUtil.getContext()
-                    .publishEvent(new CreateMemberEvent(SecurityUtil.getUid(), memberReq.getUsername(), password));
+                    .publishEvent(new CreateMemberEvent(loginUser.getUid(), memberReq.getUsername(), password));
         }
         return toRes(success);
     }

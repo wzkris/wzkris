@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.tenantlog.operate;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.tenantlog.operate.TenantOperateLogInfoApi;
 import com.wzkris.system.request.tenantlog.TenantOperateLogQueryRequest;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tenant-operatelog-info")
 @RequiredArgsConstructor
-public class TenantOperateLogInfoController extends BaseController {
+public class TenantOperateLogInfoController {
 
     private final TenantOperateLogInfoApi tenantOperateLogInfoApi;
 

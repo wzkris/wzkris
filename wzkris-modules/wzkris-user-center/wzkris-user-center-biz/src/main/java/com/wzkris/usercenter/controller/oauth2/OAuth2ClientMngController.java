@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.oauth2;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.oauth2.OAuth2ClientMngApi;
@@ -28,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/oauth2client-manage")
 @RequiredArgsConstructor
-public class OAuth2ClientMngController extends BaseController {
+public class OAuth2ClientMngController {
 
     private final OAuth2ClientMngApi oAuth2ClientMngApi;
 

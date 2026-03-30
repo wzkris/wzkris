@@ -3,7 +3,6 @@ package com.wzkris.gateway.filter;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.gateway.properties.PermitAllProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -55,13 +54,7 @@ public class BlacklistUrlsFilter extends OncePerRequestFilter {
             return;
         }
 
-        String traceId = TraceIdUtil.generate();
-        TraceIdUtil.set(traceId);
-        try {
-            filterChain.doFilter(request, response);
-        } finally {
-            TraceIdUtil.clear();
-        }
+        filterChain.doFilter(request, response);
     }
 
     private boolean isPathDenied(String path) {

@@ -138,6 +138,7 @@ public class MenuInfoServiceImpl
                 .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
                 .list()
                 .stream()
+                .filter(Objects::nonNull)
                 .map(MenuInfoDO::getPerms)
                 .filter(StringUtil::isNotBlank)
                 .toList();

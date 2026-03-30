@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.adminlog.login;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.adminlog.login.AdminLoginlogMngApi;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin-loginlog-manage")
 @RequiredArgsConstructor
-public class AdminLoginlogMngController extends BaseController {
+public class AdminLoginlogMngController {
 
     private final AdminLoginlogMngApi adminLoginlogMngApi;
 

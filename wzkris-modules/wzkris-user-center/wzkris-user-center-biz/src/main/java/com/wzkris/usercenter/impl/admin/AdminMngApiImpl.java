@@ -5,7 +5,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
@@ -39,7 +39,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminMngApiImpl extends BaseController implements AdminMngApi {
+public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     private final AdminInfoMapper adminInfoMapper;
 
@@ -68,10 +68,10 @@ public class AdminMngApiImpl extends BaseController implements AdminMngApi {
                 .like(ObjectUtils.isNotEmpty(request.getEmail()), "u.email", request.getEmail())
                 .eq(ObjectUtils.isNotEmpty(request.getStatus()), "u.status", request.getStatus())
                 .eq(ObjectUtils.isNotEmpty(request.getDeptId()), "u.dept_id", request.getDeptId())
-                .between(request.getParam("beginTime") != null && request.getParam("endTime") != null,
+                .between(request.getBeginTime() != null && request.getEndTime() != null,
                         "u.create_at",
-                        request.getParam("beginTime"),
-                        request.getParam("endTime"))
+                        request.getBeginTime(),
+                        request.getEndTime())
                 .orderByDesc("u.admin_id");
     }
 

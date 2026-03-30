@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
@@ -33,7 +33,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TenantMngApiImpl extends BaseController implements TenantMngApi {
+public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
 
     private final TenantInfoMapper tenantInfoMapper;
 

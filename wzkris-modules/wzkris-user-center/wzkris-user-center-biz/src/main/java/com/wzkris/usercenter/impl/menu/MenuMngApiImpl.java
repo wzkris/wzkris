@@ -3,7 +3,7 @@ package com.wzkris.usercenter.impl.menu;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
@@ -24,7 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MenuMngApiImpl extends BaseController implements MenuMngApi {
+public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
 
     private final MenuInfoService menuInfoService;
 

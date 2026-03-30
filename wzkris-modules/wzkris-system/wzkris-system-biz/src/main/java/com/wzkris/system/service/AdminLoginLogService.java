@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface AdminLoginLogService extends IService<AdminLoginLogDO> {
 
-    List<AdminLoginLogDO> list(AdminLoginLogQueryRequest QueryRequest);
+    List<AdminLoginLogDO> list(AdminLoginLogQueryRequest request);
 
 }
 

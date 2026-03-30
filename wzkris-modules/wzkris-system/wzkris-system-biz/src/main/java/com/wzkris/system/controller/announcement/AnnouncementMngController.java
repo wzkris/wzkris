@@ -3,7 +3,6 @@ package com.wzkris.system.controller.announcement;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.announcement.AnnouncementMngApi;
@@ -30,7 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/announcement-manage")
 @RequiredArgsConstructor
-public class AnnouncementMngController extends BaseController {
+public class AnnouncementMngController {
 
     private final AnnouncementMngApi announcementMngApi;
 

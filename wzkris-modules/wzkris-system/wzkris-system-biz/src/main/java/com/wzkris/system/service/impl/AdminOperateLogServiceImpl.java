@@ -25,23 +25,21 @@ public class AdminOperateLogServiceImpl
         implements AdminOperateLogService {
 
     @Override
-    public List<AdminOperateLogDO> list(AdminOperateLogQueryRequest QueryRequest) {
-        return baseMapper.selectList(this.buildQueryWrapper(QueryRequest));
+    public List<AdminOperateLogDO> list(AdminOperateLogQueryRequest request) {
+        return baseMapper.selectList(this.buildQueryWrapper(request));
     }
 
-    private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogQueryRequest QueryRequest) {
+    private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogQueryRequest request) {
         return new LambdaQueryWrapper<AdminOperateLogDO>()
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getAdminId()), AdminOperateLogDO::getAdminId, QueryRequest.getAdminId())
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getSuccess()), AdminOperateLogDO::getSuccess, QueryRequest.getSuccess())
-                .like(StringUtil.isNotBlank(QueryRequest.getTitle()), AdminOperateLogDO::getTitle, QueryRequest.getTitle())
-                .like(StringUtil.isNotBlank(QueryRequest.getSubTitle()), AdminOperateLogDO::getSubTitle, QueryRequest.getSubTitle())
-                .eq(StringUtil.isNotEmpty(QueryRequest.getOperType()), AdminOperateLogDO::getOperType, QueryRequest.getOperType())
-                .like(StringUtil.isNotBlank(QueryRequest.getOperName()), AdminOperateLogDO::getUsername, QueryRequest.getOperName())
-                .between(
-                        QueryRequest.getParam("beginTime") != null && QueryRequest.getParam("endTime") != null,
+                .eq(ObjectUtils.isNotEmpty(request.getAdminId()), AdminOperateLogDO::getAdminId, request.getAdminId())
+                .eq(ObjectUtils.isNotEmpty(request.getSuccess()), AdminOperateLogDO::getSuccess, request.getSuccess())
+                .like(StringUtil.isNotBlank(request.getTitle()), AdminOperateLogDO::getTitle, request.getTitle())
+                .like(StringUtil.isNotBlank(request.getSubTitle()), AdminOperateLogDO::getSubTitle, request.getSubTitle())
+                .eq(StringUtil.isNotEmpty(request.getOperType()), AdminOperateLogDO::getOperType, request.getOperType())
+                .like(StringUtil.isNotBlank(request.getOperName()), AdminOperateLogDO::getUsername, request.getOperName())
+                .between(request.getBeginTime() != null && request.getEndTime() != null,
                         AdminOperateLogDO::getOperTime,
-                        QueryRequest.getParam("beginTime"),
-                        QueryRequest.getParam("endTime"))
+                        request.getBeginTime(), request.getEndTime())
                 .orderByDesc(AdminOperateLogDO::getOperId);
     }
 

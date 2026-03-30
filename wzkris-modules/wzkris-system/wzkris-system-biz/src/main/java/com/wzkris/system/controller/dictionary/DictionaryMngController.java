@@ -3,7 +3,6 @@ package com.wzkris.system.controller.dictionary;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.dictionary.DictionaryMngApi;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/dictionary-manage")
 @RequiredArgsConstructor
-public class DictionaryMngController extends BaseController {
+public class DictionaryMngController {
 
     private final DictionaryMngApi dictionaryMngApi;
 

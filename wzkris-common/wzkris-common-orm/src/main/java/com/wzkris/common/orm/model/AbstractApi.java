@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * web层通用数据处理
+ * api层通用数据处理
  *
  * @author wzkris
  */
-public abstract class BaseController {
+public abstract class AbstractApi {
 
     /**
      * 当前记录起始索引
@@ -39,6 +39,10 @@ public abstract class BaseController {
      * 排序
      */
     public static final String ASC = "asc";
+
+    private static final long DEFAULT_PAGE_NUM = 1L;
+
+    private static final long DEFAULT_PAGE_SIZE = 10L;
 
     /**
      * 响应请求分页数据
@@ -61,25 +65,40 @@ public abstract class BaseController {
      * 设置请求分页数据
      */
     protected void startPage() {
-        List<OrderItem> orders = new ArrayList<>();
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-
-        long pageNum = request.getParameter(PAGE_NUM) == null ? 1 : Long.parseLong(request.getParameter(PAGE_NUM));
-        long pageSize = request.getParameter(PAGE_SIZE) == null ? 10 : Long.parseLong(request.getParameter(PAGE_SIZE));
+        if (!(requestAttributes instanceof ServletRequestAttributes servletRequestAttributes)) {
+            PageUtil.startPage(DEFAULT_PAGE_NUM, DEFAULT_PAGE_SIZE);
+            return;
+        }
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        long pageNum = parsePositiveLong(request.getParameter(PAGE_NUM), DEFAULT_PAGE_NUM);
+        long pageSize = parsePositiveLong(request.getParameter(PAGE_SIZE), DEFAULT_PAGE_SIZE);
         String orderBys = request.getParameter(ORDER_BY);
+        List<OrderItem> orders = new ArrayList<>();
         if (StringUtil.isNotBlank(orderBys)) {
             if (SqlInjectionUtils.check(orderBys)) {
-                throw new RuntimeException("存在sql注入参数");
+                throw new IllegalArgumentException("存在sql注入参数");
             }
+            boolean asc = Boolean.parseBoolean(request.getParameter(ASC));
             for (String orderBy : orderBys.split(",")) {
-                OrderItem orderItem = Boolean.TRUE.equals(Boolean.valueOf(request.getParameter(ASC)))
-                        ? OrderItem.asc(orderBy) : OrderItem.desc(orderBy);
+                OrderItem orderItem = asc ? OrderItem.asc(orderBy) : OrderItem.desc(orderBy);
                 orders.add(orderItem);
             }
         }
 
         PageUtil.startPage(pageNum, pageSize, orders);
+    }
+
+    private long parsePositiveLong(String value, long defaultValue) {
+        if (StringUtil.isBlank(value)) {
+            return defaultValue;
+        }
+        try {
+            long parsedValue = Long.parseLong(value);
+            return parsedValue > 0 ? parsedValue : defaultValue;
+        } catch (NumberFormatException ex) {
+            return defaultValue;
+        }
     }
 
     /**

@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.tenant;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
@@ -28,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @CheckTenantPerms("user-mod:tenant-info")
 @RequestMapping("/tenant-info")
 @RequiredArgsConstructor
-public class TenantInfoController extends BaseController {
+public class TenantInfoController {
 
     private final TenantInfoApi tenantInfoApi;
 

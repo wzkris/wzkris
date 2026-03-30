@@ -14,9 +14,9 @@ import java.util.List;
  */
 public interface TenantOperateLogService extends IService<TenantOperateLogDO> {
 
-    List<TenantOperateLogDO> list(TenantOperateLogQueryRequest QueryRequest);
+    List<TenantOperateLogDO> list(TenantOperateLogQueryRequest request);
 
-    List<TenantOperateLogInfoResponse> listInfoVO(TenantOperateLogQueryRequest QueryRequest);
+    List<TenantOperateLogInfoResponse> listInfoVO(TenantOperateLogQueryRequest request);
 
 }
 

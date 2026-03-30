@@ -1,11 +1,14 @@
 package com.wzkris.usercenter.impl.tenantwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.model.AbstractApi;
+import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletMngApi;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
-import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordQueryRequest;
+import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordMngQueryRequest;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,32 +18,27 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TenantWalletMngApiImpl implements TenantWalletMngApi {
+public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletMngApi {
 
     private final TenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override
-    public List<TenantWalletRecordResponse> listRecord(TenantWalletRecordQueryRequest request) {
-        return tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request)).stream()
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngQueryRequest request) {
+        startPage();
+        List<TenantWalletRecordResponse> list = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request))
+                .stream()
                 .map(this::toResponse)
                 .toList();
+        return getDataTable(list);
     }
 
-    private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordQueryRequest request) {
+    private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordMngQueryRequest request) {
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
-                .eq(
-                        ObjectUtils.isNotEmpty(request.getTenantId()),
-                        TenantWalletRecordDO::getTenantId,
-                        request.getTenantId())
-                .like(
-                        StringUtil.isNotBlank(request.getRecordType()),
-                        TenantWalletRecordDO::getRecordType,
-                        request.getRecordType())
-                .between(
-                        request.getParam("beginTime") != null && request.getParam("endTime") != null,
+                .eq(ObjectUtils.isNotEmpty(request.getTenantId()), TenantWalletRecordDO::getTenantId, request.getTenantId())
+                .like(StringUtil.isNotBlank(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
+                .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantWalletRecordDO::getCreateAt,
-                        request.getParam("beginTime"),
-                        request.getParam("endTime"))
+                        request.getBeginTime(), request.getEndTime())
                 .orderByDesc(TenantWalletRecordDO::getRecordId);
     }
 

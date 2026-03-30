@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerMngApiImpl extends BaseController implements CustomerMngApi {
+public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
 
     private final CustomerInfoService customerInfoService;
 

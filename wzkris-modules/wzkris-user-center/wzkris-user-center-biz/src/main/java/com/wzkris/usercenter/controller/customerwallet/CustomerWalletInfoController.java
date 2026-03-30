@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.controller.customerwallet;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.customerwallet.CustomerWalletInfoApi;
 import com.wzkris.usercenter.request.customerwallet.CustomerWalletRecordQueryRequest;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/customer-wallet-info")
 @RequiredArgsConstructor
-public class CustomerWalletInfoController extends BaseController {
+public class CustomerWalletInfoController {
 
     private final CustomerWalletInfoApi customerWalletInfoApi;
 

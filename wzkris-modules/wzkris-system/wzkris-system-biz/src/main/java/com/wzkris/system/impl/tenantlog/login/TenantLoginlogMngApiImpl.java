@@ -1,7 +1,7 @@
 package com.wzkris.system.impl.tenantlog.login;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.tenantlog.login.TenantLoginlogMngApi;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TenantLoginlogMngApiImpl extends BaseController implements TenantLoginlogMngApi {
+public class TenantLoginlogMngApiImpl extends AbstractApi implements TenantLoginlogMngApi {
 
     private final TenantLoginLogService tenantLoginLogService;
 

@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.menu;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
 import com.wzkris.usercenter.request.menu.MenuMngQueryRequest;
@@ -27,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/menu-manage")
 @RequiredArgsConstructor
-public class MenuMngController extends BaseController {
+public class MenuMngController {
 
     private final MenuMngApi menuMngApi;
 

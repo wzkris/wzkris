@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.dept;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
 import com.wzkris.usercenter.request.dept.DeptMngQueryRequest;
@@ -27,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/dept-manage")
 @RequiredArgsConstructor
-public class DeptMngController extends BaseController {
+public class DeptMngController {
 
     private final DeptMngApi deptMngApi;
 

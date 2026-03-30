@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
 import com.wzkris.usercenter.domain.DeptInfoDO;
@@ -23,7 +23,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class DeptMngApiImpl extends BaseController implements DeptMngApi {
+public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
 
     private final DeptInfoMapper deptInfoMapper;
 

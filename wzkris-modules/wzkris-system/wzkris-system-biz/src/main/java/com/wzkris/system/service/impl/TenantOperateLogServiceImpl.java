@@ -21,28 +21,26 @@ public class TenantOperateLogServiceImpl
         implements TenantOperateLogService {
 
     @Override
-    public List<TenantOperateLogDO> list(TenantOperateLogQueryRequest QueryRequest) {
-        return baseMapper.selectList(this.buildQueryWrapper(QueryRequest));
+    public List<TenantOperateLogDO> list(TenantOperateLogQueryRequest request) {
+        return baseMapper.selectList(this.buildQueryWrapper(request));
     }
 
     @Override
-    public List<TenantOperateLogInfoResponse> listInfoVO(TenantOperateLogQueryRequest QueryRequest) {
-        return baseMapper.selectListInfoVO(this.buildQueryWrapper(QueryRequest));
+    public List<TenantOperateLogInfoResponse> listInfoVO(TenantOperateLogQueryRequest request) {
+        return baseMapper.selectListInfoVO(this.buildQueryWrapper(request));
     }
 
-    private LambdaQueryWrapper<TenantOperateLogDO> buildQueryWrapper(TenantOperateLogQueryRequest QueryRequest) {
+    private LambdaQueryWrapper<TenantOperateLogDO> buildQueryWrapper(TenantOperateLogQueryRequest request) {
         return new LambdaQueryWrapper<TenantOperateLogDO>()
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getMemberId()), TenantOperateLogDO::getMemberId, QueryRequest.getMemberId())
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getSuccess()), TenantOperateLogDO::getSuccess, QueryRequest.getSuccess())
-                .like(StringUtil.isNotBlank(QueryRequest.getTitle()), TenantOperateLogDO::getTitle, QueryRequest.getTitle())
-                .like(StringUtil.isNotBlank(QueryRequest.getSubTitle()), TenantOperateLogDO::getSubTitle, QueryRequest.getSubTitle())
-                .eq(StringUtil.isNotEmpty(QueryRequest.getOperType()), TenantOperateLogDO::getOperType, QueryRequest.getOperType())
-                .like(StringUtil.isNotBlank(QueryRequest.getUsername()), TenantOperateLogDO::getUsername, QueryRequest.getUsername())
-                .between(
-                        QueryRequest.getParam("beginTime") != null && QueryRequest.getParam("endTime") != null,
+                .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantOperateLogDO::getMemberId, request.getMemberId())
+                .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantOperateLogDO::getSuccess, request.getSuccess())
+                .like(StringUtil.isNotBlank(request.getTitle()), TenantOperateLogDO::getTitle, request.getTitle())
+                .like(StringUtil.isNotBlank(request.getSubTitle()), TenantOperateLogDO::getSubTitle, request.getSubTitle())
+                .eq(StringUtil.isNotEmpty(request.getOperType()), TenantOperateLogDO::getOperType, request.getOperType())
+                .like(StringUtil.isNotBlank(request.getUsername()), TenantOperateLogDO::getUsername, request.getUsername())
+                .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantOperateLogDO::getOperTime,
-                        QueryRequest.getParam("beginTime"),
-                        QueryRequest.getParam("endTime"))
+                        request.getBeginTime(), request.getEndTime())
                 .orderByDesc(TenantOperateLogDO::getOperId);
     }
 

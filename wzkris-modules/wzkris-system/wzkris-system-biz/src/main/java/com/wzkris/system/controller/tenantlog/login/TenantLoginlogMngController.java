@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.tenantlog.login;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.system.api.tenantlog.login.TenantLoginlogMngApi;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tenant-loginlog-manage")
 @RequiredArgsConstructor
-public class TenantLoginlogMngController extends BaseController {
+public class TenantLoginlogMngController {
 
     private final TenantLoginlogMngApi tenantLoginlogMngApi;
 

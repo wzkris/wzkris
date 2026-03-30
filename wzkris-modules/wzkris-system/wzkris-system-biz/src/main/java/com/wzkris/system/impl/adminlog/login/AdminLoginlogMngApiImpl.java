@@ -1,7 +1,7 @@
 package com.wzkris.system.impl.adminlog.login;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.adminlog.login.AdminLoginlogMngApi;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminLoginlogMngApiImpl extends BaseController implements AdminLoginlogMngApi {
+public class AdminLoginlogMngApiImpl extends AbstractApi implements AdminLoginlogMngApi {
 
     private final AdminLoginLogService adminLoginLogService;
 

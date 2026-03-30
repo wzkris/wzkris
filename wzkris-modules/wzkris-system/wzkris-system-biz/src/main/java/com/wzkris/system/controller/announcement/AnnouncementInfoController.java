@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.announcement;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.announcement.AnnouncementInfoApi;
 import com.wzkris.system.response.announcement.AnnouncementInfoResponse;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/announcement-info")
 @RequiredArgsConstructor
-public class AnnouncementInfoController extends BaseController {
+public class AnnouncementInfoController {
 
     private final AnnouncementInfoApi announcementInfoApi;
 

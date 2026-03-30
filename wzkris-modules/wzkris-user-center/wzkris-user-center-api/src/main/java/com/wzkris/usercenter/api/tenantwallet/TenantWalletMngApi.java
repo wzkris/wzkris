@@ -1,12 +1,12 @@
 package com.wzkris.usercenter.api.tenantwallet;
 
-import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordQueryRequest;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.orm.model.Page;
+import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordMngQueryRequest;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
-
-import java.util.List;
 
 public interface TenantWalletMngApi {
 
-    List<TenantWalletRecordResponse> listRecord(TenantWalletRecordQueryRequest request);
+    Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngQueryRequest request);
 
 }

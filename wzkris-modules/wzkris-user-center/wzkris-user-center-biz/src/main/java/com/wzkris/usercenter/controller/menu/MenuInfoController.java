@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.controller.menu;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.menu.MenuInfoApi;
 import com.wzkris.usercenter.response.RouterResponse;
@@ -23,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/menu-info")
 @RequiredArgsConstructor
-public class MenuInfoController extends BaseController {
+public class MenuInfoController {
 
     private final MenuInfoApi menuInfoApi;
 

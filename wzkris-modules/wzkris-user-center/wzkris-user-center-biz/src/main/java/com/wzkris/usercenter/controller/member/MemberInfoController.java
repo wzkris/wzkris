@@ -3,7 +3,6 @@ package com.wzkris.usercenter.controller.member;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.usercenter.api.member.MemberInfoApi;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/member-info")
 @RequiredArgsConstructor
-public class MemberInfoController extends BaseController {
+public class MemberInfoController {
 
     private final MemberInfoApi memberInfoApi;
 

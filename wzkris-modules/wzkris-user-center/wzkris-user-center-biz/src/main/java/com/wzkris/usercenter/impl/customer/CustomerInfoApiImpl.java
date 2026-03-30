@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.impl.customer;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.customer.CustomerInfoApi;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerInfoApiImpl extends BaseController implements CustomerInfoApi {
+public class CustomerInfoApiImpl extends AbstractApi implements CustomerInfoApi {
 
     private final CustomerInfoService customerInfoService;
 

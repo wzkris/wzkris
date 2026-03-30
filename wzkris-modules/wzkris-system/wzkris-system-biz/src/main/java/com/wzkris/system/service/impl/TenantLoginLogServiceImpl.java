@@ -21,34 +21,29 @@ public class TenantLoginLogServiceImpl
         implements TenantLoginLogService {
 
     @Override
-    public List<TenantLoginLogDO> list(TenantLoginLogQueryRequest QueryRequest) {
-        return baseMapper.selectList(this.buildQueryWrapper(QueryRequest));
+    public List<TenantLoginLogDO> list(TenantLoginLogQueryRequest request) {
+        return baseMapper.selectList(this.buildQueryWrapper(request));
     }
 
-    private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogQueryRequest QueryRequest) {
+    private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogQueryRequest request) {
         return new LambdaQueryWrapper<TenantLoginLogDO>()
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getMemberId()), TenantLoginLogDO::getMemberId, QueryRequest.getMemberId())
-                .eq(ObjectUtils.isNotEmpty(QueryRequest.getSuccess()), TenantLoginLogDO::getSuccess, QueryRequest.getSuccess())
-                .eq(StringUtil.isNotEmpty(QueryRequest.getTraceId()), TenantLoginLogDO::getTraceId, QueryRequest.getTraceId())
-                .eq(StringUtil.isNotEmpty(QueryRequest.getRiskLevel()), TenantLoginLogDO::getRiskLevel, QueryRequest.getRiskLevel())
-                .like(StringUtil.isNotEmpty(QueryRequest.getUsername()), TenantLoginLogDO::getUsername, QueryRequest.getUsername())
-                .like(
-                        StringUtil.isNotEmpty(QueryRequest.getLoginLocation()),
+                .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantLoginLogDO::getMemberId, request.getMemberId())
+                .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantLoginLogDO::getSuccess, request.getSuccess())
+                .eq(StringUtil.isNotEmpty(request.getTraceId()), TenantLoginLogDO::getTraceId, request.getTraceId())
+                .eq(StringUtil.isNotEmpty(request.getRiskLevel()), TenantLoginLogDO::getRiskLevel, request.getRiskLevel())
+                .like(StringUtil.isNotEmpty(request.getUsername()), TenantLoginLogDO::getUsername, request.getUsername())
+                .like(StringUtil.isNotEmpty(request.getLoginLocation()),
                         TenantLoginLogDO::getLoginLocation,
-                        QueryRequest.getLoginLocation())
-                .like(
-                        StringUtil.isNotEmpty(QueryRequest.getAbnormalTag()),
+                        request.getLoginLocation())
+                .like(StringUtil.isNotEmpty(request.getAbnormalTag()),
                         TenantLoginLogDO::getAbnormalTags,
-                        QueryRequest.getAbnormalTag())
-                .ne(
-                        Boolean.TRUE.equals(QueryRequest.getAbnormalOnly()),
+                        request.getAbnormalTag())
+                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()),
                         TenantLoginLogDO::getRiskLevel,
                         RiskLevelEnum.LOW.getValue())
-                .between(
-                        QueryRequest.getParam("beginTime") != null && QueryRequest.getParam("endTime") != null,
+                .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantLoginLogDO::getLoginTime,
-                        QueryRequest.getParam("beginTime"),
-                        QueryRequest.getParam("endTime"))
+                        request.getBeginTime(), request.getEndTime())
                 .orderByDesc(TenantLoginLogDO::getLogId);
     }
 

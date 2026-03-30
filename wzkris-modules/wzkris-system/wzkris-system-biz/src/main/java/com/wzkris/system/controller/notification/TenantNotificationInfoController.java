@@ -1,7 +1,6 @@
 package com.wzkris.system.controller.notification;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.notification.TenantNotificationInfoApi;
 import com.wzkris.system.response.notification.NotificationInfoResponse;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/notification-infot")
 @RequiredArgsConstructor
-public class TenantNotificationInfoController extends BaseController {
+public class TenantNotificationInfoController {
 
     private final TenantNotificationInfoApi tenantNotificationInfoApi;
 

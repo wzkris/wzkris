@@ -100,9 +100,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         Result<AdminPermissionResponse> permissionsResult = adminInfoRemote.getPermission(
                 new AdminPermsQueryRequest(userResp.getAdminId(), userResp.getDeptId()));
         if (!ResultUtil.check(permissionsResult)) {
-            OAuth2ExceptionUtil.throwError(
-                    BizBaseCodeEnum.API_REQUEST_ERROR.value(),
-                    permissionsResult != null ? permissionsResult.getMessage() : "query permission failed");
+            OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.API_REQUEST_ERROR.value(), "query permission failed");
         }
         AdminPermissionResponse permissions = permissionsResult.getData();
 
@@ -114,6 +112,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
                 : IdentityTypeEnum.NONE);
         user.setPhoneNumber(userResp.getPhoneNumber());
         user.setUsername(userResp.getUsername());
+        user.setDeptScopes(permissions.getDeptScopes());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())

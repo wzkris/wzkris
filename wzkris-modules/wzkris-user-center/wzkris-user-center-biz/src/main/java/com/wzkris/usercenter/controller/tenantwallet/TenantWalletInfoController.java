@@ -3,11 +3,10 @@ package com.wzkris.usercenter.controller.tenantwallet;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.orm.model.BaseController;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
-import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordQueryRequest;
+import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordInfoQueryRequest;
 import com.wzkris.usercenter.request.tenantwallet.WalletWithdrawalRequest;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletInfoResponse;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
@@ -29,19 +28,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/tenant-wallet")
 @CheckTenantPerms("user-mod:tenant-wallet-info")
 @RequiredArgsConstructor
-public class TenantWalletInfoController extends BaseController {
+public class TenantWalletInfoController {
 
     private final TenantWalletInfoApi tenantWalletInfoApi;
 
     @Operation(summary = "余额信息")
     @GetMapping("/query-info")
     public Result<TenantWalletInfoResponse> queryInfo() {
-        return ok(tenantWalletInfoApi.queryInfo());
+        return tenantWalletInfoApi.queryInfo();
     }
 
     @Operation(summary = "钱包记录分页")
     @GetMapping("/query-record-page")
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordQueryRequest request) {
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoQueryRequest request) {
         return tenantWalletInfoApi.queryRecordPage(request);
     }
 

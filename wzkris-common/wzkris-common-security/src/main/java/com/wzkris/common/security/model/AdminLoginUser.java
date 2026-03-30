@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
+import java.util.Collection;
+
 /**
  * 管理员用户视图。
  */
@@ -16,6 +18,8 @@ public class AdminLoginUser extends AbsBaseLoginUser {
 
     @Nullable
     private String phoneNumber;
+
+    private Collection deptScopes;
 
     @Override
     public String getName() {

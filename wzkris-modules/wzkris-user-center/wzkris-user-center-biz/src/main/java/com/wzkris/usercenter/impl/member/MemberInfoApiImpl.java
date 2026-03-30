@@ -3,7 +3,7 @@ package com.wzkris.usercenter.impl.member;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.orm.model.BaseController;
+import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.member.MemberInfoApi;
 import com.wzkris.usercenter.domain.MemberInfoDO;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MemberInfoApiImpl extends BaseController implements MemberInfoApi {
+public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
 
     private final MemberInfoMapper memberInfoMapper;
 

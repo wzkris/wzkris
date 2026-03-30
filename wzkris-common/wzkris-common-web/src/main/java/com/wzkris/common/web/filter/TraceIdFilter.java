@@ -35,6 +35,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
             if (StringUtil.isNotBlank(hint)) {
                 response.setHeader(CustomHeaderConstants.X_ROUTE_HINT, hint);
             }
+
             filterChain.doFilter(request, response);
         } finally {
             TraceIdUtil.clear();
