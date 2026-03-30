@@ -2,7 +2,6 @@ package com.wzkris.gateway.service;
 
 import com.wzkris.common.core.constant.JwtClaimConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.exception.service.ApiResultException;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -18,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -55,18 +53,16 @@ public class TokenValidateService {
      * 3. 调用 auth 服务获取 BaseLoginUser 并组装 Authentication
      */
     public Authentication check(HttpServletRequest request) {
-        String token = extractToken(request);
-        if (StringUtil.isBlank(token)) {
-            throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Authorization token not found!!"));
-        }
         try {
+            String token = extractToken(request);
+            if (StringUtil.isBlank(token)) {
+                return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
+            }
             Jwt jwt = jwtDecoder.decode(token);
             String authType = jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE);
             AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(authType);
             if (authTypeEnum == null) {
-                String msg = StringUtil.isBlank(authType) ? "Invalid token: missing auth_type claim"
-                        : "Invalid token: invalid auth_type claim";
-                throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(msg));
+                return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
             }
 
             if (authTypeEnum == AuthTypeEnum.CLIENT) {
@@ -74,7 +70,7 @@ public class TokenValidateService {
             }
             String uidStr = jwt.getSubject();
             if (StringUtil.isBlank(uidStr)) {
-                throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: missing subject"));
+                return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
             }
             String sid = jwt.getClaimAsString(JwtClaimConstants.SID);
             if (StringUtil.isBlank(sid)) {
@@ -83,7 +79,7 @@ public class TokenValidateService {
             return introspectCustom(authTypeEnum, Long.valueOf(uidStr), token, sid);
         } catch (JwtException e) {
             log.info("JWT validation failed: {}", e.getMessage());
-            throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth("Invalid token: " + e.getMessage()));
+            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
     }
 
@@ -110,7 +106,7 @@ public class TokenValidateService {
         LoginUserQueryRequest LoginUserQueryRequest = new LoginUserQueryRequest(authTypeEnum.getValue(), uid, sid);
         Result<LoginUserResponse> r = loginUserRemote.queryInfo(LoginUserQueryRequest);
         if (!ResultUtil.check(r)) {
-            throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
+            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
 
         LoginUserResponse LoginUserResponse = r.getData();
@@ -125,7 +121,7 @@ public class TokenValidateService {
         OAuth2TokenQueryRequest OAuth2TokenQueryRequest = new OAuth2TokenQueryRequest(token);
         Result<LoginUserResponse> r = loginUserRemote.queryOAuth2(OAuth2TokenQueryRequest);
         if (!ResultUtil.check(r)) {
-            throw new ApiResultException(HttpStatus.UNAUTHORIZED.value(), Result.unauth(r.getMessage()));
+            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
 
         LoginUserResponse LoginUserResponse = r.getData();

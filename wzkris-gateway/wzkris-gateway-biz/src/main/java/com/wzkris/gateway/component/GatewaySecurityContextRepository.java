@@ -12,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,6 +45,9 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class GatewaySecurityContextRepository implements SecurityContextRepository, ApplicationRunner {
 
+    private static final Authentication ANONYMOUS_AUTHENTICATION = new AnonymousAuthenticationToken("anonymous",
+            "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
+
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
     private final SecurityContextHolderStrategy contextHolderStrategy =
@@ -60,18 +65,6 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
      */
     private final Set<String> permitAllAnnotations = new HashSet<>();
 
-    private static boolean isPathMatched(Iterable<String> patterns, String path) {
-        if (patterns == null) {
-            return false;
-        }
-        for (String pattern : patterns) {
-            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         return loadDeferredContext(requestResponseHolder.getRequest()).get();
@@ -84,20 +77,19 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
     }
 
     private SecurityContext loadContextInternal(HttpServletRequest request) {
-        SecurityContext context = this.contextHolderStrategy.createEmptyContext();
+        Authentication authentication;
 
-        String path = request.getRequestURI();
-        // 白名单：不加载任何认证信息
-        if (isPathPermitted(path)) {
-            return context;
+        if (isPathPermitted(request.getRequestURI())) { //白名单放行
+            authentication = ANONYMOUS_AUTHENTICATION;
+        } else {
+            authentication = this.tokenValidateService.check(request);
         }
 
-        Authentication authentication = this.tokenValidateService.check(request);
-        if (authentication instanceof UsernamePasswordAuthenticationToken authenticationToken) {
+        if (authentication instanceof AbstractAuthenticationToken authenticationToken) {
             authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
         }
+        SecurityContext context = this.contextHolderStrategy.createEmptyContext();
         context.setAuthentication(authentication);
-
         return context;
     }
 
@@ -119,6 +111,18 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
     private boolean isPathPermitted(String path) {
         return isPathMatched(permitAllProperties.getIgnores(), path)
                 || isPathMatched(permitAllAnnotations, path);
+    }
+
+    private static boolean isPathMatched(Iterable<String> patterns, String path) {
+        if (patterns == null) {
+            return false;
+        }
+        for (String pattern : patterns) {
+            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

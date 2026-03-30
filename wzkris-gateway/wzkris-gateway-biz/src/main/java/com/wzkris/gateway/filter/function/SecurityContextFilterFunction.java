@@ -2,6 +2,7 @@ package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -45,8 +46,8 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
     @Override
     public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
         Authentication authentication = SecurityUtil.getAuthentication();
-        if (authentication == null) {
-            return next.handle(request);
+        if (!authentication.isAuthenticated()) {
+            return ServerResponse.status(401).body(Result.unauth("Unauthorized"));
         }
 
         ServerRequest requestWithHeaders = addAuthHeaders(request, authentication);
