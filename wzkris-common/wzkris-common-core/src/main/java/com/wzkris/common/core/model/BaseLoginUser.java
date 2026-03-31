@@ -21,7 +21,7 @@ public interface BaseLoginUser extends Principal {
     IdentityTypeEnum getIdentityType();
 
     /**
-     * 灰度标记
+     * 标签
      */
     @Nullable
     String getHint();

@@ -4,6 +4,7 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.utils.StringUtil;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -83,8 +84,7 @@ public final class SecurityUtil {
         Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof BaseLoginUser
-                && ((BaseLoginUser) authentication.getPrincipal()).getAuthType() != AuthTypeEnum.CLIENT;
+                && authentication.getPrincipal() instanceof BaseLoginUser;
     }
 
     /**
@@ -134,7 +134,7 @@ public final class SecurityUtil {
      * @return 标签
      */
     public static String getHint() {
-        return getLoginUser().getHint();
+        return StringUtil.defaultIfEmpty(getLoginUser().getHint(), StringUtil.EMPTY);
     }
 
     /**
