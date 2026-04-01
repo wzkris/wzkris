@@ -1,19 +1,21 @@
 package com.wzkris.auth.listener;
 
-import com.wzkris.auth.listener.event.LoginEvent;
-import com.wzkris.auth.service.TokenService;
+import com.wzkris.auth.event.LoginEvent;
+import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
+import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
+import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
+import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
+import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
+import com.wzkris.auth.service.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
-import com.wzkris.common.core.model.domain.LoginAdmin;
-import com.wzkris.common.core.model.domain.LoginCustomer;
-import com.wzkris.common.core.model.domain.LoginTenant;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
-import com.wzkris.message.httpservice.loginlog.LoginLogHttpService;
-import com.wzkris.message.httpservice.loginlog.req.LoginLogEvent;
-import com.wzkris.principal.httpservice.admin.AdminInfoHttpService;
-import com.wzkris.principal.httpservice.admin.req.LoginInfoReq;
-import com.wzkris.principal.httpservice.customer.CustomerInfoHttpService;
-import com.wzkris.principal.httpservice.member.MemberInfoHttpService;
+import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.ResultUtil;
+import com.wzkris.common.security.model.AdminLoginUser;
+import com.wzkris.common.security.model.CustomerLoginUser;
+import com.wzkris.common.security.model.TenantLoginUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.basjes.parse.useragent.UserAgent;
@@ -23,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author : wzkris
@@ -36,105 +37,107 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class LoginEventListener {
 
-    private final TokenService tokenService;
+    private final ILoginLogRemote loginLogRemote;
 
-    private final LoginLogHttpService loginLogHttpService;
+    private final LoginRiskAnalyzeService loginRiskAnalyzeService;
 
-    private final AdminInfoHttpService adminInfoHttpService;
+    private final IAdminInfoRemote adminInfoRemote;
 
-    private final MemberInfoHttpService memberInfoHttpService;
+    private final IMemberInfoRemote memberInfoRemote;
 
-    private final CustomerInfoHttpService customerInfoHttpService;
+    private final ICustomerInfoRemote customerInfoRemote;
 
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final MyPrincipal principal = event.getPrincipal();
-        log.info("'{}' 发生登录事件", principal);
+        final BaseLoginUser loginUser = event.getLoginUser();
+        log.info("'{}' 发生登录事件", loginUser);
 
-        if (Objects.equals(principal.getType(), AuthTypeEnum.ADMIN)) {
-            this.handleLoginAdmin(event, (LoginAdmin) principal);
-        } else if (Objects.equals(principal.getType(), AuthTypeEnum.TENANT)) {
-            this.handleLoginTenant(event, (LoginTenant) principal);
-        } else if (Objects.equals(principal.getType(), AuthTypeEnum.CUSTOMER)) {
-            this.handleLoginCustomer(event, (LoginCustomer) principal);
+        AuthTypeEnum authType = loginUser.getAuthType();
+        if (authType == AuthTypeEnum.ADMIN || authType == AuthTypeEnum.TENANT || authType == AuthTypeEnum.CUSTOMER) {
+            this.handleLogin(event, loginUser);
         }
     }
 
-    private void handleLoginAdmin(LoginEvent event, LoginAdmin admin) {
+    private void handleLogin(LoginEvent event, BaseLoginUser loginUser) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
-        final String ipAddr = event.getIpAddr();
-        final UserAgent userAgent = event.getUserAgent();
-
-        // 获取客户端浏览器
-        String browser = userAgent.getValue(UserAgent.AGENT_NAME);
-        // 获取登录地址
+        String ipAddr = event.getIpAddr();
+        UserAgent userAgent = event.getUserAgent();
+        String userAgentText = JsonUtil.toJsonString(userAgent.getHeaders());
         String loginLocation = IpUtil.parseIp(ipAddr);
+        String traceId = event.getTraceId();
+        Date now = new Date();
+        LoginRiskAnalyzeService.RiskResult riskResult =
+                loginRiskAnalyzeService.analyze(loginUser, ipAddr, userAgentText, event.getSuccess(), now);
 
-        if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(admin.getId());
-            loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(new Date());
-            adminInfoHttpService.updateLoginInfo(loginInfoReq);
-        }
-        // 插入后台登陆日志
+        updateLoginInfoIfSuccess(loginUser, ipAddr, event.getSuccess(), now);
+
         LoginLogEvent loginLogEvent = new LoginLogEvent();
-        loginLogEvent.setAuthType(AuthTypeEnum.ADMIN.getValue());
-        loginLogEvent.setOperatorId(admin.getId());
-        loginLogEvent.setUsername(admin.getUsername());
-        loginLogEvent.setLoginTime(new Date());
+        loginLogEvent.setAuthType(loginUser.getAuthType().getValue());
+        loginLogEvent.setOperatorId(loginUser.getUid());
+        loginLogEvent.setUsername(resolveUsername(loginUser));
+        loginLogEvent.setTenantId(resolveTenantId(loginUser));
+        loginLogEvent.setLoginTime(now);
         loginLogEvent.setLoginIp(ipAddr);
         loginLogEvent.setLoginType(loginType);
         loginLogEvent.setSuccess(event.getSuccess());
         loginLogEvent.setErrorMsg(errorMsg);
         loginLogEvent.setLoginLocation(loginLocation);
-        loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-        loginLogEvent.setBrowser(browser);
-        loginLogHttpService.save(Collections.singletonList(loginLogEvent));
+        loginLogEvent.setTraceId(traceId);
+        loginLogEvent.setUserAgent(userAgentText);
+        loginLogEvent.setAbnormalTags(riskResult.abnormalTags());
+        loginLogEvent.setRiskLevel(riskResult.riskLevel().getValue());
+        loginLogEvent.setRiskScore(riskResult.riskScore());
+        loginLogRemote.save(Collections.singletonList(loginLogEvent));
+        reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
     }
 
-    private void handleLoginTenant(LoginEvent event, LoginTenant tenant) {
-        final String loginType = event.getLoginType();
-        final String errorMsg = event.getErrorMsg();
-        final String ipAddr = event.getIpAddr();
-        final UserAgent userAgent = event.getUserAgent();
-
-        // 获取客户端浏览器
-        String browser = userAgent.getValue(UserAgent.AGENT_NAME);
-        // 获取登录地址
-        String loginLocation = IpUtil.parseIp(ipAddr);
-
-        if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(tenant.getId());
-            loginInfoReq.setLoginIp(ipAddr);
-            loginInfoReq.setLoginDate(new Date());
-            memberInfoHttpService.updateLoginInfo(loginInfoReq);
+    private void updateLoginInfoIfSuccess(BaseLoginUser loginUser, String ipAddr, Boolean success, Date loginDate) {
+        if (!Boolean.TRUE.equals(success)) {
+            return;
         }
-        // 插入租户登陆日志
-        LoginLogEvent loginLogEvent = new LoginLogEvent();
-        loginLogEvent.setAuthType(AuthTypeEnum.TENANT.getValue());
-        loginLogEvent.setOperatorId(tenant.getId());
-        loginLogEvent.setUsername(tenant.getUsername());
-        loginLogEvent.setTenantId(tenant.getTenantId());
-        loginLogEvent.setLoginTime(new Date());
-        loginLogEvent.setLoginIp(ipAddr);
-        loginLogEvent.setLoginType(loginType);
-        loginLogEvent.setSuccess(event.getSuccess());
-        loginLogEvent.setErrorMsg(errorMsg);
-        loginLogEvent.setLoginLocation(loginLocation);
-        loginLogEvent.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-        loginLogEvent.setBrowser(browser);
-        loginLogHttpService.save(Collections.singletonList(loginLogEvent));
+        LoginInfoUpdateRequest LoginInfoUpdateRequest = new LoginInfoUpdateRequest(loginUser.getUid());
+        LoginInfoUpdateRequest.setLoginIp(ipAddr);
+        LoginInfoUpdateRequest.setLoginDate(loginDate);
+        AuthTypeEnum authType = loginUser.getAuthType();
+        if (authType == AuthTypeEnum.ADMIN) {
+            ResultUtil.checkNoData(adminInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+        } else if (authType == AuthTypeEnum.TENANT) {
+            ResultUtil.checkNoData(memberInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+        } else if (authType == AuthTypeEnum.CUSTOMER) {
+            ResultUtil.checkNoData(customerInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+        }
     }
 
-    private void handleLoginCustomer(LoginEvent event, LoginCustomer customer) {
-        if (event.getSuccess()) {
-            LoginInfoReq loginInfoReq = new LoginInfoReq(customer.getId());
-            loginInfoReq.setLoginIp(event.getIpAddr());
-            loginInfoReq.setLoginDate(new Date());
-            customerInfoHttpService.updateLoginInfo(loginInfoReq);
+    private String resolveUsername(BaseLoginUser loginUser) {
+        if (loginUser instanceof AdminLoginUser admin) {
+            return admin.getUsername();
         }
+        if (loginUser instanceof TenantLoginUser tenant) {
+            return tenant.getUsername();
+        }
+        if (loginUser instanceof CustomerLoginUser customer) {
+            return customer.getPhoneNumber();
+        }
+        return String.valueOf(loginUser.getUid());
+    }
+
+    private Long resolveTenantId(BaseLoginUser loginUser) {
+        if (loginUser instanceof TenantLoginUser tenant) {
+            return tenant.getTenantId();
+        }
+        return null;
+    }
+
+    private void reportRiskAlertIfNecessary(BaseLoginUser loginUser, LoginLogEvent event, LoginRiskAnalyzeService.RiskResult riskResult) {
+        if (!loginRiskAnalyzeService.shouldAlert(loginUser, riskResult)) {
+            return;
+        }
+        log.warn("登录风险告警 authType={}, uid={}, riskLevel={}, score={}, tags={}, ip={}, traceId={}",
+                loginUser.getAuthType(), loginUser.getUid(), riskResult.riskLevel(), riskResult.riskScore(),
+                riskResult.abnormalTags(), event.getLoginIp(), event.getTraceId());
     }
 
 }
+

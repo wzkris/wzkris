@@ -1,24 +1,26 @@
 package com.wzkris.auth.security.filter;
 
-import com.wzkris.auth.listener.event.LogoutEvent;
+import com.wzkris.auth.domain.TokenClaims;
+import com.wzkris.auth.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-
-import java.io.Serializable;
+import org.springframework.stereotype.Component;
 
 /**
- * 退出登录
+ * 退出登录处理器
  *
  * @author wzkris
  */
+@Slf4j
+@Component
 public class LogoutHandlerImpl implements LogoutHandler {
 
     private final TokenService tokenService;
@@ -28,37 +30,33 @@ public class LogoutHandlerImpl implements LogoutHandler {
     }
 
     /**
-     * 由于该过滤器链未配置安全上下文解析，authentication必定为null
+     * 退出登录处理
      *
      * @param request        the HTTP request
      * @param response       the HTTP response
-     * @param authentication the current principal details
+     * @param authentication the current loginUser details
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        String adminToken = request.getHeader(CustomHeaderConstants.X_ADMIN_TOKEN);
-        if (StringUtil.isNotBlank(adminToken)) {
-            Serializable id = tokenService.logoutByAccessToken(AuthTypeEnum.ADMIN.getValue(), adminToken);
-            if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthTypeEnum.ADMIN.getValue()));
-            }
+        if (authentication == null) {
+            return;
         }
 
-        String tenantToken = request.getHeader(CustomHeaderConstants.X_TENANT_TOKEN);
-        if (StringUtil.isNotBlank(tenantToken)) {
-            Serializable id = tokenService.logoutByAccessToken(AuthTypeEnum.TENANT.getValue(), tenantToken);
-            if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthTypeEnum.TENANT.getValue()));
-            }
-        }
+        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
+        BaseLoginUser loginUser = (BaseLoginUser) authenticationToken.getPrincipal();
+        Long uid = loginUser.getUid();
+        String authType = loginUser.getAuthType().getValue();
+        String accessToken = authenticationToken.getCredentials().toString();
 
-        String customerToken = request.getHeader(CustomHeaderConstants.X_CUSTOMER_TOKEN);
-        if (StringUtil.isNotBlank(customerToken)) {
-            Serializable id = tokenService.logoutByAccessToken(AuthTypeEnum.CUSTOMER.getValue(), customerToken);
-            if (id != null) {
-                SpringUtil.getContext().publishEvent(new LogoutEvent(id, AuthTypeEnum.CUSTOMER.getValue()));
-            }
-        }
+        // 解析 accessToken 获取 sid
+        TokenClaims claims = tokenService.parseJwt(accessToken);
+        String sid = claims.getSid();
+
+        // 移除会话
+        tokenService.revoke(authType, uid, sid);
+
+        // 发布登出事件
+        SpringUtil.getContext().publishEvent(new LogoutEvent(uid, loginUser.getAuthType()));
     }
 
 }

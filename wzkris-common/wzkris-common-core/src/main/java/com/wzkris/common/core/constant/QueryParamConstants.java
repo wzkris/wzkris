@@ -22,4 +22,9 @@ public class QueryParamConstants {
      */
     public static final String X_CUSTOMER_TOKEN = "X_Customer_Token";
 
+    /**
+     * 客户端Token
+     */
+    public static final String X_CLIENT_TOKEN = "X_Client_Token";
+
 }

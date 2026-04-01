@@ -4,6 +4,7 @@ import com.wzkris.common.core.function.ThrowableSupplier;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -18,7 +19,10 @@ public final class DistLockTemplate {
 
     private static final String LOCK_KEY_PREFIX = "distlock:";
 
-    private DistLockTemplate() {
+    private static RedissonClient redissonClient;
+
+    private DistLockTemplate(RedissonClient redissonClient) {
+        DistLockTemplate.redissonClient = redissonClient;
     }
 
     public static boolean lockAndExecute(final String lockKey, Runnable runnable) {
@@ -40,7 +44,7 @@ public final class DistLockTemplate {
                                          final long lockTimeout, Runnable runnable) {
         final String distLockKey = getLockKey(lockKey);
 
-        final RLock lock = RedisUtil.getLock(distLockKey);
+        final RLock lock = redissonClient.getLock(distLockKey);
         boolean locked = false;
         try {
             locked = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
@@ -86,7 +90,7 @@ public final class DistLockTemplate {
 
         final String distLockKey = getLockKey(lockKey);
 
-        final RLock lock = RedisUtil.getLock(distLockKey);
+        final RLock lock = redissonClient.getLock(distLockKey);
         boolean locked = false;
         try {
             locked = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);
@@ -129,7 +133,7 @@ public final class DistLockTemplate {
 
         final String distLockKey = getLockKey(lockKey);
 
-        final RLock lock = RedisUtil.getLock(distLockKey);
+        final RLock lock = redissonClient.getLock(distLockKey);
         boolean locked = false;
         try {
             locked = lock.tryLock(waitLockTime, lockTimeout, TimeUnit.MILLISECONDS);

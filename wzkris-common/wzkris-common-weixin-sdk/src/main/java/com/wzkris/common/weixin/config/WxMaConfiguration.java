@@ -8,6 +8,7 @@ import com.wzkris.common.weixin.properties.WxMaProperties;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxRuntimeException;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -30,20 +31,17 @@ public class WxMaConfiguration {
     }
 
     @Bean
-    public WxMaService wxMaService(RedissonClient redissonClient) {
+    public WxMaService wxMaService(ObjectProvider<RedissonClient> redissonClientProvider) {
         List<WxMaProperties.Config> configs = this.properties.getConfigs();
         if (configs == null) {
             throw new WxRuntimeException("大哥，拜托先看下项目首页的说明（readme文件），添加下相关配置，注意别配错了！");
         }
+
         WxMaService maService = new WxMaServiceImpl();
         maService.setMultiConfigs(configs.stream()
                 .map(a -> {
                     WxMaDefaultConfigImpl config;
-                    if (this.properties.isUseRedis()) {
-                        config = new WxMaRedissonConfigImpl(redissonClient, a.getAppid());
-                    } else {
-                        config = new WxMaDefaultConfigImpl();
-                    }
+                    config = new WxMaRedissonConfigImpl(redissonClientProvider.getIfAvailable(), a.getAppid());
 
                     config.setAppid(a.getAppid());
                     config.setSecret(a.getSecret());

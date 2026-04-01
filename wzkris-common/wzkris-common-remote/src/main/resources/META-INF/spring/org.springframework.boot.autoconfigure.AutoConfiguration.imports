@@ -1,0 +1,2 @@
+com.wzkris.common.remote.config.RemoteInterfaceAutoConfiguration
+com.wzkris.common.remote.config.CustomRestClientAutoConfiguration

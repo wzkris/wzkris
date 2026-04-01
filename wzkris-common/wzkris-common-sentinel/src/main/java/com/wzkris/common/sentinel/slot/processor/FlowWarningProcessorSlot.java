@@ -7,6 +7,8 @@ import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleChecker;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.wzkris.common.core.utils.SpringUtil;
+import com.wzkris.common.sentinel.event.FlowAlarmEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
@@ -81,13 +83,12 @@ public class FlowWarningProcessorSlot extends AbstractLinkedProcessorSlot<Defaul
 
             // CAS更新成功才执行告警（防止并发重复告警）
             if (lastWarningTime.compareAndSet(lastTime, currentTime)) {
-                logFlowLimitWarning(resourceName, rule);
-                triggerAlarm(resourceName, rule);
+                logWarning(resourceName, rule);
             }
         }
     }
 
-    private void logFlowLimitWarning(String resourceName, FlowRule rule) {
+    private void logWarning(String resourceName, FlowRule rule) {
         log.warn(
                 "[Sentinel Flow Limit] Resource '{}' triggered flow control. "
                         + "Threshold: {}, Strategy: {}, ControlBehavior: {}",
@@ -95,10 +96,8 @@ public class FlowWarningProcessorSlot extends AbstractLinkedProcessorSlot<Defaul
                 rule.getCount(),
                 rule.getStrategy(),
                 rule.getControlBehavior());
-    }
-
-    protected void triggerAlarm(String resourceName, FlowRule rule) {
-        // TODO 实现具体的告警逻辑
+        FlowAlarmEvent event = new FlowAlarmEvent(resourceName, rule);
+        SpringUtil.getContext().publishEvent(event);
     }
 
     @Override

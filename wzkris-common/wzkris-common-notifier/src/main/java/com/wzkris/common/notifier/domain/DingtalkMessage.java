@@ -1,13 +1,12 @@
 package com.wzkris.common.notifier.domain;
 
-import com.wzkris.common.notifier.enums.DingtalkTemplateKey;
+import com.wzkris.common.notifier.enums.DingtalkTemplateKeyEnum;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -17,17 +16,18 @@ public class DingtalkMessage {
     /**
      * 指定消息类型
      */
-    private DingtalkTemplateKey templateKey;
-
-    /**
-     * 发送对象
-     */
-    private List<String> recipients;
+    private DingtalkTemplateKeyEnum templateKey;
 
     /**
      * 消息参数
      */
     private Map<String, Object> templateParams;
+
+    /**
+     * Webhook标识
+     * 如果指定，则从管理的webhooks中选择对应的webhook；如果未指定，则使用默认webhook
+     */
+    private String webhookKey;
 
     public static Builder builder() {
         return new Builder();
@@ -35,19 +35,14 @@ public class DingtalkMessage {
 
     public static class Builder {
 
-        private DingtalkTemplateKey templateKey;
-
-        private List<String> recipients;
+        private DingtalkTemplateKeyEnum templateKey;
 
         private Map<String, Object> templateParams = new HashMap<>();
 
-        public Builder templateKey(DingtalkTemplateKey templateKey) {
-            this.templateKey = templateKey;
-            return this;
-        }
+        private String webhookKey;
 
-        public Builder recipients(List<String> recipients) {
-            this.recipients = recipients;
+        public Builder templateKey(DingtalkTemplateKeyEnum templateKey) {
+            this.templateKey = templateKey;
             return this;
         }
 
@@ -58,14 +53,20 @@ public class DingtalkMessage {
             return this;
         }
 
+        public Builder webhookKey(String webhookKey) {
+            this.webhookKey = webhookKey;
+            return this;
+        }
+
         public DingtalkMessage build() {
             Assert.notNull(this.templateKey, "templateKey 不能为空");
-            Assert.notEmpty(this.recipients, "recipients 不能为空");
+            Assert.notNull(this.webhookKey, "webhookKey 不能为空");
+            Assert.notNull(this.templateParams, "templateParams 不能为空");
             templateKey.validate(this.templateParams);
             DingtalkMessage m = new DingtalkMessage();
             m.templateKey = this.templateKey;
-            m.recipients = this.recipients;
             m.templateParams = this.templateParams;
+            m.webhookKey = this.webhookKey;
             return m;
         }
 

@@ -23,48 +23,18 @@ public class CustomHeaderConstants {
     public static final String X_ROUTE_HINT = "X-Route-Hint";
 
     /**
-     * API签名请求头
-     */
-    public static final String X_REQUEST_SIGN = "X-Request-Sign";
-
-    /**
-     * 请求来源
-     */
-    public static final String X_REQUEST_FROM = "X-Request-From";
-
-    /**
      * 请求时间
      */
     public static final String X_REQUEST_TIME = "X-Request-Time";
 
     /**
-     * 管理员Token
+     * security-context 信息
      */
-    public static final String X_ADMIN_TOKEN = "X-Admin-Token";
+    public static final String X_USER_CONTEXT = "X-User-Context";
 
     /**
-     * 管理员信息
+     * 权限信息
      */
-    public static final String X_ADMIN_INFO = "X-Admin-Info";
-
-    /**
-     * 租户Token
-     */
-    public static final String X_TENANT_TOKEN = "X-Tenant-Token";
-
-    /**
-     * 租户信息
-     */
-    public static final String X_TENANT_INFO = "X-Tenant-Info";
-
-    /**
-     * 客户Token
-     */
-    public static final String X_CUSTOMER_TOKEN = "X-Customer-Token";
-
-    /**
-     * 客户信息
-     */
-    public static final String X_CUSTOMER_INFO = "X-Customer-Info";
+    public static final String X_PERMISSIONS = "X-Permissions";
 
 }

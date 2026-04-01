@@ -19,8 +19,8 @@
     </description>
 
     <modules>
-        <module>wzkris-modules-message</module>
-        <module>wzkris-modules-principal</module>
+        <module>wzkris-system</module>
+        <module>wzkris-user-center</module>
     </modules>
 
 </project>

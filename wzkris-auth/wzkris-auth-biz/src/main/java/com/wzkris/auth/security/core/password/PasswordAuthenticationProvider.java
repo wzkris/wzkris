@@ -1,15 +1,17 @@
 package com.wzkris.auth.security.core.password;
 
-import com.wzkris.auth.config.TokenProperties;
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.auth.remote.interfaces.captchachallenge.ICaptchaChallengeRemote;
+import com.wzkris.auth.remote.interfaces.captchachallenge.request.ValidateChallengeRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.service.CaptchaService;
+import com.wzkris.auth.security.core.CommonAuthenticationToken;
+import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.auth.service.UserInfoTemplate;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
-import com.wzkris.common.core.exception.BaseException;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.ResultUtil;
+import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -24,27 +26,26 @@ import java.util.Optional;
  * @description 密码模式核心处理
  */
 @Component // 注册成bean方便引用
-public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider<PasswordAuthenticationToken> {
+public final class PasswordAuthenticationProvider extends CommonAuthenticationProvider {
 
-    private final List<UserInfoTemplate> userInfoTemplates;
+    private final List<LoginUserService> loginUserServices;
 
-    private final CaptchaService captchaService;
+    private final ICaptchaChallengeRemote captchaChallengeRemote;
 
     public PasswordAuthenticationProvider(
-            TokenProperties tokenProperties,
             TokenService tokenService,
-            List<UserInfoTemplate> userInfoTemplates,
-            CaptchaService captchaService) {
-        super(tokenProperties, tokenService);
-        this.userInfoTemplates = userInfoTemplates;
-        this.captchaService = captchaService;
+            List<LoginUserService> loginUserServices,
+            ICaptchaChallengeRemote captchaChallengeRemote) {
+        super(tokenService);
+        this.loginUserServices = loginUserServices;
+        this.captchaChallengeRemote = captchaChallengeRemote;
     }
 
     @Override
-    public PasswordAuthenticationToken doAuthenticate(Authentication authentication) {
+    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
 
-        Optional<UserInfoTemplate> templateOptional = userInfoTemplates.stream()
+        Optional<LoginUserService> templateOptional = loginUserServices.stream()
                 .filter(t -> t.checkAuthType(authenticationToken.getAuthType()))
                 .findFirst();
 
@@ -56,28 +57,24 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        try {
-            // 校验是否被冻结
-            captchaService.validateAccount(authenticationToken.getAuthType().getValue() + ":" + authenticationToken.getUsername());
-        } catch (BaseException e) {
-            OAuth2ExceptionUtil.throwError(e.getBiz(), e.getMessage());
+        Result<Boolean> booleanResult = captchaChallengeRemote.validateChallenge(new ValidateChallengeRequest(authenticationToken.getCaptchaId()));
+        boolean pass = ResultUtil.check(booleanResult) && Boolean.TRUE.equals(booleanResult.getData());
+
+        if (!pass) {
+            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
+                    "invalidParameter.captcha.error");
         }
 
-        boolean valid = captchaService.validateChallenge(authenticationToken.getCaptchaId());
-        if (!valid) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), "invalidParameter.captcha.error");
-        }
-
-        MyPrincipal principal = templateOptional.get().loadByUsernameAndPassword(
+        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
-        if (principal == null) {
+        if (token == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        return new PasswordAuthenticationToken(authenticationToken.getAuthType(), authenticationToken.getUsername(), principal);
+        return token;
     }
 
     @Override
@@ -86,3 +83,4 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     }
 
 }
+

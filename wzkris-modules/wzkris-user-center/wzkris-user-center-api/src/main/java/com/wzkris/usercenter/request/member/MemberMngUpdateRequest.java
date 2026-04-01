@@ -1,0 +1,56 @@
+package com.wzkris.usercenter.request.member;
+
+import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.validator.annotation.EnumsCheck;
+import com.wzkris.common.validator.annotation.PhoneNumber;
+import com.wzkris.common.validator.annotation.Xss;
+import com.wzkris.usercenter.enums.GenderEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+import java.util.List;
+
+/**
+ * 修改租户成员请求体
+ */
+@Data
+@Schema(description = "修改租户成员参数体")
+public class MemberMngUpdateRequest {
+
+    @NotNull(message = "{invalidParameter.id.invalid}")
+    private Long memberId;
+
+    @Pattern(regexp = "^[a-z0-9_]+$", message = "{invalidParameter.username.invalid}")// 用户名只能为小写英文、数字和下划线
+    @Xss
+    @Size(min = 6, max = 30, message = "{invalidParameter.username.invalid}")
+    @Schema(description = "用户名")
+    private String username;
+
+    @PhoneNumber
+    @Schema(description = "手机号码")
+    private String phoneNumber;
+
+    @Pattern(
+            regexp = "[" +
+                    CommonConstants.STATUS_ENABLE +
+                    CommonConstants.STATUS_DISABLE
+                    + "]",
+            message = "{invalidParameter.status.invalid}")
+    @Schema(description = "状态")
+    private String status;
+
+    @EnumsCheck(value = GenderEnum.class, property = "value")
+    @Schema(description = "性别")
+    private String gender;
+
+    @Schema(description = "用户额外信息")
+    private String remark;
+
+    @Schema(description = "职位组")
+    private List<Long> postIds;
+
+}
+

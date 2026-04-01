@@ -1,0 +1,10 @@
+server:
+  port: 9300
+  servlet:
+    context-path: /wzkris-captcha-api
+
+spring:
+  application:
+    name: wzkris-captcha
+  profiles:
+    active: @profiles.active@

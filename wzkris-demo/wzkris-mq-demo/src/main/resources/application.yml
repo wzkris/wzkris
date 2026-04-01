@@ -30,3 +30,6 @@ spring:
           destination: order_pay
           content-type: application/json
           group: order-pay-consumer-group
+
+request-signature:
+  enable: false

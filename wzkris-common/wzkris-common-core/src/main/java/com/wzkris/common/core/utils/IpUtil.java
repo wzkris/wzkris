@@ -20,7 +20,7 @@ public abstract class IpUtil {
     /**
      * IP地址查询
      */
-    public static final String IP_URL = "http://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true";
+    public static final String IP_URL = "https://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true";
 
     public static final String UNKNOWN = "未知地址";
 
@@ -42,7 +42,8 @@ public abstract class IpUtil {
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                log.error("获取地理位置异常, ip：{}, 响应体：{}", ip, response);
+                log.warn("获取地理位置异常, ip：{}, 响应体：{}", ip, response);
+                return response.statusCode() + "";
             }
             JsonNode nodes = JsonUtil.readTree(response.body());
             String region = nodes.get("pro").asText();

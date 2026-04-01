@@ -3,11 +3,11 @@ package com.wzkris.auth.security.core.sms;
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @description 短信模式转换器
  */
 @Component
-public final class SmsAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+public final class SmsAuthenticationConverter extends CommonAuthenticationConverter {
 
     @Override
     protected boolean support(LoginTypeEnum loginType) {
@@ -54,10 +54,10 @@ public final class SmsAuthenticationConverter extends CommonAuthenticationConver
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
+    protected Authentication buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String phoneNumber = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.PHONE_NUMBER));
         String smsCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.SMS_CODE));
-        return new SmsAuthenticationToken(authTypeEnum, phoneNumber, smsCode);
+        return SmsAuthenticationToken.unauthenticated(authTypeEnum, phoneNumber, smsCode);
     }
 
 }

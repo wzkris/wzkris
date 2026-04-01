@@ -2,11 +2,11 @@ package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @description 密码模式转换器
  */
 @Component
-public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter {
 
     private static final String CAPTCHA_ID = "captcha_id";
 
@@ -67,11 +67,11 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
+    protected Authentication buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
         String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
         String captchaId = StringUtil.toStringOrNull(additionalParameters.get(CAPTCHA_ID));
-        return new PasswordAuthenticationToken(authTypeEnum, username, password, captchaId);
+        return PasswordAuthenticationToken.unauthenticated(authTypeEnum, username, password, captchaId);
     }
 
 }

@@ -31,19 +31,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-security</artifactId>
-        </dependency>
-
-        <!--模板引擎-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <!-- wzkris Common Redis-->
@@ -52,28 +41,10 @@
             <artifactId>wzkris-common-redis</artifactId>
         </dependency>
 
-        <!-- 验证码-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-captcha</artifactId>
-        </dependency>
-
-        <!--动态线程池-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-thread</artifactId>
-        </dependency>
-
         <!-- Sentinel -->
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-sentinel</artifactId>
-        </dependency>
-
-        <!-- web服务-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-web</artifactId>
         </dependency>
 
         <dependency>
@@ -81,28 +52,15 @@
             <artifactId>wzkris-common-weixin-sdk</artifactId>
         </dependency>
 
-        <!--本地rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-rmi</artifactId>
+            <artifactId>wzkris-auth-api</artifactId>
+            <version>${revision}</version>
         </dependency>
 
-        <!--用户rpc服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-principal-rmi</artifactId>
-        </dependency>
-
-        <!--系统rpc服务-->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-message-rmi</artifactId>
-        </dependency>
-
-        <!-- 接口文档 -->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-swagger</artifactId>
+            <artifactId>wzkris-common-remote</artifactId>
         </dependency>
 
         <!-- springBoot test-->
@@ -131,3 +89,7 @@
         </plugins>
     </build>
 </project>
+
+
+
+

@@ -1,0 +1,150 @@
+package com.wzkris.common.notifier.core.impl;
+
+import com.wzkris.common.notifier.core.NotificationContext;
+import com.wzkris.common.notifier.core.NotificationResult;
+import com.wzkris.common.notifier.core.Notifier;
+import com.wzkris.common.notifier.domain.EmailMessage;
+import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;
+import com.wzkris.common.notifier.enums.NotificationChannelEnum;
+import com.wzkris.common.notifier.properties.NotifierProperties;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * 邮件通知器实现
+ * 负责将 NotificationMessage 适配为邮件发送
+ *
+ * @author wzkris
+ * @date 2025/11/06
+ */
+@Slf4j
+public class EmailNotifier implements Notifier<EmailMessage>, EnvironmentAware {
+
+    private final JavaMailSender mailSender;
+
+    private final NotifierProperties notifierProperties;
+
+    private Environment environment;
+
+    public EmailNotifier(JavaMailSender mailSender, NotifierProperties notifierProperties) {
+        Assert.notNull(mailSender, "邮件发送器不能为空");
+        this.mailSender = mailSender;
+        this.notifierProperties = notifierProperties;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Override
+    public NotificationResult send(EmailMessage message) {
+        // 获取接收人列表
+        List<String> recipients = message.getRecipients();
+        if (CollectionUtils.isEmpty(recipients)) {
+            return NotificationResult.failure("邮件接收人不能为空");
+        }
+
+        if (Objects.equals(message.getTemplateKey(), EmailTemplateKeyEnum.PLAINTEXT)) {
+            // 发送纯文本邮件
+            return sendTextEmail(message);
+        } else if (Objects.equals(message.getTemplateKey(), EmailTemplateKeyEnum.HTML)) {
+            // 发送HTML格式邮件
+            return sendHtmlEmail(message);
+        } else {
+            return NotificationResult.failure("发送邮件失败: 不支持的邮件模板类型");
+        }
+    }
+
+    @Override
+    public NotificationChannelEnum getChannel() {
+        return NotificationChannelEnum.EMAIL;
+    }
+
+    @Override
+    public EmailMessage buildMessage(NotificationContext context) {
+        Assert.notNull(context, "通知上下文不能为空");
+
+        NotifierProperties.EmailConfig emailConfig = notifierProperties.getEmail();
+
+        EmailTemplateKeyEnum templateKey = emailConfig.getTemplateKey();
+
+        List<String> recipients = emailConfig.getRecipients();
+        Assert.notEmpty(recipients, "邮件接收人不能为空");
+
+        // 获取发件人信息（优先使用配置的）
+        String fromName = emailConfig.getFromName();
+
+        // 获取主题和内容
+        String subject = context.getTitle();
+        String content = context.getContent();
+
+        return EmailMessage.builder()
+                .templateKey(templateKey)
+                .recipients(recipients)
+                .subject(subject)
+                .content(content)
+                .fromName(fromName)
+                .build();
+    }
+
+    /**
+     * 发送纯文本邮件
+     */
+    private NotificationResult sendTextEmail(EmailMessage message) {
+        try {
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setFrom(getFrom(message.getFromName()));
+            simpleMailMessage.setTo(message.getRecipients().toArray(new String[0]));
+            simpleMailMessage.setSubject(message.getSubject());
+            simpleMailMessage.setText(message.getContent());
+
+            mailSender.send(simpleMailMessage);
+
+            String messageId = "email-" + System.currentTimeMillis();
+            return NotificationResult.success(messageId);
+        } catch (Exception e) {
+            log.error("发送纯文本邮件失败", e);
+            throw new RuntimeException("发送邮件失败: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 发送HTML格式邮件
+     */
+    private NotificationResult sendHtmlEmail(EmailMessage message) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setFrom(getFrom(message.getFromName()));
+            helper.setTo(message.getRecipients().toArray(new String[0]));
+            helper.setSubject(message.getSubject());
+            helper.setText(message.getContent(), true);
+
+            mailSender.send(mimeMessage);
+
+            String messageId = "email-" + System.currentTimeMillis();
+            return NotificationResult.success(messageId);
+        } catch (MessagingException e) {
+            log.error("发送HTML邮件失败", e);
+            throw new RuntimeException("发送邮件失败: " + e.getMessage(), e);
+        }
+    }
+
+    private String getFrom(String fromName) {
+        return fromName + " <" + environment.resolvePlaceholders("${spring.mail.username}") + ">";
+    }
+
+}

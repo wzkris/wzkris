@@ -1,0 +1,69 @@
+package com.wzkris.usercenter.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.usercenter.domain.TenantInfoDO;
+import com.wzkris.usercenter.response.SelectResponse;
+import org.springframework.lang.Nullable;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * 租户层
+ *
+ * @author wzkris
+ */
+public interface TenantInfoService extends IService<TenantInfoDO> {
+
+    /**
+     * 租户选择列表
+     *
+     * @param tenantName 租户名称
+     */
+    List<SelectResponse> listSelect(@Nullable String tenantName);
+
+    /**
+     * 添加租户, 会创建租户管理员账号
+     *
+     * @param tenant   参数
+     * @param username 登录账户
+     * @param password 登录密码
+     */
+    boolean saveTenant(TenantInfoDO tenant, String username, String password);
+
+    /**
+     * 删除租户及相关信息
+     *
+     * @param tenantId 租户ID
+     */
+    boolean removeTenant(Long tenantId);
+
+    /**
+     * 校验租户账号数量
+     *
+     * @param tenantId 租户ID
+     * @return true通过 false不通过
+     */
+    boolean checkAccountLimit(Long tenantId);
+
+    /**
+     * 校验租户职位数量
+     *
+     * @param tenantId 租户ID
+     * @return true通过 false不通过
+     */
+    boolean checkPostLimit(Long tenantId);
+
+    /**
+     * 校验是否租户超管
+     *
+     * @param memberIds 用户ID
+     */
+    boolean checkAdministrator(List<Long> memberIds);
+
+    default boolean checkAdministrator(Long memberId) {
+        return this.checkAdministrator(Collections.singletonList(memberId));
+    }
+
+}
+

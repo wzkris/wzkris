@@ -36,37 +36,38 @@ wzkris
 ├── sql                    // 数据库脚本(MySQL/PostgreSQL)
 ├── wzkris-auth            // OAuth2认证授权服务
 │   ├── wzkris-auth-biz    // 认证业务实现
-│   └── wzkris-auth-rmi    // 认证远程接口
+│   └── wzkris-auth-api    // 认证远程接口
 ├── wzkris-bom             // 依赖版本管理
 ├── wzkris-common          // 公共模块集合
-│   ├── wzkris-common-apikey        // API密钥管理
 │   ├── wzkris-common-captcha       // 验证码模块
 │   ├── wzkris-common-core          // 核心工具包
 │   ├── wzkris-common-excel         // Excel处理
+│   ├── wzkris-common-httpclient    // HTTP远程调用封装
 │   ├── wzkris-common-loadbalancer  // 负载均衡
 │   ├── wzkris-common-log           // 日志记录
-│   ├── wzkris-common-notifier      // 通知SDK集成
-│   ├── wzkris-common-httpservice   // 远程调用
-│   ├── wzkris-common-orm           // 持久层框架
-│   ├── wzkris-common-redis         // Redis缓存
-│   ├── wzkris-common-seata         // 分布式事务
-│   ├── wzkris-common-security      // 安全模块
-│   ├── wzkris-common-sentinel      // 限流熔断
-│   ├── wzkris-common-statemachine  // 状态机
-│   ├── wzkris-common-swagger       // API文档
-│   ├── wzkris-common-thread        // 线程池
-│   ├── wzkris-common-validator     // 数据校验
-│   ├── wzkris-common-web           // Web基础
-│   └── wzkris-common-weixin-sdk    // 微信SDK
+│   ├── wzkris-common-notifier      // 通知SDK集成(钉钉/企业微信等)
+│   ├── wzkris-common-orm           // 持久层框架封装(MyBatis-Plus)
+│   ├── wzkris-common-redis         // Redis缓存封装
+│   ├── wzkris-common-security      // 安全模块(权限校验、数据脱敏等)
+│   ├── wzkris-common-sentinel      // 限流熔断(Sentinel集成)
+│   ├── wzkris-common-swagger       // API文档封装(Knife4j集成)
+│   ├── wzkris-common-validator     // 数据校验扩展
+│   ├── wzkris-common-web           // Web基础组件封装
+│   └── wzkris-common-weixin-sdk    // 微信开放平台SDK封装
 ├── wzkris-demo            // 示例模块
+│   ├── oauth2-client-demo     // OAuth2客户端示例
 │   ├── wzkris-mq-demo         // RocketMQ Stream 示例
-│   └── wzkris-pg-bus-demo     // PostgreSQL LISTEN/NOTIFY + MyBatis-Plus 示例
+│   └── wzkris-pg-bus-demo     // PostgreSQL LISTEN/NOTIFY + MyBatis-Plus 轻量级消息总线示例
 ├── wzkris-extends         // 扩展模块
-│   └── wzkris-monitor-admin  // 监控中心
-├── wzkris-gateway         // API网关
+│   └── wzkris-monitor-admin  // 监控中心(Spring Boot Admin集成)
+├── wzkris-gateway         // API网关(Spring Cloud Gateway)
 ├── wzkris-modules         // 业务功能模块
-│   ├── wzkris-modules-message     // 消息服务
-│   └── wzkris-modules-principal   // 主体信息服务
+│   ├── wzkris-system          // 系统服务
+│   │   ├── wzkris-system-api  // 系统服务远程接口
+│   │   └── wzkris-system-biz  // 系统服务业务实现
+│   └── wzkris-user-center     // 用户中心服务
+│       ├── wzkris-user-center-api  // 用户中心服务远程接口
+│       └── wzkris-user-center-biz  // 用户中心服务业务实现
 └── pom.xml                // 项目依赖管理
 ```
 
@@ -99,8 +100,8 @@ wzkris
    
    **PostgreSQL数据库（主数据库）**
    - 创建PostgreSQL数据库（推荐版本 12+）
-   - 执行 `sql/postgresql/wzkris_principal.sql` 初始化主体服务数据库
-   - 执行 `sql/postgresql/wzkris_message.sql` 初始化消息服务数据库
+   - 执行 `sql/postgresql/wzkris_user_center.sql` 初始化用户中心数据库
+   - 执行 `sql/postgresql/wzkris_system.sql` 初始化系统服务数据库
    
    **MySQL数据库（Nacos配置中心）**
    - 创建MySQL数据库（推荐版本 8.0+）
@@ -126,8 +127,8 @@ wzkris
      1. Nacos（服务注册与配置中心）
      2. Gateway (8080) - API网关服务
      3. Auth (9000) - 认证授权服务
-     4. Principal (8000) - 主体信息服务
-     5. Message (5555) - 消息服务
+     4. User-Center (8000) - 用户中心服务
+     5. System (5555) - 系统服务
      6. Monitor (9100) - 监控中心（可选）
 
 ### 服务端口说明
@@ -136,15 +137,15 @@ wzkris
 |---------|------|------|
 | Gateway | 8080 | API网关服务 |
 | Auth | 9000 | 认证授权服务 |
-| Principal | 8000 | 主体信息服务 |
-| Message | 5555 | 消息服务 |
+| User-Center | 8000 | 用户中心服务 |
+| System | 5555 | 系统服务 |
 | Monitor | 9100 | 监控中心 |
 
 ## 📨 PostgreSQL 消息总线 Demo
 
 `wzkris-demo/wzkris-pg-bus-demo` 演示了如何通过 **MyBatis-Plus + PostgreSQL NOTIFY/LISTEN** 组合出轻量级消息总线，覆盖如下能力：
 
-- MyBatis-Plus 管理消息表 `demo_bus_message`（字段包含 channel、title、payload、status）
+- MyBatis-Plus 管理消息表 `demo_bus_system`（字段包含 channel、title、payload、status）
 - 通过 `pg_notify` 推送变更事件，监听线程常驻 `LISTEN <channel>`
 - REST API 用于发消息、补发、手动 ACK，便于联调
 
@@ -162,13 +163,13 @@ wzkris
 4. 调用接口
    ```bash
    # 发布一条消息
-   curl -X POST http://localhost:3341/messages \
+   curl -X POST http://localhost:3341/systems \
      -H "Content-Type: application/json" \
      -d '{"title":"demo","payload":"hello pg bus"}'
    # 重放
-   curl -X POST http://localhost:3341/messages/{id}/resend
+   curl -X POST http://localhost:3341/systems/{id}/resend
    # 查询
-   curl http://localhost:3341/messages
+   curl http://localhost:3341/systems
    ```
 
 ### 访问方式

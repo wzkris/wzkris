@@ -1,5 +1,6 @@
 package com.wzkris.common.excel.core;
 
+import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.FieldCache;
 import com.alibaba.excel.metadata.FieldWrapper;
 import com.alibaba.excel.util.ClassUtils;
@@ -47,6 +48,21 @@ public class ExcelDownHandler implements SheetWriteHandler {
      * 联动选择数据Sheet名的头
      */
     private static final String LINKED_OPTIONS_SHEET_NAME = "linkedOptions";
+
+    /**
+     * 下拉框最大校验行数
+     */
+    private static final int MAX_VALIDATION_ROWS = 1000;
+
+    /**
+     * 使用额外表形式的下拉框选项数量阈值
+     */
+    private static final int SHEET_DROPDOWN_THRESHOLD = 20;
+
+    /**
+     * 简单下拉框选项数量阈值
+     */
+    private static final int SIMPLE_DROPDOWN_THRESHOLD = 10;
 
     /**
      * 下拉可选项
@@ -109,14 +125,14 @@ public class ExcelDownHandler implements SheetWriteHandler {
                 try {
                     values = (List<Object>) FieldUtils.readField(format.enumClass(), format.textField(), true);
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    throw new ExcelCommonException("读取枚举字段失败: " + format.enumClass().getName(), e);
                 }
                 options = values.stream().map(String::valueOf).collect(Collectors.toList());
             }
             if (CollectionUtils.isNotEmpty(options)) {
                 // 仅当下拉可选项不为空时执行
-                if (options.size() > 20) {
-                    // 这里限制如果可选项大于20，则使用额外表形式
+                if (options.size() > SHEET_DROPDOWN_THRESHOLD) {
+                    // 这里限制如果可选项大于阈值，则使用额外表形式
                     dropDownWithSheet(helper, workbook, sheet, index, options);
                 } else {
                     // 否则使用固定值形式
@@ -132,8 +148,8 @@ public class ExcelDownHandler implements SheetWriteHandler {
             if (!everyOptions.getNextOptions().isEmpty()) {
                 // 当二级选项不为空时，使用额外关联表的形式
                 dropDownLinkedOptions(helper, workbook, sheet, everyOptions);
-            } else if (everyOptions.getOptions().size() > 10) {
-                // 当一级选项参数个数大于10，使用额外表的形式
+            } else if (everyOptions.getOptions().size() > SIMPLE_DROPDOWN_THRESHOLD) {
+                // 当一级选项参数个数大于阈值，使用额外表的形式
                 dropDownWithSheet(helper, workbook, sheet, everyOptions.getIndex(), everyOptions.getOptions());
             } else if (!everyOptions.getOptions().isEmpty()) {
                 // 当一级选项个数不为空，使用默认形式
@@ -224,7 +240,7 @@ public class ExcelDownHandler implements SheetWriteHandler {
             // 数据验证为序列模式，引用到每一个主表中的二级选项位置
             // 创建子项的名称管理器，只是为了使得Excel可以识别到数据
             String mainSheetFirstOptionsColumnName = getExcelColumnName(options.getIndex());
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < MAX_VALIDATION_ROWS; i++) {
                 // 以一级选项对应的主体所在位置创建二级下拉
                 String secondOptionsFunction = String.format("=INDIRECT(%s%d)", mainSheetFirstOptionsColumnName, i + 1);
                 // 二级只能主表每一行的每一列添加二级校验
@@ -309,7 +325,7 @@ public class ExcelDownHandler implements SheetWriteHandler {
     private void markOptionsToSheet(
             DataValidationHelper helper, Sheet sheet, Integer celIndex, DataValidationConstraint constraint) {
         // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
-        CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, celIndex, celIndex);
+        CellRangeAddressList addressList = new CellRangeAddressList(1, MAX_VALIDATION_ROWS, celIndex, celIndex);
         markDataValidationToSheet(helper, sheet, constraint, addressList);
     }
 
@@ -348,7 +364,6 @@ public class ExcelDownHandler implements SheetWriteHandler {
             // 选定提示
             dataValidation.createPromptBox("填写说明：", "填写内容只能为下拉中数据，其他数据将导致导入失败");
             dataValidation.setShowPromptBox(true);
-            sheet.addValidationData(dataValidation);
         } else {
             dataValidation.setSuppressDropDownArrow(false);
         }

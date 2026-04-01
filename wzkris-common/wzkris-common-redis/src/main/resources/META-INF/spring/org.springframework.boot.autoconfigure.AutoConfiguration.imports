@@ -1,1 +1,2 @@
 com.wzkris.common.redis.config.RedisAutoConfiguration
+com.wzkris.common.redis.config.RedisCacheAutoConfiguration

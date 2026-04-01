@@ -19,6 +19,7 @@
 
     <modules>
         <module>wzkris-monitor-admin</module>
+        <module>wzkris-mqtt-server</module>
     </modules>
 
 

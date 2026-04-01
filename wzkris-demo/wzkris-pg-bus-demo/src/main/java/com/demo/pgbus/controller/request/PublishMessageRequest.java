@@ -18,4 +18,3 @@ public class PublishMessageRequest {
     private String payload;
 
 }
-

@@ -1,0 +1,173 @@
+package com.wzkris.common.remote.config;
+
+import com.wzkris.common.remote.fallback.RemoteInterfaceFallback;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+/**
+ * 创建Remote Interface服务代理的 FactoryBean。
+ */
+public class RemoteInterfaceFactoryBean<T> implements FactoryBean<T>, InitializingBean,
+        BeanFactoryAware, ApplicationContextAware {
+
+    private Class<T> type;
+
+    private String url;
+
+    private String serviceId;
+
+    private String path;
+
+    private Class<? extends RemoteInterfaceFallback<?>> fallbackFactory;
+
+    private BeanFactory beanFactory;
+
+    private ApplicationContext applicationContext;
+
+    private volatile T proxy;
+
+    @Override
+    public void afterPropertiesSet() {
+        Assert.notNull(type, "必须提供 RemoteInterface 接口类型");
+        // 验证：必须提供 url 或 serviceId 中的一个
+        boolean hasUrl = StringUtils.hasText(url);
+        boolean hasServiceId = StringUtils.hasText(serviceId);
+        Assert.isTrue(hasUrl || hasServiceId,
+                "RemoteInterface 必须指定 'url' 或 'serviceId' 其中之一");
+        if (hasUrl) {
+            Assert.isTrue(url.startsWith("http"), "url必须为http开头");
+        }
+    }
+
+    private RestClient.Builder getRestClientBuilder() {
+        return applicationContext.getBean("customRestClientBuilder", RestClient.Builder.class);
+    }
+
+    private String buildBaseUrl() {
+        // 优先使用 url
+        if (StringUtils.hasText(url)) {
+            return url + path;
+        }
+        // 否则使用 serviceId（服务发现）
+        return "http://" + serviceId + path;
+    }
+
+    private T wrapWithFallbackIfNecessary(T target) {
+        if (fallbackFactory == null
+                || RemoteInterfaceFallback.NoOp.class.equals(fallbackFactory)) {
+            return target;
+        }
+        RemoteInterfaceFallback<T> fallbackFactory = getFallbackFactory();
+        InvocationHandler handler = new FallbackInvocationHandler<>(target, fallbackFactory);
+        return (T) Proxy.newProxyInstance(
+                type.getClassLoader(),
+                new Class[]{type},
+                handler
+        );
+    }
+
+    @Override
+    public T getObject() {
+        if (proxy == null) {
+            synchronized (this) {
+                if (proxy == null) {
+                    proxy = createProxy();
+                }
+            }
+        }
+        return proxy;
+    }
+
+    private T createProxy() {
+        RestClient.Builder builder = getRestClientBuilder();
+        RestClient restClient = builder.baseUrl(buildBaseUrl()).build();
+
+        HttpServiceProxyFactory proxyFactory = HttpServiceProxyFactory
+                .builderFor(RestClientAdapter.create(restClient))
+                .build();
+
+        T target = proxyFactory.createClient(type);
+        return wrapWithFallbackIfNecessary(target);
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return type;
+    }
+
+    public void setType(Class<T> type) {
+        this.type = type;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    private RemoteInterfaceFallback<T> getFallbackFactory() {
+        if (!(beanFactory instanceof ListableBeanFactory listableBeanFactory)) {
+            throw new IllegalStateException("BeanFactory 必须是 ListableBeanFactory");
+        }
+        return (RemoteInterfaceFallback<T>) listableBeanFactory.getBean(fallbackFactory);
+    }
+
+    public void setFallbackFactory(Class<? extends RemoteInterfaceFallback<?>> fallbackFactory) {
+        this.fallbackFactory = fallbackFactory;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    private static class FallbackInvocationHandler<T> implements InvocationHandler {
+
+        private final T target;
+
+        private final RemoteInterfaceFallback<T> fallbackFactory;
+
+        private FallbackInvocationHandler(T target, RemoteInterfaceFallback<T> fallbackFactory) {
+            this.target = target;
+            this.fallbackFactory = fallbackFactory;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            try {
+                return method.invoke(target, args);
+            } catch (Throwable ex) {
+                Throwable cause = ex instanceof InvocationTargetException && ex.getCause() != null
+                        ? ex.getCause()
+                        : ex;
+                T fallback = fallbackFactory.create(cause);
+                return method.invoke(fallback, args);
+            }
+        }
+
+    }
+
+}

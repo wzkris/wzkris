@@ -1,4 +1,0 @@
-com.wzkris.principal.httpservice.admin.fallback.AdminInfoHttpServiceFallback
-com.wzkris.principal.httpservice.customer.fallback.CustomerInfoHttpServiceFallback
-com.wzkris.principal.httpservice.member.fallback.MemberInfoHttpServiceFallback
-com.wzkris.principal.httpservice.oauth2.fallback.OAuth2ClientHttpServiceFallback

@@ -32,8 +32,11 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-message-rmi</artifactId>
+            <artifactId>wzkris-common-remote</artifactId>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
 </project>
+
+

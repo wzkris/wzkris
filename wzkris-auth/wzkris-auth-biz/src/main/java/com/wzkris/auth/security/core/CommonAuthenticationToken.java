@@ -1,39 +1,57 @@
 package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.BaseLoginUser;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author wzkris
  * @date 2024/3/11
  * @description AuthenticationToken基类，适配多端登录参数
  */
-public abstract class CommonAuthenticationToken extends AbstractAuthenticationToken {
+public class CommonAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final MyPrincipal principal;
+    private final BaseLoginUser baseLoginUser;
 
-    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
-        this(authorities, null);
-    }
+    @Getter
+    private final Set<String> perms;
 
-    protected CommonAuthenticationToken(Collection<? extends GrantedAuthority> authorities, MyPrincipal principal) {
-        super(authorities);
-        this.principal = principal;
-        if (principal != null) {
+    @Getter
+    private final LoginTypeEnum loginType;
+
+    @Getter
+    @Setter
+    private String accessToken;
+
+    @Getter
+    @Setter
+    private String refreshToken;
+
+    public CommonAuthenticationToken(BaseLoginUser baseLoginUser, Set<String> perms, LoginTypeEnum loginType) {
+        super(null);
+        this.baseLoginUser = baseLoginUser;
+        this.perms = perms;
+        this.loginType = loginType;
+        if (baseLoginUser != null) {
             super.setAuthenticated(true);
         }
     }
 
-    public abstract LoginTypeEnum getLoginType();
+    @Override
+    public Object getCredentials() {
+        return accessToken;
+    }
 
     @Override
-    public final MyPrincipal getPrincipal() {
-        return this.principal;
+    public final BaseLoginUser getPrincipal() {
+        return this.baseLoginUser;
     }
 
     @Override
@@ -43,8 +61,8 @@ public abstract class CommonAuthenticationToken extends AbstractAuthenticationTo
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        if (principal != null) {
-            return AuthorityUtils.createAuthorityList(principal.getPermissions());
+        if (perms != null) {
+            return AuthorityUtils.createAuthorityList(perms);
         }
         return super.getAuthorities();
     }

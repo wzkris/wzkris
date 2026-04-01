@@ -2,12 +2,12 @@ package com.wzkris.common.excel.utils;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.convert.ExcelBigNumberConvert;
 import com.wzkris.common.excel.core.*;
 import jakarta.servlet.ServletOutputStream;
@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Excel相关处理
@@ -75,68 +74,7 @@ public class ExcelUtil {
     }
 
     /**
-     * 导出excel
-     *
-     * @param list      导出数据集合
-     * @param sheetName 工作表的名称
-     * @param clazz     实体类
-     * @param response  响应体
-     */
-    public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, HttpServletResponse response) {
-        try {
-            resetResponse(sheetName, response);
-            ServletOutputStream os = response.getOutputStream();
-            exportExcel(list, sheetName, clazz, false, os, null);
-        } catch (IOException e) {
-            throw new RuntimeException("导出Excel异常");
-        }
-    }
-
-    /**
-     * 导出excel
-     *
-     * @param list      导出数据集合
-     * @param sheetName 工作表的名称
-     * @param clazz     实体类
-     * @param response  响应体
-     * @param options   级联下拉选
-     */
-    public static <T> void exportExcel(
-            List<T> list,
-            String sheetName,
-            Class<T> clazz,
-            HttpServletResponse response,
-            List<DropDownOptions> options) {
-        try {
-            resetResponse(sheetName, response);
-            ServletOutputStream os = response.getOutputStream();
-            exportExcel(list, sheetName, clazz, false, os, options);
-        } catch (IOException e) {
-            throw new RuntimeException("导出Excel异常");
-        }
-    }
-
-    /**
-     * 导出excel
-     *
-     * @param list      导出数据集合
-     * @param sheetName 工作表的名称
-     * @param clazz     实体类
-     * @param merge     是否合并单元格
-     * @param response  响应体
-     */
-    public static <T> void exportExcel(
-            List<T> list, String sheetName, Class<T> clazz, boolean merge, HttpServletResponse response) {
-        try {
-            resetResponse(sheetName, response);
-            ServletOutputStream os = response.getOutputStream();
-            exportExcel(list, sheetName, clazz, merge, os, null);
-        } catch (IOException e) {
-            throw new RuntimeException("导出Excel异常");
-        }
-    }
-
-    /**
+     * /**
      * 导出excel
      *
      * @param list      导出数据集合
@@ -147,45 +85,14 @@ public class ExcelUtil {
      * @param options   级联下拉选
      */
     public static <T> void exportExcel(
-            List<T> list,
-            String sheetName,
-            Class<T> clazz,
-            boolean merge,
-            HttpServletResponse response,
-            List<DropDownOptions> options) {
+            List<T> list, String sheetName, Class<T> clazz, boolean merge, HttpServletResponse response, List<DropDownOptions> options) {
         try {
             resetResponse(sheetName, response);
             ServletOutputStream os = response.getOutputStream();
             exportExcel(list, sheetName, clazz, merge, os, options);
         } catch (IOException e) {
-            throw new RuntimeException("导出Excel异常");
+            throw new ExcelCommonException("导出Excel异常: " + e.getMessage(), e);
         }
-    }
-
-    /**
-     * 导出excel
-     *
-     * @param list      导出数据集合
-     * @param sheetName 工作表的名称
-     * @param clazz     实体类
-     * @param os        输出流
-     */
-    public static <T> void exportExcel(List<T> list, String sheetName, Class<T> clazz, OutputStream os) {
-        exportExcel(list, sheetName, clazz, false, os, null);
-    }
-
-    /**
-     * 导出excel
-     *
-     * @param list      导出数据集合
-     * @param sheetName 工作表的名称
-     * @param clazz     实体类
-     * @param os        输出流
-     * @param options   级联下拉选内容
-     */
-    public static <T> void exportExcel(
-            List<T> list, String sheetName, Class<T> clazz, OutputStream os, List<DropDownOptions> options) {
-        exportExcel(list, sheetName, clazz, false, os, options);
     }
 
     /**
@@ -198,12 +105,7 @@ public class ExcelUtil {
      * @param os        输出流
      */
     public static <T> void exportExcel(
-            List<T> list,
-            String sheetName,
-            Class<T> clazz,
-            boolean merge,
-            OutputStream os,
-            List<DropDownOptions> options) {
+            List<T> list, String sheetName, Class<T> clazz, boolean merge, OutputStream os, List<DropDownOptions> options) {
         ExcelWriterSheetBuilder builder = EasyExcel.write(os, clazz)
                 .autoCloseStream(false)
                 // 自动适配
@@ -221,7 +123,76 @@ public class ExcelUtil {
     }
 
     /**
-     * 单表多数据模板导出 模板格式为 {.属性}
+     * 多sheet导出excel
+     *
+     * @param dataMap  Map key为sheet名称，value为数据列表
+     * @param clazz    实体类
+     * @param merge    是否合并单元格
+     * @param filename 文件名
+     * @param response 响应体
+     * @param options  级联下拉选（所有sheet共用）
+     */
+    public static <T> void exportExcelMultiSheet(
+            Map<String, List<T>> dataMap, Class<T> clazz, boolean merge, String filename, HttpServletResponse response, List<DropDownOptions> options) {
+        try {
+            resetResponse(filename, response);
+            ServletOutputStream os = response.getOutputStream();
+            exportExcelMultiSheet(dataMap, clazz, merge, os, options);
+        } catch (IOException e) {
+            throw new ExcelCommonException("导出Excel异常: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 多sheet导出excel
+     *
+     * @param dataMap Map key为sheet名称，value为数据列表
+     * @param clazz   实体类
+     * @param merge   是否合并单元格
+     * @param os      输出流
+     * @param options 级联下拉选（所有sheet共用）
+     */
+    public static <T> void exportExcelMultiSheet(
+            Map<String, List<T>> dataMap, Class<T> clazz, boolean merge, OutputStream os, List<DropDownOptions> options) {
+        if (MapUtils.isEmpty(dataMap)) {
+            throw new IllegalArgumentException("数据为空");
+        }
+        // 创建ExcelWriter（不指定sheet，用于多sheet导出）
+        ExcelWriter excelWriter = EasyExcel.write(os, clazz)
+                .autoCloseStream(false)
+                // 自动适配
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                // 大数值自动转换 防止失真
+                .registerConverter(new ExcelBigNumberConvert())
+                .build();
+        try {
+            int sheetIndex = 0;
+            for (Map.Entry<String, List<T>> entry : dataMap.entrySet()) {
+                String sheetName = entry.getKey();
+                List<T> list = entry.getValue();
+                if (list == null) {
+                    list = List.of();
+                }
+                // 为每个sheet创建WriteSheet并配置handlers
+                ExcelWriterSheetBuilder builder = EasyExcel.writerSheet(sheetIndex, sheetName);
+                if (merge && CollectionUtils.isNotEmpty(list)) {
+                    // 合并处理器
+                    builder.registerWriteHandler(new CellMergeStrategy(list, true));
+                }
+                // 添加下拉框操作
+                builder.registerWriteHandler(new ExcelDownHandler(options));
+                // 创建WriteSheet并写入数据
+                WriteSheet writeSheet = builder.build();
+                excelWriter.write(list, writeSheet);
+                sheetIndex++;
+            }
+        } finally {
+            excelWriter.finish();
+        }
+    }
+
+    /**
+     * 单sheet模板导出 模板格式为 {key.属性}
      *
      * @param filename     文件名
      * @param templatePath 模板路径 resource 目录下的路径包括模板文件名
@@ -231,18 +202,18 @@ public class ExcelUtil {
      * @param response     响应体
      */
     public static void exportTemplate(
-            List<Object> data, String filename, String templatePath, HttpServletResponse response) {
+            Map<String, Object> data, String filename, String templatePath, HttpServletResponse response) {
         try {
             resetResponse(filename, response);
             ServletOutputStream os = response.getOutputStream();
             exportTemplate(data, templatePath, os);
         } catch (IOException e) {
-            throw new RuntimeException("导出Excel异常");
+            throw new ExcelCommonException("导出Excel异常: " + e.getMessage(), e);
         }
     }
 
     /**
-     * 单表多数据模板导出 模板格式为 {.属性}
+     * 单sheet模板导出 模板格式为 {key.属性}
      *
      * @param templatePath 模板路径 resource 目录下的路径包括模板文件名
      *                     例如: excel/temp.xlsx
@@ -250,43 +221,30 @@ public class ExcelUtil {
      * @param data         模板需要的数据
      * @param os           输出流
      */
-    public static void exportTemplate(List<Object> data, String templatePath, OutputStream os) throws IOException {
-        ClassPathResource templateResource = new ClassPathResource(templatePath);
-        ExcelWriter excelWriter = EasyExcel.write(os)
-                .withTemplate(templateResource.getInputStream())
-                .autoCloseStream(false)
-                // 大数值自动转换 防止失真
-                .registerConverter(new ExcelBigNumberConvert())
-                .build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        if (CollectionUtils.isEmpty(data)) {
+    public static void exportTemplate(Map<String, Object> data, String templatePath, OutputStream os) throws IOException {
+        if (MapUtils.isEmpty(data)) {
             throw new IllegalArgumentException("数据为空");
         }
-        // 单表多数据导出 模板格式为 {.属性}
-        for (Object d : data) {
-            excelWriter.fill(d, writeSheet);
-        }
-        excelWriter.finish();
-    }
-
-    /**
-     * 多表多数据模板导出 模板格式为 {key.属性}
-     *
-     * @param filename     文件名
-     * @param templatePath 模板路径 resource 目录下的路径包括模板文件名
-     *                     例如: excel/temp.xlsx
-     *                     重点: 模板文件必须放置到启动类对应的 resource 目录下
-     * @param data         模板需要的数据
-     * @param response     响应体
-     */
-    public static void exportTemplateMultiList(
-            Map<String, Object> data, String filename, String templatePath, HttpServletResponse response) {
-        try {
-            resetResponse(filename, response);
-            ServletOutputStream os = response.getOutputStream();
-            exportTemplateMultiList(data, templatePath, os);
-        } catch (IOException e) {
-            throw new RuntimeException("导出Excel异常");
+        ClassPathResource templateResource = new ClassPathResource(templatePath);
+        try (InputStream templateInputStream = templateResource.getInputStream()) {
+            ExcelWriter excelWriter = EasyExcel.write(os)
+                    .withTemplate(templateInputStream)
+                    .autoCloseStream(false)
+                    // 大数值自动转换 防止失真
+                    .registerConverter(new ExcelBigNumberConvert())
+                    .build();
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+            for (Map.Entry<String, Object> map : data.entrySet()) {
+                // 设置列表后续还有数据
+                if (map.getValue() instanceof Collection) {
+                    // 多表导出必须使用 FillWrapper
+                    excelWriter.fill(new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
+                } else {
+                    excelWriter.fill(map.getValue(), writeSheet);
+                }
+            }
+            excelWriter.finish();
         }
     }
 
@@ -307,43 +265,8 @@ public class ExcelUtil {
             ServletOutputStream os = response.getOutputStream();
             exportTemplateMultiSheet(data, templatePath, os);
         } catch (IOException e) {
-            throw new RuntimeException("导出Excel异常");
+            throw new ExcelCommonException("导出Excel异常: " + e.getMessage(), e);
         }
-    }
-
-    /**
-     * 多表多数据模板导出 模板格式为 {key.属性}
-     *
-     * @param templatePath 模板路径 resource 目录下的路径包括模板文件名
-     *                     例如: excel/temp.xlsx
-     *                     重点: 模板文件必须放置到启动类对应的 resource 目录下
-     * @param data         模板需要的数据
-     * @param os           输出流
-     */
-    public static void exportTemplateMultiList(Map<String, Object> data, String templatePath, OutputStream os) throws IOException {
-        ClassPathResource templateResource = new ClassPathResource(templatePath);
-        ExcelWriter excelWriter = EasyExcel.write(os)
-                .withTemplate(templateResource.getInputStream())
-                .autoCloseStream(false)
-                // 大数值自动转换 防止失真
-                .registerConverter(new ExcelBigNumberConvert())
-                .build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        if (MapUtils.isEmpty(data)) {
-            throw new IllegalArgumentException("数据为空");
-        }
-        for (Map.Entry<String, Object> map : data.entrySet()) {
-            // 设置列表后续还有数据
-            FillConfig fillConfig =
-                    FillConfig.builder().forceNewRow(Boolean.TRUE).build();
-            if (map.getValue() instanceof Collection) {
-                // 多表导出必须使用 FillWrapper
-                excelWriter.fill(new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
-            } else {
-                excelWriter.fill(map.getValue(), writeSheet);
-            }
-        }
-        excelWriter.finish();
     }
 
     /**
@@ -356,38 +279,39 @@ public class ExcelUtil {
      * @param os           输出流
      */
     public static void exportTemplateMultiSheet(List<Map<String, Object>> data, String templatePath, OutputStream os) throws IOException {
-        ClassPathResource templateResource = new ClassPathResource(templatePath);
-        ExcelWriter excelWriter = EasyExcel.write(os)
-                .withTemplate(templateResource.getInputStream())
-                .autoCloseStream(false)
-                // 大数值自动转换 防止失真
-                .registerConverter(new ExcelBigNumberConvert())
-                .build();
         if (CollectionUtils.isEmpty(data)) {
             throw new IllegalArgumentException("数据为空");
         }
-        for (int i = 0; i < data.size(); i++) {
-            WriteSheet writeSheet = EasyExcel.writerSheet(i).build();
-            for (Map.Entry<String, Object> map : data.get(i).entrySet()) {
-                // 设置列表后续还有数据
-                FillConfig fillConfig =
-                        FillConfig.builder().forceNewRow(Boolean.TRUE).build();
-                if (map.getValue() instanceof Collection) {
-                    // 多表导出必须使用 FillWrapper
-                    excelWriter.fill(
-                            new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
-                } else {
-                    excelWriter.fill(map.getValue(), writeSheet);
+        ClassPathResource templateResource = new ClassPathResource(templatePath);
+        try (InputStream templateInputStream = templateResource.getInputStream()) {
+            ExcelWriter excelWriter = EasyExcel.write(os)
+                    .withTemplate(templateInputStream)
+                    .autoCloseStream(false)
+                    // 大数值自动转换 防止失真
+                    .registerConverter(new ExcelBigNumberConvert())
+                    .build();
+            FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+            for (int i = 0; i < data.size(); i++) {
+                WriteSheet writeSheet = EasyExcel.writerSheet(i).build();
+                for (Map.Entry<String, Object> map : data.get(i).entrySet()) {
+                    // 设置列表后续还有数据
+                    if (map.getValue() instanceof Collection) {
+                        // 多表导出必须使用 FillWrapper
+                        excelWriter.fill(
+                                new FillWrapper(map.getKey(), (Collection<?>) map.getValue()), fillConfig, writeSheet);
+                    } else {
+                        excelWriter.fill(map.getValue(), writeSheet);
+                    }
                 }
             }
+            excelWriter.finish();
         }
-        excelWriter.finish();
     }
 
     /**
      * 重置响应体
      */
-    private static void resetResponse(String sheetName, HttpServletResponse response)
+    static void resetResponse(String sheetName, HttpServletResponse response)
             throws UnsupportedEncodingException {
         String filename = encodingFilename(sheetName);
         String encode = URLEncoder.encode(filename, StandardCharsets.UTF_8);
@@ -397,68 +321,10 @@ public class ExcelUtil {
     }
 
     /**
-     * 解析导出值 0=男,1=女,2=未知
-     *
-     * @param propertyValue 参数值
-     * @param converterExp  翻译注解
-     * @param separator     分隔符
-     * @return 解析后值
-     */
-    public static String convertByExp(String propertyValue, String converterExp, String separator) {
-        StringBuilder propertyString = new StringBuilder();
-        String[] convertSource = converterExp.split(",");
-        for (String item : convertSource) {
-            String[] itemArray = item.split("=");
-            if (StringUtil.containsAny(propertyValue, separator)) {
-                for (String value : propertyValue.split(separator)) {
-                    if (itemArray[0].equals(value)) {
-                        propertyString.append(itemArray[1]).append(separator);
-                        break;
-                    }
-                }
-            } else {
-                if (itemArray[0].equals(propertyValue)) {
-                    return itemArray[1];
-                }
-            }
-        }
-        return StringUtil.removeEnd(propertyString.toString(), separator);
-    }
-
-    /**
-     * 反向解析值 男=0,女=1,未知=2
-     *
-     * @param propertyValue 参数值
-     * @param converterExp  翻译注解
-     * @param separator     分隔符
-     * @return 解析后值
-     */
-    public static String reverseByExp(String propertyValue, String converterExp, String separator) {
-        StringBuilder propertyString = new StringBuilder();
-        String[] convertSource = converterExp.split(",");
-        for (String item : convertSource) {
-            String[] itemArray = item.split("=");
-            if (StringUtil.containsAny(propertyValue, separator)) {
-                for (String value : propertyValue.split(separator)) {
-                    if (itemArray[1].equals(value)) {
-                        propertyString.append(itemArray[0]).append(separator);
-                        break;
-                    }
-                }
-            } else {
-                if (itemArray[1].equals(propertyValue)) {
-                    return itemArray[0];
-                }
-            }
-        }
-        return StringUtil.removeEnd(propertyString.toString(), separator);
-    }
-
-    /**
      * 编码文件名
      */
-    public static String encodingFilename(String filename) {
-        return UUID.randomUUID() + "_" + filename + ".xlsx";
+    static String encodingFilename(String filename) {
+        return System.currentTimeMillis() + "_" + filename + ".xlsx";
     }
 
 }

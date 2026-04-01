@@ -6,6 +6,7 @@ import jakarta.servlet.DispatcherType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,10 +14,8 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
-import static io.netty.handler.codec.http.HttpMethod.DELETE;
-import static io.netty.handler.codec.http.HttpMethod.POST;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
@@ -28,6 +27,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class AdminServerClientConfig {
+
+    private final PathPatternRequestMatcher.Builder requestMatcher = PathPatternRequestMatcher.withDefaults();
 
     private final AdminServerProperties properties;
 
@@ -64,9 +65,9 @@ public class AdminServerClientConfig {
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                         .ignoringRequestMatchers(
-                                new AntPathRequestMatcher(this.properties.path("/instances"), POST.toString()),
-                                new AntPathRequestMatcher(this.properties.path("/instances/*"), DELETE.toString()),
-                                new AntPathRequestMatcher(this.properties.path("/actuator/**"))));
+                                requestMatcher.matcher(HttpMethod.POST, this.properties.path("/instances")),
+                                requestMatcher.matcher(HttpMethod.DELETE, this.properties.path("/instances/*")),
+                                requestMatcher.matcher(this.properties.path("/actuator/**"))));
 
         return httpSecurity.build();
     }

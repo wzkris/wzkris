@@ -1,17 +1,17 @@
 server:
   port: 9000
+  servlet:
+    context-path: /wzkris-auth-api
 
 spring:
   application:
     name: wzkris-auth
   profiles:
     active: @profiles.active@
-    
 
 weixin:
   miniapp:
     enable: true
-    use-redis: true
     configs:
       - appid: xxx
         secret: xxx

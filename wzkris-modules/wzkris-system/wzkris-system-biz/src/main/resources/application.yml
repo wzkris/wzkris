@@ -1,0 +1,10 @@
+server:
+  port: 5555
+  servlet:
+    context-path: /wzkris-system-api
+
+spring:
+  application:
+    name: wzkris-system
+  profiles:
+    active: @profiles.active@

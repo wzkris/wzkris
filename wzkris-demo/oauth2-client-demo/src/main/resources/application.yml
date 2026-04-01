@@ -1,0 +1,26 @@
+server:
+  port: 3342
+
+spring:
+  application:
+    name: oauth2-client-demo
+  security:
+    oauth2:
+      client:
+        registration:
+          auth-center:                    # registrationId（可自定义）
+            provider: wzkris              # 对应 provider 名称
+            client-id: oauth_client_demo   # 必须与数据库一致
+            client-secret: secret          # 必须与数据库一致
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:3342/login/oauth2/code/{registrationId}"
+            scope: read                    # 必须与数据库一致
+            client-name: 系统
+        provider:
+          wzkris:
+            issuer-uri: http://localhost:9000/wzkris-auth-api  # 授权服务器地址（必须与授权服务器配置的 issuer 完全一致）
+
+logging:
+  level:
+    com.demo.pgbus: DEBUG
+    org.springframework.security: trace

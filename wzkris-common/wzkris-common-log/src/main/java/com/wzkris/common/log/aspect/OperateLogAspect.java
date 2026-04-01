@@ -6,14 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.SpringUtil;
-import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.security.utils.TenantUtil;
-import com.wzkris.message.httpservice.operatelog.req.OperateLogEvent;
+import com.wzkris.common.log.remote.request.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -86,17 +83,18 @@ public class OperateLogAspect {
         OperateLogEvent operateLogEvent = new OperateLogEvent();
 
         // 设置用户信息
-        operateLogEvent.setOperatorId(SecurityUtil.getId());
-        operateLogEvent.setAuthType(SecurityUtil.getAuthType().getValue());
-        operateLogEvent.setOperName(SecurityUtil.getName());
+        operateLogEvent.setOperatorId(SecurityUtil.getUid());
+        AuthTypeEnum authType = SecurityUtil.getAuthType();
+        operateLogEvent.setAuthType(authType.getValue());
+        operateLogEvent.setOperName(SecurityUtil.getLoginUser().getName());
 
         // 设置租户ID
-        if (Objects.equals(SecurityUtil.getAuthType(), AuthTypeEnum.TENANT)) {
-            operateLogEvent.setTenantId(TenantUtil.getTenantId());
+        if (authType == AuthTypeEnum.TENANT) {
+            operateLogEvent.setTenantId(SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId());
         }
 
         // 设置操作信息
-        operateLogEvent.setOperType(operateLog.operateType().getValue());
+        operateLogEvent.setOperType(operateLog.type().getValue());
         operateLogEvent.setSuccess(true);
         operateLogEvent.setOperTime(new Date());
 
@@ -112,7 +110,7 @@ public class OperateLogAspect {
         if (exception != null) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
-        } else if (jsonResult instanceof Result<?> result && !result.isSuccess()) {
+        } else if (jsonResult instanceof Result<?> result && ResultUtil.checkNoData(result)) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
         }
@@ -120,7 +118,7 @@ public class OperateLogAspect {
         // 设置注解信息
         operateLogEvent.setTitle(operateLog.title());
         operateLogEvent.setSubTitle(operateLog.subTitle());
-        operateLogEvent.setOperType(operateLog.operateType().getValue());
+        operateLogEvent.setOperType(operateLog.type().getValue());
 
         // 处理参数和结果
         try {

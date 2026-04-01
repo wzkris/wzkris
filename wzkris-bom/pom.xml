@@ -17,25 +17,10 @@
 
     <properties>
         <revision>4.1.0</revision>
-        <spotless-maven-plugin.version>2.44.4</spotless-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- api密钥模块 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-apikey</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 验证码模块 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-captcha</artifactId>
-                <version>${revision}</version>
-            </dependency>
 
             <!-- 核心模块 -->
             <dependency>
@@ -75,7 +60,7 @@
             <!-- feign调用 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-httpservice</artifactId>
+                <artifactId>wzkris-common-remote</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -93,13 +78,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 分布式事务 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-seata</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- 安全模块 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
@@ -114,24 +92,10 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 状态机-->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-statemachine</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- 接口模块 -->
             <dependency>
                 <groupId>com.wzkris</groupId>
                 <artifactId>wzkris-common-swagger</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 线程池模块 -->
-            <dependency>
-                <groupId>com.wzkris</groupId>
-                <artifactId>wzkris-common-thread</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -159,17 +123,5 @@
         </dependencies>
     </dependencyManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>${spotless-maven-plugin.version}</version>
-                <configuration>
-                    <skip>true</skip> <!-- 跳过当前模块 -->
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
+

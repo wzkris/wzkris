@@ -1,6 +1,6 @@
 package com.wzkris.common.notifier.domain;
 
-import com.wzkris.common.notifier.enums.EmailTemplateKey;
+import com.wzkris.common.notifier.enums.EmailTemplateKeyEnum;
 import lombok.*;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EmailMessage {
 
-    private EmailTemplateKey templateKey;
+    private EmailTemplateKeyEnum templateKey;
 
     private List<String> recipients;
 
@@ -19,10 +19,6 @@ public class EmailMessage {
 
     private String content;
 
-    private String fromEmail;
-
     private String fromName;
 
 }
-
-

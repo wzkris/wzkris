@@ -93,10 +93,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         Result<?> resultBody = (body instanceof Result) ? (Result<?>) body
-                : Result.init(BizBaseCodeEnum.API_REQUEST_ERROR.value(), null, ex.getMessage());
+                : Result.init(BizBaseCodeEnum.SYSTEM_ERROR.value(), null, ex.getMessage());
         return new ResponseEntity<>(resultBody, headers, statusCode);
     }
 
+    @ExceptionHandler(exception = {
+            RuntimeException.class,
+    })
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
+        log.error("请求地址'{} {}',发生系统异常", request.getMethod(), request.getRequestURI(), ex);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Result.init(BizBaseCodeEnum.SYSTEM_ERROR.value(), null, ex.getMessage()));
+    }
+
 }
-
-

@@ -1,13 +1,12 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.constants.QrCodeConstant;
-import com.wzkris.auth.domain.resp.QrTokenResp;
-import com.wzkris.auth.enums.QrCodeStatus;
+import com.wzkris.auth.enums.QrCodeStatusEnum;
+import com.wzkris.auth.response.QrTokenResponse;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.redis.util.RedisUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.annotation.ExControllerStat;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,13 +15,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.Duration;
+import java.util.*;
 
 @Tag(name = "二维码登录")
 @Slf4j
@@ -35,6 +33,8 @@ public class QrLoginController {
 
     private final TokenService tokenService;
 
+    private final RedisTemplate<String, Object> redisTemplate;
+
     @Operation(summary = "二维码")
     @GetMapping
     public Result<?> qrcode() {
@@ -43,8 +43,8 @@ public class QrLoginController {
         Map<String, String> params = new HashMap<>(2);
         params.put("qrcodeId", qrcodeId);
         //存放二维码唯一标识30秒有效
-        RedisUtil.setObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId,
-                new QrTokenResp(QrCodeStatus.WAIT.getValue(), null, null), 60);
+        redisTemplate.opsForValue().set(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId,
+                new QrTokenResponse(QrCodeStatusEnum.WAIT.getValue(), null, null), Duration.ofSeconds(60));
         return Result.ok(params);
     }
 
@@ -52,15 +52,16 @@ public class QrLoginController {
     @PostMapping("/scan")
     public Result<Void> scan(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        QrTokenResp qrTokenResp = RedisUtil.getObj(key, QrTokenResp.class);
-        if (Objects.isNull(qrTokenResp)) {
+        Object value = redisTemplate.opsForValue().get(key);
+        QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
+        if (Objects.isNull(qrTokenResponse)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatus.WAIT.getValue())) {
+        if (!StringUtil.equals(qrTokenResponse.getStatus(), QrCodeStatusEnum.WAIT.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
-        qrTokenResp.setStatus(QrCodeStatus.SCANED.getValue());
-        RedisUtil.setObj(key, qrTokenResp, 60);
+        qrTokenResponse.setStatus(QrCodeStatusEnum.SCANED.getValue());
+        redisTemplate.opsForValue().set(key, qrTokenResponse, Duration.ofSeconds(60));
         return Result.ok();
     }
 
@@ -68,37 +69,42 @@ public class QrLoginController {
     @PostMapping("/confirm")
     public Result<Void> confirm(@Valid @RequestBody String qrcodeId) {
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        QrTokenResp qrTokenResp = RedisUtil.getObj(key, QrTokenResp.class);
-        if (Objects.isNull(qrTokenResp)) {
+        Object value = redisTemplate.opsForValue().get(key);
+        QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
+        if (Objects.isNull(qrTokenResponse)) {
             return Result.requestFail("二维码已过期");
         }
-        if (!StringUtil.equals(qrTokenResp.getStatus(), QrCodeStatus.SCANED.getValue())) {
+        if (!StringUtil.equals(qrTokenResponse.getStatus(), QrCodeStatusEnum.SCANED.getValue())) {
             return Result.requestFail("二维码已被扫描");
         }
 
-        MyPrincipal principal = SecurityUtil.getPrincipal();
-        String accessToken = tokenService.generateAccessToken(principal);
-        String refreshToken = tokenService.generateToken();
-        tokenService.save(principal, accessToken, refreshToken);
+        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        Set<String> permission = SecurityUtil.getPermission();
+        // 生成新的sid
+        String sid = UUID.randomUUID().toString();
+        String accessToken = tokenService.generateAccessToken(loginUser, sid);
+        String refreshToken = tokenService.generateRefreshToken(loginUser, sid);
+        tokenService.save(loginUser, sid, permission);
 
-        qrTokenResp.setStatus(QrCodeStatus.CONFIRM.getValue());
-        qrTokenResp.setAccessToken(accessToken);
-        qrTokenResp.setRefreshToken(refreshToken);
-        RedisUtil.setObj(key, qrTokenResp, 60);
+        qrTokenResponse.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
+        qrTokenResponse.setAccessToken(accessToken);
+        qrTokenResponse.setRefreshToken(refreshToken);
+        redisTemplate.opsForValue().set(key, qrTokenResponse, Duration.ofSeconds(60));
         return Result.ok();
     }
 
     @Operation(summary = "轮询获取扫码结果")
     @GetMapping("/poll-status")
-    public Result<QrTokenResp> pollstatus(
+    public Result<QrTokenResponse> pollstatus(
             @NotBlank(message = "{invalidParameter.param.invalid}")
             @RequestParam String qrcodeId
     ) {
-        QrTokenResp qrTokenResp = RedisUtil.getObj(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId, QrTokenResp.class);
-        if (Objects.isNull(qrTokenResp)) {
-            return Result.ok(QrTokenResp.OVERDUE());
+        Object value = redisTemplate.opsForValue().get(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId);
+        QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
+        if (Objects.isNull(qrTokenResponse)) {
+            return Result.ok(QrTokenResponse.OVERDUE());
         }
-        return Result.ok(qrTokenResp);
+        return Result.ok(qrTokenResponse);
     }
 
 }

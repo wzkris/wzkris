@@ -3,11 +3,11 @@ package com.wzkris.auth.security.core.wexcx;
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @description 微信小程序登录模式转换器
  */
 @Component
-public final class WexcxAuthenticationConverter extends CommonAuthenticationConverter<CommonAuthenticationToken> {
+public final class WexcxAuthenticationConverter extends CommonAuthenticationConverter {
 
     @Override
     protected boolean support(LoginTypeEnum loginType) {
@@ -38,10 +38,10 @@ public final class WexcxAuthenticationConverter extends CommonAuthenticationConv
     }
 
     @Override
-    protected CommonAuthenticationToken buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
+    protected Authentication buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_CODE));
         String phoneCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_PHONE_CODE));
-        return new WexcxAuthenticationToken(authTypeEnum, wxCode, phoneCode);
+        return WexcxAuthenticationToken.unauthenticated(authTypeEnum, wxCode, phoneCode);
     }
 
 }

@@ -32,9 +32,11 @@
             <version>${excel.version}</version>
         </dependency>
 
+        <!-- 参数校验（可选依赖，用于Excel导入时的数据校验） -->
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

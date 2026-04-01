@@ -1,0 +1,42 @@
+package com.wzkris.common.remote.annotation;
+
+import com.wzkris.common.remote.fallback.RemoteInterfaceFallback;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+/**
+ * Marker annotation for declarative HTTP interfaces powered by {@link org.springframework.web.service.invoker.HttpServiceProxyFactory}.
+ */
+@Target(TYPE)
+@Retention(RUNTIME)
+@Documented
+public @interface RemoteInterface {
+
+    /**
+     * Direct service URL, if provided will be used directly instead of service discovery.
+     */
+    String url() default "";
+
+    /**
+     * Logical service id registered to the discovery server.
+     * Only used when url is not provided.
+     */
+    String serviceId() default "";
+
+    /**
+     * 接口公共路径
+     */
+    String path() default "";
+
+    /**
+     * Optional fallback factory for degraded handling.
+     */
+    Class<? extends RemoteInterfaceFallback<?>> fallbackFactory()
+            default RemoteInterfaceFallback.NoOp.class;
+
+}

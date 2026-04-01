@@ -18,4 +18,9 @@ public class CaptchaException extends BaseException {
         super("验证码异常", 412, biz, code, args, null);
     }
 
+    @Override
+    public Throwable fillInStackTrace() {
+        return this;
+    }
+
 }

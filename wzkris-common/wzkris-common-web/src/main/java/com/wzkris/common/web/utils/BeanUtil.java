@@ -1,23 +1,20 @@
 package com.wzkris.common.web.utils;
 
-import com.wzkris.common.core.utils.SpringUtil;
-import io.github.linpeilie.Converter;
+import com.wzkris.common.core.utils.JsonUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Mapstruct 工具类
- * <p>参考文档：<a href="https://mapstruct.plus/introduction/quick-start.html">mapstruct-plus</a></p>
+ * Bean 工具类
  *
  * @author Michelle.Chung
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeanUtil {
-
-    private static final Converter CONVERTER = SpringUtil.getFactory().getBean(Converter.class);
 
     /**
      * 将 T 类型对象，转换为 desc 类型的对象并返回
@@ -27,7 +24,12 @@ public class BeanUtil {
      * @return desc
      */
     public static <T, V> V convert(T source, Class<V> desc) {
-        return CONVERTER.convert(source, desc);
+        if (source == null) {
+            return null;
+        }
+        V target = BeanUtils.instantiateClass(desc);
+        BeanUtils.copyProperties(source, target);
+        return target;
     }
 
     /**
@@ -38,7 +40,11 @@ public class BeanUtil {
      * @return desc
      */
     public static <T, V> V convert(T source, V desc) {
-        return CONVERTER.convert(source, desc);
+        if (source == null || desc == null) {
+            return desc;
+        }
+        BeanUtils.copyProperties(source, desc);
+        return desc;
     }
 
     /**
@@ -49,18 +55,14 @@ public class BeanUtil {
      * @return desc
      */
     public static <T, V> List<V> convert(List<T> sourceList, Class<V> desc) {
-        return CONVERTER.convert(sourceList, desc);
-    }
+        if (sourceList == null) {
+            return null;
+        }
+        if (sourceList.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-    /**
-     * 将 Map 转换为 beanClass 类型的集合并返回
-     *
-     * @param map       数据来源
-     * @param beanClass bean类
-     * @return bean对象
-     */
-    public static <T> T convert(Map<String, Object> map, Class<T> beanClass) {
-        return CONVERTER.convert(map, beanClass);
+        return JsonUtil.toColl(JsonUtil.toBytes(sourceList), List.class, desc);
     }
 
 }

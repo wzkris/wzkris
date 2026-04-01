@@ -1,13 +1,19 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
-import com.wzkris.common.core.model.MyPrincipal;
+import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.utils.StringUtil;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.stereotype.Component;
 
-import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author : wzkris
@@ -16,33 +22,80 @@ import java.util.Collection;
  * @create : 2024/04/22 12:22
  * @update : 2024/12/20 16:35
  */
-public abstract class SecurityUtil {
+@Component("su")
+public final class SecurityUtil {
 
-    /**
-     * 获得当前认证信息，可能登录可能未登录
-     *
-     * @return 认证信息
-     */
+    private static final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
+            .getContextHolderStrategy();
+
     @Nullable
     public static Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
+        return securityContextHolderStrategy.getContext().getAuthentication();
+    }
+
+    public static void setAuthentication(Authentication authentication) {
+        securityContextHolderStrategy.getContext().setAuthentication(authentication);
     }
 
     /**
-     * 设置当前认证信息
+     * 获取当前登录用户信息,未登录抛出异常
+     *
+     * @return 当前用户（实际运行时类型可能为具体 BaseUser 子类）
      */
-    public static void setAuthentication(Authentication authentication) {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    public static BaseLoginUser getLoginUser() {
+        try {
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            return (BaseLoginUser) authentication.getPrincipal();
+        } catch (Exception e) {
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        }
+    }
+
+    /**
+     * 获取当前登录用户并转换为指定子类，类型不匹配时抛出异常。
+     */
+    public static <T extends BaseLoginUser> T getLoginUser(Class<T> loginUserClass) {
+        Objects.requireNonNull(loginUserClass, "loginUserClass must not be null");
+        BaseLoginUser loginUser = getLoginUser();
+        if (loginUserClass.isInstance(loginUser)) {
+            return loginUserClass.cast(loginUser);
+        }
+        throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+    }
+
+    /**
+     * 获取当前登录用户权限,未登录抛出异常
+     *
+     * @return 当前用户
+     */
+    public static Set<String> getPermission() {
+        try {
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            return AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+        } catch (Exception e) {
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        }
     }
 
     /**
      * 是否认证
      */
-    public static boolean isAuthenticated() {
-        Authentication authentication = getAuthentication();
+    public static boolean isAuth() {
+        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
         return authentication != null
                 && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof MyPrincipal;
+                && authentication.getPrincipal() instanceof BaseLoginUser;
+    }
+
+    /**
+     * 是否对应认证类型
+     */
+    public static boolean isAuth(AuthTypeEnum authTypeEnum) {
+        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+        return authentication != null
+                && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof BaseLoginUser
+                && ((BaseLoginUser) authentication.getPrincipal()).getAuthType() == authTypeEnum;
     }
 
     /**
@@ -50,22 +103,10 @@ public abstract class SecurityUtil {
      */
     public static String getTokenValue() {
         try {
-            return getAuthentication().getCredentials().toString();
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            return authentication == null ? null : authentication.getCredentials().toString();
         } catch (Exception e) {
             return null;
-        }
-    }
-
-    /**
-     * 获取当前登录用户信息,未登录抛出异常
-     *
-     * @return 当前用户
-     */
-    public static MyPrincipal getPrincipal() {
-        try {
-            return (MyPrincipal) getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
     }
 
@@ -74,26 +115,8 @@ public abstract class SecurityUtil {
      *
      * @return 登录ID
      */
-    public static Long getId() {
-        return getPrincipal().getId();
-    }
-
-    /**
-     * 获取当前标签
-     *
-     * @return 标签
-     */
-    public static String getHint() {
-        return getPrincipal().getHint();
-    }
-
-    /**
-     * 获取当前名称
-     *
-     * @return 登录名称
-     */
-    public static String getName() {
-        return getPrincipal().getName();
+    public static Long getUid() {
+        return getLoginUser().getUid();
     }
 
     /**
@@ -102,14 +125,40 @@ public abstract class SecurityUtil {
      * @return 登录类型
      */
     public static AuthTypeEnum getAuthType() {
-        return getPrincipal().getType();
+        return getLoginUser().getAuthType();
     }
 
     /**
-     * 获取权限
+     * 获取当前标签
+     *
+     * @return 标签
      */
-    public static Collection<String> getAuthorities() {
-        return getPrincipal().getPermissions();
+    public static String getHint() {
+        return StringUtil.defaultIfEmpty(getLoginUser().getHint(), StringUtil.EMPTY);
+    }
+
+    /**
+     * 获取当前身份类型
+     *
+     * @return 身份类型
+     */
+    @Nullable
+    public static IdentityTypeEnum getIdentityType() {
+        return getLoginUser().getIdentityType();
+    }
+
+    /**
+     * 是否超级管理员
+     */
+    public static boolean isSuper() {
+        IdentityTypeEnum identityType = getIdentityType();
+        if (isAuth(AuthTypeEnum.ADMIN)) {
+            return identityType == IdentityTypeEnum.SUPER;
+        } else if (isAuth(AuthTypeEnum.TENANT)) {
+            return identityType == IdentityTypeEnum.SUPER;
+        } else {
+            return false;
+        }
     }
 
 }

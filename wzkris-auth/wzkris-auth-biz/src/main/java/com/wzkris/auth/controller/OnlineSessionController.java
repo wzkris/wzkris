@@ -1,16 +1,18 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.domain.OnlineSession;
-import com.wzkris.auth.domain.resp.OnlineSessionResp;
+import com.wzkris.auth.domain.TokenClaims;
+import com.wzkris.auth.response.OnlineSessionResponse;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RMapCache;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,31 +31,46 @@ public class OnlineSessionController {
 
     private final TokenService tokenService;
 
+    /**
+     * 获取在线会话列表
+     *
+     * @return 在线会话列表
+     */
     @Operation(summary = "在线会话")
     @GetMapping
-    public Result<Collection<OnlineSessionResp>> onlineSession() {
-        String accessToken = SecurityUtil.getTokenValue();
-        String refreshToken = tokenService.loadRefreshTokenByAccessToken(SecurityUtil.getAuthType().getValue(), accessToken);
+    public Result<Collection<OnlineSessionResponse>> onlineSession() {
+        AuthTypeEnum authType = SecurityUtil.getAuthType();
+        Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
-        RMapCache<String, OnlineSession> onlineCache = tokenService.loadSessionCache(SecurityUtil.getAuthType().getValue(), SecurityUtil.getId());
+        TokenClaims claims = tokenService.parseJwt(SecurityUtil.getTokenValue());
+        String sid = claims.getSid();
 
-        List<OnlineSessionResp> resps = new ArrayList<>();
+        List<OnlineSessionResponse> resps = new ArrayList<>();
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
-            OnlineSessionResp userResp = new OnlineSessionResp(entry.getValue());
-            userResp.setRefreshToken(entry.getKey());
-            if (StringUtil.equals(refreshToken, entry.getKey())) {
-                userResp.setCurrent(true);
+            String sessionSid = entry.getKey();
+            OnlineSessionResponse sessionResp = new OnlineSessionResponse();
+            BeanUtil.convert(entry.getValue(), sessionResp);
+            sessionResp.setSid(sessionSid);
+            if (StringUtil.equals(sid, sessionSid)) {
+                sessionResp.setCurrent(true);
             }
-            resps.add(userResp);
+            resps.add(sessionResp);
         }
 
         return ok(resps);
     }
 
+    /**
+     * 踢出指定会话（仅删除会话信息，不拉黑sid）
+     *
+     * @param sid 会话ID
+     * @return 操作结果
+     */
     @Operation(summary = "踢出会话")
     @PostMapping("/kickout")
-    public Result<Void> kickoutSession(@RequestBody String refreshToken) {
-        tokenService.logoutByRefreshToken(SecurityUtil.getAuthType().getValue(), refreshToken);
+    public Result<Void> kickoutSession(@RequestBody String sid) {
+        AuthTypeEnum authType = SecurityUtil.getAuthType();
+        tokenService.revoke(authType.getValue(), SecurityUtil.getUid(), sid);
         return ok();
     }
 

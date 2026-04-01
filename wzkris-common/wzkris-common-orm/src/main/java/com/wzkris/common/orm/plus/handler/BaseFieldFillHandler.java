@@ -21,10 +21,10 @@ import java.util.Date;
 @Slf4j
 public class BaseFieldFillHandler implements MetaObjectHandler {
 
-    private static Long getPrincipalId() {
+    private static Long getUserId() {
         Long id;
-        if (SecurityUtil.isAuthenticated()) {
-            id = SecurityUtil.getId();
+        if (SecurityUtil.isAuth()) {
+            id = SecurityUtil.getUid();
         } else {
             id = SecurityConstants.SYSTEM_USER_ID;
         }
@@ -33,7 +33,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
 
     private static String getHint() {
         String hint;
-        if (SecurityUtil.isAuthenticated()) {
+        if (SecurityUtil.isAuth()) {
             hint = SecurityUtil.getHint();
         } else {
             hint = StringUtil.EMPTY;
@@ -45,7 +45,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity) {
-            Long id = getPrincipalId();
+            Long id = getUserId();
             fillInsert(id, metaObject);
         }
     }
@@ -63,7 +63,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity) {
-            Long id = getPrincipalId();
+            Long id = getUserId();
             fillUpdate(id, metaObject);
         }
     }

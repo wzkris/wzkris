@@ -10,8 +10,13 @@ import com.wzkris.common.core.exception.BaseException;
  */
 public final class BusinessException extends BaseException {
 
-    public BusinessException(int biz, String code, Object... args) {
-        super("业务异常", 500, biz, code, args, null);
+    public BusinessException(int biz, String message) {
+        super("业务异常", 200, biz, null, null, message);
+    }
+
+    @Override
+    public Throwable fillInStackTrace() {
+        return this;
     }
 
 }
