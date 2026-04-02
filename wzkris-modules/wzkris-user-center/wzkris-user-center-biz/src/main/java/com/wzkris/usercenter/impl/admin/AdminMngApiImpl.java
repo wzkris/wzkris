@@ -57,7 +57,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
     public Result<Page<AdminMngResponse>> queryPage(AdminMngQueryRequest request) {
         startPage();
         List<AdminMngResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
-        return getDataTable(list);
+        return getPageResult(list);
     }
 
     private QueryWrapper<AdminInfoDO> buildPageWrapper(AdminMngQueryRequest request) {

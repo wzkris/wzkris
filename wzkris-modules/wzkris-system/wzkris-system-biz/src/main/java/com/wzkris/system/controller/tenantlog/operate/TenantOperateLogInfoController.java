@@ -3,7 +3,7 @@ package com.wzkris.system.controller.tenantlog.operate;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.tenantlog.operate.TenantOperateLogInfoApi;
-import com.wzkris.system.request.tenantlog.TenantOperateLogQueryRequest;
+import com.wzkris.system.request.tenantlog.TenantOperateLogInfoQueryRequest;
 import com.wzkris.system.response.tenantlog.TenantOperateLogInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,10 +21,9 @@ public class TenantOperateLogInfoController {
     private final TenantOperateLogInfoApi tenantOperateLogInfoApi;
 
     @Operation(summary = "分页")
-    @GetMapping("/page")
-    public Result<Page<TenantOperateLogInfoResponse>> page(TenantOperateLogQueryRequest request) {
-        return tenantOperateLogInfoApi.page(request);
+    @GetMapping("/query-page")
+    public Result<Page<TenantOperateLogInfoResponse>> queryPage(TenantOperateLogInfoQueryRequest request) {
+        return tenantOperateLogInfoApi.queryPage(request);
     }
 
 }
-

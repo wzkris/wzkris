@@ -5,11 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "筛选条件")
-public class TenantLoginLogQueryRequest extends QueryRequest {
-
-    @Schema(description = "用户ID")
-    private Long memberId;
+@Schema(description = "租户个人登录日志筛选条件（info）")
+public class TenantLoginLogInfoQueryRequest extends QueryRequest {
 
     @Schema(description = "用户名")
     private String username;
@@ -33,4 +30,3 @@ public class TenantLoginLogQueryRequest extends QueryRequest {
     private Boolean abnormalOnly;
 
 }
-

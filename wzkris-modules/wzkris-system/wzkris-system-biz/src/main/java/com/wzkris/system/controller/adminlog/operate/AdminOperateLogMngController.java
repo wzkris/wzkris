@@ -4,8 +4,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.adminlog.operate.AdminOperateLogMngApi;
-import com.wzkris.system.request.adminlog.AdminOperateLogQueryRequest;
-import com.wzkris.system.response.adminlog.AdminOperateLogResponse;
+import com.wzkris.system.request.adminlog.AdminOperateLogMngQueryRequest;
+import com.wzkris.system.response.adminlog.AdminOperateLogMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +29,8 @@ public class AdminOperateLogMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:admin-operatelog-mng:page")
-    public Result<Page<AdminOperateLogResponse>> queryPage(AdminOperateLogQueryRequest request) {
+    public Result<Page<AdminOperateLogMngResponse>> queryPage(AdminOperateLogMngQueryRequest request) {
         return adminOperateLogMngApi.queryPage(request);
     }
 
 }
-

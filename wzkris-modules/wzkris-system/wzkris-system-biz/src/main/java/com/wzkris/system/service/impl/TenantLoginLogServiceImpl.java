@@ -6,7 +6,7 @@ import com.wzkris.common.core.enums.RiskLevelEnum;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.system.domain.TenantLoginLogDO;
 import com.wzkris.system.mapper.TenantLoginLogMapper;
-import com.wzkris.system.request.tenantlog.TenantLoginLogQueryRequest;
+import com.wzkris.system.request.tenantlog.TenantLoginLogMngQueryRequest;
 import com.wzkris.system.service.TenantLoginLogService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -21,11 +21,11 @@ public class TenantLoginLogServiceImpl
         implements TenantLoginLogService {
 
     @Override
-    public List<TenantLoginLogDO> list(TenantLoginLogQueryRequest request) {
+    public List<TenantLoginLogDO> list(TenantLoginLogMngQueryRequest request) {
         return baseMapper.selectList(this.buildQueryWrapper(request));
     }
 
-    private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogQueryRequest request) {
+    private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogMngQueryRequest request) {
         return new LambdaQueryWrapper<TenantLoginLogDO>()
                 .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantLoginLogDO::getMemberId, request.getMemberId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantLoginLogDO::getSuccess, request.getSuccess())

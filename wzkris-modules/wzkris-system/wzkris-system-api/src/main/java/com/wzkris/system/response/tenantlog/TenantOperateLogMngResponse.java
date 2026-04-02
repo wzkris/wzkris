@@ -6,8 +6,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@Schema(description = "租户个人操作日志信息")
-public class TenantOperateLogInfoResponse {
+@Schema(description = "租户管理操作日志信息")
+public class TenantOperateLogMngResponse {
 
     private Long operId;
 
@@ -20,11 +20,29 @@ public class TenantOperateLogInfoResponse {
     @Schema(description = "操作类型（0其它 1新增 2修改 3删除）")
     private String operType;
 
+    @Schema(description = "请求方法")
+    private String method;
+
+    @Schema(description = "请求方式")
+    private String requestMethod;
+
+    @Schema(description = "职工ID")
+    private Long memberId;
+
     @Schema(description = "用户名")
     private String username;
 
+    @Schema(description = "请求url")
+    private String operUrl;
+
     @Schema(description = "操作ip地址")
     private String operIp;
+
+    @Schema(description = "请求参数")
+    private String operParam;
+
+    @Schema(description = "返回参数")
+    private String jsonResult;
 
     @Schema(description = "操作地点")
     private String operLocation;
@@ -37,5 +55,8 @@ public class TenantOperateLogInfoResponse {
 
     @Schema(description = "操作时间")
     private Date operTime;
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
 
 }

@@ -1,4 +1,4 @@
-package com.wzkris.system.response.adminlog;
+package com.wzkris.system.response.tenantlog;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -6,12 +6,12 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class AdminLoginLogResponse {
+public class TenantLoginLogMngResponse {
 
     private Long logId;
 
     @Schema(description = "用户ID")
-    private Long adminId;
+    private Long memberId;
 
     @Schema(description = "用户名")
     private String username;
@@ -48,5 +48,8 @@ public class AdminLoginLogResponse {
 
     @Schema(description = "风险分")
     private Integer riskScore;
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
 
 }

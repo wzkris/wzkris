@@ -48,7 +48,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
                 .stream()
                 .map(this::toResponse)
                 .toList();
-        return getDataTable(list);
+        return getPageResult(list);
     }
 
     @Override

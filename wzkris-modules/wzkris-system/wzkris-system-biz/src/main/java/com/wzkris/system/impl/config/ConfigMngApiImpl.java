@@ -31,18 +31,16 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngQueryRequest request) {
         startPage();
         List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(request));
-        return getDataTable(BeanUtil.convert(list, ConfigInfoResponse.class));
+        return getPageResult(BeanUtil.convert(list, ConfigInfoResponse.class));
     }
 
     private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigMngQueryRequest request) {
         return new LambdaQueryWrapper<ConfigInfoDO>()
                 .like(StringUtil.isNotEmpty(request.getConfigKey()), ConfigInfoDO::getConfigKey, request.getConfigKey())
-                .like(
-                        StringUtil.isNotEmpty(request.getConfigName()),
+                .like(StringUtil.isNotEmpty(request.getConfigName()),
                         ConfigInfoDO::getConfigName,
                         request.getConfigName())
-                .like(
-                        StringUtil.isNotEmpty(request.getConfigType()),
+                .like(StringUtil.isNotEmpty(request.getConfigType()),
                         ConfigInfoDO::getConfigType,
                         request.getConfigType())
                 .orderByDesc(ConfigInfoDO::getConfigId);

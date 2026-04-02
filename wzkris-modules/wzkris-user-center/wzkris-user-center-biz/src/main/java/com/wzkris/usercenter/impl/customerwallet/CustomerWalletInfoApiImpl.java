@@ -37,7 +37,7 @@ public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWa
         startPage();
         List<CustomerWalletRecordDO> recordList =
                 customerWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request));
-        return getDataTable(BeanUtil.convert(recordList, CustomerWalletRecordResponse.class));
+        return getPageResult(BeanUtil.convert(recordList, CustomerWalletRecordResponse.class));
     }
 
     private LambdaQueryWrapper<CustomerWalletRecordDO> buildWalletQueryWrapper(CustomerWalletRecordQueryRequest request) {

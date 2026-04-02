@@ -49,7 +49,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     public Result<Page<TenantMngResponse>> queryPage(TenantMngQueryRequest request) {
         startPage();
         List<TenantMngResponse> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(request));
-        return getDataTable(list);
+        return getPageResult(list);
     }
 
     private QueryWrapper<TenantInfoDO> buildQueryWrapper(TenantMngQueryRequest request) {
@@ -68,7 +68,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     public Result<Page<SelectResponse>> querySelectPage(String tenantName) {
         startPage();
         List<SelectResponse> list = tenantInfoService.listSelect(tenantName);
-        return getDataTable(list);
+        return getPageResult(list);
     }
 
     @Override

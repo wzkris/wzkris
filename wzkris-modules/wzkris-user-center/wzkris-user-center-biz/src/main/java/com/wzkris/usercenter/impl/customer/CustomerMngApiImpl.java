@@ -30,7 +30,7 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
     public Result<Page<CustomerMngResponse>> queryPage(CustomerMngQueryRequest request) {
         startPage();
         List<CustomerInfoDO> list = customerInfoService.list(this.buildQueryWrapper(request));
-        return getDataTable(BeanUtil.convert(list, CustomerMngResponse.class));
+        return getPageResult(BeanUtil.convert(list, CustomerMngResponse.class));
     }
 
     private LambdaQueryWrapper<CustomerInfoDO> buildQueryWrapper(CustomerMngQueryRequest request) {

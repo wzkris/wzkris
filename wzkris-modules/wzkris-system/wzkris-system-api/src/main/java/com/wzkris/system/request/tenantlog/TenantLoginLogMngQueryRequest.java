@@ -1,4 +1,4 @@
-package com.wzkris.system.request.adminlog;
+package com.wzkris.system.request.tenantlog;
 
 import com.wzkris.common.web.model.QueryRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,10 +6,10 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class AdminLoginLogQueryRequest extends QueryRequest {
+public class TenantLoginLogMngQueryRequest extends QueryRequest {
 
     @Schema(description = "用户ID")
-    private Long adminId;
+    private Long memberId;
 
     @Schema(description = "用户名")
     private String username;

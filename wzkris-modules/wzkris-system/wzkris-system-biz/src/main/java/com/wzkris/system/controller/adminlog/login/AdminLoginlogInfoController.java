@@ -3,8 +3,9 @@ package com.wzkris.system.controller.adminlog.login;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.adminlog.login.AdminLoginlogInfoApi;
-import com.wzkris.system.request.adminlog.AdminLoginLogQueryRequest;
-import com.wzkris.system.response.adminlog.AdminLoginLogResponse;
+import com.wzkris.system.request.adminlog.AdminLoginLogInfoQueryRequest;
+import com.wzkris.system.response.adminlog.AdminLoginLogInfoResponse;
+import com.wzkris.system.response.adminlog.AdminLoginLogMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,8 @@ public class AdminLoginlogInfoController {
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    public Result<Page<AdminLoginLogResponse>> queryPage(AdminLoginLogQueryRequest request) {
+    public Result<Page<AdminLoginLogInfoResponse>> queryPage(AdminLoginLogInfoQueryRequest request) {
         return adminLoginlogInfoApi.queryPage(request);
     }
 
 }
-

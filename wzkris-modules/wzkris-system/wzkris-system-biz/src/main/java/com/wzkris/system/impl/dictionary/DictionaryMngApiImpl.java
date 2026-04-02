@@ -29,7 +29,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     public Result<Page<DictionaryInfoResponse>> queryPage(DictionaryMngQueryRequest request) {
         startPage();
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(request);
-        return getDataTable(BeanUtil.convert(dictionaryInfoMapper.selectList(lqw), DictionaryInfoResponse.class));
+        return getPageResult(BeanUtil.convert(dictionaryInfoMapper.selectList(lqw), DictionaryInfoResponse.class));
     }
 
     private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngQueryRequest request) {

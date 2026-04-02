@@ -28,7 +28,7 @@ public class AnnouncementInfoApiImpl extends AbstractApi implements Announcement
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
         startPage();
         List<AnnouncementInfoResponse> list = announcementInfoMapper.selectList2VO(lqw, AnnouncementInfoResponse.class);
-        return getDataTable(list);
+        return getPageResult(list);
     }
 
 }

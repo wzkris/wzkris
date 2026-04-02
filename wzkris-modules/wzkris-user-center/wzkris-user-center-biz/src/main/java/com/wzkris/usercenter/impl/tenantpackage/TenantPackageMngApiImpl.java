@@ -36,7 +36,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     public Result<Page<TenantPackageInfoResponse>> queryPage(TenantPackageMngQueryRequest request) {
         startPage();
         List<TenantPackageInfoDO> list = tenantPackageInfoMapper.selectList(this.buildQueryWrapper(request));
-        return getDataTable(BeanUtil.convert(list, TenantPackageInfoResponse.class));
+        return getPageResult(BeanUtil.convert(list, TenantPackageInfoResponse.class));
     }
 
     private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngQueryRequest request) {

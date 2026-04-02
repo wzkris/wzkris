@@ -30,7 +30,7 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngQueryRequest request) {
         startPage();
         List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(request));
-        return getDataTable(BeanUtil.convert(list, AnnouncementMngResponse.class));
+        return getPageResult(BeanUtil.convert(list, AnnouncementMngResponse.class));
     }
 
     private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngQueryRequest request) {

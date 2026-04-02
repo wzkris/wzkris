@@ -50,7 +50,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     public Result<Page<RoleInfoResponse>> queryPage(RoleMngQueryRequest request) {
         startPage();
         List<RoleInfoDO> list = roleInfoMapper.selectLists(this.buildQueryWrapper(request));
-        return getDataTable(BeanUtil.convert(list, RoleInfoResponse.class));
+        return getPageResult(BeanUtil.convert(list, RoleInfoResponse.class));
     }
 
     private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngQueryRequest request) {

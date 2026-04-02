@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "筛选条件")
-public class TenantOperateLogQueryRequest extends QueryRequest {
+@Schema(description = "租户个人操作日志筛选条件（info）")
+public class TenantOperateLogInfoQueryRequest extends QueryRequest {
 
     @Schema(description = "操作模块")
     private String title;
@@ -23,8 +23,4 @@ public class TenantOperateLogQueryRequest extends QueryRequest {
     @Schema(description = "操作状态")
     private Boolean success;
 
-    @Schema(description = "用户ID")
-    private Long memberId;
-
 }
-

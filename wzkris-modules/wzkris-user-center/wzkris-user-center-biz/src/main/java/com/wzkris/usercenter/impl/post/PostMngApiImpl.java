@@ -38,7 +38,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     public Result<Page<PostInfoResponse>> queryPage(PostMngQueryRequest request) {
         startPage();
         List<PostInfoDO> list = postInfoService.list(this.buildQueryWrapper(request));
-        return getDataTable(BeanUtil.convert(list, PostInfoResponse.class));
+        return getPageResult(BeanUtil.convert(list, PostInfoResponse.class));
     }
 
     private LambdaQueryWrapper<PostInfoDO> buildQueryWrapper(PostMngQueryRequest request) {

@@ -29,7 +29,7 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
                 .stream()
                 .map(this::toResponse)
                 .toList();
-        return getDataTable(list);
+        return getPageResult(list);
     }
 
     private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordMngQueryRequest request) {

@@ -6,7 +6,10 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class AdminOperateLogQueryRequest extends QueryRequest {
+public class AdminOperateLogMngQueryRequest extends QueryRequest {
+
+    @Schema(description = "用户ID")
+    private Long adminId;
 
     @Schema(description = "操作模块")
     private String title;
@@ -22,9 +25,6 @@ public class AdminOperateLogQueryRequest extends QueryRequest {
 
     @Schema(description = "操作状态")
     private Boolean success;
-
-    @Schema(description = "用户ID")
-    private Long adminId;
 
 }
 

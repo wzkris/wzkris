@@ -2,9 +2,6 @@ package com.wzkris.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wzkris.system.domain.AdminLoginLogDO;
-import com.wzkris.system.request.adminlog.AdminLoginLogQueryRequest;
-
-import java.util.List;
 
 /**
  * @author : wzkris
@@ -13,8 +10,6 @@ import java.util.List;
  * @date : 2024/1/10 13:55
  */
 public interface AdminLoginLogService extends IService<AdminLoginLogDO> {
-
-    List<AdminLoginLogDO> list(AdminLoginLogQueryRequest request);
 
 }
 

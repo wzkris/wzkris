@@ -71,24 +71,19 @@ public class Oauth2AuthenticationSuccessHandlerImpl implements AuthenticationSuc
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
 
-        if (authentication instanceof OAuth2AccessTokenAuthenticationToken accessTokenAuthentication) {
-
-            this.sendAccessTokenResponse(response, accessTokenAuthentication);
-
-        } else if (authentication instanceof OAuth2TokenIntrospectionAuthenticationToken introspectionAuthenticationToken) {
-
-            this.sendIntrospectionTokenResponse(response, introspectionAuthenticationToken);
-
-        } else if (authentication instanceof OAuth2TokenRevocationAuthenticationToken revocationAuthenticationToken) {
-            jsonMessageConverter.write(
-                    Result.ok(), STRING_OBJECT_MAP.getType(),
-                    MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
-        } else {
-            log.warn("use default response info, current authentication type :{}",
-                    authentication.getClass().getName());
-            jsonMessageConverter.write(
-                    Result.systemError("当前不支持" + authentication.getClass().getName() + "的转化"), STRING_OBJECT_MAP.getType(),
-                    MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
+        switch (authentication) {
+            case OAuth2AccessTokenAuthenticationToken accessTokenAuthentication ->
+                    this.sendAccessTokenResponse(response, accessTokenAuthentication);
+            case OAuth2TokenIntrospectionAuthenticationToken introspectionAuthenticationToken ->
+                    this.sendIntrospectionTokenResponse(response, introspectionAuthenticationToken);
+            case OAuth2TokenRevocationAuthenticationToken revocationAuthenticationToken -> jsonMessageConverter.write(
+                    Result.ok(), STRING_OBJECT_MAP.getType(), MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
+            default -> {
+                log.warn("use default response info, current authentication type :{}", authentication.getClass().getName());
+                jsonMessageConverter.write(
+                        Result.systemError("当前不支持" + authentication.getClass().getName() + "的转化"), STRING_OBJECT_MAP.getType(),
+                        MediaType.APPLICATION_JSON, new ServletServerHttpResponse(response));
+            }
         }
 
     }

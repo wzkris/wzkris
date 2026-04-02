@@ -47,7 +47,7 @@ public abstract class AbstractApi {
     /**
      * 响应请求分页数据
      */
-    protected static <T> Result<Page<T>> getDataTable(List<T> list) {
+    protected static <T> Result<Page<T>> getPageResult(List<T> list) {
         try (Page<T> page = PageUtil.getPage()) {
             page.setRows(list);
             return Result.ok(page);

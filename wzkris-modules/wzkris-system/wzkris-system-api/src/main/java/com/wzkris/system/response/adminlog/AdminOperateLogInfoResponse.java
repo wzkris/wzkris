@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class AdminOperateLogResponse {
+public class AdminOperateLogInfoResponse {
 
     private Long operId;
 
@@ -24,12 +24,6 @@ public class AdminOperateLogResponse {
 
     @Schema(description = "请求方式")
     private String requestMethod;
-
-    @Schema(description = "用户ID")
-    private Long adminId;
-
-    @Schema(description = "用户名")
-    private String username;
 
     @Schema(description = "请求url")
     private String operUrl;
