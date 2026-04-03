@@ -1,12 +1,16 @@
 package com.wzkris.common.web.utils;
 
-import com.wzkris.common.core.utils.JsonUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cglib.beans.BeanCopier;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Bean 工具类
@@ -15,6 +19,8 @@ import java.util.List;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeanUtil {
+
+    private static final Map<BeanCopierKey, BeanCopier> BEAN_COPIER_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 将 T 类型对象，转换为 desc 类型的对象并返回
@@ -28,8 +34,7 @@ public class BeanUtil {
             return null;
         }
         V target = BeanUtils.instantiateClass(desc);
-        BeanUtils.copyProperties(source, target);
-        return target;
+        return convert(source, target);
     }
 
     /**
@@ -40,10 +45,7 @@ public class BeanUtil {
      * @return desc
      */
     public static <T, V> V convert(T source, V desc) {
-        if (source == null || desc == null) {
-            return desc;
-        }
-        BeanUtils.copyProperties(source, desc);
+        copyProperties(source, desc);
         return desc;
     }
 
@@ -55,14 +57,38 @@ public class BeanUtil {
      * @return desc
      */
     public static <T, V> List<V> convert(List<T> sourceList, Class<V> desc) {
-        if (sourceList == null) {
-            return null;
-        }
-        if (sourceList.isEmpty()) {
+        if (CollectionUtils.isEmpty(sourceList)) {
             return Collections.emptyList();
         }
+        List<V> targetList = new ArrayList<>(sourceList.size());
+        BeanCopier beanCopier = null;
+        for (T source : sourceList) {
+            if (source == null) {
+                continue;
+            }
+            V target = BeanUtils.instantiateClass(desc);
+            if (beanCopier == null) {
+                beanCopier = getBeanCopier(source.getClass(), desc);
+            }
+            beanCopier.copy(source, target, null);
+            targetList.add(target);
+        }
+        return targetList;
+    }
 
-        return JsonUtil.toColl(JsonUtil.toBytes(sourceList), List.class, desc);
+    private static <T, V> void copyProperties(T source, V target) {
+        BeanCopier beanCopier = getBeanCopier(source.getClass(), target.getClass());
+        beanCopier.copy(source, target, null);
+    }
+
+    private static BeanCopier getBeanCopier(Class<?> sourceClass, Class<?> targetClass) {
+        BeanCopierKey key = new BeanCopierKey(sourceClass, targetClass);
+        return BEAN_COPIER_CACHE.computeIfAbsent(key,
+                beanCopierKey -> BeanCopier.create(beanCopierKey.sourceClass(), beanCopierKey.targetClass(), false));
+    }
+
+    private record BeanCopierKey(Class<?> sourceClass, Class<?> targetClass) {
+
     }
 
 }
