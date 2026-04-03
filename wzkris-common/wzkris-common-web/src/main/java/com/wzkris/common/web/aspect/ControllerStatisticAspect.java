@@ -1,7 +1,7 @@
 package com.wzkris.common.web.aspect;
 
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.web.annotation.ExControllerStat;
+import com.wzkris.common.web.annotation.ExclControllerStat;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -35,7 +35,7 @@ public class ControllerStatisticAspect {
 
     private static ConcurrentHashMap<String, Boolean> excludeControllers = new ConcurrentHashMap<>();
 
-    @Pointcut("bean(*Controller) && within(@org.springframework.web.bind.annotation.RestController *)")
+    @Pointcut("bean(*Controller)")
     public void pointCut() {
     }
 
@@ -47,8 +47,8 @@ public class ControllerStatisticAspect {
             Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
 
             // 如果方法或类上有排除注解，返回 true 表示排除
-            return method.isAnnotationPresent(ExControllerStat.class) ||
-                    method.getDeclaringClass().isAnnotationPresent(ExControllerStat.class);
+            return method.isAnnotationPresent(ExclControllerStat.class) ||
+                    method.getDeclaringClass().isAnnotationPresent(ExclControllerStat.class);
         });
 
         if (bool) {
