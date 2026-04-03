@@ -2,9 +2,6 @@ package com.wzkris.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wzkris.system.domain.TenantLoginLogDO;
-import com.wzkris.system.request.tenantlog.TenantLoginLogMngQueryRequest;
-
-import java.util.List;
 
 /**
  * @author : wzkris
@@ -14,7 +11,4 @@ import java.util.List;
  */
 public interface TenantLoginLogService extends IService<TenantLoginLogDO> {
 
-    List<TenantLoginLogDO> list(TenantLoginLogMngQueryRequest request);
-
 }
-

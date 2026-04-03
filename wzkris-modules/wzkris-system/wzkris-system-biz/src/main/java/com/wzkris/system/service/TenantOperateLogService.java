@@ -2,10 +2,6 @@ package com.wzkris.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wzkris.system.domain.TenantOperateLogDO;
-import com.wzkris.system.request.tenantlog.TenantOperateLogMngQueryRequest;
-import com.wzkris.system.response.tenantlog.TenantOperateLogInfoResponse;
-
-import java.util.List;
 
 /**
  * 操作日志 服务层
@@ -14,6 +10,4 @@ import java.util.List;
  */
 public interface TenantOperateLogService extends IService<TenantOperateLogDO> {
 
-
 }
-

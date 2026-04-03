@@ -12,4 +12,3 @@ import com.wzkris.system.domain.AdminLoginLogDO;
 public interface AdminLoginLogService extends IService<AdminLoginLogDO> {
 
 }
-

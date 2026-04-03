@@ -5,7 +5,6 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.adminlog.operate.AdminOperateLogInfoApi;
 import com.wzkris.system.request.adminlog.AdminOperateLogInfoQueryRequest;
 import com.wzkris.system.response.adminlog.AdminOperateLogInfoResponse;
-import com.wzkris.system.response.adminlog.AdminOperateLogMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

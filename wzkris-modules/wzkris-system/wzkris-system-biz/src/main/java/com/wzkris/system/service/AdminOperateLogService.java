@@ -11,4 +11,3 @@ import com.wzkris.system.domain.AdminOperateLogDO;
 public interface AdminOperateLogService extends IService<AdminOperateLogDO> {
 
 }
-

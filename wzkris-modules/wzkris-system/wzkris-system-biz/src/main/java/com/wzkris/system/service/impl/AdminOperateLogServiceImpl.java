@@ -19,4 +19,3 @@ public class AdminOperateLogServiceImpl
         implements AdminOperateLogService {
 
 }
-
