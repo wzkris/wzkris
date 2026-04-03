@@ -20,7 +20,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TenantLoginlogMngApiImpl extends AbstractApi implements TenantLoginlogMngApi {
+public class TenantLoginlogMngApiImpl
+        extends AbstractApi
+        implements TenantLoginlogMngApi {
 
     private final TenantLoginLogService tenantLoginLogService;
 

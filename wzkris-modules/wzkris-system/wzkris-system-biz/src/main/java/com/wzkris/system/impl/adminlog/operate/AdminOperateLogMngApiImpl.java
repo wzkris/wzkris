@@ -19,7 +19,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminOperateLogMngApiImpl extends AbstractApi implements AdminOperateLogMngApi {
+public class AdminOperateLogMngApiImpl
+        extends AbstractApi
+        implements AdminOperateLogMngApi {
 
     private final AdminOperateLogService adminOperateLogService;
 

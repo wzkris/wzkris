@@ -6,9 +6,9 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.tenantlog.operate.TenantOperateLogInfoApi;
 import com.wzkris.system.domain.TenantOperateLogDO;
-import com.wzkris.system.mapper.TenantOperateLogMapper;
 import com.wzkris.system.request.tenantlog.TenantOperateLogInfoQueryRequest;
 import com.wzkris.system.response.tenantlog.TenantOperateLogInfoResponse;
 import com.wzkris.system.service.TenantOperateLogService;
@@ -20,17 +20,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TenantOperateLogInfoApiImpl extends AbstractApi implements TenantOperateLogInfoApi {
+public class TenantOperateLogInfoApiImpl
+        extends AbstractApi
+        implements TenantOperateLogInfoApi {
 
     private final TenantOperateLogService tenantOperateLogService;
-
-    private final TenantOperateLogMapper tenantOperateLogMapper;
 
     @Override
     public Result<Page<TenantOperateLogInfoResponse>> queryPage(TenantOperateLogInfoQueryRequest request) {
         startPage();
-        List<TenantOperateLogInfoResponse> list = tenantOperateLogMapper.selectListInfoVO(buildQueryWrapper(request));
-        return getPageResult(list);
+        List<TenantOperateLogDO> list = tenantOperateLogService.list(buildQueryWrapper(request));
+        return getPageResult(BeanUtil.convert(list, TenantOperateLogInfoResponse.class));
     }
 
     private LambdaQueryWrapper<TenantOperateLogDO> buildQueryWrapper(TenantOperateLogInfoQueryRequest request) {

@@ -21,7 +21,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminLoginlogInfoApiImpl extends AbstractApi implements AdminLoginlogInfoApi {
+public class AdminLoginlogInfoApiImpl
+        extends AbstractApi
+        implements AdminLoginlogInfoApi {
 
     private final AdminLoginLogService adminLoginLogService;
 
