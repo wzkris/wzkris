@@ -14,6 +14,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class RemoteCallEvent {
 
+    private String requestMethod;
+
+    private String requestUri;
+
     private Integer httpStatusCode;
 
     private Map<String, String> requestHeaders;
@@ -25,5 +29,7 @@ public class RemoteCallEvent {
     private String responseBody;
 
     private Long costTime;
+
+    private String errorMessage;
 
 }
