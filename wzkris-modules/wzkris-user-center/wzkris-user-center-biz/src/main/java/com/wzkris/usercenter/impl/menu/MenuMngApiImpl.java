@@ -81,7 +81,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
 
     @Override
     public Result<Void> remove(Long menuId) {
-        if (menuInfoService.existSubMenu(menuId)) {
+        if (menuInfoService.existChildren(menuId)) {
             return requestFail("存在子菜单,不允许删除");
         }
         return toRes(menuInfoService.removeMenu(menuId));

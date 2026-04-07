@@ -385,7 +385,7 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public boolean existSubMenu(Long menuId) {
+    public boolean existChildren(Long menuId) {
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class).eq(MenuInfoDO::getParentId, menuId);
         return baseMapper.exists(lqw);
     }

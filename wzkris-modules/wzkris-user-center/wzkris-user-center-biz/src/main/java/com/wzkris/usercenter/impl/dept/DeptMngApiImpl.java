@@ -90,7 +90,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         if (!deptInfoMapper.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
-        if (deptInfoMapper.existSubDept(deptId)) {
+        if (deptInfoMapper.existChildren(deptId)) {
             return requestFail("存在下级部门，不允许删除");
         }
         if (deptInfoMapper.existAdmin(deptId)) {

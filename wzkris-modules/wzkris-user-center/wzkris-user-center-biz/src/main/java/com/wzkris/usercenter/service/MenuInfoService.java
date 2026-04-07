@@ -124,7 +124,7 @@ public interface MenuInfoService extends IService<MenuInfoDO> {
      * @param menuId 菜单ID
      * @return 结果 true 存在 false 不存在
      */
-    boolean existSubMenu(Long menuId);
+    boolean existChildren(Long menuId);
 
     /**
      * 删除菜单

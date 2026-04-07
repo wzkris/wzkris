@@ -8,7 +8,7 @@ import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.annotation.ExclControllerStat;
+import com.wzkris.common.web.annotation.ExcludeStatAspect;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ import java.util.*;
 @Tag(name = "二维码登录")
 @Slf4j
 @Validated
-@ExclControllerStat
+@ExcludeStatAspect
 @RestController
 @RequestMapping("/qr-code")
 @RequiredArgsConstructor

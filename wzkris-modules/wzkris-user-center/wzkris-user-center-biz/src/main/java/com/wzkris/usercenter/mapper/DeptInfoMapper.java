@@ -62,7 +62,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @return 结果
      */
     @Select("SELECT EXISTS(SELECT dept_id FROM biz.dept_info WHERE parent_id = #{deptId})")
-    boolean existSubDept(Long deptId);
+    boolean existChildren(Long deptId);
 
     /**
      * 查询部门是否存在用户
