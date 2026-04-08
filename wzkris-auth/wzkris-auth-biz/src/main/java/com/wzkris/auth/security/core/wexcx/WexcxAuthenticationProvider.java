@@ -2,6 +2,7 @@ package com.wzkris.auth.security.core.wexcx;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
+import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
@@ -26,8 +27,9 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
 
     public WexcxAuthenticationProvider(
             TokenService tokenService,
+            TokenProperties tokenProperties,
             List<LoginUserService> loginUserServices) {
-        super(tokenService);
+        super(tokenService, tokenProperties);
         this.loginUserServices = loginUserServices;
     }
 
@@ -48,7 +50,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
             return null; // never run this line
         }
 
-        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional
+        CommonAuthenticationToken token = templateOptional
                 .get()
                 .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
 

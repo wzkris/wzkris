@@ -138,17 +138,23 @@ public class TokenServiceImpl implements TokenService {
 
         OnlineSession onlineSession = buildOnlineSession();
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
-        String sessionKey = TokenKeyBuilder.buildSessionKey(type, uid);
+        // 保留原有 session key 作为会话索引（SET），单个会话条目使用独立 key
+        String sessionIndexKey = TokenKeyBuilder.buildSessionIndexKey(type, uid);
+        String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
         redisTemplate.execute(new SessionCallback<Void>() {
             @Override
-            @SuppressWarnings({"rawtypes", "unchecked"})
+            @SuppressWarnings({"unchecked"})
             public Void execute(RedisOperations operations) {
                 operations.multi();
                 operations.opsForHash().put(userInfoKey, HASH_FIELD_USER, baseLoginUser);
                 operations.opsForHash().put(userInfoKey, HASH_FIELD_PERMISSIONS, permissions);
                 operations.expire(userInfoKey, refreshTTL, TimeUnit.SECONDS);
-                operations.opsForHash().put(sessionKey, sid, onlineSession);
-                operations.expire(sessionKey, refreshTTL, TimeUnit.SECONDS);
+                // 每个会话一个独立 key，利用 EXPIRE 自动过期
+                operations.opsForValue().set(sessionEntryKey, onlineSession);
+                operations.expire(sessionEntryKey, refreshTTL, TimeUnit.SECONDS);
+                // 维护会话索引，便于列出/管理（索引允许有过期痕迹，读取时做懒删除）
+                operations.opsForSet().add(sessionIndexKey, sid);
+                operations.expire(sessionIndexKey, refreshTTL, TimeUnit.SECONDS);
                 operations.exec();
                 return null;
             }
@@ -192,13 +198,17 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void revoke(String type, Serializable uid, String sid) {
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
-        String sessionKey = TokenKeyBuilder.buildSessionKey(type, uid);
+        String sessionIndexKey = TokenKeyBuilder.buildSessionIndexKey(type, uid);
+        String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
 
-        Long size = redisTemplate.opsForHash().size(sessionKey);
-        if (size > 1) {
-            redisTemplate.opsForHash().delete(sessionKey, sid);
-        } else {
-            redisTemplate.delete(List.of(userInfoKey, sessionKey));
+        // 删除会话条目与索引项
+        redisTemplate.delete(List.of(sessionEntryKey));
+        redisTemplate.opsForSet().remove(sessionIndexKey, sid);
+
+        Long remain = redisTemplate.opsForSet().size(sessionIndexKey);
+        if (remain == null || remain == 0) {
+            // 无剩余会话，清理用户信息与索引
+            redisTemplate.delete(List.of(userInfoKey, sessionIndexKey));
         }
     }
 
@@ -212,8 +222,9 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public boolean isRevoked(String type, Long uid, String sid) {
-        String sessionKey = TokenKeyBuilder.buildSessionKey(type, uid);
-        return !redisTemplate.opsForHash().hasKey(sessionKey, sid);
+        String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
+        Boolean exists = redisTemplate.hasKey(sessionEntryKey);
+        return !exists;
     }
 
     /**
@@ -248,11 +259,22 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public Map<String, OnlineSession> loadSessionCache(String type, Serializable uid) {
-        String sessionKey = TokenKeyBuilder.buildSessionKey(type, uid);
-        Map<Object, Object> entries = redisTemplate.opsForHash().entries(sessionKey);
+        String sessionIndexKey = TokenKeyBuilder.buildSessionIndexKey(type, uid);
+        Set<Object> members = redisTemplate.opsForSet().members(sessionIndexKey);
         Map<String, OnlineSession> result = new HashMap<>();
-        for (Map.Entry<Object, Object> entry : entries.entrySet()) {
-            result.put((String) entry.getKey(), (OnlineSession) entry.getValue());
+        if (members == null || members.isEmpty()) {
+            return result;
+        }
+        for (Object m : members) {
+            String sid = String.valueOf(m);
+            String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
+            OnlineSession session = (OnlineSession) redisTemplate.opsForValue().get(sessionEntryKey);
+            if (session != null) {
+                result.put(sid, session);
+            } else {
+                // 懒惰清理索引中的过期 sid
+                redisTemplate.opsForSet().remove(sessionIndexKey, sid);
+            }
         }
         return result;
     }

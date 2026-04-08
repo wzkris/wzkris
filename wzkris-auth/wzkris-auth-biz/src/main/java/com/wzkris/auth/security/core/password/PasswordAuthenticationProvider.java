@@ -5,6 +5,7 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.remote.interfaces.captchachallenge.ICaptchaChallengeRemote;
 import com.wzkris.auth.remote.interfaces.captchachallenge.request.ValidateChallengeRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
+import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
@@ -34,9 +35,10 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     public PasswordAuthenticationProvider(
             TokenService tokenService,
+            TokenProperties tokenProperties,
             List<LoginUserService> loginUserServices,
             ICaptchaChallengeRemote captchaChallengeRemote) {
-        super(tokenService);
+        super(tokenService, tokenProperties);
         this.loginUserServices = loginUserServices;
         this.captchaChallengeRemote = captchaChallengeRemote;
     }
@@ -65,7 +67,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     "invalidParameter.captcha.error");
         }
 
-        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional.get().loadByUsernameAndPassword(
+        CommonAuthenticationToken token = templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
         if (token == null) {

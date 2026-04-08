@@ -2,6 +2,7 @@ package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.enums.LoginTypeEnum;
+import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,8 +31,11 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
 
     private final TokenService tokenService;
 
-    protected CommonAuthenticationProvider(TokenService tokenService) {
+    private final TokenProperties tokenProperties;
+
+    protected CommonAuthenticationProvider(TokenService tokenService, TokenProperties tokenProperties) {
         this.tokenService = tokenService;
+        this.tokenProperties = tokenProperties;
     }
 
     /**
@@ -69,32 +73,42 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
      */
     final CommonAuthenticationToken buildAuthenticationToken(CommonAuthenticationToken authenticationToken) {
         BaseLoginUser loginUser = authenticationToken.getPrincipal();
+
+        String refreshToken;
         String sid;
-        String refreshToken = authenticationToken.getRefreshToken();
 
         if (authenticationToken.getLoginType() == LoginTypeEnum.REFRESH) {
-            // 刷新token时，从原refreshToken中解析sid，保持使用相同的sid
-            String oldRefreshToken = authenticationToken.getRefreshToken();
-            TokenClaims claims = tokenService.parseJwt(oldRefreshToken);
+            refreshToken = authenticationToken.getRefreshToken();
+            TokenClaims claims = tokenService.parseJwt(refreshToken);
             sid = claims.getSid();
-            Instant exp = claims.getExpiresAt();
-            if (ChronoUnit.HOURS.between(Instant.now(), exp) < 2) {
-                // 使用原sid生成新的refreshToken
+            if (tokenProperties.getReuseRefreshTokens()) {
+                // 重用模式：保持 sid，不轮转，仅在接近过期时重新生成 refresh token
+                Instant exp = claims.getExpiresAt();
+                if (ChronoUnit.HOURS.between(Instant.now(), exp) < 2) {
+                    refreshToken = tokenService.generateRefreshToken(loginUser, sid);
+                }
+                // 保存/延长会话
+                tokenService.save(loginUser, sid, authenticationToken.getPerms());
+            } else {
+                // 轮转模式：生成新的 sid 与新的 refresh token，保存新会话并撤销旧会话
+                sid = UUID.randomUUID().toString();
                 refreshToken = tokenService.generateRefreshToken(loginUser, sid);
+                // 保存新会话
+                tokenService.save(loginUser, sid, authenticationToken.getPerms());
+                // 撤销旧会话以立即使旧 refresh 无效
+                tokenService.revoke(loginUser.getAuthType().getValue(), loginUser.getUid(), claims.getSid());
             }
         } else {
-            // 首次登录时，生成新的sid
+            // 首次登录时，生成新的sid并保存会话
             sid = UUID.randomUUID().toString();
             refreshToken = tokenService.generateRefreshToken(loginUser, sid);
+            tokenService.save(loginUser, sid, authenticationToken.getPerms());
         }
 
-        // 生成accessToken，使用相同的sid
+        // 生成accessToken，使用确定后的 sid
         String generatedToken = tokenService.generateAccessToken(loginUser, sid);
         authenticationToken.setAccessToken(generatedToken);
         authenticationToken.setRefreshToken(refreshToken);
-
-        // 保存用户信息和权限信息（传入sid作为Redis Hash的field key）
-        tokenService.save(loginUser, sid, authenticationToken.getPerms());
 
         return authenticationToken;
     }

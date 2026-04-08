@@ -26,13 +26,17 @@ public class TokenKeyBuilder {
      * 格式：auth-token:session:{type:uid}
      * </p>
      * <p>
-     * Redis结构：Hash，field为sid，value为OnlineSession对象
-     * </p>
-     * <p>
      * Hash tag: {type:uid} 确保同一用户的所有会话数据在同一 slot
      * </p>
      */
-    private static final String SESSION_PREFIX = "auth-token:session:{%s:%s}";
+    private static final String SESSION_INDEX_PREFIX = "auth-token:session:{%s:%s}";
+
+    /**
+     * 单个会话 Key 前缀（每个 sid 一个 key）
+     * 格式：auth-token:session:{type:uid}:sid
+     * 使用 {type:uid} 作为 hash tag，保证与用户相关的 keys 在同一 slot
+     */
+    private static final String SESSION_ENTRY_PREFIX = "auth-token:session:{%s:%s}:%s";
 
     /**
      * 用户信息 Hash Key 前缀
@@ -61,8 +65,21 @@ public class TokenKeyBuilder {
      * @param uid  用户ID
      * @return Redis Key（使用 {type:uid} hash tag）
      */
-    public static String buildSessionKey(String type, Serializable uid) {
-        return SESSION_PREFIX.formatted(type, uid);
+    public static String buildSessionIndexKey(String type, Serializable uid) {
+        return SESSION_INDEX_PREFIX.formatted(type, uid);
+    }
+
+    /**
+     * 构建单个会话条目 Key（每个 sid 对应一个独立 key）
+     * 返回格式：auth-token:session:{type:uid}:sid
+     *
+     * @param type 认证类型
+     * @param uid  用户ID
+     * @param sid  会话ID
+     * @return 单个会话的 Redis Key（使用 {type:uid} hash tag）
+     */
+    public static String buildSessionEntryKey(String type, Serializable uid, String sid) {
+        return SESSION_ENTRY_PREFIX.formatted(type, uid, sid);
     }
 
     /**

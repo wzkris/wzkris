@@ -27,8 +27,8 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
 
     private final TokenService tokenService;
 
-    public RefreshAuthenticationProvider(TokenService tokenService) {
-        super(tokenService);
+    public RefreshAuthenticationProvider(TokenService tokenService, com.wzkris.auth.properties.TokenProperties tokenProperties) {
+        super(tokenService, tokenProperties);
         this.tokenService = tokenService;
     }
 

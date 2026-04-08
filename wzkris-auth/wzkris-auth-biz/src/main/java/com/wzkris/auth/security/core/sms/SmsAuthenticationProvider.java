@@ -5,6 +5,7 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.auth.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
+import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
@@ -34,9 +35,10 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
     public SmsAuthenticationProvider(
             TokenService tokenService,
+            TokenProperties tokenProperties,
             List<LoginUserService> loginUserServices,
             ICaptchaRemote captchaRemote) {
-        super(tokenService);
+        super(tokenService, tokenProperties);
         this.loginUserServices = loginUserServices;
         this.captchaRemote = captchaRemote;
     }
@@ -68,7 +70,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     "invalidParameter.captcha.error");
         }
 
-        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        CommonAuthenticationToken token = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
         if (token == null) {
             OAuth2ExceptionUtil.throwErrorI18n(

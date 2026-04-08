@@ -55,9 +55,6 @@ public class TokenValidateService {
     public Authentication check(HttpServletRequest request) {
         try {
             String token = extractToken(request);
-            if (StringUtil.isBlank(token)) {
-                return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
-            }
             Jwt jwt = jwtDecoder.decode(token);
             String authType = jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE);
             AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(authType);
