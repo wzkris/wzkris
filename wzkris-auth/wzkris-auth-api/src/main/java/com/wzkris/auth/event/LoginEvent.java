@@ -3,7 +3,6 @@ package com.wzkris.auth.event;
 import com.wzkris.common.core.model.BaseLoginUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nl.basjes.parse.useragent.UserAgent;
 
 /**
  * @author : wzkris
@@ -25,7 +24,7 @@ public class LoginEvent {
 
     private String ipAddr;
 
-    private UserAgent userAgent;
+    private String userAgentText;
 
     private String traceId;
 

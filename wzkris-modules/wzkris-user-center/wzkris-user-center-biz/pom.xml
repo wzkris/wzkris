@@ -35,6 +35,11 @@
             <artifactId>wzkris-common-sentinel</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
+        </dependency>
+
         <!-- 日志服务-->
         <dependency>
             <groupId>com.wzkris</groupId>

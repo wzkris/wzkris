@@ -11,6 +11,7 @@ import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nl.basjes.parse.useragent.UserAgent;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -53,6 +54,8 @@ public class DefaultAuthenticationSuccessHandlerImpl implements AuthenticationSu
 
     private void recordLog(
             HttpServletRequest request, CommonAuthenticationToken authenticationToken) {
+        UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT));
+
         if (authenticationToken.getLoginType() != LoginTypeEnum.REFRESH) {
             SpringUtil.getContext()
                     .publishEvent(new LoginEvent(
@@ -61,7 +64,7 @@ public class DefaultAuthenticationSuccessHandlerImpl implements AuthenticationSu
                             true,
                             "",
                             ServletUtil.getClientIP(request),
-                            UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT)),
+                            userAgent.getUserAgentString(),
                             TraceIdUtil.get()));
         }
     }

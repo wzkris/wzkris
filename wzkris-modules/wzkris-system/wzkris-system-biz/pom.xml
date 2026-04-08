@@ -37,7 +37,7 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-remote</artifactId>
+            <artifactId>wzkris-common-web</artifactId>
         </dependency>
 
         <dependency>

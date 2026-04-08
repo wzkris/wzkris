@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.request.tenantwallet;
 
-import com.wzkris.common.web.model.QueryRequest;
+import com.wzkris.common.core.model.QueryRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.wzkris.common.web.model;
+package com.wzkris.common.core.model;
 
 import lombok.Setter;
 

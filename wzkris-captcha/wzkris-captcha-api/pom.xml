@@ -15,12 +15,17 @@
     <dependencies>
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-web</artifactId>
+            <artifactId>wzkris-common-swagger</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-validator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-remote</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -35,6 +35,11 @@
             <artifactId>wzkris-common-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
+        </dependency>
+
         <!-- wzkris Common Redis-->
         <dependency>
             <groupId>com.wzkris</groupId>
@@ -56,11 +61,6 @@
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-auth-api</artifactId>
             <version>${revision}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-remote</artifactId>
         </dependency>
 
         <!-- springBoot test-->

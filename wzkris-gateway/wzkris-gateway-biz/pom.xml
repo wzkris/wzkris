@@ -55,6 +55,11 @@
             <version>${revision}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
+        </dependency>
+
         <!-- 限流 -->
         <dependency>
             <groupId>com.wzkris</groupId>
