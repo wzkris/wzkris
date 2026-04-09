@@ -5,7 +5,6 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.auth.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
@@ -35,10 +34,9 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
     public SmsAuthenticationProvider(
             TokenService tokenService,
-            TokenProperties tokenProperties,
             List<LoginUserService> loginUserServices,
             ICaptchaRemote captchaRemote) {
-        super(tokenService, tokenProperties);
+        super(tokenService);
         this.loginUserServices = loginUserServices;
         this.captchaRemote = captchaRemote;
     }
@@ -59,6 +57,19 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
+        checkCaptcha(authenticationToken);
+
+        CommonAuthenticationToken commonAuthenticationToken = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+
+        if (commonAuthenticationToken == null) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+        }
+
+        return commonAuthenticationToken;
+    }
+
+    private void checkCaptcha(SmsAuthenticationToken authenticationToken) {
         CaptchaCheckRequest request = new CaptchaCheckRequest();
         request.setKey(authenticationToken.getPhoneNumber());
         request.setValue(authenticationToken.getSmsCode());
@@ -69,15 +80,6 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
             OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
                     "invalidParameter.captcha.error");
         }
-
-        CommonAuthenticationToken token = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
-
-        if (token == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
-        }
-
-        return token;
     }
 
     @Override

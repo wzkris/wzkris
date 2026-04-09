@@ -5,7 +5,6 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.remote.interfaces.captchachallenge.ICaptchaChallengeRemote;
 import com.wzkris.auth.remote.interfaces.captchachallenge.request.ValidateChallengeRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
@@ -35,10 +34,9 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     public PasswordAuthenticationProvider(
             TokenService tokenService,
-            TokenProperties tokenProperties,
             List<LoginUserService> loginUserServices,
             ICaptchaChallengeRemote captchaChallengeRemote) {
-        super(tokenService, tokenProperties);
+        super(tokenService);
         this.loginUserServices = loginUserServices;
         this.captchaChallengeRemote = captchaChallengeRemote;
     }
@@ -59,6 +57,21 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
+        checkCaptcha(authenticationToken);
+
+        CommonAuthenticationToken commonAuthenticationToken = templateOptional.get().loadByUsernameAndPassword(
+                authenticationToken.getUsername(), authenticationToken.getPassword());
+
+        if (commonAuthenticationToken == null) {
+            // 抛出异常
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+        }
+
+        return commonAuthenticationToken;
+    }
+
+    private void checkCaptcha(PasswordAuthenticationToken authenticationToken) {
         Result<Boolean> booleanResult = captchaChallengeRemote.validateChallenge(new ValidateChallengeRequest(authenticationToken.getCaptchaId()));
         boolean pass = ResultUtil.check(booleanResult) && Boolean.TRUE.equals(booleanResult.getData());
 
@@ -66,17 +79,6 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
             OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
                     "invalidParameter.captcha.error");
         }
-
-        CommonAuthenticationToken token = templateOptional.get().loadByUsernameAndPassword(
-                authenticationToken.getUsername(), authenticationToken.getPassword());
-
-        if (token == null) {
-            // 抛出异常
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
-        }
-
-        return token;
     }
 
     @Override

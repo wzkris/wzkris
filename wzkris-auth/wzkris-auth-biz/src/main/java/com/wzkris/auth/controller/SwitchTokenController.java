@@ -1,6 +1,7 @@
 package com.wzkris.auth.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
+import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
@@ -70,20 +71,15 @@ public class SwitchTokenController {
         }
         MemberPermissionResponse permissions = permissionResult.getData();
 
-        // 生成新的sid
-        String sid = java.util.UUID.randomUUID().toString();
-        String accessToken = tokenService.generateAccessToken(loginUser, sid);
-        String refreshToken = tokenService.generateRefreshToken(loginUser, sid);
-
         java.util.Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new java.util.HashSet<>(permissions.getGrantedAuthority())
                 : java.util.Collections.emptySet();
 
-        tokenService.save(loginUser, sid, perms);
+        TokenPair tokenPair = tokenService.login(loginUser, perms);
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("access_token", accessToken);
-        parameters.put("refresh_token", refreshToken);
+        parameters.put("access_token", tokenPair.getAccessToken());
+        parameters.put("refresh_token", tokenPair.getRefreshToken());
         return ok(parameters);
     }
 

@@ -1,6 +1,7 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.constants.QrCodeConstant;
+import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.response.QrTokenResponse;
 import com.wzkris.auth.service.TokenService;
@@ -80,15 +81,11 @@ public class QrLoginController {
 
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         Set<String> permission = SecurityUtil.getPermission();
-        // 生成新的sid
-        String sid = UUID.randomUUID().toString();
-        String accessToken = tokenService.generateAccessToken(loginUser, sid);
-        String refreshToken = tokenService.generateRefreshToken(loginUser, sid);
-        tokenService.save(loginUser, sid, permission);
+        TokenPair tokenPair = tokenService.login(loginUser, permission);
 
         qrTokenResponse.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
-        qrTokenResponse.setAccessToken(accessToken);
-        qrTokenResponse.setRefreshToken(refreshToken);
+        qrTokenResponse.setAccessToken(tokenPair.getAccessToken());
+        qrTokenResponse.setRefreshToken(tokenPair.getRefreshToken());
         redisTemplate.opsForValue().set(key, qrTokenResponse, Duration.ofSeconds(60));
         return Result.ok();
     }

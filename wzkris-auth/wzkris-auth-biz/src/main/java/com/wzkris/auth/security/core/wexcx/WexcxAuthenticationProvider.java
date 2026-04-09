@@ -2,7 +2,6 @@ package com.wzkris.auth.security.core.wexcx;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
@@ -27,9 +26,8 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
 
     public WexcxAuthenticationProvider(
             TokenService tokenService,
-            TokenProperties tokenProperties,
             List<LoginUserService> loginUserServices) {
-        super(tokenService, tokenProperties);
+        super(tokenService);
         this.loginUserServices = loginUserServices;
     }
 
@@ -50,16 +48,16 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
             return null; // never run this line
         }
 
-        CommonAuthenticationToken token = templateOptional
+        CommonAuthenticationToken commonAuthenticationToken = templateOptional
                 .get()
                 .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
 
-        if (token == null) {
+        if (commonAuthenticationToken == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        return token;
+        return commonAuthenticationToken;
     }
 
     @Override

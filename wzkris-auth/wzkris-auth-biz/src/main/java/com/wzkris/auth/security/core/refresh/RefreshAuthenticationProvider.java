@@ -27,8 +27,8 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
 
     private final TokenService tokenService;
 
-    public RefreshAuthenticationProvider(TokenService tokenService, com.wzkris.auth.properties.TokenProperties tokenProperties) {
-        super(tokenService, tokenProperties);
+    public RefreshAuthenticationProvider(TokenService tokenService) {
+        super(tokenService);
         this.tokenService = tokenService;
     }
 
@@ -38,33 +38,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         String refreshToken = authenticationToken.getRefreshToken();
         String authType = authenticationToken.getAuthType().getValue();
 
-        // 从 refreshToken JWT 中解析 uid 和 sid
-        TokenClaims claims;
-        try {
-            claims = tokenService.parseJwt(refreshToken);
-        } catch (Exception e) {
-            claims = null;
-        }
-        if (claims == null) {
-            // refreshToken 解析失败
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
-        }
-
-        if (!StringUtil.equals(authType, claims.getAuthType())) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
-        }
-
-        Long uid = claims.getUid();
-        String sid = claims.getSid();
-
-        // 检查 sid 是否在黑名单中
-        if (tokenService.isRevoked(authType, uid, sid)) {
-            // sid 已被拉黑
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
-        }
+        Long uid = checkParameter(refreshToken, authType);
 
         // 从存储中加载用户信息
         BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
@@ -85,6 +59,32 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         CommonAuthenticationToken commonAuthenticationToken = new CommonAuthenticationToken(loginUser, perms, LoginTypeEnum.REFRESH);
         commonAuthenticationToken.setRefreshToken(refreshToken);
         return commonAuthenticationToken;
+    }
+
+    private Long checkParameter(String refreshToken, String authType) {
+        // 从 refreshToken JWT 中解析 uid 和 sid
+        TokenClaims claims;
+        try {
+            claims = tokenService.parseJwt(refreshToken);
+        } catch (Exception e) {
+            // refreshToken 解析失败
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+            return null;
+        }
+
+        if (!StringUtil.equals(authType, claims.getAuthType())) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.PARAMETER_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+        }
+
+        // 检查 sid 是否在黑名单中
+        if (tokenService.isRevoked(authType, claims.getUid(), claims.getSid())) {
+            // sid 已被拉黑
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+        }
+        return claims.getUid();
     }
 
     @Override
