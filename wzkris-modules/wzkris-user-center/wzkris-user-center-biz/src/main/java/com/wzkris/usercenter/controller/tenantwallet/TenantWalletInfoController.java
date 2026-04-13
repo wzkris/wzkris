@@ -17,11 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 租户钱包信息
- *
- * @author wzkris
- */
 @Tag(name = "租户钱包信息")
 @Validated
 @RestController

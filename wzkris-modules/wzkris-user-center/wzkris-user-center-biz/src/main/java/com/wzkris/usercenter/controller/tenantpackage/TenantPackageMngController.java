@@ -23,11 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 租户套餐管理
- *
- * @author wzkris
- */
 @Tag(name = "租户套餐管理")
 @Validated
 @RestController

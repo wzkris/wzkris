@@ -2,8 +2,6 @@ package com.wzkris.usercenter.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.response.SelectResponse;
-import org.springframework.lang.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,13 +12,6 @@ import java.util.List;
  * @author wzkris
  */
 public interface TenantInfoService extends IService<TenantInfoDO> {
-
-    /**
-     * 租户选择列表
-     *
-     * @param tenantName 租户名称
-     */
-    List<SelectResponse> listSelect(@Nullable String tenantName);
 
     /**
      * 添加租户, 会创建租户管理员账号

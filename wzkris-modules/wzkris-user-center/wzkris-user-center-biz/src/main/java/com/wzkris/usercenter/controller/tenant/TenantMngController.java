@@ -24,11 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 租户管理
- *
- * @author wzkris
- */
 @Tag(name = "租户管理")
 @Validated
 @RequiredArgsConstructor

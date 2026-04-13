@@ -26,11 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 管理员管理
- *
- * @author wzkris
- */
 @Tag(name = "管理员管理")
 @Validated
 @RestController

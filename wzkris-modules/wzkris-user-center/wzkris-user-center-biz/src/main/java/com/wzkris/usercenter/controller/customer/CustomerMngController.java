@@ -16,11 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 客户管理
- *
- * @author wzkris
- */
 @Tag(name = "客户管理")
 @Validated
 @RestController

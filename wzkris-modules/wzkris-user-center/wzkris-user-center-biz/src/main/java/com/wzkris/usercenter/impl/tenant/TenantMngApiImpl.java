@@ -1,6 +1,8 @@
 package com.wzkris.usercenter.impl.tenant;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -10,6 +12,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.tenant.TenantMngApi;
 import com.wzkris.usercenter.domain.TenantInfoDO;
+import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 import com.wzkris.usercenter.event.CreateTenantEvent;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.request.PwdResetRequest;
@@ -30,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,14 +70,35 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
 
     @Override
     public Result<Page<SelectResponse>> querySelectPage(String tenantName) {
+        LambdaQueryWrapper<TenantInfoDO> lqw = new LambdaQueryWrapper<TenantInfoDO>()
+                .select(TenantInfoDO::getTenantId, TenantInfoDO::getTenantName)
+                .like(StringUtil.isNotBlank(tenantName), TenantInfoDO::getTenantName, tenantName)
+                .orderByAsc(TenantInfoDO::getTenantId);
         startPage();
-        List<SelectResponse> list = tenantInfoService.listSelect(tenantName);
+        List<SelectResponse> list = tenantInfoService.list(lqw).stream().map(tenantInfoDO -> {
+            SelectResponse SelectResponse = new SelectResponse();
+            SelectResponse.setId(tenantInfoDO.getTenantId());
+            SelectResponse.setLabel(tenantInfoDO.getTenantName());
+            return SelectResponse;
+        }).collect(Collectors.toList());
         return getPageResult(list);
     }
 
     @Override
     public Result<List<SelectResponse>> queryPackageSelect(String packageName) {
-        List<SelectResponse> selectVOS = tenantPackageInfoService.listSelect(packageName);
+        LambdaQueryWrapper<TenantPackageInfoDO> lqw = new LambdaQueryWrapper<TenantPackageInfoDO>()
+                .select(TenantPackageInfoDO::getPackageId, TenantPackageInfoDO::getPackageName)
+                .eq(TenantPackageInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .like(StringUtil.isNotBlank(packageName), TenantPackageInfoDO::getPackageName, packageName)
+                .orderByAsc(TenantPackageInfoDO::getPackageId);
+        List<SelectResponse> selectVOS = tenantPackageInfoService.list(lqw)
+                .stream()
+                .map(packageInfoDO -> {
+                    SelectResponse SelectResponse = new SelectResponse();
+                    SelectResponse.setId(packageInfoDO.getPackageId());
+                    SelectResponse.setLabel(packageInfoDO.getPackageName());
+                    return SelectResponse;
+                }).toList();
         return ok(selectVOS);
     }
 

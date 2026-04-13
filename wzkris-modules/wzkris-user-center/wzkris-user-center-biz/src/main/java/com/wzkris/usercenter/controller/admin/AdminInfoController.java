@@ -20,11 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 个人信息 业务处理
- *
- * @author wzkris
- */
 @Tag(name = "管理员信息")
 @RestController
 @RequestMapping("/admin-info")

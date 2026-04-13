@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.usercenter.domain.*;
 import com.wzkris.usercenter.mapper.*;
-import com.wzkris.usercenter.response.SelectResponse;
 import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
 import com.wzkris.usercenter.service.TenantInfoService;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 租户层
@@ -45,20 +42,6 @@ public class TenantInfoServiceImpl
     private final TenantWalletInfoMapper tenantWalletInfoMapper;
 
     private final TenantWalletRecordMapper tenantWalletRecordMapper;
-
-    @Override
-    public List<SelectResponse> listSelect(String tenantName) {
-        LambdaQueryWrapper<TenantInfoDO> lqw = new LambdaQueryWrapper<TenantInfoDO>()
-                .select(TenantInfoDO::getTenantId, TenantInfoDO::getTenantName)
-                .like(StringUtil.isNotBlank(tenantName), TenantInfoDO::getTenantName, tenantName)
-                .orderByAsc(TenantInfoDO::getTenantId);
-        return baseMapper.selectList(lqw).stream().map(tenantInfoDO -> {
-            SelectResponse SelectResponse = new SelectResponse();
-            SelectResponse.setId(tenantInfoDO.getTenantId());
-            SelectResponse.setLabel(tenantInfoDO.getTenantName());
-            return SelectResponse;
-        }).collect(Collectors.toList());
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

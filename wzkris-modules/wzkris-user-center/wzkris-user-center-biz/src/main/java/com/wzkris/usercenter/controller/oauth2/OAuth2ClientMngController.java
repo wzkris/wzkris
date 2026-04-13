@@ -18,11 +18,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * OAuth2客户端
- *
- * @author wzkris
- */
 @Tag(name = "OAuth2客户端管理")
 @RestController
 @RequestMapping("/oauth2client-manage")

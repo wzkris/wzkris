@@ -13,11 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * 菜单信息
- *
- * @author wzkris
- */
 @Tag(name = "菜单路由")
 @RestController
 @RequestMapping("/menu-info")

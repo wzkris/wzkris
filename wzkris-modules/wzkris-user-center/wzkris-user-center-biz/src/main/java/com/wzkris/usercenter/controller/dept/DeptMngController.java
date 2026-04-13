@@ -17,11 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 部门信息
- *
- * @author wzkris
- */
 @Tag(name = "部门管理")
 @RestController
 @RequestMapping("/dept-manage")

@@ -16,11 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 自身租户信息
- *
- * @author wzkris
- */
 @Tag(name = "租户信息")
 @Validated
 @RestController

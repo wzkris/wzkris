@@ -17,11 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 菜单管理
- *
- * @author wzkris
- */
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/menu-manage")

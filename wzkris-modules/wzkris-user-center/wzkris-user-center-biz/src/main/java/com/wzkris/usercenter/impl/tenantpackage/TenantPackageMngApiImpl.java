@@ -35,7 +35,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     @Override
     public Result<Page<TenantPackageInfoResponse>> queryPage(TenantPackageMngQueryRequest request) {
         startPage();
-        List<TenantPackageInfoDO> list = tenantPackageInfoMapper.selectList(this.buildQueryWrapper(request));
+        List<TenantPackageInfoDO> list = tenantPackageInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, TenantPackageInfoResponse.class));
     }
 
@@ -51,7 +51,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<TenantPackageInfoResponse> queryInfo(Long packageId) {
-        return ok(BeanUtil.convert(tenantPackageInfoMapper.selectById(packageId), TenantPackageInfoResponse.class));
+        return ok(BeanUtil.convert(tenantPackageInfoService.getById(packageId), TenantPackageInfoResponse.class));
     }
 
     @Override
@@ -64,19 +64,19 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<Void> save(TenantPackageMngSaveRequest request) {
-        return toRes(tenantPackageInfoMapper.insert(BeanUtil.convert(request, TenantPackageInfoDO.class)));
+        return toRes(tenantPackageInfoService.save(BeanUtil.convert(request, TenantPackageInfoDO.class)));
     }
 
     @Override
     public Result<Void> update(TenantPackageMngUpdateRequest request) {
-        return toRes(tenantPackageInfoMapper.updateById(BeanUtil.convert(request, TenantPackageInfoDO.class)));
+        return toRes(tenantPackageInfoService.updateById(BeanUtil.convert(request, TenantPackageInfoDO.class)));
     }
 
     @Override
     public Result<Void> updateStatus(StatusUpdateRequest request) {
         TenantPackageInfoDO update = new TenantPackageInfoDO(request.getId());
         update.setStatus(request.getStatus());
-        return toRes(tenantPackageInfoMapper.updateById(update));
+        return toRes(tenantPackageInfoService.updateById(update));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
         if (tenantPackageInfoService.existInUsed(packageIds)) {
             return requestFail("删除失败, 套餐正在使用");
         }
-        return toRes(tenantPackageInfoMapper.deleteByIds(packageIds));
+        return toRes(tenantPackageInfoService.removeByIds(packageIds));
     }
 
 }

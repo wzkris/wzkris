@@ -22,11 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 职位信息
- *
- * @author wzkris
- */
 @Tag(name = "租户职位管理")
 @Validated
 @RestController

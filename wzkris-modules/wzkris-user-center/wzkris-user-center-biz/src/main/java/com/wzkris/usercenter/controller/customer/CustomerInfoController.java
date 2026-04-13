@@ -13,11 +13,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 用户个人信息
- *
- * @author wzkris
- */
 @Tag(name = "客户信息")
 @Slf4j
 @Validated

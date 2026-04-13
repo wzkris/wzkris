@@ -14,11 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 租户钱包管理
- *
- * @author wzkris
- */
 @Tag(name = "租户钱包管理")
 @Validated
 @RestController
