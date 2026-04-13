@@ -31,7 +31,7 @@ public class TenantPackageMngSaveRequest {
     private String status;
 
     @Schema(description = "套餐绑定的菜单")
-    private List<Long> menuIds;
+    private Long[] menuIds;
 
     @Schema(description = "备注")
     private String remark;

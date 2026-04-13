@@ -8,8 +8,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * 修改租户套餐请求体
  */
@@ -35,7 +33,7 @@ public class TenantPackageMngUpdateRequest {
     private String status;
 
     @Schema(description = "套餐绑定的菜单")
-    private List<Long> menuIds;
+    private Long[] menuIds;
 
     @Schema(description = "备注")
     private String remark;
