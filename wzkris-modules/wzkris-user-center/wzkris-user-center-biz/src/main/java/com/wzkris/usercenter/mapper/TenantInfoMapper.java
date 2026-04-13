@@ -26,11 +26,20 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
     String selectOperPwdById(Long tenantId);
 
     @Select("""
-            SELECT t.*, p.package_name, w.balance FROM biz.tenant_info t LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
+            SELECT t.*, p.package_name, p.member_num_limit, p.post_num_limit, w.balance FROM biz.tenant_info t LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
             LEFT JOIN biz.tenant_wallet_info w ON t.tenant_id = w.tenant_id
             ${ew.customSqlSegment}
             """)
     List<TenantMngResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
+
+    @Select("""
+            SELECT t.*, p.package_name, p.member_num_limit, p.post_num_limit, w.balance
+            FROM biz.tenant_info t
+            LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
+            LEFT JOIN biz.tenant_wallet_info w ON t.tenant_id = w.tenant_id
+            WHERE t.tenant_id = #{tenantId}
+            """)
+    TenantMngResponse selectMngVOById(Long tenantId);
 
     /**
      * 根据用户ID查询套餐ID，如果查到则说明是租户最高管理员
@@ -42,8 +51,10 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
     Long selectPackageIdByMemberId(Long memberId);
 
     @Select("""
-             SELECT t.*, p.package_name FROM biz.tenant_info t LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
-                        WHERE t.tenant_id = #{tenantId}
+                         SELECT t.*, p.package_name, p.member_num_limit, p.post_num_limit
+                         FROM biz.tenant_info t
+                         LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
+                         WHERE t.tenant_id = #{tenantId}
             """)
     TenantInfoResponse selectVOById(Long tenantId);
 

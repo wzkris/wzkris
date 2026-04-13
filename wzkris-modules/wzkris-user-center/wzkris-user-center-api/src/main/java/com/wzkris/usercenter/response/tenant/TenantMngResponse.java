@@ -49,10 +49,10 @@ public class TenantMngResponse {
     private Date expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
-    private Integer accountLimit;
+    private Integer memberNumLimit;
 
     @Schema(description = "职位数量（-1不限制）")
-    private Integer postLimit;
+    private Integer postNumLimit;
 
     @Schema(description = "套餐名称")
     private String packageName;

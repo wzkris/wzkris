@@ -47,13 +47,5 @@ public class TenantMngUpdateRequest {
     @Schema(description = "过期时间")
     private Date expireTime;
 
-    @NotNull(message = "账号数量{validate.notnull}")
-    @Schema(description = "账号数量（-1 不限制）")
-    private Integer accountLimit;
-
-    @NotNull(message = "职位数量{validate.notnull}")
-    @Schema(description = "角色数量（-1 不限制）")
-    private Integer postLimit;
-
 }
 

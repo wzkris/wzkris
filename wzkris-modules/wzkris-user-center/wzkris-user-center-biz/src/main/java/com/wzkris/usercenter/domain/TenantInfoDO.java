@@ -54,12 +54,6 @@ public class TenantInfoDO extends BaseEntity {
     @Schema(description = "过期时间")
     private Date expireTime;
 
-    @Schema(description = "账号数量（-1不限制）")
-    private Integer accountLimit;
-
-    @Schema(description = "职位数量（-1不限制）")
-    private Integer postLimit;
-
     public TenantInfoDO(Long tenantId) {
         this.tenantId = tenantId;
     }

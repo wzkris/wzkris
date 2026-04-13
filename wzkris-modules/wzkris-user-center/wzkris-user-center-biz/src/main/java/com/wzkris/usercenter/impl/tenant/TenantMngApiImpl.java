@@ -65,7 +65,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
 
     @Override
     public Result<TenantMngResponse> queryInfo(Long tenantId) {
-        return ok(BeanUtil.convert(tenantInfoMapper.selectById(tenantId), TenantMngResponse.class));
+        return ok(tenantInfoMapper.selectMngVOById(tenantId));
     }
 
     @Override

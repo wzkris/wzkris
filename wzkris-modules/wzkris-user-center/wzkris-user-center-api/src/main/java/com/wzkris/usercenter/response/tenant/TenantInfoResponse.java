@@ -35,10 +35,10 @@ public class TenantInfoResponse {
     private Date expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
-    private Integer accountLimit;
+    private Integer memberNumLimit;
 
     @Schema(description = "职位数量（-1不限制）")
-    private Integer postLimit;
+    private Integer postNumLimit;
 
 }
 

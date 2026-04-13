@@ -35,6 +35,14 @@ public class TenantPackageMngUpdateRequest {
     @Schema(description = "套餐绑定的菜单")
     private Long[] menuIds;
 
+        @NotNull(message = "账号数量{validate.notnull}")
+        @Schema(description = "账号数量（-1 不限制）")
+        private Integer memberNumLimit;
+
+        @NotNull(message = "职位数量{validate.notnull}")
+        @Schema(description = "职位数量（-1 不限制）")
+        private Integer postNumLimit;
+
     @Schema(description = "备注")
     private String remark;
 

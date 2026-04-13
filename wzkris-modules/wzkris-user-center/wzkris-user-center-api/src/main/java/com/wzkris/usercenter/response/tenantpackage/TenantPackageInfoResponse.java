@@ -19,6 +19,12 @@ public class TenantPackageInfoResponse {
     @Schema(description = "套餐绑定的菜单")
     private Long[] menuIds;
 
+    @Schema(description = "账号数量（-1不限制）")
+    private Integer memberNumLimit;
+
+    @Schema(description = "职位数量（-1不限制）")
+    private Integer postNumLimit;
+
     @Schema(description = "备注")
     private String remark;
 

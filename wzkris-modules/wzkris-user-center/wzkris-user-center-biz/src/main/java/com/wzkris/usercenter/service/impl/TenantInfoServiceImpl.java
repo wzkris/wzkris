@@ -37,6 +37,8 @@ public class TenantInfoServiceImpl
 
     private final PostInfoService postInfoService;
 
+    private final TenantPackageInfoMapper tenantPackageInfoMapper;
+
     private final PasswordEncoderDelegate passwordEncoder;
 
     private final TenantWalletInfoMapper tenantWalletInfoMapper;
@@ -102,12 +104,13 @@ public class TenantInfoServiceImpl
     public boolean checkAccountLimit(Long tenantId) {
         return SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = baseMapper.selectById(tenantId);
-            if (tenant.getAccountLimit() == -1) {
+            TenantPackageInfoDO tenantPackage = tenantPackageInfoMapper.selectById(tenant.getPackageId());
+            if (tenantPackage.getMemberNumLimit() == -1) {
                 return true;
             }
             Long count = memberInfoMapper.selectCount(
                     Wrappers.lambdaQuery(MemberInfoDO.class).eq(MemberInfoDO::getTenantId, tenantId));
-            return tenant.getAccountLimit() - count > 0;
+            return tenantPackage.getMemberNumLimit() - count > 0;
         });
     }
 
@@ -115,12 +118,13 @@ public class TenantInfoServiceImpl
     public boolean checkPostLimit(Long tenantId) {
         return SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = baseMapper.selectById(tenantId);
-            if (tenant.getPostLimit() == -1) {
+            TenantPackageInfoDO tenantPackage = tenantPackageInfoMapper.selectById(tenant.getPackageId());
+            if (tenantPackage.getPostNumLimit() == -1) {
                 return true;
             }
             Long count = postInfoMapper.selectCount(
                     Wrappers.lambdaQuery(PostInfoDO.class).eq(PostInfoDO::getTenantId, tenantId));
-            return tenant.getPostLimit() - count > 0;
+            return tenantPackage.getPostNumLimit() - count > 0;
         });
     }
 

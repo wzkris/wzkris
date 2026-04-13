@@ -3,6 +3,7 @@ package com.wzkris.usercenter.request.tenantpackage;
 import com.wzkris.common.core.constant.CommonConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -32,6 +33,14 @@ public class TenantPackageMngSaveRequest {
 
     @Schema(description = "套餐绑定的菜单")
     private Long[] menuIds;
+
+        @NotNull(message = "账号数量{validate.notnull}")
+        @Schema(description = "账号数量（-1 不限制）")
+        private Integer memberNumLimit;
+
+        @NotNull(message = "职位数量{validate.notnull}")
+        @Schema(description = "职位数量（-1 不限制）")
+        private Integer postNumLimit;
 
     @Schema(description = "备注")
     private String remark;
