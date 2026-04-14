@@ -1,5 +1,7 @@
 package com.wzkris.common.web.aspect;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.web.annotation.ExcludeStatAspect;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,12 +17,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -34,6 +35,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ControllerStatisticAspect {
 
     private static final ConcurrentHashMap<String, Boolean> excludeControllers = new ConcurrentHashMap<>();
+
+    private final ObjectMapper objectMapper;
+
+    public ControllerStatisticAspect(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper.copy();
+        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     @Pointcut("bean(*Controller)")
     public void pointCut() {
@@ -56,7 +64,7 @@ public class ControllerStatisticAspect {
         }
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+        HttpServletRequest request = attributes == null ? null : attributes.getRequest();
         long startTime = System.currentTimeMillis();
         long endTime = 0L;
         Object result = null;
@@ -76,11 +84,11 @@ public class ControllerStatisticAspect {
                             Response: {}
                             Time Cost: {} ms
                             """,
-                    request.getRequestURL(),
-                    request.getMethod(),
+                    request == null ? null : request.getRequestURL(),
+                    request == null ? null : request.getMethod(),
                     this.getRequestParams(request),
                     this.getRequestBody(joinPoint),
-                    result,
+                    this.serializeValue(result),
                     endTime - startTime);
         }
 
@@ -88,18 +96,16 @@ public class ControllerStatisticAspect {
     }
 
     private String getRequestParams(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
+
         Map<String, String[]> paramMap = request.getParameterMap();
-        StringBuilder sb = new StringBuilder();
-
-        for (String key : paramMap.keySet()) {
-            sb.append(key).append("=").append(Arrays.toString(paramMap.get(key))).append(",");
+        if (paramMap.isEmpty()) {
+            return null;
         }
 
-        if (!sb.isEmpty()) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-
-        return sb.toString();
+        return this.serializeValue(paramMap);
     }
 
     private String getRequestBody(JoinPoint joinPoint) {
@@ -113,13 +119,35 @@ public class ControllerStatisticAspect {
             if (parameter.isAnnotationPresent(RequestBody.class)) {
                 Object arg = args[i];
                 // 排除 HttpServletRequest 和 MultipartFile
-                if (!(arg instanceof HttpServletRequest) && !(arg instanceof MultipartFile)) {
-                    return Optional.ofNullable(arg).map(Object::toString).orElse("");
+                if (!isFilterObject(arg)) {
+                    return this.serializeValue(arg);
                 }
             }
         }
 
         return null;
+    }
+
+    private String serializeValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof CharSequence || value instanceof Number || value instanceof Boolean || value instanceof Enum<?>) {
+            return String.valueOf(value);
+        }
+
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception e) {
+            log.warn("ControllerStatisticAspect serialize value failed: {}", e.getMessage());
+            return String.valueOf(value);
+        }
+    }
+
+    private boolean isFilterObject(Object value) {
+        return value instanceof HttpServletRequest ||
+                value instanceof MultipartFile ||
+                value instanceof BindingResult;
     }
 
 }

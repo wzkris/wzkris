@@ -12,7 +12,7 @@ import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngQueryRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageMngQueryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -35,14 +35,14 @@ public class TenantPackageMngController {
     @Operation(summary = "套餐分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<Page<TenantPackageInfoResponse>> queryPage(TenantPackageMngQueryRequest request) {
+    public Result<Page<TenantPackageMngQueryResponse>> queryPage(TenantPackageMngQueryRequest request) {
         return tenantPackageMngApi.queryPage(request);
     }
 
     @Operation(summary = "套餐详细信息")
     @GetMapping("/query-info/{packageId}")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<TenantPackageInfoResponse> queryInfo(@PathVariable Long packageId) {
+    public Result<TenantPackageMngQueryResponse> queryInfo(@PathVariable Long packageId) {
         return tenantPackageMngApi.queryInfo(packageId);
     }
 

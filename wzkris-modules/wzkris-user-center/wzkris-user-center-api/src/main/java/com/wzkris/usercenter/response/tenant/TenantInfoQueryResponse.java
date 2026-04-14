@@ -11,7 +11,7 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-public class TenantInfoResponse {
+public class TenantInfoQueryResponse {
 
     @Schema(description = "租户名称")
     private String tenantName;
@@ -33,12 +33,6 @@ public class TenantInfoResponse {
 
     @Schema(description = "过期时间")
     private Date expireTime;
-
-    @Schema(description = "账号数量（-1不限制）")
-    private Integer memberNumLimit;
-
-    @Schema(description = "职位数量（-1不限制）")
-    private Integer postNumLimit;
 
 }
 

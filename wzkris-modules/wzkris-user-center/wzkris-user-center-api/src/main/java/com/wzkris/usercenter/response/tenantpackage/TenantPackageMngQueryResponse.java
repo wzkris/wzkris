@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class TenantPackageInfoResponse {
+public class TenantPackageMngQueryResponse {
 
     private Long packageId;
 

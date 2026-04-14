@@ -7,13 +7,10 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.mapper.MemberInfoMapper;
-import com.wzkris.usercenter.mapper.PostInfoMapper;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.tenant.TenantInfoBasicUpdateRequest;
-import com.wzkris.usercenter.response.tenant.TenantInfoResponse;
-import com.wzkris.usercenter.response.tenant.TenantUsedQuotaResponse;
+import com.wzkris.usercenter.response.tenant.TenantInfoQueryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,16 +19,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
 
-    private final PostInfoMapper postInfoMapper;
-
     private final TenantInfoMapper tenantInfoMapper;
 
     private final PasswordEncoder passwordEncoder;
 
-    private final MemberInfoMapper memberInfoMapper;
-
     @Override
-    public Result<TenantInfoResponse> queryInfo() {
+    public Result<TenantInfoQueryResponse> queryInfo() {
         TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
         return ok(tenantInfoMapper.selectVOById(loginUser.getTenantId()));
     }
@@ -41,14 +34,6 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
         TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
         TenantInfoDO tenantInfoDO = BeanUtil.convert(request, new TenantInfoDO(loginUser.getTenantId()));
         return toRes(tenantInfoMapper.updateById(tenantInfoDO));
-    }
-
-    @Override
-    public Result<TenantUsedQuotaResponse> queryLimitInfo() {
-        TenantUsedQuotaResponse usedQuotaVO = new TenantUsedQuotaResponse();
-        usedQuotaVO.setAccountHas(Math.toIntExact(memberInfoMapper.selectCount(null)));
-        usedQuotaVO.setPostHas(Math.toIntExact(postInfoMapper.selectCount(null)));
-        return ok(usedQuotaVO);
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.wzkris.usercenter.request.tenant.TenantMngQueryRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngUpdateRequest;
 import com.wzkris.usercenter.response.SelectResponse;
-import com.wzkris.usercenter.response.tenant.TenantMngResponse;
+import com.wzkris.usercenter.response.tenant.TenantMngQueryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,14 +36,14 @@ public class TenantMngController {
     @Operation(summary = "租户分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<Page<TenantMngResponse>> queryPage(TenantMngQueryRequest request) {
+    public Result<Page<TenantMngQueryResponse>> queryPage(TenantMngQueryRequest request) {
         return tenantMngApi.queryPage(request);
     }
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/query-info/{tenantId}")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<TenantMngResponse> queryInfo(@PathVariable Long tenantId) {
+    public Result<TenantMngQueryResponse> queryInfo(@PathVariable Long tenantId) {
         return tenantMngApi.queryInfo(tenantId);
     }
 

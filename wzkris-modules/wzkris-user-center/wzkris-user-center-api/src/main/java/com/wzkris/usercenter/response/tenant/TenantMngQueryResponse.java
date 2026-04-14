@@ -13,7 +13,7 @@ import java.util.Date;
  * @author wzkris
  */
 @Data
-public class TenantMngResponse {
+public class TenantMngQueryResponse {
 
     private Long tenantId;
 

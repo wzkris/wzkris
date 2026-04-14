@@ -8,15 +8,15 @@ import com.wzkris.usercenter.request.tenant.TenantMngQueryRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngUpdateRequest;
 import com.wzkris.usercenter.response.SelectResponse;
-import com.wzkris.usercenter.response.tenant.TenantMngResponse;
+import com.wzkris.usercenter.response.tenant.TenantMngQueryResponse;
 
 import java.util.List;
 
 public interface TenantMngApi {
 
-    Result<Page<TenantMngResponse>> queryPage(TenantMngQueryRequest request);
+    Result<Page<TenantMngQueryResponse>> queryPage(TenantMngQueryRequest request);
 
-    Result<TenantMngResponse> queryInfo(Long tenantId);
+    Result<TenantMngQueryResponse> queryInfo(Long tenantId);
 
     Result<Page<SelectResponse>> querySelectPage(String tenantName);
 

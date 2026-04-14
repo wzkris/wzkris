@@ -5,7 +5,7 @@
 -- Dumped from database version 15.13
 -- Dumped by pg_dump version 15.13
 
--- Started on 2026-04-13 19:31:39
+-- Started on 2026-04-14 14:09:27
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2142,7 +2142,7 @@ COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.hint IS '标签';
 --
 
 COPY biz.admin_info (admin_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
-100	\N	super	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-13 17:30:46+08	\N	1	0	2024-04-17 14:08:55+08	2026-04-13 17:30:46+08	
+100	\N	super	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 09:14:57+08	\N	1	0	2024-04-17 14:08:55+08	2026-04-14 09:14:58+08	
 \.
 
 
@@ -2216,7 +2216,7 @@ COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort,
 --
 
 COPY biz.member_info (member_id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
-1910557183820165120	1910557183820165122	testadmin	\N	0	0	http://tmp/WK0iX8BuChGpbd2d939bf0fbdab283f01e98a4d9bc31.png	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-13 17:50:50+08	\N	1	0	2025-04-11 12:55:04+08	2026-04-13 17:50:50+08	
+1910557183820165120	1910557183820165122	testadmin	\N	0	0	http://tmp/WK0iX8BuChGpbd2d939bf0fbdab283f01e98a4d9bc31.png	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 14:09:01+08	\N	1	0	2025-04-11 12:55:04+08	2026-04-14 14:09:01+08	
 \.
 
 
@@ -2292,7 +2292,6 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1976220107171110913	修改租户套餐	1906263415450000602	3	#	\N	\N	B	0	user-mod:tenantpackage-mng:edit	#	f	t	system	1	1	2025-10-09 17:36:05+08	2025-10-09 17:36:05+08	
 1976220234040418306	删除租户套餐	1906263415450000602	0	#	\N	\N	B	0	user-mod:tenantpackage-mng:remove	#	f	t	system	1	1	2025-10-09 17:36:35+08	2025-10-09 17:36:35+08	
 1915322746249367554	修改信息	1906272182215585793	0	#	\N	\N	B	0	user-mod:tenant-info:edit	#	f	t	tenant	1	1	2025-04-24 16:31:42+08	2025-10-09 17:38:05+08	
-1906263415450001127	商户钱包	1906272182215585793	0	#	\N	\N	M	0	user-mod:tenant-wallet-info	carbon:wallet	f	t	tenant	1	1	2024-05-26 12:30:16+08	2025-10-09 17:38:19+08	
 1976225899114852354	修改菜单	1906263415450000207	0	#	\N	\N	B	0	user-mod:menu-mng:edit	#	f	t	system	1	1	2025-10-09 17:59:06+08	2025-10-09 17:59:06+08	
 1976226216250372098	新增租户	1906263415450000601	5	#	\N	\N	B	0	user-mod:tenant-mng:add	#	f	t	system	1	1	2025-10-09 18:00:21+08	2025-10-09 18:00:21+08	
 1906263415450001215	修改密钥	1906263415450000700	5	#	\N	\N	B	0	user-mod:oauth2client-mng:edit-secret	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:16:08+08	
@@ -2331,7 +2330,8 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 1906263415450000201	顾客管理	1906263415450000003	1	customer	customer/mng/index	\N	M	0	user-mod:customer-mng:page	carbon:customer	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:53+08	
 1906263415450000150	操作日志	1906263415450000104	1	operate	operatelog-admin/mng/index	\N	M	0	system-mod:admin-operatelog-mng:page	carbon:touch-interaction	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 15:01:01+08	
 1906263415450001125	钱包记录	1906263415450000601	3	#	\N	\N	B	0	user-mod:tenant-wallet-mng:record-page	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:56+08	
-2043623655623114754	套餐信息	0	90	package-info	tenant-package/info/index	\N	M	0	\N	carbon:package-node	f	t	tenant	100	100	2026-04-13 17:33:43+08	2026-04-13 17:33:51+08	
+1906263415450001127	商户钱包	0	85	/tenant-wallet	tenant/wallet/index		M	0	user-mod:tenant-wallet-info	carbon:wallet	f	t	tenant	1	100	2024-05-26 12:30:16+08	2026-04-14 10:20:48+08	
+2043932492313976834	套餐信息	1906272182215585793	0	#	\N	\N	M	0	user-mod:tenant-package-info	carbon:package-node	f	t	tenant	100	100	2026-04-14 14:00:55+08	2026-04-14 14:00:55+08	
 \.
 
 
@@ -2437,7 +2437,7 @@ COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tena
 --
 
 COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at, hint, member_num_limit, post_num_limit) FROM stdin;
-1773625804122202113	默认套餐	0	{1906272182215585793,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1980906033277222913,1980906374936838146,1980906706949554177,2043623655623114754}	通用租户套餐	1	2024-04-17 14:08:54+08	100	2026-04-13 18:49:06+08		5	5
+1773625804122202113	默认套餐	0	{1906272182215585793,2043932492313976834,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1980906033277222913,1980906374936838146,1980906706949554177}	通用租户套餐	1	2024-04-17 14:08:54+08	100	2026-04-14 14:07:58+08		5	5
 \.
 
 
@@ -2799,7 +2799,7 @@ CREATE UNIQUE INDEX uk_oauth2_client_client_id ON biz.oauth2_client USING btree 
 CREATE UNIQUE INDEX uk_tenant_info_administrator ON biz.tenant_info USING btree (administrator);
 
 
--- Completed on 2026-04-13 19:31:40
+-- Completed on 2026-04-14 14:09:27
 
 --
 -- PostgreSQL database dump complete

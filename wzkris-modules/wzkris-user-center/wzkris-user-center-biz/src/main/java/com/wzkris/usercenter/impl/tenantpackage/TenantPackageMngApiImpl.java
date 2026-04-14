@@ -14,7 +14,7 @@ import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngQueryRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageMngQueryResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +33,10 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<Page<TenantPackageInfoResponse>> queryPage(TenantPackageMngQueryRequest request) {
+    public Result<Page<TenantPackageMngQueryResponse>> queryPage(TenantPackageMngQueryRequest request) {
         startPage();
         List<TenantPackageInfoDO> list = tenantPackageInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, TenantPackageInfoResponse.class));
+        return getPageResult(BeanUtil.convert(list, TenantPackageMngQueryResponse.class));
     }
 
     private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngQueryRequest request) {
@@ -50,8 +50,8 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     }
 
     @Override
-    public Result<TenantPackageInfoResponse> queryInfo(Long packageId) {
-        return ok(BeanUtil.convert(tenantPackageInfoService.getById(packageId), TenantPackageInfoResponse.class));
+    public Result<TenantPackageMngQueryResponse> queryInfo(Long packageId) {
+        return ok(BeanUtil.convert(tenantPackageInfoService.getById(packageId), TenantPackageMngQueryResponse.class));
     }
 
     @Override

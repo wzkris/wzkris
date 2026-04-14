@@ -7,8 +7,7 @@ import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.tenant.TenantInfoBasicUpdateRequest;
-import com.wzkris.usercenter.response.tenant.TenantInfoResponse;
-import com.wzkris.usercenter.response.tenant.TenantUsedQuotaResponse;
+import com.wzkris.usercenter.response.tenant.TenantInfoQueryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class TenantInfoController {
 
     @Operation(summary = "获取信息")
     @GetMapping("/query-info")
-    public Result<TenantInfoResponse> queryInfo() {
+    public Result<TenantInfoQueryResponse> queryInfo() {
         return tenantInfoApi.queryInfo();
     }
 
@@ -37,12 +36,6 @@ public class TenantInfoController {
     @CheckTenantPerms("user-mod:tenant-info:edit")
     public Result<Void> updateBasicInfo(@RequestBody TenantInfoBasicUpdateRequest request) {
         return tenantInfoApi.updateBasicInfo(request);
-    }
-
-    @Operation(summary = "获取已使用配额")
-    @GetMapping("/query-used-quota")
-    public Result<TenantUsedQuotaResponse> queryLimitInfo() {
-        return tenantInfoApi.queryLimitInfo();
     }
 
     @Operation(summary = "修改操作密码")

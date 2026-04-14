@@ -7,15 +7,15 @@ import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngQueryRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageMngQueryResponse;
 
 import java.util.List;
 
 public interface TenantPackageMngApi {
 
-    Result<Page<TenantPackageInfoResponse>> queryPage(TenantPackageMngQueryRequest request);
+    Result<Page<TenantPackageMngQueryResponse>> queryPage(TenantPackageMngQueryRequest request);
 
-    Result<TenantPackageInfoResponse> queryInfo(Long packageId);
+    Result<TenantPackageMngQueryResponse> queryInfo(Long packageId);
 
     Result<CheckedSelectTreeResponse> queryMenuSelectTree(Long packageId);
 
