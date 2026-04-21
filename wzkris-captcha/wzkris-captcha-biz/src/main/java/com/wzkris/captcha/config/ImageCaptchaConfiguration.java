@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class ImageCaptchaConfiguration {
 
     @Bean
-    public ImageCaptchaStore redisImageCaptchaStore(RedisTemplate<String, Object> redisTemplate, ImageCaptchaProperties captchaProperties) {
+    public ImageCaptchaStore imageCaptchaStore(RedisTemplate<String, Object> redisTemplate, ImageCaptchaProperties captchaProperties) {
         return new RedisImageCaptchaStore(redisTemplate, captchaProperties);
     }
 

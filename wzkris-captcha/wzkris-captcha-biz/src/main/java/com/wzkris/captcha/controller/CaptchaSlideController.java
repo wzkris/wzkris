@@ -23,7 +23,7 @@ public class CaptchaSlideController {
 
     @Operation(summary = "获取滑动验证码")
     @PostMapping
-    public SlideCaptchaDataResponse getCaptcha() {
+    public SlideCaptchaDataResponse createCaptcha() {
         return slideCaptchaService.createCaptcha();
     }
 

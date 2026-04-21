@@ -23,7 +23,7 @@ public class CaptchaImageController {
 
     @Operation(summary = "获取图片验证码")
     @PostMapping
-    public ImageCaptchaDataResponse getCaptcha() {
+    public ImageCaptchaDataResponse createCaptcha() {
         return imageCaptchaService.createCaptcha();
     }
 

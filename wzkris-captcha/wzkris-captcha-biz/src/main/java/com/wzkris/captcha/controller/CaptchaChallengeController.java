@@ -9,7 +9,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "验证码")
 @Validated
@@ -22,7 +25,7 @@ public class CaptchaChallengeController {
 
     @Operation(summary = "获取挑战")
     @PostMapping("/challenge")
-    public ChallengeCaptchaInfo challenge() {
+    public ChallengeCaptchaInfo createChallenge() {
         return challengeService.createChallenge();
     }
 

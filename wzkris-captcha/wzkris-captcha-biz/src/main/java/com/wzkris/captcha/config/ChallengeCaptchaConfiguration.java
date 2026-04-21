@@ -12,12 +12,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class ChallengeCaptchaConfiguration {
 
     @Bean
-    public ChallengeeCaptchaStore redisStore(RedisTemplate<String, Object> redisTemplate, ChallengeCaptchaProperties captchaProperties) {
+    public ChallengeeCaptchaStore challengeeCaptchaStore(RedisTemplate<String, Object> redisTemplate, ChallengeCaptchaProperties captchaProperties) {
         return new RedisChallengeeCaptchaStore(redisTemplate, captchaProperties);
     }
 
     @Bean
-    public ChallengeServiceImpl challengeHandler(ChallengeCaptchaProperties captchaProperties, ChallengeeCaptchaStore challengeeCaptchaStore) {
+    public ChallengeServiceImpl challengeService(ChallengeCaptchaProperties captchaProperties, ChallengeeCaptchaStore challengeeCaptchaStore) {
         return new ChallengeServiceImpl(captchaProperties, challengeeCaptchaStore);
     }
 
