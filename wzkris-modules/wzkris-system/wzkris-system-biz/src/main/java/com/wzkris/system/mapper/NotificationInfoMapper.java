@@ -18,13 +18,15 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
 
     @Select("""
             <script>
-                SELECT * FROM biz.notification_to_admin s LEFT JOIN biz.notification_info n ON s.notification_id = n.notification_id
-                WHERE admin_id = #{adminId}
+                SELECT n.notification_id, n.title, n.content, s.read, n.create_at
+                FROM biz.notification_to_admin s
+                INNER JOIN biz.notification_info n ON s.notification_id = n.notification_id
+                WHERE s.admin_id = #{adminId}
             	    <if test="notificationType != null and notificationType != ''">
-            	        AND notification_type = #{notificationType}
+            	        AND n.notification_type = #{notificationType}
             	    </if>
-            	    <if test="read != null and read != ''">
-            	        AND read = #{read}
+            	    <if test="read != null">
+            	        AND s.read = #{read}
             	    </if>
                 ORDER BY s.notification_id DESC
             </script>
@@ -32,17 +34,19 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     List<NotificationInfoResponse> listAdminNotice(
             @Param("adminId") Long adminId,
             @Nullable @Param("notificationType") String notificationType,
-            @Nullable @Param("read") String read);
+            @Nullable @Param("read") Boolean read);
 
     @Select("""
             <script>
-                SELECT * FROM biz.notification_to_tenant s LEFT JOIN biz.notification_info n ON s.notification_id = n.notification_id
-                WHERE member_id = #{memberId}
+                SELECT n.notification_id, n.title, n.content, s.read, n.create_at
+                FROM biz.notification_to_tenant s
+                INNER JOIN biz.notification_info n ON s.notification_id = n.notification_id
+                WHERE s.member_id = #{memberId}
             	    <if test="notificationType != null and notificationType != ''">
-            	        AND notification_type = #{notificationType}
+            	        AND n.notification_type = #{notificationType}
             	    </if>
-            	    <if test="read != null and read != ''">
-            	        AND read = #{read}
+            	    <if test="read != null">
+            	        AND s.read = #{read}
             	    </if>
                 ORDER BY s.notification_id DESC
             </script>
@@ -50,12 +54,12 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     List<NotificationInfoResponse> listTenantNotice(
             @Param("memberId") Long memberId,
             @Nullable @Param("notificationType") String notificationType,
-            @Nullable @Param("read") String read);
+            @Nullable @Param("read") Boolean read);
 
     /**
      * 标记已读
      */
-    @Update("UPDATE biz.notification_to_admin SET read = '1' WHERE notification_id = #{notificationId} AND admin_id = #{adminId}")
+    @Update("UPDATE biz.notification_to_admin SET read = TRUE WHERE notification_id = #{notificationId} AND admin_id = #{adminId}")
     int markAdminRead(@Param("notificationId") Long notificationId, @Param("adminId") Long adminId);
 
     /**
@@ -64,8 +68,8 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     @Select("""
             <script>
                 SELECT COUNT(*) FROM
-                (SELECT 1 FROM biz.notification_to_admin u LEFT JOIN biz.notification_info n ON u.notification_id = n.notification_id
-                WHERE admin_id = #{adminId} AND read = '0'
+                (SELECT 1 FROM biz.notification_to_admin u INNER JOIN biz.notification_info n ON u.notification_id = n.notification_id
+                WHERE u.admin_id = #{adminId} AND u.read = FALSE
                     <if test="notificationType != null and notificationType != ''">
             	        AND notification_type = #{notificationType}
             	    </if>
@@ -77,7 +81,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     /**
      * 租户端标记已读
      */
-    @Update("UPDATE biz.notification_to_tenant SET read = '1' WHERE notification_id = #{notificationId} AND member_id = #{memberId}")
+    @Update("UPDATE biz.notification_to_tenant SET read = TRUE WHERE notification_id = #{notificationId} AND member_id = #{memberId}")
     int markTenantRead(@Param("notificationId") Long notificationId, @Param("memberId") Long memberId);
 
     /**
@@ -86,8 +90,8 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     @Select("""
             <script>
                 SELECT COUNT(*) FROM
-                (SELECT 1 FROM biz.notification_to_tenant u LEFT JOIN biz.notification_info n ON u.notification_id = n.notification_id
-                WHERE member_id = #{memberId} AND read = '0'
+                (SELECT 1 FROM biz.notification_to_tenant u INNER JOIN biz.notification_info n ON u.notification_id = n.notification_id
+                WHERE u.member_id = #{memberId} AND u.read = FALSE
                     <if test="notificationType != null and notificationType != ''">
                         AND notification_type = #{notificationType}
                     </if>

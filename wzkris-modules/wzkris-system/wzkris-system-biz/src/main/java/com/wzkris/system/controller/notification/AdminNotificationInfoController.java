@@ -19,7 +19,7 @@ public class AdminNotificationInfoController {
 
     @Operation(summary = "通知分页")
     @GetMapping("/query-page")
-    public Result<Page<NotificationInfoResponse>> queryPage(String read, String notificationType) {
+    public Result<Page<NotificationInfoResponse>> queryPage(Boolean read, String notificationType) {
         return adminNotificationInfoApi.queryPage(read, notificationType);
     }
 
