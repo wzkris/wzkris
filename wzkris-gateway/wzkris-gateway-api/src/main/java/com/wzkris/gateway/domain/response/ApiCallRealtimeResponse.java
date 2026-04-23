@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * API调用量统计响应
+ * API实时窗口统计响应
  *
  * @author wzkris
  */
@@ -19,19 +19,34 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiCallResponse implements Serializable {
+public class ApiCallRealtimeResponse implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "API接口调用总次数")
-    private Long apiCallCount;
+    @Schema(description = "滑动窗口秒数")
+    private Integer windowSeconds;
 
-    @Schema(description = "调用成功次数")
-    private Long successCount;
+    @Schema(description = "窗口内总请求数")
+    private Long requestCount;
 
-    @Schema(description = "调用失败次数")
-    private Long errorCount;
+    @Schema(description = "当前QPS（窗口总请求/窗口秒数）")
+    private Double qps;
+
+    @Schema(description = "成功QPS")
+    private Double successQps;
+
+    @Schema(description = "失败QPS")
+    private Double errorQps;
+
+    @Schema(description = "成功率（0-1范围）")
+    private Double successRate;
+
+    @Schema(description = "平均耗时（毫秒）")
+    private Long avgCostMs;
+
+    @Schema(description = "最大耗时（毫秒）")
+    private Long maxCostMs;
 
     @Schema(description = "HTTP 2xx状态码计数")
     private Long status2xxCount;
@@ -45,17 +60,6 @@ public class ApiCallResponse implements Serializable {
     @Schema(description = "HTTP 5xx状态码计数")
     private Long status5xxCount;
 
-    @Schema(description = "总耗时（毫秒）")
-    private Long totalCostMs;
-
-    @Schema(description = "平均耗时（毫秒）")
-    private Long avgCostMs;
-
-    @Schema(description = "最大耗时（毫秒）")
-    private Long maxCostMs;
-
     @Schema(description = "HTTP方法计数，如GET/POST/PUT/DELETE")
     private Map<String, Long> methodCounts;
-
 }
-

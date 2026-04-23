@@ -1,15 +1,19 @@
 package com.wzkris.gateway.domain.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 页面访问（日级）返回，内含24小时序列
+ * 页面访问（日级）统计响应，包含24小时序列
+ *
+ * @author wzkris
  */
 @Data
 @Builder
@@ -17,20 +21,16 @@ import java.util.Map;
 @AllArgsConstructor
 public class PageViewDailySeriesResponse implements Serializable {
 
-    /**
-     * 日期（yyyy-MM-dd）
-     */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    @Schema(description = "日期（格式：yyyy-MM-dd）")
     private String date;
 
-    /**
-     * 当日总计
-     */
+    @Schema(description = "当日总计")
     private PageViewResponse total;
 
-    /**
-     * 小时序列：key=yyyy-MM-dd-HH，value=该小时的pv/uv
-     * 使用LinkedHashMap保证0-23顺序
-     */
+    @Schema(description = "小时序列，key为yyyy-MM-dd-HH，value为该小时的PV/UV统计")
     private Map<String, PageViewResponse> hours;
 
 }

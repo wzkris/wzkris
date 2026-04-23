@@ -1,21 +1,20 @@
 package com.wzkris.gateway.domain.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * PV 上报请求
+ * 页面访问上报请求
+ *
+ * @author wzkris
  */
 @Data
 public class PageViewRequest {
 
-    /**
-     * 访问页面
-     */
+    @Schema(description = "访问页面")
     private String view;
 
-    /**
-     * 是否成功
-     */
+    @Schema(description = "是否成功")
     private Boolean success;
 
 }

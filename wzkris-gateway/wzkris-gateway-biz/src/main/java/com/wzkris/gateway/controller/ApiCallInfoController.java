@@ -3,8 +3,8 @@ package com.wzkris.gateway.controller;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.gateway.domain.response.ApiCallDailySeriesResponse;
-import com.wzkris.gateway.domain.response.PageViewDailySeriesResponse;
-import com.wzkris.gateway.service.StatisticsService;
+import com.wzkris.gateway.domain.response.ApiCallRealtimeResponse;
+import com.wzkris.gateway.service.ApiCallStatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,43 +17,33 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 统计控制器
- * @date : 2025/1/15
+ * API调用统计查询控制器
+ *
+ * @author wzkris
  */
 @Slf4j
 @RestController
-@RequestMapping("/statistics")
+@RequestMapping("/api-call-info")
 @RequiredArgsConstructor
 @CheckAdminPerms("gateway-mod:statistics:pvuv")
-public class StatisticsController {
+public class ApiCallInfoController {
 
-    private final StatisticsService statisticsService;
+    private final ApiCallStatService apiCallStatService;
 
-    /**
-     * 获取页面PV及UV统计（日）
-     */
-    @GetMapping("/pageview/daily")
-    public Result<PageViewDailySeriesResponse> getPageViewDaily(
+    @GetMapping("/query-daily")
+    public Result<ApiCallDailySeriesResponse> queryDaily(
             @RequestParam String authType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         String dateStr = date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        return Result.ok(statisticsService.getDailyPageViewSeries(authType, dateStr));
+        return Result.ok(apiCallStatService.queryDailyApiCallSeries(authType, dateStr));
     }
 
-    /**
-     * 获取 API 调用次数统计（日）
-     */
-    @GetMapping("/apicall/daily")
-    public Result<ApiCallDailySeriesResponse> getApiCallDaily(
+    @GetMapping("/query-realtime")
+    public Result<ApiCallRealtimeResponse> queryRealtime(
             @RequestParam String authType,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        String dateStr = date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        return Result.ok(statisticsService.getDailyApiCallSeries(authType, dateStr));
+            @RequestParam(required = false, defaultValue = "60") Integer windowSeconds) {
+        return Result.ok(apiCallStatService.queryRealtimeApiCallStats(authType, windowSeconds));
     }
 
 }
-

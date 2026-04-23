@@ -1,11 +1,12 @@
 package com.wzkris.gateway.config;
 
-import com.wzkris.gateway.filter.function.ApicallStatFilterFunction;
+import com.wzkris.gateway.filter.function.ApiCallStatFilterFunction;
 import com.wzkris.gateway.filter.function.RouteDecisionFilterFunction;
 import com.wzkris.gateway.filter.function.SecurityContextFilterFunction;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.function.ServerResponse;
  * @author wzkris
  */
 @Configuration
+@EnableScheduling
 public class GatewayConfiguration {
 
     /**
@@ -26,7 +28,7 @@ public class GatewayConfiguration {
             ObjectProvider<RouterFunction<ServerResponse>> routerProvider,
             SecurityContextFilterFunction securityContextFilterFunction,
             RouteDecisionFilterFunction routeDecisionFilterFunction,
-            ApicallStatFilterFunction apicallStatFilterFunction) {
+            ApiCallStatFilterFunction apiCallStatFilterFunction) {
         RouterFunction<ServerResponse> router = routerProvider.getIfUnique();
         if (router == null) {
             return null;
@@ -34,7 +36,7 @@ public class GatewayConfiguration {
         return router
                 .filter(securityContextFilterFunction)
                 .filter(routeDecisionFilterFunction)
-                .filter(apicallStatFilterFunction);
+                .filter(apiCallStatFilterFunction);
     }
 
 }
