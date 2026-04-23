@@ -1,6 +1,6 @@
 package com.wzkris.common.web.config;
 
-import com.wzkris.common.web.aspect.ControllerStatisticAspect;
+import com.wzkris.common.web.aspect.ControllerLogAspect;
 import com.wzkris.common.web.filter.TraceIdFilter;
 import com.wzkris.common.web.handler.RestExceptionHandler;
 import com.wzkris.common.web.utils.UserAgentUtil;
@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync(proxyTargetClass = true)
 @EnableScheduling
 @EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
-@Import({ControllerStatisticAspect.class, RestExceptionHandler.class,
+@Import({ControllerLogAspect.class, RestExceptionHandler.class,
         JacksonConfig.class, UserAgentUtil.class})
 @AutoConfiguration
 public class WebAutoConfiguration {

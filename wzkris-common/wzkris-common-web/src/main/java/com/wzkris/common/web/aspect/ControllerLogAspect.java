@@ -3,7 +3,7 @@ package com.wzkris.common.web.aspect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.web.annotation.ExcludeStatAspect;
+import com.wzkris.common.web.annotation.ExcludeLogAspect;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -14,10 +14,10 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Method;
@@ -25,20 +25,20 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 请求统计
+ * 请求统计打印
  *
  * @author wzkris
  */
 @Slf4j
 @Order(Ordered.LOWEST_PRECEDENCE)
 @Aspect
-public class ControllerStatisticAspect {
+public class ControllerLogAspect {
 
     private static final ConcurrentHashMap<String, Boolean> excludeControllers = new ConcurrentHashMap<>();
 
     private final ObjectMapper objectMapper;
 
-    public ControllerStatisticAspect(ObjectMapper objectMapper) {
+    public ControllerLogAspect(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper.copy();
         this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
@@ -55,8 +55,8 @@ public class ControllerStatisticAspect {
             Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
 
             // 如果方法或类上有排除注解，返回 true 表示排除
-            return method.isAnnotationPresent(ExcludeStatAspect.class) ||
-                    method.getDeclaringClass().isAnnotationPresent(ExcludeStatAspect.class);
+            return method.isAnnotationPresent(ExcludeLogAspect.class) ||
+                    method.getDeclaringClass().isAnnotationPresent(ExcludeLogAspect.class);
         });
 
         if (bool) {
