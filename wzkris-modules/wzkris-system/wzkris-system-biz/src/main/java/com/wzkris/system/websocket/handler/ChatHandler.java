@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.function.BiConsumer;
 
 /**
@@ -101,7 +101,7 @@ public class ChatHandler extends BaseWebSocketHandler {
             UserChatMessageDO message = new UserChatMessageDO();
             message.setSenderId(senderId);
             message.setReceiverId(chatMessage.getReceiverId());
-            message.setSendTime(new Date());
+            message.setSendTime(OffsetDateTime.now());
             message.setMessageType(messageType);
             message.setRead(false);
             message.setContent(chatMessage.getData());

@@ -3,7 +3,7 @@ package com.wzkris.system.response.adminlog;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 public class AdminOperateLogMngResponse {
@@ -53,6 +53,6 @@ public class AdminOperateLogMngResponse {
     private String errorMsg;
 
     @Schema(description = "操作时间")
-    private Date operTime;
+    private OffsetDateTime operTime;
 
 }

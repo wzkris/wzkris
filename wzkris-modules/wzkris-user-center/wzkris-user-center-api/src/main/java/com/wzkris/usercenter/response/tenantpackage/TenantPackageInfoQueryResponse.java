@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ public class TenantPackageInfoQueryResponse {
     private String packageRemark;
 
     @Schema(description = "到期时间")
-    private Date expireTime;
+    private OffsetDateTime expireTime;
 
     @Schema(description = "续费状态 active | expiring_soon | expired | inactive | permanent")
     private String renewalStatus;

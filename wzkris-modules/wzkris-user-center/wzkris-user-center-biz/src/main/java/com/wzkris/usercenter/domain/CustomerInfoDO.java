@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 顾客信息
@@ -43,7 +43,7 @@ public class CustomerInfoDO extends BaseEntity {
     private String loginIp;
 
     @Schema(description = "最近登录日期")
-    private Date loginDate;
+    private OffsetDateTime loginDate;
 
     public CustomerInfoDO(Long customerId) {
         this.customerId = customerId;

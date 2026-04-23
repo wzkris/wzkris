@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -42,7 +42,7 @@ public class NotificationInfoServiceImpl
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
                     SecurityUtil.isAuth(AuthTypeEnum.ADMIN) ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
-            notificationInfoDO.setCreateAt(new Date());
+            notificationInfoDO.setCreateAt(OffsetDateTime.now());
             baseMapper.insert(notificationInfoDO);
             List<NotificationToAdminDO> list = adminIds.stream()
                     .map(uid -> new NotificationToAdminDO(notificationInfoDO.getNotificationId(), uid))
@@ -61,7 +61,7 @@ public class NotificationInfoServiceImpl
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
                     SecurityUtil.isAuth(AuthTypeEnum.ADMIN) ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
-            notificationInfoDO.setCreateAt(new Date());
+            notificationInfoDO.setCreateAt(OffsetDateTime.now());
             baseMapper.insert(notificationInfoDO);
             List<NotificationToTenantDO> list = memberIds.stream()
                     .map(uid -> new NotificationToTenantDO(notificationInfoDO.getNotificationId(), uid))

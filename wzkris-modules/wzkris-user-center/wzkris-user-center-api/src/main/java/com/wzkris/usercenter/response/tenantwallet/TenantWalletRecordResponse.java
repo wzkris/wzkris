@@ -3,7 +3,7 @@ package com.wzkris.usercenter.response.tenantwallet;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 public class TenantWalletRecordResponse {
@@ -20,7 +20,7 @@ public class TenantWalletRecordResponse {
 
     private String bizNo;
 
-    private Date createAt;
+    private OffsetDateTime createAt;
 
     private String remark;
 

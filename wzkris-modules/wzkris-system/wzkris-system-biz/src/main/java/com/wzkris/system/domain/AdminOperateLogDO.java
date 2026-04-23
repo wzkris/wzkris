@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 操作日志
@@ -67,6 +67,6 @@ public class AdminOperateLogDO implements Serializable {
     private String errorMsg;
 
     @Schema(description = "操作时间")
-    private Date operTime;
+    private OffsetDateTime operTime;
 
 }

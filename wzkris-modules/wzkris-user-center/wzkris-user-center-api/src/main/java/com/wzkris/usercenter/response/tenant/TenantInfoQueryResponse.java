@@ -3,7 +3,7 @@ package com.wzkris.usercenter.response.tenant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 租户信息展示层
@@ -32,7 +32,7 @@ public class TenantInfoQueryResponse {
     private String domain;
 
     @Schema(description = "过期时间")
-    private Date expireTime;
+    private OffsetDateTime expireTime;
 
 }
 

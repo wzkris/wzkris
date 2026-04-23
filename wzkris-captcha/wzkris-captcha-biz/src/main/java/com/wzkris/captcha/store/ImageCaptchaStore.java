@@ -2,7 +2,7 @@ package com.wzkris.captcha.store;
 
 import com.wzkris.captcha.domain.ImageCaptchaInfo;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 public interface ImageCaptchaStore {
 
@@ -10,8 +10,8 @@ public interface ImageCaptchaStore {
 
     ImageCaptchaInfo removeCaptcha(String token);
 
-    void putToken(String tokenKey, Date expires);
+    void putToken(String tokenKey, OffsetDateTime expires);
 
-    Date removeToken(String tokenKey);
+    OffsetDateTime removeToken(String tokenKey);
 
 }

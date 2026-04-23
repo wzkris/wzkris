@@ -3,7 +3,7 @@ package com.wzkris.auth.response;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 在线会话返回体
@@ -52,6 +52,6 @@ public class OnlineSessionResponse {
     /**
      * 登录时间
      */
-    private Date loginTime;
+    private OffsetDateTime loginTime;
 
 }

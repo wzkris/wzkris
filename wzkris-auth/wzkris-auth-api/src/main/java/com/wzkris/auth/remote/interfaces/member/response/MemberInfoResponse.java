@@ -3,7 +3,7 @@ package com.wzkris.auth.remote.interfaces.member.response;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * sys用户信息
@@ -27,7 +27,7 @@ public class MemberInfoResponse implements Serializable {
 
     private String tenantStatus;
 
-    private Date tenantExpired;
+    private OffsetDateTime tenantExpired;
 
     private String packageStatus;
 

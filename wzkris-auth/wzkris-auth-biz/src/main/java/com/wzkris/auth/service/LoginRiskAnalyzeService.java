@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +35,7 @@ public class LoginRiskAnalyzeService {
 
     private final LoginRiskProperties loginRiskProperties;
 
-    public RiskResult analyze(BaseLoginUser loginUser, String ipAddr, String userAgent, Boolean success, Date loginTime) {
+    public RiskResult analyze(BaseLoginUser loginUser, String ipAddr, String userAgent, Boolean success, OffsetDateTime loginTime) {
         List<String> abnormalTags = new ArrayList<>();
         int score = 0;
         String userKey = buildUserKey(loginUser);
@@ -75,7 +74,7 @@ public class LoginRiskAnalyzeService {
         }
 
         // 非常用时段成功登录
-        LocalDateTime dateTime = LocalDateTime.ofInstant(loginTime.toInstant(), ZoneId.systemDefault());
+        LocalDateTime dateTime = loginTime.toLocalDateTime();
         int hour = dateTime.getHour();
         int offHoursStart = loginRiskProperties.getOffHoursStart();
         int offHoursEnd = loginRiskProperties.getOffHoursEnd();

@@ -3,7 +3,7 @@ package com.wzkris.system.response.tenantlog;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Schema(description = "租户管理操作日志信息")
@@ -54,7 +54,7 @@ public class TenantOperateLogMngResponse {
     private String errorMsg;
 
     @Schema(description = "操作时间")
-    private Date operTime;
+    private OffsetDateTime operTime;
 
     @Schema(description = "租户ID")
     private Long tenantId;

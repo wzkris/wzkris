@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 租户管理展示层
@@ -46,7 +46,7 @@ public class TenantMngQueryResponse {
     private Long packageId;
 
     @Schema(description = "过期时间")
-    private Date expireTime;
+    private OffsetDateTime expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
     private Integer memberNumLimit;

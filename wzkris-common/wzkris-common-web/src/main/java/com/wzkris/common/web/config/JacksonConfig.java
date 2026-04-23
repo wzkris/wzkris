@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import com.wzkris.common.web.jackson.BigNumberSerializer;
+import com.wzkris.common.web.jackson.OffsetDateTimeTolerantDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -37,12 +38,15 @@ public class JacksonConfig {
     }
 
     private static SimpleModule setupTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter offsetDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(offsetDateTimeFormatter));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(offsetDateTimeFormatter));
+
         javaTimeModule.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer(OffsetDateTimeSerializer.INSTANCE,
-                true, formatter, JsonFormat.Shape.STRING));
+                true, offsetDateTimeFormatter, JsonFormat.Shape.STRING));
+        javaTimeModule.addDeserializer(OffsetDateTime.class, new OffsetDateTimeTolerantDeserializer(offsetDateTimeFormatter));
+
         return javaTimeModule;
     }
 

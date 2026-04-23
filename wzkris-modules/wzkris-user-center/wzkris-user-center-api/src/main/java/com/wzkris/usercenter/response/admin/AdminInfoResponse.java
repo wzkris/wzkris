@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Collection;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Schema(description = "管理员信息")
@@ -45,7 +45,7 @@ public class AdminInfoResponse {
     private String gender;
 
     @Schema(description = "登录时间")
-    private Date loginDate;
+    private OffsetDateTime loginDate;
 
 }
 

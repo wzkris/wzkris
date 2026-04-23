@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 修改租户请求体
@@ -45,7 +45,7 @@ public class TenantMngUpdateRequest {
     @NotNull(message = "{invalidParameter.expireTime.invalid}")
     @Future(message = "{invalidParameter.expireTime.invalid}")
     @Schema(description = "过期时间")
-    private Date expireTime;
+    private OffsetDateTime expireTime;
 
 }
 

@@ -12,9 +12,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -83,7 +82,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         int challengeDifficulty = captchaProperties.getChallengeDifficulty();
         long challengeExpiresMs = captchaProperties.getChallengeExpiresMs();
         String token = UUID.randomUUID().toString();
-        Date expires = Date.from(Instant.now().plus(challengeExpiresMs, ChronoUnit.MILLIS));
+        OffsetDateTime expires = OffsetDateTime.now().plus(challengeExpiresMs, ChronoUnit.MILLIS);
         ChallengeCaptchaInfo challengeCaptchaInfo = new ChallengeCaptchaInfo(new Challenge(challengeCount, challengeSize, challengeDifficulty), expires, token);
         challengeeCaptchaStore.putChallenge(token, challengeCaptchaInfo);
         return challengeCaptchaInfo;
@@ -96,9 +95,9 @@ public class ChallengeServiceImpl implements ChallengeService {
                 throw new IllegalArgumentException(CAPTCHA_ERROR);
             }
 
-            Date now = new Date();
+            OffsetDateTime now = OffsetDateTime.now();
             ChallengeCaptchaInfo challengeCaptchaInfo = challengeeCaptchaStore.removeChallenge(token);
-            if (Objects.isNull(challengeCaptchaInfo) || !challengeCaptchaInfo.getExpires().after(now)) {
+            if (Objects.isNull(challengeCaptchaInfo) || !challengeCaptchaInfo.getExpires().isAfter(now)) {
                 throw new IllegalArgumentException(CAPTCHA_ERROR);
             }
             if (solutions.size() != captchaProperties.getChallengeCount()) {
@@ -116,7 +115,7 @@ public class ChallengeServiceImpl implements ChallengeService {
             }
 
             String verToken = UUID.randomUUID().toString();
-            Date expires = Date.from(now.toInstant().plus(captchaProperties.getTokenExpiresMs(), ChronoUnit.MILLIS));
+            OffsetDateTime expires = now.plus(captchaProperties.getTokenExpiresMs(), ChronoUnit.MILLIS);
             String hash = DigestUtils.sha256Hex(verToken);
             String id = RandomStringUtils.secure().next(captchaProperties.getIdSize(), HEX_STR);
             challengeeCaptchaStore.putToken(makeupToken(id, hash), expires);
@@ -136,13 +135,13 @@ public class ChallengeServiceImpl implements ChallengeService {
             return false;
         }
 
-        Date now = new Date();
+        OffsetDateTime now = OffsetDateTime.now();
         String id = splits[0];
         String verToken = splits[1];
         String hash = DigestUtils.sha256Hex(verToken);
         String tokenKey = makeupToken(id, hash);
-        Date expires = challengeeCaptchaStore.removeToken(tokenKey);
-        return Objects.nonNull(expires) && !expires.before(now);
+        OffsetDateTime expires = challengeeCaptchaStore.removeToken(tokenKey);
+        return Objects.nonNull(expires) && !expires.isBefore(now);
     }
 
     private String makeupToken(String id, String hash) {

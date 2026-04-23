@@ -1,8 +1,8 @@
 package com.wzkris.common.log.config;
 
 import com.wzkris.common.log.aspect.OperateLogAspect;
-import com.wzkris.common.log.remote.IOperateLogRemote;
 import com.wzkris.common.log.listener.OperateEventListener;
+import com.wzkris.common.log.remote.IOperateLogRemote;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;

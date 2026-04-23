@@ -3,7 +3,7 @@ package com.wzkris.usercenter.remote.api.member.response;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 public class MemberInfoResponse implements Serializable {
@@ -22,7 +22,7 @@ public class MemberInfoResponse implements Serializable {
 
     private String tenantStatus;
 
-    private Date tenantExpired;
+    private OffsetDateTime tenantExpired;
 
     private String packageStatus;
 

@@ -31,6 +31,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -249,7 +250,7 @@ public class TokenServiceImpl implements TokenService {
             onlineSession.setLoginIp(clientIP);
             onlineSession.setBrowser(userAgent.getValue(UserAgent.AGENT_NAME));
             onlineSession.setOs(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME));
-            onlineSession.setLoginTime(new Date());
+            onlineSession.setLoginTime(OffsetDateTime.now());
             return onlineSession;
         } catch (Exception e) {
             log.warn("Failed to build online session, returning empty session: {}", e.getMessage());

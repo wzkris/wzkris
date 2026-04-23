@@ -6,11 +6,17 @@ import com.wzkris.captcha.store.ChallengeeCaptchaStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public class RedisChallengeeCaptchaStore implements ChallengeeCaptchaStore {
+
+    private static final DateTimeFormatter LEGACY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -32,7 +38,7 @@ public class RedisChallengeeCaptchaStore implements ChallengeeCaptchaStore {
     }
 
     @Override
-    public void putToken(String token, Date expires) {
+    public void putToken(String token, OffsetDateTime expires) {
         redisTemplate.opsForValue().set(
                 makeupTokenKey(token),
                 expires,
@@ -42,8 +48,34 @@ public class RedisChallengeeCaptchaStore implements ChallengeeCaptchaStore {
     }
 
     @Override
-    public Date removeToken(String token) {
-        return (Date) redisTemplate.opsForValue().getAndDelete(makeupTokenKey(token));
+    public OffsetDateTime removeToken(String token) {
+        Object value = redisTemplate.opsForValue().getAndDelete(makeupTokenKey(token));
+        return parseOffsetDateTime(value);
+    }
+
+    private OffsetDateTime parseOffsetDateTime(Object value) {
+        switch (value) {
+            case null -> {
+                return null;
+            }
+            case OffsetDateTime offsetDateTime -> {
+                return offsetDateTime;
+            }
+            case String text -> {
+                if (text.isBlank()) {
+                    return null;
+                }
+                try {
+                    return OffsetDateTime.parse(text);
+                } catch (DateTimeParseException ignored) {
+                    LocalDateTime localDateTime = LocalDateTime.parse(text, LEGACY_FORMATTER);
+                    return localDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime();
+                }
+            }
+            default -> {
+            }
+        }
+        throw new IllegalStateException("Unsupported token expires value type: " + value.getClass().getName());
     }
 
     private String makeupChallengeKey(String token) {

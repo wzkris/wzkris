@@ -3,7 +3,7 @@ package com.wzkris.system.response.tenantlog;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 public class TenantLoginLogInfoResponse {
@@ -32,7 +32,7 @@ public class TenantLoginLogInfoResponse {
     private String errorMsg;
 
     @Schema(description = "登录时间")
-    private Date loginTime;
+    private OffsetDateTime loginTime;
 
     @Schema(description = "异常标签")
     private String abnormalTags;

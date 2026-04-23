@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class ChallengeCaptchaInfo implements Serializable {
 
     private Challenge challenge;
 
-    private Date expires;
+    private OffsetDateTime expires;
 
     private String token;
 

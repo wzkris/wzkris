@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class TenantWalletInfoServiceImpl
             record.setRecordType(WalletRecordTypeEnum.INCOME.getValue());
             record.setBizNo(bizNo);
             record.setBizType(bizType);
-            record.setCreateAt(new Date());
+            record.setCreateAt(OffsetDateTime.now());
             record.setRemark(remark);
             tenantWalletRecordMapper.insert(record);
         }
@@ -53,7 +53,7 @@ public class TenantWalletInfoServiceImpl
             record.setRecordType(WalletRecordTypeEnum.OUTCOME.getValue());
             record.setBizNo(bizNo);
             record.setBizType(bizType);
-            record.setCreateAt(new Date());
+            record.setCreateAt(OffsetDateTime.now());
             record.setRemark(remark);
             tenantWalletRecordMapper.insert(record);
         }

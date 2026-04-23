@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * Entity基类 审计字段
@@ -21,7 +21,7 @@ public class BaseEntity implements Serializable {
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
-    private Date createAt;
+    private OffsetDateTime createAt;
 
     /**
      * 创建者
@@ -33,7 +33,7 @@ public class BaseEntity implements Serializable {
      * 更新时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateAt;
+    private OffsetDateTime updateAt;
 
     /**
      * 更新者

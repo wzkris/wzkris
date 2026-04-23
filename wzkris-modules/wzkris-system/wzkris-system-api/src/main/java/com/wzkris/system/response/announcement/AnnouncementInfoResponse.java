@@ -3,7 +3,7 @@ package com.wzkris.system.response.announcement;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Schema(description = "公告信息")
@@ -18,7 +18,7 @@ public class AnnouncementInfoResponse {
     private String content;
 
     @Schema(description = "创建时间")
-    private Date createAt;
+    private OffsetDateTime createAt;
 
 }
 

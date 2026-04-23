@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 租户成员对象
@@ -49,7 +49,7 @@ public class MemberInfoDO extends BaseEntity {
     private String loginIp;
 
     @Schema(description = "最近登录日期")
-    private Date loginDate;
+    private OffsetDateTime loginDate;
 
     @Schema(description = "额外信息")
     private String remark;

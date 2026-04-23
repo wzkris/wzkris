@@ -19,7 +19,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 租户套餐概览 API — 只返回业务数据，不包含任何展示元数据
@@ -32,22 +38,21 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPackageInfoApi {
 
+    private static final long EXPIRING_SOON_MILLIS = 30L * 24 * 60 * 60 * 1000;
+
     private final TenantInfoMapper tenantInfoMapper;
+
     private final TenantPackageInfoService tenantPackageInfoService;
+
     private final TenantPackageInfoMapper tenantPackageInfoMapper;
+
     private final MemberInfoMapper memberInfoMapper;
+
     private final PostInfoMapper postInfoMapper;
-    private final MenuInfoMapper menuInfoMapper;
 
     // =============== 配额注册表 ===============
 
-    @FunctionalInterface
-    private interface QuotaSupplier {
-        int count(Long tenantId);
-    }
-
-    private record QuotaDefinition(String key, QuotaSupplier supplier) {
-    }
+    private final MenuInfoMapper menuInfoMapper;
 
     private List<QuotaDefinition> getQuotaDefinitions() {
         return List.of(
@@ -69,8 +74,6 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
             default -> null;
         };
     }
-
-    // =============== 主入口 ===============
 
     @Override
     public Result<TenantPackageInfoQueryResponse> queryInfo() {
@@ -103,7 +106,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
         return ok(resp);
     }
 
-    // =============== 配额 ===============
+    // =============== 主入口 ===============
 
     private List<QuotaItem> buildQuotaItems(TenantPackageInfoDO pkg, Long tenantId) {
         List<QuotaItem> items = new ArrayList<>();
@@ -122,7 +125,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
         return items;
     }
 
-    // =============== 权益 ===============
+    // =============== 配额 ===============
 
     private List<BenefitItem> buildBenefitItems(Long packageId) {
         List<Long> menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(packageId);
@@ -145,16 +148,28 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
         return map.values().stream().toList();
     }
 
-    // =============== 状态解析 ===============
+    // =============== 权益 ===============
 
-    private static final long EXPIRING_SOON_MILLIS = 30L * 24 * 60 * 60 * 1000;
-
-    private String resolveRenewalStatus(String packageStatus, Date expireTime) {
+    private String resolveRenewalStatus(String packageStatus, OffsetDateTime expireTime) {
         if (packageStatus != null && !"0".equals(packageStatus)) return "inactive";
         if (expireTime == null) return "permanent";
-        long diff = expireTime.getTime() - System.currentTimeMillis();
+        long diff = Duration.between(expireTime, OffsetDateTime.now()).get(ChronoUnit.MILLIS);
         if (diff < 0) return "expired";
         if (diff <= EXPIRING_SOON_MILLIS) return "expiring_soon";
         return "active";
     }
+
+    // =============== 状态解析 ===============
+
+    @FunctionalInterface
+    private interface QuotaSupplier {
+
+        int count(Long tenantId);
+
+    }
+
+    private record QuotaDefinition(String key, QuotaSupplier supplier) {
+
+    }
+
 }

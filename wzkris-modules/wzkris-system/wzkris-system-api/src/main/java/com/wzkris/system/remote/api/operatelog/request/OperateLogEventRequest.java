@@ -2,7 +2,7 @@ package com.wzkris.system.remote.api.operatelog.request;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 public class OperateLogEventRequest {
@@ -37,7 +37,7 @@ public class OperateLogEventRequest {
 
     private String errorMsg;
 
-    private Date operTime;
+    private OffsetDateTime operTime;
 
     private Long tenantId;
 

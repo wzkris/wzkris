@@ -65,7 +65,7 @@ class XssValidatorTest {
         String text = "<script>恶意代码</script>";
         assertTrue(XssValidator.containsHtml(text));
         assertFalse(validator.isValid(text, context));
-        
+
         // 测试混合内容中的script标签
         String mixedScript = "正常文本<script>alert('xss')</script>更多文本";
         assertTrue(XssValidator.containsHtml(mixedScript));
@@ -93,7 +93,7 @@ class XssValidatorTest {
     void testNull() {
         // isValid方法会处理null值，返回true（根据Jakarta Bean Validation规范，null值应该通过验证）
         assertTrue(validator.isValid(null, context));
-        
+
         // containsHtml方法不处理null，直接调用会抛出NullPointerException
         // 所以不应该直接测试containsHtml(null)，应该通过isValid来测试null值处理
     }
@@ -116,9 +116,9 @@ class XssValidatorTest {
             "http://example.com",
             "特殊字符!@#$%^&*()"
         };
-        
+
         for (String text : plainTexts) {
-            assertFalse(XssValidator.containsHtml(text), 
+            assertFalse(XssValidator.containsHtml(text),
                 "Text '" + text + "' should not contain HTML");
             assertTrue(validator.isValid(text, context));
         }
@@ -133,9 +133,9 @@ class XssValidatorTest {
             "<script src='evil.js'></script>",
             "<script>document.cookie</script>"
         };
-        
+
         for (String attack : xssAttacks) {
-            assertTrue(XssValidator.containsHtml(attack), 
+            assertTrue(XssValidator.containsHtml(attack),
                 "XSS attack '" + attack + "' should be detected");
             assertFalse(validator.isValid(attack, context));
         }
@@ -149,9 +149,9 @@ class XssValidatorTest {
             "<div onmouseover='alert(1)'>hover</div>",
             "<a href='#' onclick='evil()'>link</a>"
         };
-        
+
         for (String attack : xssAttacks) {
-            assertTrue(XssValidator.containsHtml(attack), 
+            assertTrue(XssValidator.containsHtml(attack),
                 "XSS attack '" + attack + "' should be detected");
             assertFalse(validator.isValid(attack, context));
         }
@@ -165,9 +165,9 @@ class XssValidatorTest {
             "<iframe></iframe>",
             "<IFRAME SRC='EVIL.COM'></IFRAME>"
         };
-        
+
         for (String attack : xssAttacks) {
-            assertTrue(XssValidator.containsHtml(attack), 
+            assertTrue(XssValidator.containsHtml(attack),
                 "XSS attack '" + attack + "' should be detected");
             assertFalse(validator.isValid(attack, context));
         }
@@ -208,27 +208,27 @@ class XssValidatorTest {
         String pureHtml = "<script>alert('xss')</script>";
         assertTrue(XssValidator.containsHtml(pureHtml));
         assertFalse(validator.isValid(pureHtml, context));
-        
+
         // 测试混合内容（现在应该能够被检测到）
         String mixedText = "正常文本<script>alert('xss')</script>更多文本";
         assertTrue(XssValidator.containsHtml(mixedText), "混合内容中的HTML标签应该被检测到");
         assertFalse(validator.isValid(mixedText, context), "包含HTML标签的混合内容应该验证失败");
-        
+
         // 测试HTML标签在开头
         String htmlAtStart = "<div>内容</div>正常文本";
         assertTrue(XssValidator.containsHtml(htmlAtStart));
         assertFalse(validator.isValid(htmlAtStart, context));
-        
+
         // 测试HTML标签在中间
         String htmlInMiddle = "前面文本<img src='test.jpg' />后面文本";
         assertTrue(XssValidator.containsHtml(htmlInMiddle));
         assertFalse(validator.isValid(htmlInMiddle, context));
-        
+
         // 测试HTML标签在结尾
         String htmlAtEnd = "正常文本<span>内容</span>";
         assertTrue(XssValidator.containsHtml(htmlAtEnd));
         assertFalse(validator.isValid(htmlAtEnd, context));
-        
+
         // 测试纯HTML自闭合标签
         String selfClosing = "<br />";
         assertTrue(XssValidator.containsHtml(selfClosing));
@@ -245,7 +245,7 @@ class XssValidatorTest {
                 </div>""";
         assertTrue(XssValidator.containsHtml(multilineHtml), "多行HTML应该被检测到");
         assertFalse(validator.isValid(multilineHtml, context));
-        
+
         // 测试多行script标签
         String multilineScript = """
                 <script>
@@ -254,7 +254,7 @@ class XssValidatorTest {
                 </script>""";
         assertTrue(XssValidator.containsHtml(multilineScript));
         assertFalse(validator.isValid(multilineScript, context));
-        
+
         // 测试混合内容中的多行HTML
         String mixedMultiline = "正常文本\n" +
                                "<div>\n" +
@@ -280,17 +280,17 @@ class XssValidatorTest {
         assertTrue(validator.isValid("用户名：张三", context));
         assertTrue(validator.isValid("邮箱：test@example.com", context));
         assertTrue(validator.isValid("电话：13812345678", context));
-        
+
         // 恶意输入 - 纯HTML标签
         assertFalse(validator.isValid("<script>stealCookie()</script>", context));
         assertFalse(validator.isValid("<img src=x onerror=alert(1)>", context));
-        
+
         // 恶意输入 - 混合内容（现在应该能够检测到）
-        assertFalse(validator.isValid("正常文本<script>evil</script>", context), 
+        assertFalse(validator.isValid("正常文本<script>evil</script>", context),
             "混合内容中的HTML标签应该被检测到");
         assertFalse(validator.isValid("用户输入：<div onclick='alert(1)'>点击</div>", context));
         assertFalse(validator.isValid("评论内容：<iframe src='evil.com'></iframe>", context));
-        
+
         // 恶意输入 - 多行HTML
         String multilineAttack = """
                 用户提交的内容：

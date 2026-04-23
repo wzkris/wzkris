@@ -5,7 +5,7 @@ import com.wzkris.common.core.enums.SensitiveStrategyEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Schema(description = "客户信息")
@@ -25,7 +25,7 @@ public class CustomerInfoResponse {
     private String gender;
 
     @Schema(description = "登录时间")
-    private Date loginDate;
+    private OffsetDateTime loginDate;
 
 }
 

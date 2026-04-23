@@ -10,9 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ public class ImageCaptchaServiceImpl implements ImageCaptchaService {
     public ImageCaptchaDataResponse createCaptcha() {
         String token = UUID.randomUUID().toString();
         String code = RandomStringUtils.secure().next(captchaProperties.getCodeLength(), CODE_CHARS);
-        Date expires = Date.from(Instant.now().plus(captchaProperties.getCaptchaExpiresMs(), ChronoUnit.MILLIS));
+        OffsetDateTime expires = OffsetDateTime.now().plus(captchaProperties.getCaptchaExpiresMs(), ChronoUnit.MILLIS);
 
         ImageCaptchaInfo captchaInfo = new ImageCaptchaInfo(code, expires);
         imageCaptchaStore.putCaptcha(token, captchaInfo);
@@ -47,9 +46,9 @@ public class ImageCaptchaServiceImpl implements ImageCaptchaService {
 
     @Override
     public String redeem(String token, String code) {
-        Date now = new Date();
+        OffsetDateTime now = OffsetDateTime.now();
         ImageCaptchaInfo captchaInfo = imageCaptchaStore.removeCaptcha(token);
-        if (Objects.isNull(captchaInfo) || !captchaInfo.getExpires().after(now)) {
+        if (Objects.isNull(captchaInfo) || !captchaInfo.getExpires().isAfter(now)) {
             throw new IllegalArgumentException(CAPTCHA_ERROR);
         }
 
@@ -58,7 +57,7 @@ public class ImageCaptchaServiceImpl implements ImageCaptchaService {
         }
 
         String verToken = UUID.randomUUID().toString();
-        Date expires = Date.from(now.toInstant().plus(captchaProperties.getTokenExpiresMs(), ChronoUnit.MILLIS));
+        OffsetDateTime expires = now.plus(captchaProperties.getTokenExpiresMs(), ChronoUnit.MILLIS);
         String hash = DigestUtils.sha256Hex(verToken);
         String id = RandomStringUtils.secure().next(captchaProperties.getIdSize(), ChallengeServiceImpl.HEX_STR);
         imageCaptchaStore.putToken(makeupToken(id, hash), expires);
@@ -75,13 +74,13 @@ public class ImageCaptchaServiceImpl implements ImageCaptchaService {
             return false;
         }
 
-        Date now = new Date();
+        OffsetDateTime now = OffsetDateTime.now();
         String id = splits[0];
         String verToken = splits[1];
         String hash = DigestUtils.sha256Hex(verToken);
         String tokenKey = makeupToken(id, hash);
-        Date expires = imageCaptchaStore.removeToken(tokenKey);
-        return Objects.nonNull(expires) && !expires.before(now);
+        OffsetDateTime expires = imageCaptchaStore.removeToken(tokenKey);
+        return Objects.nonNull(expires) && !expires.isBefore(now);
     }
 
     private String makeupToken(String id, String hash) {

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Schema(description = "用户增长请求")
@@ -17,11 +17,11 @@ public class CustomerIncryQueryRequest {
 
     @NotNull(message = "需要参数开始日期")
     @Schema(description = "开始日期")
-    private Date beginTime;
+    private OffsetDateTime beginTime;
 
     @NotNull(message = "需要参数结束日期")
     @Schema(description = "结束日期")
-    private Date endTime;
+    private OffsetDateTime endTime;
 
 }
 

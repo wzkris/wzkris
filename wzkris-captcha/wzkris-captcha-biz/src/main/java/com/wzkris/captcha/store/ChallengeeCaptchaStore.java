@@ -2,7 +2,7 @@ package com.wzkris.captcha.store;
 
 import com.wzkris.captcha.domain.ChallengeCaptchaInfo;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 public interface ChallengeeCaptchaStore {
 
@@ -10,8 +10,8 @@ public interface ChallengeeCaptchaStore {
 
     ChallengeCaptchaInfo removeChallenge(String token);
 
-    void putToken(String token, Date expires);
+    void putToken(String token, OffsetDateTime expires);
 
-    Date removeToken(String token);
+    OffsetDateTime removeToken(String token);
 
 }

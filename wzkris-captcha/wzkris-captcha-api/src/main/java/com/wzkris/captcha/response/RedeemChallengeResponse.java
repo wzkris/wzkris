@@ -1,14 +1,14 @@
 package com.wzkris.captcha.response;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
-public record RedeemChallengeResponse(boolean success, String message, String token, Date expires) {
+public record RedeemChallengeResponse(boolean success, String message, String token, OffsetDateTime expires) {
 
     public static RedeemChallengeResponse error(String message) {
         return new RedeemChallengeResponse(false, message, null, null);
     }
 
-    public static RedeemChallengeResponse ok(String token, Date expires) {
+    public static RedeemChallengeResponse ok(String token, OffsetDateTime expires) {
         return new RedeemChallengeResponse(true, null, token, expires);
     }
 

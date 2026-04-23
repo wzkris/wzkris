@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 系统提现记录
@@ -46,10 +46,10 @@ public class TenantWalletWithdrawalRecordDO {
     private Long creatorId;
 
     @Schema(description = "创建时间")
-    private Date createAt;
+    private OffsetDateTime createAt;
 
     @Schema(description = "完成时间")
-    private Date completeAt;
+    private OffsetDateTime completeAt;
 
     @Schema(description = "备注")
     private String remark;

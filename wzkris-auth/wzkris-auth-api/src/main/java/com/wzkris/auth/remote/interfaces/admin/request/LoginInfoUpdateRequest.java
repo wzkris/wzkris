@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 登录信息
@@ -19,7 +19,7 @@ public class LoginInfoUpdateRequest implements Serializable {
 
     private String loginIp;
 
-    private Date loginDate;
+    private OffsetDateTime loginDate;
 
     public LoginInfoUpdateRequest(Long id) {
         this.id = id;

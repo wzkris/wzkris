@@ -2,7 +2,7 @@ package com.wzkris.auth.remote.interfaces.loginlog.request;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 登录日志事件
@@ -68,7 +68,7 @@ public class LoginLogEvent {
     /**
      * 登录时间
      */
-    private Date loginTime;
+    private OffsetDateTime loginTime;
 
     /**
      * 异常标签

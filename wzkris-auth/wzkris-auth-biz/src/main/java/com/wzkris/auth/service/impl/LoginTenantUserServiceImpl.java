@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -129,7 +130,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         } else if (StringUtil.equals(memberResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.TENANT_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
-        } else if (memberResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
+        } else if (memberResp.getTenantExpired().isBefore(OffsetDateTime.now())) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.TENANT_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
         } else if (StringUtil.equals(memberResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {

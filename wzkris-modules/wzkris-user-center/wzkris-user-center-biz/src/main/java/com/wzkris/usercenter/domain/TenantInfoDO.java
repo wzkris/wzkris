@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 租户表
@@ -52,7 +52,7 @@ public class TenantInfoDO extends BaseEntity {
     private Long packageId;
 
     @Schema(description = "过期时间")
-    private Date expireTime;
+    private OffsetDateTime expireTime;
 
     public TenantInfoDO(Long tenantId) {
         this.tenantId = tenantId;

@@ -10,7 +10,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * @author : wzkris
@@ -51,7 +51,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     }
 
     private void fillInsert(Serializable userId, MetaObject metaObject) {
-        Date current = new Date();
+        OffsetDateTime current = OffsetDateTime.now();
         this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.creatorId, userId, metaObject);
@@ -69,7 +69,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
     }
 
     private void fillUpdate(Serializable userId, MetaObject metaObject) {
-        Date current = new Date();
+        OffsetDateTime current = OffsetDateTime.now();
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
     }

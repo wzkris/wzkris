@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -31,6 +31,6 @@ public class CustomerMngResponse {
     private String loginIp;
 
     @Schema(description = "最近登录日期")
-    private Date loginDate;
+    private OffsetDateTime loginDate;
 
 }

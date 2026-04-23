@@ -21,8 +21,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.Collections;
-import java.util.Date;
 
 /**
  * @author : wzkris
@@ -64,7 +64,7 @@ public class LoginEventListener {
         String userAgentText = event.getUserAgentText();
         String loginLocation = IpUtil.parseIp(ipAddr);
         String traceId = event.getTraceId();
-        Date now = new Date();
+        OffsetDateTime now = OffsetDateTime.now();
         LoginRiskAnalyzeService.RiskResult riskResult =
                 loginRiskAnalyzeService.analyze(loginUser, ipAddr, userAgentText, event.getSuccess(), now);
 
@@ -90,7 +90,7 @@ public class LoginEventListener {
         reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
     }
 
-    private void updateLoginInfoIfSuccess(BaseLoginUser loginUser, String ipAddr, Boolean success, Date loginDate) {
+    private void updateLoginInfoIfSuccess(BaseLoginUser loginUser, String ipAddr, Boolean success, OffsetDateTime loginDate) {
         if (!Boolean.TRUE.equals(success)) {
             return;
         }

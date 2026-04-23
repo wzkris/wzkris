@@ -2,7 +2,7 @@ package com.wzkris.system.remote.api.loginlog.request;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 public class LoginLogEventRequest {
@@ -29,7 +29,7 @@ public class LoginLogEventRequest {
 
     private String errorMsg;
 
-    private Date loginTime;
+    private OffsetDateTime loginTime;
 
     private String abnormalTags;
 

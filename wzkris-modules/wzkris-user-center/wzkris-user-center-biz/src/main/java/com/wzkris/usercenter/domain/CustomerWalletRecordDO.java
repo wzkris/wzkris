@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 客户钱包记录表
@@ -32,7 +32,7 @@ public class CustomerWalletRecordDO {
     private String recordType;
 
     @Schema(description = "创建时间")
-    private Date createAt;
+    private OffsetDateTime createAt;
 
     @Schema(description = "备注")
     private String remark;

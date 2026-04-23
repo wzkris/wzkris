@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 租户操作日志
@@ -67,7 +67,7 @@ public class TenantOperateLogDO implements Serializable {
     private String errorMsg;
 
     @Schema(description = "操作时间")
-    private Date operTime;
+    private OffsetDateTime operTime;
 
     @Schema(description = "租户ID")
     private Long tenantId;

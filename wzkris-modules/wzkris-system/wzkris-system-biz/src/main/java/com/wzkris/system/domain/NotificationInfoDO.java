@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 系统通知
@@ -32,10 +32,10 @@ public class NotificationInfoDO {
     private Long creatorId;
 
     @Schema(description = "创建时间")
-    private Date createAt;
+    private OffsetDateTime createAt;
 
     public NotificationInfoDO() {
-        this.createAt = new Date();
+        this.createAt = OffsetDateTime.now();
     }
 
 }

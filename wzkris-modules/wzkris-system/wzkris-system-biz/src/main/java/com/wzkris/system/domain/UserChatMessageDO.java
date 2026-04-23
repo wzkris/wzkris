@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @TableName(schema = "biz", value = "user_chat_message")
@@ -21,10 +21,10 @@ public class UserChatMessageDO {
     private Long senderId;
 
     @Schema(description = "发送时间")
-    private Date sendTime;
+    private OffsetDateTime sendTime;
 
     @Schema(description = "接收时间")
-    private Date receiveTime;
+    private OffsetDateTime receiveTime;
 
     @Schema(description = "是否已读")
     private Boolean read;

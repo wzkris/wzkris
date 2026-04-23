@@ -3,9 +3,9 @@ package com.wzkris.common.log.listener;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.log.report.AsyncBatchReporter;
 import com.wzkris.common.log.remote.IOperateLogRemote;
 import com.wzkris.common.log.remote.request.OperateLogEvent;
+import com.wzkris.common.log.report.AsyncBatchReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 

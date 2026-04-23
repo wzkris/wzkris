@@ -8,9 +8,9 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
+import com.wzkris.common.log.remote.request.OperateLogEvent;
 import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.log.remote.request.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -22,7 +22,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -96,7 +100,7 @@ public class OperateLogAspect {
         // 设置操作信息
         operateLogEvent.setOperType(operateLog.type().getValue());
         operateLogEvent.setSuccess(true);
-        operateLogEvent.setOperTime(new Date());
+        operateLogEvent.setOperTime(OffsetDateTime.now());
 
         // 设置方法信息
         String className = joinPoint.getTarget().getClass().getName();

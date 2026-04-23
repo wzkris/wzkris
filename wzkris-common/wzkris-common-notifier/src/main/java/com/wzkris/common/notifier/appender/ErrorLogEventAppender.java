@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.OffsetDateTime;
 
 /**
  * 错误日志事件 Appender（Logback 实现）
@@ -89,8 +91,8 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
         StringBuilder sb = new StringBuilder();
 
         // 1. 时间戳
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sb.append(sdf.format(new Date(event.getTimeStamp())))
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+        sb.append(sdf.format(Instant.ofEpochMilli(event.getTimeStamp())))
                 .append(" ");
 
         // 2. 线程名（在方括号中）

@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * @author : wzkris
@@ -53,7 +53,7 @@ public class TenantLoginLogDO implements Serializable {
     private String errorMsg;
 
     @Schema(description = "登录时间")
-    private Date loginTime;
+    private OffsetDateTime loginTime;
 
     @Schema(description = "异常标签")
     private String abnormalTags;

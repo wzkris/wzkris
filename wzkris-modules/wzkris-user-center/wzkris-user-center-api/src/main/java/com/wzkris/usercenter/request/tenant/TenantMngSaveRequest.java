@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 新增租户请求体
@@ -43,7 +43,7 @@ public class TenantMngSaveRequest {
     @NotNull(message = "{invalidParameter.expireTime.invalid}")
     @Future(message = "{invalidParameter.expireTime.invalid}")
     @Schema(description = "过期时间")
-    private Date expireTime;
+    private OffsetDateTime expireTime;
 
     // 用户名只能为小写英文、数字和下划线
     @Pattern(regexp = "^[a-z0-9_]+$", message = "{invalidParameter.username.invalid}")

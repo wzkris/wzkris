@@ -3,7 +3,7 @@ package com.wzkris.system.response.notification;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Schema(description = "通知信息")
@@ -22,7 +22,7 @@ public class NotificationInfoResponse {
     private Boolean read;
 
     @Schema(description = "创建时间")
-    private Date createAt;
+    private OffsetDateTime createAt;
 
 }
 

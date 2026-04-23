@@ -2,7 +2,7 @@ package com.wzkris.common.log.remote.request;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 操作事件
@@ -91,7 +91,7 @@ public class OperateLogEvent {
     /**
      * 操作时间
      */
-    private Date operTime;
+    private OffsetDateTime operTime;
 
     /**
      * 租户ID
