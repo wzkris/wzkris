@@ -3,6 +3,7 @@ package com.wzkris.common.security.utils;
 import com.wzkris.common.core.utils.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 
 import java.util.regex.Pattern;
 
@@ -56,7 +57,7 @@ public final class BearerTokenUtil {
         if (StringUtil.isBlank(uri) || !WS_PATH_PATTERN.matcher(uri).matches()) {
             return null;
         }
-        String token = request.getParameter("access_token");
+        String token = request.getParameter(OAuth2ParameterNames.ACCESS_TOKEN);
         return StringUtil.isNotBlank(token) ? token : null;
     }
 

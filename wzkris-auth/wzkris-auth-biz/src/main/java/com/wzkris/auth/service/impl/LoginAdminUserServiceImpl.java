@@ -44,7 +44,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.getByPhoneNumber(phoneNumber);
+        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByPhoneNumber(phoneNumber);
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -62,7 +62,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.getByUsername(username);
+        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByUsername(username);
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -95,7 +95,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<AdminPermissionResponse> permissionsResult = adminInfoRemote.getPermission(
+        Result<AdminPermissionResponse> permissionsResult = adminInfoRemote.queryPermission(
                 new AdminPermsQueryRequest(userResp.getAdminId(), userResp.getDeptId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.API_REQUEST_ERROR.value(), "query permission failed");

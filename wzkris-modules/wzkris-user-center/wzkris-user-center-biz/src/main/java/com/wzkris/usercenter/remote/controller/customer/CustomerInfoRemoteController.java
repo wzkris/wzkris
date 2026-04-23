@@ -21,8 +21,8 @@ public class CustomerInfoRemoteController {
     private final CustomerInfoRemoteApi customerInfoRemoteApi;
 
     @PostMapping("/query-by-phonenumber")
-    public Result<CustomerResponse> getByPhoneNumber(@RequestBody String phoneNumber) {
-        return customerInfoRemoteApi.getByPhoneNumber(phoneNumber);
+    public Result<CustomerResponse> queryByPhoneNumber(@RequestBody String phoneNumber) {
+        return customerInfoRemoteApi.queryByPhoneNumber(phoneNumber);
     }
 
     @PostMapping("/wexcx-login")
@@ -31,8 +31,8 @@ public class CustomerInfoRemoteController {
     }
 
     @PostMapping("/update-logininfo")
-    public Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest loginInfoUpdateRequest) {
-        return customerInfoRemoteApi.updateLoginInfo(loginInfoUpdateRequest);
+    public Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest request) {
+        return customerInfoRemoteApi.updateLoginInfo(request);
     }
 
 }

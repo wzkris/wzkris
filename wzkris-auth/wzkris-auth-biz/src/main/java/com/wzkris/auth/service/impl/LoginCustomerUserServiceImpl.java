@@ -1,6 +1,5 @@
 package com.wzkris.auth.service.impl;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
@@ -11,21 +10,14 @@ import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.enums.BizCallCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
-import com.wzkris.common.security.exception.CustomOAuth2Error;
 import com.wzkris.common.security.model.CustomerLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.mp.api.WxMpService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -40,18 +32,10 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
 
     private final ICustomerInfoRemote customerInfoRemote;
 
-    @Autowired
-    @Lazy
-    private WxMaService wxMaService;
-
-    @Autowired
-    @Lazy
-    private WxMpService wxMpService;
-
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<CustomerResponse> customerResult = customerInfoRemote.getByPhoneNumber(phoneNumber);
+        Result<CustomerResponse> customerResult = customerInfoRemote.queryByPhoneNumber(phoneNumber);
 
         if (!ResultUtil.check(customerResult)) {
             return null;
@@ -69,31 +53,10 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByWxXcx(String wxCode, String phoneCode) {
-        String identifier;
-        String phoneNumber = null;
-        try {
-            identifier = wxMaService
-                    .getUserService()
-                    .getSessionInfo(wxCode)
-                    .getOpenid();
-            if (StringUtil.isNotBlank(phoneCode)) {
-                phoneNumber = wxMaService.getUserService()
-                        .getPhoneNumber(phoneCode).getPhoneNumber();
-            }
-        } catch (WxErrorException e) {
-            CustomOAuth2Error error = new CustomOAuth2Error(BizCallCodeEnum.WX_ERROR.value(), e.getError().getErrorMsg());
-            throw new OAuth2AuthenticationException(error);
-        }
-
-        if (StringUtil.isAnyBlank(identifier)) {
-            log.error("微信小程序登录api查询结果为null，登录失败");
-            return null;
-        }
-
-        WexcxLoginRequest WexcxLoginRequest = new WexcxLoginRequest();
-        WexcxLoginRequest.setIdentifier(identifier);
-        WexcxLoginRequest.setPhoneNumber(phoneNumber);
-        Result<CustomerResponse> customerResult = customerInfoRemote.wexcxLogin(WexcxLoginRequest);
+        WexcxLoginRequest wexcxLoginRequest = new WexcxLoginRequest();
+        wexcxLoginRequest.setWxCode(wxCode);
+        wexcxLoginRequest.setPhoneCode(phoneCode);
+        Result<CustomerResponse> customerResult = customerInfoRemote.wexcxLogin(wexcxLoginRequest);
 
         if (!ResultUtil.check(customerResult)) {
             return null;

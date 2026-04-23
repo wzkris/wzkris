@@ -7,11 +7,11 @@ import com.wzkris.usercenter.remote.api.customer.response.CustomerResponse;
 
 public interface CustomerInfoRemoteApi {
 
-    Result<CustomerResponse> getByPhoneNumber(String phoneNumber);
+    Result<CustomerResponse> queryByPhoneNumber(String phoneNumber);
 
     Result<CustomerResponse> wexcxLogin(WexcxLoginRequest request);
 
-    Result<Void> updateLoginInfo(LoginInfoUpdateRequest loginInfoUpdateRequest);
+    Result<Void> updateLoginInfo(LoginInfoUpdateRequest request);
 
 }
 

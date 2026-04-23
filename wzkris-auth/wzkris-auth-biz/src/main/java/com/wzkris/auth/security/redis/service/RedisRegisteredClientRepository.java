@@ -69,7 +69,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.getById(id);
+        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryById(id);
         return checkAndSave(oauth2Client);
     }
 
@@ -84,7 +84,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.getByClientId(clientId);
+        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryByClientId(clientId);
         return checkAndSave(oauth2Client);
     }
 

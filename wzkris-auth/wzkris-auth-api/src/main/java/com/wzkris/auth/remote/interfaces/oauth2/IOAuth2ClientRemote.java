@@ -29,7 +29,7 @@ public interface IOAuth2ClientRemote {
      * @return oauth2客户端
      */
     @PostExchange("/query-by-id")
-    Result<OAuth2ClientResponse> getById(@RequestBody String id);
+    Result<OAuth2ClientResponse> queryById(@RequestBody String id);
 
     /**
      * 根据clientid查询客户端信息
@@ -38,7 +38,7 @@ public interface IOAuth2ClientRemote {
      * @return oauth2客户端
      */
     @PostExchange("/query-by-clientid")
-    Result<OAuth2ClientResponse> getByClientId(@RequestBody String clientid);
+    Result<OAuth2ClientResponse> queryByClientId(@RequestBody String clientid);
 
 }
 

@@ -14,7 +14,7 @@ public interface AdminInfoRemoteApi {
 
     Result<AdminPermissionResponse> queryPermission(AdminPermsQueryRequest request);
 
-    Result<Void> updateLoginInfo(LoginInfoUpdateRequest loginInfoUpdateRequest);
+    Result<Void> updateLoginInfo(LoginInfoUpdateRequest request);
 
 }
 

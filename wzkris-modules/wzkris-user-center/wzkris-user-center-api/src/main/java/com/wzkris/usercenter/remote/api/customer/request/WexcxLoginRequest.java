@@ -11,8 +11,8 @@ import lombok.ToString;
 @AllArgsConstructor
 public class WexcxLoginRequest {
 
-    private String identifier;
+    private String wxCode;
 
-    private String phoneNumber;
+    private String phoneCode;
 
 }

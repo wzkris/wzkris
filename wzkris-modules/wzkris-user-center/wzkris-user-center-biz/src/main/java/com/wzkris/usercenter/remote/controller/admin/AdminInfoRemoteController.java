@@ -37,8 +37,8 @@ public class AdminInfoRemoteController {
     }
 
     @PostMapping("/update-logininfo")
-    public Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest loginInfoUpdateRequest) {
-        return adminInfoRemoteApi.updateLoginInfo(loginInfoUpdateRequest);
+    public Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest request) {
+        return adminInfoRemoteApi.updateLoginInfo(request);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.remote.impl.member;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.MemberSocialInfoDO;
@@ -16,9 +17,14 @@ import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
 import com.wzkris.usercenter.service.PermissionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
@@ -33,8 +39,12 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
 
     private final PermissionService permissionService;
 
+    @Autowired
+    @Lazy
+    private WxMaService wxMaService;
+
     @Override
-    public Result<MemberInfoResponse> getByUsername(String username) {
+    public Result<MemberInfoResponse> queryByUsername(String username) {
         MemberInfoDO member = memberInfoMapper.selectByUsername(username);
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
@@ -42,7 +52,7 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     }
 
     @Override
-    public Result<MemberInfoResponse> getByPhoneNumber(String phoneNumber) {
+    public Result<MemberInfoResponse> queryByPhoneNumber(String phoneNumber) {
         MemberInfoDO member = memberInfoMapper.selectByPhoneNumber(phoneNumber);
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
@@ -50,8 +60,18 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     }
 
     @Override
-    public Result<MemberInfoResponse> getByWexcxIdentifier(String xcxIdentifier) {
-        MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectByIdentifier(xcxIdentifier);
+    public Result<MemberInfoResponse> queryByWexcxCode(String xcxcode) {
+        String identifier;
+        try {
+            identifier = wxMaService
+                    .getUserService()
+                    .getSessionInfo(xcxcode)
+                    .getOpenid();
+        } catch (WxErrorException e) {
+            log.error("微信小程序换取openid失败", e);
+            return Result.apiRequestFail(e.getError().getErrorMsg());
+        }
+        MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectByIdentifier(identifier);
         if (ObjectUtils.isEmpty(memberSocialInfoDO)) {
             return Result.ok(null);
         }
@@ -62,16 +82,16 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     }
 
     @Override
-    public Result<MemberPermissionResponse> getPermission(MemberPermsQueryRequest request) {
+    public Result<MemberPermissionResponse> queryPermission(MemberPermsQueryRequest request) {
         return Result.ok(permissionService.getTenantPermission(
                 request.getMemberId(), request.getTenantId()));
     }
 
     @Override
-    public Result<Void> updateLoginInfo(LoginInfoUpdateRequest loginInfoUpdateRequest) {
-        MemberInfoDO memberInfoDO = new MemberInfoDO(loginInfoUpdateRequest.getId());
-        memberInfoDO.setLoginIp(loginInfoUpdateRequest.getLoginIp());
-        memberInfoDO.setLoginDate(loginInfoUpdateRequest.getLoginDate());
+    public Result<Void> updateLoginInfo(LoginInfoUpdateRequest request) {
+        MemberInfoDO memberInfoDO = new MemberInfoDO(request.getId());
+        memberInfoDO.setLoginIp(request.getLoginIp());
+        memberInfoDO.setLoginDate(request.getLoginDate());
         memberInfoMapper.updateById(memberInfoDO);
         return Result.ok();
     }

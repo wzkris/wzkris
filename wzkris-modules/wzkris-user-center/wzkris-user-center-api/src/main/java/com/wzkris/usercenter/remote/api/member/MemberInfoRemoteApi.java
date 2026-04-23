@@ -8,15 +8,15 @@ import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
 
 public interface MemberInfoRemoteApi {
 
-    Result<MemberInfoResponse> getByUsername(String username);
+    Result<MemberInfoResponse> queryByUsername(String username);
 
-    Result<MemberInfoResponse> getByPhoneNumber(String phoneNumber);
+    Result<MemberInfoResponse> queryByPhoneNumber(String phoneNumber);
 
-    Result<MemberInfoResponse> getByWexcxIdentifier(String xcxIdentifier);
+    Result<MemberInfoResponse> queryByWexcxCode(String xcxcode);
 
-    Result<MemberPermissionResponse> getPermission(MemberPermsQueryRequest request);
+    Result<MemberPermissionResponse> queryPermission(MemberPermsQueryRequest request);
 
-    Result<Void> updateLoginInfo(LoginInfoUpdateRequest loginInfoUpdateRequest);
+    Result<Void> updateLoginInfo(LoginInfoUpdateRequest request);
 
 }
 

@@ -22,28 +22,28 @@ public class MemberInfoRemoteController {
     private final MemberInfoRemoteApi memberInfoRemoteApi;
 
     @PostMapping("/query-by-username")
-    public Result<MemberInfoResponse> getByUsername(@RequestBody String username) {
-        return memberInfoRemoteApi.getByUsername(username);
+    public Result<MemberInfoResponse> queryByUsername(@RequestBody String username) {
+        return memberInfoRemoteApi.queryByUsername(username);
     }
 
     @PostMapping("/query-by-phonenumber")
-    public Result<MemberInfoResponse> getByPhoneNumber(@RequestBody String phoneNumber) {
-        return memberInfoRemoteApi.getByPhoneNumber(phoneNumber);
+    public Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody String phoneNumber) {
+        return memberInfoRemoteApi.queryByPhoneNumber(phoneNumber);
     }
 
-    @PostMapping("/query-by-wexcx-identifier")
-    public Result<MemberInfoResponse> getByWexcxIdentifier(@RequestBody String xcxIdentifier) {
-        return memberInfoRemoteApi.getByWexcxIdentifier(xcxIdentifier);
+    @PostMapping("/query-by-wexcxcode")
+    public Result<MemberInfoResponse> queryByWexcxCode(@RequestBody String xcxcode) {
+        return memberInfoRemoteApi.queryByWexcxCode(xcxcode);
     }
 
     @PostMapping("/query-permission")
-    public Result<MemberPermissionResponse> getPermission(@RequestBody MemberPermsQueryRequest memberPermsReq) {
-        return memberInfoRemoteApi.getPermission(memberPermsReq);
+    public Result<MemberPermissionResponse> queryPermission(@RequestBody MemberPermsQueryRequest request) {
+        return memberInfoRemoteApi.queryPermission(request);
     }
 
     @PostMapping("/update-logininfo")
-    public Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest loginInfoUpdateRequest) {
-        return memberInfoRemoteApi.updateLoginInfo(loginInfoUpdateRequest);
+    public Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest request) {
+        return memberInfoRemoteApi.updateLoginInfo(request);
     }
 
 }

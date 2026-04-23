@@ -54,11 +54,6 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-weixin-sdk</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wzkris</groupId>
             <artifactId>wzkris-auth-api</artifactId>
             <version>${revision}</version>
         </dependency>

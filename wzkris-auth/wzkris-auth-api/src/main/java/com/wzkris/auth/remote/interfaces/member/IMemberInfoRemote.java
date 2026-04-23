@@ -29,25 +29,25 @@ public interface IMemberInfoRemote {
      * 根据用户名查询用户
      */
     @PostExchange("/query-by-username")
-    Result<MemberInfoResponse> getByUsername(@RequestBody String username);
+    Result<MemberInfoResponse> queryByUsername(@RequestBody String username);
 
     /**
      * 根据手机号查询用户
      */
     @PostExchange("/query-by-phonenumber")
-    Result<MemberInfoResponse> getByPhoneNumber(@RequestBody String phoneNumber);
+    Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
      * 根据微信小程序code查询用户
      */
-    @PostExchange("/query-by-wexcx-identifier")
-    Result<MemberInfoResponse> getByWexcxIdentifier(@RequestBody String xcxIdentifier);
+    @PostExchange("/query-by-wexcxcode")
+    Result<MemberInfoResponse> queryByWexcxCode(@RequestBody String xcxcode);
 
     /**
      * 查询管理员权限
      */
     @PostExchange("/query-permission")
-    Result<MemberPermissionResponse> getPermission(@RequestBody MemberPermsQueryRequest memberPermsReq);
+    Result<MemberPermissionResponse> queryPermission(@RequestBody MemberPermsQueryRequest memberPermsReq);
 
     /**
      * 更新用户登录信息

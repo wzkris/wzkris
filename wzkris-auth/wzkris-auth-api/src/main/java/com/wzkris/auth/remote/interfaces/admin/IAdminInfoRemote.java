@@ -29,19 +29,19 @@ public interface IAdminInfoRemote {
      * 根据用户名查询用户
      */
     @PostExchange("/query-by-username")
-    Result<AdminInfoResponse> getByUsername(@RequestBody String username);
+    Result<AdminInfoResponse> queryByUsername(@RequestBody String username);
 
     /**
      * 根据手机号查询用户
      */
     @PostExchange("/query-by-phonenumber")
-    Result<AdminInfoResponse> getByPhoneNumber(@RequestBody String phoneNumber);
+    Result<AdminInfoResponse> queryByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
      * 查询管理员权限
      */
     @PostExchange("/query-permission")
-    Result<AdminPermissionResponse> getPermission(@RequestBody AdminPermsQueryRequest AdminPermsQueryRequest);
+    Result<AdminPermissionResponse> queryPermission(@RequestBody AdminPermsQueryRequest AdminPermsQueryRequest);
 
     /**
      * 更新用户登录信息

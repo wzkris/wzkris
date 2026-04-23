@@ -39,10 +39,10 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
     }
 
     @Override
-    public Result<Void> updateLoginInfo(LoginInfoUpdateRequest loginInfoUpdateRequest) {
-        AdminInfoDO adminInfoDO = new AdminInfoDO(loginInfoUpdateRequest.getId());
-        adminInfoDO.setLoginIp(loginInfoUpdateRequest.getLoginIp());
-        adminInfoDO.setLoginDate(loginInfoUpdateRequest.getLoginDate());
+    public Result<Void> updateLoginInfo(LoginInfoUpdateRequest request) {
+        AdminInfoDO adminInfoDO = new AdminInfoDO(request.getId());
+        adminInfoDO.setLoginIp(request.getLoginIp());
+        adminInfoDO.setLoginDate(request.getLoginDate());
         adminInfoMapper.updateById(adminInfoDO);
         return Result.ok();
     }

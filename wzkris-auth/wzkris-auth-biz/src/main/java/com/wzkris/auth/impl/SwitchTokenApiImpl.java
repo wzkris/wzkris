@@ -1,6 +1,5 @@
 package com.wzkris.auth.impl;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.api.SwitchTokenApi;
 import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
@@ -15,9 +14,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -36,24 +33,9 @@ public class SwitchTokenApiImpl implements SwitchTokenApi {
 
     private final LoginTenantUserServiceImpl loginTenantUserServiceImpl;
 
-    @Autowired
-    @Lazy
-    private WxMaService wxMaService;
-
     @Override
     public Result<?> switchTenantToken(WexcxSwitchRequest request) {
-        String identifier;
-        try {
-            identifier = wxMaService
-                    .getUserService()
-                    .getSessionInfo(request.getWxCode())
-                    .getOpenid();
-        } catch (WxErrorException e) {
-            log.error("微信小程序换取openid失败", e);
-            throw new RuntimeException(e);
-        }
-
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.getByWexcxIdentifier(identifier);
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByWexcxCode(request.getWxCode());
         if (!ResultUtil.check(memberResult)) {
             return Result.requestFail("微信未绑定商户账号");
         }
@@ -61,7 +43,7 @@ public class SwitchTokenApiImpl implements SwitchTokenApi {
 
         BaseLoginUser loginUser = loginTenantUserServiceImpl.buildLoginTenant(memberInfoResponse);
 
-        Result<MemberPermissionResponse> permissionResult = memberInfoRemote.getPermission(
+        Result<MemberPermissionResponse> permissionResult = memberInfoRemote.queryPermission(
                 new MemberPermsQueryRequest(memberInfoResponse.getMemberId(), memberInfoResponse.getTenantId()));
         if (!ResultUtil.check(permissionResult)) {
             return Result.requestFail(permissionResult != null ? permissionResult.getMessage() : "查询权限失败");
@@ -75,8 +57,8 @@ public class SwitchTokenApiImpl implements SwitchTokenApi {
         TokenPair tokenPair = tokenService.login(loginUser, perms);
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("access_token", tokenPair.getAccessToken());
-        parameters.put("refresh_token", tokenPair.getRefreshToken());
+        parameters.put(OAuth2ParameterNames.ACCESS_TOKEN, tokenPair.getAccessToken());
+        parameters.put(OAuth2ParameterNames.REFRESH_TOKEN, tokenPair.getRefreshToken());
         return ok(parameters);
     }
 

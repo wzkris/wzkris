@@ -44,7 +44,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.getByPhoneNumber(phoneNumber);
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByPhoneNumber(phoneNumber);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
@@ -62,7 +62,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.getByUsername(username);
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByUsername(username);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
@@ -95,7 +95,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         this.checkAccount(memberResp);
 
         // 获取权限信息
-        Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.getPermission(
+        Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.queryPermission(
                 new MemberPermsQueryRequest(memberResp.getMemberId(), memberResp.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(
@@ -147,7 +147,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         this.checkAccount(memberResp);
 
         // 获取权限信息以判断身份类型
-        Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.getPermission(
+        Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.queryPermission(
                 new MemberPermsQueryRequest(memberResp.getMemberId(), memberResp.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(

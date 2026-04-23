@@ -28,7 +28,7 @@ public interface ICustomerInfoRemote {
      * 根据手机号查询客户
      */
     @PostExchange("/query-by-phonenumber")
-    Result<CustomerResponse> getByPhoneNumber(@RequestBody String phoneNumber);
+    Result<CustomerResponse> queryByPhoneNumber(@RequestBody String phoneNumber);
 
     /**
      * 微信小程序获取信息或注册
