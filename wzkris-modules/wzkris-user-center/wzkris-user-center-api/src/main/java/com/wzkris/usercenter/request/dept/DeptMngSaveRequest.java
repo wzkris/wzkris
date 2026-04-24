@@ -1,8 +1,11 @@
 package com.wzkris.usercenter.request.dept;
 
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -27,14 +30,8 @@ public class DeptMngSaveRequest {
     @Schema(description = "部门名称")
     private String deptName;
 
-    @Pattern(
-            regexp = "[" +
-                    CommonConstants.STATUS_ENABLE +
-                    CommonConstants.STATUS_DISABLE
-                    + "]",
-            message = "{invalidParameter.status.invalid}")
     @Schema(description = "0 代表存在 1 代表停用")
-    private String status;
+    private DeptStatusEnum status;
 
     @NotNull(message = "{invalidParameter.sort.invalid}")
     @Range(max = Integer.MAX_VALUE, message = "{invalidParameter.sort.invalid}")

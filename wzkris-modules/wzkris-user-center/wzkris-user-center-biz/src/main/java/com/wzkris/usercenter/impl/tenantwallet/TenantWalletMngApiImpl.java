@@ -8,7 +8,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletMngApi;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
-import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordMngQueryRequest;
+import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordMngPageRequest;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -23,7 +23,7 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
     private final TenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngQueryRequest request) {
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngPageRequest request) {
         startPage();
         List<TenantWalletRecordResponse> list = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request))
                 .stream()
@@ -32,7 +32,7 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
         return getPageResult(list);
     }
 
-    private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordMngQueryRequest request) {
+    private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordMngPageRequest request) {
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
                 .eq(ObjectUtils.isNotEmpty(request.getTenantId()), TenantWalletRecordDO::getTenantId, request.getTenantId())
                 .like(StringUtil.isNotBlank(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())

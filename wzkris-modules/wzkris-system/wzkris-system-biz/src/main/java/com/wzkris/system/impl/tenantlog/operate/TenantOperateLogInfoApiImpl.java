@@ -9,7 +9,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.tenantlog.operate.TenantOperateLogInfoApi;
 import com.wzkris.system.domain.TenantOperateLogDO;
-import com.wzkris.system.request.tenantlog.TenantOperateLogInfoQueryRequest;
+import com.wzkris.system.request.tenantlog.TenantOperateLogInfoPageRequest;
 import com.wzkris.system.response.tenantlog.TenantOperateLogInfoResponse;
 import com.wzkris.system.service.TenantOperateLogService;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +27,13 @@ public class TenantOperateLogInfoApiImpl
     private final TenantOperateLogService tenantOperateLogService;
 
     @Override
-    public Result<Page<TenantOperateLogInfoResponse>> queryPage(TenantOperateLogInfoQueryRequest request) {
+    public Result<Page<TenantOperateLogInfoResponse>> queryPage(TenantOperateLogInfoPageRequest request) {
         startPage();
         List<TenantOperateLogDO> list = tenantOperateLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, TenantOperateLogInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<TenantOperateLogDO> buildQueryWrapper(TenantOperateLogInfoQueryRequest request) {
+    private LambdaQueryWrapper<TenantOperateLogDO> buildQueryWrapper(TenantOperateLogInfoPageRequest request) {
         return new LambdaQueryWrapper<TenantOperateLogDO>()
                 .eq(TenantOperateLogDO::getMemberId, SecurityUtil.getUid())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantOperateLogDO::getSuccess, request.getSuccess())

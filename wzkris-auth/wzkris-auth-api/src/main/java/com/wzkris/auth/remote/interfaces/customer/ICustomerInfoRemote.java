@@ -1,6 +1,7 @@
 package com.wzkris.auth.remote.interfaces.customer;
 
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
+import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
 import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
 import com.wzkris.common.core.model.Result;
@@ -28,7 +29,7 @@ public interface ICustomerInfoRemote {
      * 根据手机号查询客户
      */
     @PostExchange("/query-by-phonenumber")
-    Result<CustomerResponse> queryByPhoneNumber(@RequestBody String phoneNumber);
+    Result<CustomerResponse> queryByPhoneNumber(@RequestBody StringValueRequest request);
 
     /**
      * 微信小程序获取信息或注册

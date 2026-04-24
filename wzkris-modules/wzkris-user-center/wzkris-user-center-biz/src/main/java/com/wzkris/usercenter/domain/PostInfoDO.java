@@ -3,6 +3,7 @@ package com.wzkris.usercenter.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.post.PostStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,7 @@ public class PostInfoDO extends BaseEntity {
     private String postName;
 
     @Schema(description = "状态（0代表正常 1代表停用）")
-    private String status;
+    private PostStatusEnum status;
 
     @Schema(description = "角色排序")
     private Integer postSort;
@@ -36,7 +37,7 @@ public class PostInfoDO extends BaseEntity {
         this.postId = postId;
     }
 
-    public PostInfoDO(String status) {
+    public PostInfoDO(PostStatusEnum status) {
         this.status = status;
     }
 

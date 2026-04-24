@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.response.role;
 
+import com.wzkris.usercenter.enums.role.RoleStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,8 @@ public class RoleInfoResponse {
     @Schema(description = "角色名称")
     private String roleName;
 
-    @Schema(description = "状态（0 代表正常 1 代表停用）")
-    private String status;
+    @Schema(description = "状态")
+    private RoleStatusEnum status;
 
     @Schema(description = "角色排序")
     private Integer roleSort;

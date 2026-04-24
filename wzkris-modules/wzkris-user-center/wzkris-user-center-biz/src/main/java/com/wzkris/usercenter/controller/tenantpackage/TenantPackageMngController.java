@@ -7,21 +7,19 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageMngApi;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngPageRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageMngQueryResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "租户套餐管理")
 @Validated
@@ -35,24 +33,24 @@ public class TenantPackageMngController {
     @Operation(summary = "套餐分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<Page<TenantPackageMngQueryResponse>> queryPage(TenantPackageMngQueryRequest request) {
+    public Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request) {
         return tenantPackageMngApi.queryPage(request);
     }
 
     @Operation(summary = "套餐详细信息")
-    @GetMapping("/query-info/{packageId}")
+    @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<TenantPackageMngQueryResponse> queryInfo(@PathVariable Long packageId) {
-        return tenantPackageMngApi.queryInfo(packageId);
+    public Result<TenantPackageMngResponse> queryInfo(IdRequest request) {
+        return tenantPackageMngApi.queryInfo(request);
     }
 
     @Operation(summary = "套餐菜单选择树")
-    @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{packageId}"})
+    @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{id}"})
     @CheckAdminPerms(
             value = {"user-mod:tenantpackage-mng:add", "user-mod:tenantpackage-mng:edit"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@PathVariable(required = false) Long packageId) {
-        return tenantPackageMngApi.queryMenuSelectTree(packageId);
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request) {
+        return tenantPackageMngApi.queryMenuSelectTree(request);
     }
 
     @Operation(summary = "新增租户套餐")
@@ -71,21 +69,12 @@ public class TenantPackageMngController {
         return tenantPackageMngApi.update(request);
     }
 
-    @Operation(summary = "修改租户套餐状态")
-    @OperateLog(title = "租户套餐", subTitle = "修改租户套餐状态", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/update-status")
-    @CheckAdminPerms("user-mod:tenantpackage-mng:edit")
-    public Result<Void> updateStatus(@RequestBody @Valid StatusUpdateRequest request) {
-        return tenantPackageMngApi.updateStatus(request);
-    }
-
     @Operation(summary = "删除租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:tenantpackage-mng:remove")
-    public Result<Void> remove(
-            @NotEmpty(message = "{invalidParameter.id.invalid}") @RequestBody List<Long> packageIds) {
-        return tenantPackageMngApi.remove(packageIds);
+    public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
+        return tenantPackageMngApi.remove(request);
     }
 
 }

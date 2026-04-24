@@ -6,7 +6,7 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
-import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordInfoQueryRequest;
+import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordInfoPageRequest;
 import com.wzkris.usercenter.request.tenantwallet.WalletWithdrawalRequest;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletInfoResponse;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
@@ -35,7 +35,7 @@ public class TenantWalletInfoController {
 
     @Operation(summary = "钱包记录分页")
     @GetMapping("/query-record-page")
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoQueryRequest request) {
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request) {
         return tenantWalletInfoApi.queryRecordPage(request);
     }
 

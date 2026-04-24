@@ -13,7 +13,7 @@ import com.wzkris.usercenter.domain.TenantWalletRecordDO;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
-import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordInfoQueryRequest;
+import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordInfoPageRequest;
 import com.wzkris.usercenter.request.tenantwallet.WalletWithdrawalRequest;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletInfoResponse;
 import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
@@ -42,7 +42,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
     }
 
     @Override
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoQueryRequest request) {
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request) {
         startPage();
         List<TenantWalletRecordResponse> list = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request))
                 .stream()
@@ -61,7 +61,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
         return Result.ok();
     }
 
-    private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordInfoQueryRequest request) {
+    private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordInfoPageRequest request) {
         TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
                 .eq(TenantWalletRecordDO::getTenantId, loginUser.getTenantId())

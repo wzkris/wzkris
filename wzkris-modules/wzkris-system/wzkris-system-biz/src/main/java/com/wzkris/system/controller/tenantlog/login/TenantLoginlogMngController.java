@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.system.api.tenantlog.login.TenantLoginlogMngApi;
-import com.wzkris.system.request.tenantlog.TenantLoginLogMngQueryRequest;
+import com.wzkris.system.request.tenantlog.TenantLoginLogMngPageRequest;
 import com.wzkris.system.response.tenantlog.TenantLoginLogMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +24,7 @@ public class TenantLoginlogMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckTenantPerms("system-mod:tenant-loginlog-mng:page")
-    public Result<Page<TenantLoginLogMngResponse>> queryPage(TenantLoginLogMngQueryRequest request) {
+    public Result<Page<TenantLoginLogMngResponse>> queryPage(TenantLoginLogMngPageRequest request) {
         return tenantLoginlogMngApi.queryPage(request);
     }
 

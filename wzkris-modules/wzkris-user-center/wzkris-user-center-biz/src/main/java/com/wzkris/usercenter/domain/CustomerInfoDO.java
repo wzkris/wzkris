@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.validator.annotation.Xss;
+import com.wzkris.usercenter.enums.customer.CustomerStatusEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,10 +33,10 @@ public class CustomerInfoDO extends BaseEntity {
     private String phoneNumber;
 
     @Schema(description = "用户状态")
-    private String status;
+    private CustomerStatusEnum status;
 
     @Schema(description = "用户性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "用户头像")
     private String avatar;

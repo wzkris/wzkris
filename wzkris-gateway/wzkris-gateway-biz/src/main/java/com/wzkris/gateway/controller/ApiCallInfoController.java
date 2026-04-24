@@ -2,15 +2,15 @@ package com.wzkris.gateway.controller;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.gateway.domain.request.ApiCallDailyQueryRequest;
+import com.wzkris.gateway.domain.request.ApiCallRealtimeQueryRequest;
 import com.wzkris.gateway.domain.response.ApiCallDailySeriesResponse;
 import com.wzkris.gateway.domain.response.ApiCallRealtimeResponse;
 import com.wzkris.gateway.service.ApiCallStatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -31,19 +31,16 @@ public class ApiCallInfoController {
     private final ApiCallStatService apiCallStatService;
 
     @GetMapping("/query-daily")
-    public Result<ApiCallDailySeriesResponse> queryDaily(
-            @RequestParam String authType,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        String dateStr = date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
+    public Result<ApiCallDailySeriesResponse> queryDaily(ApiCallDailyQueryRequest request) {
+        String dateStr = request.getDate() != null ? request.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) :
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        return Result.ok(apiCallStatService.queryDailyApiCallSeries(authType, dateStr));
+        return Result.ok(apiCallStatService.queryDailyApiCallSeries(request.getAuthType(), dateStr));
     }
 
     @GetMapping("/query-realtime")
-    public Result<ApiCallRealtimeResponse> queryRealtime(
-            @RequestParam String authType,
-            @RequestParam(required = false, defaultValue = "60") Integer windowSeconds) {
-        return Result.ok(apiCallStatService.queryRealtimeApiCallStats(authType, windowSeconds));
+    public Result<ApiCallRealtimeResponse> queryRealtime(ApiCallRealtimeQueryRequest request) {
+        Integer windowSeconds = request.getWindowSeconds() != null ? request.getWindowSeconds() : 60;
+        return Result.ok(apiCallStatService.queryRealtimeApiCallStats(request.getAuthType(), windowSeconds));
     }
 
 }

@@ -7,6 +7,7 @@ import com.wzkris.usercenter.remote.api.admin.AdminInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
+import com.wzkris.usercenter.request.common.StringValueRequest;
 import com.wzkris.usercenter.response.permission.AdminPermissionResponse;
 import com.wzkris.usercenter.service.PermissionService;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,14 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
     private final PermissionService permissionService;
 
     @Override
-    public Result<AdminInfoResponse> queryByUsername(String username) {
-        AdminInfoDO admin = adminInfoMapper.selectByUsername(username);
+    public Result<AdminInfoResponse> queryByUsername(StringValueRequest request) {
+        AdminInfoDO admin = adminInfoMapper.selectByUsername(request.getValue());
         return Result.ok(this.toAdminInfoResponse(admin));
     }
 
     @Override
-    public Result<AdminInfoResponse> queryByPhoneNumber(String phoneNumber) {
-        AdminInfoDO admin = adminInfoMapper.selectByPhoneNumber(phoneNumber);
+    public Result<AdminInfoResponse> queryByPhoneNumber(StringValueRequest request) {
+        AdminInfoDO admin = adminInfoMapper.selectByPhoneNumber(request.getValue());
         return Result.ok(this.toAdminInfoResponse(admin));
     }
 

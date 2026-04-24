@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.remote.api.admin.response;
 
+import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,7 +20,7 @@ public class AdminInfoResponse implements Serializable {
 
     private String phoneNumber;
 
-    private String status;
+    private AdminStatusEnum status;
 
     private String password;
 

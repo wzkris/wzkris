@@ -6,12 +6,14 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.config.ConfigMngApi;
-import com.wzkris.system.request.config.ConfigMngQueryRequest;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.config.ConfigMngPageRequest;
 import com.wzkris.system.request.config.ConfigMngSaveRequest;
 import com.wzkris.system.request.config.ConfigMngUpdateRequest;
 import com.wzkris.system.response.config.ConfigInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,15 +35,15 @@ public class ConfigMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:config-mng:page")
-    public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngQueryRequest request) {
+    public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
         return configMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/query-info/{configId}")
+    @GetMapping("/query-info/{id}")
     @CheckAdminPerms("system-mod:config-mng:page")
-    public Result<ConfigInfoResponse> queryInfo(@PathVariable Long configId) {
-        return configMngApi.queryInfo(configId);
+    public Result<ConfigInfoResponse> queryInfo(IdRequest request) {
+        return configMngApi.queryInfo(request);
     }
 
     @Operation(summary = "添加参数")
@@ -64,8 +66,8 @@ public class ConfigMngController {
     @OperateLog(title = "参数管理", subTitle = "删除参数", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("system-mod:config-mng:remove")
-    public Result<Void> remove(@RequestBody Long configId) {
-        return configMngApi.remove(configId);
+    public Result<Void> remove(@RequestBody @Valid IdRequest request) {
+        return configMngApi.remove(request);
     }
 
     @Operation(summary = "刷新参数缓存")

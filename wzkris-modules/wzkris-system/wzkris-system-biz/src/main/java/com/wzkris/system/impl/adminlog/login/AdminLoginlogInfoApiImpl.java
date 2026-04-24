@@ -10,7 +10,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.adminlog.login.AdminLoginlogInfoApi;
 import com.wzkris.system.domain.AdminLoginLogDO;
-import com.wzkris.system.request.adminlog.AdminLoginLogInfoQueryRequest;
+import com.wzkris.system.request.adminlog.AdminLoginLogInfoPageRequest;
 import com.wzkris.system.response.adminlog.AdminLoginLogInfoResponse;
 import com.wzkris.system.service.AdminLoginLogService;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ public class AdminLoginlogInfoApiImpl
     private final AdminLoginLogService adminLoginLogService;
 
     @Override
-    public Result<Page<AdminLoginLogInfoResponse>> queryPage(AdminLoginLogInfoQueryRequest request) {
+    public Result<Page<AdminLoginLogInfoResponse>> queryPage(AdminLoginLogInfoPageRequest request) {
         startPage();
         List<AdminLoginLogDO> list = adminLoginLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, AdminLoginLogInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<AdminLoginLogDO> buildQueryWrapper(AdminLoginLogInfoQueryRequest request) {
+    private LambdaQueryWrapper<AdminLoginLogDO> buildQueryWrapper(AdminLoginLogInfoPageRequest request) {
         return new LambdaQueryWrapper<AdminLoginLogDO>()
                 .eq(AdminLoginLogDO::getAdminId, SecurityUtil.getUid())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), AdminLoginLogDO::getSuccess, request.getSuccess())

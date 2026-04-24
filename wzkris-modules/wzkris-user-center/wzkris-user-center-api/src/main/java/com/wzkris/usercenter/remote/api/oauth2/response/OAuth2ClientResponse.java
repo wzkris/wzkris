@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.remote.api.oauth2.response;
 
+import com.wzkris.usercenter.enums.oauth2.OAuth2ClientStatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,7 +20,7 @@ public class OAuth2ClientResponse implements Serializable {
 
     private String[] redirectUris;
 
-    private String status;
+    private OAuth2ClientStatusEnum status;
 
     private Boolean autoApprove;
 

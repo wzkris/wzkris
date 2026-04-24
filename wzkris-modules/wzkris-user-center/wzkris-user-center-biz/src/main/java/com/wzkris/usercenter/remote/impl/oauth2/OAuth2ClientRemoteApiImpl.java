@@ -5,6 +5,7 @@ import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
+import com.wzkris.usercenter.request.common.StringValueRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,14 @@ public class OAuth2ClientRemoteApiImpl implements OAuth2ClientRemoteApi {
     private final OAuth2ClientMapper oAuth2ClientMapper;
 
     @Override
-    public Result<OAuth2ClientResponse> queryById(String id) {
-        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectById(id);
+    public Result<OAuth2ClientResponse> queryById(StringValueRequest request) {
+        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectById(request.getValue());
         return Result.ok(this.toOAuth2ClientResponse(oauth2ClientDO));
     }
 
     @Override
-    public Result<OAuth2ClientResponse> queryByClientId(String clientId) {
-        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectByClientId(clientId);
+    public Result<OAuth2ClientResponse> queryByClientId(StringValueRequest request) {
+        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectByClientId(request.getValue());
         return Result.ok(this.toOAuth2ClientResponse(oauth2ClientDO));
     }
 

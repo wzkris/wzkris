@@ -2,7 +2,7 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.usercenter.enums.customerwallet.CustomerWalletStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,12 +26,12 @@ public class CustomerWalletInfoDO {
     private BigDecimal balance;
 
     @Schema(description = "状态")
-    private String status;
+    private CustomerWalletStatusEnum status;
 
     public CustomerWalletInfoDO(Long customerId) {
         this.customerId = customerId;
         this.balance = BigDecimal.ZERO;
-        this.status = CommonConstants.STATUS_ENABLE;
+        this.status = CustomerWalletStatusEnum.ENABLE;
     }
 
 }

@@ -6,18 +6,17 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.announcement.AnnouncementMngApi;
-import com.wzkris.system.request.announcement.AnnouncementMngQueryRequest;
+import com.wzkris.system.request.common.IdListRequest;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.announcement.AnnouncementMngPageRequest;
 import com.wzkris.system.request.announcement.AnnouncementMngSaveUpdateRequest;
 import com.wzkris.system.response.announcement.AnnouncementMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 系统消息 操作处理
@@ -36,15 +35,15 @@ public class AnnouncementMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:announcement-mng:page")
-    public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngQueryRequest request) {
+    public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request) {
         return announcementMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/query-info/{announcementId}")
+    @GetMapping("/query-info/{id}")
     @CheckAdminPerms("system-mod:announcement-mng:page")
-    public Result<AnnouncementMngResponse> queryInfo(@PathVariable Long announcementId) {
-        return announcementMngApi.queryInfo(announcementId);
+    public Result<AnnouncementMngResponse> queryInfo(IdRequest request) {
+        return announcementMngApi.queryInfo(request);
     }
 
     @Operation(summary = "添加草稿")
@@ -67,8 +66,8 @@ public class AnnouncementMngController {
     @OperateLog(title = "系统消息", subTitle = "删除草稿", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("system-mod:announcement-mng:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> msgIds) {
-        return announcementMngApi.remove(msgIds);
+    public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
+        return announcementMngApi.remove(request);
     }
 
 }

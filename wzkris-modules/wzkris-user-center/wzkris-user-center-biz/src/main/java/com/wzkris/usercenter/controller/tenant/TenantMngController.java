@@ -7,17 +7,17 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.tenant.TenantMngApi;
-import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.tenant.TenantMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.common.PwdResetRequest;
+import com.wzkris.usercenter.request.tenant.TenantMngPageRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngUpdateRequest;
-import com.wzkris.usercenter.response.SelectResponse;
-import com.wzkris.usercenter.response.tenant.TenantMngQueryResponse;
+import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngListRequest;
+import com.wzkris.usercenter.response.common.SelectResponse;
+import com.wzkris.usercenter.response.tenant.TenantMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,21 +36,21 @@ public class TenantMngController {
     @Operation(summary = "租户分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<Page<TenantMngQueryResponse>> queryPage(TenantMngQueryRequest request) {
+    public Result<Page<TenantMngResponse>> queryPage(TenantMngPageRequest request) {
         return tenantMngApi.queryPage(request);
     }
 
     @Operation(summary = "ID获取租户详细信息")
-    @GetMapping("/query-info/{tenantId}")
+    @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<TenantMngQueryResponse> queryInfo(@PathVariable Long tenantId) {
-        return tenantMngApi.queryInfo(tenantId);
+    public Result<TenantMngResponse> queryInfo(IdRequest request) {
+        return tenantMngApi.queryInfo(request);
     }
 
     @Operation(summary = "租户选择列表(带分页)")
     @GetMapping("/query-selectpage")
-    public Result<Page<SelectResponse>> querySelectPage(String tenantName) {
-        return tenantMngApi.querySelectPage(tenantName);
+    public Result<Page<SelectResponse>> querySelectPage(TenantMngPageRequest request) {
+        return tenantMngApi.querySelectPage(request);
     }
 
     @Operation(summary = "套餐选择列表")
@@ -58,8 +58,8 @@ public class TenantMngController {
     @CheckAdminPerms(
             value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
             mode = CheckMode.OR)
-    public Result<List<SelectResponse>> queryPackageSelect(String packageName) {
-        return tenantMngApi.queryPackageSelect(packageName);
+    public Result<List<SelectResponse>> queryPackageSelect(TenantPackageMngListRequest request) {
+        return tenantMngApi.queryPackageSelect(request);
     }
 
     @Operation(summary = "新增租户")
@@ -78,14 +78,6 @@ public class TenantMngController {
         return tenantMngApi.update(tenantReq);
     }
 
-    @Operation(summary = "修改租户状态")
-    @OperateLog(title = "租户管理", subTitle = "修改租户状态", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/update-status")
-    @CheckAdminPerms("user-mod:tenant-mng:edit")
-    public Result<Void> updateStatus(@RequestBody @Valid StatusUpdateRequest request) {
-        return tenantMngApi.updateStatus(request);
-    }
-
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-operpwd")
@@ -98,8 +90,8 @@ public class TenantMngController {
     @OperateLog(title = "租户管理", subTitle = "删除租户", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:tenant-mng:remove")
-    public Result<Void> remove(@RequestBody @NotNull(message = "{invalidParameter.id.invalid}") Long tenantId) {
-        return tenantMngApi.remove(tenantId);
+    public Result<Void> remove(@RequestBody @Valid IdRequest request) {
+        return tenantMngApi.remove(request);
     }
 
 }

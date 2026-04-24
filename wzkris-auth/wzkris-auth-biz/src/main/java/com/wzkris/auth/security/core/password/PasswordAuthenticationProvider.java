@@ -51,7 +51,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
@@ -65,7 +65,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
         if (commonAuthenticationToken == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
         return commonAuthenticationToken;

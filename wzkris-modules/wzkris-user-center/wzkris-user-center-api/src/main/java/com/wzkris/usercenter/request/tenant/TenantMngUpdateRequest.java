@@ -1,10 +1,9 @@
 package com.wzkris.usercenter.request.tenant;
 
+import com.wzkris.usercenter.enums.tenant.TenantStatusEnum;
+import com.wzkris.usercenter.enums.tenant.TenantTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
@@ -19,19 +18,17 @@ public class TenantMngUpdateRequest {
     @NotNull(message = "{invalidParameter.id.invalid}")
     private Long tenantId;
 
-    @Pattern(regexp = "[01]", message = "{invalidParameter.tenantType.invalid}")
-    @Schema(description = "租户类型 0-个人 1-企业")
-    private String tenantType;
+    @Schema(description = "租户类型")
+    private TenantTypeEnum tenantType;
 
     @Schema(description = "联系电话")
     private String contactPhone;
 
-    @NotBlank(message = "{invalidParameter.tenantName.invalid}")
     @Schema(description = "租户名称")
     private String tenantName;
 
     @Schema(description = "租户状态")
-    private String status;
+    private TenantStatusEnum status;
 
     @Schema(description = "域名")
     private String domain;
@@ -42,8 +39,6 @@ public class TenantMngUpdateRequest {
     @Schema(description = "租户套餐编号")
     private Long packageId;
 
-    @NotNull(message = "{invalidParameter.expireTime.invalid}")
-    @Future(message = "{invalidParameter.expireTime.invalid}")
     @Schema(description = "过期时间")
     private OffsetDateTime expireTime;
 

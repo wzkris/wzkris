@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.tenantlog.login.TenantLoginlogMngApi;
 import com.wzkris.system.domain.TenantLoginLogDO;
-import com.wzkris.system.request.tenantlog.TenantLoginLogMngQueryRequest;
+import com.wzkris.system.request.tenantlog.TenantLoginLogMngPageRequest;
 import com.wzkris.system.response.tenantlog.TenantLoginLogMngResponse;
 import com.wzkris.system.service.TenantLoginLogService;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +27,13 @@ public class TenantLoginlogMngApiImpl
     private final TenantLoginLogService tenantLoginLogService;
 
     @Override
-    public Result<Page<TenantLoginLogMngResponse>> queryPage(TenantLoginLogMngQueryRequest request) {
+    public Result<Page<TenantLoginLogMngResponse>> queryPage(TenantLoginLogMngPageRequest request) {
         startPage();
         List<TenantLoginLogDO> list = tenantLoginLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, TenantLoginLogMngResponse.class));
     }
 
-    private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogMngQueryRequest request) {
+    private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogMngPageRequest request) {
         return new LambdaQueryWrapper<TenantLoginLogDO>()
                 .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantLoginLogDO::getMemberId, request.getMemberId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantLoginLogDO::getSuccess, request.getSuccess())

@@ -14,6 +14,7 @@ import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
+import com.wzkris.usercenter.request.common.StringValueRequest;
 import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
 import com.wzkris.usercenter.service.PermissionService;
 import lombok.RequiredArgsConstructor;
@@ -44,28 +45,28 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     private WxMaService wxMaService;
 
     @Override
-    public Result<MemberInfoResponse> queryByUsername(String username) {
-        MemberInfoDO member = memberInfoMapper.selectByUsername(username);
+    public Result<MemberInfoResponse> queryByUsername(StringValueRequest request) {
+        MemberInfoDO member = memberInfoMapper.selectByUsername(request.getValue());
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
         return Result.ok(response);
     }
 
     @Override
-    public Result<MemberInfoResponse> queryByPhoneNumber(String phoneNumber) {
-        MemberInfoDO member = memberInfoMapper.selectByPhoneNumber(phoneNumber);
+    public Result<MemberInfoResponse> queryByPhoneNumber(StringValueRequest request) {
+        MemberInfoDO member = memberInfoMapper.selectByPhoneNumber(request.getValue());
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
         return Result.ok(response);
     }
 
     @Override
-    public Result<MemberInfoResponse> queryByWexcxCode(String xcxcode) {
+    public Result<MemberInfoResponse> queryByWexcxCode(StringValueRequest request) {
         String identifier;
         try {
             identifier = wxMaService
                     .getUserService()
-                    .getSessionInfo(xcxcode)
+                    .getSessionInfo(request.getValue())
                     .getOpenid();
         } catch (WxErrorException e) {
             log.error("微信小程序换取openid失败", e);

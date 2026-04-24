@@ -7,21 +7,20 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.role.RoleMngApi;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.role.RoleMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.role.RoleMngPageRequest;
 import com.wzkris.usercenter.request.role.RoleMngSaveRequest;
 import com.wzkris.usercenter.request.role.RoleMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectResponse;
-import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
 import com.wzkris.usercenter.response.role.RoleInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 角色信息
@@ -40,42 +39,42 @@ public class RoleMngController {
     @Operation(summary = "角色分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:role-mng:page")
-    public Result<Page<RoleInfoResponse>> queryPage(RoleMngQueryRequest request) {
+    public Result<Page<RoleInfoResponse>> queryPage(RoleMngPageRequest request) {
         return roleMngApi.queryPage(request);
     }
 
     @Operation(summary = "角色详细信息")
-    @GetMapping("/query-info/{roleId}")
+    @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:role-mng:query")
-    public Result<RoleInfoResponse> queryInfo(@PathVariable Long roleId) {
-        return roleMngApi.queryInfo(roleId);
+    public Result<RoleInfoResponse> queryInfo(IdRequest request) {
+        return roleMngApi.queryInfo(request);
     }
 
     @Operation(summary = "角色 - 菜单选择树")
-    @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{roleId}"})
+    @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{id}"})
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(@PathVariable(required = false) Long roleId) {
-        return roleMngApi.queryRoleMenuSelectTree(roleId);
+    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request) {
+        return roleMngApi.queryRoleMenuSelectTree(request);
     }
 
     @Operation(summary = "角色 - 部门选择树")
-    @GetMapping({"/query-dept-checked-selecttree/", "/query-dept-checked-selecttree/{roleId}"})
+    @GetMapping({"/query-dept-checked-selecttree/", "/query-dept-checked-selecttree/{id}"})
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(@PathVariable(required = false) Long roleId) {
-        return roleMngApi.queryRoleDeptSelectTree(roleId);
+    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(IdRequest request) {
+        return roleMngApi.queryRoleDeptSelectTree(request);
     }
 
     @Operation(summary = "角色 - 继承选择列表")
-    @GetMapping({"/query-hierarchy-checked-select/", "/query-hierarchy-checked-select/{roleId}"})
+    @GetMapping({"/query-hierarchy-checked-select/", "/query-hierarchy-checked-select/{id}"})
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectResponse> queryRoleInheritedSelect(@PathVariable(required = false) Long roleId) {
-        return roleMngApi.queryRoleInheritedSelect(roleId);
+    public Result<CheckedSelectResponse> queryRoleInheritedSelect(IdRequest request) {
+        return roleMngApi.queryRoleInheritedSelect(request);
     }
 
     @Operation(summary = "新增角色")
@@ -94,20 +93,12 @@ public class RoleMngController {
         return roleMngApi.update(request);
     }
 
-    @Operation(summary = "状态修改")
-    @OperateLog(title = "用户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/update-status")
-    @CheckAdminPerms("user-mod:role-mng:edit")
-    public Result<Void> updateStatus(@RequestBody StatusUpdateRequest request) {
-        return roleMngApi.updateStatus(request);
-    }
-
     @Operation(summary = "删除角色")
     @OperateLog(title = "角色管理", subTitle = "删除角色", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:role-mng:remove")
-    public Result<Void> remove(@RequestBody @NotEmpty(message = "{invalidParameter.id.invalid}") List<Long> roleIds) {
-        return roleMngApi.remove(roleIds);
+    public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
+        return roleMngApi.remove(request);
     }
 
 }

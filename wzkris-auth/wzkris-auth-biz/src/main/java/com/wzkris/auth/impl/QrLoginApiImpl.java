@@ -1,6 +1,7 @@
 package com.wzkris.auth.impl;
 
 import com.wzkris.auth.api.QrLoginApi;
+import com.wzkris.auth.request.QrCodeIdRequest;
 import com.wzkris.auth.constants.QrCodeConstant;
 import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
@@ -40,7 +41,8 @@ public class QrLoginApiImpl implements QrLoginApi {
     }
 
     @Override
-    public Result<Void> scan(String qrcodeId) {
+    public Result<Void> scan(QrCodeIdRequest request) {
+        String qrcodeId = request.getQrcodeId();
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
         Object value = redisTemplate.opsForValue().get(key);
         QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
@@ -56,7 +58,8 @@ public class QrLoginApiImpl implements QrLoginApi {
     }
 
     @Override
-    public Result<Void> confirm(String qrcodeId) {
+    public Result<Void> confirm(QrCodeIdRequest request) {
+        String qrcodeId = request.getQrcodeId();
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
         Object value = redisTemplate.opsForValue().get(key);
         QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
@@ -79,7 +82,8 @@ public class QrLoginApiImpl implements QrLoginApi {
     }
 
     @Override
-    public Result<QrTokenResponse> pollstatus(String qrcodeId) {
+    public Result<QrTokenResponse> pollstatus(QrCodeIdRequest request) {
+        String qrcodeId = request.getQrcodeId();
         Object value = redisTemplate.opsForValue().get(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId);
         QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
         if (Objects.isNull(qrTokenResponse)) {

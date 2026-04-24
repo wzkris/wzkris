@@ -3,14 +3,14 @@ package com.wzkris.usercenter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.PostToMenuDO;
+import com.wzkris.usercenter.enums.post.PostStatusEnum;
 import com.wzkris.usercenter.mapper.MemberToPostMapper;
 import com.wzkris.usercenter.mapper.PostInfoMapper;
 import com.wzkris.usercenter.mapper.PostToMenuMapper;
-import com.wzkris.usercenter.response.SelectResponse;
+import com.wzkris.usercenter.response.common.SelectResponse;
 import com.wzkris.usercenter.service.PostInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -41,7 +41,7 @@ public class PostInfoServiceImpl
         // 只能查出状态正常的职位
         LambdaQueryWrapper<PostInfoDO> lqw = new LambdaQueryWrapper<PostInfoDO>()
                 .in(PostInfoDO::getPostId, postIds)
-                .eq(PostInfoDO::getStatus, CommonConstants.STATUS_ENABLE);
+                .eq(PostInfoDO::getStatus, PostStatusEnum.ENABLE);
         return baseMapper.selectList(lqw);
     }
 
@@ -55,7 +55,7 @@ public class PostInfoServiceImpl
         LambdaQueryWrapper<PostInfoDO> lqw = new LambdaQueryWrapper<PostInfoDO>()
                 .select(PostInfoDO::getPostId)
                 .in(PostInfoDO::getPostId, postIds)
-                .eq(PostInfoDO::getStatus, CommonConstants.STATUS_ENABLE);
+                .eq(PostInfoDO::getStatus, PostStatusEnum.ENABLE);
         return baseMapper.selectList(lqw).stream().map(PostInfoDO::getPostId).toList();
     }
 
@@ -63,7 +63,7 @@ public class PostInfoServiceImpl
     public List<SelectResponse> listSelect(String postName) {
         return baseMapper.selectList(Wrappers.lambdaQuery(PostInfoDO.class)
                         .select(PostInfoDO::getPostId, PostInfoDO::getPostName)
-                        .eq(PostInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                        .eq(PostInfoDO::getStatus, PostStatusEnum.ENABLE)
                         .like(StringUtil.isNotBlank(postName), PostInfoDO::getPostName, postName)
                         .orderByAsc(PostInfoDO::getPostId))
                 .stream()

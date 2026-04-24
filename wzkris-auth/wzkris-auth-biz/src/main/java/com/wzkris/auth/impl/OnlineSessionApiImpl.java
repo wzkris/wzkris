@@ -1,6 +1,7 @@
 package com.wzkris.auth.impl;
 
 import com.wzkris.auth.api.OnlineSessionApi;
+import com.wzkris.auth.request.SidRequest;
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.response.OnlineSessionResponse;
@@ -51,7 +52,8 @@ public class OnlineSessionApiImpl implements OnlineSessionApi {
     }
 
     @Override
-    public Result<Void> kickout(String sid) {
+    public Result<Void> kickout(SidRequest request) {
+        String sid = request.getSid();
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         tokenService.revoke(loginUser.getAuthType().getValue(), loginUser.getUid(), sid);
         return ok();

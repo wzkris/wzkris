@@ -1,11 +1,8 @@
 package com.wzkris.usercenter.request.role;
 
-import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.usercenter.enums.role.RoleStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -24,22 +21,12 @@ public class RoleMngUpdateRequest {
     @Schema(description = "数据范围（1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限）")
     private String dataScope;
 
-    @NotBlank(message = "{invalidParameter.roleName.invalid}")
-    @Size(min = 2, max = 20, message = "{invalidParameter.roleName.invalid}")
     @Schema(description = "角色名称")
     private String roleName;
 
-    @NotBlank(message = "{invalidParameter.status.invalid}")
-    @Pattern(
-            regexp = "[" +
-                    CommonConstants.STATUS_ENABLE +
-                    CommonConstants.STATUS_DISABLE
-                    + "]",
-            message = "{invalidParameter.status.invalid}")
-    @Schema(description = "状态（0 代表正常 1 代表停用）")
-    private String status;
+    @Schema(description = "状态")
+    private RoleStatusEnum status;
 
-    @NotNull(message = "{invalidParameter.sort.invalid}")
     @Range(message = "{invalidParameter.sort.invalid}")
     @Schema(description = "角色排序")
     private Integer roleSort;

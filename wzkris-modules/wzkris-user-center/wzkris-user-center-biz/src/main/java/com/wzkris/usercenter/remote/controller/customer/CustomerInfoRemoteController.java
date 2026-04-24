@@ -5,7 +5,9 @@ import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.customer.request.WexcxLoginRequest;
 import com.wzkris.usercenter.remote.api.customer.response.CustomerResponse;
+import com.wzkris.usercenter.request.common.StringValueRequest;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +23,8 @@ public class CustomerInfoRemoteController {
     private final CustomerInfoRemoteApi customerInfoRemoteApi;
 
     @PostMapping("/query-by-phonenumber")
-    public Result<CustomerResponse> queryByPhoneNumber(@RequestBody String phoneNumber) {
-        return customerInfoRemoteApi.queryByPhoneNumber(phoneNumber);
+    public Result<CustomerResponse> queryByPhoneNumber(@RequestBody @Valid StringValueRequest request) {
+        return customerInfoRemoteApi.queryByPhoneNumber(request);
     }
 
     @PostMapping("/wexcx-login")
@@ -36,8 +38,4 @@ public class CustomerInfoRemoteController {
     }
 
 }
-
-
-
-
 

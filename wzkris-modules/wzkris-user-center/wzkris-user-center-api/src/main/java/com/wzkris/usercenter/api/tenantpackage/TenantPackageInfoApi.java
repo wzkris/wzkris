@@ -1,10 +1,10 @@
 package com.wzkris.usercenter.api.tenantpackage;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoQueryResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
 
 public interface TenantPackageInfoApi {
 
-    Result<TenantPackageInfoQueryResponse> queryInfo();
+    Result<TenantPackageInfoResponse> queryInfo();
 
 }

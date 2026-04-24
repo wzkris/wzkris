@@ -6,13 +6,14 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
-import com.wzkris.usercenter.enums.IdentifierTypeEnum;
+import com.wzkris.usercenter.enums.social.IdentifierTypeEnum;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerSocialInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.customer.request.WexcxLoginRequest;
 import com.wzkris.usercenter.remote.api.customer.response.CustomerResponse;
+import com.wzkris.usercenter.request.common.StringValueRequest;
 import com.wzkris.usercenter.service.CustomerInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +38,8 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
     private WxMaService wxMaService;
 
     @Override
-    public Result<CustomerResponse> queryByPhoneNumber(String phoneNumber) {
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectByPhoneNumber(phoneNumber);
+    public Result<CustomerResponse> queryByPhoneNumber(StringValueRequest request) {
+        CustomerInfoDO customerInfoDO = customerInfoMapper.selectByPhoneNumber(request.getValue());
         return Result.ok(this.toCustomerResponse(customerInfoDO));
     }
 

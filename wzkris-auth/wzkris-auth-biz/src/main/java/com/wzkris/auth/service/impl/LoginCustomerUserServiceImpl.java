@@ -3,6 +3,7 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
+import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
 import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
 import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
@@ -35,7 +36,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<CustomerResponse> customerResult = customerInfoRemote.queryByPhoneNumber(phoneNumber);
+        Result<CustomerResponse> customerResult = customerInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
 
         if (!ResultUtil.check(customerResult)) {
             return null;
@@ -98,7 +99,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     private void checkAccount(CustomerResponse CustomerResponse) {
         if (StringUtil.equals(CustomerResponse.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 

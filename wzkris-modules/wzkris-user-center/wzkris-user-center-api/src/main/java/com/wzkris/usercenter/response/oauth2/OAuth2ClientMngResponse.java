@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.response.oauth2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wzkris.usercenter.enums.oauth2.OAuth2ClientStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class OAuth2ClientMngResponse {
     private String clientName;
 
     @Schema(description = "客户端状态")
-    private String status;
+    private OAuth2ClientStatusEnum status;
 
     @Schema(description = "客户端id 等价于app_id")
     private String clientId;

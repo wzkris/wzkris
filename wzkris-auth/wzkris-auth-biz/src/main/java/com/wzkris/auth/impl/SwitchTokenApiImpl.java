@@ -2,6 +2,7 @@ package com.wzkris.auth.impl;
 
 import com.wzkris.auth.api.SwitchTokenApi;
 import com.wzkris.auth.domain.TokenPair;
+import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
@@ -35,7 +36,7 @@ public class SwitchTokenApiImpl implements SwitchTokenApi {
 
     @Override
     public Result<?> switchTenantToken(WexcxSwitchRequest request) {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByWexcxCode(request.getWxCode());
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByWexcxCode(new StringValueRequest(request.getWxCode()));
         if (!ResultUtil.check(memberResult)) {
             return Result.requestFail("微信未绑定商户账号");
         }

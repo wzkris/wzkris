@@ -13,13 +13,11 @@ import com.wzkris.usercenter.api.member.MemberMngApi;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.event.CreateMemberEvent;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
-import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.member.MemberMngGrantPostRequest;
-import com.wzkris.usercenter.request.member.MemberMngQueryRequest;
-import com.wzkris.usercenter.request.member.MemberMngSaveRequest;
-import com.wzkris.usercenter.request.member.MemberMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectResponse;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.common.PwdResetRequest;
+import com.wzkris.usercenter.request.member.*;
+import com.wzkris.usercenter.response.common.CheckedSelectResponse;
 import com.wzkris.usercenter.response.member.MemberMngResponse;
 import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
@@ -48,13 +46,13 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<Page<MemberMngResponse>> queryPage(MemberMngQueryRequest request) {
+    public Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request) {
         startPage();
         List<MemberMngResponse> list = memberInfoMapper.listVO(this.buildPageWrapper(request));
         return getPageResult(list);
     }
 
-    private QueryWrapper<MemberInfoDO> buildPageWrapper(MemberMngQueryRequest request) {
+    private QueryWrapper<MemberInfoDO> buildPageWrapper(MemberMngPageRequest request) {
         return new QueryWrapper<MemberInfoDO>()
                 .like(ObjectUtils.isNotEmpty(request.getUsername()), "username", request.getUsername())
                 .like(ObjectUtils.isNotEmpty(request.getPhoneNumber()), "phone_number", request.getPhoneNumber())
@@ -66,7 +64,8 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     }
 
     @Override
-    public Result<MemberMngResponse> queryInfo(Long memberId) {
+    public Result<MemberMngResponse> queryInfo(IdRequest request) {
+        Long memberId = request.getId();
         if (tenantInfoService.checkAdministrator(memberId)) {
             return accessDenied("数据权限不足");
         }
@@ -74,10 +73,11 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     }
 
     @Override
-    public Result<CheckedSelectResponse> queryPostSelect(Long memberId, String postName) {
+    public Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request) {
+        Long memberId = request.getMemberId();
         CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
         checkedSelectResponse.setCheckedKeys(memberId == null ? Collections.emptyList() : postInfoService.listIdByMemberId(memberId));
-        checkedSelectResponse.setSelects(postInfoService.listSelect(postName));
+        checkedSelectResponse.setSelects(postInfoService.listSelect(request.getPostName()));
         return ok(checkedSelectResponse);
     }
 
@@ -93,6 +93,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
         MemberInfoDO member = BeanUtil.convert(memberReq, MemberInfoDO.class);
+        member.setStatus(memberReq.getStatus());
         String password = RandomStringUtils.secure().nextAlphabetic(8);
         member.setPassword(password);
         boolean success = memberInfoService.saveMember(member, memberReq.getPostIds());
@@ -115,6 +116,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
             return requestFail("修改成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
         MemberInfoDO member = BeanUtil.convert(memberReq, MemberInfoDO.class);
+        member.setStatus(memberReq.getStatus());
         return toRes(memberInfoService.updateMember(member, memberReq.getPostIds()));
     }
 
@@ -129,16 +131,6 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     }
 
     @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        if (tenantInfoService.checkAdministrator(request.getId())) {
-            return accessDenied("数据权限不足");
-        }
-        MemberInfoDO update = new MemberInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(memberInfoMapper.updateById(update));
-    }
-
-    @Override
     public Result<Void> grantPosts(MemberMngGrantPostRequest request) {
         if (tenantInfoService.checkAdministrator(request.getMemberId())) {
             return accessDenied("数据权限不足");
@@ -147,7 +139,8 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     }
 
     @Override
-    public Result<Void> remove(List<Long> memberIds) {
+    public Result<Void> remove(IdListRequest request) {
+        List<Long> memberIds = request.getIds();
         if (tenantInfoService.checkAdministrator(memberIds)) {
             return accessDenied("数据权限不足");
         }

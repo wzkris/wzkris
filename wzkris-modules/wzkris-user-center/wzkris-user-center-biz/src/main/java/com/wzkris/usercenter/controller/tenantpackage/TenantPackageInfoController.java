@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.tenantpackage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageInfoApi;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoQueryResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class TenantPackageInfoController {
 
     @Operation(summary = "获取当前租户套餐概览")
     @GetMapping("/query-info")
-    public Result<TenantPackageInfoQueryResponse> queryInfo() {
+    public Result<TenantPackageInfoResponse> queryInfo() {
         return tenantPackageInfoApi.queryInfo();
     }
 

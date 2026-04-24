@@ -11,7 +11,7 @@ import com.wzkris.usercenter.api.customerwallet.CustomerWalletInfoApi;
 import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
 import com.wzkris.usercenter.mapper.CustomerWalletInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;
-import com.wzkris.usercenter.request.customerwallet.CustomerWalletRecordQueryRequest;
+import com.wzkris.usercenter.request.customerwallet.CustomerWalletRecordPageRequest;
 import com.wzkris.usercenter.response.customerwallet.CustomerWalletInfoResponse;
 import com.wzkris.usercenter.response.customerwallet.CustomerWalletRecordResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +33,14 @@ public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWa
     }
 
     @Override
-    public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(CustomerWalletRecordQueryRequest request) {
+    public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(CustomerWalletRecordPageRequest request) {
         startPage();
         List<CustomerWalletRecordDO> recordList =
                 customerWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request));
         return getPageResult(BeanUtil.convert(recordList, CustomerWalletRecordResponse.class));
     }
 
-    private LambdaQueryWrapper<CustomerWalletRecordDO> buildWalletQueryWrapper(CustomerWalletRecordQueryRequest request) {
+    private LambdaQueryWrapper<CustomerWalletRecordDO> buildWalletQueryWrapper(CustomerWalletRecordPageRequest request) {
         return new LambdaQueryWrapper<CustomerWalletRecordDO>()
                 .like(
                         StringUtil.isNotBlank(request.getRecordType()),

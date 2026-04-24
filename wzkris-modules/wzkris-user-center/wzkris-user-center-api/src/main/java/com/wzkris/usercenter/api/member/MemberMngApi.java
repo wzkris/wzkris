@@ -2,24 +2,20 @@ package com.wzkris.usercenter.api.member;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.member.MemberMngGrantPostRequest;
-import com.wzkris.usercenter.request.member.MemberMngQueryRequest;
-import com.wzkris.usercenter.request.member.MemberMngSaveRequest;
-import com.wzkris.usercenter.request.member.MemberMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectResponse;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.common.PwdResetRequest;
+import com.wzkris.usercenter.request.member.*;
+import com.wzkris.usercenter.response.common.CheckedSelectResponse;
 import com.wzkris.usercenter.response.member.MemberMngResponse;
-
-import java.util.List;
 
 public interface MemberMngApi {
 
-    Result<Page<MemberMngResponse>> queryPage(MemberMngQueryRequest request);
+    Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request);
 
-    Result<MemberMngResponse> queryInfo(Long memberId);
+    Result<MemberMngResponse> queryInfo(IdRequest request);
 
-    Result<CheckedSelectResponse> queryPostSelect(Long memberId, String postName);
+    Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request);
 
     Result<Void> save(MemberMngSaveRequest memberReq);
 
@@ -27,10 +23,8 @@ public interface MemberMngApi {
 
     Result<Void> resetPwd(PwdResetRequest request);
 
-    Result<Void> updateStatus(StatusUpdateRequest request);
-
     Result<Void> grantPosts(MemberMngGrantPostRequest request);
 
-    Result<Void> remove(List<Long> memberIds);
+    Result<Void> remove(IdListRequest request);
 
 }

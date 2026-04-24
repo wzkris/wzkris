@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.request.oauth2;
 
+import com.wzkris.usercenter.enums.oauth2.OAuth2ClientStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -15,14 +15,12 @@ public class OAuth2ClientMngUpdateRequest {
     @NotNull(message = "{invalidParameter.id.invalid}")
     private Long id;
 
-    @NotBlank(message = "{invalidParameter.clientName.invalid}")
     @Schema(description = "客户端名称")
     private String clientName;
 
     @Schema(description = "客户端状态")
-    private String status;
+    private OAuth2ClientStatusEnum status;
 
-    @NotBlank(message = "{invalidParameter.id.invalid}")
     @Schema(description = "客户端 id 等价于 app_id")
     private String clientId;
 

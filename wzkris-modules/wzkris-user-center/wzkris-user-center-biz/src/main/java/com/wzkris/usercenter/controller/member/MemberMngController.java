@@ -7,13 +7,11 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.member.MemberMngApi;
-import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.member.MemberMngGrantPostRequest;
-import com.wzkris.usercenter.request.member.MemberMngQueryRequest;
-import com.wzkris.usercenter.request.member.MemberMngSaveRequest;
-import com.wzkris.usercenter.request.member.MemberMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectResponse;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.common.PwdResetRequest;
+import com.wzkris.usercenter.request.member.*;
+import com.wzkris.usercenter.response.common.CheckedSelectResponse;
 import com.wzkris.usercenter.response.member.MemberMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,8 +19,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "租户成员管理")
 @Validated
@@ -36,24 +32,24 @@ public class MemberMngController {
     @Operation(summary = "分页列表")
     @GetMapping("/query-page")
     @CheckTenantPerms("user-mod:member-mng:page")
-    public Result<Page<MemberMngResponse>> queryPage(MemberMngQueryRequest request) {
+    public Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request) {
         return memberMngApi.queryPage(request);
     }
 
     @Operation(summary = "成员详细信息")
-    @GetMapping("/query-info/{memberId}")
+    @GetMapping("/query-info/{id}")
     @CheckTenantPerms("user-mod:member-mng:page")
-    public Result<MemberMngResponse> queryInfo(@PathVariable Long memberId) {
-        return memberMngApi.queryInfo(memberId);
+    public Result<MemberMngResponse> queryInfo(IdRequest request) {
+        return memberMngApi.queryInfo(request);
     }
 
     @Operation(summary = "成员-职位选择列表")
-    @GetMapping({"/query-post-checked-select/", "/query-post-checked-select/{memberId}"})
+    @GetMapping("/query-post-checked-select")
     @CheckTenantPerms(
             value = {"user-mod:member-mng:edit", "user-mod:member-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectResponse> queryPostSelect(@PathVariable(required = false) Long memberId, String postName) {
-        return memberMngApi.queryPostSelect(memberId, postName);
+    public Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request) {
+        return memberMngApi.queryPostSelect(request);
     }
 
     @Operation(summary = "新增成员")
@@ -80,14 +76,6 @@ public class MemberMngController {
         return memberMngApi.resetPwd(request);
     }
 
-    @Operation(summary = "状态修改")
-    @OperateLog(title = "成员管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/update-status")
-    @CheckTenantPerms("user-mod:member-mng:edit")
-    public Result<Void> updateStatus(@RequestBody StatusUpdateRequest request) {
-        return memberMngApi.updateStatus(request);
-    }
-
     @Operation(summary = "授权职位")
     @OperateLog(title = "成员管理", subTitle = "授权成员职位", type = OperateTypeEnum.GRANT)
     @PostMapping("/grant-post")
@@ -100,8 +88,8 @@ public class MemberMngController {
     @OperateLog(title = "成员管理", subTitle = "删除成员", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckTenantPerms("user-mod:member-mng:remove")
-    public Result<Void> remove(@RequestBody List<Long> memberIds) {
-        return memberMngApi.remove(memberIds);
+    public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
+        return memberMngApi.remove(request);
     }
 
 }

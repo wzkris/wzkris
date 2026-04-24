@@ -8,9 +8,9 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
-import com.wzkris.usercenter.request.PasswordUpdateRequest;
+import com.wzkris.usercenter.request.common.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.tenant.TenantInfoBasicUpdateRequest;
-import com.wzkris.usercenter.response.tenant.TenantInfoQueryResponse;
+import com.wzkris.usercenter.response.tenant.TenantInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<TenantInfoQueryResponse> queryInfo() {
+    public Result<TenantInfoResponse> queryInfo() {
         TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
         return ok(tenantInfoMapper.selectVOById(loginUser.getTenantId()));
     }

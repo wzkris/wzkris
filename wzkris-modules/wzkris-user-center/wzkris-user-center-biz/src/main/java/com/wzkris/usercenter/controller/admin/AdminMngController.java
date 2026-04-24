@@ -7,15 +7,14 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.admin.AdminMngApi;
-import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.admin.AdminMngGrantRequest;
-import com.wzkris.usercenter.request.admin.AdminMngQueryRequest;
-import com.wzkris.usercenter.request.admin.AdminMngSaveRequest;
-import com.wzkris.usercenter.request.admin.AdminMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectResponse;
-import com.wzkris.usercenter.response.SelectTreeResponse;
+import com.wzkris.usercenter.request.admin.*;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.common.PwdResetRequest;
+import com.wzkris.usercenter.request.dept.DeptMngListRequest;
 import com.wzkris.usercenter.response.admin.AdminMngResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectResponse;
+import com.wzkris.usercenter.response.common.SelectTreeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,7 +37,7 @@ public class AdminMngController {
     @Operation(summary = "管理员分页列表")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:admin-mng:page")
-    public Result<Page<AdminMngResponse>> queryPage(AdminMngQueryRequest request) {
+    public Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request) {
         return adminMngApi.queryPage(request);
     }
 
@@ -47,24 +46,24 @@ public class AdminMngController {
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
-    public Result<List<SelectTreeResponse>> queryDeptSelectTree(String deptName) {
-        return adminMngApi.queryDeptSelectTree(deptName);
+    public Result<List<SelectTreeResponse>> queryDeptSelectTree(DeptMngListRequest request) {
+        return adminMngApi.queryDeptSelectTree(request);
     }
 
     @Operation(summary = "管理员 - 角色选择列表")
-    @GetMapping({"/query-role-checked-select/", "/query-role-checked-select/{adminId}"})
+    @GetMapping("/query-role-checked-select")
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectResponse> queryRoleSelect(@PathVariable(required = false) Long adminId, String roleName) {
-        return adminMngApi.queryRoleSelect(adminId, roleName);
+    public Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request) {
+        return adminMngApi.queryRoleSelect(request);
     }
 
     @Operation(summary = "管理员详细信息")
-    @GetMapping("/query-info/{adminId}")
+    @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:admin-mng:query")
-    public Result<AdminMngResponse> queryInfo(@PathVariable Long adminId) {
-        return adminMngApi.queryInfo(adminId);
+    public Result<AdminMngResponse> queryInfo(IdRequest request) {
+        return adminMngApi.queryInfo(request);
     }
 
     @Operation(summary = "新增管理员")
@@ -95,8 +94,8 @@ public class AdminMngController {
     @OperateLog(title = "管理员管理", subTitle = "删除管理员", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:admin-mng:remove")
-    public Result<Void> remove(@RequestBody List<Long> userIds) {
-        return adminMngApi.remove(userIds);
+    public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
+        return adminMngApi.remove(request);
     }
 
     @Operation(summary = "重置密码")
@@ -107,19 +106,11 @@ public class AdminMngController {
         return adminMngApi.resetPwd(request);
     }
 
-    @Operation(summary = "状态修改")
-    @OperateLog(title = "管理员管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/update-status")
-    @CheckAdminPerms("user-mod:admin-mng:edit")
-    public Result<Void> updateStatus(@RequestBody StatusUpdateRequest request) {
-        return adminMngApi.updateStatus(request);
-    }
-
     @Operation(summary = "导出")
     @OperateLog(title = "管理员管理", subTitle = "导出管理员数据", type = OperateTypeEnum.EXPORT)
     @GetMapping("/export")
     @CheckAdminPerms("user-mod:admin-mng:export")
-    public void export(HttpServletResponse response, AdminMngQueryRequest request) {
+    public void export(HttpServletResponse response, AdminMngPageRequest request) {
         adminMngApi.export(response, request);
     }
 

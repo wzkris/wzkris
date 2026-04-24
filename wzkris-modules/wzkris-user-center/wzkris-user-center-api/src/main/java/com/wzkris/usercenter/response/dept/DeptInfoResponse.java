@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.response.dept;
 
+import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class DeptInfoResponse {
     private String deptName;
 
     @Schema(description = "0代表存在 1代表停用")
-    private String status;
+    private DeptStatusEnum status;
 
     @Schema(description = "显示顺序")
     private Integer deptSort;

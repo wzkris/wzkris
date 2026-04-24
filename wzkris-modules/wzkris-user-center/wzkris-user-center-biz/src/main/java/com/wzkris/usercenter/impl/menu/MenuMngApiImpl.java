@@ -8,9 +8,9 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
 import com.wzkris.usercenter.domain.MenuInfoDO;
-import com.wzkris.usercenter.enums.MenuTypeEnum;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.menu.MenuMngQueryRequest;
+import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.menu.MenuMngListRequest;
 import com.wzkris.usercenter.request.menu.MenuMngSaveRequest;
 import com.wzkris.usercenter.request.menu.MenuMngUpdateRequest;
 import com.wzkris.usercenter.response.menu.MenuInfoResponse;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +30,12 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<List<MenuInfoResponse>> queryList(MenuMngQueryRequest request) {
+    public Result<List<MenuInfoResponse>> queryList(MenuMngListRequest request) {
         List<MenuInfoDO> menus = menuInfoService.list(this.buildQueryWrapper(request));
         return ok(BeanUtil.convert(menus, MenuInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngQueryRequest request) {
+    private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngListRequest request) {
         List<Long> menuIds = new ArrayList<>();
         if (!SecurityUtil.isSuper()) {
             menuIds = menuInfoService.listMenuIdByAdminId(SecurityUtil.getUid());
@@ -42,45 +43,45 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
         return new LambdaQueryWrapper<MenuInfoDO>()
                 .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
                 .like(StringUtil.isNotEmpty(request.getMenuName()), MenuInfoDO::getMenuName, request.getMenuName())
-                .eq(StringUtil.isNotEmpty(request.getStatus()), MenuInfoDO::getStatus, request.getStatus())
-                .eq(StringUtil.isNotEmpty(request.getScope()), MenuInfoDO::getScope, request.getScope())
+                .eq(request.getStatus() != null, MenuInfoDO::getStatus, request.getStatus())
+                .eq(Objects.nonNull(request.getScope()), MenuInfoDO::getScope, request.getScope())
                 .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
     }
 
     @Override
-    public Result<MenuInfoResponse> queryInfo(Long menuId) {
-        return ok(BeanUtil.convert(menuInfoService.getById(menuId), MenuInfoResponse.class));
+    public Result<MenuInfoResponse> queryInfo(IdRequest request) {
+        return ok(BeanUtil.convert(menuInfoService.getById(request.getId()), MenuInfoResponse.class));
     }
 
     @Override
     public Result<Void> save(MenuMngSaveRequest request) {
-        if (StringUtil.equalsAny(request.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
+        if ((Objects.equals(request.getMenuType(), MenuTypeEnum.INNERLINK)
+                || Objects.equals(request.getMenuType(), MenuTypeEnum.OUTLINK))
                 && !StringUtil.ishttp(request.getPath())) {
             return requestFail("新增菜单'" + request.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
-        return toRes(menuInfoService.save(BeanUtil.convert(request, MenuInfoDO.class)));
+        MenuInfoDO menuInfoDO = BeanUtil.convert(request, MenuInfoDO.class);
+        menuInfoDO.setStatus(request.getStatus());
+        return toRes(menuInfoService.save(menuInfoDO));
     }
 
     @Override
     public Result<Void> update(MenuMngUpdateRequest request) {
-        if (StringUtil.equalsAny(request.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())
+        if ((Objects.equals(request.getMenuType(), MenuTypeEnum.INNERLINK)
+                || Objects.equals(request.getMenuType(), MenuTypeEnum.OUTLINK))
                 && !StringUtil.ishttp(request.getPath())) {
             return requestFail("修改菜单'" + request.getMenuName() + "'失败，地址必须以http(s)://开头");
         } else if (request.getMenuId().equals(request.getParentId())) {
             return requestFail("修改菜单'" + request.getMenuName() + "'失败，上级菜单不能选择自己");
         }
-        return toRes(menuInfoService.updateById(BeanUtil.convert(request, MenuInfoDO.class)));
+        MenuInfoDO menuInfoDO = BeanUtil.convert(request, MenuInfoDO.class);
+        menuInfoDO.setStatus(request.getStatus());
+        return toRes(menuInfoService.updateById(menuInfoDO));
     }
 
     @Override
-    public Result<Void> editStatus(StatusUpdateRequest request) {
-        MenuInfoDO update = new MenuInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(menuInfoService.updateById(update));
-    }
-
-    @Override
-    public Result<Void> remove(Long menuId) {
+    public Result<Void> remove(IdRequest request) {
+        Long menuId = request.getId();
         if (menuInfoService.existChildren(menuId)) {
             return requestFail("存在子菜单,不允许删除");
         }

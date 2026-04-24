@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.usercenter.domain.TenantWalletInfoDO;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
-import com.wzkris.usercenter.enums.WalletRecordTypeEnum;
+import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import com.wzkris.usercenter.service.TenantWalletInfoService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

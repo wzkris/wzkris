@@ -8,7 +8,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.adminlog.operate.AdminOperateLogMngApi;
 import com.wzkris.system.domain.AdminOperateLogDO;
-import com.wzkris.system.request.adminlog.AdminOperateLogMngQueryRequest;
+import com.wzkris.system.request.adminlog.AdminOperateLogMngPageRequest;
 import com.wzkris.system.response.adminlog.AdminOperateLogMngResponse;
 import com.wzkris.system.service.AdminOperateLogService;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +26,13 @@ public class AdminOperateLogMngApiImpl
     private final AdminOperateLogService adminOperateLogService;
 
     @Override
-    public Result<Page<AdminOperateLogMngResponse>> queryPage(AdminOperateLogMngQueryRequest request) {
+    public Result<Page<AdminOperateLogMngResponse>> queryPage(AdminOperateLogMngPageRequest request) {
         startPage();
         List<AdminOperateLogDO> list = adminOperateLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, AdminOperateLogMngResponse.class));
     }
 
-    private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogMngQueryRequest request) {
+    private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogMngPageRequest request) {
         return new LambdaQueryWrapper<AdminOperateLogDO>()
                 .eq(ObjectUtils.isNotEmpty(request.getAdminId()), AdminOperateLogDO::getAdminId, request.getAdminId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), AdminOperateLogDO::getSuccess, request.getSuccess())

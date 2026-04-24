@@ -9,7 +9,8 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.dictionary.DictionaryMngApi;
 import com.wzkris.system.domain.DictionaryInfoDO;
 import com.wzkris.system.mapper.DictionaryInfoMapper;
-import com.wzkris.system.request.dictionary.DictionaryMngQueryRequest;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.dictionary.DictionaryMngPageRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;
 import com.wzkris.system.response.dictionary.DictionaryInfoResponse;
@@ -26,13 +27,13 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     private final DictionaryInfoService dictionaryInfoService;
 
     @Override
-    public Result<Page<DictionaryInfoResponse>> queryPage(DictionaryMngQueryRequest request) {
+    public Result<Page<DictionaryInfoResponse>> queryPage(DictionaryMngPageRequest request) {
         startPage();
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(request);
         return getPageResult(BeanUtil.convert(dictionaryInfoMapper.selectList(lqw), DictionaryInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngQueryRequest request) {
+    private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngPageRequest request) {
         return new LambdaQueryWrapper<DictionaryInfoDO>()
                 .like(StringUtil.isNotBlank(request.getDictName()), DictionaryInfoDO::getDictName, request.getDictName())
                 .like(StringUtil.isNotBlank(request.getDictKey()), DictionaryInfoDO::getDictKey, request.getDictKey())
@@ -40,7 +41,8 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     }
 
     @Override
-    public Result<DictionaryInfoResponse> queryInfo(Long dictId) {
+    public Result<DictionaryInfoResponse> queryInfo(IdRequest request) {
+        Long dictId = request.getId();
         return ok(BeanUtil.convert(dictionaryInfoMapper.selectById(dictId), DictionaryInfoResponse.class));
     }
 
@@ -61,7 +63,8 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     }
 
     @Override
-    public Result<Void> remove(Long dictId) {
+    public Result<Void> remove(IdRequest request) {
+        Long dictId = request.getId();
         return toRes(dictionaryInfoService.deleteById(dictId));
     }
 

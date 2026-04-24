@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,10 +42,10 @@ public class AdminInfoDO extends BaseEntity {
     private String phoneNumber;
 
     @Schema(description = "用户状态")
-    private String status;
+    private AdminStatusEnum status;
 
     @Schema(description = "用户性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "用户头像")
     private String avatar;

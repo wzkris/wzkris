@@ -1,13 +1,10 @@
 package com.wzkris.usercenter.request.menu;
 
-import com.wzkris.common.core.constant.CommonConstants;
-import com.wzkris.common.validator.annotation.EnumsCheck;
-import com.wzkris.usercenter.enums.MenuScopeEnum;
-import com.wzkris.usercenter.enums.MenuTypeEnum;
+import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
+import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
+import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -22,16 +19,13 @@ public class MenuMngUpdateRequest {
     @NotNull(message = "{invalidParameter.id.invalid}")
     private Long menuId;
 
-    @NotBlank(message = "{invalidParameter.menuName.invalid}")
     @Size(min = 0, max = 30, message = "{invalidParameter.menuName.invalid}")
     @Schema(description = "菜单名称")
     private String menuName;
 
-    @NotNull(message = "{invalidParameter.parentId.invalid}")
     @Schema(description = "父菜单 ID")
     private Long parentId;
 
-    @NotNull(message = "{invalidParameter.sort.invalid}")
     @Range(max = Integer.MAX_VALUE, message = "{invalidParameter.sort.invalid}")
     @Schema(description = "显示顺序")
     private Integer menuSort;
@@ -51,19 +45,11 @@ public class MenuMngUpdateRequest {
     @Schema(description = "是否显示")
     private Boolean visible;
 
-    @NotBlank(message = "{invalidParameter.menuType.invalid}")
-    @EnumsCheck(value = MenuTypeEnum.class, property = "value")
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
-    private String menuType;
+    private MenuTypeEnum menuType;
 
-    @Pattern(
-            regexp = "[" +
-                    CommonConstants.STATUS_ENABLE +
-                    CommonConstants.STATUS_DISABLE
-                    + "]",
-            message = "{invalidParameter.status.invalid}")
     @Schema(description = "菜单状态（0 正常 1 停用）")
-    private String status;
+    private MenuStatusEnum status;
 
     @Schema(description = "权限字符串")
     private String perms;
@@ -71,10 +57,8 @@ public class MenuMngUpdateRequest {
     @Schema(description = "菜单图标")
     private String icon;
 
-    @NotBlank(message = "{invalidParameter.menuScope.invalid}")
-    @EnumsCheck(value = MenuScopeEnum.class, property = "value")
     @Schema(description = "菜单域")
-    private String scope;
+    private MenuScopeEnum scope;
 
 }
 

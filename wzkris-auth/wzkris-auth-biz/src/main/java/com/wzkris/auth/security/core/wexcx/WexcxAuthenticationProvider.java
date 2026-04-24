@@ -41,7 +41,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
@@ -54,7 +54,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
 
         if (commonAuthenticationToken == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
         return commonAuthenticationToken;

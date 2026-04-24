@@ -3,6 +3,7 @@ package com.wzkris.system.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.system.enums.announcement.AnncStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,6 @@ public class AnnouncementInfoDO extends BaseEntity {
     private String content;
 
     @Schema(description = "状态（0草稿 1关闭 2公开）")
-    private String status;
+    private AnncStatusEnum status;
 
 }

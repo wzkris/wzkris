@@ -1,6 +1,9 @@
 package com.wzkris.usercenter.response.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
+import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,10 +38,10 @@ public class AdminMngResponse {
     private String phoneNumber;
 
     @Schema(description = "用户状态")
-    private String status;
+    private AdminStatusEnum status;
 
     @Schema(description = "用户性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "用户头像")
     private String avatar;
@@ -60,7 +63,7 @@ public class AdminMngResponse {
     private String deptName;
 
     @Schema(description = "部门状态")
-    private String deptStatus;
+    private DeptStatusEnum deptStatus;
 
 }
 

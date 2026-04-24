@@ -8,8 +8,11 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.announcement.AnnouncementMngApi;
 import com.wzkris.system.domain.AnnouncementInfoDO;
+import com.wzkris.system.enums.announcement.AnncStatusEnum;
 import com.wzkris.system.mapper.AnnouncementInfoMapper;
-import com.wzkris.system.request.announcement.AnnouncementMngQueryRequest;
+import com.wzkris.system.request.common.IdListRequest;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.announcement.AnnouncementMngPageRequest;
 import com.wzkris.system.request.announcement.AnnouncementMngSaveUpdateRequest;
 import com.wzkris.system.response.announcement.AnnouncementMngResponse;
 import com.wzkris.system.service.AnnouncementInfoService;
@@ -27,37 +30,42 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     private final AnnouncementInfoService announcementInfoService;
 
     @Override
-    public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngQueryRequest request) {
+    public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request) {
         startPage();
         List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, AnnouncementMngResponse.class));
     }
 
-    private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngQueryRequest request) {
+    private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngPageRequest request) {
         return new LambdaQueryWrapper<AnnouncementInfoDO>()
                 .like(StringUtil.isNotBlank(request.getTitle()), AnnouncementInfoDO::getTitle, request.getTitle())
-                .eq(StringUtil.isNotBlank(request.getStatus()), AnnouncementInfoDO::getStatus, request.getStatus())
+                .eq(request.getStatus() != null, AnnouncementInfoDO::getStatus, request.getStatus())
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
     }
 
     @Override
-    public Result<AnnouncementMngResponse> queryInfo(Long announcementId) {
+    public Result<AnnouncementMngResponse> queryInfo(IdRequest request) {
+        Long announcementId = request.getId();
         return ok(BeanUtil.convert(announcementInfoMapper.selectById(announcementId), AnnouncementMngResponse.class));
     }
 
     @Override
     public Result<Void> save(AnnouncementMngSaveUpdateRequest request) {
-        return toRes(announcementInfoMapper.insert(BeanUtil.convert(request, AnnouncementInfoDO.class)));
+        AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
+        announcementInfoDO.setStatus(request.getStatus());
+        return toRes(announcementInfoMapper.insert(announcementInfoDO));
     }
 
     @Override
     public Result<Void> update(AnnouncementMngSaveUpdateRequest request) {
-        return toRes(announcementInfoMapper.updateById(BeanUtil.convert(request, AnnouncementInfoDO.class)));
+        AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
+        announcementInfoDO.setStatus(request.getStatus());
+        return toRes(announcementInfoMapper.updateById(announcementInfoDO));
     }
 
     @Override
-    public Result<Void> remove(List<Long> msgIds) {
-        return toRes(announcementInfoMapper.deleteByIds(msgIds));
+    public Result<Void> remove(IdListRequest request) {
+        return toRes(announcementInfoMapper.deleteByIds(request.getIds()));
     }
 
 }

@@ -2,8 +2,8 @@ package com.wzkris.system.request.announcement;
 
 import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.Xss;
-import com.wzkris.system.enums.AnncStatusEnum;
-import com.wzkris.system.enums.AnncTypeEnum;
+import com.wzkris.system.enums.announcement.AnncStatusEnum;
+import com.wzkris.system.enums.announcement.AnncTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -22,15 +22,14 @@ public class AnnouncementMngSaveUpdateRequest {
     private String title;
 
     @EnumsCheck(value = AnncTypeEnum.class, property = "value")
-    @Schema(description = "消息类型（1系统公告 2APP公告）")
+    @Schema(description = "消息类型")
     private String msgType;
 
     @Schema(description = "内容")
     private String content;
 
-    @EnumsCheck(value = AnncStatusEnum.class, property = "value")
-    @Schema(description = "状态（0草稿 1关闭 2公开）")
-    private String status;
+    @Schema(description = "状态")
+    private AnncStatusEnum status;
 
 }
 

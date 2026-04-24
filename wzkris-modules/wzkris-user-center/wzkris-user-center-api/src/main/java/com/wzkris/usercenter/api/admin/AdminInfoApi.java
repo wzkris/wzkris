@@ -1,9 +1,9 @@
 package com.wzkris.usercenter.api.admin;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.request.PasswordUpdateRequest;
-import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
 import com.wzkris.usercenter.request.admin.AdminInfoBasicUpdateRequest;
+import com.wzkris.usercenter.request.common.PasswordUpdateRequest;
+import com.wzkris.usercenter.request.common.PhoneNumberUpdateRequest;
 import com.wzkris.usercenter.response.admin.AdminInfoResponse;
 import com.wzkris.usercenter.response.admin.ChatPersonResponse;
 

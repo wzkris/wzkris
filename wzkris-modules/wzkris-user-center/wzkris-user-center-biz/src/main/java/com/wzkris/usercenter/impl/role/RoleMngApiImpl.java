@@ -12,13 +12,14 @@ import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
 import com.wzkris.usercenter.mapper.RoleInheritanceMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.role.RoleMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.role.RoleMngPageRequest;
 import com.wzkris.usercenter.request.role.RoleMngSaveRequest;
 import com.wzkris.usercenter.request.role.RoleMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectResponse;
-import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.SelectResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
+import com.wzkris.usercenter.response.common.SelectResponse;
 import com.wzkris.usercenter.response.role.RoleInfoResponse;
 import com.wzkris.usercenter.service.DeptInfoService;
 import com.wzkris.usercenter.service.MenuInfoService;
@@ -47,21 +48,22 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     private final RoleInheritanceMapper roleInheritanceMapper;
 
     @Override
-    public Result<Page<RoleInfoResponse>> queryPage(RoleMngQueryRequest request) {
+    public Result<Page<RoleInfoResponse>> queryPage(RoleMngPageRequest request) {
         startPage();
         List<RoleInfoDO> list = roleInfoMapper.selectLists(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, RoleInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngQueryRequest request) {
+    private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngPageRequest request) {
         return new LambdaQueryWrapper<RoleInfoDO>()
                 .like(StringUtil.isNotEmpty(request.getRoleName()), RoleInfoDO::getRoleName, request.getRoleName())
-                .eq(StringUtil.isNotEmpty(request.getStatus()), RoleInfoDO::getStatus, request.getStatus())
+                .eq(request.getStatus() != null, RoleInfoDO::getStatus, request.getStatus())
                 .orderByDesc(RoleInfoDO::getRoleSort, RoleInfoDO::getRoleId);
     }
 
     @Override
-    public Result<RoleInfoResponse> queryInfo(Long roleId) {
+    public Result<RoleInfoResponse> queryInfo(IdRequest request) {
+        Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
@@ -69,7 +71,8 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(Long roleId) {
+    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request) {
+        Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
@@ -80,7 +83,8 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(Long roleId) {
+    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(IdRequest request) {
+        Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
@@ -92,7 +96,8 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<CheckedSelectResponse> queryRoleInheritedSelect(Long roleId) {
+    public Result<CheckedSelectResponse> queryRoleInheritedSelect(IdRequest request) {
+        Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
@@ -109,6 +114,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     @Override
     public Result<Void> save(RoleMngSaveRequest request) {
         RoleInfoDO role = BeanUtil.convert(request, RoleInfoDO.class);
+        role.setStatus(request.getStatus());
         return toRes(roleInfoService.saveRole(role, request.getMenuIds(), request.getDeptIds(), request.getChildIds()));
     }
 
@@ -123,21 +129,13 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
             return requestFail("角色继承关系存在循环");
         }
         RoleInfoDO role = BeanUtil.convert(request, RoleInfoDO.class);
+        role.setStatus(request.getStatus());
         return toRes(roleInfoService.updateRole(role, request.getMenuIds(), request.getDeptIds(), request.getChildIds()));
     }
 
     @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        if (!roleInfoMapper.checkDataScopes(request.getId())) {
-            return accessDenied("数据权限不足");
-        }
-        RoleInfoDO update = new RoleInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(roleInfoMapper.updateById(update));
-    }
-
-    @Override
-    public Result<Void> remove(List<Long> roleIds) {
+    public Result<Void> remove(IdListRequest request) {
+        List<Long> roleIds = request.getIds();
         if (!roleInfoMapper.checkDataScopes(roleIds)) {
             return accessDenied("数据权限不足");
         }

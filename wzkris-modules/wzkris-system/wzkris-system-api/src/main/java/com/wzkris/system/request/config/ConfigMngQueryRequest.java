@@ -20,4 +20,3 @@ public class ConfigMngQueryRequest {
     private Boolean builtIn;
 
 }
-

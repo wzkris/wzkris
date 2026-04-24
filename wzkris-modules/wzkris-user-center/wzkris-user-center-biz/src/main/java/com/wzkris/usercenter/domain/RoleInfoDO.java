@@ -3,6 +3,7 @@ package com.wzkris.usercenter.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.role.RoleStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,8 +27,8 @@ public class RoleInfoDO extends BaseEntity {
     @Schema(description = "角色名称")
     private String roleName;
 
-    @Schema(description = "状态（0 代表正常 1 代表停用）")
-    private String status;
+    @Schema(description = "状态")
+    private RoleStatusEnum status;
 
     @Schema(description = "角色排序")
     private Integer roleSort;
@@ -36,7 +37,7 @@ public class RoleInfoDO extends BaseEntity {
         this.roleId = roleId;
     }
 
-    public RoleInfoDO(String status) {
+    public RoleInfoDO(RoleStatusEnum status) {
         this.status = status;
     }
 

@@ -2,14 +2,14 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.domain.RoleInheritanceDO;
 import com.wzkris.usercenter.domain.RoleToDeptDO;
 import com.wzkris.usercenter.domain.RoleToMenuDO;
+import com.wzkris.usercenter.enums.role.RoleStatusEnum;
 import com.wzkris.usercenter.mapper.*;
-import com.wzkris.usercenter.response.SelectResponse;
+import com.wzkris.usercenter.response.common.SelectResponse;
 import com.wzkris.usercenter.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -97,7 +97,7 @@ public class RoleInfoServiceImpl
         }
         LambdaQueryWrapper<RoleInfoDO> lqw = new LambdaQueryWrapper<RoleInfoDO>()
                 .in(RoleInfoDO::getRoleId, roleIds)
-                .eq(RoleInfoDO::getStatus, CommonConstants.STATUS_ENABLE);
+                .eq(RoleInfoDO::getStatus, RoleStatusEnum.ENABLE);
         return baseMapper.selectList(lqw);
     }
 
@@ -114,7 +114,7 @@ public class RoleInfoServiceImpl
         LambdaQueryWrapper<RoleInfoDO> lqw = new LambdaQueryWrapper<RoleInfoDO>()
                 .select(RoleInfoDO::getRoleId)
                 .in(RoleInfoDO::getRoleId, roleIds)
-                .eq(RoleInfoDO::getStatus, CommonConstants.STATUS_ENABLE);
+                .eq(RoleInfoDO::getStatus, RoleStatusEnum.ENABLE);
         return baseMapper.selectList(lqw).stream().map(RoleInfoDO::getRoleId).toList();
     }
 

@@ -5,8 +5,10 @@ import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
+import com.wzkris.usercenter.request.common.StringValueRequest;
 import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,18 +24,18 @@ public class MemberInfoRemoteController {
     private final MemberInfoRemoteApi memberInfoRemoteApi;
 
     @PostMapping("/query-by-username")
-    public Result<MemberInfoResponse> queryByUsername(@RequestBody String username) {
-        return memberInfoRemoteApi.queryByUsername(username);
+    public Result<MemberInfoResponse> queryByUsername(@RequestBody @Valid StringValueRequest request) {
+        return memberInfoRemoteApi.queryByUsername(request);
     }
 
     @PostMapping("/query-by-phonenumber")
-    public Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody String phoneNumber) {
-        return memberInfoRemoteApi.queryByPhoneNumber(phoneNumber);
+    public Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody @Valid StringValueRequest request) {
+        return memberInfoRemoteApi.queryByPhoneNumber(request);
     }
 
     @PostMapping("/query-by-wexcxcode")
-    public Result<MemberInfoResponse> queryByWexcxCode(@RequestBody String xcxcode) {
-        return memberInfoRemoteApi.queryByWexcxCode(xcxcode);
+    public Result<MemberInfoResponse> queryByWexcxCode(@RequestBody @Valid StringValueRequest request) {
+        return memberInfoRemoteApi.queryByWexcxCode(request);
     }
 
     @PostMapping("/query-permission")
@@ -47,8 +49,4 @@ public class MemberInfoRemoteController {
     }
 
 }
-
-
-
-
 

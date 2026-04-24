@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.request.customer;
 
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class CustomerInfoBasicUpdateRequest {
     private String nickname;
 
     @Schema(description = "用户性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "头像")
     private String avatar;

@@ -9,9 +9,9 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.oauth2.OAuth2ClientMngApi;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
 import com.wzkris.usercenter.request.oauth2.ClientSecretUpdateRequest;
-import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngQueryRequest;
+import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngPageRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngSaveRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngUpdateRequest;
 import com.wzkris.usercenter.response.oauth2.OAuth2ClientMngResponse;
@@ -34,26 +34,28 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     private final OAuth2ClientService oAuth2ClientService;
 
     @Override
-    public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngQueryRequest request) {
+    public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
         startPage();
         List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, OAuth2ClientMngResponse.class));
     }
 
-    private LambdaQueryWrapper<OAuth2ClientDO> buildQueryWrapper(OAuth2ClientMngQueryRequest request) {
+    private LambdaQueryWrapper<OAuth2ClientDO> buildQueryWrapper(OAuth2ClientMngPageRequest request) {
         return new LambdaQueryWrapper<OAuth2ClientDO>()
-                .eq(StringUtil.isNotEmpty(request.getStatus()), OAuth2ClientDO::getStatus, request.getStatus())
+                .eq(request.getStatus() != null, OAuth2ClientDO::getStatus, request.getStatus())
                 .like(StringUtil.isNotEmpty(request.getClientId()), OAuth2ClientDO::getClientId, request.getClientId());
     }
 
     @Override
-    public Result<OAuth2ClientMngResponse> queryInfo(Long id) {
-        return ok(BeanUtil.convert(oauth2ClientMapper.selectById(id), OAuth2ClientMngResponse.class));
+    public Result<OAuth2ClientMngResponse> queryInfo(IdRequest request) {
+        return ok(BeanUtil.convert(oauth2ClientMapper.selectById(request.getId()), OAuth2ClientMngResponse.class));
     }
 
     @Override
     public Result<Void> update(OAuth2ClientMngUpdateRequest request) {
-        return toRes(oauth2ClientMapper.updateById(BeanUtil.convert(request, OAuth2ClientDO.class)));
+        OAuth2ClientDO oauth2ClientDO = BeanUtil.convert(request, OAuth2ClientDO.class);
+        oauth2ClientDO.setStatus(request.getStatus());
+        return toRes(oauth2ClientMapper.updateById(oauth2ClientDO));
     }
 
     @Override
@@ -65,16 +67,9 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     }
 
     @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        OAuth2ClientDO update = new OAuth2ClientDO();
-        update.setId(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(oauth2ClientMapper.updateById(update));
-    }
-
-    @Override
     public Result<String> save(OAuth2ClientMngSaveRequest request) {
         OAuth2ClientDO client = BeanUtil.convert(request, OAuth2ClientDO.class);
+        client.setStatus(request.getStatus());
         String secret = RandomStringUtils.secure().nextAlphabetic(16);
         client.setClientSecret(passwordEncoder.encode(secret));
         oauth2ClientMapper.insert(client);
@@ -82,8 +77,8 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     }
 
     @Override
-    public Result<Void> remove(Long id) {
-        return toRes(oauth2ClientMapper.deleteById(id));
+    public Result<Void> remove(IdRequest request) {
+        return toRes(oauth2ClientMapper.deleteById(request.getId()));
     }
 
 }

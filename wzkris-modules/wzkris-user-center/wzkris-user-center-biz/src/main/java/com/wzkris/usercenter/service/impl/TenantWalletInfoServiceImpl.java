@@ -3,7 +3,7 @@ package com.wzkris.usercenter.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wzkris.usercenter.domain.TenantWalletInfoDO;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
-import com.wzkris.usercenter.enums.WalletRecordTypeEnum;
+import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import com.wzkris.usercenter.mapper.TenantWalletInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
 import com.wzkris.usercenter.service.TenantWalletInfoService;

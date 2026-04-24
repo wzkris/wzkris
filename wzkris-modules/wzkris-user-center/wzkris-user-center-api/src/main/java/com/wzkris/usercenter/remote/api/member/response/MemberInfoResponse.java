@@ -1,5 +1,8 @@
 package com.wzkris.usercenter.remote.api.member.response;
 
+import com.wzkris.usercenter.enums.member.MemberStatusEnum;
+import com.wzkris.usercenter.enums.tenant.TenantStatusEnum;
+import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,14 +19,14 @@ public class MemberInfoResponse implements Serializable {
 
     private String phoneNumber;
 
-    private String status;
+    private MemberStatusEnum status;
 
     private String password;
 
-    private String tenantStatus;
+    private TenantStatusEnum tenantStatus;
 
     private OffsetDateTime tenantExpired;
 
-    private String packageStatus;
+    private TenantPackageStatusEnum packageStatus;
 
 }

@@ -6,9 +6,9 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.oauth2.OAuth2ClientMngApi;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
 import com.wzkris.usercenter.request.oauth2.ClientSecretUpdateRequest;
-import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngQueryRequest;
+import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngPageRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngSaveRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngUpdateRequest;
 import com.wzkris.usercenter.response.oauth2.OAuth2ClientMngResponse;
@@ -29,15 +29,15 @@ public class OAuth2ClientMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:oauth2client-mng:page")
-    public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngQueryRequest request) {
+    public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
         return oAuth2ClientMngApi.queryPage(request);
     }
 
     @Operation(summary = "根据id查详情")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:oauth2client-mng:query")
-    public Result<OAuth2ClientMngResponse> queryInfo(@PathVariable Long id) {
-        return oAuth2ClientMngApi.queryInfo(id);
+    public Result<OAuth2ClientMngResponse> queryInfo(IdRequest request) {
+        return oAuth2ClientMngApi.queryInfo(request);
     }
 
     @Operation(summary = "根据id修改客户端")
@@ -56,14 +56,6 @@ public class OAuth2ClientMngController {
         return oAuth2ClientMngApi.updateSecret(request);
     }
 
-    @Operation(summary = "状态修改")
-    @OperateLog(title = "OAuth2客户端管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/update-status")
-    @CheckAdminPerms("user-mod:oauth2client-mng:edit")
-    public Result<Void> updateStatus(@RequestBody StatusUpdateRequest request) {
-        return oAuth2ClientMngApi.updateStatus(request);
-    }
-
     @Operation(summary = "添加客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
@@ -76,8 +68,8 @@ public class OAuth2ClientMngController {
     @OperateLog(title = "OAuth2客户端管理", subTitle = "删除客户端", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:oauth2client-mng:remove")
-    public Result<Void> remove(@RequestBody Long id) {
-        return oAuth2ClientMngApi.remove(id);
+    public Result<Void> remove(@RequestBody @Valid IdRequest request) {
+        return oAuth2ClientMngApi.remove(request);
     }
 
 }

@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.customerwallet;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.customerwallet.CustomerWalletInfoApi;
-import com.wzkris.usercenter.request.customerwallet.CustomerWalletRecordQueryRequest;
+import com.wzkris.usercenter.request.customerwallet.CustomerWalletRecordPageRequest;
 import com.wzkris.usercenter.response.customerwallet.CustomerWalletInfoResponse;
 import com.wzkris.usercenter.response.customerwallet.CustomerWalletRecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ public class CustomerWalletInfoController {
 
     @Operation(summary = "钱包记录")
     @GetMapping("/query-record-page")
-    public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(CustomerWalletRecordQueryRequest request) {
+    public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(CustomerWalletRecordPageRequest request) {
         return customerWalletInfoApi.queryRecordPage(request);
     }
 

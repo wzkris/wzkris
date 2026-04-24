@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,8 +28,8 @@ public class TenantPackageInfoDO extends BaseEntity {
     @Schema(description = "套餐名称")
     private String packageName;
 
-    @Schema(description = "状态（0正常 1停用）")
-    private String status;
+    @Schema(description = "状态")
+    private TenantPackageStatusEnum status;
 
     @TableField(typeHandler = ArrayTypeHandler.class)
     @Schema(description = "套餐绑定的菜单")

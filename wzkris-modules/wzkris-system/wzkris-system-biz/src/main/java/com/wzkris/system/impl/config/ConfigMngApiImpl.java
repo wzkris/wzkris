@@ -9,7 +9,8 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.config.ConfigMngApi;
 import com.wzkris.system.domain.ConfigInfoDO;
 import com.wzkris.system.mapper.ConfigInfoMapper;
-import com.wzkris.system.request.config.ConfigMngQueryRequest;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.config.ConfigMngPageRequest;
 import com.wzkris.system.request.config.ConfigMngSaveRequest;
 import com.wzkris.system.request.config.ConfigMngUpdateRequest;
 import com.wzkris.system.response.config.ConfigInfoResponse;
@@ -28,13 +29,13 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     private final ConfigInfoService configInfoService;
 
     @Override
-    public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngQueryRequest request) {
+    public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
         startPage();
         List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, ConfigInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigMngQueryRequest request) {
+    private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigMngPageRequest request) {
         return new LambdaQueryWrapper<ConfigInfoDO>()
                 .like(StringUtil.isNotEmpty(request.getConfigKey()), ConfigInfoDO::getConfigKey, request.getConfigKey())
                 .like(StringUtil.isNotEmpty(request.getConfigName()),
@@ -47,7 +48,8 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     }
 
     @Override
-    public Result<ConfigInfoResponse> queryInfo(Long configId) {
+    public Result<ConfigInfoResponse> queryInfo(IdRequest request) {
+        Long configId = request.getId();
         return ok(BeanUtil.convert(configInfoMapper.selectById(configId), ConfigInfoResponse.class));
     }
 
@@ -68,7 +70,8 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     }
 
     @Override
-    public Result<Void> remove(Long configId) {
+    public Result<Void> remove(IdRequest request) {
+        Long configId = request.getId();
         ConfigInfoDO config = configInfoMapper.selectById(configId);
         if (config.getBuiltIn()) {
             return requestFail(String.format("内置参数'%s'不能删除", config.getConfigKey()));

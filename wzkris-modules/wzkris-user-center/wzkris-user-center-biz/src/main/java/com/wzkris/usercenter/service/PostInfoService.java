@@ -2,7 +2,7 @@ package com.wzkris.usercenter.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wzkris.usercenter.domain.PostInfoDO;
-import com.wzkris.usercenter.response.SelectResponse;
+import com.wzkris.usercenter.response.common.SelectResponse;
 import jakarta.annotation.Nullable;
 
 import java.util.List;

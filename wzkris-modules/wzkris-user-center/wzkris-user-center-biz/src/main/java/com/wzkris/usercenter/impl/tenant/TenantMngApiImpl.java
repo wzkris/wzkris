@@ -2,7 +2,6 @@ package com.wzkris.usercenter.impl.tenant;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -13,15 +12,17 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.tenant.TenantMngApi;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
+import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
 import com.wzkris.usercenter.event.CreateTenantEvent;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
-import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.tenant.TenantMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.common.PwdResetRequest;
+import com.wzkris.usercenter.request.tenant.TenantMngPageRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngUpdateRequest;
-import com.wzkris.usercenter.response.SelectResponse;
-import com.wzkris.usercenter.response.tenant.TenantMngQueryResponse;
+import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngListRequest;
+import com.wzkris.usercenter.response.common.SelectResponse;
+import com.wzkris.usercenter.response.tenant.TenantMngResponse;
 import com.wzkris.usercenter.service.AdminInfoService;
 import com.wzkris.usercenter.service.TenantInfoService;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
@@ -50,26 +51,27 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<Page<TenantMngQueryResponse>> queryPage(TenantMngQueryRequest request) {
+    public Result<Page<TenantMngResponse>> queryPage(TenantMngPageRequest request) {
         startPage();
-        List<TenantMngQueryResponse> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(request));
+        List<TenantMngResponse> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(request));
         return getPageResult(list);
     }
 
-    private QueryWrapper<TenantInfoDO> buildQueryWrapper(TenantMngQueryRequest request) {
+    private QueryWrapper<TenantInfoDO> buildQueryWrapper(TenantMngPageRequest request) {
         return new QueryWrapper<TenantInfoDO>()
                 .like(StringUtil.isNotEmpty(request.getTenantName()), "tenant_name", request.getTenantName())
-                .eq(StringUtil.isNotEmpty(request.getStatus()), "t.status", request.getStatus())
+                .eq(request.getStatus() != null, "t.status", request.getStatus())
                 .orderByDesc("t.tenant_id");
     }
 
     @Override
-    public Result<TenantMngQueryResponse> queryInfo(Long tenantId) {
-        return ok(tenantInfoMapper.selectMngVOById(tenantId));
+    public Result<TenantMngResponse> queryInfo(IdRequest request) {
+        return ok(tenantInfoMapper.selectMngVOById(request.getId()));
     }
 
     @Override
-    public Result<Page<SelectResponse>> querySelectPage(String tenantName) {
+    public Result<Page<SelectResponse>> querySelectPage(TenantMngPageRequest request) {
+        String tenantName = request.getTenantName();
         LambdaQueryWrapper<TenantInfoDO> lqw = new LambdaQueryWrapper<TenantInfoDO>()
                 .select(TenantInfoDO::getTenantId, TenantInfoDO::getTenantName)
                 .like(StringUtil.isNotBlank(tenantName), TenantInfoDO::getTenantName, tenantName)
@@ -85,10 +87,11 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     }
 
     @Override
-    public Result<List<SelectResponse>> queryPackageSelect(String packageName) {
+    public Result<List<SelectResponse>> queryPackageSelect(TenantPackageMngListRequest request) {
+        String packageName = request.getPackageName();
         LambdaQueryWrapper<TenantPackageInfoDO> lqw = new LambdaQueryWrapper<TenantPackageInfoDO>()
                 .select(TenantPackageInfoDO::getPackageId, TenantPackageInfoDO::getPackageName)
-                .eq(TenantPackageInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .eq(TenantPackageInfoDO::getStatus, TenantPackageStatusEnum.ENABLE)
                 .like(StringUtil.isNotBlank(packageName), TenantPackageInfoDO::getPackageName, packageName)
                 .orderByAsc(TenantPackageInfoDO::getPackageId);
         List<SelectResponse> selectVOS = tenantPackageInfoService.list(lqw)
@@ -108,6 +111,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
             return requestFail("登录账号'" + tenantReq.getUsername() + "'已存在");
         }
         TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
+        tenant.setStatus(tenantReq.getStatus());
         String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
         tenant.setOperPwd(operPwd);
         String password = RandomStringUtils.secure().nextAlphabetic(8);
@@ -127,16 +131,10 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     @Override
     public Result<Void> update(TenantMngUpdateRequest tenantReq) {
         TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
+        tenant.setStatus(tenantReq.getStatus());
         tenant.setAdministrator(null);
         tenant.setOperPwd(null);
         return toRes(tenantInfoMapper.updateById(tenant));
-    }
-
-    @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        TenantInfoDO update = new TenantInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(tenantInfoMapper.updateById(update));
     }
 
     @Override
@@ -150,8 +148,8 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     }
 
     @Override
-    public Result<Void> remove(Long tenantId) {
-        return toRes(tenantInfoService.removeTenant(tenantId));
+    public Result<Void> remove(IdRequest request) {
+        return toRes(tenantInfoService.removeTenant(request.getId()));
     }
 
 }

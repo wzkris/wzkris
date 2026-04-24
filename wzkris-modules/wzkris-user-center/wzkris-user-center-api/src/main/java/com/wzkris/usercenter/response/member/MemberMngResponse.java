@@ -1,6 +1,8 @@
 package com.wzkris.usercenter.response.member;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wzkris.usercenter.enums.member.MemberStatusEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,10 +31,10 @@ public class MemberMngResponse {
     private String phoneNumber;
 
     @Schema(description = "状态值")
-    private String status;
+    private MemberStatusEnum status;
 
     @Schema(description = "性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "头像")
     private String avatar;

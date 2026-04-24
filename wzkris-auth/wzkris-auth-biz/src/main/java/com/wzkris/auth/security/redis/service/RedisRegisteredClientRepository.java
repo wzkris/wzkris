@@ -16,6 +16,7 @@
 package com.wzkris.auth.security.redis.service;
 
 import com.wzkris.auth.properties.TokenProperties;
+import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.oauth2.IOAuth2ClientRemote;
 import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientResponse;
 import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
@@ -69,7 +70,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryById(id);
+        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryById(new StringValueRequest(id));
         return checkAndSave(oauth2Client);
     }
 
@@ -84,7 +85,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryByClientId(clientId);
+        Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryByClientId(new StringValueRequest(clientId));
         return checkAndSave(oauth2Client);
     }
 

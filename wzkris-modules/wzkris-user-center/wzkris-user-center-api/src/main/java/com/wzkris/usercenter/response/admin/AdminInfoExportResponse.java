@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.wzkris.common.excel.annotation.ExcelDictFormat;
 import com.wzkris.common.excel.convert.ExcelDictConvert;
 import com.wzkris.common.validator.annotation.PhoneNumber;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import lombok.Data;
 
 @Data
@@ -28,7 +29,7 @@ public class AdminInfoExportResponse {
 
     @ExcelProperty(value = "性别", converter = ExcelDictConvert.class)
     @ExcelDictFormat(readConverterExp = "0=男,1=女,2=未知")
-    private String gender;
+    private GenderEnum gender;
 
     @ExcelProperty("部门名称")
     private String deptName;

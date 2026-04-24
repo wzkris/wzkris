@@ -7,6 +7,7 @@ import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminInfoResponse;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminPermissionResponse;
+import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -44,7 +45,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByPhoneNumber(phoneNumber);
+        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -62,7 +63,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByUsername(username);
+        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByUsername(new StringValueRequest(username));
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -125,7 +126,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     private void checkAccount(AdminInfoResponse userResp) {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 

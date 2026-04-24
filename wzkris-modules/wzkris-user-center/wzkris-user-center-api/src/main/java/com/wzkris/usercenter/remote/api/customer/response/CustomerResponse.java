@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.remote.api.customer.response;
 
+import com.wzkris.usercenter.enums.customer.CustomerStatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,6 +14,6 @@ public class CustomerResponse implements Serializable {
 
     private String phoneNumber;
 
-    private String status;
+    private CustomerStatusEnum status;
 
 }

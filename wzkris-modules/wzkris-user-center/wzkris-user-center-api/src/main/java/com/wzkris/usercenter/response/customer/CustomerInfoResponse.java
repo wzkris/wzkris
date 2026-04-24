@@ -2,6 +2,7 @@ package com.wzkris.usercenter.response.customer;
 
 import com.wzkris.common.core.annotation.Sensitive;
 import com.wzkris.common.core.enums.SensitiveStrategyEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -22,7 +23,7 @@ public class CustomerInfoResponse {
     private String avatar;
 
     @Schema(description = "用户性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "登录时间")
     private OffsetDateTime loginDate;

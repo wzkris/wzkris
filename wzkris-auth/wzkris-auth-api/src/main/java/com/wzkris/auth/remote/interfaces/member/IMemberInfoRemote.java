@@ -1,6 +1,7 @@
 package com.wzkris.auth.remote.interfaces.member;
 
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
+import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
 import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
@@ -29,19 +30,19 @@ public interface IMemberInfoRemote {
      * 根据用户名查询用户
      */
     @PostExchange("/query-by-username")
-    Result<MemberInfoResponse> queryByUsername(@RequestBody String username);
+    Result<MemberInfoResponse> queryByUsername(@RequestBody StringValueRequest request);
 
     /**
      * 根据手机号查询用户
      */
     @PostExchange("/query-by-phonenumber")
-    Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody String phoneNumber);
+    Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody StringValueRequest request);
 
     /**
      * 根据微信小程序code查询用户
      */
     @PostExchange("/query-by-wexcxcode")
-    Result<MemberInfoResponse> queryByWexcxCode(@RequestBody String xcxcode);
+    Result<MemberInfoResponse> queryByWexcxCode(@RequestBody StringValueRequest request);
 
     /**
      * 查询管理员权限

@@ -9,12 +9,13 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageMngApi;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngPageRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageMngQueryResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageMngResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
 import lombok.RequiredArgsConstructor;
@@ -33,29 +34,30 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<Page<TenantPackageMngQueryResponse>> queryPage(TenantPackageMngQueryRequest request) {
+    public Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request) {
         startPage();
         List<TenantPackageInfoDO> list = tenantPackageInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, TenantPackageMngQueryResponse.class));
+        return getPageResult(BeanUtil.convert(list, TenantPackageMngResponse.class));
     }
 
-    private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngQueryRequest request) {
+    private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngPageRequest request) {
         return new LambdaQueryWrapper<TenantPackageInfoDO>()
                 .select(TenantPackageInfoDO.class, q -> !q.getColumn().equals("menu_ids"))
                 .like(StringUtil.isNotEmpty(request.getPackageName()),
                         TenantPackageInfoDO::getPackageName,
                         request.getPackageName())
-                .eq(StringUtil.isNotEmpty(request.getStatus()), TenantPackageInfoDO::getStatus, request.getStatus())
+                .eq(request.getStatus() != null, TenantPackageInfoDO::getStatus, request.getStatus())
                 .orderByDesc(TenantPackageInfoDO::getPackageId);
     }
 
     @Override
-    public Result<TenantPackageMngQueryResponse> queryInfo(Long packageId) {
-        return ok(BeanUtil.convert(tenantPackageInfoService.getById(packageId), TenantPackageMngQueryResponse.class));
+    public Result<TenantPackageMngResponse> queryInfo(IdRequest request) {
+        return ok(BeanUtil.convert(tenantPackageInfoService.getById(request.getId()), TenantPackageMngResponse.class));
     }
 
     @Override
-    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(Long packageId) {
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request) {
+        Long packageId = request.getId();
         CheckedSelectTreeResponse checkedSelectTreeResponse = new CheckedSelectTreeResponse();
         checkedSelectTreeResponse.setCheckedKeys(tenantPackageInfoMapper.listMenuIdByPackageId(packageId));
         checkedSelectTreeResponse.setSelectTrees(menuInfoService.listAllTenantSelectTree());
@@ -64,23 +66,21 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<Void> save(TenantPackageMngSaveRequest request) {
-        return toRes(tenantPackageInfoService.save(BeanUtil.convert(request, TenantPackageInfoDO.class)));
+        TenantPackageInfoDO tenantPackageInfoDO = BeanUtil.convert(request, TenantPackageInfoDO.class);
+        tenantPackageInfoDO.setStatus(request.getStatus());
+        return toRes(tenantPackageInfoService.save(tenantPackageInfoDO));
     }
 
     @Override
     public Result<Void> update(TenantPackageMngUpdateRequest request) {
-        return toRes(tenantPackageInfoService.updateById(BeanUtil.convert(request, TenantPackageInfoDO.class)));
+        TenantPackageInfoDO tenantPackageInfoDO = BeanUtil.convert(request, TenantPackageInfoDO.class);
+        tenantPackageInfoDO.setStatus(request.getStatus());
+        return toRes(tenantPackageInfoService.updateById(tenantPackageInfoDO));
     }
 
     @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        TenantPackageInfoDO update = new TenantPackageInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(tenantPackageInfoService.updateById(update));
-    }
-
-    @Override
-    public Result<Void> remove(List<Long> packageIds) {
+    public Result<Void> remove(IdListRequest request) {
+        List<Long> packageIds = request.getIds();
         if (tenantPackageInfoService.existInUsed(packageIds)) {
             return requestFail("删除失败, 套餐正在使用");
         }

@@ -9,8 +9,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.customer.CustomerMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.customer.CustomerMngPageRequest;
 import com.wzkris.usercenter.response.customer.CustomerInfoExportResponse;
 import com.wzkris.usercenter.response.customer.CustomerMngResponse;
 import com.wzkris.usercenter.service.CustomerInfoService;
@@ -27,15 +27,15 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
     private final CustomerInfoService customerInfoService;
 
     @Override
-    public Result<Page<CustomerMngResponse>> queryPage(CustomerMngQueryRequest request) {
+    public Result<Page<CustomerMngResponse>> queryPage(CustomerMngPageRequest request) {
         startPage();
         List<CustomerInfoDO> list = customerInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, CustomerMngResponse.class));
     }
 
-    private LambdaQueryWrapper<CustomerInfoDO> buildQueryWrapper(CustomerMngQueryRequest request) {
+    private LambdaQueryWrapper<CustomerInfoDO> buildQueryWrapper(CustomerMngPageRequest request) {
         return new LambdaQueryWrapper<CustomerInfoDO>()
-                .eq(StringUtil.isNotBlank(request.getStatus()), CustomerInfoDO::getStatus, request.getStatus())
+                .eq(request.getStatus() != null, CustomerInfoDO::getStatus, request.getStatus())
                 .like(StringUtil.isNotBlank(request.getNickname()), CustomerInfoDO::getNickname, request.getNickname())
                 .like(StringUtil.isNotBlank(request.getPhoneNumber()), CustomerInfoDO::getPhoneNumber, request.getPhoneNumber())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
@@ -45,19 +45,12 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
     }
 
     @Override
-    public Result<CustomerMngResponse> queryInfo(Long customerId) {
-        return ok(BeanUtil.convert(customerInfoService.getById(customerId), CustomerMngResponse.class));
+    public Result<CustomerMngResponse> queryInfo(IdRequest request) {
+        return ok(BeanUtil.convert(customerInfoService.getById(request.getId()), CustomerMngResponse.class));
     }
 
     @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        CustomerInfoDO update = new CustomerInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(customerInfoService.updateById(update));
-    }
-
-    @Override
-    public void export(HttpServletResponse response, CustomerMngQueryRequest request) {
+    public void export(HttpServletResponse response, CustomerMngPageRequest request) {
         List<CustomerInfoDO> list = customerInfoService.list(this.buildQueryWrapper(request));
         List<CustomerInfoExportResponse> convert = BeanUtil.convert(list, CustomerInfoExportResponse.class);
         ExcelUtil.exportExcel(convert, "客户数据", CustomerInfoExportResponse.class, false, response, null);

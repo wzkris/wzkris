@@ -1,15 +1,16 @@
 package com.wzkris.usercenter.impl.dept;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
 import com.wzkris.usercenter.domain.DeptInfoDO;
+import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
-import com.wzkris.usercenter.request.dept.DeptMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.dept.DeptMngListRequest;
 import com.wzkris.usercenter.request.dept.DeptMngSaveRequest;
 import com.wzkris.usercenter.request.dept.DeptMngUpdateRequest;
 import com.wzkris.usercenter.response.dept.DeptInfoResponse;
@@ -30,12 +31,12 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     private final DeptInfoService deptInfoService;
 
     @Override
-    public Result<List<DeptInfoResponse>> queryList(DeptMngQueryRequest request) {
+    public Result<List<DeptInfoResponse>> queryList(DeptMngListRequest request) {
         List<DeptInfoDO> depts = deptInfoMapper.selectLists(buildQueryWrapper(request));
         return ok(BeanUtil.convert(depts, DeptInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<DeptInfoDO> buildQueryWrapper(DeptMngQueryRequest request) {
+    private LambdaQueryWrapper<DeptInfoDO> buildQueryWrapper(DeptMngListRequest request) {
         return new LambdaQueryWrapper<DeptInfoDO>()
                 .apply(request.getParentId() != null && request.getParentId() != 0,
                         "{0} = ANY(ancestors)", request.getParentId())
@@ -45,12 +46,13 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
                                 .apply("{0} = ANY(ancestors)", request.getDeptId())
                 )
                 .like(StringUtil.isNotEmpty(request.getDeptName()), DeptInfoDO::getDeptName, request.getDeptName())
-                .eq(StringUtil.isNotEmpty(request.getStatus()), DeptInfoDO::getStatus, request.getStatus())
+                .eq(request.getStatus() != null, DeptInfoDO::getStatus, request.getStatus())
                 .orderByDesc(DeptInfoDO::getDeptSort, DeptInfoDO::getDeptId);
     }
 
     @Override
-    public Result<DeptInfoResponse> queryInfo(Long deptId) {
+    public Result<DeptInfoResponse> queryInfo(IdRequest request) {
+        Long deptId = request.getId();
         if (!deptInfoMapper.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
@@ -64,11 +66,13 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         }
         if (ObjectUtils.isNotEmpty(request.getParentId()) && request.getParentId() != 0) {
             DeptInfoDO info = deptInfoMapper.selectById(request.getParentId());
-            if (StringUtil.equals(CommonConstants.STATUS_DISABLE, info.getStatus())) {
+            if (DeptStatusEnum.DISABLE == info.getStatus()) {
                 return requestFail("无法在被禁用的部门下添加下级");
             }
         }
-        return toRes(deptInfoService.saveDept(BeanUtil.convert(request, DeptInfoDO.class)));
+        DeptInfoDO deptInfoDO = BeanUtil.convert(request, DeptInfoDO.class);
+        deptInfoDO.setStatus(request.getStatus());
+        return toRes(deptInfoService.saveDept(deptInfoDO));
     }
 
     @Override
@@ -78,15 +82,18 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         }
         if (Objects.equals(request.getParentId(), request.getDeptId())) {
             return requestFail("修改部门'" + request.getDeptName() + "'失败，上级部门不能是自己");
-        } else if (StringUtil.equals(CommonConstants.STATUS_DISABLE, request.getStatus())
+        } else if (DeptStatusEnum.DISABLE == request.getStatus()
                 && deptInfoMapper.existNormalSubDept(request.getDeptId())) {
             return requestFail("该部门包含未停用的子部门");
         }
-        return toRes(deptInfoService.updateDept(BeanUtil.convert(request, DeptInfoDO.class)));
+        DeptInfoDO deptInfoDO = BeanUtil.convert(request, DeptInfoDO.class);
+        deptInfoDO.setStatus(request.getStatus());
+        return toRes(deptInfoService.updateDept(deptInfoDO));
     }
 
     @Override
-    public Result<?> remove(Long deptId) {
+    public Result<?> remove(IdRequest request) {
+        Long deptId = request.getId();
         if (!deptInfoMapper.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }

@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.response.post;
 
+import com.wzkris.usercenter.enums.post.PostStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class PostInfoResponse {
     private String postName;
 
     @Schema(description = "状态（0代表正常 1代表停用）")
-    private String status;
+    private PostStatusEnum status;
 
     @Schema(description = "角色排序")
     private Integer postSort;

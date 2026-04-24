@@ -2,7 +2,7 @@ package com.wzkris.system.remote.impl.notification;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.system.enums.NotificationTypeEnum;
+import com.wzkris.system.enums.notification.NotificationTypeEnum;
 import com.wzkris.system.remote.api.notification.NotificationInfoRemoteApi;
 import com.wzkris.system.remote.api.notification.request.NotificationRequest;
 import com.wzkris.system.request.message.SimpleMessageRequest;
@@ -23,11 +23,11 @@ public class NotificationInfoRemoteApiImpl implements NotificationInfoRemoteApi 
         if (Objects.equals(request.getAuthType(), AuthTypeEnum.ADMIN)) {
             notificationInfoService.save2Admin(
                     request.getReceiverIds(),
-                    new SimpleMessageRequest(request.getTitle(), NotificationTypeEnum.SYSTEM.getValue(), request.getContent()));
+                    new SimpleMessageRequest(request.getTitle(), NotificationTypeEnum.SYSTEM, request.getContent()));
         } else if (Objects.equals(request.getAuthType(), AuthTypeEnum.TENANT)) {
             notificationInfoService.save2Tenant(
                     request.getReceiverIds(),
-                    new SimpleMessageRequest(request.getTitle(), NotificationTypeEnum.SYSTEM.getValue(), request.getContent()));
+                    new SimpleMessageRequest(request.getTitle(), NotificationTypeEnum.SYSTEM, request.getContent()));
         }
         return Result.ok();
     }

@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.response.tenantwallet;
 
+import com.wzkris.usercenter.enums.tenantwallet.TenantWalletStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -15,7 +16,7 @@ public class TenantWalletInfoResponse {
     private BigDecimal balance;
 
     @Schema(description = "状态")
-    private String status;
+    private TenantWalletStatusEnum status;
 
 }
 

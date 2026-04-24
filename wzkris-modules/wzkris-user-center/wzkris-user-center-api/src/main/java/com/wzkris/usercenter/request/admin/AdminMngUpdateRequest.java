@@ -1,10 +1,10 @@
 package com.wzkris.usercenter.request.admin;
 
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.common.validator.annotation.Xss;
-import com.wzkris.usercenter.enums.GenderEnum;
+import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -45,18 +45,12 @@ public class AdminMngUpdateRequest {
     @Schema(description = "手机号码")
     private String phoneNumber;
 
-    @Pattern(
-            regexp = "[" +
-                    CommonConstants.STATUS_ENABLE +
-                    CommonConstants.STATUS_DISABLE
-                    + "]",
-            message = "{invalidParameter.status.invalid}")
     @Schema(description = "用户状态")
-    private String status;
+    private AdminStatusEnum status;
 
     @EnumsCheck(value = GenderEnum.class, property = "value")
     @Schema(description = "用户性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "用户额外信息")
     private String remark;

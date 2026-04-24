@@ -10,11 +10,12 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.post.PostMngApi;
 import com.wzkris.usercenter.domain.PostInfoDO;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.post.PostMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdListRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.post.PostMngPageRequest;
 import com.wzkris.usercenter.request.post.PostMngSaveRequest;
 import com.wzkris.usercenter.request.post.PostMngUpdateRequest;
-import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
+import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
 import com.wzkris.usercenter.response.post.PostInfoResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
@@ -35,26 +36,27 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<Page<PostInfoResponse>> queryPage(PostMngQueryRequest request) {
+    public Result<Page<PostInfoResponse>> queryPage(PostMngPageRequest request) {
         startPage();
         List<PostInfoDO> list = postInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, PostInfoResponse.class));
     }
 
-    private LambdaQueryWrapper<PostInfoDO> buildQueryWrapper(PostMngQueryRequest request) {
+    private LambdaQueryWrapper<PostInfoDO> buildQueryWrapper(PostMngPageRequest request) {
         return new LambdaQueryWrapper<PostInfoDO>()
                 .like(StringUtil.isNotEmpty(request.getPostName()), PostInfoDO::getPostName, request.getPostName())
-                .eq(StringUtil.isNotEmpty(request.getStatus()), PostInfoDO::getStatus, request.getStatus())
+                .eq(request.getStatus() != null, PostInfoDO::getStatus, request.getStatus())
                 .orderByDesc(PostInfoDO::getPostSort, PostInfoDO::getPostId);
     }
 
     @Override
-    public Result<PostInfoResponse> queryInfo(Long postId) {
-        return ok(BeanUtil.convert(postInfoService.getById(postId), PostInfoResponse.class));
+    public Result<PostInfoResponse> queryInfo(IdRequest request) {
+        return ok(BeanUtil.convert(postInfoService.getById(request.getId()), PostInfoResponse.class));
     }
 
     @Override
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(Long postId) {
+    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request) {
+        Long postId = request.getId();
         CheckedSelectTreeResponse checkedSelectTreeResponse = new CheckedSelectTreeResponse();
         checkedSelectTreeResponse.setCheckedKeys(menuInfoService.listMenuIdByPostId(postId));
         checkedSelectTreeResponse.setSelectTrees(menuInfoService.listTenantSelectTree(SecurityUtil.getUid()));
@@ -67,24 +69,20 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
             return requestFail("当前租户职位数量已达到上限");
         }
         PostInfoDO post = BeanUtil.convert(request, PostInfoDO.class);
+        post.setStatus(request.getStatus());
         return toRes(postInfoService.savePost(post, request.getMenuIds()));
     }
 
     @Override
     public Result<Void> update(PostMngUpdateRequest request) {
         PostInfoDO post = BeanUtil.convert(request, PostInfoDO.class);
+        post.setStatus(request.getStatus());
         return toRes(postInfoService.updatePost(post, request.getMenuIds()));
     }
 
     @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        PostInfoDO update = new PostInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(postInfoService.updateById(update));
-    }
-
-    @Override
-    public Result<Void> remove(List<Long> postIds) {
+    public Result<Void> remove(IdListRequest request) {
+        List<Long> postIds = request.getIds();
         if (postInfoService.existMember(postIds)) {
             return requestFail("当前职位已被分配");
         }

@@ -1,10 +1,10 @@
 package com.wzkris.usercenter.request.member;
 
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.common.validator.annotation.Xss;
-import com.wzkris.usercenter.enums.GenderEnum;
+import com.wzkris.usercenter.enums.member.MemberStatusEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -31,18 +31,12 @@ public class MemberMngSaveRequest {
     @Schema(description = "手机号码")
     private String phoneNumber;
 
-    @Pattern(
-            regexp = "[" +
-                    CommonConstants.STATUS_ENABLE +
-                    CommonConstants.STATUS_DISABLE
-                    + "]",
-            message = "{invalidParameter.status.invalid}")
     @Schema(description = "状态")
-    private String status;
+    private MemberStatusEnum status;
 
     @EnumsCheck(value = GenderEnum.class, property = "value")
     @Schema(description = "性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "用户额外信息")
     private String remark;

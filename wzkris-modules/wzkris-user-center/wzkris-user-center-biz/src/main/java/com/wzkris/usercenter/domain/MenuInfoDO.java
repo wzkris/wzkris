@@ -3,6 +3,9 @@ package com.wzkris.usercenter.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
+import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
+import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,11 +47,11 @@ public class MenuInfoDO extends BaseEntity {
     @Schema(description = "是否显示")
     private Boolean visible;
 
-    @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
-    private String menuType;
+    @Schema(description = "菜单类型")
+    private MenuTypeEnum menuType;
 
     @Schema(description = "菜单状态（0正常 1停用）") // 停用状态在选择框无法显示，不显示的可以在选择框显示 路由不显示
-    private String status;
+    private MenuStatusEnum status;
 
     @Schema(description = "权限字符串")
     private String perms;
@@ -57,13 +60,13 @@ public class MenuInfoDO extends BaseEntity {
     private String icon;
 
     @Schema(description = "菜单域")
-    private String scope;
+    private MenuScopeEnum scope;
 
     public MenuInfoDO(Long menuId) {
         this.menuId = menuId;
     }
 
-    public MenuInfoDO(String status) {
+    public MenuInfoDO(MenuStatusEnum status) {
         this.status = status;
     }
 

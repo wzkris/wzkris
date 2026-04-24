@@ -2,6 +2,7 @@ package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.system.enums.notification.NotificationTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -22,8 +23,8 @@ public class NotificationInfoDO {
     @Schema(description = "标题")
     private String title;
 
-    @Schema(description = "通知类型（0系统通知 1设备告警）")
-    private String notificationType;
+    @Schema(description = "通知类型")
+    private NotificationTypeEnum notificationType;
 
     @Schema(description = "内容")
     private String content;

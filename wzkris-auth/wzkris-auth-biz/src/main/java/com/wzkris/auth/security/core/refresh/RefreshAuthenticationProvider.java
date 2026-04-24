@@ -45,7 +45,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         if (loginUser == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
         // 从存储中加载权限信息
@@ -69,20 +69,20 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         } catch (Exception e) {
             // refreshToken 解析失败
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
             return null;
         }
 
         if (!StringUtil.equals(authType, claims.getAuthType())) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
         // 检查 sid 是否在黑名单中
         if (tokenService.isRevoked(authType, claims.getUid(), claims.getSid())) {
             // sid 已被拉黑
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
+                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
         return claims.getUid();
     }

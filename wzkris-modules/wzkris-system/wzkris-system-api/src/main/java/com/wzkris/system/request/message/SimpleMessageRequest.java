@@ -1,5 +1,6 @@
 package com.wzkris.system.request.message;
 
+import com.wzkris.system.enums.notification.NotificationTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +16,7 @@ public class SimpleMessageRequest {
     private String title;
 
     @Schema(description = "消息类型")
-    private String type;
+    private NotificationTypeEnum type;
 
     @Schema(description = "前端展示时间, 毫秒")
     private int duration;
@@ -23,7 +24,7 @@ public class SimpleMessageRequest {
     @Schema(description = "内容")
     private String content;
 
-    public SimpleMessageRequest(String title, String type, String content) {
+    public SimpleMessageRequest(String title, NotificationTypeEnum type, String content) {
         this.title = title;
         this.type = type;
         this.duration = 1500;

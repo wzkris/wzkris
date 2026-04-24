@@ -5,7 +5,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
-import com.wzkris.usercenter.response.SelectTreeResponse;
+import com.wzkris.usercenter.response.common.SelectTreeResponse;
 import com.wzkris.usercenter.service.DeptInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;

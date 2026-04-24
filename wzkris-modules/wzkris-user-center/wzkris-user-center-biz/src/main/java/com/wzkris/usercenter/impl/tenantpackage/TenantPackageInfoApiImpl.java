@@ -9,11 +9,12 @@ import com.wzkris.usercenter.api.tenantpackage.TenantPackageInfoApi;
 import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
-import com.wzkris.usercenter.enums.MenuScopeEnum;
+import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
+import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
 import com.wzkris.usercenter.mapper.*;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoQueryResponse;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoQueryResponse.BenefitItem;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoQueryResponse.QuotaItem;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse.BenefitItem;
+import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse.QuotaItem;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -76,14 +76,14 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
     }
 
     @Override
-    public Result<TenantPackageInfoQueryResponse> queryInfo() {
+    public Result<TenantPackageInfoResponse> queryInfo() {
         TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
         TenantInfoDO tenant = tenantInfoMapper.selectById(loginUser.getTenantId());
         if (tenant == null) {
             return requestFail("租户不存在");
         }
 
-        TenantPackageInfoQueryResponse resp = new TenantPackageInfoQueryResponse();
+        TenantPackageInfoResponse resp = new TenantPackageInfoResponse();
         resp.setTenantName(tenant.getTenantName());
         resp.setExpireTime(tenant.getExpireTime());
 
@@ -150,10 +150,10 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
 
     // =============== 权益 ===============
 
-    private String resolveRenewalStatus(String packageStatus, OffsetDateTime expireTime) {
-        if (packageStatus != null && !"0".equals(packageStatus)) return "inactive";
+    private String resolveRenewalStatus(TenantPackageStatusEnum packageStatus, OffsetDateTime expireTime) {
+        if (packageStatus != null && packageStatus != TenantPackageStatusEnum.ENABLE) return "inactive";
         if (expireTime == null) return "permanent";
-        long diff = Duration.between(expireTime, OffsetDateTime.now()).get(ChronoUnit.MILLIS);
+        long diff = Duration.between(OffsetDateTime.now(), expireTime).toMillis();
         if (diff < 0) return "expired";
         if (diff <= EXPIRING_SOON_MILLIS) return "expiring_soon";
         return "active";

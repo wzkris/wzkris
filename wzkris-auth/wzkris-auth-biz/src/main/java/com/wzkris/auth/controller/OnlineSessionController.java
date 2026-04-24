@@ -1,6 +1,7 @@
 package com.wzkris.auth.controller;
 
 import com.wzkris.auth.api.OnlineSessionApi;
+import com.wzkris.auth.request.SidRequest;
 import com.wzkris.auth.response.OnlineSessionResponse;
 import com.wzkris.common.core.model.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,8 +29,8 @@ public class OnlineSessionController {
 
     @Operation(summary = "踢出会话")
     @PostMapping("/kickout")
-    public Result<Void> kickout(@RequestBody String sid) {
-        return onlineSessionApi.kickout(sid);
+    public Result<Void> kickout(@RequestBody SidRequest request) {
+        return onlineSessionApi.kickout(request);
     }
 
 }

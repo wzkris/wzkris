@@ -3,9 +3,12 @@ package com.wzkris.system.controller.notification;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.notification.AdminNotificationInfoApi;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.message.UnreadSizeQueryRequest;
 import com.wzkris.system.response.notification.NotificationInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +28,14 @@ public class AdminNotificationInfoController {
 
     @Operation(summary = "标记已读")
     @PostMapping("/mark-read")
-    public Result<Void> markRead(@RequestBody Long notificationId) {
-        return adminNotificationInfoApi.markRead(notificationId);
+    public Result<Void> markRead(@RequestBody @Valid IdRequest request) {
+        return adminNotificationInfoApi.markRead(request);
     }
 
     @Operation(summary = "未读数量")
-    @GetMapping("/unread-size")
-    public Result<Integer> unreadSize(String notificationType) {
-        return adminNotificationInfoApi.unreadSize(notificationType);
+    @GetMapping("/query-unread-size")
+    public Result<Integer> queryUnreadSize(UnreadSizeQueryRequest request) {
+        return adminNotificationInfoApi.queryUnreadSize(request);
     }
 
 }

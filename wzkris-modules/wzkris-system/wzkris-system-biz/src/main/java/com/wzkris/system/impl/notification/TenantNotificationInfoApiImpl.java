@@ -6,6 +6,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.system.api.notification.TenantNotificationInfoApi;
 import com.wzkris.system.mapper.NotificationInfoMapper;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.message.UnreadSizeQueryRequest;
 import com.wzkris.system.response.notification.NotificationInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,13 +28,13 @@ public class TenantNotificationInfoApiImpl extends AbstractApi implements Tenant
     }
 
     @Override
-    public Result<Void> markRead(Long notificationId) {
-        return toRes(notificationInfoMapper.markTenantRead(notificationId, SecurityUtil.getUid()));
+    public Result<Void> markRead(IdRequest request) {
+        return toRes(notificationInfoMapper.markTenantRead(request.getId(), SecurityUtil.getUid()));
     }
 
     @Override
-    public Result<Integer> unreadSize(String notificationType) {
-        int count = notificationInfoMapper.countTenantUnread(SecurityUtil.getUid(), notificationType);
+    public Result<Integer> queryUnreadSize(UnreadSizeQueryRequest request) {
+        int count = notificationInfoMapper.countTenantUnread(SecurityUtil.getUid(), request.getNotificationType());
         return ok(count);
     }
 

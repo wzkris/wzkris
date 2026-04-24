@@ -1,5 +1,8 @@
 package com.wzkris.usercenter.response.menu;
 
+import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
+import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
+import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,10 +41,10 @@ public class MenuInfoResponse {
     private Boolean visible;
 
     @Schema(description = "菜单类型（D目录 M菜单 B按钮 I内链 O外链）")
-    private String menuType;
+    private MenuTypeEnum menuType;
 
     @Schema(description = "菜单状态（0正常 1停用）")
-    private String status;
+    private MenuStatusEnum status;
 
     @Schema(description = "权限字符串")
     private String perms;
@@ -50,7 +53,7 @@ public class MenuInfoResponse {
     private String icon;
 
     @Schema(description = "菜单域")
-    private String scope;
+    private MenuScopeEnum scope;
 
     @Schema(description = "子菜单")
     private List<MenuInfoResponse> children = new ArrayList<>();

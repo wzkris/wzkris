@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OperateLogRemoteApi {
 
-    Result<Void> save(List<OperateLogEventRequest> operateLogEventRequests);
+    Result<Void> save(List<OperateLogEventRequest> requestList);
 
 }
 

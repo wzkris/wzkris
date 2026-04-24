@@ -1,6 +1,8 @@
 package com.wzkris.usercenter.request.tenant;
 
 import com.wzkris.common.validator.annotation.Xss;
+import com.wzkris.usercenter.enums.tenant.TenantStatusEnum;
+import com.wzkris.usercenter.enums.tenant.TenantTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -17,9 +19,9 @@ import java.time.OffsetDateTime;
 @Schema(description = "新增租户参数体")
 public class TenantMngSaveRequest {
 
-    @Pattern(regexp = "[01]", message = "{invalidParameter.tenantType.invalid}")
-    @Schema(description = "租户类型 0-个人 1-企业")
-    private String tenantType;
+    @NotNull(message = "{invalidParameter.param.invalid}")
+    @Schema(description = "租户类型")
+    private TenantTypeEnum tenantType;
 
     @Schema(description = "联系电话")
     private String contactPhone;
@@ -28,8 +30,9 @@ public class TenantMngSaveRequest {
     @Schema(description = "租户名称")
     private String tenantName;
 
+    @NotNull(message = "{invalidParameter.status.invalid}")
     @Schema(description = "租户状态")
-    private String status;
+    private TenantStatusEnum status;
 
     @Schema(description = "域名")
     private String domain;

@@ -5,12 +5,14 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
-import com.wzkris.usercenter.request.dept.DeptMngQueryRequest;
+import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.usercenter.request.dept.DeptMngListRequest;
 import com.wzkris.usercenter.request.dept.DeptMngSaveRequest;
 import com.wzkris.usercenter.request.dept.DeptMngUpdateRequest;
 import com.wzkris.usercenter.response.dept.DeptInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,15 +30,15 @@ public class DeptMngController {
     @Operation(summary = "部门列表 (不带分页)")
     @GetMapping("/query-list")
     @CheckAdminPerms("user-mod:dept-mng:list")
-    public Result<List<DeptInfoResponse>> queryList(DeptMngQueryRequest request) {
+    public Result<List<DeptInfoResponse>> queryList(DeptMngListRequest request) {
         return deptMngApi.queryList(request);
     }
 
     @Operation(summary = "根据部门编号获取详细信息")
-    @GetMapping("/query-info/{deptId}")
+    @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:dept-mng:query")
-    public Result<DeptInfoResponse> queryInfo(@PathVariable Long deptId) {
-        return deptMngApi.queryInfo(deptId);
+    public Result<DeptInfoResponse> queryInfo(IdRequest request) {
+        return deptMngApi.queryInfo(request);
     }
 
     @Operation(summary = "新增部门")
@@ -59,8 +61,8 @@ public class DeptMngController {
     @OperateLog(title = "部门管理", subTitle = "删除部门", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
     @CheckAdminPerms("user-mod:dept-mng:remove")
-    public Result<?> remove(@RequestBody Long deptId) {
-        return deptMngApi.remove(deptId);
+    public Result<?> remove(@RequestBody @Valid IdRequest request) {
+        return deptMngApi.remove(request);
     }
 
 }

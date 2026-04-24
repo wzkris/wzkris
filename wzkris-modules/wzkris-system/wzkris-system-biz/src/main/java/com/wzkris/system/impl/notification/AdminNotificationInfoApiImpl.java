@@ -6,6 +6,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.system.api.notification.AdminNotificationInfoApi;
 import com.wzkris.system.mapper.NotificationInfoMapper;
+import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.message.UnreadSizeQueryRequest;
 import com.wzkris.system.response.notification.NotificationInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,13 +28,13 @@ public class AdminNotificationInfoApiImpl extends AbstractApi implements AdminNo
     }
 
     @Override
-    public Result<Void> markRead(Long notificationId) {
-        return toRes(notificationInfoMapper.markAdminRead(notificationId, SecurityUtil.getUid()));
+    public Result<Void> markRead(IdRequest request) {
+        return toRes(notificationInfoMapper.markAdminRead(request.getId(), SecurityUtil.getUid()));
     }
 
     @Override
-    public Result<Integer> unreadSize(String notificationType) {
-        int count = notificationInfoMapper.countAdminUnread(SecurityUtil.getUid(), notificationType);
+    public Result<Integer> queryUnreadSize(UnreadSizeQueryRequest request) {
+        int count = notificationInfoMapper.countAdminUnread(SecurityUtil.getUid(), request.getNotificationType());
         return ok(count);
     }
 

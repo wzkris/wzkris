@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.api.member;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.request.PasswordUpdateRequest;
-import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
+import com.wzkris.usercenter.request.common.PasswordUpdateRequest;
+import com.wzkris.usercenter.request.common.PhoneNumberUpdateRequest;
 import com.wzkris.usercenter.request.member.MemberInfoBasicUpdateRequest;
 import com.wzkris.usercenter.response.member.MemberInfoResponse;
 

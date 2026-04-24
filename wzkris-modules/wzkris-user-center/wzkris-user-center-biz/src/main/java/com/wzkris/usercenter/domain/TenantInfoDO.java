@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.tenant.TenantStatusEnum;
+import com.wzkris.usercenter.enums.tenant.TenantTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,8 +28,8 @@ public class TenantInfoDO extends BaseEntity {
     @Schema(description = "管理员ID")
     private Long administrator;
 
-    @Schema(description = "租户类型 0-个人 1-企业")
-    private String tenantType;
+    @Schema(description = "租户类型")
+    private TenantTypeEnum tenantType;
 
     @Schema(description = "联系电话")
     private String contactPhone;
@@ -40,7 +42,7 @@ public class TenantInfoDO extends BaseEntity {
     private String operPwd;
 
     @Schema(description = "租户状态")
-    private String status;
+    private TenantStatusEnum status;
 
     @Schema(description = "域名")
     private String domain;

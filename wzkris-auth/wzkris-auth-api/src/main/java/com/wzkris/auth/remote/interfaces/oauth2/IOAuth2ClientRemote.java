@@ -1,5 +1,6 @@
 package com.wzkris.auth.remote.interfaces.oauth2;
 
+import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
@@ -29,7 +30,7 @@ public interface IOAuth2ClientRemote {
      * @return oauth2客户端
      */
     @PostExchange("/query-by-id")
-    Result<OAuth2ClientResponse> queryById(@RequestBody String id);
+    Result<OAuth2ClientResponse> queryById(@RequestBody StringValueRequest request);
 
     /**
      * 根据clientid查询客户端信息
@@ -38,7 +39,7 @@ public interface IOAuth2ClientRemote {
      * @return oauth2客户端
      */
     @PostExchange("/query-by-clientid")
-    Result<OAuth2ClientResponse> queryByClientId(@RequestBody String clientid);
+    Result<OAuth2ClientResponse> queryByClientId(@RequestBody StringValueRequest request);
 
 }
 

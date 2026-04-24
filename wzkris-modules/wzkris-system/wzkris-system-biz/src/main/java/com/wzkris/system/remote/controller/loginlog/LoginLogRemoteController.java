@@ -2,15 +2,14 @@ package com.wzkris.system.remote.controller.loginlog;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.system.remote.api.loginlog.LoginLogRemoteApi;
-import com.wzkris.system.remote.api.loginlog.request.LoginLogEventRequest;
+import com.wzkris.system.remote.api.loginlog.request.LoginLogBatchSaveRequest;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Hidden
 @RestController
@@ -24,8 +23,8 @@ public class LoginLogRemoteController {
      * 批量保存登录日志
      */
     @PostMapping("/save")
-    public Result<Void> save(@RequestBody List<LoginLogEventRequest> loginLogEventRequests) {
-        return loginLogRemoteApi.save(loginLogEventRequests);
+    public Result<Void> save(@RequestBody @Valid LoginLogBatchSaveRequest request) {
+        return loginLogRemoteApi.save(request.getLoginLogEventRequests());
     }
 
 }

@@ -114,7 +114,7 @@ public class OperateLogAspect {
         if (exception != null) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
-        } else if (jsonResult instanceof Result<?> result && ResultUtil.checkNoData(result)) {
+        } else if (jsonResult instanceof Result<?> result && !ResultUtil.checkNoData(result)) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
         }
