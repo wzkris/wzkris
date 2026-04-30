@@ -8,13 +8,14 @@ import lombok.Getter;
 import org.springframework.lang.Nullable;
 
 /**
- * 公告类型
+ * 公告状态
  */
 @Getter
 @AllArgsConstructor
-public enum AnncTypeEnum {
-    SYSTEM("1", "系统公告"),
-    APP("2", "APP公告");
+public enum AnnouncementStatusEnum {
+    DRAFT("0", "草稿"),
+    CLOSED("1", "关闭"),
+    PUBLISH("2", "已发布");
 
     @EnumValue
     @JsonValue
@@ -24,8 +25,8 @@ public enum AnncTypeEnum {
 
     @JsonCreator
     @Nullable
-    public static AnncTypeEnum fromValue(String value) {
-        for (AnncTypeEnum typeEnum : values()) {
+    public static AnnouncementStatusEnum fromValue(String value) {
+        for (AnnouncementStatusEnum typeEnum : values()) {
             if (typeEnum.value.equals(value)) {
                 return typeEnum;
             }

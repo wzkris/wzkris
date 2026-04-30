@@ -17,15 +17,26 @@ import java.util.List;
 @Component
 @RefreshScope
 @ConfigurationProperties(prefix = "security")
-public class PermitAllProperties {
+public class PermitUrlProperties {
 
-    /** 白名单路径 */
+    /**
+     * 白名单路径
+     */
     private List<String> ignores = new ArrayList<>();
 
-    /** 黑名单路径 */
+    /**
+     * 黑名单路径
+     */
     private List<String> denys = new ArrayList<>();
 
-    /** 是否允许WebSocket握手阶段通过query参数传递token */
+    /**
+     * 是否允许WebSocket握手阶段通过query参数传递token
+     */
     private boolean wsQueryTokenEnabled = true;
+
+    /**
+     * websocket请求地址
+     */
+    private String wsUri;
 
 }

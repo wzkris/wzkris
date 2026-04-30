@@ -30,8 +30,8 @@ public class ApiCallStatWriteService {
                     .method(key.getMethod())
                     .userId(key.getUserId())
                     .success(success)
-                    .statusCode(key.getStatusCode() == null ? 0 : key.getStatusCode())
-                    .costMs(key.getCostMs() == null ? 0L : Math.max(0L, key.getCostMs()))
+                    .statusCode(key.getStatusCode())
+                    .costMs(key.getCostMs())
                     .build());
         } catch (Exception e) {
             log.error("API调用量统计异常: {}", e.getMessage(), e);

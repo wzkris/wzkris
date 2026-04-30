@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.response.customerwallet;
 
+import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,8 @@ public class CustomerWalletRecordResponse {
     @Schema(description = "金额, 元")
     private BigDecimal amount;
 
-    @Schema(description = "记录类型 0-收入 1-支出")
-    private String recordType;
+    @Schema(description = "记录类型")
+    private WalletRecordTypeEnum recordType;
 
     @Schema(description = "创建时间")
     private OffsetDateTime createAt;

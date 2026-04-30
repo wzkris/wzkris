@@ -31,7 +31,7 @@ public class TenantWalletInfoServiceImpl
             TenantWalletRecordDO record = new TenantWalletRecordDO();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setRecordType(WalletRecordTypeEnum.INCOME.getValue());
+            record.setRecordType(WalletRecordTypeEnum.INCOME);
             record.setBizNo(bizNo);
             record.setBizType(bizType);
             record.setCreateAt(OffsetDateTime.now());
@@ -50,7 +50,7 @@ public class TenantWalletInfoServiceImpl
             TenantWalletRecordDO record = new TenantWalletRecordDO();
             record.setTenantId(tenantId);
             record.setAmount(amount);
-            record.setRecordType(WalletRecordTypeEnum.OUTCOME.getValue());
+            record.setRecordType(WalletRecordTypeEnum.OUTCOME);
             record.setBizNo(bizNo);
             record.setBizType(bizType);
             record.setCreateAt(OffsetDateTime.now());

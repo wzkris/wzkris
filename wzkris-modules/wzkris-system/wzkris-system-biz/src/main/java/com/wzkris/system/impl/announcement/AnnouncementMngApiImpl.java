@@ -8,7 +8,6 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.announcement.AnnouncementMngApi;
 import com.wzkris.system.domain.AnnouncementInfoDO;
-import com.wzkris.system.enums.announcement.AnncStatusEnum;
 import com.wzkris.system.mapper.AnnouncementInfoMapper;
 import com.wzkris.system.request.common.IdListRequest;
 import com.wzkris.system.request.common.IdRequest;

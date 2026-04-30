@@ -31,4 +31,5 @@ public class ApiStatsSnapshot {
     private long maxCostMs;
 
     private Map<String, Long> methodCounts;
+
 }

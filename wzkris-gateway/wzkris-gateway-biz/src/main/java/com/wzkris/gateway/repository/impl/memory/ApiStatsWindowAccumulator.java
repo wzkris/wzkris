@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public class ApiStatsWindowAccumulator {
 
+    private final Map<String, Long> methodCounts = new HashMap<>();
+
     private long total;
 
     private long success;
@@ -28,8 +30,6 @@ public class ApiStatsWindowAccumulator {
     private long totalCostMs;
 
     private long maxCostMs;
-
-    private final Map<String, Long> methodCounts = new HashMap<>();
 
     public void merge(ApiStatsSnapshot snapshot) {
         total += snapshot.getTotal();

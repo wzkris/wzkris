@@ -1,7 +1,7 @@
 package com.wzkris.system.request.announcement;
 
 import com.wzkris.common.validator.annotation.Xss;
-import com.wzkris.system.enums.announcement.AnncStatusEnum;
+import com.wzkris.system.enums.announcement.AnnouncementStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,7 +26,7 @@ public class AnnouncementMngSaveUpdateRequest {
     private String content;
 
     @Schema(description = "状态")
-    private AnncStatusEnum status;
+    private AnnouncementStatusEnum status;
 
 }
 

@@ -1,4 +1,4 @@
-package com.wzkris.gateway.domain.response;
+package com.wzkris.gateway.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -62,4 +62,5 @@ public class ApiCallRealtimeResponse implements Serializable {
 
     @Schema(description = "HTTP方法计数，如GET/POST/PUT/DELETE")
     private Map<String, Long> methodCounts;
+
 }

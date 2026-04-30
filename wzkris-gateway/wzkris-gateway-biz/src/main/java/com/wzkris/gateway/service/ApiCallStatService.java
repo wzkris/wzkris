@@ -1,10 +1,10 @@
 package com.wzkris.gateway.service;
 
 import com.wzkris.gateway.domain.ApiCallStatsDO;
-import com.wzkris.gateway.domain.response.ApiCallDailySeriesResponse;
-import com.wzkris.gateway.domain.response.ApiCallRealtimeResponse;
-import com.wzkris.gateway.domain.response.ApiCallResponse;
 import com.wzkris.gateway.repository.ApiCallRepository;
+import com.wzkris.gateway.response.ApiCallDailySeriesResponse;
+import com.wzkris.gateway.response.ApiCallRealtimeResponse;
+import com.wzkris.gateway.response.ApiCallResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +24,11 @@ public class ApiCallStatService {
     private final ApiCallRepository apiCallRepository;
 
     public ApiCallRealtimeResponse queryRealtimeApiCallStats(String authType, Integer windowSeconds) {
-        int safeWindow = windowSeconds == null ? 60 : Math.max(5, Math.min(windowSeconds, 300));
+        int safeWindow = Math.max(5, Math.min(windowSeconds, 300));
         ApiCallStatsDO stats = apiCallRepository.getRealtimeApiCallStats(authType, safeWindow);
-        double qps = safeWindow > 0 ? (double) stats.getTotal() / safeWindow : 0D;
-        double successQps = safeWindow > 0 ? (double) stats.getSuccess() / safeWindow : 0D;
-        double errorQps = safeWindow > 0 ? (double) stats.getError() / safeWindow : 0D;
+        double qps = (double) stats.getTotal() / safeWindow;
+        double successQps = (double) stats.getSuccess() / safeWindow;
+        double errorQps = (double) stats.getError() / safeWindow;
         double successRate = stats.getTotal() > 0 ? (double) stats.getSuccess() / stats.getTotal() : 0D;
 
         return ApiCallRealtimeResponse.builder()

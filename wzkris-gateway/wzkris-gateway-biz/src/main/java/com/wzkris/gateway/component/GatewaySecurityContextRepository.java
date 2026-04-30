@@ -2,7 +2,7 @@ package com.wzkris.gateway.component;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.component.SupplierDeferredSecurityContext;
-import com.wzkris.gateway.properties.PermitAllProperties;
+import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.service.TokenValidateService;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
 import jakarta.annotation.security.PermitAll;
@@ -58,12 +58,24 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
 
     private final TokenValidateService tokenValidateService;
 
-    private final PermitAllProperties permitAllProperties;
+    private final PermitUrlProperties permitUrlProperties;
 
     /**
      * 带 {@link PermitAll} 注解的 URL 集合（启动时扫描）。
      */
     private final Set<String> permitAllAnnotations = new HashSet<>();
+
+    private static boolean isPathMatched(Iterable<String> patterns, String path) {
+        if (patterns == null) {
+            return false;
+        }
+        for (String pattern : patterns) {
+            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
@@ -109,20 +121,8 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
     }
 
     private boolean isPathPermitted(String path) {
-        return isPathMatched(permitAllProperties.getIgnores(), path)
+        return isPathMatched(permitUrlProperties.getIgnores(), path)
                 || isPathMatched(permitAllAnnotations, path);
-    }
-
-    private static boolean isPathMatched(Iterable<String> patterns, String path) {
-        if (patterns == null) {
-            return false;
-        }
-        for (String pattern : patterns) {
-            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

@@ -2,7 +2,6 @@ package com.wzkris.usercenter.impl.tenantwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.model.TenantLoginUser;
@@ -22,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +65,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
         TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
                 .eq(TenantWalletRecordDO::getTenantId, loginUser.getTenantId())
-                .like(StringUtil.isNotBlank(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
+                .like(Objects.nonNull(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantWalletRecordDO::getCreateAt,
                         request.getBeginTime(), request.getEndTime())

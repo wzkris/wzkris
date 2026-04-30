@@ -8,11 +8,11 @@ import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.ClientLoginUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
-import com.wzkris.gateway.properties.PermitAllProperties;
-import com.wzkris.gateway.remote.interfaces.loginuser.ILoginUserRemote;
-import com.wzkris.gateway.remote.interfaces.loginuser.request.LoginUserQueryRequest;
-import com.wzkris.gateway.remote.interfaces.loginuser.request.OAuth2TokenQueryRequest;
-import com.wzkris.gateway.remote.interfaces.loginuser.response.LoginUserResponse;
+import com.wzkris.gateway.properties.PermitUrlProperties;
+import com.wzkris.gateway.remote.api.loginuser.ILoginUserRemote;
+import com.wzkris.gateway.remote.api.loginuser.request.LoginUserQueryRequest;
+import com.wzkris.gateway.remote.api.loginuser.request.OAuth2TokenQueryRequest;
+import com.wzkris.gateway.remote.api.loginuser.response.LoginUserResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,7 @@ public class TokenValidateService {
 
     private final JwtDecoder jwtDecoder;
 
-    private final PermitAllProperties permitAllProperties;
+    private final PermitUrlProperties permitUrlProperties;
 
     /**
      * 验证 JWT Token（同步）
@@ -53,39 +53,45 @@ public class TokenValidateService {
      * 3. 调用 auth 服务获取 BaseLoginUser 并组装 Authentication
      */
     public Authentication check(HttpServletRequest request) {
+        String token = extractToken(request);
+        Jwt jwt;
         try {
-            String token = extractToken(request);
-            Jwt jwt = jwtDecoder.decode(token);
-            String authType = jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE);
-            AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(authType);
-            if (authTypeEnum == null) {
-                return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
-            }
-
-            if (authTypeEnum == AuthTypeEnum.CLIENT) {
-                return authenticateClient(jwt, token);
-            }
-            String uidStr = jwt.getSubject();
-            if (StringUtil.isBlank(uidStr)) {
-                return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
-            }
-            String sid = jwt.getClaimAsString(JwtClaimConstants.SID);
-            if (StringUtil.isBlank(sid)) {
-                return introspectOAuth2(token);
-            }
-            return introspectCustom(authTypeEnum, Long.valueOf(uidStr), token, sid);
+            jwt = jwtDecoder.decode(token);
         } catch (JwtException e) {
             log.info("JWT validation failed: {}", e.getMessage());
             return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
+
+        String authType = jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE);
+        AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(authType);
+        if (authTypeEnum == null) {
+            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
+        }
+
+        if (authTypeEnum == AuthTypeEnum.CLIENT) {
+            return authenticateClient(jwt, token);
+        }
+        String uidStr = jwt.getSubject();
+        if (StringUtil.isBlank(uidStr)) {
+            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
+        }
+        String sid = jwt.getClaimAsString(JwtClaimConstants.SID);
+        if (StringUtil.isBlank(sid)) {
+            return introspectOAuth2(token);
+        }
+        return introspectCustom(authTypeEnum, Long.valueOf(uidStr), token, sid);
     }
 
     private String extractToken(HttpServletRequest request) {
-        String token = BearerTokenUtil.extractBearerToken(request);
-        if (StringUtil.isNotBlank(token) || !permitAllProperties.isWsQueryTokenEnabled()) {
+        String token = BearerTokenUtil.extractHeaderToken(request);
+        if (StringUtil.isNotBlank(token)) {
             return token;
         }
-        return BearerTokenUtil.extractWsAccessToken(request);
+        if (permitUrlProperties.isWsQueryTokenEnabled()
+                && request.getRequestURI().startsWith(permitUrlProperties.getWsUri())) {
+            return BearerTokenUtil.extractQueryToken(request);
+        }
+        return null;
     }
 
     private Authentication authenticateClient(Jwt jwt, String token) {

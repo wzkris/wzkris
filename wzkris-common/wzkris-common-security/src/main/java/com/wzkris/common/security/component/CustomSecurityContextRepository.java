@@ -69,7 +69,7 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
         BaseLoginUser baseLoginUser = JsonUtil.parseObject(loginUserHeader, BaseLoginUser.class);
         UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(
                 baseLoginUser,
-                BearerTokenUtil.extractBearerToken(request),
+                BearerTokenUtil.extractHeaderToken(request),
                 AuthorityUtils.createAuthorityList(permissions));
         authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
         ctx.setAuthentication(authenticationToken);

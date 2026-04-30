@@ -74,7 +74,7 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
 
             CustomerSocialInfoDO customerSocialInfoDO = new CustomerSocialInfoDO();
             customerSocialInfoDO.setIdentifier(identifier);
-            customerSocialInfoDO.setIdentifierType(IdentifierTypeEnum.WE_XCX.getValue());
+            customerSocialInfoDO.setIdentifierType(IdentifierTypeEnum.WE_XCX);
             customerId = customerInfoService.registerBySocial(customerInfoDO, customerSocialInfoDO);
         } else {
             customerId = socialInfoDO.getCustomerId();

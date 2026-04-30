@@ -2,7 +2,6 @@ package com.wzkris.usercenter.impl.customerwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -18,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -42,14 +42,10 @@ public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWa
 
     private LambdaQueryWrapper<CustomerWalletRecordDO> buildWalletQueryWrapper(CustomerWalletRecordPageRequest request) {
         return new LambdaQueryWrapper<CustomerWalletRecordDO>()
-                .like(
-                        StringUtil.isNotBlank(request.getRecordType()),
-                        CustomerWalletRecordDO::getRecordType,
-                        request.getRecordType())
+                .like(Objects.nonNull(request.getRecordType()), CustomerWalletRecordDO::getRecordType, request.getRecordType())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         CustomerWalletRecordDO::getCreateAt,
-                        request.getBeginTime(),
-                        request.getEndTime())
+                        request.getBeginTime(), request.getEndTime())
                 .orderByDesc(CustomerWalletRecordDO::getRecordId);
     }
 

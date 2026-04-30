@@ -2,7 +2,7 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.usercenter.enums.tenantwalletwithdrawal.TenantWalletWithdrawalStatusEnum;
+import com.wzkris.usercenter.enums.tenantwallet.TenantWalletWithdrawalStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +28,7 @@ public class TenantWalletWithdrawalRecordDO {
     @Schema(description = "订单号")
     private String orderNo;
 
-    @Schema(description = "状态 '0'处理中 '1'成功 '2'失败")
+    @Schema(description = "状态")
     private TenantWalletWithdrawalStatusEnum status;
 
     @Schema(description = "租户ID")

@@ -1,4 +1,4 @@
-package com.wzkris.system.enums.announcement;
+package com.wzkris.usercenter.enums.tenantwallet;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -7,15 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.lang.Nullable;
 
-/**
- * 公告状态
- */
 @Getter
 @AllArgsConstructor
-public enum AnncStatusEnum {
-    DRAFT("0", "草稿"),
-    CLOSED("1", "关闭"),
-    PUBLISH("2", "已发布");
+public enum TenantWalletWithdrawalStatusEnum {
+
+    PROCESSING("0", "处理中"),
+
+    SUCCESS("1", "成功"),
+
+    FAIL("2", "失败");
 
     @EnumValue
     @JsonValue
@@ -25,12 +25,13 @@ public enum AnncStatusEnum {
 
     @JsonCreator
     @Nullable
-    public static AnncStatusEnum fromValue(String value) {
-        for (AnncStatusEnum typeEnum : values()) {
-            if (typeEnum.value.equals(value)) {
-                return typeEnum;
+    public static TenantWalletWithdrawalStatusEnum fromValue(String value) {
+        for (TenantWalletWithdrawalStatusEnum statusEnum : values()) {
+            if (statusEnum.value.equals(value)) {
+                return statusEnum;
             }
         }
         return null;
     }
+
 }

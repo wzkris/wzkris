@@ -7,7 +7,7 @@ import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.announcement.AnnouncementInfoApi;
 import com.wzkris.system.domain.AnnouncementInfoDO;
-import com.wzkris.system.enums.announcement.AnncStatusEnum;
+import com.wzkris.system.enums.announcement.AnnouncementStatusEnum;
 import com.wzkris.system.mapper.AnnouncementInfoMapper;
 import com.wzkris.system.response.announcement.AnnouncementInfoResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class AnnouncementInfoApiImpl extends AbstractApi implements Announcement
     @Override
     public Result<Page<AnnouncementInfoResponse>> queryPage() {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
-                .eq(AnnouncementInfoDO::getStatus, AnncStatusEnum.PUBLISH)
+                .eq(AnnouncementInfoDO::getStatus, AnnouncementStatusEnum.PUBLISH)
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
         startPage();
         List<AnnouncementInfoResponse> list = announcementInfoMapper.selectList2VO(lqw, AnnouncementInfoResponse.class);

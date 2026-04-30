@@ -1,12 +1,12 @@
-package com.wzkris.gateway.remote.interfaces.loginuser;
+package com.wzkris.gateway.remote.api.loginuser;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;
 import com.wzkris.common.remote.constants.ServiceIdConstant;
-import com.wzkris.gateway.remote.interfaces.loginuser.request.LoginUserQueryRequest;
-import com.wzkris.gateway.remote.interfaces.loginuser.request.OAuth2TokenQueryRequest;
-import com.wzkris.gateway.remote.interfaces.loginuser.response.LoginUserResponse;
+import com.wzkris.gateway.remote.api.loginuser.request.LoginUserQueryRequest;
+import com.wzkris.gateway.remote.api.loginuser.request.OAuth2TokenQueryRequest;
+import com.wzkris.gateway.remote.api.loginuser.response.LoginUserResponse;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;

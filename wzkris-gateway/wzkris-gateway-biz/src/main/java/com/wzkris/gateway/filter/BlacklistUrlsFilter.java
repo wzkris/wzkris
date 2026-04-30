@@ -3,7 +3,7 @@ package com.wzkris.gateway.filter;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.gateway.properties.PermitAllProperties;
+import com.wzkris.gateway.properties.PermitUrlProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +34,7 @@ public class BlacklistUrlsFilter extends OncePerRequestFilter {
 
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
-    private final PermitAllProperties permitAllProperties;
+    private final PermitUrlProperties permitUrlProperties;
 
     private static void writeJsonResponse(HttpServletResponse response, HttpStatus status, Object body)
             throws IOException {
@@ -58,8 +58,8 @@ public class BlacklistUrlsFilter extends OncePerRequestFilter {
     }
 
     private boolean isPathDenied(String path) {
-        return CollectionUtils.isNotEmpty(permitAllProperties.getDenys())
-                && permitAllProperties.getDenys().stream()
+        return CollectionUtils.isNotEmpty(permitUrlProperties.getDenys())
+                && permitUrlProperties.getDenys().stream()
                 .anyMatch(pattern -> PATH_MATCHER.match(pattern, path));
     }
 

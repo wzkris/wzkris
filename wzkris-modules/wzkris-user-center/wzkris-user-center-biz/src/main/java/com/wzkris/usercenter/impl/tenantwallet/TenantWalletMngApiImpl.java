@@ -2,7 +2,6 @@ package com.wzkris.usercenter.impl.tenantwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletMngApi;
@@ -15,6 +14,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
     private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordMngPageRequest request) {
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
                 .eq(ObjectUtils.isNotEmpty(request.getTenantId()), TenantWalletRecordDO::getTenantId, request.getTenantId())
-                .like(StringUtil.isNotBlank(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
+                .like(Objects.nonNull(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantWalletRecordDO::getCreateAt,
                         request.getBeginTime(), request.getEndTime())

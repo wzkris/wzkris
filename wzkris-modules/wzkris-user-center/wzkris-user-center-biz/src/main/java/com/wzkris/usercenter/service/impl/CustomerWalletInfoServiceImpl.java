@@ -31,7 +31,7 @@ public class CustomerWalletInfoServiceImpl
             CustomerWalletRecordDO record = new CustomerWalletRecordDO();
             record.setCustomerId(customerId);
             record.setAmount(amount);
-            record.setRecordType(WalletRecordTypeEnum.INCOME.getValue());
+            record.setRecordType(WalletRecordTypeEnum.INCOME);
             record.setCreateAt(OffsetDateTime.now());
             customerWalletRecordMapper.insert(record);
         }
@@ -47,7 +47,7 @@ public class CustomerWalletInfoServiceImpl
             CustomerWalletRecordDO record = new CustomerWalletRecordDO();
             record.setCustomerId(customerId);
             record.setAmount(amount);
-            record.setRecordType(WalletRecordTypeEnum.OUTCOME.getValue());
+            record.setRecordType(WalletRecordTypeEnum.OUTCOME);
             record.setCreateAt(OffsetDateTime.now());
             customerWalletRecordMapper.insert(record);
         }

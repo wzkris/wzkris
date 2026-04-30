@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.response.tenantwallet;
 
+import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class TenantWalletRecordResponse {
 
     private BigDecimal amount;
 
-    private String recordType;
+    private WalletRecordTypeEnum recordType;
 
     private String bizType;
 

@@ -9,28 +9,44 @@ package com.wzkris.gateway.domain;
 @lombok.Builder
 public class ApiCallStatKey {
 
-    /** 认证类型，如app/admin/miniapp */
+    /**
+     * 认证类型，如app/admin/miniapp
+     */
     private String authType;
 
-    /** 用户ID */
+    /**
+     * 用户ID
+     */
     private Long userId;
 
-    /** 请求路径 */
+    /**
+     * 请求路径
+     */
     private String path;
 
-    /** HTTP方法，如GET/POST */
+    /**
+     * HTTP方法，如GET/POST
+     */
     private String method;
 
-    /** HTTP状态码 */
+    /**
+     * HTTP状态码
+     */
     private Integer statusCode;
 
-    /** 请求耗时（毫秒） */
+    /**
+     * 请求耗时（毫秒）
+     */
     private Long costMs;
 
-    /** 日期，格式yyyy-MM-dd */
+    /**
+     * 日期，格式yyyy-MM-dd
+     */
     private String date;
 
-    /** 小时，格式yyyy-MM-dd-HH */
+    /**
+     * 小时，格式yyyy-MM-dd-HH
+     */
     private String hour;
 
 }

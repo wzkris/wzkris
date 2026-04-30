@@ -1,4 +1,4 @@
-package com.wzkris.gateway.domain.response;
+package com.wzkris.gateway.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 页面访问（日级）统计响应，包含24小时序列
+ * API调用（日级）统计响应，包含24小时序列
  *
  * @author wzkris
  */
@@ -19,7 +19,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageViewDailySeriesResponse implements Serializable {
+public class ApiCallDailySeriesResponse implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -28,10 +28,13 @@ public class PageViewDailySeriesResponse implements Serializable {
     private String date;
 
     @Schema(description = "当日总计")
-    private PageViewResponse total;
+    private ApiCallResponse total;
 
-    @Schema(description = "小时序列，key为yyyy-MM-dd-HH，value为该小时的PV/UV统计")
-    private Map<String, PageViewResponse> hours;
+    @Schema(description = "小时序列，key为yyyy-MM-dd-HH，value为该小时的API调用统计")
+    private Map<String, ApiCallResponse> hours;
+
+    @Schema(description = "按路径的当日总计，key为API路径，value为该路径的统计信息")
+    private Map<String, ApiCallResponse> paths;
 
 }
 

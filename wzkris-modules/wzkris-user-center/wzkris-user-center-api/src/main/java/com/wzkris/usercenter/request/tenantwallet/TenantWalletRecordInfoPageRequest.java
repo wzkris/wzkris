@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.request.tenantwallet;
 
 import com.wzkris.common.core.model.QueryRequest;
+import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import lombok.Data;
 @Data
 public class TenantWalletRecordInfoPageRequest extends QueryRequest {
 
-    @Schema(description = "记录类型 0-收入 1-支出")
-    private String recordType;
+    @Schema(description = "记录类型")
+    private WalletRecordTypeEnum recordType;
 
 }

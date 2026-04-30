@@ -1,4 +1,4 @@
-package com.wzkris.gateway.domain.request;
+package com.wzkris.gateway.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

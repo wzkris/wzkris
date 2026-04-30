@@ -2,6 +2,7 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,8 @@ public class TenantWalletRecordDO {
     @Schema(description = "金额, 元")
     private BigDecimal amount;
 
-    @Schema(description = "记录类型 0-收入 1-支出")
-    private String recordType;
+    @Schema(description = "记录类型")
+    private WalletRecordTypeEnum recordType;
 
     @Schema(description = "业务类型")
     private String bizType;

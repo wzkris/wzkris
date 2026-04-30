@@ -1,6 +1,6 @@
 package com.wzkris.system.response.announcement;
 
-import com.wzkris.system.enums.announcement.AnncStatusEnum;
+import com.wzkris.system.enums.announcement.AnnouncementStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -16,6 +16,6 @@ public class AnnouncementMngResponse {
     private String content;
 
     @Schema(description = "状态（0草稿 1关闭 2公开）")
-    private AnncStatusEnum status;
+    private AnnouncementStatusEnum status;
 
 }

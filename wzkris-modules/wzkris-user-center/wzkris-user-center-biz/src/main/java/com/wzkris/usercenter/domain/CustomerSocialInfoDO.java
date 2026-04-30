@@ -21,10 +21,7 @@ public class CustomerSocialInfoDO {
     @Schema(description = "第三方唯一标识")
     private String identifier;
 
-    /**
-     * {@link IdentifierTypeEnum}
-     */
     @Schema(description = "渠道类型")
-    private String identifierType;
+    private IdentifierTypeEnum identifierType;
 
 }
