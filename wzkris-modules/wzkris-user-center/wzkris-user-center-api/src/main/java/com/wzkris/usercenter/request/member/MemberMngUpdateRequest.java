@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.request.member;
 
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.usercenter.enums.member.MemberStatusEnum;
@@ -36,7 +35,6 @@ public class MemberMngUpdateRequest {
     @Schema(description = "状态")
     private MemberStatusEnum status;
 
-    @EnumsCheck(value = GenderEnum.class, property = "value")
     @Schema(description = "性别")
     private GenderEnum gender;
 

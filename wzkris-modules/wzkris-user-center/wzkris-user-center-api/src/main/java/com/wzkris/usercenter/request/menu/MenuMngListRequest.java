@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.request.menu;
 
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +19,6 @@ public class MenuMngListRequest {
     private MenuStatusEnum status;
 
     @NotBlank(message = "{invalidParameter.menuScope.invalid}")
-    @EnumsCheck(value = MenuScopeEnum.class, property = "value")
     @Schema(description = "菜单域")
     private MenuScopeEnum scope;
 

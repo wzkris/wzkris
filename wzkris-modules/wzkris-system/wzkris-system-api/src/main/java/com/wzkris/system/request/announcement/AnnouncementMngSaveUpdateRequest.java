@@ -1,9 +1,7 @@
 package com.wzkris.system.request.announcement;
 
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.system.enums.announcement.AnncStatusEnum;
-import com.wzkris.system.enums.announcement.AnncTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,7 +19,6 @@ public class AnnouncementMngSaveUpdateRequest {
     @Schema(description = "标题")
     private String title;
 
-    @EnumsCheck(value = AnncTypeEnum.class, property = "value")
     @Schema(description = "消息类型")
     private String msgType;
 

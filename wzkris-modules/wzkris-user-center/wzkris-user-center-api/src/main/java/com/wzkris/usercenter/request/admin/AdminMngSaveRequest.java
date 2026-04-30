@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.request.admin;
 
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.common.validator.annotation.PhoneNumber;
 import com.wzkris.common.validator.annotation.Xss;
 import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
@@ -46,7 +45,6 @@ public class AdminMngSaveRequest {
     @Schema(description = "用户状态")
     private AdminStatusEnum status;
 
-    @EnumsCheck(value = GenderEnum.class, property = "value")
     @Schema(description = "用户性别")
     private GenderEnum gender;
 

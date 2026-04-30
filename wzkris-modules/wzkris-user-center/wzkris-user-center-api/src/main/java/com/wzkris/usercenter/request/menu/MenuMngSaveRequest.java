@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.request.menu;
 
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
@@ -48,7 +47,6 @@ public class MenuMngSaveRequest {
     private Boolean visible;
 
     @NotBlank(message = "{invalidParameter.menuType.invalid}")
-    @EnumsCheck(value = MenuTypeEnum.class, property = "value")
     @Schema(description = "菜单类型")
     private MenuTypeEnum menuType;
 
@@ -62,7 +60,6 @@ public class MenuMngSaveRequest {
     private String icon;
 
     @NotBlank(message = "{invalidParameter.menuScope.invalid}")
-    @EnumsCheck(value = MenuScopeEnum.class, property = "value")
     @Schema(description = "菜单域")
     private MenuScopeEnum scope;
 
