@@ -1,6 +1,6 @@
 package com.wzkris.common.swagger.config;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.wzkris.common.swagger.support.OpenApiMethodPredicates;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author wzkris
+ * Knife4j / SpringDoc 公共装配：单分组、仅收录带 {@code io.swagger.v3.oas.annotations.tags.Tag} 的接口。
  */
 @EnableConfigurationProperties(SwaggerProperties.class)
 @ConditionalOnProperty(name = "springdoc.enabled", matchIfMissing = true)
@@ -27,21 +27,23 @@ public class SwaggerAutoConfiguration {
     @Bean
     public GroupedOpenApi groupedOpenApi() {
         return GroupedOpenApi.builder()
-                .group(this.getClass().getName())
-                .addOpenApiMethodFilter(it -> it.getAnnotation(Tag.class) != null)
+                .group(swaggerProperties.getApiGroup())
+                .addOpenApiMethodFilter(OpenApiMethodPredicates::hasTag)
                 .build();
     }
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title(swaggerProperties.getTitle())
-                        .description(swaggerProperties.getDescription())
-                        .license(new License().url(swaggerProperties.getLicense()))
-                        .version(swaggerProperties.getVersion())
-                        .termsOfService(swaggerProperties.getTermsOfServiceUrl())
-                );
+        return new OpenAPI().info(buildInfo());
+    }
+
+    private Info buildInfo() {
+        return new Info()
+                .title(swaggerProperties.getTitle())
+                .description(swaggerProperties.getDescription())
+                .license(new License().url(swaggerProperties.getLicense()))
+                .version(swaggerProperties.getVersion())
+                .termsOfService(swaggerProperties.getTermsOfServiceUrl());
     }
 
 }
