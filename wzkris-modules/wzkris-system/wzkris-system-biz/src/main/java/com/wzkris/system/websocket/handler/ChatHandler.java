@@ -1,8 +1,9 @@
 package com.wzkris.system.websocket.handler;
 
 import com.wzkris.common.core.model.BaseLoginUser;
-import com.wzkris.system.domain.UserChatMessageDO;
-import com.wzkris.system.mapper.UserChatMessageMapper;
+import com.wzkris.system.enums.chat.MediaFormatEnum;
+import com.wzkris.system.enums.chat.ResourceTypeEnum;
+import com.wzkris.system.service.ChatPersistInfoService;
 import com.wzkris.system.utils.WebSocketSessionHolder;
 import com.wzkris.system.websocket.BaseWebSocketHandler;
 import com.wzkris.system.websocket.protocol.ChatMessage;
@@ -13,36 +14,25 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.time.OffsetDateTime;
 import java.util.function.BiConsumer;
 
-/**
- * 聊天处理
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ChatHandler extends BaseWebSocketHandler {
 
-    private final UserChatMessageMapper chatMessageMapper;
+    private final ChatPersistInfoService chatPersistInfoService;
 
     public void handle(WebSocketSession session, WsMessage wsMessage, BiConsumer<WebSocketSession, CloseStatus> closeSession) {
         try {
             BaseLoginUser senderInfo = getLoginInfo(session);
-
-            // 解析聊天消息
             ChatMessage chatMessage = ChatMessage.fromWsMessage(wsMessage);
             chatMessage.setSenderId(senderInfo.getUid());
-
-            // 根据消息类型处理
             if (chatMessage.isText()) {
                 doHandleTextMessage(senderInfo.getUid(), chatMessage);
             } else if (chatMessage.isResource()) {
-                doHandleImageMessage(senderInfo.getUid(), chatMessage);
-            } else if (chatMessage.isResource()) {
-                // do sth.
+                doHandleResourceMessage(senderInfo.getUid(), chatMessage);
             } else {
-                // 未知消息类型
                 log.error("处理ws聊天消息时发生错误: 未知聊天类型{}", chatMessage.getSubType());
                 closeSession.accept(session, CloseStatus.BAD_DATA);
             }
@@ -52,72 +42,42 @@ public class ChatHandler extends BaseWebSocketHandler {
         }
     }
 
-    /**
-     * 处理文本消息
-     */
     private void doHandleTextMessage(Long senderId, ChatMessage chatMessage) {
         try {
             log.info("收到文本消息: 发送者={}, 接收者={}, 内容={}",
                     senderId, chatMessage.getReceiverId(), chatMessage.getText());
-
-            WebSocketSession receiverSession = WebSocketSessionHolder.getSession(chatMessage.getReceiverId());
-            if (receiverSession == null || !receiverSession.isOpen()) {
-                // 接收者没有socket需要存储
-                storeMessage(senderId, chatMessage, "text");
-            } else {
-                receiverSession.sendMessage(chatMessage.toBinaryMessage());
-            }
+            deliverChatMessage(senderId, chatMessage);
         } catch (Exception e) {
             log.error("处理文本消息时发生错误: {}", e.getMessage(), e);
         }
     }
 
-    /**
-     * 处理图片消息
-     */
-    private void doHandleImageMessage(Long senderId, ChatMessage chatMessage) {
+    private void doHandleResourceMessage(Long senderId, ChatMessage chatMessage) {
         try {
-            log.info("收到图片消息: 发送者={}, 接收者={}, 格式={}, 大小={}字节",
-                    senderId, chatMessage.getReceiverId(), chatMessage.getMediaFormat(), chatMessage.getMetadata().length);
-
-            WebSocketSession receiverSession = WebSocketSessionHolder.getSession(chatMessage.getReceiverId());
-            if (receiverSession == null || !receiverSession.isOpen()) {
-                // 接收者没有socket需要存储
-                storeMessage(senderId, chatMessage, "image");
-            } else {
-                receiverSession.sendMessage(chatMessage.toBinaryMessage());
-            }
-
+            log.info("收到媒体消息: 发送者={}, 接收者={}, 格式={}, 大小={}字节",
+                    senderId, chatMessage.getReceiverId(), chatMessage.getMediaFormat(),
+                    chatMessage.getData() != null ? chatMessage.getData().length : 0);
+            deliverChatMessage(senderId, chatMessage);
         } catch (Exception e) {
-            log.error("处理图片消息时发生错误: {}", e.getMessage(), e);
+            log.error("处理媒体消息时发生错误: {}", e.getMessage(), e);
         }
     }
 
-    /**
-     * 保存消息到数据库
-     */
-    private void storeMessage(Long senderId, ChatMessage chatMessage, String messageType) {
-        try {
-            UserChatMessageDO message = new UserChatMessageDO();
-            message.setSenderId(senderId);
-            message.setReceiverId(chatMessage.getReceiverId());
-            message.setSendTime(OffsetDateTime.now());
-            message.setMessageType(messageType);
-            message.setRead(false);
-            message.setContent(chatMessage.getData());
-
-            if (chatMessage.isText()) {
-                message.setMediaFormat("text");
-            } else {
-                message.setMediaFormat(chatMessage.getMediaFormat());
-            }
-
-            chatMessageMapper.insert(message);
-            log.debug("消息已保存到数据库: senderId={}, receiverId={}, type={}",
-                    senderId, chatMessage.getReceiverId(), chatMessage.getSubType());
-
-        } catch (Exception e) {
-            log.error("保存消息到数据库时发生错误: {}", e.getMessage(), e);
+    private void deliverChatMessage(Long senderId, ChatMessage chatMessage) throws Exception {
+        if (chatMessage.isText()) {
+            chatPersistInfoService.persistOutbound(senderId, chatMessage.getReceiverId(),
+                    ResourceTypeEnum.TEXT, MediaFormatEnum.TEXT, chatMessage.getData());
+        } else {
+            chatPersistInfoService.persistOutbound(senderId, chatMessage.getReceiverId(),
+                    ResourceTypeEnum.IMAGE,
+                    MediaFormatEnum.fromProtocol(chatMessage.getMediaFormat()),
+                    chatMessage.getData());
+        }
+        WebSocketSession receiverSession = WebSocketSessionHolder.getSession(chatMessage.getReceiverId());
+        if (receiverSession != null && receiverSession.isOpen()) {
+            receiverSession.sendMessage(chatMessage.toBinaryMessage());
+        } else {
+            log.debug("接收者未在线，消息已落库: receiverId={}", chatMessage.getReceiverId());
         }
     }
 
