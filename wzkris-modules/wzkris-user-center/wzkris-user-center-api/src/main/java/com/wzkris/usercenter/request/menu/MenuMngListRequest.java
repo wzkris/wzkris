@@ -4,7 +4,7 @@ import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +19,7 @@ public class MenuMngListRequest {
     @Parameter(description = "0代表存在 1代表停用")
     private MenuStatusEnum status;
 
-    @NotBlank(message = "{invalidParameter.menuScope.invalid}")
+    @NotNull(message = "{invalidParameter.menuScope.invalid}")
     @Parameter(description = "菜单域")
     private MenuScopeEnum scope;
 }

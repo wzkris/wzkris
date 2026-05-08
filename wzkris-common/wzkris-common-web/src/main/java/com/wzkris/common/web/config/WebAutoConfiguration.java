@@ -17,7 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
 @Import({ControllerLogAspect.class, RestExceptionHandler.class,
-        JacksonConfig.class, UserAgentUtil.class})
+        JacksonConfig.class, UserAgentUtil.class,
+        EnumConvertWebMvcConfigurer.class})
 @AutoConfiguration
 public class WebAutoConfiguration {
 
