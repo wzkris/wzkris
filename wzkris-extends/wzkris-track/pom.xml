@@ -6,22 +6,17 @@
 
     <parent>
         <groupId>com.wzkris</groupId>
-        <artifactId>wzkris</artifactId>
+        <artifactId>wzkris-extends</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>wzkris-extends</artifactId>
+    <artifactId>wzkris-track</artifactId>
     <packaging>pom</packaging>
 
-    <description>
-        wzkris-extend扩展模块
-    </description>
+    <description>埋点接入（api + biz）</description>
 
     <modules>
-        <module>wzkris-monitor-admin</module>
-        <module>wzkris-mqtt-server</module>
-        <module>wzkris-track</module>
+        <module>wzkris-track-api</module>
+        <module>wzkris-track-biz</module>
     </modules>
-
-
 </project>
