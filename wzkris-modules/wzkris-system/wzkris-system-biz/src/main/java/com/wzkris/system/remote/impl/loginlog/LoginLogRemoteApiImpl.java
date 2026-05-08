@@ -31,11 +31,11 @@ public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
         if (CollectionUtils.isEmpty(loginLogEventRequests)) {
             return Result.ok();
         }
-        Map<String, List<LoginLogEventRequest>> listMap =
+        Map<AuthTypeEnum, List<LoginLogEventRequest>> listMap =
                 loginLogEventRequests.stream().collect(Collectors.groupingBy(LoginLogEventRequest::getAuthType));
-        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN.getValue(), Collections.emptyList()));
-        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.CUSTOMER.getValue(), Collections.emptyList()));
-        saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT.getValue(), Collections.emptyList()));
+        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN, Collections.emptyList()));
+        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.CUSTOMER, Collections.emptyList()));
+        saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT, Collections.emptyList()));
         return Result.ok();
     }
 

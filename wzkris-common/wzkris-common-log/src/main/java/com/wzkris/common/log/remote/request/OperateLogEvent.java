@@ -1,5 +1,6 @@
 package com.wzkris.common.log.remote.request;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
@@ -41,7 +42,7 @@ public class OperateLogEvent {
     /**
      * 认证类型
      */
-    private String authType;
+    private AuthTypeEnum authType;
 
     /**
      * 操作人员ID

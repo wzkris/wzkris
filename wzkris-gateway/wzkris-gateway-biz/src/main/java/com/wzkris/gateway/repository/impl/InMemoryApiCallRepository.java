@@ -1,5 +1,6 @@
 package com.wzkris.gateway.repository.impl;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.gateway.domain.ApiCallEventDO;
 import com.wzkris.gateway.domain.ApiCallStatsDO;
 import com.wzkris.gateway.repository.ApiCallRepository;
@@ -82,20 +83,20 @@ public class InMemoryApiCallRepository implements ApiCallRepository {
     // ======== 读取 ========
 
     @Override
-    public ApiCallStatsDO getHourlyApiCallStats(String authType, String hour) {
+    public ApiCallStatsDO getHourlyApiCallStats(AuthTypeEnum authType, String hour) {
         drainQueue(READ_DRAIN_LIMIT);
-        ApiStatsBucket agg = apiHourly.get(hour + ":" + authType);
+        ApiStatsBucket agg = apiHourly.get(hour + ":" + authType.getValue());
         return agg != null ? agg.toStats() : ApiCallStatsDO.zero();
     }
 
     @Override
-    public ApiCallStatsDO getRealtimeApiCallStats(String authType, int windowSeconds) {
+    public ApiCallStatsDO getRealtimeApiCallStats(AuthTypeEnum authType, int windowSeconds) {
         drainQueue(READ_DRAIN_LIMIT);
         int safeWindow = Math.max(1, Math.min(windowSeconds, MAX_REALTIME_WINDOW_SECONDS));
         long nowSecond = Instant.now().getEpochSecond();
         ApiStatsWindowAccumulator merged = new ApiStatsWindowAccumulator();
         for (long second = nowSecond - safeWindow + 1; second <= nowSecond; second++) {
-            ApiStatsBucket agg = apiSecondWindow.get(second + ":" + authType);
+            ApiStatsBucket agg = apiSecondWindow.get(second + ":" + authType.getValue());
             if (agg != null) {
                 merged.merge(agg.toSnapshot());
             }
@@ -104,9 +105,9 @@ public class InMemoryApiCallRepository implements ApiCallRepository {
     }
 
     @Override
-    public Map<String, ApiCallStatsDO> getDailyApiCallStatsByPath(String authType, String date) {
+    public Map<String, ApiCallStatsDO> getDailyApiCallStatsByPath(AuthTypeEnum authType, String date) {
         drainQueue(READ_DRAIN_LIMIT);
-        String prefix = date + ":" + authType + ":";
+        String prefix = date + ":" + authType.getValue() + ":";
         return apiDailyPath.entrySet().stream()
                 .filter(e -> e.getKey().startsWith(prefix))
                 .collect(Collectors.toMap(
@@ -184,7 +185,7 @@ public class InMemoryApiCallRepository implements ApiCallRepository {
     private void applyEvent(ApiCallEventDO event) {
         String hour = event.getTimestamp().format(HOUR_FMT);
         String date = event.getTimestamp().format(DATE_FMT);
-        String authType = event.getAuthType();
+        AuthTypeEnum authType = event.getAuthType();
         String path = event.getPath();
         String method = event.getMethod();
         int statusCode = event.getStatusCode();

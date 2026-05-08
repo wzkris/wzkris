@@ -3,11 +3,13 @@ package com.wzkris.common.core.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.lang.Nullable;
 
 /**
  * 风险等级
  */
+@Getter
 @AllArgsConstructor
 public enum RiskLevelEnum {
 
@@ -17,6 +19,7 @@ public enum RiskLevelEnum {
 
     HIGH("HIGH");
 
+    @JsonValue
     private final String value;
 
     @JsonCreator
@@ -28,11 +31,6 @@ public enum RiskLevelEnum {
             }
         }
         return null;
-    }
-
-    @JsonValue
-    public String getValue() {
-        return value;
     }
 
 }

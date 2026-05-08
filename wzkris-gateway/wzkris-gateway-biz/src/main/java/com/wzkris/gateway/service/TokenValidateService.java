@@ -62,9 +62,8 @@ public class TokenValidateService {
             return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
 
-        String authType = jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE);
-        AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(authType);
-        if (authTypeEnum == null) {
+        AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE));
+        if (authTypeEnum == AuthTypeEnum.NONE) {
             return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
 
@@ -106,7 +105,7 @@ public class TokenValidateService {
     }
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
-        LoginUserQueryRequest LoginUserQueryRequest = new LoginUserQueryRequest(authTypeEnum.getValue(), uid, sid);
+        LoginUserQueryRequest LoginUserQueryRequest = new LoginUserQueryRequest(authTypeEnum, uid, sid);
         Result<LoginUserResponse> r = loginUserRemote.queryInfo(LoginUserQueryRequest);
         if (!ResultUtil.check(r)) {
             return UsernamePasswordAuthenticationToken.unauthenticated(null, null);

@@ -1,5 +1,6 @@
 package com.wzkris.system.response.adminlog;
 
+import com.wzkris.common.core.enums.RiskLevelEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -44,7 +45,7 @@ public class AdminLoginLogMngResponse {
     private String abnormalTags;
 
     @Schema(description = "风险等级")
-    private String riskLevel;
+    private RiskLevelEnum riskLevel;
 
     @Schema(description = "风险分")
     private Integer riskScore;

@@ -1,5 +1,6 @@
 package com.wzkris.system.remote.api.operatelog.request;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
@@ -17,7 +18,7 @@ public class OperateLogEventRequest {
 
     private String requestMethod;
 
-    private String authType;
+    private AuthTypeEnum authType;
 
     private Long operatorId;
 

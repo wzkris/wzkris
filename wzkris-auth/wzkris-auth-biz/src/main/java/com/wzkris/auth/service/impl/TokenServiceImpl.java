@@ -7,6 +7,7 @@ import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.TokenKeyBuilder;
 import com.wzkris.common.core.constant.JwtClaimConstants;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
@@ -110,16 +111,16 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private String generateAccessToken(BaseLoginUser baseLoginUser, String sid) {
-        Jwt jwt = getJwt(tokenProperties.getAccessTokenTimeOut(), baseLoginUser.getUid(), sid, baseLoginUser.getAuthType().getValue());
+        Jwt jwt = getJwt(tokenProperties.getAccessTokenTimeOut(), baseLoginUser.getUid(), sid, baseLoginUser.getAuthType());
         return jwt.getTokenValue();
     }
 
     private String generateRefreshToken(BaseLoginUser baseLoginUser, String sid) {
-        Jwt jwt = getJwt(tokenProperties.getRefreshTokenTimeOut(), baseLoginUser.getUid(), sid, baseLoginUser.getAuthType().getValue());
+        Jwt jwt = getJwt(tokenProperties.getRefreshTokenTimeOut(), baseLoginUser.getUid(), sid, baseLoginUser.getAuthType());
         return jwt.getTokenValue();
     }
 
-    private Jwt getJwt(int timeout, Long uid, String sid, String authType) {
+    private Jwt getJwt(int timeout, Long uid, String sid, AuthTypeEnum authType) {
         JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.RS256;
 
         JwsHeader jwsHeader = JwsHeader.with(jwsAlgorithm)
@@ -130,7 +131,7 @@ public class TokenServiceImpl implements TokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(uid.toString())  // uid
                 .claim(JwtClaimConstants.SID, sid)  // 会话ID，与 accessToken 的 sid 相同
-                .claim(JwtClaimConstants.AUTH_TYPE, authType)
+                .claim(JwtClaimConstants.AUTH_TYPE, authType.getValue())
                 .issuer(authorizationServerSettings.getIssuer())  // 添加 issuer
                 .issuedAt(issuedAt)
                 .expiresAt(expiresAt)

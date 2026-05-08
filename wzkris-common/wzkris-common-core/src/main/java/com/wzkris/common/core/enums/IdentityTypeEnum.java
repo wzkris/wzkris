@@ -3,11 +3,13 @@ package com.wzkris.common.core.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.lang.Nullable;
 
 /**
  * 身份类型
  */
+@Getter
 @AllArgsConstructor
 public enum IdentityTypeEnum {
 
@@ -21,6 +23,7 @@ public enum IdentityTypeEnum {
      */
     SUPER("SUPER");
 
+    @JsonValue
     private final String value;
 
     @JsonCreator
@@ -32,11 +35,6 @@ public enum IdentityTypeEnum {
             }
         }
         return null;
-    }
-
-    @JsonValue
-    public String getValue() {
-        return value;
     }
 
 }

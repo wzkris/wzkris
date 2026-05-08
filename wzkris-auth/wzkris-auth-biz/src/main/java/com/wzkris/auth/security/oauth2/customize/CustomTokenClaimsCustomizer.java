@@ -23,18 +23,18 @@ public class CustomTokenClaimsCustomizer implements OAuth2TokenCustomizer<JwtEnc
             return;
         }
         JwtClaimsSet.Builder claims = context.getClaims();
-        String authType = null;
+        AuthTypeEnum authType = AuthTypeEnum.NONE;
         var principal = context.getPrincipal();
 
         // OAuth2 客户端（例如 client_credentials）
         if (principal instanceof OAuth2ClientAuthenticationToken) {
-            authType = AuthTypeEnum.CLIENT.getValue();
+            authType = AuthTypeEnum.CLIENT;
         } else if (principal != null && principal.getPrincipal() instanceof BaseLoginUser baseLoginUser) {
-            authType = baseLoginUser.getAuthType().getValue();
+            authType = baseLoginUser.getAuthType();
         }
 
-        if (authType != null) {
-            claims.claim(JwtClaimConstants.AUTH_TYPE, authType);
+        if (authType != AuthTypeEnum.NONE) {
+            claims.claim(JwtClaimConstants.AUTH_TYPE, authType.getValue());
         }
     }
 

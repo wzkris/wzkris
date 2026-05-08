@@ -2,6 +2,7 @@ package com.wzkris.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.core.enums.RiskLevelEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -59,7 +60,7 @@ public class AdminLoginLogDO implements Serializable {
     private String abnormalTags;
 
     @Schema(description = "风险等级")
-    private String riskLevel;
+    private RiskLevelEnum riskLevel;
 
     @Schema(description = "风险分")
     private Integer riskScore;

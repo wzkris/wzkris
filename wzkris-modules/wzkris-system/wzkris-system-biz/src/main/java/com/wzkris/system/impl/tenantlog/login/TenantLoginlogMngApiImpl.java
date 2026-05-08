@@ -38,11 +38,11 @@ public class TenantLoginlogMngApiImpl
                 .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantLoginLogDO::getMemberId, request.getMemberId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantLoginLogDO::getSuccess, request.getSuccess())
                 .eq(StringUtil.isNotEmpty(request.getTraceId()), TenantLoginLogDO::getTraceId, request.getTraceId())
-                .eq(StringUtil.isNotEmpty(request.getRiskLevel()), TenantLoginLogDO::getRiskLevel, request.getRiskLevel())
+                .eq(ObjectUtils.isNotEmpty(request.getRiskLevel()), TenantLoginLogDO::getRiskLevel, request.getRiskLevel())
                 .like(StringUtil.isNotEmpty(request.getUsername()), TenantLoginLogDO::getUsername, request.getUsername())
                 .like(StringUtil.isNotEmpty(request.getLoginLocation()), TenantLoginLogDO::getLoginLocation, request.getLoginLocation())
                 .like(StringUtil.isNotEmpty(request.getAbnormalTag()), TenantLoginLogDO::getAbnormalTags, request.getAbnormalTag())
-                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()), TenantLoginLogDO::getRiskLevel, RiskLevelEnum.LOW.getValue())
+                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()), TenantLoginLogDO::getRiskLevel, RiskLevelEnum.LOW)
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantLoginLogDO::getLoginTime,
                         request.getBeginTime(),

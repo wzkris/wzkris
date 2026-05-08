@@ -45,7 +45,6 @@ public class LogoutHandlerImpl implements LogoutHandler {
         UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
         BaseLoginUser loginUser = (BaseLoginUser) authenticationToken.getPrincipal();
         Long uid = loginUser.getUid();
-        String authType = loginUser.getAuthType().getValue();
         String accessToken = authenticationToken.getCredentials().toString();
 
         // 解析 accessToken 获取 sid
@@ -53,7 +52,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
         String sid = claims.getSid();
 
         // 移除会话
-        tokenService.revoke(authType, uid, sid);
+        tokenService.revoke(loginUser.getAuthType().getValue(), uid, sid);
 
         // 发布登出事件
         SpringUtil.getContext().publishEvent(new LogoutEvent(uid, loginUser.getAuthType()));

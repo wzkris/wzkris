@@ -71,7 +71,7 @@ public class LoginEventListener {
         updateLoginInfoIfSuccess(loginUser, ipAddr, event.getSuccess(), now);
 
         LoginLogEvent loginLogEvent = new LoginLogEvent();
-        loginLogEvent.setAuthType(loginUser.getAuthType().getValue());
+        loginLogEvent.setAuthType(loginUser.getAuthType());
         loginLogEvent.setOperatorId(loginUser.getUid());
         loginLogEvent.setUsername(resolveUsername(loginUser));
         loginLogEvent.setTenantId(resolveTenantId(loginUser));
@@ -84,7 +84,7 @@ public class LoginEventListener {
         loginLogEvent.setTraceId(traceId);
         loginLogEvent.setUserAgent(userAgentText);
         loginLogEvent.setAbnormalTags(riskResult.abnormalTags());
-        loginLogEvent.setRiskLevel(riskResult.riskLevel().getValue());
+        loginLogEvent.setRiskLevel(riskResult.riskLevel());
         loginLogEvent.setRiskScore(riskResult.riskScore());
         loginLogRemote.save(Collections.singletonList(loginLogEvent));
         reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);

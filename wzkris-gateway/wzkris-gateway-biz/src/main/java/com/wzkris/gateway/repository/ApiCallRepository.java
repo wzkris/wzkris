@@ -1,5 +1,6 @@
 package com.wzkris.gateway.repository;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.gateway.domain.ApiCallEventDO;
 import com.wzkris.gateway.domain.ApiCallStatsDO;
 
@@ -38,7 +39,7 @@ public interface ApiCallRepository {
      * @param hour     格式 yyyy-MM-dd-HH
      * @return 聚合统计，不存在时返回 {@link ApiCallStatsDO#zero()}
      */
-    ApiCallStatsDO getHourlyApiCallStats(String authType, String hour);
+    ApiCallStatsDO getHourlyApiCallStats(AuthTypeEnum authType, String hour);
 
     /**
      * 查询滑动窗口内的实时 API 统计（用于 QPS/成功率/耗时监控）
@@ -47,7 +48,7 @@ public interface ApiCallRepository {
      * @param windowSeconds 滑动窗口秒数，建议 5-300
      * @return 窗口聚合统计
      */
-    ApiCallStatsDO getRealtimeApiCallStats(String authType, int windowSeconds);
+    ApiCallStatsDO getRealtimeApiCallStats(AuthTypeEnum authType, int windowSeconds);
 
     /**
      * 查询指定日期按路径分组的 API 调用聚合统计
@@ -66,6 +67,6 @@ public interface ApiCallRepository {
      * @param date     格式 yyyy-MM-dd
      * @return path → 聚合统计的映射，无数据时返回空 Map
      */
-    Map<String, ApiCallStatsDO> getDailyApiCallStatsByPath(String authType, String date);
+    Map<String, ApiCallStatsDO> getDailyApiCallStatsByPath(AuthTypeEnum authType, String date);
 
 }

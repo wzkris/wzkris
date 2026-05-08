@@ -1,5 +1,6 @@
 package com.wzkris.gateway.domain;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,9 +27,9 @@ public class ApiCallEventDO {
     private LocalDateTime timestamp;
 
     /**
-     * 认证类型（tag/维度），如 app / admin / miniapp
+     * 认证类型
      */
-    private String authType;
+    private AuthTypeEnum authType;
 
     /**
      * 请求路径（tag/维度）

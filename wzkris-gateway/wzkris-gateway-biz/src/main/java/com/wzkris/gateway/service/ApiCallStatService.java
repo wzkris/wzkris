@@ -1,5 +1,6 @@
 package com.wzkris.gateway.service;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.gateway.domain.ApiCallStatsDO;
 import com.wzkris.gateway.repository.ApiCallRepository;
 import com.wzkris.gateway.response.ApiCallDailySeriesResponse;
@@ -23,7 +24,7 @@ public class ApiCallStatService {
 
     private final ApiCallRepository apiCallRepository;
 
-    public ApiCallRealtimeResponse queryRealtimeApiCallStats(String authType, Integer windowSeconds) {
+    public ApiCallRealtimeResponse queryRealtimeApiCallStats(AuthTypeEnum authType, Integer windowSeconds) {
         int safeWindow = Math.max(5, Math.min(windowSeconds, 300));
         ApiCallStatsDO stats = apiCallRepository.getRealtimeApiCallStats(authType, safeWindow);
         double qps = (double) stats.getTotal() / safeWindow;
@@ -48,7 +49,7 @@ public class ApiCallStatService {
                 .build();
     }
 
-    public ApiCallDailySeriesResponse queryDailyApiCallSeries(String authType, String date) {
+    public ApiCallDailySeriesResponse queryDailyApiCallSeries(AuthTypeEnum authType, String date) {
         Map<String, ApiCallResponse> hoursMap = new LinkedHashMap<>(24);
         long totalApi = 0L;
         long totalSuccess = 0L;

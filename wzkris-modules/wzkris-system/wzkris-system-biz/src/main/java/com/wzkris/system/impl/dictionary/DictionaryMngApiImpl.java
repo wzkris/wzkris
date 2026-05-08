@@ -13,7 +13,7 @@ import com.wzkris.system.mapper.DictionaryInfoMapper;
 import com.wzkris.system.request.dictionary.DictionaryMngPageRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;
-import com.wzkris.system.response.dictionary.DictionaryInfoResponse;
+import com.wzkris.system.response.dictionary.DictionaryMngResponse;
 import com.wzkris.system.service.DictionaryInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,10 +27,10 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     private final DictionaryInfoService dictionaryInfoService;
 
     @Override
-    public Result<Page<DictionaryInfoResponse>> queryPage(DictionaryMngPageRequest request) {
+    public Result<Page<DictionaryMngResponse>> queryPage(DictionaryMngPageRequest request) {
         startPage(request);
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(request);
-        return getPageResult(BeanUtil.convert(dictionaryInfoMapper.selectList(lqw), DictionaryInfoResponse.class));
+        return getPageResult(BeanUtil.convert(dictionaryInfoMapper.selectList(lqw), DictionaryMngResponse.class));
     }
 
     private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngPageRequest request) {
@@ -41,9 +41,9 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     }
 
     @Override
-    public Result<DictionaryInfoResponse> queryInfo(IdRequest request) {
+    public Result<DictionaryMngResponse> queryInfo(IdRequest request) {
         Long dictId = request.getId();
-        return ok(BeanUtil.convert(dictionaryInfoMapper.selectById(dictId), DictionaryInfoResponse.class));
+        return ok(BeanUtil.convert(dictionaryInfoMapper.selectById(dictId), DictionaryMngResponse.class));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.wzkris.gateway.domain;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
+
 /**
  * 统计键，用于标识统计维度
  *
@@ -12,7 +14,7 @@ public class ApiCallStatKey {
     /**
      * 认证类型，如app/admin/miniapp
      */
-    private String authType;
+    private AuthTypeEnum authType;
 
     /**
      * 用户ID

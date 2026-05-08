@@ -47,7 +47,7 @@ public abstract class CommonAuthenticationConverter
 
         // auth_type (REQUIRED)
         AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(request.getParameter(OAuth2ParameterConstant.AUTH_TYPE));
-        if (authTypeEnum == null) {
+        if (authTypeEnum == AuthTypeEnum.NONE) {
             return null;
         }
 

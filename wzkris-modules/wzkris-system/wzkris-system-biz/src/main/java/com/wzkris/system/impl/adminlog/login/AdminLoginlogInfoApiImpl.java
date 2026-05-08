@@ -39,11 +39,11 @@ public class AdminLoginlogInfoApiImpl
                 .eq(AdminLoginLogDO::getAdminId, SecurityUtil.getUid())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), AdminLoginLogDO::getSuccess, request.getSuccess())
                 .eq(StringUtil.isNotEmpty(request.getTraceId()), AdminLoginLogDO::getTraceId, request.getTraceId())
-                .eq(StringUtil.isNotEmpty(request.getRiskLevel()), AdminLoginLogDO::getRiskLevel, request.getRiskLevel())
+                .eq(ObjectUtils.isNotEmpty(request.getRiskLevel()), AdminLoginLogDO::getRiskLevel, request.getRiskLevel())
                 .like(StringUtil.isNotEmpty(request.getUsername()), AdminLoginLogDO::getUsername, request.getUsername())
                 .like(StringUtil.isNotEmpty(request.getLoginLocation()), AdminLoginLogDO::getLoginLocation, request.getLoginLocation())
                 .like(StringUtil.isNotEmpty(request.getAbnormalTag()), AdminLoginLogDO::getAbnormalTags, request.getAbnormalTag())
-                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()), AdminLoginLogDO::getRiskLevel, RiskLevelEnum.LOW.getValue())
+                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()), AdminLoginLogDO::getRiskLevel, RiskLevelEnum.LOW)
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         AdminLoginLogDO::getLoginTime,
                         request.getBeginTime(),

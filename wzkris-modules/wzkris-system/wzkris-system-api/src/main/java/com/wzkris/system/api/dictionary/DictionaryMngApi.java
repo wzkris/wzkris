@@ -6,15 +6,15 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngPageRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;
-import com.wzkris.system.response.dictionary.DictionaryInfoResponse;
+import com.wzkris.system.response.dictionary.DictionaryMngResponse;
 
 public interface DictionaryMngApi {
 
-    Result<Page<DictionaryInfoResponse>> queryPage(DictionaryMngPageRequest request);
+    Result<Page<DictionaryMngResponse>> queryPage(DictionaryMngPageRequest request);
 
-    Result<DictionaryInfoResponse> queryInfo(IdRequest request);
+    Result<DictionaryMngResponse> queryInfo(IdRequest request);
 
-    Result<Void> save(DictionaryMngSaveRequest addReq);
+    Result<Void> save(DictionaryMngSaveRequest request);
 
     Result<Void> update(DictionaryMngUpdateRequest request);
 

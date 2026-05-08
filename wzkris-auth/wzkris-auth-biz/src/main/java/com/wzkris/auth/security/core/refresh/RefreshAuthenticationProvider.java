@@ -6,6 +6,7 @@ import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -36,12 +37,12 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
     public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
         RefreshAuthenticationToken authenticationToken = (RefreshAuthenticationToken) authentication;
         String refreshToken = authenticationToken.getRefreshToken();
-        String authType = authenticationToken.getAuthType().getValue();
+        AuthTypeEnum authType = authenticationToken.getAuthType();
 
         Long uid = checkParameter(refreshToken, authType);
 
         // 从存储中加载用户信息
-        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
+        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
         if (loginUser == null) {
             // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
@@ -49,7 +50,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         }
 
         // 从存储中加载权限信息
-        Set<String> perms = tokenService.loadPermissionsByUid(authType, uid);
+        Set<String> perms = tokenService.loadPermissionsByUid(authType.getValue(), uid);
 
         // 如果权限不存在，使用空集合
         if (perms == null) {
@@ -61,7 +62,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         return commonAuthenticationToken;
     }
 
-    private Long checkParameter(String refreshToken, String authType) {
+    private Long checkParameter(String refreshToken, AuthTypeEnum authType) {
         // 从 refreshToken JWT 中解析 uid 和 sid
         TokenClaims claims;
         try {
@@ -73,13 +74,13 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
             return null;
         }
 
-        if (!StringUtil.equals(authType, claims.getAuthType())) {
+        if (!StringUtil.equals(authType.getValue(), claims.getAuthType())) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
         // 检查 sid 是否在黑名单中
-        if (tokenService.isRevoked(authType, claims.getUid(), claims.getSid())) {
+        if (tokenService.isRevoked(authType.getValue(), claims.getUid(), claims.getSid())) {
             // sid 已被拉黑
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");

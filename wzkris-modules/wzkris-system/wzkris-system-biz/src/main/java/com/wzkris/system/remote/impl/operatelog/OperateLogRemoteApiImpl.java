@@ -31,11 +31,11 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
         if (CollectionUtils.isEmpty(requestList)) {
             return Result.ok();
         }
-        Map<String, List<OperateLogEventRequest>> listMap =
+        Map<AuthTypeEnum, List<OperateLogEventRequest>> listMap =
                 requestList.stream()
                         .collect(Collectors.groupingBy(OperateLogEventRequest::getAuthType));
-        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN.getValue(), Collections.emptyList()));
-        saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT.getValue(), Collections.emptyList()));
+        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN, Collections.emptyList()));
+        saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT, Collections.emptyList()));
         return Result.ok();
     }
 

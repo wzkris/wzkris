@@ -10,7 +10,7 @@ import com.wzkris.system.api.dictionary.DictionaryMngApi;
 import com.wzkris.system.request.dictionary.DictionaryMngPageRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;
-import com.wzkris.system.response.dictionary.DictionaryInfoResponse;
+import com.wzkris.system.response.dictionary.DictionaryMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,14 +31,14 @@ public class DictionaryMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:dictionary-mng:page")
-    public Result<Page<DictionaryInfoResponse>> queryPage(@ParameterObject DictionaryMngPageRequest request) {
+    public Result<Page<DictionaryMngResponse>> queryPage(@ParameterObject DictionaryMngPageRequest request) {
         return dictionaryMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("system-mod:dictionary-mng:page")
-    public Result<DictionaryInfoResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<DictionaryMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return dictionaryMngApi.queryInfo(request);
     }
 
@@ -46,8 +46,8 @@ public class DictionaryMngController {
     @OperateLog(title = "数据字典", subTitle = "添加字典", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
     @CheckAdminPerms("system-mod:dictionary-mng:add")
-    public Result<Void> save(@RequestBody DictionaryMngSaveRequest addReq) {
-        return dictionaryMngApi.save(addReq);
+    public Result<Void> save(@RequestBody DictionaryMngSaveRequest request) {
+        return dictionaryMngApi.save(request);
     }
 
     @Operation(summary = "修改")

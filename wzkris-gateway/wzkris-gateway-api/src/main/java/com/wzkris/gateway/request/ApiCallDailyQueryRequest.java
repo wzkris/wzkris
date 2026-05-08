@@ -1,5 +1,6 @@
 package com.wzkris.gateway.request;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 public class ApiCallDailyQueryRequest {
 
     @Schema(description = "认证类型")
-    private String authType;
+    private AuthTypeEnum authType;
 
     @Schema(description = "日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

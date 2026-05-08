@@ -1,5 +1,6 @@
 package com.wzkris.gateway.filter.function;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.domain.ApiCallStatKey;
@@ -61,11 +62,11 @@ public class ApiCallStatFilterFunction implements HandlerFilterFunction<ServerRe
 
     private void record(String path, String method, int statusCode, long costMs, boolean success) {
         try {
-            String authType = "anonymous";
+            AuthTypeEnum authType = null;
             Long userId = null;
             if (SecurityUtil.isAuth()) {
                 BaseLoginUser loginUser = SecurityUtil.getLoginUser();
-                authType = loginUser.getAuthType().getValue();
+                authType = loginUser.getAuthType();
                 userId = loginUser.getUid();
             }
 

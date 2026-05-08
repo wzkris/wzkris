@@ -5,6 +5,7 @@ import com.wzkris.auth.remote.api.loginuser.request.LoginUserQueryRequest;
 import com.wzkris.auth.remote.api.loginuser.request.OAuth2TokenQueryRequest;
 import com.wzkris.auth.remote.api.loginuser.response.LoginUserResponse;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import lombok.RequiredArgsConstructor;
@@ -30,24 +31,20 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
     public Result<LoginUserResponse> queryInfo(LoginUserQueryRequest request) {
         final Long uid = request.getUid();
         final String sid = request.getSid();
-        final String authType = request.getAuthType();
-
-        if (uid == null || authType == null || sid == null) {
-            return Result.unauth("Invalid token: missing subject");
-        }
+        final AuthTypeEnum authType = request.getAuthType();
 
         // 检查 sid 是否不在会话中
-        if (tokenService.isRevoked(authType, uid, sid)) {
+        if (tokenService.isRevoked(authType.getValue(), uid, sid)) {
             return Result.unauth("Token has been revoked");
         }
 
         // 通过 uid 获取用户信息和权限
-        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
+        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
         if (loginUser == null) {
             return Result.unauth("Token has been expired");
         }
 
-        Set<String> permissions = tokenService.loadPermissionsByUid(authType, uid);
+        Set<String> permissions = tokenService.loadPermissionsByUid(authType.getValue(), uid);
         return Result.ok(new LoginUserResponse(loginUser, permissions));
     }
 
