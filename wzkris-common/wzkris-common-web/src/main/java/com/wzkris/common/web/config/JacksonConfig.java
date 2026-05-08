@@ -45,7 +45,7 @@ public class JacksonConfig {
 
         javaTimeModule.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer(OffsetDateTimeSerializer.INSTANCE,
                 true, offsetDateTimeFormatter, JsonFormat.Shape.STRING));
-        javaTimeModule.addDeserializer(OffsetDateTime.class, new OffsetDateTimeTolerantDeserializer(offsetDateTimeFormatter));
+        javaTimeModule.addDeserializer(OffsetDateTime.class, new OffsetDateTimeTolerantDeserializer());
 
         return javaTimeModule;
     }

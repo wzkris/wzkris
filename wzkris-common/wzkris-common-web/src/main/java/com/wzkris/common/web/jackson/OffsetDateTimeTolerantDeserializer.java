@@ -3,6 +3,7 @@ package com.wzkris.common.web.jackson;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -15,11 +16,7 @@ import java.time.format.DateTimeParseException;
  */
 public class OffsetDateTimeTolerantDeserializer extends JsonDeserializer<OffsetDateTime> {
 
-    private final DateTimeFormatter legacyFormatter;
-
-    public OffsetDateTimeTolerantDeserializer(DateTimeFormatter legacyFormatter) {
-        this.legacyFormatter = legacyFormatter;
-    }
+    private final DateTimeFormatter legacyFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public OffsetDateTime deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
@@ -35,4 +32,5 @@ public class OffsetDateTimeTolerantDeserializer extends JsonDeserializer<OffsetD
             return localDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime();
         }
     }
+
 }
