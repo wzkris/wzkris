@@ -1,12 +1,13 @@
 package com.wzkris.system.request.message;
 
+import com.wzkris.common.orm.request.PagingRequest;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 @Schema(description = "通知分页查询")
-public class NotificationInfoPageRequest {
+public class NotificationInfoPageRequest extends PagingRequest {
 
     @Parameter(description = "是否已读")
     private Boolean read;

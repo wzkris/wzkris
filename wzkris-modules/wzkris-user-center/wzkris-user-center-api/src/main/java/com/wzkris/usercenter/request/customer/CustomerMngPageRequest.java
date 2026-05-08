@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.request.customer;
 
-import com.wzkris.common.core.model.QueryRequest;
+import com.wzkris.common.orm.request.PagingRequest;
 import com.wzkris.usercenter.enums.customer.CustomerStatusEnum;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "客户管理查询参数体")
-public class CustomerMngPageRequest extends QueryRequest {
+public class CustomerMngPageRequest extends PagingRequest {
 
     @Parameter(description = "用户昵称")
     private String nickname;

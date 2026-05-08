@@ -30,7 +30,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
 
     @Override
     public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, ConfigInfoResponse.class));
     }

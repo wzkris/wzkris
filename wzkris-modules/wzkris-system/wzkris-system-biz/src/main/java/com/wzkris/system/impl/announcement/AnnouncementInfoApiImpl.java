@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.PagingRequest;
 import com.wzkris.system.api.announcement.AnnouncementInfoApi;
 import com.wzkris.system.domain.AnnouncementInfoDO;
 import com.wzkris.system.enums.announcement.AnnouncementStatusEnum;
@@ -22,11 +23,11 @@ public class AnnouncementInfoApiImpl extends AbstractApi implements Announcement
     private final AnnouncementInfoMapper announcementInfoMapper;
 
     @Override
-    public Result<Page<AnnouncementInfoResponse>> queryPage() {
+    public Result<Page<AnnouncementInfoResponse>> queryPage(PagingRequest request) {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
                 .eq(AnnouncementInfoDO::getStatus, AnnouncementStatusEnum.PUBLISH)
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
-        startPage();
+        startPage(request);
         List<AnnouncementInfoResponse> list = announcementInfoMapper.selectList2VO(lqw, AnnouncementInfoResponse.class);
         return getPageResult(list);
     }

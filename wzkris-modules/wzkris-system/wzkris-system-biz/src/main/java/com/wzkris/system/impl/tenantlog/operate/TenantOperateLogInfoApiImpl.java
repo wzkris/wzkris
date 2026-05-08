@@ -28,7 +28,7 @@ public class TenantOperateLogInfoApiImpl
 
     @Override
     public Result<Page<TenantOperateLogInfoResponse>> queryPage(TenantOperateLogInfoPageRequest request) {
-        startPage();
+        startPage(request);
         List<TenantOperateLogDO> list = tenantOperateLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, TenantOperateLogInfoResponse.class));
     }

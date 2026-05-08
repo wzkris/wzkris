@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.request.admin;
 
-import com.wzkris.common.core.model.QueryRequest;
+import com.wzkris.common.orm.request.PagingRequest;
 import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "管理查询参数体")
-public class AdminMngPageRequest extends QueryRequest {
+public class AdminMngPageRequest extends PagingRequest {
 
     @Parameter(description = "部门ID")
     private Long deptId;

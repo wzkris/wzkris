@@ -1,36 +1,24 @@
 package com.wzkris.common.orm.utils;
 
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.PagingRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 分页工具 必须手动清理线程信息
- * @date : 2024/1/11 16:41
+ * 当前线程的分页上下文，供分页插件读取。
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PageUtil {
 
     private static final ThreadLocal<Page<?>> LOCAL_PAGE = new ThreadLocal<>();
 
-    public static void startPage(long pageNum, long pageSize) {
-        startPage(pageNum, pageSize, null);
-    }
-
-    public static void startPage(long pageNum, long pageSize, List<OrderItem> orders) {
-        Page<?> page = new Page<>(pageNum, pageSize);
-        page.setOrders(orders);
+    public static void bind(PagingRequest request) {
+        Page<?> page = new Page<>(request.normalizedPageNum(), request.normalizedPageSize());
+        page.setOrders(request.buildOrderItems());
         LOCAL_PAGE.set(page);
     }
 
-    /**
-     * 获取当前分页对象
-     */
     @SuppressWarnings("unchecked")
     public static <T> Page<T> getPage() {
         return (Page<T>) LOCAL_PAGE.get();

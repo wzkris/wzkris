@@ -37,7 +37,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
 
     @Override
     public Result<Page<PostMngResponse>> queryPage(PostMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<PostInfoDO> list = postInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, PostMngResponse.class));
     }

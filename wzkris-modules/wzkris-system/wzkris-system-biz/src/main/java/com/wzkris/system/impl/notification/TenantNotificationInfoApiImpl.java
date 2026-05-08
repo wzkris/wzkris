@@ -23,7 +23,7 @@ public class TenantNotificationInfoApiImpl extends AbstractApi implements Tenant
 
     @Override
     public Result<Page<NotificationInfoResponse>> queryPage(NotificationInfoPageRequest request) {
-        startPage();
+        startPage(request);
         List<NotificationInfoResponse> list = notificationInfoMapper.listTenantNotice(
                 SecurityUtil.getUid(), request.getNotificationType(), request.getRead());
         return getPageResult(list);

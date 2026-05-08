@@ -28,7 +28,7 @@ public class AdminOperateLogInfoApiImpl
 
     @Override
     public Result<Page<AdminOperateLogInfoResponse>> queryPage(AdminOperateLogInfoPageRequest request) {
-        startPage();
+        startPage(request);
         List<AdminOperateLogDO> list = adminOperateLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, AdminOperateLogInfoResponse.class));
     }

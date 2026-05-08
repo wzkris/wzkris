@@ -43,7 +43,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     @Override
     public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request) {
-        startPage();
+        startPage(request);
         List<TenantWalletRecordResponse> list = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request))
                 .stream()
                 .map(this::toResponse)

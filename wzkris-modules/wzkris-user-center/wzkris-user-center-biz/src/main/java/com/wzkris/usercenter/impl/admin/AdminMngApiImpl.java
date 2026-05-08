@@ -54,7 +54,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<AdminMngResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
         return getPageResult(list);
     }

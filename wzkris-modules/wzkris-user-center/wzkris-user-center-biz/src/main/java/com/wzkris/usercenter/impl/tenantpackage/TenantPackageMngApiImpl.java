@@ -35,7 +35,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<TenantPackageInfoDO> list = tenantPackageInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, TenantPackageMngResponse.class));
     }

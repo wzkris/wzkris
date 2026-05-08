@@ -52,9 +52,6 @@ public class Page<T> implements AutoCloseable {
         this.pageSize = pageSize;
     }
 
-    /**
-     * 计算当前分页偏移量
-     */
     public long offset() {
         if (this.pageNum <= 1) {
             return 0;

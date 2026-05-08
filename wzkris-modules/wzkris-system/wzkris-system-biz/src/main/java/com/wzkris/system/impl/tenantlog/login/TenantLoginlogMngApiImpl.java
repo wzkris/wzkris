@@ -28,7 +28,7 @@ public class TenantLoginlogMngApiImpl
 
     @Override
     public Result<Page<TenantLoginLogMngResponse>> queryPage(TenantLoginLogMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<TenantLoginLogDO> list = tenantLoginLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, TenantLoginLogMngResponse.class));
     }

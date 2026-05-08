@@ -29,7 +29,7 @@ public class AdminLoginlogInfoApiImpl
 
     @Override
     public Result<Page<AdminLoginLogInfoResponse>> queryPage(AdminLoginLogInfoPageRequest request) {
-        startPage();
+        startPage(request);
         List<AdminLoginLogDO> list = adminLoginLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, AdminLoginLogInfoResponse.class));
     }

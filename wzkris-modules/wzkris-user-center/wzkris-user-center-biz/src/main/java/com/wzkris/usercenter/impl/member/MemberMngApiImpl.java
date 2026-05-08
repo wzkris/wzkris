@@ -47,7 +47,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<MemberMngResponse> list = memberInfoMapper.listVO(this.buildPageWrapper(request));
         return getPageResult(list);
     }

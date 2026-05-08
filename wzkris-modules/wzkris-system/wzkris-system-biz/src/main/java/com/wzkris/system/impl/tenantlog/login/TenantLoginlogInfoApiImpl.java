@@ -29,7 +29,7 @@ public class TenantLoginlogInfoApiImpl
 
     @Override
     public Result<Page<TenantLoginLogInfoResponse>> queryPage(TenantLoginLogInfoPageRequest request) {
-        startPage();
+        startPage(request);
         List<TenantLoginLogDO> list = tenantLoginLogService.list(buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, TenantLoginLogInfoResponse.class));
     }

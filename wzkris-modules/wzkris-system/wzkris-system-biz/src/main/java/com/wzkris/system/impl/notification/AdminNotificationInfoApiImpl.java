@@ -23,7 +23,7 @@ public class AdminNotificationInfoApiImpl extends AbstractApi implements AdminNo
 
     @Override
     public Result<Page<NotificationInfoResponse>> queryPage(NotificationInfoPageRequest request) {
-        startPage();
+        startPage(request);
         List<NotificationInfoResponse> list = notificationInfoMapper.listAdminNotice(
                 SecurityUtil.getUid(), request.getNotificationType(), request.getRead());
         return getPageResult(list);

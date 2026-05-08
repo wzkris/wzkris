@@ -28,7 +28,7 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
 
     @Override
     public Result<Page<CustomerMngResponse>> queryPage(CustomerMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<CustomerInfoDO> list = customerInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, CustomerMngResponse.class));
     }

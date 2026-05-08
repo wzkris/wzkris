@@ -2,11 +2,11 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.RoleInfoDO;
+import com.wzkris.usercenter.enums.role.DataScopeEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
@@ -31,26 +31,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PermissionServiceImpl implements PermissionService {
-
-    /**
-     * 全部数据权限
-     */
-    public static final String DATA_SCOPE_ALL = "1";
-
-    /**
-     * 自定数据权限
-     */
-    public static final String DATA_SCOPE_CUSTOM = "2";
-
-    /**
-     * 部门数据权限
-     */
-    public static final String DATA_SCOPE_DEPT = "3";
-
-    /**
-     * 部门及以下数据权限
-     */
-    public static final String DATA_SCOPE_DEPT_AND_CHILD = "4";
 
     private final RoleInfoService roleInfoService;
 
@@ -118,25 +98,25 @@ public class PermissionServiceImpl implements PermissionService {
         }
         Set<Long> deptIds = new HashSet<>();
         // 循环每一个角色，拼接所有可访问的部门id
-        Map<String, List<Long>> datascopeMap = roles.stream()
+        Map<DataScopeEnum, List<Long>> datascopeMap = roles.stream()
                 // 根据权限作用域分组
                 .collect(Collectors.groupingBy(
                         RoleInfoDO::getDataScope, Collectors.mapping(RoleInfoDO::getRoleId, Collectors.toList())));
-        for (Map.Entry<String, List<Long>> entry : datascopeMap.entrySet()) {
-            if (StringUtil.equals(DATA_SCOPE_ALL, entry.getKey())) {
+        for (Map.Entry<DataScopeEnum, List<Long>> entry : datascopeMap.entrySet()) {
+            if (Objects.equals(DataScopeEnum.ALL, entry.getKey())) {
                 deptIds = deptInfoMapper
                         .selectList(Wrappers.lambdaQuery(DeptInfoDO.class).select(DeptInfoDO::getDeptId))
                         .stream()
                         .map(DeptInfoDO::getDeptId)
                         .collect(Collectors.toSet());
                 break;
-            } else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
+            } else if (Objects.equals(DataScopeEnum.CUSTOM, entry.getKey())) {
                 // 自定义部门权限
                 deptIds.addAll(roleToDeptMapper.listDeptIdByRoleIds(entry.getValue()));
-            } else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
+            } else if (Objects.equals(DataScopeEnum.DEPT, entry.getKey())) {
                 // 部门自身数据权限
                 deptIds.add(deptId);
-            } else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
+            } else if (Objects.equals(DataScopeEnum.DEPT_AND_CHILD, entry.getKey())) {
                 // 部门及以下数据权限
                 deptIds.addAll(deptInfoMapper.listSubDeptIdById(deptId));
             } else {

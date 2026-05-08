@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.request.tenant;
 
+import com.wzkris.common.orm.request.PagingRequest;
 import com.wzkris.usercenter.enums.tenant.TenantStatusEnum;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "租户管理查询参数体")
-public class TenantMngPageRequest {
+public class TenantMngPageRequest extends PagingRequest {
 
     @Parameter(description = "租户名称")
     private String tenantName;

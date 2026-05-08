@@ -24,7 +24,7 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
 
     @Override
     public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<TenantWalletRecordResponse> list = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request))
                 .stream()
                 .map(this::toResponse)

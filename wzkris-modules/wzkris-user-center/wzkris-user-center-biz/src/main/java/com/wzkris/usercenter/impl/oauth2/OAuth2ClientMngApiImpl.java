@@ -35,7 +35,7 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
 
     @Override
     public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<OAuth2ClientDO> list = oauth2ClientMapper.selectList(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, OAuth2ClientMngResponse.class));
     }

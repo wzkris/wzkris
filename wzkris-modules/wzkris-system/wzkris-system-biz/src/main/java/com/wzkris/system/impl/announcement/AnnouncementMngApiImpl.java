@@ -30,7 +30,7 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
 
     @Override
     public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, AnnouncementMngResponse.class));
     }

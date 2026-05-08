@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Setter
-public class QueryRequest {
+public abstract class QueryRequest {
 
     private Map<String, Object> params;
 

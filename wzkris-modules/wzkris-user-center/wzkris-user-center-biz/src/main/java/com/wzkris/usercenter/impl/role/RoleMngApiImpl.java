@@ -49,7 +49,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
 
     @Override
     public Result<Page<RoleMngResponse>> queryPage(RoleMngPageRequest request) {
-        startPage();
+        startPage(request);
         List<RoleInfoDO> list = roleInfoMapper.selectLists(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, RoleMngResponse.class));
     }
