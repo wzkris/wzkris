@@ -7,9 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-/**
- * 新增租户套餐请求体
- */
 @Data
 @Schema(description = "新增租户套餐参数体")
 public class TenantPackageMngSaveRequest {

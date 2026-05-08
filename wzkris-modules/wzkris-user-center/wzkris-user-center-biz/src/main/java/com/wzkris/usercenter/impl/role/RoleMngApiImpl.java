@@ -12,15 +12,15 @@ import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
 import com.wzkris.usercenter.mapper.RoleInheritanceMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.role.RoleMngPageRequest;
 import com.wzkris.usercenter.request.role.RoleMngSaveRequest;
 import com.wzkris.usercenter.request.role.RoleMngUpdateRequest;
 import com.wzkris.usercenter.response.common.CheckedSelectResponse;
 import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
 import com.wzkris.usercenter.response.common.SelectResponse;
-import com.wzkris.usercenter.response.role.RoleInfoResponse;
+import com.wzkris.usercenter.response.role.RoleMngResponse;
 import com.wzkris.usercenter.service.DeptInfoService;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
@@ -48,10 +48,10 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     private final RoleInheritanceMapper roleInheritanceMapper;
 
     @Override
-    public Result<Page<RoleInfoResponse>> queryPage(RoleMngPageRequest request) {
+    public Result<Page<RoleMngResponse>> queryPage(RoleMngPageRequest request) {
         startPage();
         List<RoleInfoDO> list = roleInfoMapper.selectLists(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, RoleInfoResponse.class));
+        return getPageResult(BeanUtil.convert(list, RoleMngResponse.class));
     }
 
     private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngPageRequest request) {
@@ -62,12 +62,12 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<RoleInfoResponse> queryInfo(IdRequest request) {
+    public Result<RoleMngResponse> queryInfo(IdRequest request) {
         Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(roleInfoMapper.selectById(roleId), RoleInfoResponse.class));
+        return ok(BeanUtil.convert(roleInfoMapper.selectById(roleId), RoleMngResponse.class));
     }
 
     @Override

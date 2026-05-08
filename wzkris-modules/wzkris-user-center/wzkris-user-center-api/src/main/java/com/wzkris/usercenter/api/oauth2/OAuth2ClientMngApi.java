@@ -2,7 +2,7 @@ package com.wzkris.usercenter.api.oauth2;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.oauth2.ClientSecretUpdateRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngPageRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngSaveRequest;

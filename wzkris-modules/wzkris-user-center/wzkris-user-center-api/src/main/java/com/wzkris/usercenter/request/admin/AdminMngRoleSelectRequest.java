@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.request.admin;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -7,10 +8,9 @@ import lombok.Data;
 @Schema(description = "管理员角色选择参数")
 public class AdminMngRoleSelectRequest {
 
-    @Schema(description = "管理员ID")
+    @Parameter(description = "管理员ID")
     private Long adminId;
 
-    @Schema(description = "角色名称")
+    @Parameter(description = "角色名称")
     private String roleName;
-
 }

@@ -13,9 +13,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * 修改管理员请求体
- */
 @Data
 @Schema(description = "修改管理员参数体")
 public class AdminMngUpdateRequest {

@@ -10,9 +10,6 @@ import org.hibernate.validator.constraints.Range;
 
 import java.util.List;
 
-/**
- * 新增职位请求体
- */
 @Data
 @Schema(description = "新增职位参数体")
 public class PostMngSaveRequest {

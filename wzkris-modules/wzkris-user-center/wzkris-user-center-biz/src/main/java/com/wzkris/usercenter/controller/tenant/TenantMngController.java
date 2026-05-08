@@ -7,7 +7,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.tenant.TenantMngApi;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.common.PwdResetRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngPageRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;
@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,20 +37,20 @@ public class TenantMngController {
     @Operation(summary = "租户分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<Page<TenantMngResponse>> queryPage(TenantMngPageRequest request) {
+    public Result<Page<TenantMngResponse>> queryPage(@ParameterObject TenantMngPageRequest request) {
         return tenantMngApi.queryPage(request);
     }
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:tenant-mng:page")
-    public Result<TenantMngResponse> queryInfo(IdRequest request) {
+    public Result<TenantMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return tenantMngApi.queryInfo(request);
     }
 
     @Operation(summary = "租户选择列表(带分页)")
     @GetMapping("/query-selectpage")
-    public Result<Page<SelectResponse>> querySelectPage(TenantMngPageRequest request) {
+    public Result<Page<SelectResponse>> querySelectPage(@ParameterObject TenantMngPageRequest request) {
         return tenantMngApi.querySelectPage(request);
     }
 
@@ -58,7 +59,7 @@ public class TenantMngController {
     @CheckAdminPerms(
             value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
             mode = CheckMode.OR)
-    public Result<List<SelectResponse>> queryPackageSelect(TenantPackageMngListRequest request) {
+    public Result<List<SelectResponse>> queryPackageSelect(@ParameterObject TenantPackageMngListRequest request) {
         return tenantMngApi.queryPackageSelect(request);
     }
 

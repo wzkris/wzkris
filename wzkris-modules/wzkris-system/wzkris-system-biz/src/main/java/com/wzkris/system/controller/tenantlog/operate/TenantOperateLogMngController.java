@@ -9,15 +9,11 @@ import com.wzkris.system.response.tenantlog.TenantOperateLogMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 操作日志记录
- *
- * @author wzkris
- */
 @Tag(name = "租户操作日志管理")
 @RestController
 @RequestMapping("/tenant-operatelog-manage")
@@ -29,7 +25,7 @@ public class TenantOperateLogMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckTenantPerms("system-mod:tenant-operatelog-mng:page")
-    public Result<Page<TenantOperateLogMngResponse>> queryPage(TenantOperateLogMngPageRequest request) {
+    public Result<Page<TenantOperateLogMngResponse>> queryPage(@ParameterObject TenantOperateLogMngPageRequest request) {
         return tenantOperateLogMngApi.queryPage(request);
     }
 

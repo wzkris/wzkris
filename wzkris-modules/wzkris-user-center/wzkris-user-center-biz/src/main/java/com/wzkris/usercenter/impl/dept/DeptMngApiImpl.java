@@ -9,11 +9,11 @@ import com.wzkris.usercenter.api.dept.DeptMngApi;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.dept.DeptMngListRequest;
 import com.wzkris.usercenter.request.dept.DeptMngSaveRequest;
 import com.wzkris.usercenter.request.dept.DeptMngUpdateRequest;
-import com.wzkris.usercenter.response.dept.DeptInfoResponse;
+import com.wzkris.usercenter.response.dept.DeptMngResponse;
 import com.wzkris.usercenter.service.DeptInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -31,9 +31,9 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     private final DeptInfoService deptInfoService;
 
     @Override
-    public Result<List<DeptInfoResponse>> queryList(DeptMngListRequest request) {
+    public Result<List<DeptMngResponse>> queryList(DeptMngListRequest request) {
         List<DeptInfoDO> depts = deptInfoMapper.selectLists(buildQueryWrapper(request));
-        return ok(BeanUtil.convert(depts, DeptInfoResponse.class));
+        return ok(BeanUtil.convert(depts, DeptMngResponse.class));
     }
 
     private LambdaQueryWrapper<DeptInfoDO> buildQueryWrapper(DeptMngListRequest request) {
@@ -51,12 +51,12 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     }
 
     @Override
-    public Result<DeptInfoResponse> queryInfo(IdRequest request) {
+    public Result<DeptMngResponse> queryInfo(IdRequest request) {
         Long deptId = request.getId();
         if (!deptInfoMapper.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(deptInfoMapper.selectById(deptId), DeptInfoResponse.class));
+        return ok(BeanUtil.convert(deptInfoMapper.selectById(deptId), DeptMngResponse.class));
     }
 
     @Override

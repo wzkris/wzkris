@@ -12,9 +12,6 @@ import lombok.Data;
 
 import java.time.OffsetDateTime;
 
-/**
- * 新增租户请求体
- */
 @Data
 @Schema(description = "新增租户参数体")
 public class TenantMngSaveRequest {

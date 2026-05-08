@@ -7,8 +7,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageMngApi;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngPageRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,14 +34,14 @@ public class TenantPackageMngController {
     @Operation(summary = "套餐分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request) {
+    public Result<Page<TenantPackageMngResponse>> queryPage(@ParameterObject TenantPackageMngPageRequest request) {
         return tenantPackageMngApi.queryPage(request);
     }
 
     @Operation(summary = "套餐详细信息")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:tenantpackage-mng:page")
-    public Result<TenantPackageMngResponse> queryInfo(IdRequest request) {
+    public Result<TenantPackageMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return tenantPackageMngApi.queryInfo(request);
     }
 
@@ -49,7 +50,7 @@ public class TenantPackageMngController {
     @CheckAdminPerms(
             value = {"user-mod:tenantpackage-mng:add", "user-mod:tenantpackage-mng:edit"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request) {
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@ParameterObject IdRequest request) {
         return tenantPackageMngApi.queryMenuSelectTree(request);
     }
 

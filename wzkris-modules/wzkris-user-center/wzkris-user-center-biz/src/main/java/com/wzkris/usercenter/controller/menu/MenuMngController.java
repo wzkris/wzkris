@@ -5,15 +5,16 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.menu.MenuMngListRequest;
 import com.wzkris.usercenter.request.menu.MenuMngSaveRequest;
 import com.wzkris.usercenter.request.menu.MenuMngUpdateRequest;
-import com.wzkris.usercenter.response.menu.MenuInfoResponse;
+import com.wzkris.usercenter.response.menu.MenuMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +31,14 @@ public class MenuMngController {
     @Operation(summary = "菜单列表（无分页）")
     @GetMapping("/query-list")
     @CheckAdminPerms("user-mod:menu-mng:list")
-    public Result<List<MenuInfoResponse>> queryList(MenuMngListRequest request) {
+    public Result<List<MenuMngResponse>> queryList(@ParameterObject MenuMngListRequest request) {
         return menuMngApi.queryList(request);
     }
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:menu-mng:list")
-    public Result<MenuInfoResponse> queryInfo(IdRequest request) {
+    public Result<MenuMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return menuMngApi.queryInfo(request);
     }
 

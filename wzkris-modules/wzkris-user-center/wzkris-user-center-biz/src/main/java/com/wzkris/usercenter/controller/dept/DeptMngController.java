@@ -5,15 +5,16 @@ import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.dept.DeptMngListRequest;
 import com.wzkris.usercenter.request.dept.DeptMngSaveRequest;
 import com.wzkris.usercenter.request.dept.DeptMngUpdateRequest;
-import com.wzkris.usercenter.response.dept.DeptInfoResponse;
+import com.wzkris.usercenter.response.dept.DeptMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +31,14 @@ public class DeptMngController {
     @Operation(summary = "部门列表 (不带分页)")
     @GetMapping("/query-list")
     @CheckAdminPerms("user-mod:dept-mng:list")
-    public Result<List<DeptInfoResponse>> queryList(DeptMngListRequest request) {
+    public Result<List<DeptMngResponse>> queryList(@ParameterObject DeptMngListRequest request) {
         return deptMngApi.queryList(request);
     }
 
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:dept-mng:query")
-    public Result<DeptInfoResponse> queryInfo(IdRequest request) {
+    public Result<DeptMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return deptMngApi.queryInfo(request);
     }
 

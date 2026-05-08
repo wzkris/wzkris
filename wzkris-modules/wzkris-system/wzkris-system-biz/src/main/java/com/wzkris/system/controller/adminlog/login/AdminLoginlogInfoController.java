@@ -8,6 +8,7 @@ import com.wzkris.system.response.adminlog.AdminLoginLogInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ public class AdminLoginlogInfoController {
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    public Result<Page<AdminLoginLogInfoResponse>> queryPage(AdminLoginLogInfoPageRequest request) {
+    public Result<Page<AdminLoginLogInfoResponse>> queryPage(@ParameterObject AdminLoginLogInfoPageRequest request) {
         return adminLoginlogInfoApi.queryPage(request);
     }
 

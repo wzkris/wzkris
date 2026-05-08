@@ -7,26 +7,22 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.role.RoleMngApi;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.role.RoleMngPageRequest;
 import com.wzkris.usercenter.request.role.RoleMngSaveRequest;
 import com.wzkris.usercenter.request.role.RoleMngUpdateRequest;
 import com.wzkris.usercenter.response.common.CheckedSelectResponse;
 import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.role.RoleInfoResponse;
+import com.wzkris.usercenter.response.role.RoleMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 角色信息
- *
- * @author wzkris
- */
 @Tag(name = "角色管理")
 @Validated
 @RestController
@@ -39,14 +35,14 @@ public class RoleMngController {
     @Operation(summary = "角色分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:role-mng:page")
-    public Result<Page<RoleInfoResponse>> queryPage(RoleMngPageRequest request) {
+    public Result<Page<RoleMngResponse>> queryPage(@ParameterObject RoleMngPageRequest request) {
         return roleMngApi.queryPage(request);
     }
 
     @Operation(summary = "角色详细信息")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:role-mng:query")
-    public Result<RoleInfoResponse> queryInfo(IdRequest request) {
+    public Result<RoleMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return roleMngApi.queryInfo(request);
     }
 
@@ -55,7 +51,7 @@ public class RoleMngController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request) {
+    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(@ParameterObject IdRequest request) {
         return roleMngApi.queryRoleMenuSelectTree(request);
     }
 
@@ -64,7 +60,7 @@ public class RoleMngController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(IdRequest request) {
+    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(@ParameterObject IdRequest request) {
         return roleMngApi.queryRoleDeptSelectTree(request);
     }
 
@@ -73,7 +69,7 @@ public class RoleMngController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectResponse> queryRoleInheritedSelect(IdRequest request) {
+    public Result<CheckedSelectResponse> queryRoleInheritedSelect(@ParameterObject IdRequest request) {
         return roleMngApi.queryRoleInheritedSelect(request);
     }
 

@@ -15,7 +15,7 @@ import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
 import com.wzkris.usercenter.event.CreateTenantEvent;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.common.PwdResetRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngPageRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;

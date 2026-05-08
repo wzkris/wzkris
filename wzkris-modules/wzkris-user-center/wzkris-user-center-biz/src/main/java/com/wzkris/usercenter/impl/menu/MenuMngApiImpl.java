@@ -9,11 +9,11 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
 import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.menu.MenuMngListRequest;
 import com.wzkris.usercenter.request.menu.MenuMngSaveRequest;
 import com.wzkris.usercenter.request.menu.MenuMngUpdateRequest;
-import com.wzkris.usercenter.response.menu.MenuInfoResponse;
+import com.wzkris.usercenter.response.menu.MenuMngResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,9 +30,9 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<List<MenuInfoResponse>> queryList(MenuMngListRequest request) {
+    public Result<List<MenuMngResponse>> queryList(MenuMngListRequest request) {
         List<MenuInfoDO> menus = menuInfoService.list(this.buildQueryWrapper(request));
-        return ok(BeanUtil.convert(menus, MenuInfoResponse.class));
+        return ok(BeanUtil.convert(menus, MenuMngResponse.class));
     }
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngListRequest request) {
@@ -49,8 +49,8 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     }
 
     @Override
-    public Result<MenuInfoResponse> queryInfo(IdRequest request) {
-        return ok(BeanUtil.convert(menuInfoService.getById(request.getId()), MenuInfoResponse.class));
+    public Result<MenuMngResponse> queryInfo(IdRequest request) {
+        return ok(BeanUtil.convert(menuInfoService.getById(request.getId()), MenuMngResponse.class));
     }
 
     @Override

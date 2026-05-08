@@ -2,20 +2,20 @@ package com.wzkris.usercenter.request.customer;
 
 import com.wzkris.common.core.model.QueryRequest;
 import com.wzkris.usercenter.enums.customer.CustomerStatusEnum;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
+@Schema(description = "客户管理查询参数体")
 public class CustomerMngPageRequest extends QueryRequest {
 
-    @Schema(description = "用户昵称")
+    @Parameter(description = "用户昵称")
     private String nickname;
 
-    @Schema(description = "手机号码")
+    @Parameter(description = "手机号码")
     private String phoneNumber;
 
-    @Schema(description = "用户状态")
+    @Parameter(description = "用户状态")
     private CustomerStatusEnum status;
-
 }
-

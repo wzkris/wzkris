@@ -10,13 +10,13 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.post.PostMngApi;
 import com.wzkris.usercenter.domain.PostInfoDO;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.post.PostMngPageRequest;
 import com.wzkris.usercenter.request.post.PostMngSaveRequest;
 import com.wzkris.usercenter.request.post.PostMngUpdateRequest;
 import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.post.PostInfoResponse;
+import com.wzkris.usercenter.response.post.PostMngResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
 import com.wzkris.usercenter.service.TenantInfoService;
@@ -36,10 +36,10 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<Page<PostInfoResponse>> queryPage(PostMngPageRequest request) {
+    public Result<Page<PostMngResponse>> queryPage(PostMngPageRequest request) {
         startPage();
         List<PostInfoDO> list = postInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, PostInfoResponse.class));
+        return getPageResult(BeanUtil.convert(list, PostMngResponse.class));
     }
 
     private LambdaQueryWrapper<PostInfoDO> buildQueryWrapper(PostMngPageRequest request) {
@@ -50,8 +50,8 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     }
 
     @Override
-    public Result<PostInfoResponse> queryInfo(IdRequest request) {
-        return ok(BeanUtil.convert(postInfoService.getById(request.getId()), PostInfoResponse.class));
+    public Result<PostMngResponse> queryInfo(IdRequest request) {
+        return ok(BeanUtil.convert(postInfoService.getById(request.getId()), PostMngResponse.class));
     }
 
     @Override

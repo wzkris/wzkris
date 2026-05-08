@@ -9,9 +9,6 @@ import org.hibernate.validator.constraints.Range;
 
 import java.util.List;
 
-/**
- * 修改职位请求体
- */
 @Data
 @Schema(description = "修改职位参数体")
 public class PostMngUpdateRequest {

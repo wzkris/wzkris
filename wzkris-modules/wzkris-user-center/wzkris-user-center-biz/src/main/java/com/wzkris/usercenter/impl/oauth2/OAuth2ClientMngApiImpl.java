@@ -9,7 +9,7 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.oauth2.OAuth2ClientMngApi;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.oauth2.ClientSecretUpdateRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngPageRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngSaveRequest;

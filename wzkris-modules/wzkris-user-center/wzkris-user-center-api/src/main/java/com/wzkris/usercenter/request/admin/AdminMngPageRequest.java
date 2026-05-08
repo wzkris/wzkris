@@ -2,6 +2,7 @@ package com.wzkris.usercenter.request.admin;
 
 import com.wzkris.common.core.model.QueryRequest;
 import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -9,23 +10,21 @@ import lombok.Data;
 @Schema(description = "管理查询参数体")
 public class AdminMngPageRequest extends QueryRequest {
 
-    @Schema(description = "部门ID")
+    @Parameter(description = "部门ID")
     private Long deptId;
 
-    @Schema(description = "用户名")
+    @Parameter(description = "用户名")
     private String username;
 
-    @Schema(description = "用户昵称")
+    @Parameter(description = "用户昵称")
     private String nickname;
 
-    @Schema(description = "用户邮箱")
+    @Parameter(description = "用户邮箱")
     private String email;
 
-    @Schema(description = "手机号码")
+    @Parameter(description = "手机号码")
     private String phoneNumber;
 
-    @Schema(description = "用户状态")
+    @Parameter(description = "用户状态")
     private AdminStatusEnum status;
-
 }
-

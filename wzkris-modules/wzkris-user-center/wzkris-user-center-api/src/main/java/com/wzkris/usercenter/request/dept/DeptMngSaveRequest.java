@@ -9,9 +9,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
-/**
- * 新增部门请求体
- */
 @Data
 @Schema(description = "新增部门参数体")
 public class DeptMngSaveRequest {

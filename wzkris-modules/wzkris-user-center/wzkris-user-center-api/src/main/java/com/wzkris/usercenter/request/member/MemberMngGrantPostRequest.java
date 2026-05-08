@@ -6,9 +6,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * 成员授权职位请求体
- */
 @Data
 @Schema(description = "成员授权职位参数体")
 public class MemberMngGrantPostRequest {

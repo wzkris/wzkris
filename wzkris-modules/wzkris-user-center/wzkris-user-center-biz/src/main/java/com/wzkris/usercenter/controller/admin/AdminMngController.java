@@ -8,8 +8,8 @@ import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.admin.AdminMngApi;
 import com.wzkris.usercenter.request.admin.*;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.common.PwdResetRequest;
 import com.wzkris.usercenter.request.dept.DeptMngListRequest;
 import com.wzkris.usercenter.response.admin.AdminMngResponse;
@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,7 @@ public class AdminMngController {
     @Operation(summary = "管理员分页列表")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:admin-mng:page")
-    public Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request) {
+    public Result<Page<AdminMngResponse>> queryPage(@ParameterObject AdminMngPageRequest request) {
         return adminMngApi.queryPage(request);
     }
 
@@ -46,7 +47,7 @@ public class AdminMngController {
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
-    public Result<List<SelectTreeResponse>> queryDeptSelectTree(DeptMngListRequest request) {
+    public Result<List<SelectTreeResponse>> queryDeptSelectTree(@ParameterObject DeptMngListRequest request) {
         return adminMngApi.queryDeptSelectTree(request);
     }
 
@@ -55,14 +56,14 @@ public class AdminMngController {
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request) {
+    public Result<CheckedSelectResponse> queryRoleSelect(@ParameterObject AdminMngRoleSelectRequest request) {
         return adminMngApi.queryRoleSelect(request);
     }
 
     @Operation(summary = "管理员详细信息")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:admin-mng:query")
-    public Result<AdminMngResponse> queryInfo(IdRequest request) {
+    public Result<AdminMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return adminMngApi.queryInfo(request);
     }
 
@@ -110,7 +111,7 @@ public class AdminMngController {
     @OperateLog(title = "管理员管理", subTitle = "导出管理员数据", type = OperateTypeEnum.EXPORT)
     @GetMapping("/export")
     @CheckAdminPerms("user-mod:admin-mng:export")
-    public void export(HttpServletResponse response, AdminMngPageRequest request) {
+    public void export(HttpServletResponse response, @ParameterObject AdminMngPageRequest request) {
         adminMngApi.export(response, request);
     }
 

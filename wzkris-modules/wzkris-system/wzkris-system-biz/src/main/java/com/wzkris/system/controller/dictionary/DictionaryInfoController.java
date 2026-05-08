@@ -2,11 +2,12 @@ package com.wzkris.system.controller.dictionary;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.system.api.dictionary.DictionaryInfoApi;
-import com.wzkris.system.request.dictionary.DictionaryMngListRequest;
+import com.wzkris.system.request.dictionary.DictionaryInfoListRequest;
 import com.wzkris.system.response.dictionary.DictionaryDataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,7 @@ public class DictionaryInfoController {
 
     @Operation(summary = "查询字典")
     @GetMapping("/{dictKey}")
-    public Result<List<DictionaryDataResponse>> queryValue(DictionaryMngListRequest request) {
+    public Result<List<DictionaryDataResponse>> queryValue(@ParameterObject DictionaryInfoListRequest request) {
         return dictionaryInfoApi.queryValue(request);
     }
 

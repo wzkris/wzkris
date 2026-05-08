@@ -4,9 +4,9 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.dictionary.DictionaryMngApi;
-import com.wzkris.system.request.common.IdRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngPageRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;
@@ -15,14 +15,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 数据字典信息
- *
- * @author wzkris
- */
 @Tag(name = "字典管理")
 @Validated
 @RestController
@@ -35,14 +31,14 @@ public class DictionaryMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:dictionary-mng:page")
-    public Result<Page<DictionaryInfoResponse>> queryPage(DictionaryMngPageRequest request) {
+    public Result<Page<DictionaryInfoResponse>> queryPage(@ParameterObject DictionaryMngPageRequest request) {
         return dictionaryMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("system-mod:dictionary-mng:page")
-    public Result<DictionaryInfoResponse> queryInfo(IdRequest request) {
+    public Result<DictionaryInfoResponse> queryInfo(@ParameterObject IdRequest request) {
         return dictionaryMngApi.queryInfo(request);
     }
 

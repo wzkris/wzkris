@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class TenantWalletInfoController {
 
     @Operation(summary = "钱包记录分页")
     @GetMapping("/query-record-page")
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request) {
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(@ParameterObject TenantWalletRecordInfoPageRequest request) {
         return tenantWalletInfoApi.queryRecordPage(request);
     }
 

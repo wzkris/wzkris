@@ -9,9 +9,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
-/**
- * 修改菜单请求体
- */
 @Data
 @Schema(description = "修改菜单参数体")
 public class MenuMngUpdateRequest {

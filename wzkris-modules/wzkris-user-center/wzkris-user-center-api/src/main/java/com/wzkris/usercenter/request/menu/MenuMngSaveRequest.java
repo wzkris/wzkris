@@ -10,9 +10,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
-/**
- * 新增菜单请求体
- */
 @Data
 @Schema(description = "新增菜单参数体")
 public class MenuMngSaveRequest {

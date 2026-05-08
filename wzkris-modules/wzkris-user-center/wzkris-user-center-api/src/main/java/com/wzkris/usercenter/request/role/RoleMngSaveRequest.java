@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.request.role;
 
+import com.wzkris.usercenter.enums.role.DataScopeEnum;
 import com.wzkris.usercenter.enums.role.RoleStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -10,15 +11,12 @@ import org.hibernate.validator.constraints.Range;
 
 import java.util.List;
 
-/**
- * 新增角色请求体
- */
 @Data
 @Schema(description = "新增角色参数体")
 public class RoleMngSaveRequest {
 
-    @Schema(description = "数据范围（1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限）")
-    private String dataScope;
+    @Schema(description = "数据范围")
+    private DataScopeEnum dataScope;
 
     @NotBlank(message = "{invalidParameter.roleName.invalid}")
     @Size(min = 2, max = 20, message = "{invalidParameter.roleName.invalid}")

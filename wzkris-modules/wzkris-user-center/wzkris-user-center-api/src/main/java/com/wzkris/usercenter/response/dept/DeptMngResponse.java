@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class DeptInfoResponse {
+public class DeptMngResponse {
 
     private Long deptId;
 
@@ -36,6 +36,6 @@ public class DeptInfoResponse {
     private String email;
 
     @Schema(description = "子部门")
-    private List<DeptInfoResponse> children = new ArrayList<>();
+    private List<DeptMngResponse> children = new ArrayList<>();
 
 }

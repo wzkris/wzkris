@@ -9,6 +9,7 @@ import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class TenantWalletMngController {
     @Operation(summary = "钱包记录分页")
     @GetMapping("/record/page")
     @CheckAdminPerms("user-mod:tenant-wallet-mng:record-page")
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngPageRequest request) {
+    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(@ParameterObject TenantWalletRecordMngPageRequest request) {
         return tenantWalletMngApi.queryRecordPage(request);
     }
 

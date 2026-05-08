@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.customer.CustomerMngPageRequest;
 import com.wzkris.usercenter.response.customer.CustomerInfoExportResponse;
 import com.wzkris.usercenter.response.customer.CustomerMngResponse;

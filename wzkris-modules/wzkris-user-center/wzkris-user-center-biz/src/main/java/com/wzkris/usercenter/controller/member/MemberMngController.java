@@ -7,8 +7,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.member.MemberMngApi;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.common.PwdResetRequest;
 import com.wzkris.usercenter.request.member.*;
 import com.wzkris.usercenter.response.common.CheckedSelectResponse;
@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,14 +33,14 @@ public class MemberMngController {
     @Operation(summary = "分页列表")
     @GetMapping("/query-page")
     @CheckTenantPerms("user-mod:member-mng:page")
-    public Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request) {
+    public Result<Page<MemberMngResponse>> queryPage(@ParameterObject MemberMngPageRequest request) {
         return memberMngApi.queryPage(request);
     }
 
     @Operation(summary = "成员详细信息")
     @GetMapping("/query-info/{id}")
     @CheckTenantPerms("user-mod:member-mng:page")
-    public Result<MemberMngResponse> queryInfo(IdRequest request) {
+    public Result<MemberMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return memberMngApi.queryInfo(request);
     }
 
@@ -48,7 +49,7 @@ public class MemberMngController {
     @CheckTenantPerms(
             value = {"user-mod:member-mng:edit", "user-mod:member-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request) {
+    public Result<CheckedSelectResponse> queryPostSelect(@ParameterObject MemberMngPostSelectRequest request) {
         return memberMngApi.queryPostSelect(request);
     }
 

@@ -4,9 +4,9 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.config.ConfigMngApi;
-import com.wzkris.system.request.common.IdRequest;
 import com.wzkris.system.request.config.ConfigMngPageRequest;
 import com.wzkris.system.request.config.ConfigMngSaveRequest;
 import com.wzkris.system.request.config.ConfigMngUpdateRequest;
@@ -15,14 +15,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 参数配置 信息操作处理
- *
- * @author wzkris
- */
 @Tag(name = "系统配置管理")
 @Validated
 @RestController
@@ -35,14 +31,14 @@ public class ConfigMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("system-mod:config-mng:page")
-    public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
+    public Result<Page<ConfigInfoResponse>> queryPage(@ParameterObject ConfigMngPageRequest request) {
         return configMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("system-mod:config-mng:page")
-    public Result<ConfigInfoResponse> queryInfo(IdRequest request) {
+    public Result<ConfigInfoResponse> queryInfo(@ParameterObject IdRequest request) {
         return configMngApi.queryInfo(request);
     }
 

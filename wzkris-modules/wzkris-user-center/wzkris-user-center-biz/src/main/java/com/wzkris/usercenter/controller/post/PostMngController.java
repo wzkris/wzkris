@@ -7,17 +7,18 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.post.PostMngApi;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.post.PostMngPageRequest;
 import com.wzkris.usercenter.request.post.PostMngSaveRequest;
 import com.wzkris.usercenter.request.post.PostMngUpdateRequest;
 import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.post.PostInfoResponse;
+import com.wzkris.usercenter.response.post.PostMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,14 +34,14 @@ public class PostMngController {
     @Operation(summary = "职位分页")
     @GetMapping("/query-page")
     @CheckTenantPerms("user-mod:post-mng:page")
-    public Result<Page<PostInfoResponse>> queryPage(PostMngPageRequest request) {
+    public Result<Page<PostMngResponse>> queryPage(@ParameterObject PostMngPageRequest request) {
         return postMngApi.queryPage(request);
     }
 
     @Operation(summary = "职位详细信息")
     @GetMapping("/query-info/{id}")
     @CheckTenantPerms("user-mod:post-mng:page")
-    public Result<PostInfoResponse> queryInfo(IdRequest request) {
+    public Result<PostMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return postMngApi.queryInfo(request);
     }
 
@@ -49,7 +50,7 @@ public class PostMngController {
     @CheckTenantPerms(
             value = {"user-mod:post-mng:edit", "user-mod:post-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request) {
+    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(@ParameterObject IdRequest request) {
         return postMngApi.queryRoleMenuSelectTree(request);
     }
 

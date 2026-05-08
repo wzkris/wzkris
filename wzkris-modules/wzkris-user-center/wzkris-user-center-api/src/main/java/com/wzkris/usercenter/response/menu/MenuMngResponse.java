@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class MenuInfoResponse {
+public class MenuMngResponse {
 
     private Long menuId;
 
@@ -56,6 +56,6 @@ public class MenuInfoResponse {
     private MenuScopeEnum scope;
 
     @Schema(description = "子菜单")
-    private List<MenuInfoResponse> children = new ArrayList<>();
+    private List<MenuMngResponse> children = new ArrayList<>();
 
 }

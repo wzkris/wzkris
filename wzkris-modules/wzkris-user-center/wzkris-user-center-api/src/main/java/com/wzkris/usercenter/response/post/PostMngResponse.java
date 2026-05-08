@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PostInfoResponse {
+public class PostMngResponse {
 
     private Long postId;
 

@@ -2,7 +2,7 @@ package com.wzkris.system.api.config;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.system.request.config.ConfigMngPageRequest;
 import com.wzkris.system.request.config.ConfigMngSaveRequest;
 import com.wzkris.system.request.config.ConfigMngUpdateRequest;

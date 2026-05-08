@@ -2,8 +2,8 @@ package com.wzkris.usercenter.api.member;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.common.PwdResetRequest;
 import com.wzkris.usercenter.request.member.*;
 import com.wzkris.usercenter.response.common.CheckedSelectResponse;

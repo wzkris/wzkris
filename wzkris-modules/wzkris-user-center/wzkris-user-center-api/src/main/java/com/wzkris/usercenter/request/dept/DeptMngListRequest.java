@@ -1,22 +1,26 @@
 package com.wzkris.usercenter.request.dept;
 
 import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Schema(description = "部门列表查询条件")
 public class DeptMngListRequest {
 
+    @Parameter(description = "部门ID")
     private Long deptId;
 
+    @Parameter(description = "父部门ID")
     private Long parentId;
 
-    @Schema(description = "部门名称")
+    @Parameter(description = "部门名称")
     private String deptName;
 
-    @Schema(description = "0代表存在 1代表停用")
+    @Parameter(description = "0代表存在 1代表停用")
     private DeptStatusEnum status;
 
     public DeptMngListRequest(Long deptId) {
@@ -26,6 +30,4 @@ public class DeptMngListRequest {
     public DeptMngListRequest(DeptStatusEnum status) {
         this.status = status;
     }
-
 }
-

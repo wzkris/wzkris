@@ -2,14 +2,16 @@ package com.wzkris.system.controller.notification;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.system.api.notification.TenantNotificationInfoApi;
-import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.system.request.message.NotificationInfoPageRequest;
 import com.wzkris.system.request.message.UnreadSizeQueryRequest;
 import com.wzkris.system.response.notification.NotificationInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "租户通知信息")
@@ -22,8 +24,8 @@ public class TenantNotificationInfoController {
 
     @Operation(summary = "通知分页")
     @GetMapping("/query-page")
-    public Result<Page<NotificationInfoResponse>> queryPage(Boolean read, String notificationType) {
-        return tenantNotificationInfoApi.queryPage(read, notificationType);
+    public Result<Page<NotificationInfoResponse>> queryPage(@ParameterObject NotificationInfoPageRequest request) {
+        return tenantNotificationInfoApi.queryPage(request);
     }
 
     @Operation(summary = "标记已读")
@@ -34,7 +36,7 @@ public class TenantNotificationInfoController {
 
     @Operation(summary = "未读数量")
     @GetMapping("/query-unread-size")
-    public Result<Integer> queryUnreadSize(UnreadSizeQueryRequest request) {
+    public Result<Integer> queryUnreadSize(@ParameterObject UnreadSizeQueryRequest request) {
         return tenantNotificationInfoApi.queryUnreadSize(request);
     }
 

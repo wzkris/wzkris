@@ -2,8 +2,8 @@ package com.wzkris.system.api.announcement;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.system.request.common.IdListRequest;
-import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.system.request.announcement.AnnouncementMngPageRequest;
 import com.wzkris.system.request.announcement.AnnouncementMngSaveUpdateRequest;
 import com.wzkris.system.response.announcement.AnnouncementMngResponse;

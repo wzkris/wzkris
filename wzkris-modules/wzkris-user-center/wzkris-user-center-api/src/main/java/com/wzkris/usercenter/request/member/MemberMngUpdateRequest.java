@@ -12,9 +12,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * 修改租户成员请求体
- */
 @Data
 @Schema(description = "修改租户成员参数体")
 public class MemberMngUpdateRequest {

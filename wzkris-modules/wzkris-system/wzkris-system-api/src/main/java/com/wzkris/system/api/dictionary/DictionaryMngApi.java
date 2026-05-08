@@ -2,7 +2,7 @@ package com.wzkris.system.api.dictionary;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.system.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngPageRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;

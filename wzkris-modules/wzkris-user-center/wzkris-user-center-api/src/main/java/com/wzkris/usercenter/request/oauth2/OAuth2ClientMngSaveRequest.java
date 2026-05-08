@@ -5,9 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-/**
- * 新增 OAuth2 客户端请求体
- */
 @Data
 @Schema(description = "新增 OAuth2 客户端参数体")
 public class OAuth2ClientMngSaveRequest {

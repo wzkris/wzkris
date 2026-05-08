@@ -5,7 +5,7 @@ import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.dictionary.DictionaryInfoApi;
 import com.wzkris.system.domain.DictionaryInfoDO;
-import com.wzkris.system.request.dictionary.DictionaryMngListRequest;
+import com.wzkris.system.request.dictionary.DictionaryInfoListRequest;
 import com.wzkris.system.response.dictionary.DictionaryDataResponse;
 import com.wzkris.system.service.DictionaryInfoService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class DictionaryInfoApiImpl extends AbstractApi implements DictionaryInfo
     private final DictionaryInfoService dictService;
 
     @Override
-    public Result<List<DictionaryDataResponse>> queryValue(DictionaryMngListRequest request) {
+    public Result<List<DictionaryDataResponse>> queryValue(DictionaryInfoListRequest request) {
         String dictKey = request.getDictKey();
         DictionaryInfoDO.DictData[] source = dictService.getValueByKey(dictKey);
         if (source == null) {

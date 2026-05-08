@@ -2,20 +2,20 @@ package com.wzkris.usercenter.api.role;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.common.IdListRequest;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.role.RoleMngPageRequest;
 import com.wzkris.usercenter.request.role.RoleMngSaveRequest;
 import com.wzkris.usercenter.request.role.RoleMngUpdateRequest;
 import com.wzkris.usercenter.response.common.CheckedSelectResponse;
 import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.role.RoleInfoResponse;
+import com.wzkris.usercenter.response.role.RoleMngResponse;
 
 public interface RoleMngApi {
 
-    Result<Page<RoleInfoResponse>> queryPage(RoleMngPageRequest request);
+    Result<Page<RoleMngResponse>> queryPage(RoleMngPageRequest request);
 
-    Result<RoleInfoResponse> queryInfo(IdRequest request);
+    Result<RoleMngResponse> queryInfo(IdRequest request);
 
     Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request);
 

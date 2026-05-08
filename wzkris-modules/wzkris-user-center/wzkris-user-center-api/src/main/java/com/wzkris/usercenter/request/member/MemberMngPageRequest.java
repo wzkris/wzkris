@@ -2,6 +2,7 @@ package com.wzkris.usercenter.request.member;
 
 import com.wzkris.common.core.model.QueryRequest;
 import com.wzkris.usercenter.enums.member.MemberStatusEnum;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -9,13 +10,12 @@ import lombok.Data;
 @Schema(description = "租户成员管理查询参数体")
 public class MemberMngPageRequest extends QueryRequest {
 
-    @Schema(description = "用户名")
+    @Parameter(description = "用户名")
     private String username;
 
-    @Schema(description = "手机号码")
+    @Parameter(description = "手机号码")
     private String phoneNumber;
 
-    @Schema(description = "状态")
+    @Parameter(description = "状态")
     private MemberStatusEnum status;
-
 }

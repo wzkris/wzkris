@@ -2,7 +2,7 @@ package com.wzkris.usercenter.api.tenant;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.common.PwdResetRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngPageRequest;
 import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;

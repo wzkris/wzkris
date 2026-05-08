@@ -6,7 +6,7 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.oauth2.OAuth2ClientMngApi;
-import com.wzkris.usercenter.request.common.IdRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.request.oauth2.ClientSecretUpdateRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngPageRequest;
 import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngSaveRequest;
@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "OAuth2客户端管理")
@@ -29,14 +30,14 @@ public class OAuth2ClientMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckAdminPerms("user-mod:oauth2client-mng:page")
-    public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
+    public Result<Page<OAuth2ClientMngResponse>> queryPage(@ParameterObject OAuth2ClientMngPageRequest request) {
         return oAuth2ClientMngApi.queryPage(request);
     }
 
     @Operation(summary = "根据id查详情")
     @GetMapping("/query-info/{id}")
     @CheckAdminPerms("user-mod:oauth2client-mng:query")
-    public Result<OAuth2ClientMngResponse> queryInfo(IdRequest request) {
+    public Result<OAuth2ClientMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return oAuth2ClientMngApi.queryInfo(request);
     }
 
