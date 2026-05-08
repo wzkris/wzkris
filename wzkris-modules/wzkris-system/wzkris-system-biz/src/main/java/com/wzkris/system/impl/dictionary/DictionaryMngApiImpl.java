@@ -10,13 +10,17 @@ import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.dictionary.DictionaryMngApi;
 import com.wzkris.system.domain.DictionaryInfoDO;
 import com.wzkris.system.mapper.DictionaryInfoMapper;
+import com.wzkris.system.request.dictionary.DictionaryDataInfo;
 import com.wzkris.system.request.dictionary.DictionaryMngPageRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngSaveRequest;
 import com.wzkris.system.request.dictionary.DictionaryMngUpdateRequest;
+import com.wzkris.system.response.dictionary.DictionaryDataResponse;
 import com.wzkris.system.response.dictionary.DictionaryMngResponse;
 import com.wzkris.system.service.DictionaryInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +34,9 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     public Result<Page<DictionaryMngResponse>> queryPage(DictionaryMngPageRequest request) {
         startPage(request);
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(request);
-        return getPageResult(BeanUtil.convert(dictionaryInfoMapper.selectList(lqw), DictionaryMngResponse.class));
+        List<DictionaryInfoDO> source = dictionaryInfoMapper.selectList(lqw);
+        List<DictionaryMngResponse> result = source.stream().map(this::toMngResponse).toList();
+        return getPageResult(result);
     }
 
     private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngPageRequest request) {
@@ -43,15 +49,16 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     @Override
     public Result<DictionaryMngResponse> queryInfo(IdRequest request) {
         Long dictId = request.getId();
-        return ok(BeanUtil.convert(dictionaryInfoMapper.selectById(dictId), DictionaryMngResponse.class));
+        DictionaryInfoDO source = dictionaryInfoMapper.selectById(dictId);
+        return ok(toMngResponse(source));
     }
 
     @Override
-    public Result<Void> save(DictionaryMngSaveRequest addReq) {
-        if (dictionaryInfoService.checkUsedByDictKey(addReq.getDictId(), addReq.getDictKey())) {
-            return requestFail("新增字典'" + addReq.getDictName() + "'失败，字典类型已存在");
+    public Result<Void> save(DictionaryMngSaveRequest request) {
+        if (dictionaryInfoService.checkUsedByDictKey(request.getDictId(), request.getDictKey())) {
+            return requestFail("新增字典'" + request.getDictName() + "'失败，字典类型已存在");
         }
-        return toRes(dictionaryInfoService.insertDict(BeanUtil.convert(addReq, DictionaryInfoDO.class)));
+        return toRes(dictionaryInfoService.insertDict(toDictInfoDO(request)));
     }
 
     @Override
@@ -59,7 +66,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
         if (dictionaryInfoService.checkUsedByDictKey(request.getDictId(), request.getDictKey())) {
             return requestFail("修改字典'" + request.getDictName() + "'失败，字典类型已存在");
         }
-        return toRes(dictionaryInfoService.updateDict(BeanUtil.convert(request, DictionaryInfoDO.class)));
+        return toRes(dictionaryInfoService.updateDict(toDictInfoDO(request)));
     }
 
     @Override
@@ -72,6 +79,47 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     public Result<?> refreshCache() {
         dictionaryInfoService.loadingDictCache();
         return ok();
+    }
+
+    private DictionaryMngResponse toMngResponse(DictionaryInfoDO source) {
+        if (source == null) {
+            return null;
+        }
+        DictionaryMngResponse target = BeanUtil.convert(source, DictionaryMngResponse.class);
+        DictionaryInfoDO.DictData[] sourceArray = source.getDictValue();
+        if (sourceArray == null) {
+            target.setDictValue(null);
+            return target;
+        }
+        DictionaryDataResponse[] targetArray = new DictionaryDataResponse[sourceArray.length];
+        for (int i = 0; i < sourceArray.length; i++) {
+            targetArray[i] = BeanUtil.convert(sourceArray[i], DictionaryDataResponse.class);
+        }
+        target.setDictValue(targetArray);
+        return target;
+    }
+
+    private DictionaryInfoDO toDictInfoDO(DictionaryMngSaveRequest source) {
+        DictionaryInfoDO target = BeanUtil.convert(source, DictionaryInfoDO.class);
+        target.setDictValue(toDictData(source.getDictValue()));
+        return target;
+    }
+
+    private DictionaryInfoDO toDictInfoDO(DictionaryMngUpdateRequest source) {
+        DictionaryInfoDO target = BeanUtil.convert(source, DictionaryInfoDO.class);
+        target.setDictValue(toDictData(source.getDictValue()));
+        return target;
+    }
+
+    private DictionaryInfoDO.DictData[] toDictData(DictionaryDataInfo[] sourceArray) {
+        if (sourceArray == null) {
+            return null;
+        }
+        DictionaryInfoDO.DictData[] targetArray = new DictionaryInfoDO.DictData[sourceArray.length];
+        for (int i = 0; i < sourceArray.length; i++) {
+            targetArray[i] = BeanUtil.convert(sourceArray[i], DictionaryInfoDO.DictData.class);
+        }
+        return targetArray;
     }
 
 }
