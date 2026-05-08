@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.orm.request.PagingRequest;
 import com.wzkris.system.api.announcement.AnnouncementInfoApi;
 import com.wzkris.system.domain.AnnouncementInfoDO;
 import com.wzkris.system.enums.announcement.AnnouncementStatusEnum;
 import com.wzkris.system.mapper.AnnouncementInfoMapper;
+import com.wzkris.system.request.announcement.AnnouncementInfoPageRequest;
 import com.wzkris.system.response.announcement.AnnouncementInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class AnnouncementInfoApiImpl extends AbstractApi implements Announcement
     private final AnnouncementInfoMapper announcementInfoMapper;
 
     @Override
-    public Result<Page<AnnouncementInfoResponse>> queryPage(PagingRequest request) {
+    public Result<Page<AnnouncementInfoResponse>> queryPage(AnnouncementInfoPageRequest request) {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
                 .eq(AnnouncementInfoDO::getStatus, AnnouncementStatusEnum.PUBLISH)
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);

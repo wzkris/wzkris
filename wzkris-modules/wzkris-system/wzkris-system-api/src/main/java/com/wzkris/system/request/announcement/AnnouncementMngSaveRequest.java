@@ -8,10 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-@Schema(description = "系统消息添加修改参数体")
-public class AnnouncementMngSaveUpdateRequest {
-
-    private Long announcementId;
+@Schema(description = "系统消息添加参数体")
+public class AnnouncementMngSaveRequest {
 
     @Xss
     @NotBlank(message = "{invalidParameter.messageTitle.invalid}")

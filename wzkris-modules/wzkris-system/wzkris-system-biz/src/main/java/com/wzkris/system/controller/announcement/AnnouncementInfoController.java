@@ -2,8 +2,8 @@ package com.wzkris.system.controller.announcement;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.orm.request.PagingRequest;
 import com.wzkris.system.api.announcement.AnnouncementInfoApi;
+import com.wzkris.system.request.announcement.AnnouncementInfoPageRequest;
 import com.wzkris.system.response.announcement.AnnouncementInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +23,7 @@ public class AnnouncementInfoController {
 
     @Operation(summary = "公告分页")
     @GetMapping("/query-page")
-    public Result<Page<AnnouncementInfoResponse>> queryPage(@ParameterObject PagingRequest request) {
+    public Result<Page<AnnouncementInfoResponse>> queryPage(@ParameterObject AnnouncementInfoPageRequest request) {
         return announcementInfoApi.queryPage(request);
     }
 

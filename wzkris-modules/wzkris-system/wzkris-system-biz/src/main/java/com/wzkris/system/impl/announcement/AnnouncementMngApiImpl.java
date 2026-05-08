@@ -5,14 +5,15 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.system.api.announcement.AnnouncementMngApi;
 import com.wzkris.system.domain.AnnouncementInfoDO;
 import com.wzkris.system.mapper.AnnouncementInfoMapper;
 import com.wzkris.system.request.announcement.AnnouncementMngPageRequest;
-import com.wzkris.system.request.announcement.AnnouncementMngSaveUpdateRequest;
-import com.wzkris.common.orm.request.IdListRequest;
-import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.system.request.announcement.AnnouncementMngSaveRequest;
+import com.wzkris.system.request.announcement.AnnouncementMngUpdateRequest;
 import com.wzkris.system.response.announcement.AnnouncementMngResponse;
 import com.wzkris.system.service.AnnouncementInfoService;
 import lombok.RequiredArgsConstructor;
@@ -49,14 +50,14 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     }
 
     @Override
-    public Result<Void> save(AnnouncementMngSaveUpdateRequest request) {
+    public Result<Void> save(AnnouncementMngSaveRequest request) {
         AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
         announcementInfoDO.setStatus(request.getStatus());
         return toRes(announcementInfoMapper.insert(announcementInfoDO));
     }
 
     @Override
-    public Result<Void> update(AnnouncementMngSaveUpdateRequest request) {
+    public Result<Void> update(AnnouncementMngUpdateRequest request) {
         AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
         announcementInfoDO.setStatus(request.getStatus());
         return toRes(announcementInfoMapper.updateById(announcementInfoDO));

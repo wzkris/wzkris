@@ -9,7 +9,8 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.system.api.announcement.AnnouncementMngApi;
 import com.wzkris.system.request.announcement.AnnouncementMngPageRequest;
-import com.wzkris.system.request.announcement.AnnouncementMngSaveUpdateRequest;
+import com.wzkris.system.request.announcement.AnnouncementMngSaveRequest;
+import com.wzkris.system.request.announcement.AnnouncementMngUpdateRequest;
 import com.wzkris.system.response.announcement.AnnouncementMngResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,7 +47,7 @@ public class AnnouncementMngController {
     @OperateLog(title = "系统消息", subTitle = "添加草稿", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
     @CheckAdminPerms("system-mod:announcement-mng:add")
-    public Result<Void> save(@Valid @RequestBody AnnouncementMngSaveUpdateRequest request) {
+    public Result<Void> save(@Valid @RequestBody AnnouncementMngSaveRequest request) {
         return announcementMngApi.save(request);
     }
 
@@ -54,7 +55,7 @@ public class AnnouncementMngController {
     @OperateLog(title = "系统消息", subTitle = "修改草稿", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
     @CheckAdminPerms("system-mod:announcement-mng:edit")
-    public Result<Void> update(@RequestBody AnnouncementMngSaveUpdateRequest request) {
+    public Result<Void> update(@RequestBody AnnouncementMngUpdateRequest request) {
         return announcementMngApi.update(request);
     }
 
