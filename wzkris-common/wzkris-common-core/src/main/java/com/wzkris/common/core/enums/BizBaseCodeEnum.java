@@ -15,6 +15,7 @@ public enum BizBaseCodeEnum {
     AUTHENTICATION_ERROR(99_901, "凭证异常"),
     REQUEST_ERROR(99_902, "请求异常"),
     API_REQUEST_ERROR(99_910, "api请求异常"),
+    REQUEST_PROCESSING(99_997, "请求正在处理中，请稍后再试"),
     TOO_MANY_REQUESTS(99_998, "请求频率过多"),
     SYSTEM_ERROR(99_999, "系统异常");
 

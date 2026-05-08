@@ -46,6 +46,15 @@ public abstract class JsonUtil {
         objectMapper.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES.mappedFeature(), true); // 允许出现单引号
     }
 
+    public static <T> T convertValue(Object obj, Class<T> clazz) {
+        try {
+            return objectMapper.convertValue(obj, clazz);
+        } catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
+    }
+
     /**
      * 对象转Json格式字符串
      *

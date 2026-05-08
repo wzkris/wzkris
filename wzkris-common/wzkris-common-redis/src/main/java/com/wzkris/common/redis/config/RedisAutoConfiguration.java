@@ -3,6 +3,7 @@ package com.wzkris.common.redis.config;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.wzkris.common.redis.aspect.IdempotentAspect;
 import com.wzkris.common.redis.util.DistLockTemplate;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,11 @@ public class RedisAutoConfiguration {
         template.setEnableTransactionSupport(true);
         template.afterPropertiesSet();
         return template;
+    }
+
+    @Bean
+    public IdempotentAspect idempotentAspect(RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
+        return new IdempotentAspect(redisTemplate, objectMapper);
     }
 
     private ObjectMapper createRedisObjectMapper(ObjectMapper objectMapper) {
