@@ -2,8 +2,7 @@ package com.wzkris.common.web.aspect;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.web.annotation.ExcludeLogAspect;
+import com.wzkris.common.web.properties.ControllerLogProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -14,15 +13,15 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 请求统计打印
@@ -34,12 +33,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Aspect
 public class ControllerLogAspect {
 
-    private static final ConcurrentHashMap<String, Boolean> excludeControllers = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final ObjectMapper objectMapper;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    public ControllerLogAspect(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper.copy();
+    private final ControllerLogProperties controllerLogProperties;
+
+    public ControllerLogAspect(ControllerLogProperties controllerLogProperties) {
+        this.controllerLogProperties = controllerLogProperties;
         this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
@@ -49,22 +50,12 @@ public class ControllerLogAspect {
 
     @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        String fullMethodName = joinPoint.getSignature().getDeclaringType().getName() + StringUtil.DOT + joinPoint.getSignature().getName();
-        Boolean bool = excludeControllers.computeIfAbsent(fullMethodName, k -> {
-            // 检查是否包含排除注解
-            Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-
-            // 如果方法或类上有排除注解，返回 true 表示排除
-            return method.isAnnotationPresent(ExcludeLogAspect.class) ||
-                    method.getDeclaringClass().isAnnotationPresent(ExcludeLogAspect.class);
-        });
-
-        if (bool) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes == null ? null : attributes.getRequest();
+        if (request == null || shouldIgnore(request.getRequestURI())) {
             return joinPoint.proceed();
         }
 
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes == null ? null : attributes.getRequest();
         long startTime = System.currentTimeMillis();
         long endTime = 0L;
         Object result = null;
@@ -84,8 +75,8 @@ public class ControllerLogAspect {
                             Response: {}
                             Time Cost: {} ms
                             """,
-                    request == null ? null : request.getRequestURL(),
-                    request == null ? null : request.getMethod(),
+                    request.getRequestURL(),
+                    request.getMethod(),
                     this.getRequestParams(request),
                     this.getRequestBody(joinPoint),
                     this.serializeValue(result),
@@ -93,6 +84,17 @@ public class ControllerLogAspect {
         }
 
         return result;
+    }
+
+    public boolean shouldIgnore(String requestUri) {
+        List<String> ignoreUrls = controllerLogProperties.getIgnoreUrls();
+
+        for (String pattern : ignoreUrls) {
+            if (pathMatcher.match(pattern, requestUri)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getRequestParams(HttpServletRequest request) {

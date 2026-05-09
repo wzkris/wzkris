@@ -4,7 +4,6 @@ import com.wzkris.auth.api.QrLoginApi;
 import com.wzkris.auth.request.QrCodeIdRequest;
 import com.wzkris.auth.response.QrTokenResponse;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.web.annotation.ExcludeLogAspect;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "二维码登录")
 @Slf4j
 @Validated
-@ExcludeLogAspect
 @RestController
 @RequestMapping("/qr-code")
 @RequiredArgsConstructor
