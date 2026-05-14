@@ -44,7 +44,6 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         // 从存储中加载用户信息
         BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
         if (loginUser == null) {
-            // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }

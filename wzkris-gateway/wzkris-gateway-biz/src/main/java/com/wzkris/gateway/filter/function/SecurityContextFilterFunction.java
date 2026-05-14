@@ -8,6 +8,7 @@ import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,10 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
     private static ServerRequest addAuthHeaders(ServerRequest request, Authentication authentication) {
         return ServerRequest.from(request)
                 .headers(h -> {
+                    h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
+                    if (authentication instanceof AnonymousAuthenticationToken) {
+                        return;
+                    }
                     Object principal = authentication.getPrincipal();
                     if (principal instanceof BaseLoginUser baseLoginUser) {
                         h.set(CustomHeaderConstants.X_USER_CONTEXT, JsonUtil.toJsonString(baseLoginUser));
@@ -38,7 +43,6 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
                         Set<String> permissions = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
                         h.set(CustomHeaderConstants.X_PERMISSIONS, JsonUtil.toJsonString(permissions));
                     }
-                    h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
                 })
                 .build();
     }

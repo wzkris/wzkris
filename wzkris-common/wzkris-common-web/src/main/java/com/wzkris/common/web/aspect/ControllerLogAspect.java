@@ -33,15 +33,16 @@ import java.util.Map;
 @Aspect
 public class ControllerLogAspect {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     private final ControllerLogProperties controllerLogProperties;
 
-    public ControllerLogAspect(ControllerLogProperties controllerLogProperties) {
+    public ControllerLogAspect(ObjectMapper objectMapper, ControllerLogProperties controllerLogProperties) {
         this.controllerLogProperties = controllerLogProperties;
-        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper = objectMapper;
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     @Pointcut("bean(*Controller)")

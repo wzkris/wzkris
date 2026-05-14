@@ -14,10 +14,10 @@ import org.springframework.lang.Nullable;
 @Getter
 @AllArgsConstructor
 public enum LoginTypeEnum {
-    REFRESH("refresh", "刷新模式"),
-    PASSWORD("password", "密码模式"),
-    SMS("sms", "短信模式"),
-    WE_XCX("we_xcx", "微信小程序模式");
+    REFRESH("REFRESH", "刷新模式"),
+    PASSWORD("PASSWORD", "密码模式"),
+    SMS("SMS", "短信模式"),
+    WE_XCX("WE_XCX", "微信小程序模式");
 
     @JsonValue
     private final String value;

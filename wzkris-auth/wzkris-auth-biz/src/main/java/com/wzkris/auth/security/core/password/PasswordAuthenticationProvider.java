@@ -63,7 +63,6 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
         if (commonAuthenticationToken == null) {
-            // 抛出异常
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }

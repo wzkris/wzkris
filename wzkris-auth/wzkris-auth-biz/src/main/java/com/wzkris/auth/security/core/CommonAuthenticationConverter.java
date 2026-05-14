@@ -1,10 +1,13 @@
 package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -42,13 +45,15 @@ public abstract class CommonAuthenticationConverter
         // login_type (REQUIRED)
         LoginTypeEnum loginTypeEnum = LoginTypeEnum.fromValue(request.getParameter(LOGIN_TYPE));
         if (loginTypeEnum == null || !this.support(loginTypeEnum)) {
-            return null;
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.unsupport.logintype");
         }
 
         // auth_type (REQUIRED)
         AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(request.getParameter(OAuth2ParameterConstant.AUTH_TYPE));
         if (authTypeEnum == AuthTypeEnum.NONE) {
-            return null;
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.unsupport.logintype");
         }
 
         MultiValueMap<String, String> parameters = getParameters(request);

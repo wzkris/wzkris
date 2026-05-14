@@ -12,18 +12,20 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AuthTypeEnum {
 
-    ADMIN("admin"),
+    ADMIN("ADMIN", "管理员"),
 
-    TENANT("tenant"),
+    TENANT("TENANT", "租户商家"),
 
-    CUSTOMER("customer"),
+    CUSTOMER("CUSTOMER", "用户"),
 
-    CLIENT("client"),
+    CLIENT("CLIENT", "客户端"),
 
-    NONE("none");
+    NONE("NONE", "无");
 
     @JsonValue
     private final String value;
+
+    private final String description;
 
     @JsonCreator
     public static AuthTypeEnum fromValue(String value) {

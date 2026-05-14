@@ -37,6 +37,6 @@ public class PermitUrlProperties {
     /**
      * websocket请求地址
      */
-    private String wsUri;
+    private String wsUri = "";
 
 }

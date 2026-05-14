@@ -1,5 +1,6 @@
 package com.wzkris.common.web.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzkris.common.web.aspect.ControllerLogAspect;
 import com.wzkris.common.web.filter.TraceIdFilter;
 import com.wzkris.common.web.handler.RestExceptionHandler;
@@ -33,8 +34,8 @@ public class WebAutoConfiguration {
     }
 
     @Bean
-    public ControllerLogAspect controllerLogAspect(ControllerLogProperties controllerLogProperties) {
-        return new ControllerLogAspect(controllerLogProperties);
+    public ControllerLogAspect controllerLogAspect(ObjectMapper objectMapper, ControllerLogProperties controllerLogProperties) {
+        return new ControllerLogAspect(objectMapper, controllerLogProperties);
     }
 
 }

@@ -7,15 +7,16 @@ import lombok.Getter;
 import org.springframework.lang.Nullable;
 
 /**
- * 身份类型
+ * 风控动作
  */
 @Getter
 @AllArgsConstructor
-public enum IdentityTypeEnum {
+public enum RiskActionEnum {
 
-    NONE("NONE", "无身份"),
+    SHOW_CAPTCHA_MODAL("SHOW_CAPTCHA_MODAL", ""),
 
-    SUPER("SUPER", "超级身份");
+    SHOW_BLOCK_MODAL("SHOW_BLOCK_MODAL", ""),
+    ;
 
     @JsonValue
     private final String value;
@@ -24,13 +25,12 @@ public enum IdentityTypeEnum {
 
     @JsonCreator
     @Nullable
-    public static IdentityTypeEnum fromValue(String value) {
-        for (IdentityTypeEnum typeEnum : values()) {
-            if (typeEnum.value.equals(value)) {
-                return typeEnum;
+    public static RiskActionEnum fromValue(String value) {
+        for (RiskActionEnum actionEnum : values()) {
+            if (actionEnum.value.equals(value)) {
+                return actionEnum;
             }
         }
         return null;
     }
-
 }

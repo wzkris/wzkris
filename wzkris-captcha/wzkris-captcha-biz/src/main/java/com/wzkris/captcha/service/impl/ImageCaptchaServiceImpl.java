@@ -5,9 +5,7 @@ import com.wzkris.captcha.properties.ImageCaptchaProperties;
 import com.wzkris.captcha.response.ImageCaptchaDataResponse;
 import com.wzkris.captcha.service.ImageCaptchaService;
 import com.wzkris.captcha.store.ImageCaptchaStore;
-import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.OffsetDateTime;
@@ -17,8 +15,6 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class ImageCaptchaServiceImpl implements ImageCaptchaService {
-
-    private static final String CAPTCHA_ERROR = "invalidParameter.captcha.error";
 
     private static final String CODE_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -49,46 +45,24 @@ public class ImageCaptchaServiceImpl implements ImageCaptchaService {
         OffsetDateTime now = OffsetDateTime.now();
         ImageCaptchaInfo captchaInfo = imageCaptchaStore.removeCaptcha(token);
         if (Objects.isNull(captchaInfo) || !captchaInfo.getExpires().isAfter(now)) {
-            throw new IllegalArgumentException(CAPTCHA_ERROR);
+            throw new IllegalArgumentException(CaptchaVerificationTokens.CAPTCHA_ERROR);
         }
 
         if (!captchaInfo.getCode().equalsIgnoreCase(code)) {
-            throw new IllegalArgumentException(CAPTCHA_ERROR);
+            throw new IllegalArgumentException(CaptchaVerificationTokens.CAPTCHA_ERROR);
         }
 
-        String verToken = UUID.randomUUID().toString();
-        OffsetDateTime expires = now.plus(captchaProperties.getTokenExpiresMs(), ChronoUnit.MILLIS);
-        String hash = DigestUtils.sha256Hex(verToken);
-        String id = RandomStringUtils.secure().next(captchaProperties.getIdSize(), ChallengeServiceImpl.HEX_STR);
-        imageCaptchaStore.putToken(makeupToken(id, hash), expires);
-        return makeupVerToken(id, verToken);
+        return CaptchaVerificationTokens.issue(
+                        captchaProperties.getIdSize(),
+                        captchaProperties.getTokenExpiresMs(),
+                        now,
+                        imageCaptchaStore::putToken)
+                .token();
     }
 
     @Override
     public Boolean validateToken(String tokenStr) {
-        if (StringUtil.isBlank(tokenStr)) {
-            return false;
-        }
-        String[] splits = tokenStr.split(":", 2);
-        if (splits.length != 2) {
-            return false;
-        }
-
-        OffsetDateTime now = OffsetDateTime.now();
-        String id = splits[0];
-        String verToken = splits[1];
-        String hash = DigestUtils.sha256Hex(verToken);
-        String tokenKey = makeupToken(id, hash);
-        OffsetDateTime expires = imageCaptchaStore.removeToken(tokenKey);
-        return Objects.nonNull(expires) && !expires.isBefore(now);
-    }
-
-    private String makeupToken(String id, String hash) {
-        return "%s:%s".formatted(id, hash);
-    }
-
-    private String makeupVerToken(String id, String verToken) {
-        return "%s:%s".formatted(id, verToken);
+        return CaptchaVerificationTokens.validate(tokenStr, imageCaptchaStore::removeToken);
     }
 
 }
