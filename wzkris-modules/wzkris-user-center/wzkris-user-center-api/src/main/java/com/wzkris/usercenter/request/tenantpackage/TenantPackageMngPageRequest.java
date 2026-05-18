@@ -15,4 +15,5 @@ public class TenantPackageMngPageRequest extends PagingRequest {
 
     @Parameter(description = "状态（0正常 1停用）")
     private TenantPackageStatusEnum status;
+
 }

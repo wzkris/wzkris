@@ -1,4 +1,4 @@
-package com.wzkris.usercenter.response.permission;
+package com.wzkris.usercenter.remote.api.member.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

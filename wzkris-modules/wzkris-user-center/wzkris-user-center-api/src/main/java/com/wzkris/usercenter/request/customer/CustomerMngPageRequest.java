@@ -18,4 +18,5 @@ public class CustomerMngPageRequest extends PagingRequest {
 
     @Parameter(description = "用户状态")
     private CustomerStatusEnum status;
+
 }

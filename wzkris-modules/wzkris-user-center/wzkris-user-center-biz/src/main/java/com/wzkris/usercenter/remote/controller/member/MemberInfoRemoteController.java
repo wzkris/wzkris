@@ -6,7 +6,7 @@ import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.request.common.StringValueRequest;
-import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
+import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

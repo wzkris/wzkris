@@ -30,4 +30,5 @@ public class DeptMngListRequest {
     public DeptMngListRequest(DeptStatusEnum status) {
         this.status = status;
     }
+
 }

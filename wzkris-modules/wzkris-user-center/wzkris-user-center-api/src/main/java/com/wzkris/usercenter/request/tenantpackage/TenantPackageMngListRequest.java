@@ -14,4 +14,5 @@ public class TenantPackageMngListRequest {
 
     @Parameter(description = "状态（0正常 1停用）")
     private TenantPackageStatusEnum status;
+
 }

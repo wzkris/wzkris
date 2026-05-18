@@ -6,7 +6,7 @@ import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.request.common.StringValueRequest;
-import com.wzkris.usercenter.response.permission.AdminPermissionResponse;
+import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

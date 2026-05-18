@@ -15,4 +15,5 @@ public class TenantMngPageRequest extends PagingRequest {
 
     @Parameter(description = "租户状态")
     private TenantStatusEnum status;
+
 }

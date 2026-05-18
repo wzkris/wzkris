@@ -15,4 +15,5 @@ public class RoleMngPageRequest extends PagingRequest {
 
     @Parameter(description = "状态（0代表正常 1代表停用）")
     private RoleStatusEnum status;
+
 }

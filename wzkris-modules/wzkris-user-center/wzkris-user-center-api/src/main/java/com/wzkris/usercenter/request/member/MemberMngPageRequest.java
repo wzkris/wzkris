@@ -18,4 +18,5 @@ public class MemberMngPageRequest extends PagingRequest {
 
     @Parameter(description = "状态")
     private MemberStatusEnum status;
+
 }

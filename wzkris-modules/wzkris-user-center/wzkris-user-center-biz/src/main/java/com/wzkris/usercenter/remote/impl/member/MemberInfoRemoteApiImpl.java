@@ -15,7 +15,7 @@ import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.request.common.StringValueRequest;
-import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
+import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import com.wzkris.usercenter.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

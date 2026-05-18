@@ -13,4 +13,5 @@ public class MemberMngPostSelectRequest {
 
     @Parameter(description = "职位名称")
     private String postName;
+
 }

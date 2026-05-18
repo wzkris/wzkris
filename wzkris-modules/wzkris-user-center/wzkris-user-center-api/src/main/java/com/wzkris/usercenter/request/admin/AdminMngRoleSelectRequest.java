@@ -13,4 +13,5 @@ public class AdminMngRoleSelectRequest {
 
     @Parameter(description = "角色名称")
     private String roleName;
+
 }

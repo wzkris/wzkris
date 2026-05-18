@@ -27,4 +27,5 @@ public class AdminMngPageRequest extends PagingRequest {
 
     @Parameter(description = "用户状态")
     private AdminStatusEnum status;
+
 }

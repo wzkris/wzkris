@@ -22,4 +22,5 @@ public class MenuMngListRequest {
     @NotNull(message = "{invalidParameter.menuScope.invalid}")
     @Parameter(description = "菜单域")
     private MenuScopeEnum scope;
+
 }

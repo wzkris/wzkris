@@ -15,4 +15,5 @@ public class OAuth2ClientMngPageRequest extends PagingRequest {
 
     @Parameter(description = "客户端状态")
     private OAuth2ClientStatusEnum status;
+
 }

@@ -4,8 +4,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
+import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import com.wzkris.usercenter.request.common.StringValueRequest;
-import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
 
 public interface MemberInfoRemoteApi {
 

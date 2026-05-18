@@ -12,4 +12,5 @@ public class CustomerWalletRecordPageRequest extends PagingRequest {
 
     @Parameter(description = "记录类型")
     private WalletRecordTypeEnum recordType;
+
 }
