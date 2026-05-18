@@ -2,16 +2,10 @@ package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.remote.interfaces.captchachallenge.ICaptchaChallengeRemote;
-import com.wzkris.auth.remote.interfaces.captchachallenge.request.ValidateChallengeRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
-import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -30,15 +24,11 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     private final List<LoginUserService> loginUserServices;
 
-    private final ICaptchaChallengeRemote captchaChallengeRemote;
-
     public PasswordAuthenticationProvider(
             TokenService tokenService,
-            List<LoginUserService> loginUserServices,
-            ICaptchaChallengeRemote captchaChallengeRemote) {
+            List<LoginUserService> loginUserServices) {
         super(tokenService);
         this.loginUserServices = loginUserServices;
-        this.captchaChallengeRemote = captchaChallengeRemote;
     }
 
     @Override
@@ -57,8 +47,6 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        checkCaptcha(authenticationToken);
-
         CommonAuthenticationToken commonAuthenticationToken = templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
@@ -68,16 +56,6 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
         }
 
         return commonAuthenticationToken;
-    }
-
-    private void checkCaptcha(PasswordAuthenticationToken authenticationToken) {
-        Result<Boolean> booleanResult = captchaChallengeRemote.validateChallenge(new ValidateChallengeRequest(authenticationToken.getCaptchaId()));
-        boolean pass = ResultUtil.check(booleanResult) && Boolean.TRUE.equals(booleanResult.getData());
-
-        if (!pass) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
-                    "invalidParameter.captcha.error");
-        }
     }
 
     @Override

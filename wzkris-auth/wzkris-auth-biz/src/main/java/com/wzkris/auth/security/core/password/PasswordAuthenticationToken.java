@@ -22,18 +22,14 @@ public final class PasswordAuthenticationToken extends AbstractAuthenticationTok
 
     private final String password;
 
-    private final String captchaId;
-
     private PasswordAuthenticationToken(
             AuthTypeEnum authType,
             String username,
-            String password,
-            String captchaId) {
+            String password) {
         super(Collections.emptyList());
         this.authType = authType;
         this.username = username;
         this.password = password;
-        this.captchaId = captchaId;
         super.setAuthenticated(false);
     }
 
@@ -43,9 +39,8 @@ public final class PasswordAuthenticationToken extends AbstractAuthenticationTok
     public static PasswordAuthenticationToken unauthenticated(
             AuthTypeEnum authType,
             String username,
-            String password,
-            String captchaId) {
-        return new PasswordAuthenticationToken(authType, username, password, captchaId);
+            String password) {
+        return new PasswordAuthenticationToken(authType, username, password);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.wzkris.captcha.remote.controller.challenge.request;
+package com.wzkris.captcha.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -16,5 +16,3 @@ public class ValidateChallengeRequest {
     }
 
 }
-
-

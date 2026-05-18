@@ -96,7 +96,7 @@ public class GenericResponseService implements ApplicationContextAware {
     private static final String EXTENSION_EXCEPTION_CLASSES = "x-exception-class";
 
     /**
-     * The constant LOGGER.
+     * The constants LOGGER.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericResponseService.class);
 

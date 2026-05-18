@@ -1,16 +1,13 @@
-package com.wzkris.captcha.risk;
+package com.wzkris.gateway.utils;
 
 import com.wzkris.common.core.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
-public final class RiskClientKeys {
+public final class GatewayRiskClientKeys {
 
-    private RiskClientKeys() {
+    private GatewayRiskClientKeys() {
     }
 
-    /**
-     * 网关风控与通行票绑定使用的默认主体键（当前为客户端 IP）。
-     */
     public static String defaultCompositeKey(HttpServletRequest request) {
         return "ip:" + ServletUtil.getClientIP(request);
     }

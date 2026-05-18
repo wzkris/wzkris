@@ -60,7 +60,7 @@ public class EnumConvertWebMvcConfigurer implements WebMvcConfigurer {
                     return enumConstant;
                 }
             }
-            throw new IllegalArgumentException("No enum constant " + targetType.getName() + "." + enumName);
+            throw new IllegalArgumentException("No enum constants " + targetType.getName() + "." + enumName);
         }
 
     }

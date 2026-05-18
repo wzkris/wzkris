@@ -1,4 +1,4 @@
-package com.wzkris.captcha.remote.controller.common.request;
+package com.wzkris.captcha.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

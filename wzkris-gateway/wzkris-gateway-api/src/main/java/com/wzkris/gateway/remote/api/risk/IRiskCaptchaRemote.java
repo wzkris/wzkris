@@ -1,6 +1,6 @@
-package com.wzkris.auth.remote.interfaces.captchachallenge;
+package com.wzkris.gateway.remote.api.risk;
 
-import com.wzkris.auth.remote.interfaces.captchachallenge.request.ValidateChallengeRequest;
+import com.wzkris.captcha.request.RiskPassExchangeRequest;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;
@@ -15,10 +15,9 @@ import org.springframework.web.service.annotation.PostExchange;
         path = ServiceContextPathConstant.RISK
 )
 @HttpExchange(url = "/risk-captcha-remote")
-public interface ICaptchaChallengeRemote {
+public interface IRiskCaptchaRemote {
 
-    @PostExchange("/validate-challenge")
-    Result<Boolean> validateChallenge(@Validated @RequestBody ValidateChallengeRequest challengeReq);
+    @PostExchange("/validate-exchange")
+    Result<Boolean> validateExchange(@Validated @RequestBody RiskPassExchangeRequest request);
 
 }
-

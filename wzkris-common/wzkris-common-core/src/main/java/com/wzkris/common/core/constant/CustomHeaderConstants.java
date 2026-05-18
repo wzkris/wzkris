@@ -13,6 +13,11 @@ public class CustomHeaderConstants {
     public static final String X_TENANT_ID = "X-Tenant-Id";
 
     /**
+     * 风控验证码头
+     */
+    public static final String RISK_PASS_HEADER = "X-Risk-Pass";
+
+    /**
      * tracing_id
      */
     public static final String X_TRACING_ID = "X-Tracing-Id";

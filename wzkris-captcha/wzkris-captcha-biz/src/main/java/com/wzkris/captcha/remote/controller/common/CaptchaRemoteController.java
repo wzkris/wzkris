@@ -1,6 +1,6 @@
 package com.wzkris.captcha.remote.controller.common;
 
-import com.wzkris.captcha.remote.controller.common.request.CaptchaCheckRequest;
+import com.wzkris.captcha.request.CaptchaCheckRequest;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Hidden;
