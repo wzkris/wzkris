@@ -2,11 +2,9 @@ package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.BaseLoginUser;
-import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,11 +23,12 @@ import java.util.Set;
  * @author wzkris
  */
 @Component
-@RequiredArgsConstructor
 public class SecurityContextFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
-    private static ServerRequest addAuthHeaders(ServerRequest request, Authentication authentication) {
-        return ServerRequest.from(request)
+    @Override
+    public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
+        Authentication authentication = SecurityUtil.getAuthentication();
+        ServerRequest newRequest = ServerRequest.from(request)
                 .headers(h -> {
                     h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
                     if (authentication instanceof AnonymousAuthenticationToken) {
@@ -45,17 +44,7 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
                     }
                 })
                 .build();
-    }
-
-    @Override
-    public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
-        Authentication authentication = SecurityUtil.getAuthentication();
-        if (!authentication.isAuthenticated()) {
-            return ServerResponse.status(401).body(Result.unauth("Unauthorized"));
-        }
-
-        ServerRequest requestWithHeaders = addAuthHeaders(request, authentication);
-        return next.handle(requestWithHeaders);
+        return next.handle(newRequest);
     }
 
 }

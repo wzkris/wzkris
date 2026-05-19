@@ -83,7 +83,7 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
 
     @Override
     public boolean containsContext(HttpServletRequest request) {
-        return securityContextHolderStrategy.getContext().getAuthentication() != null;
+        return StringUtil.isNotBlank(request.getHeader(CustomHeaderConstants.X_USER_CONTEXT));
     }
 
 }

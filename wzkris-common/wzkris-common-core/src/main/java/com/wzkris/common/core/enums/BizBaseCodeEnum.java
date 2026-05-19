@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 public enum BizBaseCodeEnum {
     OK(0, "ok"),
     ACCESS_DENIED(99_900, "禁止访问"),
-    AUTHENTICATION_ERROR(99_901, "凭证异常"),
+    AUTHENTICATION_ERROR(99_901, "访问凭证异常"),
     REQUEST_ERROR(99_902, "请求异常"),
     API_REQUEST_ERROR(99_910, "api请求异常"),
     REQUEST_PROCESSING(99_997, "请求正在处理中，请稍后再试"),

@@ -2,6 +2,7 @@ package com.wzkris.gateway.component;
 
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.component.SupplierDeferredSecurityContext;
+import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.service.TokenValidateService;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
@@ -112,7 +113,7 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
 
     @Override
     public boolean containsContext(HttpServletRequest request) {
-        return this.contextHolderStrategy.getContext().getAuthentication() != null;
+        return StringUtil.isNotBlank(BearerTokenUtil.extractHeaderToken(request));
     }
 
     @Override

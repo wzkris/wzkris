@@ -25,7 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Slf4j
-@Order(-99)
+@Order(-90)
 @Component
 @RequiredArgsConstructor
 public class RiskCaptchaFilter extends OncePerRequestFilter {
