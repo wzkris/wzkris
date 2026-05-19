@@ -2,8 +2,8 @@ package com.wzkris.system.controller.dictionary;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.system.api.dictionary.DictionaryInfoApi;
-import com.wzkris.system.request.dictionary.DictionaryInfoListRequest;
-import com.wzkris.system.response.dictionary.DictionaryDataResponse;
+import com.wzkris.system.api.dictionary.request.DictionaryInfoListRequest;
+import com.wzkris.system.api.dictionary.response.DictionaryDataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

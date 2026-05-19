@@ -2,7 +2,7 @@ package com.wzkris.system.controller.config;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.system.api.config.ConfigInfoApi;
-import com.wzkris.system.request.config.ConfigInfoQueryRequest;
+import com.wzkris.system.api.config.request.ConfigInfoQueryRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

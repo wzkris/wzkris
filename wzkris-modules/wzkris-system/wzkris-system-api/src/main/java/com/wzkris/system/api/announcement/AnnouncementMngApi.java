@@ -4,10 +4,10 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.system.request.announcement.AnnouncementMngPageRequest;
-import com.wzkris.system.request.announcement.AnnouncementMngSaveRequest;
-import com.wzkris.system.request.announcement.AnnouncementMngUpdateRequest;
-import com.wzkris.system.response.announcement.AnnouncementMngResponse;
+import com.wzkris.system.api.announcement.request.AnnouncementMngPageRequest;
+import com.wzkris.system.api.announcement.request.AnnouncementMngSaveRequest;
+import com.wzkris.system.api.announcement.request.AnnouncementMngUpdateRequest;
+import com.wzkris.system.api.announcement.response.AnnouncementMngResponse;
 
 public interface AnnouncementMngApi {
 

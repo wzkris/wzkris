@@ -2,10 +2,10 @@ package com.wzkris.usercenter.api.dept;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.usercenter.request.dept.DeptMngListRequest;
-import com.wzkris.usercenter.request.dept.DeptMngSaveRequest;
-import com.wzkris.usercenter.request.dept.DeptMngUpdateRequest;
-import com.wzkris.usercenter.response.dept.DeptMngResponse;
+import com.wzkris.usercenter.api.dept.request.DeptMngListRequest;
+import com.wzkris.usercenter.api.dept.request.DeptMngSaveRequest;
+import com.wzkris.usercenter.api.dept.request.DeptMngUpdateRequest;
+import com.wzkris.usercenter.api.dept.response.DeptMngResponse;
 
 import java.util.List;
 

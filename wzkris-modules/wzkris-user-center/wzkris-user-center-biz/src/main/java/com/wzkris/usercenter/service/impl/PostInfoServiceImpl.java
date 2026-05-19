@@ -10,7 +10,7 @@ import com.wzkris.usercenter.enums.post.PostStatusEnum;
 import com.wzkris.usercenter.mapper.MemberToPostMapper;
 import com.wzkris.usercenter.mapper.PostInfoMapper;
 import com.wzkris.usercenter.mapper.PostToMenuMapper;
-import com.wzkris.usercenter.response.common.SelectResponse;
+import com.wzkris.usercenter.response.SelectResponse;
 import com.wzkris.usercenter.service.PostInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;

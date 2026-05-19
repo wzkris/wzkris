@@ -2,8 +2,8 @@ package com.wzkris.system.api.tenantlog.operate;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.system.request.tenantlog.TenantOperateLogMngPageRequest;
-import com.wzkris.system.response.tenantlog.TenantOperateLogMngResponse;
+import com.wzkris.system.api.tenantlog.request.TenantOperateLogMngPageRequest;
+import com.wzkris.system.api.tenantlog.response.TenantOperateLogMngResponse;
 
 public interface TenantOperateLogMngApi {
 

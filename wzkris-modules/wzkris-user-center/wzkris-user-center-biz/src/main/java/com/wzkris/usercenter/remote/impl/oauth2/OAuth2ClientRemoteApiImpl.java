@@ -5,7 +5,7 @@ import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
-import com.wzkris.usercenter.request.common.StringValueRequest;
+import com.wzkris.usercenter.request.StringValueRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.wzkris.system.websocket.protocol;
 
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.system.request.message.SimpleMessageRequest;
+import com.wzkris.system.api.message.request.SimpleMessageRequest;
 import lombok.Getter;
 import org.springframework.web.socket.BinaryMessage;
 

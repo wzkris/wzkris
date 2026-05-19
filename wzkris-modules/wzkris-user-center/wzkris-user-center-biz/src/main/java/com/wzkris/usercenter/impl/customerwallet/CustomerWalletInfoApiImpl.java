@@ -7,12 +7,12 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.customerwallet.CustomerWalletInfoApi;
+import com.wzkris.usercenter.api.customerwallet.request.CustomerWalletRecordPageRequest;
+import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletInfoResponse;
+import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletRecordResponse;
 import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
 import com.wzkris.usercenter.mapper.CustomerWalletInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;
-import com.wzkris.usercenter.request.customerwallet.CustomerWalletRecordPageRequest;
-import com.wzkris.usercenter.response.customerwallet.CustomerWalletInfoResponse;
-import com.wzkris.usercenter.response.customerwallet.CustomerWalletRecordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

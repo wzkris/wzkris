@@ -1,8 +1,8 @@
 package com.wzkris.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.system.api.message.request.SimpleMessageRequest;
 import com.wzkris.system.domain.NotificationInfoDO;
-import com.wzkris.system.request.message.SimpleMessageRequest;
 
 import java.util.List;
 

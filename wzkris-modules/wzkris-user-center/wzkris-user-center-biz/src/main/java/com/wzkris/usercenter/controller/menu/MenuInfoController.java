@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.menu;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.menu.MenuInfoApi;
-import com.wzkris.usercenter.response.menu.RouterResponse;
+import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

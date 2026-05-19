@@ -2,7 +2,7 @@ package com.wzkris.usercenter.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wzkris.usercenter.domain.DeptInfoDO;
-import com.wzkris.usercenter.response.common.SelectTreeResponse;
+import com.wzkris.usercenter.response.SelectTreeResponse;
 
 import java.util.List;
 

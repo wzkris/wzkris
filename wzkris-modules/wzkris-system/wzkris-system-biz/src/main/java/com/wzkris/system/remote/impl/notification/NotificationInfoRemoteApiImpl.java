@@ -2,10 +2,10 @@ package com.wzkris.system.remote.impl.notification;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.system.api.message.request.SimpleMessageRequest;
 import com.wzkris.system.enums.notification.NotificationTypeEnum;
 import com.wzkris.system.remote.api.notification.NotificationInfoRemoteApi;
 import com.wzkris.system.remote.api.notification.request.NotificationRequest;
-import com.wzkris.system.request.message.SimpleMessageRequest;
 import com.wzkris.system.service.NotificationInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

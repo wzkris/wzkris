@@ -1,8 +1,8 @@
 package com.wzkris.system.mapper;
 
 import com.wzkris.common.orm.plus.BaseMapperPlus;
+import com.wzkris.system.api.notification.response.NotificationInfoResponse;
 import com.wzkris.system.domain.NotificationInfoDO;
-import com.wzkris.system.response.notification.NotificationInfoResponse;
 import jakarta.annotation.Nullable;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

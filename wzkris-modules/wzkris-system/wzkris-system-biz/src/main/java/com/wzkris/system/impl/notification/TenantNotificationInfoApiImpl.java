@@ -5,11 +5,11 @@ import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.system.api.message.request.NotificationInfoPageRequest;
+import com.wzkris.system.api.message.request.UnreadSizeQueryRequest;
 import com.wzkris.system.api.notification.TenantNotificationInfoApi;
+import com.wzkris.system.api.notification.response.NotificationInfoResponse;
 import com.wzkris.system.mapper.NotificationInfoMapper;
-import com.wzkris.system.request.message.NotificationInfoPageRequest;
-import com.wzkris.system.request.message.UnreadSizeQueryRequest;
-import com.wzkris.system.response.notification.NotificationInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

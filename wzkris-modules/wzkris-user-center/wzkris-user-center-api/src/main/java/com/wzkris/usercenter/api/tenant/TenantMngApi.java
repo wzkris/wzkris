@@ -3,13 +3,13 @@ package com.wzkris.usercenter.api.tenant;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.usercenter.request.common.PwdResetRequest;
-import com.wzkris.usercenter.request.tenant.TenantMngPageRequest;
-import com.wzkris.usercenter.request.tenant.TenantMngSaveRequest;
-import com.wzkris.usercenter.request.tenant.TenantMngUpdateRequest;
-import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngListRequest;
-import com.wzkris.usercenter.response.common.SelectResponse;
-import com.wzkris.usercenter.response.tenant.TenantMngResponse;
+import com.wzkris.usercenter.api.tenant.request.TenantMngPageRequest;
+import com.wzkris.usercenter.api.tenant.request.TenantMngSaveRequest;
+import com.wzkris.usercenter.api.tenant.request.TenantMngUpdateRequest;
+import com.wzkris.usercenter.api.tenant.response.TenantMngResponse;
+import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngListRequest;
+import com.wzkris.usercenter.request.PwdResetRequest;
+import com.wzkris.usercenter.response.SelectResponse;
 
 import java.util.List;
 

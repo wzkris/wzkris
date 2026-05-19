@@ -1,6 +1,6 @@
 package com.wzkris.system.event;
 
-import com.wzkris.system.request.message.SimpleMessageRequest;
+import com.wzkris.system.api.message.request.SimpleMessageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;

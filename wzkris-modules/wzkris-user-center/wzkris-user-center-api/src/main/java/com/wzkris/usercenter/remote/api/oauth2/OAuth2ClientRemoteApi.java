@@ -2,7 +2,7 @@ package com.wzkris.usercenter.remote.api.oauth2;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
-import com.wzkris.usercenter.request.common.StringValueRequest;
+import com.wzkris.usercenter.request.StringValueRequest;
 
 public interface OAuth2ClientRemoteApi {
 

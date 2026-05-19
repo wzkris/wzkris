@@ -72,8 +72,8 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
             tokenPair = tokenService.login(loginUser, authenticationToken.getPerms());
         }
 
-        authenticationToken.setAccessToken(tokenPair.getAccessToken());
-        authenticationToken.setRefreshToken(tokenPair.getRefreshToken());
+        authenticationToken.setAccessToken(tokenPair.accessToken());
+        authenticationToken.setRefreshToken(tokenPair.refreshToken());
 
         return authenticationToken;
     }

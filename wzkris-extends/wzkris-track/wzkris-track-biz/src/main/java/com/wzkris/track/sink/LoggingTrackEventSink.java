@@ -2,7 +2,7 @@ package com.wzkris.track.sink;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.track.request.track.TrackEventRequest;
+import com.wzkris.track.api.track.request.TrackEventRequest;
 
 import java.util.List;
 

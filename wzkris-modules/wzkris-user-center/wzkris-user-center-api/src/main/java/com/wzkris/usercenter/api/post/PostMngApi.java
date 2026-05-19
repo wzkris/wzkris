@@ -4,11 +4,11 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.usercenter.request.post.PostMngPageRequest;
-import com.wzkris.usercenter.request.post.PostMngSaveRequest;
-import com.wzkris.usercenter.request.post.PostMngUpdateRequest;
-import com.wzkris.usercenter.response.common.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.post.PostMngResponse;
+import com.wzkris.usercenter.api.post.request.PostMngPageRequest;
+import com.wzkris.usercenter.api.post.request.PostMngSaveRequest;
+import com.wzkris.usercenter.api.post.request.PostMngUpdateRequest;
+import com.wzkris.usercenter.api.post.response.PostMngResponse;
+import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 
 public interface PostMngApi {
 

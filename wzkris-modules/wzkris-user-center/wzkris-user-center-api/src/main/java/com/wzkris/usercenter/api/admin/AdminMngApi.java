@@ -4,12 +4,12 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.usercenter.request.admin.*;
-import com.wzkris.usercenter.request.common.PwdResetRequest;
-import com.wzkris.usercenter.request.dept.DeptMngListRequest;
-import com.wzkris.usercenter.response.admin.AdminMngResponse;
-import com.wzkris.usercenter.response.common.CheckedSelectResponse;
-import com.wzkris.usercenter.response.common.SelectTreeResponse;
+import com.wzkris.usercenter.api.admin.request.*;
+import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
+import com.wzkris.usercenter.api.dept.request.DeptMngListRequest;
+import com.wzkris.usercenter.request.PwdResetRequest;
+import com.wzkris.usercenter.response.CheckedSelectResponse;
+import com.wzkris.usercenter.response.SelectTreeResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.wzkris.track.sink;
 
-import com.wzkris.track.request.track.TrackEventRequest;
+import com.wzkris.track.api.track.request.TrackEventRequest;
 
 import java.util.List;
 

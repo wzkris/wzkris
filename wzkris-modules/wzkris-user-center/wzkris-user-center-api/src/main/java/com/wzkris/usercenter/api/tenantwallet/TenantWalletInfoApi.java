@@ -2,10 +2,10 @@ package com.wzkris.usercenter.api.tenantwallet;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.tenantwallet.TenantWalletRecordInfoPageRequest;
-import com.wzkris.usercenter.request.tenantwallet.WalletWithdrawalRequest;
-import com.wzkris.usercenter.response.tenantwallet.TenantWalletInfoResponse;
-import com.wzkris.usercenter.response.tenantwallet.TenantWalletRecordResponse;
+import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordInfoPageRequest;
+import com.wzkris.usercenter.api.tenantwallet.request.WalletWithdrawalRequest;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
 
 public interface TenantWalletInfoApi {
 

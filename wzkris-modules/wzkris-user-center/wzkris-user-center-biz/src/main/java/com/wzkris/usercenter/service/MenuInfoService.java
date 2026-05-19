@@ -1,9 +1,9 @@
 package com.wzkris.usercenter.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.domain.MenuInfoDO;
-import com.wzkris.usercenter.response.common.SelectTreeResponse;
-import com.wzkris.usercenter.response.menu.RouterResponse;
+import com.wzkris.usercenter.response.SelectTreeResponse;
 import org.springframework.lang.Nullable;
 
 import java.util.List;

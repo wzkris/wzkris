@@ -3,7 +3,7 @@ package com.wzkris.usercenter.remote.controller.oauth2;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
-import com.wzkris.usercenter.request.common.StringValueRequest;
+import com.wzkris.usercenter.request.StringValueRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -5,7 +5,7 @@ import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.customer.request.WexcxLoginRequest;
 import com.wzkris.usercenter.remote.api.customer.response.CustomerResponse;
-import com.wzkris.usercenter.request.common.StringValueRequest;
+import com.wzkris.usercenter.request.StringValueRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

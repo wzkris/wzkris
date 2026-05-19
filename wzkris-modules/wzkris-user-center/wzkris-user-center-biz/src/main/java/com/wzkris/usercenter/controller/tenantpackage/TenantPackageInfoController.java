@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.tenantpackage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageInfoApi;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

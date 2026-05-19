@@ -3,11 +3,11 @@ package com.wzkris.usercenter.api.oauth2;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.usercenter.request.oauth2.ClientSecretUpdateRequest;
-import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngPageRequest;
-import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngSaveRequest;
-import com.wzkris.usercenter.request.oauth2.OAuth2ClientMngUpdateRequest;
-import com.wzkris.usercenter.response.oauth2.OAuth2ClientMngResponse;
+import com.wzkris.usercenter.api.oauth2.request.ClientSecretUpdateRequest;
+import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngPageRequest;
+import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngSaveRequest;
+import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngUpdateRequest;
+import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngResponse;
 
 public interface OAuth2ClientMngApi {
 

@@ -1,9 +1,9 @@
 package com.wzkris.usercenter.api.tenant;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.request.common.PasswordUpdateRequest;
-import com.wzkris.usercenter.request.tenant.TenantInfoBasicUpdateRequest;
-import com.wzkris.usercenter.response.tenant.TenantInfoResponse;
+import com.wzkris.usercenter.api.tenant.request.TenantInfoBasicUpdateRequest;
+import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
+import com.wzkris.usercenter.request.PasswordUpdateRequest;
 
 public interface TenantInfoApi {
 

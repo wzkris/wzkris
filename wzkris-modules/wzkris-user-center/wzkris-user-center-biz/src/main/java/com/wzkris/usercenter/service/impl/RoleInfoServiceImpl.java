@@ -9,7 +9,7 @@ import com.wzkris.usercenter.domain.RoleToDeptDO;
 import com.wzkris.usercenter.domain.RoleToMenuDO;
 import com.wzkris.usercenter.enums.role.RoleStatusEnum;
 import com.wzkris.usercenter.mapper.*;
-import com.wzkris.usercenter.response.common.SelectResponse;
+import com.wzkris.usercenter.response.SelectResponse;
 import com.wzkris.usercenter.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;

@@ -13,7 +13,7 @@ import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.customer.request.WexcxLoginRequest;
 import com.wzkris.usercenter.remote.api.customer.response.CustomerResponse;
-import com.wzkris.usercenter.request.common.StringValueRequest;
+import com.wzkris.usercenter.request.StringValueRequest;
 import com.wzkris.usercenter.service.CustomerInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

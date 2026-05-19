@@ -3,7 +3,7 @@ package com.wzkris.usercenter.impl.menu;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.usercenter.api.menu.MenuInfoApi;
-import com.wzkris.usercenter.response.menu.RouterResponse;
+import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

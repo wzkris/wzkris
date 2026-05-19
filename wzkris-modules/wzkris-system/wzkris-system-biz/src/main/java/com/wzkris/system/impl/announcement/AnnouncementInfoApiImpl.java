@@ -6,11 +6,11 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.system.api.announcement.AnnouncementInfoApi;
+import com.wzkris.system.api.announcement.request.AnnouncementInfoPageRequest;
+import com.wzkris.system.api.announcement.response.AnnouncementInfoResponse;
 import com.wzkris.system.domain.AnnouncementInfoDO;
 import com.wzkris.system.enums.announcement.AnnouncementStatusEnum;
 import com.wzkris.system.mapper.AnnouncementInfoMapper;
-import com.wzkris.system.request.announcement.AnnouncementInfoPageRequest;
-import com.wzkris.system.response.announcement.AnnouncementInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

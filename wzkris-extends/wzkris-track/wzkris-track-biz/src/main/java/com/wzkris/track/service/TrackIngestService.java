@@ -2,9 +2,9 @@ package com.wzkris.track.service;
 
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.track.api.track.request.TrackEventRequest;
 import com.wzkris.track.props.TrackProperties;
 import com.wzkris.track.ratelimit.AppKeyRateLimiter;
-import com.wzkris.track.request.track.TrackEventRequest;
 import com.wzkris.track.sink.TrackEventSink;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
