@@ -8,7 +8,7 @@ import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.security.model.TenantLoginUser;
+import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.member.MemberMngApi;
@@ -83,8 +83,8 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<Void> save(MemberMngSaveRequest memberReq) {
-        TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
-        if (!tenantInfoService.checkAccountLimit(loginUser.getTenantId())) {
+        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
+        if (!tenantInfoService.checkAccountLimit(tenantUser.getTenantId())) {
             return requestFail("账号数量已达上限，请联系管理员");
         } else if (memberInfoService.existByUsername(null, memberReq.getUsername())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
@@ -99,7 +99,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
         boolean success = memberInfoService.saveMember(member, memberReq.getPostIds());
         if (success) {
             SpringUtil.getContext()
-                    .publishEvent(new CreateMemberEvent(loginUser.getUid(), memberReq.getUsername(), password));
+                    .publishEvent(new CreateMemberEvent(tenantUser.getUid(), memberReq.getUsername(), password));
         }
         return toRes(success);
     }

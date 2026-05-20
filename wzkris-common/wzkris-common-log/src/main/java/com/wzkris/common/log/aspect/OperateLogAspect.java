@@ -9,7 +9,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.remote.request.OperateLogEvent;
-import com.wzkris.common.security.model.TenantLoginUser;
+import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +94,7 @@ public class OperateLogAspect {
 
         // 设置租户ID
         if (authType == AuthTypeEnum.TENANT) {
-            operateLogEvent.setTenantId(SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId());
+            operateLogEvent.setTenantId(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId());
         }
 
         // 设置操作信息

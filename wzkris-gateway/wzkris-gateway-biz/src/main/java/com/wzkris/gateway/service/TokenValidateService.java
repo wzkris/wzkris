@@ -6,7 +6,7 @@ import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.security.model.ClientLoginUser;
+import com.wzkris.common.security.model.LoginClientUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.remote.api.loginuser.ILoginUserRemote;
@@ -94,11 +94,11 @@ public class TokenValidateService {
     }
 
     private Authentication authenticateClient(Jwt jwt, String token) {
-        ClientLoginUser clientLoginUser = new ClientLoginUser();
-        clientLoginUser.setClientId(jwt.getSubject());
+        LoginClientUser clientUser = new LoginClientUser();
+        clientUser.setClientId(jwt.getSubject());
         List<String> scope = jwt.getClaimAsStringList(OAuth2ParameterNames.SCOPE);
         return UsernamePasswordAuthenticationToken.authenticated(
-                clientLoginUser, token,
+                clientUser, token,
                 CollectionUtils.isNotEmpty(scope)
                         ? AuthorityUtils.createAuthorityList(scope)
                         : AuthorityUtils.NO_AUTHORITIES);

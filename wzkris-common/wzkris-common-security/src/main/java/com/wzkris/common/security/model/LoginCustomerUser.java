@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CustomerLoginUser extends AbsBaseLoginUser {
+public class LoginCustomerUser extends AbsBaseLoginUser {
 
     private String phoneNumber;
 

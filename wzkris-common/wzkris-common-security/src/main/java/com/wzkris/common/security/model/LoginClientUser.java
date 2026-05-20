@@ -9,13 +9,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ClientLoginUser extends AbsBaseLoginUser {
+public class LoginClientUser extends AbsBaseLoginUser {
 
     private String clientId;
 
     @Override
     public String getName() {
-        return clientId;
+        return this.clientId;
     }
 
 }

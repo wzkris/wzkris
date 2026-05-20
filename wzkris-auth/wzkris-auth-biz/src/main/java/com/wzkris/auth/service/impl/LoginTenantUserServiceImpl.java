@@ -16,7 +16,7 @@ import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.security.model.TenantLoginUser;
+import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -106,21 +106,21 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         }
         MemberPermissionResponse permissions = permissionsResult.getData();
 
-        TenantLoginUser loginUser = new TenantLoginUser();
-        loginUser.setUid(memberInfoResponse.getMemberId());
-        loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(permissions.getAdmin()
+        LoginTenantUser tenantUser = new LoginTenantUser();
+        tenantUser.setUid(memberInfoResponse.getMemberId());
+        tenantUser.setAuthType(AuthTypeEnum.TENANT);
+        tenantUser.setIdentityType(permissions.getAdmin()
                 ? IdentityTypeEnum.SUPER
                 : IdentityTypeEnum.NONE);
-        loginUser.setUsername(memberInfoResponse.getUsername());
-        loginUser.setTenantId(memberInfoResponse.getTenantId());
+        tenantUser.setUsername(memberInfoResponse.getUsername());
+        tenantUser.setTenantId(memberInfoResponse.getTenantId());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())
                 : Collections.emptySet();
 
         return UsernamePasswordAuthenticationToken.authenticated(
-                loginUser, null, AuthorityUtils.createAuthorityList(perms));
+                tenantUser, null, AuthorityUtils.createAuthorityList(perms));
     }
 
     /**
@@ -148,16 +148,16 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     private void recordFailedLog(MemberInfoResponse memberResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        TenantLoginUser loginUser = new TenantLoginUser();
-        loginUser.setUid(memberResp.getMemberId());
-        loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(IdentityTypeEnum.NONE);
-        loginUser.setUsername(memberResp.getUsername());
-        loginUser.setTenantId(memberResp.getTenantId());
+        LoginTenantUser tenantUser = new LoginTenantUser();
+        tenantUser.setUid(memberResp.getMemberId());
+        tenantUser.setAuthType(AuthTypeEnum.TENANT);
+        tenantUser.setIdentityType(IdentityTypeEnum.NONE);
+        tenantUser.setUsername(memberResp.getUsername());
+        tenantUser.setTenantId(memberResp.getTenantId());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        loginUser,
+                        tenantUser,
                         loginType,
                         false,
                         errorMsg,

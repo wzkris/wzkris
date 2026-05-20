@@ -17,7 +17,7 @@ import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.security.model.AdminLoginUser;
+import com.wzkris.common.security.model.LoginAdminUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -104,22 +104,22 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         }
         AdminPermissionResponse permissions = permissionsResult.getData();
 
-        AdminLoginUser user = new AdminLoginUser();
-        user.setUid(adminInfoResponse.getAdminId());
-        user.setAuthType(AuthTypeEnum.ADMIN);
-        user.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId())
+        LoginAdminUser adminUser = new LoginAdminUser();
+        adminUser.setUid(adminInfoResponse.getAdminId());
+        adminUser.setAuthType(AuthTypeEnum.ADMIN);
+        adminUser.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId())
                 ? IdentityTypeEnum.SUPER
                 : IdentityTypeEnum.NONE);
-        user.setPhoneNumber(adminInfoResponse.getPhoneNumber());
-        user.setUsername(adminInfoResponse.getUsername());
-        user.setDeptScopes(permissions.getDeptScopes());
+        adminUser.setPhoneNumber(adminInfoResponse.getPhoneNumber());
+        adminUser.setUsername(adminInfoResponse.getUsername());
+        adminUser.setDeptScopes(permissions.getDeptScopes());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())
                 : Collections.emptySet();
 
         return UsernamePasswordAuthenticationToken.authenticated(
-                user, null, AuthorityUtils.createAuthorityList(perms));
+                adminUser, null, AuthorityUtils.createAuthorityList(perms));
     }
 
     /**
@@ -137,15 +137,15 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
      */
     private void recordFailedLog(AdminInfoResponse userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        AdminLoginUser user = new AdminLoginUser();
-        user.setUid(userResp.getAdminId());
-        user.setAuthType(AuthTypeEnum.ADMIN);
-        user.setIdentityType(IdentityTypeEnum.NONE);
-        user.setUsername(userResp.getUsername());
+        LoginAdminUser adminUser = new LoginAdminUser();
+        adminUser.setUid(userResp.getAdminId());
+        adminUser.setAuthType(AuthTypeEnum.ADMIN);
+        adminUser.setIdentityType(IdentityTypeEnum.NONE);
+        adminUser.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        user,
+                        adminUser,
                         loginType,
                         false,
                         errorMsg,

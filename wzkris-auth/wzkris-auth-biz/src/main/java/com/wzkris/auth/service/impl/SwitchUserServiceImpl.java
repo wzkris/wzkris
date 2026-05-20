@@ -16,8 +16,8 @@ import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
-import com.wzkris.common.security.model.AdminLoginUser;
-import com.wzkris.common.security.model.TenantLoginUser;
+import com.wzkris.common.security.model.LoginAdminUser;
+import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
@@ -47,7 +47,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken switchToTenant(AdminLoginUser fromAdmin, Long tenantId) {
+    public UsernamePasswordAuthenticationToken switchToTenant(LoginAdminUser adminUser, Long tenantId) {
         Result<MemberInfoResponse> memberResult = memberInfoRemote.queryAdministratorByTenantId(
                 new TenantIdRequest(tenantId));
         if (!ResultUtil.check(memberResult)) {
@@ -57,8 +57,8 @@ public class SwitchUserServiceImpl implements SwitchUserService {
 
         try {
             UsernamePasswordAuthenticationToken token = buildTenantAuthenticationToken(memberResp);
-            TenantLoginUser tenantUser = (TenantLoginUser) token.getPrincipal();
-            tenantUser.setActorUid(fromAdmin.getUid());
+            LoginTenantUser tenantUser = (LoginTenantUser) token.getPrincipal();
+            tenantUser.setActorUid(adminUser.getUid());
             tenantUser.setActorAuthType(AuthTypeEnum.ADMIN);
             return token;
         } catch (Exception e) {
@@ -71,8 +71,8 @@ public class SwitchUserServiceImpl implements SwitchUserService {
     @Override
     public UsernamePasswordAuthenticationToken switchToAdmin(Long actorUid) {
         String adminType = AuthTypeEnum.ADMIN.getValue();
-        var adminUser = tokenService.loadLoginUserByUid(adminType, actorUid);
-        if (!(adminUser instanceof AdminLoginUser admin)) {
+        var loadedUser = tokenService.loadLoginUserByUid(adminType, actorUid);
+        if (!(loadedUser instanceof LoginAdminUser adminUser)) {
             return null;
         }
         Set<String> perms = tokenService.loadPermissionsByUid(adminType, actorUid);
@@ -80,7 +80,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
             perms = Collections.emptySet();
         }
         return UsernamePasswordAuthenticationToken.authenticated(
-                admin, null, AuthorityUtils.createAuthorityList(perms));
+                adminUser, null, AuthorityUtils.createAuthorityList(perms));
     }
 
     private UsernamePasswordAuthenticationToken buildTenantAuthenticationToken(MemberInfoResponse memberInfoResponse) {
@@ -95,21 +95,21 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         }
         MemberPermissionResponse permissions = permissionsResult.getData();
 
-        TenantLoginUser loginUser = new TenantLoginUser();
-        loginUser.setUid(memberInfoResponse.getMemberId());
-        loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(permissions.getAdmin()
+        LoginTenantUser tenantUser = new LoginTenantUser();
+        tenantUser.setUid(memberInfoResponse.getMemberId());
+        tenantUser.setAuthType(AuthTypeEnum.TENANT);
+        tenantUser.setIdentityType(permissions.getAdmin()
                 ? IdentityTypeEnum.SUPER
                 : IdentityTypeEnum.NONE);
-        loginUser.setUsername(memberInfoResponse.getUsername());
-        loginUser.setTenantId(memberInfoResponse.getTenantId());
+        tenantUser.setUsername(memberInfoResponse.getUsername());
+        tenantUser.setTenantId(memberInfoResponse.getTenantId());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())
                 : Collections.emptySet();
 
         return UsernamePasswordAuthenticationToken.authenticated(
-                loginUser, null, AuthorityUtils.createAuthorityList(perms));
+                tenantUser, null, AuthorityUtils.createAuthorityList(perms));
     }
 
     private void checkTenantAccount(MemberInfoResponse memberResp) {
@@ -131,17 +131,17 @@ public class SwitchUserServiceImpl implements SwitchUserService {
     private void recordTenantFailedLog(MemberInfoResponse memberResp, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        TenantLoginUser loginUser = new TenantLoginUser();
-        loginUser.setUid(memberResp.getMemberId());
-        loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(IdentityTypeEnum.NONE);
-        loginUser.setUsername(memberResp.getUsername());
-        loginUser.setTenantId(memberResp.getTenantId());
+        LoginTenantUser tenantUser = new LoginTenantUser();
+        tenantUser.setUid(memberResp.getMemberId());
+        tenantUser.setAuthType(AuthTypeEnum.TENANT);
+        tenantUser.setIdentityType(IdentityTypeEnum.NONE);
+        tenantUser.setUsername(memberResp.getUsername());
+        tenantUser.setTenantId(memberResp.getTenantId());
 
         UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT));
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        loginUser,
+                        tenantUser,
                         LoginTypeEnum.SWITCH.getValue(),
                         false,
                         errorMsg,

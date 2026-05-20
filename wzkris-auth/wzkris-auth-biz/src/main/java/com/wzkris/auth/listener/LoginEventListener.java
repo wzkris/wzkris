@@ -12,9 +12,9 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.security.model.AdminLoginUser;
-import com.wzkris.common.security.model.CustomerLoginUser;
-import com.wzkris.common.security.model.TenantLoginUser;
+import com.wzkris.common.security.model.LoginAdminUser;
+import com.wzkris.common.security.model.LoginCustomerUser;
+import com.wzkris.common.security.model.LoginTenantUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -110,21 +110,21 @@ public class LoginEventListener {
     }
 
     private String resolveUsername(BaseLoginUser loginUser) {
-        if (loginUser instanceof AdminLoginUser admin) {
-            return admin.getUsername();
+        if (loginUser instanceof LoginAdminUser adminUser) {
+            return adminUser.getUsername();
         }
-        if (loginUser instanceof TenantLoginUser tenant) {
-            return tenant.getUsername();
+        if (loginUser instanceof LoginTenantUser tenantUser) {
+            return tenantUser.getUsername();
         }
-        if (loginUser instanceof CustomerLoginUser customer) {
-            return customer.getPhoneNumber();
+        if (loginUser instanceof LoginCustomerUser customerUser) {
+            return customerUser.getPhoneNumber();
         }
         return String.valueOf(loginUser.getUid());
     }
 
     private Long resolveTenantId(BaseLoginUser loginUser) {
-        if (loginUser instanceof TenantLoginUser tenant) {
-            return tenant.getTenantId();
+        if (loginUser instanceof LoginTenantUser tenantUser) {
+            return tenantUser.getTenantId();
         }
         return null;
     }

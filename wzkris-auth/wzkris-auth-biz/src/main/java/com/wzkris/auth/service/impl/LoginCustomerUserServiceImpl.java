@@ -12,7 +12,7 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
-import com.wzkris.common.security.model.CustomerLoginUser;
+import com.wzkris.common.security.model.LoginCustomerUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,14 +85,14 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         // 校验用户状态
         this.checkAccount(customerResponse);
 
-        CustomerLoginUser loginUser = new CustomerLoginUser();
-        loginUser.setUid(customerResponse.getCustomerId());
-        loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setPhoneNumber(customerResponse.getPhoneNumber());
+        LoginCustomerUser customerUser = new LoginCustomerUser();
+        customerUser.setUid(customerResponse.getCustomerId());
+        customerUser.setAuthType(AuthTypeEnum.CUSTOMER);
+        customerUser.setPhoneNumber(customerResponse.getPhoneNumber());
 
         // Customer 用户没有权限，使用空集合
         return UsernamePasswordAuthenticationToken.authenticated(
-                loginUser, null, AuthorityUtils.createAuthorityList(Collections.emptySet()));
+                customerUser, null, AuthorityUtils.createAuthorityList(Collections.emptySet()));
     }
 
     /**
@@ -108,14 +108,14 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     private void recordFailedLog(CustomerResponse CustomerResponse, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        CustomerLoginUser loginUser = new CustomerLoginUser();
-        loginUser.setUid(CustomerResponse.getCustomerId());
-        loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setPhoneNumber(CustomerResponse.getPhoneNumber());
+        LoginCustomerUser customerUser = new LoginCustomerUser();
+        customerUser.setUid(CustomerResponse.getCustomerId());
+        customerUser.setAuthType(AuthTypeEnum.CUSTOMER);
+        customerUser.setPhoneNumber(CustomerResponse.getPhoneNumber());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        loginUser,
+                        customerUser,
                         loginType,
                         false,
                         errorMsg,

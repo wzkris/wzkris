@@ -7,7 +7,7 @@ import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.security.model.TenantLoginUser;
+import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.post.PostMngApi;
@@ -65,7 +65,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
 
     @Override
     public Result<Void> save(PostMngSaveRequest request) {
-        if (!tenantInfoService.checkPostLimit(SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId())) {
+        if (!tenantInfoService.checkPostLimit(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId())) {
             return requestFail("当前租户职位数量已达到上限");
         }
         PostInfoDO post = BeanUtil.convert(request, PostInfoDO.class);

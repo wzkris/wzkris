@@ -5,7 +5,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.utils.DataScopeUtil;
-import com.wzkris.common.security.model.AdminLoginUser;
+import com.wzkris.common.security.model.LoginAdminUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -83,8 +83,8 @@ public class DataScopeAspect {
                         ? dataColumn.column()
                         : dataColumn.alias() + StringUtil.DOT + dataColumn.column();
 
-                AdminLoginUser loginUser = SecurityUtil.getLoginUser(AdminLoginUser.class);
-                DataScopeUtil.putParameter(column, loginUser.getDeptScopes());
+                LoginAdminUser adminUser = SecurityUtil.getLoginUser(LoginAdminUser.class);
+                DataScopeUtil.putParameter(column, adminUser.getDeptScopes());
             }
         } catch (Exception e) {
             log.error("Failed to inject data scope parameters: {}", e.getMessage(), e);

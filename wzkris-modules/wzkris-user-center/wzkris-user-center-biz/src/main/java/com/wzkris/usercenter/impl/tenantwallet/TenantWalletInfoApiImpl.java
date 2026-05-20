@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.model.TenantLoginUser;
+import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordInfoPageRequest;
@@ -37,8 +37,8 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     @Override
     public Result<TenantWalletInfoResponse> queryInfo() {
-        TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
-        return ok(tenantWalletInfoMapper.selectById2VO(loginUser.getTenantId(), TenantWalletInfoResponse.class));
+        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
+        return ok(tenantWalletInfoMapper.selectById2VO(tenantUser.getTenantId(), TenantWalletInfoResponse.class));
     }
 
     @Override
@@ -53,8 +53,8 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     @Override
     public Result<Void> withdrawal(WalletWithdrawalRequest request) {
-        TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
-        TenantInfoDO tenantInfoDO = tenantInfoMapper.selectById(loginUser.getTenantId());
+        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
+        TenantInfoDO tenantInfoDO = tenantInfoMapper.selectById(tenantUser.getTenantId());
         if (!passwordEncoder.matches(request.getOperPwd(), tenantInfoDO.getOperPwd())) {
             return Result.requestFail("密码错误");
         }
@@ -62,9 +62,9 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
     }
 
     private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordInfoPageRequest request) {
-        TenantLoginUser loginUser = SecurityUtil.getLoginUser(TenantLoginUser.class);
+        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
-                .eq(TenantWalletRecordDO::getTenantId, loginUser.getTenantId())
+                .eq(TenantWalletRecordDO::getTenantId, tenantUser.getTenantId())
                 .like(Objects.nonNull(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantWalletRecordDO::getCreateAt,

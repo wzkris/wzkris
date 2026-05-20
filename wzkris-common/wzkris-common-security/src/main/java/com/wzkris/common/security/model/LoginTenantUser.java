@@ -5,25 +5,23 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
-import java.util.Collection;
-
 /**
- * 管理员用户视图。
+ * 租户用户视图。
  */
 @Getter
 @Setter
-public class AdminLoginUser extends AbsBaseLoginUser {
+public class LoginTenantUser extends AbsBaseLoginUser {
 
     private String username;
+
+    private Long tenantId;
 
     @Nullable
     private String phoneNumber;
 
-    private Collection deptScopes;
-
     @Override
     public String getName() {
-        return username;
+        return this.username;
     }
 
 }
