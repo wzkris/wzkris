@@ -3,6 +3,7 @@ package com.wzkris.auth.remote.interfaces.member;
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.member.request.TenantIdRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
 import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
 import com.wzkris.common.core.model.Result;
@@ -37,6 +38,12 @@ public interface IMemberInfoRemote {
      */
     @PostExchange("/query-by-phonenumber")
     Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody StringValueRequest request);
+
+    /**
+     * 根据租户ID 查询租户最高管理员成员（用于登录态切换）
+     */
+    @PostExchange("/query-administrator-by-tenant")
+    Result<MemberInfoResponse> queryAdministratorByTenantId(@RequestBody TenantIdRequest request);
 
     /**
      * 根据微信小程序code查询用户

@@ -13,6 +13,7 @@ import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
+import com.wzkris.usercenter.remote.api.member.request.TenantIdRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import com.wzkris.usercenter.request.StringValueRequest;
@@ -55,6 +56,21 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     @Override
     public Result<MemberInfoResponse> queryByPhoneNumber(StringValueRequest request) {
         MemberInfoDO member = memberInfoMapper.selectByPhoneNumber(request.getValue());
+        MemberInfoResponse response = this.toMemberInfoResponse(member);
+        this.retrieveAllStatus(response);
+        return Result.ok(response);
+    }
+
+    @Override
+    public Result<MemberInfoResponse> queryAdministratorByTenantId(TenantIdRequest request) {
+        TenantInfoDO tenant = tenantInfoMapper.selectById(request.getTenantId());
+        if (tenant == null || tenant.getAdministrator() == null) {
+            return Result.ok(null);
+        }
+        MemberInfoDO member = memberInfoMapper.selectById(tenant.getAdministrator());
+        if (member == null || !request.getTenantId().equals(member.getTenantId())) {
+            return Result.ok(null);
+        }
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
         return Result.ok(response);

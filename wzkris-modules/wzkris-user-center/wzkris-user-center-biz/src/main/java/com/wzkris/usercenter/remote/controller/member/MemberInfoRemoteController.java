@@ -4,6 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
+import com.wzkris.usercenter.remote.api.member.request.TenantIdRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import com.wzkris.usercenter.request.StringValueRequest;
@@ -31,6 +32,11 @@ public class MemberInfoRemoteController {
     @PostMapping("/query-by-phonenumber")
     public Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody @Valid StringValueRequest request) {
         return memberInfoRemoteApi.queryByPhoneNumber(request);
+    }
+
+    @PostMapping("/query-administrator-by-tenant")
+    public Result<MemberInfoResponse> queryAdministratorByTenantId(@RequestBody @Valid TenantIdRequest request) {
+        return memberInfoRemoteApi.queryAdministratorByTenantId(request);
     }
 
     @PostMapping("/query-by-wexcxcode")

@@ -1,27 +1,27 @@
 package com.wzkris.auth.service;
 
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import nl.basjes.parse.useragent.UserAgent;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 public interface LoginUserService {
 
     @Nullable
-    default CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
+    default UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         return null;
     }
 
     @Nullable
-    default CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) {
+    default UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) {
         return null;
     }
 
     @Nullable
-    default CommonAuthenticationToken loadUserByWxXcx(String wxCode, @Nullable String phoneCode) {
+    default UsernamePasswordAuthenticationToken loadUserByWxXcx(String wxCode, @Nullable String phoneCode) {
         return null;
     }
 

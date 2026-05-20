@@ -3,10 +3,10 @@ package com.wzkris.auth.security.core.password;
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
     }
 
     @Override
-    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
 
         Optional<LoginUserService> templateOptional = loginUserServices.stream()
@@ -47,15 +47,15 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        CommonAuthenticationToken commonAuthenticationToken = templateOptional.get().loadByUsernameAndPassword(
+        UsernamePasswordAuthenticationToken authenticated = templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
-        if (commonAuthenticationToken == null) {
+        if (authenticated == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        return commonAuthenticationToken;
+        return authenticated;
     }
 
     @Override

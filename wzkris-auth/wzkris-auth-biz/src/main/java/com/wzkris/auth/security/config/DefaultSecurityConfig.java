@@ -15,6 +15,7 @@
  */
 package com.wzkris.auth.security.config;
 
+import com.wzkris.auth.security.filter.CustomSwitchUserFilter;
 import com.wzkris.auth.security.filter.LoginEndpointFilter;
 import com.wzkris.auth.security.filter.LogoutHandlerImpl;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
@@ -38,7 +40,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @Configuration
 public class DefaultSecurityConfig {
 
-    static final String[] defaultUrl = new String[]{"/login", "/logout"};
+    static final String[] defaultUrl = new String[]{"/login", "/logout", "/login/impersonate", "/logout/impersonate"};
 
     @Bean
     @Order(0)
@@ -46,6 +48,7 @@ public class DefaultSecurityConfig {
             HttpSecurity http,
             SecurityContextRepository securityContextRepository,
             LoginEndpointFilter loginEndpointFilter,
+            CustomSwitchUserFilter switchUserFilter,
             LogoutHandlerImpl logoutHandler)
             throws Exception {
         http.securityMatcher(defaultUrl)
@@ -61,6 +64,7 @@ public class DefaultSecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .addFilterAt(loginEndpointFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(switchUserFilter, SwitchUserFilter.class)
                 .logout(logout -> {
                     logout.addLogoutHandler(logoutHandler)
                             .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT));

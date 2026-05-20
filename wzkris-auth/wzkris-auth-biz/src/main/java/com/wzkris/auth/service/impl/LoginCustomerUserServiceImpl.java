@@ -7,7 +7,6 @@ import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
 import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
 import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -19,6 +18,8 @@ import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -35,7 +36,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
+    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         Result<CustomerResponse> customerResult = customerInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
 
         if (!ResultUtil.check(customerResult)) {
@@ -44,7 +45,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         CustomerResponse CustomerResponse = customerResult.getData();
 
         try {
-            return this.buildAuthenticationToken(CustomerResponse, LoginTypeEnum.SMS);
+            return this.buildAuthenticationToken(CustomerResponse);
         } catch (Exception e) {
             this.recordFailedLog(CustomerResponse, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
@@ -53,7 +54,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadUserByWxXcx(String wxCode, String phoneCode) {
+    public UsernamePasswordAuthenticationToken loadUserByWxXcx(String wxCode, String phoneCode) {
         WexcxLoginRequest wexcxLoginRequest = new WexcxLoginRequest();
         wexcxLoginRequest.setWxCode(wxCode);
         wexcxLoginRequest.setPhoneCode(phoneCode);
@@ -65,7 +66,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         CustomerResponse CustomerResponse = customerResult.getData();
 
         try {
-            return this.buildAuthenticationToken(CustomerResponse, LoginTypeEnum.WE_XCX);
+            return this.buildAuthenticationToken(CustomerResponse);
         } catch (Exception e) {
             this.recordFailedLog(CustomerResponse, LoginTypeEnum.WE_XCX.getValue(), e.getMessage());
             throw e;
@@ -80,17 +81,18 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private CommonAuthenticationToken buildAuthenticationToken(CustomerResponse CustomerResponse, LoginTypeEnum loginType) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(CustomerResponse customerResponse) {
         // 校验用户状态
-        this.checkAccount(CustomerResponse);
+        this.checkAccount(customerResponse);
 
         CustomerLoginUser loginUser = new CustomerLoginUser();
-        loginUser.setUid(CustomerResponse.getCustomerId());
+        loginUser.setUid(customerResponse.getCustomerId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setPhoneNumber(CustomerResponse.getPhoneNumber());
+        loginUser.setPhoneNumber(customerResponse.getPhoneNumber());
 
         // Customer 用户没有权限，使用空集合
-        return new CommonAuthenticationToken(loginUser, Collections.emptySet(), loginType);
+        return UsernamePasswordAuthenticationToken.authenticated(
+                loginUser, null, AuthorityUtils.createAuthorityList(Collections.emptySet()));
     }
 
     /**

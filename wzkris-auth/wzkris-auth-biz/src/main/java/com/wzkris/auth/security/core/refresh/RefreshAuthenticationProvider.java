@@ -2,15 +2,15 @@ package com.wzkris.auth.security.core.refresh;
 
 import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +34,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
     }
 
     @Override
-    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         RefreshAuthenticationToken authenticationToken = (RefreshAuthenticationToken) authentication;
         String refreshToken = authenticationToken.getRefreshToken();
         AuthTypeEnum authType = authenticationToken.getAuthType();
@@ -56,9 +56,8 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
             perms = Collections.emptySet();
         }
 
-        CommonAuthenticationToken commonAuthenticationToken = new CommonAuthenticationToken(loginUser, perms, LoginTypeEnum.REFRESH);
-        commonAuthenticationToken.setRefreshToken(refreshToken);
-        return commonAuthenticationToken;
+        return UsernamePasswordAuthenticationToken.authenticated(
+                loginUser, null, AuthorityUtils.createAuthorityList(perms));
     }
 
     private Long checkParameter(String refreshToken, AuthTypeEnum authType) {

@@ -73,6 +73,8 @@ public class LoginEventListener {
         LoginLogEvent loginLogEvent = new LoginLogEvent();
         loginLogEvent.setAuthType(loginUser.getAuthType());
         loginLogEvent.setOperatorId(loginUser.getUid());
+        loginLogEvent.setActorUid(loginUser.getActorUid());
+        loginLogEvent.setActorAuthType(loginUser.getActorAuthType());
         loginLogEvent.setUsername(resolveUsername(loginUser));
         loginLogEvent.setTenantId(resolveTenantId(loginUser));
         loginLogEvent.setLoginTime(now);

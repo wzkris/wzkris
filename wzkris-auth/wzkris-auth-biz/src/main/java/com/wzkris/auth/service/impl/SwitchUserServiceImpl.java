@@ -3,28 +3,30 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.member.request.TenantIdRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
 import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
-import com.wzkris.auth.service.LoginUserService;
+import com.wzkris.auth.service.SwitchUserService;
+import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
-import com.wzkris.common.security.exception.CustomErrorCodes;
+import com.wzkris.common.security.model.AdminLoginUser;
 import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import nl.basjes.parse.useragent.UserAgent;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -37,66 +39,53 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class LoginTenantUserServiceImpl implements LoginUserService {
+public class SwitchUserServiceImpl implements SwitchUserService {
 
     private final IMemberInfoRemote memberInfoRemote;
 
-    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
-
+    public UsernamePasswordAuthenticationToken switchToTenant(AdminLoginUser fromAdmin, Long tenantId) {
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryAdministratorByTenantId(
+                new TenantIdRequest(tenantId));
         if (!ResultUtil.check(memberResult)) {
             return null;
         }
         MemberInfoResponse memberResp = memberResult.getData();
 
         try {
-            return this.buildAuthenticationToken(memberResp);
+            UsernamePasswordAuthenticationToken token = buildTenantAuthenticationToken(memberResp);
+            TenantLoginUser tenantUser = (TenantLoginUser) token.getPrincipal();
+            tenantUser.setActorUid(fromAdmin.getUid());
+            tenantUser.setActorAuthType(AuthTypeEnum.ADMIN);
+            return token;
         } catch (Exception e) {
-            this.recordFailedLog(memberResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
+            recordTenantFailedLog(memberResp, e.getMessage());
             throw e;
         }
     }
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByUsername(new StringValueRequest(username));
-
-        if (!ResultUtil.check(memberResult)) {
+    public UsernamePasswordAuthenticationToken switchToAdmin(Long actorUid) {
+        String adminType = AuthTypeEnum.ADMIN.getValue();
+        var adminUser = tokenService.loadLoginUserByUid(adminType, actorUid);
+        if (!(adminUser instanceof AdminLoginUser admin)) {
             return null;
         }
-        MemberInfoResponse memberResp = memberResult.getData();
-
-        try {
-            if (!passwordEncoder.matches(password, memberResp.getPassword())) {
-                OAuth2ExceptionUtil.throwErrorI18n(
-                        BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
-            }
-
-            return this.buildAuthenticationToken(memberResp);
-        } catch (Exception e) {
-            this.recordFailedLog(memberResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
-            throw e;
+        Set<String> perms = tokenService.loadPermissionsByUid(adminType, actorUid);
+        if (perms == null) {
+            perms = Collections.emptySet();
         }
+        return UsernamePasswordAuthenticationToken.authenticated(
+                admin, null, AuthorityUtils.createAuthorityList(perms));
     }
 
-    @Override
-    public boolean checkAuthType(AuthTypeEnum authType) {
-        return AuthTypeEnum.TENANT.equals(authType);
-    }
+    private UsernamePasswordAuthenticationToken buildTenantAuthenticationToken(MemberInfoResponse memberInfoResponse) {
+        checkTenantAccount(memberInfoResponse);
 
-    /**
-     * 构建认证Token
-     */
-    private UsernamePasswordAuthenticationToken buildAuthenticationToken(MemberInfoResponse memberInfoResponse) {
-        // 校验用户状态
-        this.checkAccount(memberInfoResponse);
-
-        // 获取权限信息
         Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.queryPermission(
                 new MemberPermsQueryRequest(memberInfoResponse.getMemberId(), memberInfoResponse.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
@@ -123,10 +112,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
                 loginUser, null, AuthorityUtils.createAuthorityList(perms));
     }
 
-    /**
-     * 校验用户账号
-     */
-    private void checkAccount(MemberInfoResponse memberResp) {
+    private void checkTenantAccount(MemberInfoResponse memberResp) {
         if (StringUtil.equals(memberResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
@@ -142,10 +128,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         }
     }
 
-    /**
-     * 记录失败日志
-     */
-    private void recordFailedLog(MemberInfoResponse memberResp, String loginType, String errorMsg) {
+    private void recordTenantFailedLog(MemberInfoResponse memberResp, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         TenantLoginUser loginUser = new TenantLoginUser();
@@ -155,16 +138,16 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         loginUser.setUsername(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 
+        UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT));
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
                         loginUser,
-                        loginType,
+                        LoginTypeEnum.SWITCH.getValue(),
                         false,
                         errorMsg,
                         ServletUtil.getClientIP(request),
-                        getUserAgent(request),
+                        userAgent.getUserAgentString(),
                         TraceIdUtil.getOrGenerate()));
     }
 
 }
-

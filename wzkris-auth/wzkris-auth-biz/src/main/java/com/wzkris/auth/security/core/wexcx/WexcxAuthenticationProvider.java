@@ -3,10 +3,10 @@ package com.wzkris.auth.security.core.wexcx;
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
     }
 
     @Override
-    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         WexcxAuthenticationToken authenticationToken = (WexcxAuthenticationToken) authentication;
 
         Optional<LoginUserService> templateOptional = loginUserServices.stream()
@@ -48,16 +48,15 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
             return null; // never run this line
         }
 
-        CommonAuthenticationToken commonAuthenticationToken = templateOptional
-                .get()
+        UsernamePasswordAuthenticationToken authenticated = templateOptional.get()
                 .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
 
-        if (commonAuthenticationToken == null) {
+        if (authenticated == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        return commonAuthenticationToken;
+        return authenticated;
     }
 
     @Override

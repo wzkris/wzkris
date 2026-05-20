@@ -38,4 +38,16 @@ public interface BaseLoginUser extends Principal {
     @Nullable
     String getUserExpiredReason();
 
+    /**
+     * 实际操作者ID（impersonation 场景）
+     */
+    @Nullable
+    Long getActorUid();
+
+    /**
+     * 实际操作者认证类型（impersonation 场景）。
+     */
+    @Nullable
+    AuthTypeEnum getActorAuthType();
+
 }

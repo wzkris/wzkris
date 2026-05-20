@@ -5,7 +5,6 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.auth.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
@@ -13,6 +12,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     }
 
     @Override
-    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
 
         Optional<LoginUserService> templateOptional = loginUserServices.stream()
@@ -59,14 +59,15 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         checkCaptcha(authenticationToken);
 
-        CommonAuthenticationToken commonAuthenticationToken = templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+        UsernamePasswordAuthenticationToken authenticated = templateOptional.get()
+                .loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
 
-        if (commonAuthenticationToken == null) {
+        if (authenticated == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
         }
 
-        return commonAuthenticationToken;
+        return authenticated;
     }
 
     private void checkCaptcha(SmsAuthenticationToken authenticationToken) {

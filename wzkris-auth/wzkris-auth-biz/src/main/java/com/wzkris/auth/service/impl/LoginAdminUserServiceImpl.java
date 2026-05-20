@@ -8,7 +8,6 @@ import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminInfoResponse;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminPermissionResponse;
 import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -23,6 +22,8 @@ import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -44,7 +45,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
+    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         Result<AdminInfoResponse> userResult = adminInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
 
         if (!ResultUtil.check(userResult)) {
@@ -53,7 +54,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         AdminInfoResponse userResp = userResult.getData();
 
         try {
-            return this.buildAuthenticationToken(userResp, LoginTypeEnum.SMS);
+            return this.buildAuthenticationToken(userResp);
         } catch (Exception e) {
             this.recordFailedLog(userResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
@@ -62,7 +63,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+    public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         Result<AdminInfoResponse> userResult = adminInfoRemote.queryByUsername(new StringValueRequest(username));
 
         if (!ResultUtil.check(userResult)) {
@@ -76,7 +77,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
                         BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
-            return this.buildAuthenticationToken(userResp, LoginTypeEnum.PASSWORD);
+            return this.buildAuthenticationToken(userResp);
         } catch (Exception e) {
             this.recordFailedLog(userResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
             throw e;
@@ -91,33 +92,34 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private CommonAuthenticationToken buildAuthenticationToken(AdminInfoResponse userResp, LoginTypeEnum loginType) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(AdminInfoResponse adminInfoResponse) {
         // 校验用户状态
-        this.checkAccount(userResp);
+        this.checkAccount(adminInfoResponse);
 
         // 获取权限信息
         Result<AdminPermissionResponse> permissionsResult = adminInfoRemote.queryPermission(
-                new AdminPermsQueryRequest(userResp.getAdminId(), userResp.getDeptId()));
+                new AdminPermsQueryRequest(adminInfoResponse.getAdminId(), adminInfoResponse.getDeptId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.API_REQUEST_ERROR.value(), "query permission failed");
         }
         AdminPermissionResponse permissions = permissionsResult.getData();
 
         AdminLoginUser user = new AdminLoginUser();
-        user.setUid(userResp.getAdminId());
+        user.setUid(adminInfoResponse.getAdminId());
         user.setAuthType(AuthTypeEnum.ADMIN);
-        user.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getAdminId())
+        user.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId())
                 ? IdentityTypeEnum.SUPER
                 : IdentityTypeEnum.NONE);
-        user.setPhoneNumber(userResp.getPhoneNumber());
-        user.setUsername(userResp.getUsername());
+        user.setPhoneNumber(adminInfoResponse.getPhoneNumber());
+        user.setUsername(adminInfoResponse.getUsername());
         user.setDeptScopes(permissions.getDeptScopes());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())
                 : Collections.emptySet();
 
-        return new CommonAuthenticationToken(user, perms, loginType);
+        return UsernamePasswordAuthenticationToken.authenticated(
+                user, null, AuthorityUtils.createAuthorityList(perms));
     }
 
     /**

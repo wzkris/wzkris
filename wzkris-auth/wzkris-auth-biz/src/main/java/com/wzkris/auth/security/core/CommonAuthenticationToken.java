@@ -1,70 +1,32 @@
 package com.wzkris.auth.security.core;
 
-import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
 
 /**
- * @author wzkris
- * @date 2024/3/11
- * @description AuthenticationToken基类，适配多端登录参数
+ * 未认证请求 Token 基类，承载多端共用的 {@link AuthTypeEnum}。
  */
-public class CommonAuthenticationToken extends AbstractAuthenticationToken {
+@Getter
+public abstract class CommonAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final BaseLoginUser baseLoginUser;
+    private final AuthTypeEnum authType;
 
-    @Getter
-    private final Set<String> perms;
-
-    @Getter
-    private final LoginTypeEnum loginType;
-
-    @Getter
-    @Setter
-    private String accessToken;
-
-    @Getter
-    @Setter
-    private String refreshToken;
-
-    public CommonAuthenticationToken(BaseLoginUser baseLoginUser, Set<String> perms, LoginTypeEnum loginType) {
-        super(null);
-        this.baseLoginUser = baseLoginUser;
-        this.perms = perms;
-        this.loginType = loginType;
-        if (baseLoginUser != null) {
-            super.setAuthenticated(true);
-        }
-    }
-
-    @Override
-    public Object getCredentials() {
-        return accessToken;
-    }
-
-    @Override
-    public final BaseLoginUser getPrincipal() {
-        return this.baseLoginUser;
+    protected CommonAuthenticationToken(AuthTypeEnum authType) {
+        super(Collections.emptyList());
+        this.authType = authType;
+        setAuthenticated(false);
     }
 
     @Override
     public void setAuthenticated(boolean authenticated) {
-        throw new UnsupportedOperationException("Cannot set authenticated to " + this.getClass().getSimpleName());
-    }
-
-    @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        if (perms != null) {
-            return AuthorityUtils.createAuthorityList(perms);
+        if (authenticated) {
+            throw new IllegalArgumentException(
+                    "Cannot set this token to trusted - use UsernamePasswordAuthenticationToken instead");
         }
-        return super.getAuthorities();
+        super.setAuthenticated(false);
     }
 
 }
