@@ -5,11 +5,9 @@ import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.gateway.api.risk.response.RiskCaptchaRequiredResponse;
+import com.wzkris.gateway.constants.GatewayRiskRedisKeys;
 import com.wzkris.gateway.properties.RiskCaptchaProperties;
-import com.wzkris.gateway.response.RiskCaptchaRequiredResponse;
-import com.wzkris.gateway.service.GatewayRiskLockService;
-import com.wzkris.gateway.service.GatewayRiskPassService;
-import com.wzkris.gateway.utils.GatewayRiskClientKeys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -34,16 +33,7 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
 
     private final RiskCaptchaProperties riskCaptchaProperties;
 
-    private final GatewayRiskLockService gatewayRiskLockService;
-
-    private final GatewayRiskPassService gatewayRiskPassService;
-
-    private static void writeJsonResponse(HttpServletResponse response, HttpStatus status, Object body)
-            throws IOException {
-        response.setStatus(status.value());
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JsonUtil.toJsonString(body));
-    }
+    private final StringRedisTemplate stringRedisTemplate;
 
     private static boolean isPathMatched(Iterable<String> patterns, String path) {
         if (patterns == null) {
@@ -66,9 +56,9 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
         }
 
         String path = request.getRequestURI();
-        String clientKey = GatewayRiskClientKeys.defaultCompositeKey(request);
+        String clientKey = GatewayRiskRedisKeys.clientKey(request);
 
-        boolean locked = gatewayRiskLockService.isLocked(request);
+        boolean locked = stringRedisTemplate.hasKey(GatewayRiskRedisKeys.lockKey(clientKey));
         boolean enforced = isPathMatched(riskCaptchaProperties.getEnforcedPaths(), path);
 
         if (!locked && !enforced) {
@@ -76,27 +66,23 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (hasValidPass(request, clientKey)) {
+        String passToken = request.getHeader(CustomHeaderConstants.RISK_PASS_HEADER);
+        if (StringUtil.isNotBlank(passToken)
+                && clientKey.equals(stringRedisTemplate.opsForValue().get(GatewayRiskRedisKeys.passKey(passToken.trim())))) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        writeJsonResponse(response, HttpStatus.TOO_MANY_REQUESTS,
+        response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(JsonUtil.toJsonString(
                 Result.init(BizBaseCodeEnum.TOO_MANY_REQUESTS.value(),
                         RiskCaptchaRequiredResponse.builder()
                                 .riskCaptchaRequired(true)
                                 .riskLocked(locked)
                                 .path(path)
                                 .build(),
-                        "risk.captcha.required"));
-    }
-
-    private boolean hasValidPass(HttpServletRequest request, String clientKey) {
-        String raw = request.getHeader(CustomHeaderConstants.RISK_PASS_HEADER);
-        if (StringUtil.isBlank(raw)) {
-            return false;
-        }
-        return gatewayRiskPassService.validatePass(raw.trim(), clientKey);
+                        "risk.captcha.required")));
     }
 
 }

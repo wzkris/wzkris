@@ -1,4 +1,4 @@
-package com.wzkris.gateway.response;
+package com.wzkris.gateway.api.risk.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

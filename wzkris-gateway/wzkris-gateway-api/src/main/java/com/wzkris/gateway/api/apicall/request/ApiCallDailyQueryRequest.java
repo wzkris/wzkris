@@ -1,4 +1,4 @@
-package com.wzkris.gateway.request;
+package com.wzkris.gateway.api.apicall.request;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;

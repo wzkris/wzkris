@@ -3,10 +3,8 @@ package com.wzkris.gateway.controller;
 import com.wzkris.captcha.request.RiskPassExchangeRequest;
 import com.wzkris.captcha.response.RiskPassExchangeResponse;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.gateway.remote.api.risk.IRiskCaptchaRemote;
-import com.wzkris.gateway.service.GatewayRiskPassService;
-import com.wzkris.gateway.utils.GatewayRiskClientKeys;
+import com.wzkris.gateway.api.risk.GatewayRiskPassApi;
+import com.wzkris.gateway.constants.GatewayRiskRedisKeys;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,20 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RiskPassController {
 
-    private final IRiskCaptchaRemote riskCaptchaRemote;
-
-    private final GatewayRiskPassService gatewayRiskPassService;
+    private final GatewayRiskPassApi gatewayRiskPassApi;
 
     @Operation(summary = "验证码通过后换发风控通行票")
     @PostMapping("/exchange")
     public Result<RiskPassExchangeResponse> exchange(
             @RequestBody @Valid RiskPassExchangeRequest request, HttpServletRequest httpRequest) {
-        Result<Boolean> validated = riskCaptchaRemote.validateExchange(request);
-        if (!ResultUtil.check(validated) || !Boolean.TRUE.equals(validated.getData())) {
-            return Result.requestFail("invalidParameter.captcha.error");
-        }
-        String clientKey = GatewayRiskClientKeys.defaultCompositeKey(httpRequest);
-        return Result.ok(gatewayRiskPassService.grantPass(clientKey, request.getCaptchaType()));
+        return gatewayRiskPassApi.exchange(request, GatewayRiskRedisKeys.clientKey(httpRequest));
     }
 
 }

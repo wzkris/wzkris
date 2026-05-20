@@ -1,4 +1,4 @@
-package com.wzkris.gateway.response;
+package com.wzkris.gateway.api.apicall.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
-/**
- * API调用（日级）统计响应，包含24小时序列
- *
- * @author wzkris
- */
 @Data
 @Builder
 @NoArgsConstructor
@@ -37,4 +32,3 @@ public class ApiCallDailySeriesResponse implements Serializable {
     private Map<String, ApiCallResponse> paths;
 
 }
-

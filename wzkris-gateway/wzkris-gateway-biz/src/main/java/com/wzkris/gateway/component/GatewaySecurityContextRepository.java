@@ -5,6 +5,7 @@ import com.wzkris.common.security.component.SupplierDeferredSecurityContext;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.service.TokenValidateService;
+import com.wzkris.gateway.service.impl.TokenValidateServiceImpl;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
 import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +37,7 @@ import java.util.function.Supplier;
  * Gateway 专用 SecurityContextRepository。
  * <p>
  * - 不再根据自定义请求头还原用户信息，避免外部伪造请求头绕过认证；
- * - 直接复用网关的 {@link TokenValidateService} 做 Token 校验，并构建 SecurityContext；
+ * - 直接复用网关的 {@link TokenValidateServiceImpl} 做 Token 校验，并构建 SecurityContext；
  * - 复用网关的白名单/黑名单配置，白名单直接返回空上下文，黑名单交给下游 Filter 处理。
  *
  * @author wzkris
@@ -95,7 +96,7 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
         if (isPathPermitted(request.getRequestURI())) { //白名单放行
             authentication = ANONYMOUS_AUTHENTICATION;
         } else {
-            authentication = this.tokenValidateService.check(request);
+            authentication = this.tokenValidateService.loadAuthenticationByRequest(request);
         }
 
         if (authentication instanceof AbstractAuthenticationToken authenticationToken) {

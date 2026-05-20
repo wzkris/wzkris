@@ -3,8 +3,8 @@ package com.wzkris.gateway.filter.function;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.gateway.domain.ApiCallStatKey;
-import com.wzkris.gateway.service.ApiCallStatWriteService;
+import com.wzkris.gateway.domain.ApiCallEventDO;
+import com.wzkris.gateway.repository.ApiCallRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,33 +13,27 @@ import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-/**
- * API 调用量统计过滤器（Gateway MVC HandlerFilterFunction 实现）。
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ApiCallStatFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
-    private final ApiCallStatWriteService writeService;
+    private final ApiCallRepository apiCallRepository;
 
-    private static boolean shouldSkipStatistics(String path) {
-        return path.startsWith("/actuator")
+    @Override
+    public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
+        String path = request.path();
+        if (path.startsWith("/actuator")
                 || path.startsWith("/health")
                 || path.startsWith("/metrics")
                 || path.startsWith("/swagger")
                 || path.startsWith("/doc")
                 || path.startsWith("/v3/api-docs")
-                || path.startsWith("/webjars");
-    }
-
-    @Override
-    public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
-        String path = request.path();
-        if (shouldSkipStatistics(path)) {
+                || path.startsWith("/webjars")) {
             return next.handle(request);
         }
 
@@ -49,13 +43,11 @@ public class ApiCallStatFilterFunction implements HandlerFilterFunction<ServerRe
         try {
             ServerResponse response = next.handle(request);
             int status = response.statusCode().value();
-            boolean success = status >= 200 && status < 300;
-            long costMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNano);
-            record(path, method, status, costMs, success);
+            record(path, method, status, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNano),
+                    status >= 200 && status < 300);
             return response;
         } catch (Exception e) {
-            long costMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNano);
-            record(path, method, 500, costMs, false);
+            record(path, method, 500, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNano), false);
             throw e;
         }
     }
@@ -69,16 +61,16 @@ public class ApiCallStatFilterFunction implements HandlerFilterFunction<ServerRe
                 authType = loginUser.getAuthType();
                 userId = loginUser.getUid();
             }
-
-            ApiCallStatKey key = ApiCallStatKey.builder()
+            apiCallRepository.recordApiCallEvent(ApiCallEventDO.builder()
+                    .timestamp(LocalDateTime.now())
                     .authType(authType)
-                    .userId(userId)
                     .path(path)
                     .method(method)
+                    .userId(userId)
+                    .success(success)
                     .statusCode(statusCode)
                     .costMs(costMs)
-                    .build();
-            writeService.recordApiCall(key, success);
+                    .build());
         } catch (Exception e) {
             log.warn("接口调用量统计失败: {}", e.getMessage());
         }
