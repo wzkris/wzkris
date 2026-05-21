@@ -1,7 +1,6 @@
 package com.wzkris.system.impl.tenantlog.login;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.enums.RiskLevelEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -38,11 +37,8 @@ public class TenantLoginlogMngApiImpl
                 .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantLoginLogDO::getMemberId, request.getMemberId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantLoginLogDO::getSuccess, request.getSuccess())
                 .eq(StringUtil.isNotEmpty(request.getTraceId()), TenantLoginLogDO::getTraceId, request.getTraceId())
-                .eq(ObjectUtils.isNotEmpty(request.getRiskLevel()), TenantLoginLogDO::getRiskLevel, request.getRiskLevel())
                 .like(StringUtil.isNotEmpty(request.getUsername()), TenantLoginLogDO::getUsername, request.getUsername())
                 .like(StringUtil.isNotEmpty(request.getLoginLocation()), TenantLoginLogDO::getLoginLocation, request.getLoginLocation())
-                .like(StringUtil.isNotEmpty(request.getAbnormalTag()), TenantLoginLogDO::getAbnormalTags, request.getAbnormalTag())
-                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()), TenantLoginLogDO::getRiskLevel, RiskLevelEnum.LOW)
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantLoginLogDO::getLoginTime,
                         request.getBeginTime(),

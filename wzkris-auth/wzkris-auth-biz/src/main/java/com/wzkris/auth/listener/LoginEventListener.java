@@ -7,7 +7,6 @@ import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
-import com.wzkris.auth.service.LoginRiskAnalyzeService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
@@ -37,8 +36,6 @@ public class LoginEventListener {
 
     private final ILoginLogRemote loginLogRemote;
 
-    private final LoginRiskAnalyzeService loginRiskAnalyzeService;
-
     private final IAdminInfoRemote adminInfoRemote;
 
     private final IMemberInfoRemote memberInfoRemote;
@@ -65,8 +62,6 @@ public class LoginEventListener {
         String loginLocation = IpUtil.parseIp(ipAddr);
         String traceId = event.getTraceId();
         OffsetDateTime now = OffsetDateTime.now();
-        LoginRiskAnalyzeService.RiskResult riskResult =
-                loginRiskAnalyzeService.analyze(loginUser, ipAddr, userAgentText, event.getSuccess(), now);
 
         updateLoginInfoIfSuccess(loginUser, ipAddr, event.getSuccess(), now);
 
@@ -85,11 +80,7 @@ public class LoginEventListener {
         loginLogEvent.setLoginLocation(loginLocation);
         loginLogEvent.setTraceId(traceId);
         loginLogEvent.setUserAgent(userAgentText);
-        loginLogEvent.setAbnormalTags(riskResult.abnormalTags());
-        loginLogEvent.setRiskLevel(riskResult.riskLevel());
-        loginLogEvent.setRiskScore(riskResult.riskScore());
         loginLogRemote.save(Collections.singletonList(loginLogEvent));
-        reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
     }
 
     private void updateLoginInfoIfSuccess(BaseLoginUser loginUser, String ipAddr, Boolean success, OffsetDateTime loginDate) {
@@ -127,15 +118,6 @@ public class LoginEventListener {
             return tenantUser.getTenantId();
         }
         return null;
-    }
-
-    private void reportRiskAlertIfNecessary(BaseLoginUser loginUser, LoginLogEvent event, LoginRiskAnalyzeService.RiskResult riskResult) {
-        if (!loginRiskAnalyzeService.shouldAlert(loginUser, riskResult)) {
-            return;
-        }
-        log.warn("登录风险告警 authType={}, uid={}, riskLevel={}, score={}, tags={}, ip={}, traceId={}",
-                loginUser.getAuthType(), loginUser.getUid(), riskResult.riskLevel(), riskResult.riskScore(),
-                riskResult.abnormalTags(), event.getLoginIp(), event.getTraceId());
     }
 
 }

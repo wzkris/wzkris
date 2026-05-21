@@ -56,9 +56,6 @@ public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
             adminLoginLogDO.setSuccess(loginLogEventRequest.getSuccess());
             adminLoginLogDO.setErrorMsg(loginLogEventRequest.getErrorMsg());
             adminLoginLogDO.setLoginTime(loginLogEventRequest.getLoginTime());
-            adminLoginLogDO.setAbnormalTags(loginLogEventRequest.getAbnormalTags());
-            adminLoginLogDO.setRiskLevel(loginLogEventRequest.getRiskLevel());
-            adminLoginLogDO.setRiskScore(loginLogEventRequest.getRiskScore());
             loginLogs.add(adminLoginLogDO);
         }
         adminLoginLogMapper.insert(loginLogs, 1000);
@@ -82,9 +79,6 @@ public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
             tenantLoginLogDO.setSuccess(loginLogEventRequest.getSuccess());
             tenantLoginLogDO.setErrorMsg(loginLogEventRequest.getErrorMsg());
             tenantLoginLogDO.setLoginTime(loginLogEventRequest.getLoginTime());
-            tenantLoginLogDO.setAbnormalTags(loginLogEventRequest.getAbnormalTags());
-            tenantLoginLogDO.setRiskLevel(loginLogEventRequest.getRiskLevel());
-            tenantLoginLogDO.setRiskScore(loginLogEventRequest.getRiskScore());
             loginLogs.add(tenantLoginLogDO);
         }
         tenantLoginLogMapper.insert(loginLogs, 1000);

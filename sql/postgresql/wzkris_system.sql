@@ -48,10 +48,7 @@ CREATE TABLE biz.admin_login_log (
     login_location character varying(50) NOT NULL,
     login_time timestamp(0) with time zone NOT NULL,
     trace_id character varying(64) NOT NULL,
-    user_agent character varying(200) NOT NULL,
-    abnormal_tags character varying(64) NOT NULL,
-    risk_level character varying(16) NOT NULL,
-    risk_score integer NOT NULL
+    user_agent character varying(200) NOT NULL
 );
 
 
@@ -922,10 +919,7 @@ CREATE TABLE biz.tenant_login_log (
     login_location character varying(50) NOT NULL,
     login_time timestamp(0) with time zone NOT NULL,
     trace_id character varying(64) NOT NULL,
-    user_agent character varying(200) NOT NULL,
-    abnormal_tags character varying(64) NOT NULL,
-    risk_level character varying(16) NOT NULL,
-    risk_score integer NOT NULL
+    user_agent character varying(200) NOT NULL
 );
 
 
@@ -1217,7 +1211,7 @@ COMMENT ON COLUMN biz.tenant_operate_log.oper_time IS '操作时间';
 -- Data for Name: admin_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.admin_login_log (log_id, admin_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, abnormal_tags, risk_level, risk_score) FROM stdin;
+COPY biz.admin_login_log (log_id, admin_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
 \.
 
 
@@ -1324,7 +1318,7 @@ COPY biz.notification_to_tenant (notification_id, member_id, read) FROM stdin;
 -- Data for Name: tenant_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_login_log (log_id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, abnormal_tags, risk_level, risk_score) FROM stdin;
+COPY biz.tenant_login_log (log_id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
 2039616960859942914	1910557183820165122	1910557183820165120	testadmin	password	t		172.16.8.59	 局域网	2026-04-02 16:12:31+08	20260402161230015-2-5218330	{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}		LOW	0
 2039619680941584385	1910557183820165122	1910557183820165120	testadmin	password	f	商户已过期，请联系管理员	172.16.8.59	 局域网	2026-04-02 16:23:20+08	20260402162319581-24-4431240	{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}	HIGH_FAIL_FREQ	MEDIUM	60
 2039875760288346113	1910557183820165122	1910557183820165120	testadmin	password	f	商户已过期，请联系管理员	172.16.8.59	 局域网	2026-04-03 09:20:54+08	20260403092053754-3-1020537	{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}		LOW	20

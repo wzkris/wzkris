@@ -1,7 +1,6 @@
 package com.wzkris.system.impl.adminlog.login;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.core.enums.RiskLevelEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -38,11 +37,8 @@ public class AdminLoginlogMngApiImpl
                 .eq(ObjectUtils.isNotEmpty(request.getAdminId()), AdminLoginLogDO::getAdminId, request.getAdminId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), AdminLoginLogDO::getSuccess, request.getSuccess())
                 .eq(StringUtil.isNotEmpty(request.getTraceId()), AdminLoginLogDO::getTraceId, request.getTraceId())
-                .eq(ObjectUtils.isNotEmpty(request.getRiskLevel()), AdminLoginLogDO::getRiskLevel, request.getRiskLevel())
                 .like(StringUtil.isNotEmpty(request.getUsername()), AdminLoginLogDO::getUsername, request.getUsername())
                 .like(StringUtil.isNotEmpty(request.getLoginLocation()), AdminLoginLogDO::getLoginLocation, request.getLoginLocation())
-                .like(StringUtil.isNotEmpty(request.getAbnormalTag()), AdminLoginLogDO::getAbnormalTags, request.getAbnormalTag())
-                .ne(Boolean.TRUE.equals(request.getAbnormalOnly()), AdminLoginLogDO::getRiskLevel, RiskLevelEnum.LOW)
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         AdminLoginLogDO::getLoginTime,
                         request.getBeginTime(),

@@ -1,6 +1,5 @@
 package com.wzkris.system.api.tenantlog.login.response;
 
-import com.wzkris.common.core.enums.RiskLevelEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -40,15 +39,6 @@ public class TenantLoginLogMngResponse {
 
     @Schema(description = "登录时间")
     private OffsetDateTime loginTime;
-
-    @Schema(description = "异常标签")
-    private String abnormalTags;
-
-    @Schema(description = "风险等级")
-    private RiskLevelEnum riskLevel;
-
-    @Schema(description = "风险分")
-    private Integer riskScore;
 
     @Schema(description = "租户ID")
     private Long tenantId;

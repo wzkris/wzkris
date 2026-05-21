@@ -1,6 +1,5 @@
 package com.wzkris.system.api.adminlog.login.request;
 
-import com.wzkris.common.core.enums.RiskLevelEnum;
 import com.wzkris.common.orm.request.PagingRequest;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,14 +20,5 @@ public class AdminLoginLogInfoPageRequest extends PagingRequest {
 
     @Parameter(description = "链路追踪ID")
     private String traceId;
-
-    @Parameter(description = "风险等级")
-    private RiskLevelEnum riskLevel;
-
-    @Parameter(description = "异常标签（支持模糊匹配）")
-    private String abnormalTag;
-
-    @Parameter(description = "仅异常记录（true 时过滤风险等级非 LOW）")
-    private Boolean abnormalOnly;
 
 }
