@@ -48,7 +48,7 @@ public class RiskPassServiceImpl {
         ServiceJwtIssueRequest issueRequest = new ServiceJwtIssueRequest();
         issueRequest.setSubject(clientKey);
         issueRequest.setClaims(claims);
-        issueRequest.setTtlSeconds(riskPassProperties.getTtlSeconds());
+        issueRequest.setTtlSeconds(riskPassProperties.getPassTtlSeconds());
         Result<ServiceJwtIssueResponse> issued = serviceJwtIssueRemote.issue(issueRequest);
         if (!ResultUtil.check(issued)) {
             return Result.requestFail(issued.getMessage());

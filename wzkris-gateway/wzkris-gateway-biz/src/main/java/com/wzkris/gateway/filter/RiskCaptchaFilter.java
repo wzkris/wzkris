@@ -59,10 +59,6 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
         }
 
         String path = request.getRequestURI();
-        if (isPathMatched(riskCaptchaProperties.getBypassPaths(), path)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         String clientIp = ServletUtil.getClientIP(request);
 

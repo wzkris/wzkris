@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @RefreshScope
-@ConfigurationProperties(prefix = "security.risk-pass")
+@ConfigurationProperties(prefix = "risk-captcha")
 public class RiskPassProperties {
 
-    private long ttlSeconds = 600;
+    private long passTtlSeconds = 180;
 
 }
