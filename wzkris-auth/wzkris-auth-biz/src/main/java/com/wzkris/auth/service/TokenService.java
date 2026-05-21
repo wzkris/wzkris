@@ -1,7 +1,6 @@
 package com.wzkris.auth.service;
 
 import com.wzkris.auth.domain.OnlineSession;
-import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.common.core.model.BaseLoginUser;
 import jakarta.annotation.Nullable;
@@ -78,17 +77,5 @@ public interface TokenService {
      * @return sid -> OnlineSession，无会话返回空 Map
      */
     Map<String, OnlineSession> loadSessionCache(String type, Serializable uid);
-
-    TokenClaims parseJwt(String token);
-
-    /**
-     * 服务间签发 JWT（无会话、不写 Redis），用于风控通行票等场景。
-     *
-     * @param subject    JWT subject
-     * @param claims     自定义 claims（不可覆盖 subject / 时间类标准声明）
-     * @param ttlSeconds 有效期（秒）
-     * @return JWT 字符串
-     */
-    String issueServiceJwt(String subject, Map<String, Object> claims, long ttlSeconds);
 
 }

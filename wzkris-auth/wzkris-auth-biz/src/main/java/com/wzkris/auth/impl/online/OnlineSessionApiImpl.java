@@ -6,6 +6,7 @@ import com.wzkris.auth.api.online.response.OnlineSessionResponse;
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
@@ -28,12 +29,14 @@ public class OnlineSessionApiImpl implements OnlineSessionApi {
 
     private final TokenService tokenService;
 
+    private final JwtTokenHelper jwtTokenHelper;
+
     @Override
     public Result<Collection<OnlineSessionResponse>> queryList() {
         AuthTypeEnum authType = SecurityUtil.getAuthType();
         Map<String, OnlineSession> onlineCache = tokenService.loadSessionCache(authType.getValue(), SecurityUtil.getUid());
 
-        TokenClaims claims = tokenService.parseJwt(SecurityUtil.getTokenValue());
+        TokenClaims claims = jwtTokenHelper.parse(SecurityUtil.getTokenValue());
         String sid = claims.getSid();
 
         List<OnlineSessionResponse> list = new ArrayList<>();

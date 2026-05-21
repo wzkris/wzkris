@@ -4,6 +4,7 @@ import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;
@@ -28,9 +29,12 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
 
     private final TokenService tokenService;
 
-    public RefreshAuthenticationProvider(TokenService tokenService) {
+    private final JwtTokenHelper jwtTokenHelper;
+
+    public RefreshAuthenticationProvider(TokenService tokenService, JwtTokenHelper jwtTokenHelper) {
         super(tokenService);
         this.tokenService = tokenService;
+        this.jwtTokenHelper = jwtTokenHelper;
     }
 
     @Override
@@ -64,7 +68,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         // 从 refreshToken JWT 中解析 uid 和 sid
         TokenClaims claims;
         try {
-            claims = tokenService.parseJwt(refreshToken);
+            claims = jwtTokenHelper.parse(refreshToken);
         } catch (Exception e) {
             // refreshToken 解析失败
             OAuth2ExceptionUtil.throwErrorI18n(
