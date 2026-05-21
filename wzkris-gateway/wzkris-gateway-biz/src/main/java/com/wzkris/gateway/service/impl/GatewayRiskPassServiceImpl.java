@@ -1,7 +1,6 @@
 package com.wzkris.gateway.service.impl;
 
-import com.wzkris.captcha.enums.CaptchaTypeEnum;
-import com.wzkris.captcha.response.RiskPassExchangeResponse;
+import com.wzkris.gateway.api.risk.response.RiskPassExchangeResponse;
 import com.wzkris.gateway.constants.GatewayRiskRedisKeys;
 import com.wzkris.gateway.properties.RiskCaptchaProperties;
 import com.wzkris.gateway.service.GatewayRiskPassService;
@@ -23,7 +22,7 @@ public class GatewayRiskPassServiceImpl implements GatewayRiskPassService {
     private final RiskCaptchaProperties riskCaptchaProperties;
 
     @Override
-    public RiskPassExchangeResponse grantPass(String clientKey, CaptchaTypeEnum captchaType) {
+    public RiskPassExchangeResponse grantPass(String clientKey, String captchaType) {
         String passToken = UUID.randomUUID().toString().replace("-", "");
         long ttlSecs = riskCaptchaProperties.getPassTtlSeconds();
         stringRedisTemplate.opsForValue().set(

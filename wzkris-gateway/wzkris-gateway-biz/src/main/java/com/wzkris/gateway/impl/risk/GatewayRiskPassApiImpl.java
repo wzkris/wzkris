@@ -1,10 +1,10 @@
 package com.wzkris.gateway.impl.risk;
 
-import com.wzkris.captcha.request.RiskPassExchangeRequest;
-import com.wzkris.captcha.response.RiskPassExchangeResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.gateway.api.risk.GatewayRiskPassApi;
+import com.wzkris.gateway.remote.api.risk.request.RiskPassExchangeRequest;
+import com.wzkris.gateway.api.risk.response.RiskPassExchangeResponse;
 import com.wzkris.gateway.remote.api.risk.IRiskCaptchaRemote;
 import com.wzkris.gateway.service.GatewayRiskPassService;
 import lombok.RequiredArgsConstructor;

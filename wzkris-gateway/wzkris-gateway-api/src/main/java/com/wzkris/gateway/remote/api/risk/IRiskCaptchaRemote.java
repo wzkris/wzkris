@@ -1,10 +1,10 @@
 package com.wzkris.gateway.remote.api.risk;
 
-import com.wzkris.captcha.request.RiskPassExchangeRequest;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;
 import com.wzkris.common.remote.constants.ServiceIdConstant;
+import com.wzkris.gateway.remote.api.risk.request.RiskPassExchangeRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;

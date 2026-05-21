@@ -1,9 +1,9 @@
 package com.wzkris.gateway.controller;
 
-import com.wzkris.captcha.request.RiskPassExchangeRequest;
-import com.wzkris.captcha.response.RiskPassExchangeResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.gateway.api.risk.GatewayRiskPassApi;
+import com.wzkris.gateway.remote.api.risk.request.RiskPassExchangeRequest;
+import com.wzkris.gateway.api.risk.response.RiskPassExchangeResponse;
 import com.wzkris.gateway.constants.GatewayRiskRedisKeys;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

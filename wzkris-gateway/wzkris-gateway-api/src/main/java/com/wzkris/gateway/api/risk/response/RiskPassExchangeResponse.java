@@ -1,6 +1,5 @@
-package com.wzkris.captcha.response;
+package com.wzkris.gateway.api.risk.response;
 
-import com.wzkris.captcha.enums.CaptchaTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +20,8 @@ public class RiskPassExchangeResponse {
      */
     private String captchaType;
 
-    public static RiskPassExchangeResponse of(String passToken, OffsetDateTime expiresAt, CaptchaTypeEnum captchaTypeEnum) {
-        return new RiskPassExchangeResponse(passToken, expiresAt, captchaTypeEnum.getValue());
+    public static RiskPassExchangeResponse of(String passToken, OffsetDateTime expiresAt, String captchaType) {
+        return new RiskPassExchangeResponse(passToken, expiresAt, captchaType);
     }
 
 }
