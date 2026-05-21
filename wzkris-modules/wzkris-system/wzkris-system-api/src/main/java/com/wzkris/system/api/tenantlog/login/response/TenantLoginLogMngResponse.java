@@ -1,4 +1,4 @@
-package com.wzkris.system.api.adminlog.response;
+package com.wzkris.system.api.tenantlog.login.response;
 
 import com.wzkris.common.core.enums.RiskLevelEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,12 +7,12 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
-public class AdminLoginLogMngResponse {
+public class TenantLoginLogMngResponse {
 
     private Long logId;
 
     @Schema(description = "用户ID")
-    private Long adminId;
+    private Long memberId;
 
     @Schema(description = "用户名")
     private String username;
@@ -49,5 +49,8 @@ public class AdminLoginLogMngResponse {
 
     @Schema(description = "风险分")
     private Integer riskScore;
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
 
 }

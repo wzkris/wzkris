@@ -1,4 +1,4 @@
-package com.wzkris.system.api.tenantlog.response;
+package com.wzkris.system.api.tenantlog.login.response;
 
 import com.wzkris.common.core.enums.RiskLevelEnum;
 import io.swagger.v3.oas.annotations.media.Schema;

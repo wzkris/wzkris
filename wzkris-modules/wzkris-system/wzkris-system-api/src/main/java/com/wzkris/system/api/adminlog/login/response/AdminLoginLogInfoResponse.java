@@ -1,4 +1,4 @@
-package com.wzkris.system.api.adminlog.response;
+package com.wzkris.system.api.adminlog.login.response;
 
 import com.wzkris.common.core.enums.RiskLevelEnum;
 import io.swagger.v3.oas.annotations.media.Schema;

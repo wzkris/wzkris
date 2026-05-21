@@ -1,4 +1,4 @@
-package com.wzkris.system.api.tenantlog.request;
+package com.wzkris.system.api.adminlog.operate.request;
 
 import com.wzkris.common.orm.request.PagingRequest;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -7,10 +7,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class TenantOperateLogMngPageRequest extends PagingRequest {
-
-    @Parameter(description = "用户ID")
-    private Long memberId;
+public class AdminOperateLogInfoPageRequest extends PagingRequest {
 
     @Parameter(description = "操作模块")
     private String title;
@@ -22,7 +19,7 @@ public class TenantOperateLogMngPageRequest extends PagingRequest {
     private String operType;
 
     @Parameter(description = "操作人员")
-    private String username;
+    private String operName;
 
     @Parameter(description = "操作状态")
     private Boolean success;

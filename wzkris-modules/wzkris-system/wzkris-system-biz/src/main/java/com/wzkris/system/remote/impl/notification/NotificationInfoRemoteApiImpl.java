@@ -2,7 +2,7 @@ package com.wzkris.system.remote.impl.notification;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.system.api.message.request.SimpleMessageRequest;
+import com.wzkris.system.api.notification.request.SimpleMessageRequest;
 import com.wzkris.system.enums.notification.NotificationTypeEnum;
 import com.wzkris.system.remote.api.notification.NotificationInfoRemoteApi;
 import com.wzkris.system.remote.api.notification.request.NotificationRequest;

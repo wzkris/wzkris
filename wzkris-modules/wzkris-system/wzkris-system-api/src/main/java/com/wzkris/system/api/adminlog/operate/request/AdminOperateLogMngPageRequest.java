@@ -1,4 +1,4 @@
-package com.wzkris.system.api.adminlog.request;
+package com.wzkris.system.api.adminlog.operate.request;
 
 import com.wzkris.common.orm.request.PagingRequest;
 import io.swagger.v3.oas.annotations.Parameter;

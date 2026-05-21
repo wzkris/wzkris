@@ -1,4 +1,4 @@
-package com.wzkris.system.api.message.request;
+package com.wzkris.system.api.notification.request;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;

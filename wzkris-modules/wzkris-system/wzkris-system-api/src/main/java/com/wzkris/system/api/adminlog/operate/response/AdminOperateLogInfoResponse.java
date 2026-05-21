@@ -1,4 +1,4 @@
-package com.wzkris.system.api.adminlog.response;
+package com.wzkris.system.api.adminlog.operate.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

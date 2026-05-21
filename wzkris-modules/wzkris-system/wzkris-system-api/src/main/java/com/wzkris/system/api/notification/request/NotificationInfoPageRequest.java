@@ -1,4 +1,4 @@
-package com.wzkris.system.api.message.request;
+package com.wzkris.system.api.notification.request;
 
 import com.wzkris.common.orm.request.PagingRequest;
 import io.swagger.v3.oas.annotations.Parameter;

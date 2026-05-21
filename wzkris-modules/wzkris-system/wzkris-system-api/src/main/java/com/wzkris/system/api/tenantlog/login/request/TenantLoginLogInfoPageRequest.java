@@ -1,4 +1,4 @@
-package com.wzkris.system.api.adminlog.request;
+package com.wzkris.system.api.tenantlog.login.request;
 
 import com.wzkris.common.core.enums.RiskLevelEnum;
 import com.wzkris.common.orm.request.PagingRequest;
@@ -7,11 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "筛选条件")
-public class AdminLoginLogMngPageRequest extends PagingRequest {
-
-    @Parameter(description = "用户ID")
-    private Long adminId;
+@Schema(description = "租户个人登录日志筛选条件（info）")
+public class TenantLoginLogInfoPageRequest extends PagingRequest {
 
     @Parameter(description = "用户名")
     private String username;

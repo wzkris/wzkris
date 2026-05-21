@@ -5,7 +5,7 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.system.api.message.request.SimpleMessageRequest;
+import com.wzkris.system.api.notification.request.SimpleMessageRequest;
 import com.wzkris.system.domain.NotificationInfoDO;
 import com.wzkris.system.domain.NotificationToAdminDO;
 import com.wzkris.system.domain.NotificationToTenantDO;

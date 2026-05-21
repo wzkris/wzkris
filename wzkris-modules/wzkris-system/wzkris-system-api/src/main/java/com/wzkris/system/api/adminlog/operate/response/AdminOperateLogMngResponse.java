@@ -1,4 +1,4 @@
-package com.wzkris.system.api.tenantlog.response;
+package com.wzkris.system.api.adminlog.operate.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -6,8 +6,7 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
-@Schema(description = "租户管理操作日志信息")
-public class TenantOperateLogMngResponse {
+public class AdminOperateLogMngResponse {
 
     private Long operId;
 
@@ -26,8 +25,8 @@ public class TenantOperateLogMngResponse {
     @Schema(description = "请求方式")
     private String requestMethod;
 
-    @Schema(description = "职工ID")
-    private Long memberId;
+    @Schema(description = "用户ID")
+    private Long adminId;
 
     @Schema(description = "用户名")
     private String username;
@@ -35,7 +34,7 @@ public class TenantOperateLogMngResponse {
     @Schema(description = "请求url")
     private String operUrl;
 
-    @Schema(description = "操作ip地址")
+    @Schema(description = "操作地址")
     private String operIp;
 
     @Schema(description = "请求参数")
@@ -55,8 +54,5 @@ public class TenantOperateLogMngResponse {
 
     @Schema(description = "操作时间")
     private OffsetDateTime operTime;
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
 
 }
