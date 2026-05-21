@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 @Hidden
 @Validated
@@ -34,7 +35,8 @@ public class CaptchaRemoteController {
 
         // 通用失败次数限制：避免对同一 key 暴力猜解
         // 说明：不改变现有接口形态；通过 key 派生 fail/lock key 实现增强。
-        String lockKey = "captcha:lock:" + key;
+        final String lockKey = "captcha:lock:" + key;
+        final String failKey = "captcha:fail:" + key;
         if (stringRedisTemplate.hasKey(lockKey)) {
             return Result.ok(false);
         }
@@ -42,11 +44,9 @@ public class CaptchaRemoteController {
         String value = stringRedisTemplate.opsForValue().get(key);
         boolean equals = StringUtil.equals(request.getValue(), value);
         if (equals) {
-            stringRedisTemplate.delete(key);
-            stringRedisTemplate.delete("captcha:fail:" + key);
+            stringRedisTemplate.delete(Arrays.asList(lockKey, failKey));
         }
         if (!equals) {
-            String failKey = "captcha:fail:" + key;
             Long failCount = stringRedisTemplate.opsForValue().increment(failKey);
             // 首次失败设置一个窗口期，与验证码 TTL 解耦
             if (failCount != null && failCount == 1L) {

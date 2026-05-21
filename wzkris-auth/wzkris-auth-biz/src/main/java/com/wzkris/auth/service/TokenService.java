@@ -81,4 +81,14 @@ public interface TokenService {
 
     TokenClaims parseJwt(String token);
 
+    /**
+     * 服务间签发 JWT（无会话、不写 Redis），用于风控通行票等场景。
+     *
+     * @param subject    JWT subject
+     * @param claims     自定义 claims（不可覆盖 subject / 时间类标准声明）
+     * @param ttlSeconds 有效期（秒）
+     * @return JWT 字符串
+     */
+    String issueServiceJwt(String subject, Map<String, Object> claims, long ttlSeconds);
+
 }

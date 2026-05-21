@@ -4,10 +4,11 @@ import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.gateway.api.risk.response.RiskCaptchaRequiredResponse;
-import com.wzkris.gateway.constants.GatewayRiskRedisKeys;
+import com.wzkris.gateway.domain.RiskCaptchaRequired;
 import com.wzkris.gateway.properties.RiskCaptchaProperties;
+import com.wzkris.gateway.service.RiskPassJwtValidateService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,8 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
 
     private final StringRedisTemplate stringRedisTemplate;
 
+    private final RiskPassJwtValidateService riskPassJwtValidateService;
+
     private static boolean isPathMatched(Iterable<String> patterns, String path) {
         if (patterns == null) {
             return false;
@@ -56,9 +59,14 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
         }
 
         String path = request.getRequestURI();
-        String clientKey = GatewayRiskRedisKeys.clientKey(request);
+        if (isPathMatched(riskCaptchaProperties.getBypassPaths(), path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        boolean locked = stringRedisTemplate.hasKey(GatewayRiskRedisKeys.lockKey(clientKey));
+        String clientIp = ServletUtil.getClientIP(request);
+
+        boolean locked = stringRedisTemplate.hasKey(clientIp);
         boolean enforced = isPathMatched(riskCaptchaProperties.getEnforcedPaths(), path);
 
         if (!locked && !enforced) {
@@ -66,9 +74,8 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
             return;
         }
 
-        String passToken = request.getHeader(CustomHeaderConstants.RISK_PASS_HEADER);
-        if (StringUtil.isNotBlank(passToken)
-                && clientKey.equals(stringRedisTemplate.opsForValue().get(GatewayRiskRedisKeys.passKey(passToken.trim())))) {
+        String riskPassToken = request.getHeader(CustomHeaderConstants.RISK_PASS_HEADER);
+        if (riskPassJwtValidateService.isValid(riskPassToken, clientIp)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -77,12 +84,11 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(JsonUtil.toJsonString(
                 Result.init(BizBaseCodeEnum.TOO_MANY_REQUESTS.value(),
-                        RiskCaptchaRequiredResponse.builder()
+                        RiskCaptchaRequired.builder()
                                 .riskCaptchaRequired(true)
                                 .riskLocked(locked)
-                                .path(path)
                                 .build(),
-                        "risk.captcha.required")));
+                        "风险验证码缺失或验证失败")));
     }
 
 }

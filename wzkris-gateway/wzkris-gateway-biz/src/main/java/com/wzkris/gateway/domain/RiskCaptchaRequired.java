@@ -1,4 +1,4 @@
-package com.wzkris.gateway.api.risk.response;
+package com.wzkris.gateway.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RiskCaptchaRequiredResponse implements Serializable {
+public class RiskCaptchaRequired implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -23,8 +23,5 @@ public class RiskCaptchaRequiredResponse implements Serializable {
 
     @Schema(description = "是否处于风控锁定")
     private boolean riskLocked;
-
-    @Schema(description = "请求路径")
-    private String path;
 
 }

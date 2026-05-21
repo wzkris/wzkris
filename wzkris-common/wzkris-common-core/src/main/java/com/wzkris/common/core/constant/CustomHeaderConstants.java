@@ -18,6 +18,11 @@ public class CustomHeaderConstants {
     public static final String RISK_PASS_HEADER = "X-Risk-Pass";
 
     /**
+     * 网关侧解析的客户端IP
+     */
+    public static final String X_GATEWAY_CLIENT_IP = "X-Gateway-Client-IP";
+
+    /**
      * tracing_id
      */
     public static final String X_TRACING_ID = "X-Tracing-Id";

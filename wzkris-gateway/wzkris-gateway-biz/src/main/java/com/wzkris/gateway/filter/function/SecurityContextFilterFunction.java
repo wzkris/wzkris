@@ -3,6 +3,7 @@ package com.wzkris.gateway.filter.function;
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
+import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,9 +29,11 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
     @Override
     public ServerResponse filter(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
         Authentication authentication = SecurityUtil.getAuthentication();
+        String gatewayClientIp = ServletUtil.getClientIP(request.servletRequest());
         ServerRequest newRequest = ServerRequest.from(request)
                 .headers(h -> {
                     h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
+                    h.set(CustomHeaderConstants.X_GATEWAY_CLIENT_IP, gatewayClientIp);
                     if (authentication instanceof AnonymousAuthenticationToken) {
                         return;
                     }

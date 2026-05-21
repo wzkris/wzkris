@@ -152,6 +152,26 @@ public class TokenServiceImpl implements TokenService {
         return TokenClaims.from(jwtDecoder.decode(token));
     }
 
+    @Override
+    public String issueServiceJwt(String subject, Map<String, Object> claims, long ttlSeconds) {
+        JwsHeader jwsHeader = JwsHeader.with(SignatureAlgorithm.RS256).build();
+        Instant issuedAt = Instant.now();
+        Instant expiresAt = issuedAt.plusSeconds(ttlSeconds);
+        JwtClaimsSet.Builder builder = JwtClaimsSet.builder()
+                .issuer(authorizationServerSettings.getIssuer())
+                .issuedAt(issuedAt)
+                .expiresAt(expiresAt)
+                .id(UUID.randomUUID().toString())
+                .notBefore(issuedAt);
+        if (claims != null) {
+            claims.forEach(builder::claim);
+        }
+        builder.subject(subject);
+        builder.issuedAt(issuedAt);
+        builder.expiresAt(expiresAt);
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, builder.build())).getTokenValue();
+    }
+
     private void save(BaseLoginUser baseLoginUser, String sid, Set<String> permissions) {
         Serializable uid = baseLoginUser.getUid();
         String type = baseLoginUser.getAuthType().getValue();
