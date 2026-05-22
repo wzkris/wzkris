@@ -6,6 +6,7 @@ import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.service.TokenValidateService;
 import com.wzkris.gateway.service.impl.TokenValidateServiceImpl;
+import com.wzkris.gateway.utils.PathMatchUtil;
 import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
 import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -50,8 +50,6 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
     private static final Authentication ANONYMOUS_AUTHENTICATION = new AnonymousAuthenticationToken("anonymous",
             "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
 
-    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
-
     private final SecurityContextHolderStrategy contextHolderStrategy =
             SecurityContextHolder.getContextHolderStrategy();
 
@@ -66,18 +64,6 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
      * 带 {@link PermitAll} 注解的 URL 集合（启动时扫描）。
      */
     private final Set<String> permitAllAnnotations = new HashSet<>();
-
-    private static boolean isPathMatched(Iterable<String> patterns, String path) {
-        if (patterns == null) {
-            return false;
-        }
-        for (String pattern : patterns) {
-            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
@@ -123,8 +109,8 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
     }
 
     private boolean isPathPermitted(String path) {
-        return isPathMatched(permitUrlProperties.getIgnores(), path)
-                || isPathMatched(permitAllAnnotations, path);
+        return PathMatchUtil.matchAny(permitUrlProperties.getIgnores(), path)
+                || PathMatchUtil.matchAny(permitAllAnnotations, path);
     }
 
 }

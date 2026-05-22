@@ -5,8 +5,8 @@ import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ServletUtil;
-import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.domain.RiskCaptchaRequired;
+import com.wzkris.gateway.utils.PathMatchUtil;
 import com.wzkris.gateway.properties.RiskCaptchaProperties;
 import com.wzkris.gateway.service.RiskPassJwtValidateService;
 import com.wzkris.gateway.utils.PathMatchUtil;
@@ -20,7 +20,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -31,25 +30,11 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class RiskCaptchaFilter extends OncePerRequestFilter {
 
-    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
-
     private final RiskCaptchaProperties riskCaptchaProperties;
 
     private final StringRedisTemplate stringRedisTemplate;
 
     private final RiskPassJwtValidateService riskPassJwtValidateService;
-
-    private static boolean isPathMatched(Iterable<String> patterns, String path) {
-        if (patterns == null) {
-            return false;
-        }
-        for (String pattern : patterns) {
-            if (StringUtil.isNotBlank(pattern) && PATH_MATCHER.match(pattern, path)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -64,7 +49,7 @@ public class RiskCaptchaFilter extends OncePerRequestFilter {
         String clientIp = ServletUtil.getClientIP(request);
 
         boolean locked = stringRedisTemplate.hasKey(clientIp);
-        boolean enforced = isPathMatched(riskCaptchaProperties.getEnforcedPaths(), path);
+        boolean enforced = PathMatchUtil.matchAny(riskCaptchaProperties.getEnforcedPaths(), path);
 
         if (!locked && !enforced) {
             filterChain.doFilter(request, response);
