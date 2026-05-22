@@ -9,6 +9,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.gateway.domain.RiskCaptchaRequired;
 import com.wzkris.gateway.properties.RiskCaptchaProperties;
 import com.wzkris.gateway.service.RiskPassJwtValidateService;
+import com.wzkris.gateway.utils.PathMatchUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

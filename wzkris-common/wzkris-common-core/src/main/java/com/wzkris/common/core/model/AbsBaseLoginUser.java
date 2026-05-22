@@ -33,15 +33,9 @@ public abstract class AbsBaseLoginUser implements BaseLoginUser {
     private String userExpiredReason;
 
     /**
-     * 实际操作者ID（impersonation 场景）。null 表示当前用户即操作者。
+     * 代操作实际操作者
      */
     @Nullable
-    private Long actorUid;
-
-    /**
-     * 实际操作者认证类型（impersonation 场景）。
-     */
-    @Nullable
-    private AuthTypeEnum actorAuthType;
+    private ActorInfo actor;
 
 }

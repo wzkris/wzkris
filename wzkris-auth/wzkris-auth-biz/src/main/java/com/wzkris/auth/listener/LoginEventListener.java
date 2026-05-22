@@ -8,6 +8,7 @@ import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.ActorInfo;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -68,8 +69,11 @@ public class LoginEventListener {
         LoginLogEvent loginLogEvent = new LoginLogEvent();
         loginLogEvent.setAuthType(loginUser.getAuthType());
         loginLogEvent.setOperatorId(loginUser.getUid());
-        loginLogEvent.setActorUid(loginUser.getActorUid());
-        loginLogEvent.setActorAuthType(loginUser.getActorAuthType());
+        ActorInfo actor = loginUser.getActor();
+        if (actor != null) {
+            loginLogEvent.setActorUid(actor.getUid());
+            loginLogEvent.setActorAuthType(actor.getAuthType());
+        }
         loginLogEvent.setUsername(resolveUsername(loginUser));
         loginLogEvent.setTenantId(resolveTenantId(loginUser));
         loginLogEvent.setLoginTime(now);

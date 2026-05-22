@@ -1,8 +1,6 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.enums.LoginTypeEnum;
-import com.wzkris.auth.event.LoginEvent;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.request.TenantIdRequest;
@@ -14,23 +12,19 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.enums.IdentityTypeEnum;
+import com.wzkris.common.core.model.ActorInfo;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.*;
+import com.wzkris.common.core.utils.ResultUtil;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.model.LoginAdminUser;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
-import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import nl.basjes.parse.useragent.UserAgent;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -47,7 +41,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken switchToTenant(LoginAdminUser adminUser, Long tenantId) {
+    public UsernamePasswordAuthenticationToken switchToTenant(LoginAdminUser adminUser, Long tenantId, String actorSid) {
         Result<MemberInfoResponse> memberResult = memberInfoRemote.queryAdministratorByTenantId(
                 new TenantIdRequest(tenantId));
         if (!ResultUtil.check(memberResult)) {
@@ -55,27 +49,20 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         }
         MemberInfoResponse memberResp = memberResult.getData();
 
-        try {
-            UsernamePasswordAuthenticationToken token = buildTenantAuthenticationToken(memberResp);
-            LoginTenantUser tenantUser = (LoginTenantUser) token.getPrincipal();
-            tenantUser.setActorUid(adminUser.getUid());
-            tenantUser.setActorAuthType(AuthTypeEnum.ADMIN);
-            return token;
-        } catch (Exception e) {
-            recordTenantFailedLog(memberResp, e.getMessage());
-            throw e;
-        }
+        UsernamePasswordAuthenticationToken token = buildTenantAuthenticationToken(memberResp);
+        LoginTenantUser tenantUser = (LoginTenantUser) token.getPrincipal();
+        tenantUser.setActor(ActorInfo.of(adminUser.getUid(), AuthTypeEnum.ADMIN, actorSid));
+        return token;
     }
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken switchToAdmin(Long actorUid) {
-        String adminType = AuthTypeEnum.ADMIN.getValue();
-        var loadedUser = tokenService.loadLoginUserByUid(adminType, actorUid);
+    public UsernamePasswordAuthenticationToken switchBack(Long actorUid, AuthTypeEnum authTypeEnum) {
+        var loadedUser = tokenService.loadLoginUserByUid(authTypeEnum.getValue(), actorUid);
         if (!(loadedUser instanceof LoginAdminUser adminUser)) {
             return null;
         }
-        Set<String> perms = tokenService.loadPermissionsByUid(adminType, actorUid);
+        Set<String> perms = tokenService.loadPermissionsByUid(authTypeEnum.getValue(), actorUid);
         if (perms == null) {
             perms = Collections.emptySet();
         }
@@ -126,28 +113,6 @@ public class SwitchUserServiceImpl implements SwitchUserService {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.TENANT_PACKAGE_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
-    }
-
-    private void recordTenantFailedLog(MemberInfoResponse memberResp, String errorMsg) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-
-        LoginTenantUser tenantUser = new LoginTenantUser();
-        tenantUser.setUid(memberResp.getMemberId());
-        tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setIdentityType(IdentityTypeEnum.NONE);
-        tenantUser.setUsername(memberResp.getUsername());
-        tenantUser.setTenantId(memberResp.getTenantId());
-
-        UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT));
-        SpringUtil.getContext()
-                .publishEvent(new LoginEvent(
-                        tenantUser,
-                        LoginTypeEnum.SWITCH.getValue(),
-                        false,
-                        errorMsg,
-                        ServletUtil.getClientIP(request),
-                        userAgent.getUserAgentString(),
-                        TraceIdUtil.getOrGenerate()));
     }
 
 }

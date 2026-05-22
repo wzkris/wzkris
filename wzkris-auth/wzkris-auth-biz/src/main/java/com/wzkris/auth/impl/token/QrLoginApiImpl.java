@@ -68,7 +68,7 @@ public class QrLoginApiImpl implements QrLoginApi {
 
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         Set<String> permission = SecurityUtil.getPermission();
-        TokenPair tokenPair = tokenService.login(loginUser, permission);
+        TokenPair tokenPair = tokenService.loginCreate(loginUser, permission);
 
         qrTokenResponse.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
         qrTokenResponse.setAccessToken(tokenPair.accessToken());

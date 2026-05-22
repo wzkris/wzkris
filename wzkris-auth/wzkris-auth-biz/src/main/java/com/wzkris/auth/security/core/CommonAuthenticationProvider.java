@@ -29,8 +29,8 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
         BaseLoginUser loginUser = (BaseLoginUser) authenticated.getPrincipal();
         var perms = AuthorityUtils.authorityListToSet(authenticated.getAuthorities());
         TokenPair tokenPair = authentication instanceof RefreshAuthenticationToken refresh
-                ? tokenService.refresh(loginUser, perms, refresh.getRefreshToken())
-                : tokenService.login(loginUser, perms);
+                ? tokenService.loginRefresh(loginUser, perms, refresh.getRefreshToken())
+                : tokenService.loginCreate(loginUser, perms);
         authenticated.setDetails(tokenPair);
         return authenticated;
     }

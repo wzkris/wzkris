@@ -63,7 +63,7 @@ public class DefaultAuthenticationSuccessHandlerImpl implements AuthenticationSu
 
     private void recordLog(HttpServletRequest request, UsernamePasswordAuthenticationToken authenticationToken) {
         LoginTypeEnum loginType = LoginTypeEnum.fromValue(request.getParameter(OAuth2ParameterConstant.LOGIN_TYPE));
-        if (loginType == LoginTypeEnum.REFRESH) {
+        if (loginType == null || loginType == LoginTypeEnum.REFRESH) {
             return;
         }
 

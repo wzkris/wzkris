@@ -18,7 +18,7 @@ public enum LoginTypeEnum {
     PASSWORD("PASSWORD", "密码模式"),
     SMS("SMS", "短信模式"),
     WE_XCX("WE_XCX", "微信小程序模式"),
-    SWITCH("SWITCH", "登录态切换模式");
+    ;
 
     @JsonValue
     private final String value;

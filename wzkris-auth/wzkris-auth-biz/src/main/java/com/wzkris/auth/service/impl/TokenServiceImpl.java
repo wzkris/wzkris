@@ -50,64 +50,59 @@ public class TokenServiceImpl implements TokenService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public TokenPair login(BaseLoginUser loginUser, Set<String> permissions) {
-        String sid = UUID.randomUUID().toString();
-        String accessToken = generateAccessToken(loginUser, sid);
-        String refreshToken = generateRefreshToken(loginUser, sid);
-        save(loginUser, sid, permissions);
-        return new TokenPair(accessToken, refreshToken);
+    public TokenPair loginCreate(BaseLoginUser loginUser, Set<String> permissions) {
+        return issue(loginUser, permissions, UUID.randomUUID().toString(), SessionWriteOp.CREATE);
     }
 
     @Override
-    public TokenPair refresh(BaseLoginUser loginUser, Set<String> permissions, String oldRefreshToken) {
+    public TokenPair loginReuse(BaseLoginUser loginUser, Set<String> permissions, String sid) {
+        return issue(loginUser, permissions, sid, SessionWriteOp.REUSE);
+    }
+
+    @Override
+    public TokenPair loginRefresh(BaseLoginUser loginUser, Set<String> permissions, String oldRefreshToken) {
         TokenClaims claims = jwtTokenHelper.parse(oldRefreshToken);
         String oldSid = claims.getSid();
 
-        String refreshToken;
-        String sid;
-
         if (tokenProperties.getReuseRefreshTokens()) {
-            sid = oldSid;
             Instant exp = claims.getExpiresAt();
-            if (ChronoUnit.HOURS.between(Instant.now(), exp) < 2) {
-                refreshToken = generateRefreshToken(loginUser, sid);
-            } else {
-                refreshToken = oldRefreshToken;
-            }
-            save(loginUser, sid, permissions);
-        } else {
-            sid = UUID.randomUUID().toString();
-            refreshToken = generateRefreshToken(loginUser, sid);
-            save(loginUser, sid, permissions);
-            revoke(loginUser.getAuthType().getValue(), loginUser.getUid(), oldSid);
+            String refreshToken = ChronoUnit.HOURS.between(Instant.now(), exp) < 2
+                    ? generateRefreshToken(loginUser, oldSid)
+                    : oldRefreshToken;
+            TokenPair pair = loginReuse(loginUser, permissions, oldSid);
+            return new TokenPair(pair.accessToken(), refreshToken);
         }
 
-        String accessToken = generateAccessToken(loginUser, sid);
-        return new TokenPair(accessToken, refreshToken);
+        revoke(loginUser.getAuthType().getValue(), loginUser.getUid(), oldSid);
+        return loginCreate(loginUser, permissions);
     }
 
-    private String generateAccessToken(BaseLoginUser baseLoginUser, String sid) {
+    private TokenPair issue(BaseLoginUser loginUser, Set<String> permissions, String sid, SessionWriteOp op) {
+        persist(loginUser, sid, permissions, op);
+        return new TokenPair(generateAccessToken(loginUser, sid), generateRefreshToken(loginUser, sid));
+    }
+
+    private String generateAccessToken(BaseLoginUser loginUser, String sid) {
         return jwtTokenHelper.encodeLoginToken(
                 tokenProperties.getAccessTokenTimeOut(),
-                baseLoginUser.getUid(),
+                loginUser.getUid(),
                 sid,
-                baseLoginUser.getAuthType());
+                loginUser.getAuthType());
     }
 
-    private String generateRefreshToken(BaseLoginUser baseLoginUser, String sid) {
+    private String generateRefreshToken(BaseLoginUser loginUser, String sid) {
         return jwtTokenHelper.encodeLoginToken(
                 tokenProperties.getRefreshTokenTimeOut(),
-                baseLoginUser.getUid(),
+                loginUser.getUid(),
                 sid,
-                baseLoginUser.getAuthType());
+                loginUser.getAuthType());
     }
 
-    private void save(BaseLoginUser baseLoginUser, String sid, Set<String> permissions) {
-        Serializable uid = baseLoginUser.getUid();
-        String type = baseLoginUser.getAuthType().getValue();
+    private void persist(BaseLoginUser loginUser, String sid, Set<String> permissions, SessionWriteOp op) {
+        Serializable uid = loginUser.getUid();
+        String type = loginUser.getAuthType().getValue();
         long refreshTTL = tokenProperties.getRefreshTokenTimeOut();
 
-        OnlineSession onlineSession = buildOnlineSession();
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
         String sessionIndexKey = TokenKeyBuilder.buildSessionIndexKey(type, uid);
         String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
@@ -117,19 +112,22 @@ public class TokenServiceImpl implements TokenService {
             @SuppressWarnings({"unchecked"})
             public Void execute(RedisOperations ops) {
                 Map<String, Object> userinfoMap = new HashMap<>();
-                userinfoMap.put(HASH_FIELD_USER, baseLoginUser);
+                userinfoMap.put(HASH_FIELD_USER, loginUser);
                 userinfoMap.put(HASH_FIELD_PERMISSIONS, permissions);
 
                 ops.multi();
                 ops.opsForHash().putAll(userInfoKey, userinfoMap);
                 ops.expire(userInfoKey, refreshTTL, TimeUnit.SECONDS);
 
-                ops.opsForValue().set(sessionEntryKey, onlineSession, refreshTTL, TimeUnit.SECONDS);
+                if (op == SessionWriteOp.CREATE) {
+                    ops.opsForValue().set(sessionEntryKey, buildOnlineSession(), refreshTTL, TimeUnit.SECONDS);
+                } else {
+                    ops.expire(sessionEntryKey, refreshTTL, TimeUnit.SECONDS);
+                }
 
                 long expireTimestamp = System.currentTimeMillis() + (refreshTTL * 1000);
                 ops.opsForZSet().add(sessionIndexKey, sid, expireTimestamp);
                 ops.opsForZSet().removeRangeByScore(sessionIndexKey, 0, System.currentTimeMillis() - 1);
-
                 ops.expire(sessionIndexKey, refreshTTL, TimeUnit.SECONDS);
                 ops.exec();
                 return null;
@@ -173,8 +171,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public boolean isRevoked(String type, Long uid, String sid) {
         String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
-        Boolean exists = redisTemplate.hasKey(sessionEntryKey);
-        return !exists;
+        return !redisTemplate.hasKey(sessionEntryKey);
     }
 
     private OnlineSession buildOnlineSession() {
@@ -233,6 +230,17 @@ public class TokenServiceImpl implements TokenService {
         }
 
         return result;
+    }
+
+    private enum SessionWriteOp {
+        /**
+         * 写入新的 OnlineSession 元数据
+         */
+        CREATE,
+        /**
+         * 仅续期已有 OnlineSession，不覆盖设备/IP 等元数据
+         */
+        REUSE
     }
 
 }

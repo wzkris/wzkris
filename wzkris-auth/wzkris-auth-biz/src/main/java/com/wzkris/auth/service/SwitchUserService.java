@@ -1,5 +1,6 @@
 package com.wzkris.auth.service;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.security.model.LoginAdminUser;
 import jakarta.annotation.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,12 +14,12 @@ public interface SwitchUserService {
      * ADMIN 切换到指定租户的租户最高管理员。
      */
     @Nullable
-    UsernamePasswordAuthenticationToken switchToTenant(LoginAdminUser adminUser, Long tenantId);
+    UsernamePasswordAuthenticationToken switchToTenant(LoginAdminUser adminUser, Long tenantId, String actorSid);
 
     /**
-     * 由 impersonated TENANT 切回原 ADMIN。
+     * 切回原 user
      */
     @Nullable
-    UsernamePasswordAuthenticationToken switchToAdmin(Long actorUid);
+    UsernamePasswordAuthenticationToken switchBack(Long actorUid, AuthTypeEnum authTypeEnum);
 
 }

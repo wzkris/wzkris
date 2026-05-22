@@ -1,13 +1,15 @@
 package com.wzkris.auth.security.filter;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.security.handler.DefaultAuthenticationSuccessHandlerImpl;
 import com.wzkris.auth.service.SwitchUserService;
 import com.wzkris.auth.service.TokenService;
+import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
+import com.wzkris.common.core.model.ActorInfo;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
@@ -26,8 +28,6 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 import org.springframework.security.web.context.NullSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 /**
  * 登录态切换：ADMIN → 租户最高管理员；TENANT（含 actor）→ ADMIN。
  */
@@ -38,10 +38,16 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
 
     private final SwitchUserService switchUserService;
 
-    public CustomSwitchUserFilter(TokenService tokenService, SwitchUserService switchUserService) {
+    private final JwtTokenHelper jwtTokenHelper;
+
+    public CustomSwitchUserFilter(
+            TokenService tokenService,
+            SwitchUserService switchUserService,
+            JwtTokenHelper jwtTokenHelper) {
         super();
         this.tokenService = tokenService;
         this.switchUserService = switchUserService;
+        this.jwtTokenHelper = jwtTokenHelper;
         setSuccessHandler(new DefaultAuthenticationSuccessHandlerImpl());
         setFailureHandler(new AuthenticationEntryPointFailureHandler(new AuthenticationEntryPointImpl()));
         setSecurityContextRepository(new NullSecurityContextRepository());
@@ -52,35 +58,57 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
 
     @Override
     protected Authentication attemptSwitchUser(HttpServletRequest request) {
-        String loginType = request.getParameter(OAuth2ParameterConstant.LOGIN_TYPE);
-        if (!Objects.equals(LoginTypeEnum.SWITCH, LoginTypeEnum.fromValue(loginType))) {
+        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        if (!(loginUser instanceof LoginAdminUser adminUser)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCodeEnum.REQUEST_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST,
-                    "invalidParameter.param.invalid", OAuth2ParameterConstant.LOGIN_TYPE);
+                    BizBaseCodeEnum.ACCESS_DENIED.value(), OAuth2ErrorCodes.ACCESS_DENIED,
+                    "invalidParameter.param.invalid");
+            return null;
         }
 
-        LoginAdminUser adminUser = SecurityUtil.getLoginUser(LoginAdminUser.class);
-        return completeSwitch(switchUserService.switchToTenant(adminUser, parseTenantId(request)));
+        TokenClaims claims = jwtTokenHelper.parse(SecurityUtil.getTokenValue());
+        return completeEnter(switchUserService.switchToTenant(adminUser, parseTenantId(request), claims.getSid()));
     }
 
     @Override
     protected Authentication attemptExitUser(HttpServletRequest request) {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        if (tenantUser.getActorUid() == null || tenantUser.getActorAuthType() != AuthTypeEnum.ADMIN) {
+        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        if (!(loginUser instanceof LoginTenantUser tenantUser)) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizBaseCodeEnum.ACCESS_DENIED.value(), OAuth2ErrorCodes.ACCESS_DENIED,
+                    "invalidParameter.param.invalid");
+            return null;
+        }
+        ActorInfo actor = tenantUser.getActor();
+        if (actor == null || actor.getAuthType() != AuthTypeEnum.ADMIN || StringUtil.isBlank(actor.getSid())) {
             OAuth2ExceptionUtil.throwError(
                     BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST,
                     "current session is not impersonated by admin");
         }
-        return completeSwitch(switchUserService.switchToAdmin(tenantUser.getActorUid()));
-    }
-
-    private UsernamePasswordAuthenticationToken completeSwitch(UsernamePasswordAuthenticationToken authenticated) {
+        UsernamePasswordAuthenticationToken authenticated = switchUserService.switchBack(actor.getUid(), actor.getAuthType());
         if (authenticated == null) {
             OAuth2ExceptionUtil.throwError(
                     BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST,
                     "switch target user not found");
         }
-        authenticated.setDetails(tokenService.login(
+        BaseLoginUser adminUser = (BaseLoginUser) authenticated.getPrincipal();
+        authenticated.setDetails(tokenService.loginReuse(
+                adminUser,
+                AuthorityUtils.authorityListToSet(authenticated.getAuthorities()),
+                actor.getSid()));
+
+        TokenClaims claims = jwtTokenHelper.parse(SecurityUtil.getTokenValue());
+        tokenService.revoke(tenantUser, claims.getSid());
+        return authenticated;
+    }
+
+    private UsernamePasswordAuthenticationToken completeEnter(UsernamePasswordAuthenticationToken authenticated) {
+        if (authenticated == null) {
+            OAuth2ExceptionUtil.throwError(
+                    BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST,
+                    "switch target user not found");
+        }
+        authenticated.setDetails(tokenService.loginCreate(
                 (BaseLoginUser) authenticated.getPrincipal(),
                 AuthorityUtils.authorityListToSet(authenticated.getAuthorities())));
         return authenticated;
