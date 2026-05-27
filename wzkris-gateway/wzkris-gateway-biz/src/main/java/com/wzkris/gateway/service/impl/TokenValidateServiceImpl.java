@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,22 +65,18 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         }
 
         AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE));
-        if (authTypeEnum == AuthTypeEnum.NONE) {
+        if (authTypeEnum == null) {
             return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
 
         if (authTypeEnum == AuthTypeEnum.CLIENT) {
             return authenticateClient(jwt, token);
         }
-        String uidStr = jwt.getSubject();
-        if (StringUtil.isBlank(uidStr)) {
-            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
-        }
         String sid = jwt.getClaimAsString(JwtClaimConstants.SID);
         if (StringUtil.isBlank(sid)) {
             return introspectOAuth2(token);
         }
-        return introspectCustom(authTypeEnum, Long.valueOf(uidStr), token, sid);
+        return introspectCustom(authTypeEnum, Long.valueOf(jwt.getSubject()), token, sid);
     }
 
     private String extractToken(HttpServletRequest request) {
@@ -98,11 +95,7 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         LoginClientUser clientUser = new LoginClientUser();
         clientUser.setClientId(jwt.getSubject());
         List<String> scope = jwt.getClaimAsStringList(OAuth2ParameterNames.SCOPE);
-        return UsernamePasswordAuthenticationToken.authenticated(
-                clientUser, token,
-                CollectionUtils.isNotEmpty(scope)
-                        ? AuthorityUtils.createAuthorityList(scope)
-                        : AuthorityUtils.NO_AUTHORITIES);
+        return buildAuthentication(clientUser, token, new HashSet<>(scope));
     }
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {

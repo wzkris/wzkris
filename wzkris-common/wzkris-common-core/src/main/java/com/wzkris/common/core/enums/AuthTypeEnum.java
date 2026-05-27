@@ -20,7 +20,7 @@ public enum AuthTypeEnum {
 
     CLIENT("CLIENT", "客户端"),
 
-    NONE("NONE", "无");
+    ;
 
     @JsonValue
     private final String value;
@@ -34,7 +34,7 @@ public enum AuthTypeEnum {
                 return typeEnum;
             }
         }
-        return NONE;
+        return null;
     }
 
 }

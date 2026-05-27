@@ -7,7 +7,7 @@ import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.service.TokenValidateService;
 import com.wzkris.gateway.service.impl.TokenValidateServiceImpl;
 import com.wzkris.gateway.utils.PathMatchUtil;
-import com.wzkris.gateway.utils.ScanAnnotationUrlUtil;
+import com.wzkris.gateway.utils.RequestUrlUtil;
 import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -105,7 +105,7 @@ public class GatewaySecurityContextRepository implements SecurityContextReposito
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        this.permitAllAnnotations.addAll(ScanAnnotationUrlUtil.scanUrls(PermitAll.class));
+        this.permitAllAnnotations.addAll(RequestUrlUtil.scanAnnotation(PermitAll.class));
     }
 
     private boolean isPathPermitted(String path) {
