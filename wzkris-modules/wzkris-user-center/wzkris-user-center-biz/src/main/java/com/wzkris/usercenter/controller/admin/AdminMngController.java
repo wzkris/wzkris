@@ -108,7 +108,7 @@ public class AdminMngController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "管理员管理", subTitle = "导出管理员数据", type = OperateTypeEnum.EXPORT)
+    @OperateLog(title = "管理员管理", subTitle = "导出管理员数据", type = OperateTypeEnum.EXPORT_IMPORT)
     @GetMapping("/export")
     @CheckAdminPerms("user-mod:admin-mng:export")
     public void export(HttpServletResponse response, @ParameterObject AdminMngPageRequest request) {

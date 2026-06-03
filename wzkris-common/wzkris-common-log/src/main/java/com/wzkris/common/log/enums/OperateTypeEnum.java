@@ -37,14 +37,10 @@ public enum OperateTypeEnum {
     GRANT("4"),
 
     /**
-     * 导出
+     * 导入导出
      */
-    EXPORT("5"),
-
-    /**
-     * 导入
-     */
-    IMPORT("6");
+    EXPORT_IMPORT("5"),
+    ;
 
     private final String value;
 }

@@ -43,7 +43,7 @@ public class CustomerMngController {
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "客户管理", type = OperateTypeEnum.EXPORT)
+    @OperateLog(title = "客户管理", type = OperateTypeEnum.EXPORT_IMPORT)
     @GetMapping("/export")
     @CheckAdminPerms("user-mod:customer-mng:export")
     public void export(HttpServletResponse response, @ParameterObject CustomerMngPageRequest request) {
