@@ -15,7 +15,7 @@ public class NotificationRequest implements Serializable {
 
     private List<Long> receiverIds;
 
-    private AuthTypeEnum authType;
+    private AuthTypeEnum toAuthType;
 
     private String title;
 

@@ -4,6 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.system.remote.api.notification.NotificationInfoRemoteApi;
 import com.wzkris.system.remote.api.notification.request.NotificationRequest;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +19,7 @@ public class NotificationInfoRemoteController {
 
     private final NotificationInfoRemoteApi notificationInfoRemoteApi;
 
-    /**
-     * 发送通知
-     */
+    @Schema(description = "发送通知")
     @PostMapping("/send-to-users")
     public Result<Void> send2Users(@RequestBody NotificationRequest request) {
         return notificationInfoRemoteApi.send2Users(request);

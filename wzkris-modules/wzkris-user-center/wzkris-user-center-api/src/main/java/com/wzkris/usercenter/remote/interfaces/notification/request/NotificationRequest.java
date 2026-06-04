@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.remote.interfaces.notification.request;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,15 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 public class NotificationRequest implements Serializable {
 
-    /**
-     * 接收者ID
-     */
+    @Schema(description = "接收者ID")
     private List<Long> receiverIds;
 
-    /**
-     * 接收者类型
-     */
-    private AuthTypeEnum authType;
+    @Schema(description = "接收者类型")
+    private AuthTypeEnum toAuthType;
 
     private String title;
 

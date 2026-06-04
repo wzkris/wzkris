@@ -20,11 +20,11 @@ public class NotificationInfoRemoteApiImpl implements NotificationInfoRemoteApi 
 
     @Override
     public Result<Void> send2Users(NotificationRequest request) {
-        if (Objects.equals(request.getAuthType(), AuthTypeEnum.ADMIN)) {
+        if (Objects.equals(request.getToAuthType(), AuthTypeEnum.ADMIN)) {
             notificationInfoService.save2Admin(
                     request.getReceiverIds(),
                     new SimpleMessageRequest(request.getTitle(), NotificationTypeEnum.SYSTEM, request.getContent()));
-        } else if (Objects.equals(request.getAuthType(), AuthTypeEnum.TENANT)) {
+        } else if (Objects.equals(request.getToAuthType(), AuthTypeEnum.TENANT)) {
             notificationInfoService.save2Tenant(
                     request.getReceiverIds(),
                     new SimpleMessageRequest(request.getTitle(), NotificationTypeEnum.SYSTEM, request.getContent()));
