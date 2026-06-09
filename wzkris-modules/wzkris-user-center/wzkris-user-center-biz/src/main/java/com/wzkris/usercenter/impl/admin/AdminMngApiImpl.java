@@ -15,7 +15,6 @@ import com.wzkris.usercenter.api.admin.AdminMngApi;
 import com.wzkris.usercenter.api.admin.request.*;
 import com.wzkris.usercenter.api.admin.response.AdminInfoExportResponse;
 import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
-import com.wzkris.usercenter.api.dept.request.DeptMngListRequest;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.event.CreateAdminEvent;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
@@ -69,13 +68,12 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
                 .eq(ObjectUtils.isNotEmpty(request.getDeptId()), "u.dept_id", request.getDeptId())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         "u.create_at",
-                        request.getBeginTime(),
-                        request.getEndTime())
+                        request.getBeginTime(), request.getEndTime())
                 .orderByDesc("u.admin_id");
     }
 
     @Override
-    public Result<List<SelectTreeResponse>> queryDeptSelectTree(DeptMngListRequest request) {
+    public Result<List<SelectTreeResponse>> queryDeptSelectTree(AdminMngDeptSelectRequest request) {
         String deptName = request.getDeptName();
         return ok(deptInfoService.listSelectTree(deptName));
     }

@@ -1,7 +1,10 @@
 package com.wzkris.usercenter.remote.impl.member;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.MemberSocialInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
@@ -13,6 +16,7 @@ import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
+import com.wzkris.usercenter.remote.api.member.request.MemberQueryOneRequest;
 import com.wzkris.usercenter.remote.api.member.request.TenantIdRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
@@ -46,16 +50,11 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     private WxMaService wxMaService;
 
     @Override
-    public Result<MemberInfoResponse> queryByUsername(StringValueRequest request) {
-        MemberInfoDO member = memberInfoMapper.selectByUsername(request.getValue());
-        MemberInfoResponse response = this.toMemberInfoResponse(member);
-        this.retrieveAllStatus(response);
-        return Result.ok(response);
-    }
-
-    @Override
-    public Result<MemberInfoResponse> queryByPhoneNumber(StringValueRequest request) {
-        MemberInfoDO member = memberInfoMapper.selectByPhoneNumber(request.getValue());
+    public Result<MemberInfoResponse> queryOne(MemberQueryOneRequest request) {
+        LambdaQueryWrapper<MemberInfoDO> eq = Wrappers.lambdaQuery(MemberInfoDO.class)
+                .eq(StringUtil.isNotBlank(request.getPhoneNumber()), MemberInfoDO::getPhoneNumber, request.getPhoneNumber())
+                .eq(StringUtil.isNotBlank(request.getUsername()), MemberInfoDO::getUsername, request.getUsername());
+        MemberInfoDO member = memberInfoMapper.selectOne(eq);
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
         return Result.ok(response);

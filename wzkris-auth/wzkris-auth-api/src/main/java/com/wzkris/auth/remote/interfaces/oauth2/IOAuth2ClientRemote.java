@@ -1,6 +1,6 @@
 package com.wzkris.auth.remote.interfaces.oauth2;
 
-import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
+import com.wzkris.auth.remote.interfaces.oauth2.request.OAuth2ClientQueryOneRequest;
 import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
@@ -23,23 +23,8 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(url = "/oauth2-remote")
 public interface IOAuth2ClientRemote {
 
-    /**
-     * 根据id查询客户端信息
-     *
-     * @param id id
-     * @return oauth2客户端
-     */
-    @PostExchange("/query-by-id")
-    Result<OAuth2ClientResponse> queryById(@RequestBody StringValueRequest request);
-
-    /**
-     * 根据clientid查询客户端信息
-     *
-     * @param clientid clientid
-     * @return oauth2客户端
-     */
-    @PostExchange("/query-by-clientid")
-    Result<OAuth2ClientResponse> queryByClientId(@RequestBody StringValueRequest request);
+    @PostExchange("/query-one")
+    Result<OAuth2ClientResponse> queryOne(@RequestBody OAuth2ClientQueryOneRequest request);
 
 }
 

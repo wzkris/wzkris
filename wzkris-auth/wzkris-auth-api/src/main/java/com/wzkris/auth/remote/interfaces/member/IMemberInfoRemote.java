@@ -2,6 +2,7 @@ package com.wzkris.auth.remote.interfaces.member;
 
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
+import com.wzkris.auth.remote.interfaces.member.request.MemberQueryOneRequest;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.request.TenantIdRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
@@ -27,17 +28,8 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(url = "/member-info-remote")
 public interface IMemberInfoRemote {
 
-    /**
-     * 根据用户名查询用户
-     */
-    @PostExchange("/query-by-username")
-    Result<MemberInfoResponse> queryByUsername(@RequestBody StringValueRequest request);
-
-    /**
-     * 根据手机号查询用户
-     */
-    @PostExchange("/query-by-phonenumber")
-    Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody StringValueRequest request);
+    @PostExchange("/query-one")
+    Result<MemberInfoResponse> queryOne(@RequestBody MemberQueryOneRequest request);
 
     /**
      * 根据租户ID 查询租户最高管理员成员（用于登录态切换）

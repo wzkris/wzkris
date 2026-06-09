@@ -23,12 +23,4 @@ public class DeptMngListRequest {
     @Parameter(description = "0代表存在 1代表停用")
     private DeptStatusEnum status;
 
-    public DeptMngListRequest(Long deptId) {
-        this.deptId = deptId;
-    }
-
-    public DeptMngListRequest(DeptStatusEnum status) {
-        this.status = status;
-    }
-
 }

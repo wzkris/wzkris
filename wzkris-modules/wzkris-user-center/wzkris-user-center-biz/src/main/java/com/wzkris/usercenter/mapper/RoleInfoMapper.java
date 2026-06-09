@@ -40,15 +40,16 @@ public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
      * @param roleIds 待操作的角色 id
      * @return 是否
      */
+    @DataScope(value = {@DataColumn(column = "rd.dept_id")})
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END
-                        FROM biz.role_info r LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id WHERE r.role_id IN
-                    <foreach collection="collection" item="roleId" open="(" separator="," close=")">
-                        <if test="roleId != null and roleId != ''">
-                            #{roleId}
-                        </if>
-                    </foreach>
+                FROM biz.role_info r 
+                LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id 
+                WHERE r.role_id IN
+                <foreach collection="collection" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
             </script>
             """)
     boolean checkDataScopes(Collection<Long> roleIds);

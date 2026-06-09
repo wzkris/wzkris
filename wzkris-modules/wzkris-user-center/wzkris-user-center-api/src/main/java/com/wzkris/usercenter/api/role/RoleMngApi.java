@@ -17,9 +17,9 @@ public interface RoleMngApi {
 
     Result<RoleMngResponse> queryInfo(IdRequest request);
 
-    Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request);
+    Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 
-    Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(IdRequest request);
+    Result<CheckedSelectTreeResponse> queryDeptSelectTree(IdRequest request);
 
     Result<CheckedSelectResponse> queryRoleInheritedSelect(IdRequest request);
 

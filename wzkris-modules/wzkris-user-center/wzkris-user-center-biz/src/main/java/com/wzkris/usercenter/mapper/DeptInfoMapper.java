@@ -32,12 +32,6 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
     List<DeptInfoDO> listSubsByParentId(Long parentId);
 
     /**
-     * 根据部门ID查询名称
-     */
-    @Select("SELECT dept_name FROM biz.dept_info WHERE dept_id = #{deptId}")
-    String selectDeptNameById(Long deptId);
-
-    /**
      * 根据ID查询所有子部门id（包括自身）
      *
      * @param deptId 部门ID
@@ -45,15 +39,6 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      */
     @Select("SELECT dept_id FROM biz.dept_info WHERE #{deptId} = ANY(ancestors) OR dept_id = #{deptId}")
     List<Long> listSubDeptIdById(Long deptId);
-
-    /**
-     * 根据ID查询所有子部门（正常状态）(不包括自身)
-     *
-     * @param deptId 部门ID
-     * @return 子部门数
-     */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz.dept_info WHERE #{deptId} = ANY(ancestors) AND status = '0')")
-    boolean existNormalSubDept(Long deptId);
 
     /**
      * 是否存在子节点
@@ -87,15 +72,15 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptIds 待操作的部门 id
      * @return 是否
      */
+    @DataScope(value = {@DataColumn(column = "dept_id")})
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END
-                    FROM biz.dept_info WHERE dept_id IN
-                    <foreach collection="collection" item="deptId" open="(" separator="," close=")">
-                        <if test="deptId != null and deptId != ''">
-                            #{deptId}
-                        </if>
-                    </foreach>
+                FROM biz.dept_info 
+                WHERE dept_id IN
+                <foreach collection="collection" item="deptId" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
             </script>
             """)
     boolean checkDataScopes(Collection<Long> deptIds);

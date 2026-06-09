@@ -82,9 +82,6 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         }
         if (Objects.equals(request.getParentId(), request.getDeptId())) {
             return requestFail("修改部门'" + request.getDeptName() + "'失败，上级部门不能是自己");
-        } else if (DeptStatusEnum.DISABLE == request.getStatus()
-                && deptInfoMapper.existNormalSubDept(request.getDeptId())) {
-            return requestFail("该部门包含未停用的子部门");
         }
         DeptInfoDO deptInfoDO = BeanUtil.convert(request, DeptInfoDO.class);
         deptInfoDO.setStatus(request.getStatus());

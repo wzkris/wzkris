@@ -1,14 +1,17 @@
 package com.wzkris.usercenter.remote.impl.admin;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.AdminInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
+import com.wzkris.usercenter.remote.api.admin.request.AdminQueryOneRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
-import com.wzkris.usercenter.request.StringValueRequest;
 import com.wzkris.usercenter.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,15 +25,12 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
     private final PermissionService permissionService;
 
     @Override
-    public Result<AdminInfoResponse> queryByUsername(StringValueRequest request) {
-        AdminInfoDO admin = adminInfoMapper.selectByUsername(request.getValue());
-        return Result.ok(this.toAdminInfoResponse(admin));
-    }
-
-    @Override
-    public Result<AdminInfoResponse> queryByPhoneNumber(StringValueRequest request) {
-        AdminInfoDO admin = adminInfoMapper.selectByPhoneNumber(request.getValue());
-        return Result.ok(this.toAdminInfoResponse(admin));
+    public Result<AdminInfoResponse> queryOne(AdminQueryOneRequest request) {
+        LambdaQueryWrapper<AdminInfoDO> eq = Wrappers.lambdaQuery(AdminInfoDO.class)
+                .eq(StringUtil.isNotBlank(request.getPhoneNumber()), AdminInfoDO::getPhoneNumber, request.getPhoneNumber())
+                .eq(StringUtil.isNotBlank(request.getUsername()), AdminInfoDO::getUsername, request.getUsername());
+        AdminInfoDO adminInfoDO = adminInfoMapper.selectOne(eq);
+        return Result.ok(this.toAdminInfoResponse(adminInfoDO));
     }
 
     @Override

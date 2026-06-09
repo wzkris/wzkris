@@ -55,7 +55,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     }
 
     @Override
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request) {
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request) {
         Long postId = request.getId();
         CheckedSelectTreeResponse checkedSelectTreeResponse = new CheckedSelectTreeResponse();
         checkedSelectTreeResponse.setCheckedKeys(menuInfoService.listMenuIdByPostId(postId));

@@ -1,11 +1,14 @@
 package com.wzkris.usercenter.remote.impl.oauth2;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
+import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryOneRequest;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
-import com.wzkris.usercenter.request.StringValueRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +19,11 @@ public class OAuth2ClientRemoteApiImpl implements OAuth2ClientRemoteApi {
     private final OAuth2ClientMapper oAuth2ClientMapper;
 
     @Override
-    public Result<OAuth2ClientResponse> queryById(StringValueRequest request) {
-        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectById(request.getValue());
-        return Result.ok(this.toOAuth2ClientResponse(oauth2ClientDO));
-    }
-
-    @Override
-    public Result<OAuth2ClientResponse> queryByClientId(StringValueRequest request) {
-        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectByClientId(request.getValue());
+    public Result<OAuth2ClientResponse> queryOne(OAuth2ClientQueryOneRequest request) {
+        LambdaQueryWrapper<OAuth2ClientDO> eq = Wrappers.lambdaQuery(OAuth2ClientDO.class)
+                .eq(StringUtil.isNotBlank(request.getId()), OAuth2ClientDO::getId, request.getId())
+                .eq(StringUtil.isNotBlank(request.getClientId()), OAuth2ClientDO::getClientId, request.getClientId());
+        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectOne(eq);
         return Result.ok(this.toOAuth2ClientResponse(oauth2ClientDO));
     }
 

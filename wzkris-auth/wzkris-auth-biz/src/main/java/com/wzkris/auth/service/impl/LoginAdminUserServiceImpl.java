@@ -5,9 +5,9 @@ import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
 import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryOneRequest;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminInfoResponse;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminPermissionResponse;
-import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -46,7 +46,9 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
+        AdminQueryOneRequest request = new AdminQueryOneRequest();
+        request.setPhoneNumber(phoneNumber);
+        Result<AdminInfoResponse> userResult = adminInfoRemote.queryOne(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -64,7 +66,9 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.queryByUsername(new StringValueRequest(username));
+        AdminQueryOneRequest request = new AdminQueryOneRequest();
+        request.setUsername(username);
+        Result<AdminInfoResponse> userResult = adminInfoRemote.queryOne(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;

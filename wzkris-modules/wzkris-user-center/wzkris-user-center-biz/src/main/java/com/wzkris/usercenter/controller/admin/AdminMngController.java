@@ -11,7 +11,6 @@ import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.admin.AdminMngApi;
 import com.wzkris.usercenter.api.admin.request.*;
 import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
-import com.wzkris.usercenter.api.dept.request.DeptMngListRequest;
 import com.wzkris.usercenter.request.PwdResetRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.SelectTreeResponse;
@@ -47,7 +46,7 @@ public class AdminMngController {
     @CheckAdminPerms(
             value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
             mode = CheckMode.OR)
-    public Result<List<SelectTreeResponse>> queryDeptSelectTree(@ParameterObject DeptMngListRequest request) {
+    public Result<List<SelectTreeResponse>> queryDeptSelectTree(@ParameterObject AdminMngDeptSelectRequest request) {
         return adminMngApi.queryDeptSelectTree(request);
     }
 

@@ -5,6 +5,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.utils.DataScopeUtil;
+import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.BooleanValue;
 import net.sf.jsqlparser.expression.Expression;
@@ -33,10 +34,16 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
     @Override
     public Expression getSqlSegment(Table table, Expression where, String mappedStatementId) {
         DataScope dataScope = DataScopeUtil.getDataScope(mappedStatementId);
-        if (dataScope != null) {
-            return handleDataScope(mappedStatementId, dataScope);
+        if (dataScope == null) {
+            return null;
         }
-        return null;
+
+        // 超级管理员跳过所有数据权限
+        if (SecurityUtil.isSuperAdmin()) {
+            return null;
+        }
+
+        return handleDataScope(mappedStatementId, dataScope);
     }
 
     private Expression handleDataScope(String mappedStatementId, DataScope dataScope) {
@@ -54,7 +61,6 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
 
             Expression currentExpression = handleExpression(column, value);
 
-            // 组合表达式，使用 AND 连接
             if (resultExpression == null) {
                 resultExpression = currentExpression;
             } else {
@@ -62,49 +68,45 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
             }
         }
 
+        if (resultExpression == null) {
+            return new BooleanValue(false);
+        }
+
         return resultExpression;
     }
 
     private Expression handleExpression(String column, Object value) {
-        Expression expression;
         if (value instanceof Collection<?> collection) {
-            if (CollectionUtils.isEmpty(collection)) {
-                expression = new BooleanValue(true);
-            } else {
-                expression = handleCollectionParameter(column, collection);
-            }
-        } else {
-            expression = new EqualsTo(new Column(column), handleSingleParameter(value));
+            return handleCollectionParameter(column, collection);
         }
-        return expression;
+        return new EqualsTo(new Column(column), handleSingleParameter(value));
     }
 
-    private InExpression handleCollectionParameter(String column, Collection<?> collection) {
+    private Expression handleCollectionParameter(String column, Collection<?> collection) {
+        if (CollectionUtils.isEmpty(collection)) {
+            return new BooleanValue(false);
+        }
         InExpression inExpression = new InExpression();
         inExpression.setLeftExpression(new Column(column));
         ParenthesedExpressionList<Expression> expressions = new ParenthesedExpressionList<>();
         for (Object val : collection) {
-            Expression exp = handleSingleParameter(val);
-            expressions.add(exp);
+            expressions.add(handleSingleParameter(val));
         }
         inExpression.setRightExpression(expressions);
         return inExpression;
     }
 
     private Expression handleSingleParameter(Object value) {
-        Expression expression;
         if (value instanceof Long longValue) {
-            expression = new LongValue(longValue);
+            return new LongValue(longValue);
         } else if (value instanceof Integer intValue) {
-            expression = new LongValue(intValue.longValue());
+            return new LongValue(intValue.longValue());
         } else if (value instanceof Short shortValue) {
-            expression = new LongValue(shortValue.longValue());
+            return new LongValue(shortValue.longValue());
         } else if (value instanceof Byte byteValue) {
-            expression = new LongValue(byteValue.longValue());
-        } else {
-            expression = new StringValue(value.toString());
+            return new LongValue(byteValue.longValue());
         }
-        return expression;
+        return new StringValue(value.toString());
     }
 
 }

@@ -147,18 +147,12 @@ public final class SecurityUtil {
         return getLoginUser().getIdentityType();
     }
 
-    /**
-     * 是否超级管理员
-     */
-    public static boolean isSuper() {
-        IdentityTypeEnum identityType = getIdentityType();
-        if (isAuth(AuthTypeEnum.ADMIN)) {
-            return identityType == IdentityTypeEnum.SUPER;
-        } else if (isAuth(AuthTypeEnum.TENANT)) {
-            return identityType == IdentityTypeEnum.SUPER;
-        } else {
-            return false;
-        }
+    public static boolean isSuperAdmin() {
+        return isAuth(AuthTypeEnum.ADMIN) && getIdentityType() == IdentityTypeEnum.SUPER;
+    }
+
+    public static boolean isSuperTenant() {
+        return isAuth(AuthTypeEnum.TENANT) && getIdentityType() == IdentityTypeEnum.SUPER;
     }
 
 }

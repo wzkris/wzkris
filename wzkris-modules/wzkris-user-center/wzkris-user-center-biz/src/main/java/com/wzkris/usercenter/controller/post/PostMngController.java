@@ -50,8 +50,8 @@ public class PostMngController {
     @CheckTenantPerms(
             value = {"user-mod:post-mng:edit", "user-mod:post-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(@ParameterObject IdRequest request) {
-        return postMngApi.queryRoleMenuSelectTree(request);
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@ParameterObject IdRequest request) {
+        return postMngApi.queryMenuSelectTree(request);
     }
 
     @Operation(summary = "新增职位")

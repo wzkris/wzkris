@@ -16,7 +16,7 @@ public interface PostMngApi {
 
     Result<PostMngResponse> queryInfo(IdRequest request);
 
-    Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request);
+    Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 
     Result<Void> save(PostMngSaveRequest request);
 

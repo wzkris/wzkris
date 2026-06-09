@@ -71,7 +71,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(IdRequest request) {
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request) {
         Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
@@ -83,7 +83,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(IdRequest request) {
+    public Result<CheckedSelectTreeResponse> queryDeptSelectTree(IdRequest request) {
         Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");

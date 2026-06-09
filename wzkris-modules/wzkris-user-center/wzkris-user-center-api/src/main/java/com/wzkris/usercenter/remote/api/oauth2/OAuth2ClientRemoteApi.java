@@ -1,14 +1,12 @@
 package com.wzkris.usercenter.remote.api.oauth2;
 
 import com.wzkris.common.core.model.Result;
+import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryOneRequest;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
-import com.wzkris.usercenter.request.StringValueRequest;
 
 public interface OAuth2ClientRemoteApi {
 
-    Result<OAuth2ClientResponse> queryById(StringValueRequest request);
-
-    Result<OAuth2ClientResponse> queryByClientId(StringValueRequest request);
+    Result<OAuth2ClientResponse> queryOne(OAuth2ClientQueryOneRequest request);
 
 }
 

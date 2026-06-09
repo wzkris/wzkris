@@ -2,11 +2,11 @@ package com.wzkris.usercenter.remote.controller.admin;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.AdminInfoRemoteApi;
+import com.wzkris.usercenter.remote.api.admin.request.AdminQueryOneRequest;
 import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
-import com.wzkris.usercenter.request.StringValueRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +23,9 @@ public class AdminInfoRemoteController {
 
     private final AdminInfoRemoteApi adminInfoRemoteApi;
 
-    @PostMapping("/query-by-username")
-    public Result<AdminInfoResponse> queryByUsername(@RequestBody @Valid StringValueRequest request) {
-        return adminInfoRemoteApi.queryByUsername(request);
-    }
-
-    @PostMapping("/query-by-phonenumber")
-    public Result<AdminInfoResponse> queryByPhoneNumber(@RequestBody @Valid StringValueRequest request) {
-        return adminInfoRemoteApi.queryByPhoneNumber(request);
+    @PostMapping("/query-one")
+    public Result<AdminInfoResponse> queryOne(@RequestBody @Valid AdminQueryOneRequest request) {
+        return adminInfoRemoteApi.queryOne(request);
     }
 
     @PostMapping("/query-permission")

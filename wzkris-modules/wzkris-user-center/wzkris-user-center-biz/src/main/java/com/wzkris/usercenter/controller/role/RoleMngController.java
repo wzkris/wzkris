@@ -51,8 +51,8 @@ public class RoleMngController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(@ParameterObject IdRequest request) {
-        return roleMngApi.queryRoleMenuSelectTree(request);
+    public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@ParameterObject IdRequest request) {
+        return roleMngApi.queryMenuSelectTree(request);
     }
 
     @Operation(summary = "角色 - 部门选择树")
@@ -60,8 +60,8 @@ public class RoleMngController {
     @CheckAdminPerms(
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
-    public Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(@ParameterObject IdRequest request) {
-        return roleMngApi.queryRoleDeptSelectTree(request);
+    public Result<CheckedSelectTreeResponse> queryDeptSelectTree(@ParameterObject IdRequest request) {
+        return roleMngApi.queryDeptSelectTree(request);
     }
 
     @Operation(summary = "角色 - 继承选择列表")

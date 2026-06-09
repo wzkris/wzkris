@@ -3,6 +3,7 @@ package com.wzkris.usercenter.remote.controller.member;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
+import com.wzkris.usercenter.remote.api.member.request.MemberQueryOneRequest;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.member.request.TenantIdRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
@@ -24,14 +25,9 @@ public class MemberInfoRemoteController {
 
     private final MemberInfoRemoteApi memberInfoRemoteApi;
 
-    @PostMapping("/query-by-username")
-    public Result<MemberInfoResponse> queryByUsername(@RequestBody @Valid StringValueRequest request) {
-        return memberInfoRemoteApi.queryByUsername(request);
-    }
-
-    @PostMapping("/query-by-phonenumber")
-    public Result<MemberInfoResponse> queryByPhoneNumber(@RequestBody @Valid StringValueRequest request) {
-        return memberInfoRemoteApi.queryByPhoneNumber(request);
+    @PostMapping("/query-one")
+    public Result<MemberInfoResponse> queryOne(@RequestBody @Valid MemberQueryOneRequest request) {
+        return memberInfoRemoteApi.queryOne(request);
     }
 
     @PostMapping("/query-administrator-by-tenant")

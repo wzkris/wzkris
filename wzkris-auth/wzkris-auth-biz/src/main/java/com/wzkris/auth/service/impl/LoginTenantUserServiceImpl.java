@@ -3,9 +3,9 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.member.request.MemberQueryOneRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
 import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
 import com.wzkris.auth.service.LoginUserService;
@@ -46,7 +46,9 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
+        MemberQueryOneRequest request = new MemberQueryOneRequest();
+        request.setPhoneNumber(phoneNumber);
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryOne(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
@@ -64,7 +66,9 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryByUsername(new StringValueRequest(username));
+        MemberQueryOneRequest request = new MemberQueryOneRequest();
+        request.setUsername(username);
+        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryOne(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;

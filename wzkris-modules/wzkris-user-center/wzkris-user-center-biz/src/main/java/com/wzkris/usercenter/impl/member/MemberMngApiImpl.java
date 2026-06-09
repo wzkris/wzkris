@@ -48,7 +48,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     @Override
     public Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request) {
         startPage(request);
-        List<MemberMngResponse> list = memberInfoMapper.listVO(this.buildPageWrapper(request));
+        List<MemberMngResponse> list = memberInfoMapper.selectVOList(this.buildPageWrapper(request));
         return getPageResult(list);
     }
 
@@ -59,8 +59,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
                 .eq(ObjectUtils.isNotEmpty(request.getStatus()), "s.status", request.getStatus())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         "s.create_at",
-                        request.getBeginTime(),
-                        request.getEndTime());
+                        request.getBeginTime(), request.getEndTime());
     }
 
     @Override

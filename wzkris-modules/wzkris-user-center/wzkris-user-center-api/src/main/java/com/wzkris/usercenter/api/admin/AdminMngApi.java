@@ -6,7 +6,6 @@ import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.admin.request.*;
 import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
-import com.wzkris.usercenter.api.dept.request.DeptMngListRequest;
 import com.wzkris.usercenter.request.PwdResetRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.SelectTreeResponse;
@@ -18,7 +17,7 @@ public interface AdminMngApi {
 
     Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request);
 
-    Result<List<SelectTreeResponse>> queryDeptSelectTree(DeptMngListRequest request);
+    Result<List<SelectTreeResponse>> queryDeptSelectTree(AdminMngDeptSelectRequest request);
 
     Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request);
 

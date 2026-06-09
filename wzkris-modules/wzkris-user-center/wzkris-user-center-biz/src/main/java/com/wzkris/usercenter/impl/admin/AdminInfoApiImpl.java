@@ -11,6 +11,7 @@ import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.api.admin.response.ChatPersonResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
+import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.usercenter.remote.interfaces.captcha.request.CaptchaCheckRequest;
@@ -42,11 +43,8 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
     @Override
     public Result<AdminInfoResponse> queryInfo() {
         final Long uid = SecurityUtil.getUid();
-        boolean issuper = SecurityUtil.isSuper();
+        boolean issuper = SecurityUtil.isSuperAdmin();
         AdminInfoDO adminInfoDO = adminInfoService.getById(uid);
-        if (adminInfoDO == null) {
-            adminInfoDO = new AdminInfoDO();
-        }
         AdminInfoResponse adminInfoVO = new AdminInfoResponse();
         adminInfoVO.setAdmin(issuper);
         adminInfoVO.setUsername(adminInfoDO.getUsername());
@@ -57,7 +55,8 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         adminInfoVO.setPhoneNumber(adminInfoDO.getPhoneNumber());
         adminInfoVO.setGender(adminInfoDO.getGender());
         adminInfoVO.setLoginDate(adminInfoDO.getLoginDate());
-        adminInfoVO.setDeptName(deptInfoMapper.selectDeptNameById(adminInfoDO.getDeptId()));
+        DeptInfoDO deptInfoDO = deptInfoMapper.selectById(adminInfoDO.getDeptId());
+        adminInfoVO.setDeptName(deptInfoDO == null ? "" : deptInfoDO.getDeptName());
         adminInfoVO.setRoleGroup(issuper ? SecurityConstants.SUPER_ADMIN_NAME : roleInfoService.getRoleGroup(uid));
         return ok(adminInfoVO);
     }

@@ -1,8 +1,11 @@
 package com.wzkris.usercenter.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.DeptInfoDO;
+import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
 import com.wzkris.usercenter.response.SelectTreeResponse;
@@ -119,9 +122,11 @@ public class DeptInfoServiceImpl
 
     @Override
     public List<SelectTreeResponse> listSelectTree(String deptName) {
-        List<DeptInfoDO> allDepts = this.lambdaQuery()
-                .like(StringUtil.isNotBlank(deptName), DeptInfoDO::getDeptName, deptName)
-                .list();
+        LambdaQueryWrapper<DeptInfoDO> wrapper = Wrappers.lambdaQuery(DeptInfoDO.class)
+                .eq(DeptInfoDO::getStatus, DeptStatusEnum.ENABLE)
+                .like(StringUtil.isNotBlank(deptName), DeptInfoDO::getDeptName, deptName);
+
+        List<DeptInfoDO> allDepts = baseMapper.selectLists(wrapper);
 
         List<DeptInfoDO> deptTrees = this.buildDeptTree(allDepts);
         return deptTrees.stream().map(this::convertToSelectTreeResp).collect(Collectors.toList());

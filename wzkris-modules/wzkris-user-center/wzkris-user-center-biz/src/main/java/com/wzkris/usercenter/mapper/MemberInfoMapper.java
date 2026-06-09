@@ -22,25 +22,7 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
                     		 LEFT JOIN biz.post_info p ON sp.post_id = p.post_id AND p.status = '0'
                     ${ew.customSqlSegment} GROUP BY s.member_id ORDER BY s.member_id DESC
             """)
-    List<MemberMngResponse> listVO(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
-
-    /**
-     * 通过用户名查询租户成员
-     *
-     * @param username 租户成员账号
-     * @return 租户成员信息
-     */
-    @Select("SELECT * FROM biz.member_info WHERE username = #{username}")
-    MemberInfoDO selectByUsername(String username);
-
-    /**
-     * 通过手机号查询用户
-     *
-     * @param phoneNumber 手机号
-     * @return 用户对象信息
-     */
-    @Select("SELECT * FROM biz.member_info WHERE phone_number = #{phoneNumber}")
-    MemberInfoDO selectByPhoneNumber(String phoneNumber);
+    List<MemberMngResponse> selectVOList(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
 
 }
 

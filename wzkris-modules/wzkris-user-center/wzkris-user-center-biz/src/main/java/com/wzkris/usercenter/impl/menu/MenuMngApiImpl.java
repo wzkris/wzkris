@@ -37,7 +37,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngListRequest request) {
         List<Long> menuIds = new ArrayList<>();
-        if (!SecurityUtil.isSuper()) {
+        if (!SecurityUtil.isSuperAdmin()) {
             menuIds = menuInfoService.listMenuIdByAdminId(SecurityUtil.getUid());
         }
         return new LambdaQueryWrapper<MenuInfoDO>()
