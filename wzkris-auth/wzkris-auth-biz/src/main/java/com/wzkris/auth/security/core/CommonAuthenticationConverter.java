@@ -43,8 +43,7 @@ public abstract class CommonAuthenticationConverter
         // login_type (REQUIRED)
         LoginTypeEnum loginTypeEnum = LoginTypeEnum.fromValue(request.getParameter(OAuth2ParameterConstant.LOGIN_TYPE));
         if (loginTypeEnum == null || !this.support(loginTypeEnum)) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.unsupport.logintype");
+            return null;
         }
 
         // auth_type (REQUIRED)

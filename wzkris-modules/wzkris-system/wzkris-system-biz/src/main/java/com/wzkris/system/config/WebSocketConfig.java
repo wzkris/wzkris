@@ -25,7 +25,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(binaryProtocolWebSocketHandler, "/ws/message")
                 .addInterceptors(authHandShakeInterceptor, new HttpSessionHandshakeInterceptor())
                 .setAllowedOriginPatterns("*");
-
     }
 
     @Bean

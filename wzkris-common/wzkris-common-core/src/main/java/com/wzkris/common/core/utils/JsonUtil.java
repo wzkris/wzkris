@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wzkris.common.core.exception.util.UtilException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public abstract class JsonUtil {
      * 配置MAPPER提升兼容性
      */
     static {
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false); // 允许空Bean序列化
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 允许不存在的属性反序列化
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true); // 允许使用无引号字段

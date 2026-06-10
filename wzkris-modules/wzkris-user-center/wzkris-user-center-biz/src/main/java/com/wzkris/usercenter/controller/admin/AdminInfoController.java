@@ -6,7 +6,6 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
-import com.wzkris.usercenter.api.admin.response.ChatPersonResponse;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +16,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "管理员信息")
 @RestController
@@ -35,12 +32,6 @@ public class AdminInfoController {
     @Cacheable(value = info_prefix + "#600_000", key = "@su.getUid()", sync = true) // TODO 这里缓存的需要在退出时移除
     public Result<AdminInfoResponse> queryInfo() {
         return adminInfoApi.queryInfo();
-    }
-
-    @Operation(summary = "聊天人员列表")
-    @GetMapping("/chat-person-list")
-    public Result<List<ChatPersonResponse>> queryChatPersonList() {
-        return adminInfoApi.queryChatPersonList();
     }
 
     @Operation(summary = "修改基本信息")

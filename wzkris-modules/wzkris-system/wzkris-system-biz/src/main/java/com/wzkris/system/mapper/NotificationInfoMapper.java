@@ -28,7 +28,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             	    <if test="read != null">
             	        AND s.read = #{read}
             	    </if>
-                ORDER BY s.notification_id DESC
+                ORDER BY s.read ASC, s.notification_id DESC,
             </script>
             """)
     List<NotificationInfoResponse> listAdminNotice(
@@ -48,7 +48,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             	    <if test="read != null">
             	        AND s.read = #{read}
             	    </if>
-                ORDER BY s.notification_id DESC
+                ORDER BY s.read ASC, s.notification_id DESC,
             </script>
             """)
     List<NotificationInfoResponse> listTenantNotice(
@@ -60,7 +60,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
      * 标记已读
      */
     @Update("UPDATE biz.notification_to_admin SET read = TRUE WHERE notification_id = #{notificationId} AND admin_id = #{adminId}")
-    int markAdminRead(@Param("notificationId") Long notificationId, @Param("adminId") Long adminId);
+    int updateAdminRead(@Param("notificationId") Long notificationId, @Param("adminId") Long adminId);
 
     /**
      * 最大统计100
@@ -76,13 +76,13 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 LIMIT 100) tmp
             </script>
             """)
-    int countAdminUnread(@Param("adminId") Long adminId, @Nullable @Param("notificationType") String notificationType);
+    int selectCountAdminUnread(@Param("adminId") Long adminId, @Nullable @Param("notificationType") String notificationType);
 
     /**
      * 租户端标记已读
      */
     @Update("UPDATE biz.notification_to_tenant SET read = TRUE WHERE notification_id = #{notificationId} AND member_id = #{memberId}")
-    int markTenantRead(@Param("notificationId") Long notificationId, @Param("memberId") Long memberId);
+    int updateTenantRead(@Param("notificationId") Long notificationId, @Param("memberId") Long memberId);
 
     /**
      * 租户端未读统计（最大统计100）
@@ -98,7 +98,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 LIMIT 100) tmp
             </script>
             """)
-    int countTenantUnread(@Param("memberId") Long memberId, @Nullable @Param("notificationType") String notificationType);
+    int selectCountTenantUnread(@Param("memberId") Long memberId, @Nullable @Param("notificationType") String notificationType);
 
 }
 

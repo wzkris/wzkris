@@ -31,12 +31,12 @@ public class AdminNotificationInfoApiImpl extends AbstractApi implements AdminNo
 
     @Override
     public Result<Void> markRead(IdRequest request) {
-        return toRes(notificationInfoMapper.markAdminRead(request.getId(), SecurityUtil.getUid()));
+        return toRes(notificationInfoMapper.updateAdminRead(request.getId(), SecurityUtil.getUid()));
     }
 
     @Override
     public Result<Integer> queryUnreadSize(UnreadSizeQueryRequest request) {
-        int count = notificationInfoMapper.countAdminUnread(SecurityUtil.getUid(), request.getNotificationType());
+        int count = notificationInfoMapper.selectCountAdminUnread(SecurityUtil.getUid(), request.getNotificationType());
         return ok(count);
     }
 

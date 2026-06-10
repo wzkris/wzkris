@@ -3,6 +3,7 @@ package com.wzkris.common.log.aspect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
@@ -55,6 +56,7 @@ public class OperateLogAspect {
 
     public OperateLogAspect() {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     /**
@@ -194,7 +196,7 @@ public class OperateLogAspect {
                 });
     }
 
-    private String argsArrayToString(Object[] paramsArray) {
+    private String argsArrayToString(Object[] paramsArray) throws JsonProcessingException {
         if (paramsArray == null || paramsArray.length == 0) {
             return StringUtil.EMPTY;
         }
@@ -202,13 +204,8 @@ public class OperateLogAspect {
         StringBuilder params = new StringBuilder();
         for (Object o : paramsArray) {
             if (o != null && !isFilterObject(o)) {
-                try {
-                    String jsonObj = objectMapper.writeValueAsString(o);
-                    params.append(jsonObj).append(StringUtil.SPACE);
-                } catch (Exception ignored) {
-                    // 序列化失败，使用toString方法
-                    params.append(o).append(StringUtil.SPACE);
-                }
+                String jsonObj = objectMapper.writeValueAsString(o);
+                params.append(jsonObj).append(StringUtil.SPACE);
             }
         }
         return params.toString().trim();

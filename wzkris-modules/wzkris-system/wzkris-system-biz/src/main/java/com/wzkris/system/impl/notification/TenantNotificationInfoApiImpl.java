@@ -31,12 +31,12 @@ public class TenantNotificationInfoApiImpl extends AbstractApi implements Tenant
 
     @Override
     public Result<Void> markRead(IdRequest request) {
-        return toRes(notificationInfoMapper.markTenantRead(request.getId(), SecurityUtil.getUid()));
+        return toRes(notificationInfoMapper.updateTenantRead(request.getId(), SecurityUtil.getUid()));
     }
 
     @Override
     public Result<Integer> queryUnreadSize(UnreadSizeQueryRequest request) {
-        int count = notificationInfoMapper.countTenantUnread(SecurityUtil.getUid(), request.getNotificationType());
+        int count = notificationInfoMapper.selectCountTenantUnread(SecurityUtil.getUid(), request.getNotificationType());
         return ok(count);
     }
 

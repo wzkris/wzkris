@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.impl.admin;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -59,14 +58,6 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         adminInfoVO.setDeptName(deptInfoDO == null ? "" : deptInfoDO.getDeptName());
         adminInfoVO.setRoleGroup(issuper ? SecurityConstants.SUPER_ADMIN_NAME : roleInfoService.getRoleGroup(uid));
         return ok(adminInfoVO);
-    }
-
-    @Override
-    public Result<List<ChatPersonResponse>> queryChatPersonList() {
-        List<AdminInfoDO> adminInfoDOS = adminInfoService.list(Wrappers.lambdaQuery(AdminInfoDO.class)
-                .select(AdminInfoDO::getAdminId, AdminInfoDO::getNickname, AdminInfoDO::getAvatar)
-                .ne(AdminInfoDO::getAdminId, SecurityUtil.getUid()));
-        return ok(cast2ChatVO(adminInfoDOS));
     }
 
     private List<ChatPersonResponse> cast2ChatVO(List<AdminInfoDO> adminInfoDOS) {
