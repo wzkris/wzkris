@@ -148,7 +148,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        List<Long> userIds = request.getIds();
+        List<Long> userIds = request.getIdList();
         if (!adminInfoMapper.checkDataScopes(userIds)) {
             return accessDenied("数据权限不足");
         }

@@ -6,7 +6,7 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
-import com.wzkris.usercenter.api.dept.request.DeptMngListRequest;
+import com.wzkris.usercenter.api.dept.request.DeptMngTreeRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngSaveRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngUpdateRequest;
 import com.wzkris.usercenter.api.dept.response.DeptMngResponse;
@@ -31,7 +31,7 @@ public class DeptMngController {
     @Operation(summary = "部门列表 (不带分页)")
     @GetMapping("/query-list")
     @CheckAdminPerms("user-mod:dept-mng:list")
-    public Result<List<DeptMngResponse>> queryList(@ParameterObject DeptMngListRequest request) {
+    public Result<List<DeptMngResponse>> queryList(@ParameterObject DeptMngTreeRequest request) {
         return deptMngApi.queryList(request);
     }
 

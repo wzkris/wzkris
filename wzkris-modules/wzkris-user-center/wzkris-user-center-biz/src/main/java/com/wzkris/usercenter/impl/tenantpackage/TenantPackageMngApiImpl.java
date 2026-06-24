@@ -80,7 +80,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        List<Long> packageIds = request.getIds();
+        List<Long> packageIds = request.getIdList();
         if (tenantPackageInfoService.existInUsed(packageIds)) {
             return requestFail("删除失败, 套餐正在使用");
         }

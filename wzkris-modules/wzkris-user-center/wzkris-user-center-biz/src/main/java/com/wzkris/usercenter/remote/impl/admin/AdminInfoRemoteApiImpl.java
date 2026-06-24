@@ -8,7 +8,7 @@ import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.AdminInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
-import com.wzkris.usercenter.remote.api.admin.request.AdminQueryOneRequest;
+import com.wzkris.usercenter.remote.api.admin.request.AdminQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
@@ -25,7 +25,7 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
     private final PermissionService permissionService;
 
     @Override
-    public Result<AdminInfoResponse> queryOne(AdminQueryOneRequest request) {
+    public Result<AdminInfoResponse> queryOne(AdminQueryRequest request) {
         LambdaQueryWrapper<AdminInfoDO> eq = Wrappers.lambdaQuery(AdminInfoDO.class)
                 .eq(StringUtil.isNotBlank(request.getPhoneNumber()), AdminInfoDO::getPhoneNumber, request.getPhoneNumber())
                 .eq(StringUtil.isNotBlank(request.getUsername()), AdminInfoDO::getUsername, request.getUsername());

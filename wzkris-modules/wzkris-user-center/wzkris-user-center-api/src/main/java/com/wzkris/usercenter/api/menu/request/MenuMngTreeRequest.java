@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Schema(description = "菜单管理查询条件")
-public class MenuMngListRequest {
+@Schema(description = "菜单树查询条件")
+public class MenuMngTreeRequest {
 
     @Parameter(description = "菜单名称")
     private String menuName;

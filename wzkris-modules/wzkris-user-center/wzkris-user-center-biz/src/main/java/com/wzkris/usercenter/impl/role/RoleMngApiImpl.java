@@ -135,7 +135,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        List<Long> roleIds = request.getIds();
+        List<Long> roleIds = request.getIdList();
         if (!roleInfoMapper.checkDataScopes(roleIds)) {
             return accessDenied("数据权限不足");
         }

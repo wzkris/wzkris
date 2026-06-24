@@ -2,8 +2,8 @@ package com.wzkris.gateway.impl.apicall;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.gateway.api.apicall.ApiCallInfoApi;
-import com.wzkris.gateway.api.apicall.request.ApiCallDailyQueryRequest;
-import com.wzkris.gateway.api.apicall.request.ApiCallRealtimeQueryRequest;
+import com.wzkris.gateway.api.apicall.request.ApiCallDailyStatRequest;
+import com.wzkris.gateway.api.apicall.request.ApiCallRealtimeStatRequest;
 import com.wzkris.gateway.api.apicall.response.ApiCallDailySeriesResponse;
 import com.wzkris.gateway.api.apicall.response.ApiCallRealtimeResponse;
 import com.wzkris.gateway.api.apicall.response.ApiCallResponse;
@@ -84,7 +84,7 @@ public class ApiCallInfoApiImpl implements ApiCallInfoApi {
     }
 
     @Override
-    public Result<ApiCallDailySeriesResponse> queryDaily(ApiCallDailyQueryRequest request) {
+    public Result<ApiCallDailySeriesResponse> queryDaily(ApiCallDailyStatRequest request) {
         String date = request.getDate() != null
                 ? request.getDate().format(DATE_FORMAT)
                 : LocalDate.now().format(DATE_FORMAT);
@@ -92,7 +92,7 @@ public class ApiCallInfoApiImpl implements ApiCallInfoApi {
     }
 
     @Override
-    public Result<ApiCallRealtimeResponse> queryRealtime(ApiCallRealtimeQueryRequest request) {
+    public Result<ApiCallRealtimeResponse> queryRealtime(ApiCallRealtimeStatRequest request) {
         int windowSeconds = request.getWindowSeconds() != null ? request.getWindowSeconds() : 60;
         return Result.ok(toRealtimeResponse(
                 apiCallStatService.queryRealtime(request.getAuthType(), windowSeconds)));

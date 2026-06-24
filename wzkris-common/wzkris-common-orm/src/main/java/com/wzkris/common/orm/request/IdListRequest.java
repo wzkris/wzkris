@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class IdListRequest {
 
-    private List<Long> ids;
+    private List<Long> idList;
 
 }

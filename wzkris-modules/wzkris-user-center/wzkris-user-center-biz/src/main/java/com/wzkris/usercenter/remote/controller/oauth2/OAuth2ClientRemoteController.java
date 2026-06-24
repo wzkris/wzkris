@@ -2,7 +2,7 @@ package com.wzkris.usercenter.remote.controller.oauth2;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
-import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryOneRequest;
+import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryRequest;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ public class OAuth2ClientRemoteController {
     private final OAuth2ClientRemoteApi oAuth2ClientRemoteApi;
 
     @PostMapping("/query-one")
-    public Result<OAuth2ClientResponse> queryOne(@RequestBody @Valid OAuth2ClientQueryOneRequest request) {
+    public Result<OAuth2ClientResponse> queryOne(@RequestBody @Valid OAuth2ClientQueryRequest request) {
         return oAuth2ClientRemoteApi.queryOne(request);
     }
 

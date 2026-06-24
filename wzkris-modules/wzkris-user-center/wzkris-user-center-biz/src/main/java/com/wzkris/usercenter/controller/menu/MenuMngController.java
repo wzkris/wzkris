@@ -6,7 +6,7 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
-import com.wzkris.usercenter.api.menu.request.MenuMngListRequest;
+import com.wzkris.usercenter.api.menu.request.MenuMngTreeRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngSaveRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngUpdateRequest;
 import com.wzkris.usercenter.api.menu.response.MenuMngResponse;
@@ -31,7 +31,7 @@ public class MenuMngController {
     @Operation(summary = "菜单列表（无分页）")
     @GetMapping("/query-list")
     @CheckAdminPerms("user-mod:menu-mng:list")
-    public Result<List<MenuMngResponse>> queryList(@ParameterObject MenuMngListRequest request) {
+    public Result<List<MenuMngResponse>> queryList(@ParameterObject MenuMngTreeRequest request) {
         return menuMngApi.queryList(request);
     }
 

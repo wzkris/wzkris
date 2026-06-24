@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberQueryOneRequest implements Serializable {
+public class MemberQueryRequest implements Serializable {
 
     @Schema(description = "用户名")
     private String username;

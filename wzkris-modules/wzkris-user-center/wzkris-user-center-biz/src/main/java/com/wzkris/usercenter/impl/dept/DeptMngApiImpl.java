@@ -7,7 +7,7 @@ import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
-import com.wzkris.usercenter.api.dept.request.DeptMngListRequest;
+import com.wzkris.usercenter.api.dept.request.DeptMngTreeRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngSaveRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngUpdateRequest;
 import com.wzkris.usercenter.api.dept.response.DeptMngResponse;
@@ -31,12 +31,12 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     private final DeptInfoService deptInfoService;
 
     @Override
-    public Result<List<DeptMngResponse>> queryList(DeptMngListRequest request) {
+    public Result<List<DeptMngResponse>> queryList(DeptMngTreeRequest request) {
         List<DeptInfoDO> depts = deptInfoMapper.selectLists(buildQueryWrapper(request));
         return ok(BeanUtil.convert(depts, DeptMngResponse.class));
     }
 
-    private LambdaQueryWrapper<DeptInfoDO> buildQueryWrapper(DeptMngListRequest request) {
+    private LambdaQueryWrapper<DeptInfoDO> buildQueryWrapper(DeptMngTreeRequest request) {
         return new LambdaQueryWrapper<DeptInfoDO>()
                 .apply(request.getParentId() != null && request.getParentId() != 0,
                         "{0} = ANY(ancestors)", request.getParentId())

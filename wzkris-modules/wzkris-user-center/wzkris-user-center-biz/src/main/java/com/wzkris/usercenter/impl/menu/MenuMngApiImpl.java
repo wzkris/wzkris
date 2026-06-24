@@ -8,7 +8,7 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
-import com.wzkris.usercenter.api.menu.request.MenuMngListRequest;
+import com.wzkris.usercenter.api.menu.request.MenuMngTreeRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngSaveRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngUpdateRequest;
 import com.wzkris.usercenter.api.menu.response.MenuMngResponse;
@@ -30,12 +30,12 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<List<MenuMngResponse>> queryList(MenuMngListRequest request) {
+    public Result<List<MenuMngResponse>> queryList(MenuMngTreeRequest request) {
         List<MenuInfoDO> menus = menuInfoService.list(this.buildQueryWrapper(request));
         return ok(BeanUtil.convert(menus, MenuMngResponse.class));
     }
 
-    private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngListRequest request) {
+    private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngTreeRequest request) {
         List<Long> menuIds = new ArrayList<>();
         if (!SecurityUtil.isSuperAdmin()) {
             menuIds = menuInfoService.listMenuIdByAdminId(SecurityUtil.getUid());

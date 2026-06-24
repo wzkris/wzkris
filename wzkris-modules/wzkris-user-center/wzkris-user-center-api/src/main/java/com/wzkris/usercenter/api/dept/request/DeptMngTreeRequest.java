@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Schema(description = "部门列表查询条件")
-public class DeptMngListRequest {
+@Schema(description = "部门树查询条件")
+public class DeptMngTreeRequest {
 
     @Parameter(description = "部门ID")
     private Long deptId;

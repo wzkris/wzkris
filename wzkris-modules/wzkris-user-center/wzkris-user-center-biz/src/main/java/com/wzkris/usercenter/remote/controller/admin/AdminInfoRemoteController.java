@@ -2,7 +2,7 @@ package com.wzkris.usercenter.remote.controller.admin;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.AdminInfoRemoteApi;
-import com.wzkris.usercenter.remote.api.admin.request.AdminQueryOneRequest;
+import com.wzkris.usercenter.remote.api.admin.request.AdminQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
@@ -24,7 +24,7 @@ public class AdminInfoRemoteController {
     private final AdminInfoRemoteApi adminInfoRemoteApi;
 
     @PostMapping("/query-one")
-    public Result<AdminInfoResponse> queryOne(@RequestBody @Valid AdminQueryOneRequest request) {
+    public Result<AdminInfoResponse> queryOne(@RequestBody @Valid AdminQueryRequest request) {
         return adminInfoRemoteApi.queryOne(request);
     }
 

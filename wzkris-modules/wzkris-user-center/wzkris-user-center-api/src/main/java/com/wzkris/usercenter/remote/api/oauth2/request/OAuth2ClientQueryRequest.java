@@ -1,4 +1,4 @@
-package com.wzkris.auth.remote.interfaces.oauth2.request;
+package com.wzkris.usercenter.remote.api.oauth2.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class OAuth2ClientQueryOneRequest implements Serializable {
+public class OAuth2ClientQueryRequest implements Serializable {
 
     @Schema(description = "id")
     private String id;

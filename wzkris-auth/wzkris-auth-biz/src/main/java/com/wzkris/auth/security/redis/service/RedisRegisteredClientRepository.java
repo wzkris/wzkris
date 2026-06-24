@@ -17,7 +17,7 @@ package com.wzkris.auth.security.redis.service;
 
 import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.remote.interfaces.oauth2.IOAuth2ClientRemote;
-import com.wzkris.auth.remote.interfaces.oauth2.request.OAuth2ClientQueryOneRequest;
+import com.wzkris.auth.remote.interfaces.oauth2.request.OAuth2ClientQueryRequest;
 import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientResponse;
 import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
@@ -70,7 +70,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        OAuth2ClientQueryOneRequest request = new OAuth2ClientQueryOneRequest();
+        OAuth2ClientQueryRequest request = new OAuth2ClientQueryRequest();
         request.setId(id);
         Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryOne(request);
         return checkAndSave(oauth2Client);
@@ -87,7 +87,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
             return ModelMapper.convertRegisteredClient(oAuth2RegisteredClient);
         }
 
-        OAuth2ClientQueryOneRequest request = new OAuth2ClientQueryOneRequest();
+        OAuth2ClientQueryRequest request = new OAuth2ClientQueryRequest();
         request.setClientId(clientId);
         Result<OAuth2ClientResponse> oauth2Client = oAuth2ClientRemote.queryOne(request);
         return checkAndSave(oauth2Client);

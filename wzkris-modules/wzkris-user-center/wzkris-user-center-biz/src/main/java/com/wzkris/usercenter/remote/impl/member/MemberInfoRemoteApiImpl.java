@@ -16,7 +16,7 @@ import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
-import com.wzkris.usercenter.remote.api.member.request.MemberQueryOneRequest;
+import com.wzkris.usercenter.remote.api.member.request.MemberQueryRequest;
 import com.wzkris.usercenter.remote.api.member.request.TenantIdRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
@@ -50,7 +50,7 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     private WxMaService wxMaService;
 
     @Override
-    public Result<MemberInfoResponse> queryOne(MemberQueryOneRequest request) {
+    public Result<MemberInfoResponse> queryOne(MemberQueryRequest request) {
         LambdaQueryWrapper<MemberInfoDO> eq = Wrappers.lambdaQuery(MemberInfoDO.class)
                 .eq(StringUtil.isNotBlank(request.getPhoneNumber()), MemberInfoDO::getPhoneNumber, request.getPhoneNumber())
                 .eq(StringUtil.isNotBlank(request.getUsername()), MemberInfoDO::getUsername, request.getUsername());

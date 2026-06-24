@@ -1,8 +1,7 @@
-package com.wzkris.usercenter.remote.api.admin.request;
+package com.wzkris.auth.remote.interfaces.oauth2.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,18 +9,17 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class AdminQueryOneRequest implements Serializable {
+public class OAuth2ClientQueryRequest implements Serializable {
 
-    @Schema(description = "用户名")
-    private String username;
+    @Schema(description = "id")
+    private String id;
 
-    @Schema(description = "手机号")
-    private String phoneNumber;
+    @Schema(description = "客户端id")
+    private String clientId;
 
     @AssertTrue(message = "{invalidParameter.param.invalid}")
     public boolean hasQueryCondition() {
-        return isNotBlank(username) || isNotBlank(phoneNumber);
+        return isNotBlank(id) || isNotBlank(clientId);
     }
 
     private boolean isNotBlank(String value) {

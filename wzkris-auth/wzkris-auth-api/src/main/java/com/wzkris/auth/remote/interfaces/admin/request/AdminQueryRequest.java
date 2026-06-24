@@ -1,7 +1,6 @@
-package com.wzkris.auth.remote.interfaces.member.request;
+package com.wzkris.auth.remote.interfaces.admin.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +8,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class MemberQueryOneRequest implements Serializable {
+public class AdminQueryRequest implements Serializable {
 
     @Schema(description = "用户名")
     private String username;

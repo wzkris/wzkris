@@ -82,7 +82,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        List<Long> postIds = request.getIds();
+        List<Long> postIds = request.getIdList();
         if (postInfoService.existMember(postIds)) {
             return requestFail("当前职位已被分配");
         }

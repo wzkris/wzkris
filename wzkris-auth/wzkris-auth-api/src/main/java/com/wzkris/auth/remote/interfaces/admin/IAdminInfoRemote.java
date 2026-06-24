@@ -1,7 +1,7 @@
 package com.wzkris.auth.remote.interfaces.admin;
 
-import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryOneRequest;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminInfoResponse;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminPermissionResponse;
@@ -27,19 +27,19 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface IAdminInfoRemote {
 
     @PostExchange("/query-one")
-    Result<AdminInfoResponse> queryOne(@RequestBody AdminQueryOneRequest request);
+    Result<AdminInfoResponse> queryOne(@RequestBody AdminQueryRequest request);
 
     /**
      * 查询管理员权限
      */
     @PostExchange("/query-permission")
-    Result<AdminPermissionResponse> queryPermission(@RequestBody AdminPermsQueryRequest AdminPermsQueryRequest);
+    Result<AdminPermissionResponse> queryPermission(@RequestBody AdminPermsQueryRequest request);
 
     /**
      * 更新用户登录信息
      */
     @PostExchange("/update-logininfo")
-    Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest LoginInfoUpdateRequest);
+    Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest request);
 
 }
 

@@ -5,7 +5,7 @@ import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
-import com.wzkris.auth.remote.interfaces.member.request.MemberQueryOneRequest;
+import com.wzkris.auth.remote.interfaces.member.request.MemberQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
 import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
 import com.wzkris.auth.service.LoginUserService;
@@ -46,7 +46,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        MemberQueryOneRequest request = new MemberQueryOneRequest();
+        MemberQueryRequest request = new MemberQueryRequest();
         request.setPhoneNumber(phoneNumber);
         Result<MemberInfoResponse> memberResult = memberInfoRemote.queryOne(request);
 
@@ -66,7 +66,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        MemberQueryOneRequest request = new MemberQueryOneRequest();
+        MemberQueryRequest request = new MemberQueryRequest();
         request.setUsername(username);
         Result<MemberInfoResponse> memberResult = memberInfoRemote.queryOne(request);
 

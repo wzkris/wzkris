@@ -65,7 +65,7 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        return toRes(announcementInfoMapper.deleteByIds(request.getIds()));
+        return toRes(announcementInfoMapper.deleteByIds(request.getIdList()));
     }
 
 }

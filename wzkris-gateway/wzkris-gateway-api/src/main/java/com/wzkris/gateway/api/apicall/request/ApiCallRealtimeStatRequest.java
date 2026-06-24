@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "API调用实时统计查询参数")
-public class ApiCallRealtimeQueryRequest {
+public class ApiCallRealtimeStatRequest {
 
     @Schema(description = "认证类型")
     private AuthTypeEnum authType;

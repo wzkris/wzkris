@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
-import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryOneRequest;
+import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryRequest;
 import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class OAuth2ClientRemoteApiImpl implements OAuth2ClientRemoteApi {
     private final OAuth2ClientMapper oAuth2ClientMapper;
 
     @Override
-    public Result<OAuth2ClientResponse> queryOne(OAuth2ClientQueryOneRequest request) {
+    public Result<OAuth2ClientResponse> queryOne(OAuth2ClientQueryRequest request) {
         LambdaQueryWrapper<OAuth2ClientDO> eq = Wrappers.lambdaQuery(OAuth2ClientDO.class)
                 .eq(StringUtil.isNotBlank(request.getId()), OAuth2ClientDO::getId, request.getId())
                 .eq(StringUtil.isNotBlank(request.getClientId()), OAuth2ClientDO::getClientId, request.getClientId());

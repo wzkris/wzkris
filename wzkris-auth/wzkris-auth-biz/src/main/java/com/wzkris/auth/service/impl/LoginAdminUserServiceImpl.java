@@ -5,7 +5,7 @@ import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
 import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
-import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryOneRequest;
+import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminInfoResponse;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminPermissionResponse;
 import com.wzkris.auth.service.LoginUserService;
@@ -46,7 +46,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        AdminQueryOneRequest request = new AdminQueryOneRequest();
+        AdminQueryRequest request = new AdminQueryRequest();
         request.setPhoneNumber(phoneNumber);
         Result<AdminInfoResponse> userResult = adminInfoRemote.queryOne(request);
 
@@ -66,7 +66,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        AdminQueryOneRequest request = new AdminQueryOneRequest();
+        AdminQueryRequest request = new AdminQueryRequest();
         request.setUsername(username);
         Result<AdminInfoResponse> userResult = adminInfoRemote.queryOne(request);
 

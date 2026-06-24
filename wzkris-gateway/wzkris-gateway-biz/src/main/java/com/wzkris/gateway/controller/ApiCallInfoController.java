@@ -3,8 +3,8 @@ package com.wzkris.gateway.controller;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.gateway.api.apicall.ApiCallInfoApi;
-import com.wzkris.gateway.api.apicall.request.ApiCallDailyQueryRequest;
-import com.wzkris.gateway.api.apicall.request.ApiCallRealtimeQueryRequest;
+import com.wzkris.gateway.api.apicall.request.ApiCallDailyStatRequest;
+import com.wzkris.gateway.api.apicall.request.ApiCallRealtimeStatRequest;
 import com.wzkris.gateway.api.apicall.response.ApiCallDailySeriesResponse;
 import com.wzkris.gateway.api.apicall.response.ApiCallRealtimeResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,12 @@ public class ApiCallInfoController {
     private final ApiCallInfoApi apiCallInfoApi;
 
     @GetMapping("/query-daily")
-    public Result<ApiCallDailySeriesResponse> queryDaily(ApiCallDailyQueryRequest request) {
+    public Result<ApiCallDailySeriesResponse> queryDaily(ApiCallDailyStatRequest request) {
         return apiCallInfoApi.queryDaily(request);
     }
 
     @GetMapping("/query-realtime")
-    public Result<ApiCallRealtimeResponse> queryRealtime(ApiCallRealtimeQueryRequest request) {
+    public Result<ApiCallRealtimeResponse> queryRealtime(ApiCallRealtimeStatRequest request) {
         return apiCallInfoApi.queryRealtime(request);
     }
 

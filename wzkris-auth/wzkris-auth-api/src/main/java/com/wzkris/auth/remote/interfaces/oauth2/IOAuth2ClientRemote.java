@@ -1,6 +1,6 @@
 package com.wzkris.auth.remote.interfaces.oauth2;
 
-import com.wzkris.auth.remote.interfaces.oauth2.request.OAuth2ClientQueryOneRequest;
+import com.wzkris.auth.remote.interfaces.oauth2.request.OAuth2ClientQueryRequest;
 import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
@@ -24,7 +24,7 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface IOAuth2ClientRemote {
 
     @PostExchange("/query-one")
-    Result<OAuth2ClientResponse> queryOne(@RequestBody OAuth2ClientQueryOneRequest request);
+    Result<OAuth2ClientResponse> queryOne(@RequestBody OAuth2ClientQueryRequest request);
 
 }
 

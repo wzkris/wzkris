@@ -139,7 +139,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        List<Long> memberIds = request.getIds();
+        List<Long> memberIds = request.getIdList();
         if (tenantInfoService.checkAdministrator(memberIds)) {
             return accessDenied("数据权限不足");
         }

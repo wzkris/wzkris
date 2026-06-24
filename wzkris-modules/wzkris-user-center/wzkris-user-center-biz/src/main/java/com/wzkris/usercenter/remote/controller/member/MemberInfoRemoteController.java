@@ -3,7 +3,7 @@ package com.wzkris.usercenter.remote.controller.member;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
-import com.wzkris.usercenter.remote.api.member.request.MemberQueryOneRequest;
+import com.wzkris.usercenter.remote.api.member.request.MemberQueryRequest;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.member.request.TenantIdRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
@@ -26,7 +26,7 @@ public class MemberInfoRemoteController {
     private final MemberInfoRemoteApi memberInfoRemoteApi;
 
     @PostMapping("/query-one")
-    public Result<MemberInfoResponse> queryOne(@RequestBody @Valid MemberQueryOneRequest request) {
+    public Result<MemberInfoResponse> queryOne(@RequestBody @Valid MemberQueryRequest request) {
         return memberInfoRemoteApi.queryOne(request);
     }
 
