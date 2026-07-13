@@ -62,10 +62,7 @@ wzkris
 │   └── wzkris-monitor-admin  // 监控中心(Spring Boot Admin集成)
 ├── wzkris-gateway         // API网关(Spring Cloud Gateway)
 ├── wzkris-modules         // 业务功能模块
-│   ├── wzkris-system          // 系统服务
-│   │   ├── wzkris-system-api  // 系统服务远程接口
-│   │   └── wzkris-system-biz  // 系统服务业务实现
-│   └── wzkris-user-center     // 用户中心服务
+│   └── wzkris-user-center     // 用户中心服务（含系统管理：通知/公告/字典/配置/日志）
 │       ├── wzkris-user-center-api  // 用户中心服务远程接口
 │       └── wzkris-user-center-biz  // 用户中心服务业务实现
 └── pom.xml                // 项目依赖管理
@@ -100,8 +97,7 @@ wzkris
    
    **PostgreSQL数据库（主数据库）**
    - 创建PostgreSQL数据库（推荐版本 12+）
-   - 执行 `sql/postgresql/wzkris_user_center.sql` 初始化用户中心数据库
-   - 执行 `sql/postgresql/wzkris_system.sql` 初始化系统服务数据库
+   - 执行 `sql/postgresql/wzkris_user_center.sql` 初始化用户中心数据库（已包含原系统服务全部表）
    
    **MySQL数据库（Nacos配置中心）**
    - 创建MySQL数据库（推荐版本 8.0+）
@@ -127,9 +123,8 @@ wzkris
      1. Nacos（服务注册与配置中心）
      2. Gateway (8080) - API网关服务
      3. Auth (9000) - 认证授权服务
-     4. User-Center (8000) - 用户中心服务
-     5. System (5555) - 系统服务
-     6. Monitor (9100) - 监控中心（可选）
+     4. User-Center (8000) - 用户中心服务（含系统管理）
+     5. Monitor (9100) - 监控中心（可选）
 
 ### 服务端口说明
 
@@ -137,8 +132,7 @@ wzkris
 |---------|------|------|
 | Gateway | 8080 | API网关服务 |
 | Auth | 9000 | 认证授权服务 |
-| User-Center | 8000 | 用户中心服务 |
-| System | 5555 | 系统服务 |
+| User-Center | 8000 | 用户中心服务（含系统管理） |
 | Monitor | 9100 | 监控中心 |
 
 ## 📨 PostgreSQL 消息总线 Demo

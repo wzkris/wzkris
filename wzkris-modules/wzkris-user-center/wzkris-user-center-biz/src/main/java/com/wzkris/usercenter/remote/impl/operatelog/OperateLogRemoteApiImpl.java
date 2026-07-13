@@ -1,0 +1,98 @@
+package com.wzkris.usercenter.remote.impl.operatelog;
+
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.Result;
+import com.wzkris.usercenter.domain.AdminOperateLogDO;
+import com.wzkris.usercenter.domain.TenantOperateLogDO;
+import com.wzkris.usercenter.mapper.AdminOperateLogMapper;
+import com.wzkris.usercenter.mapper.TenantOperateLogMapper;
+import com.wzkris.usercenter.remote.api.operatelog.OperateLogRemoteApi;
+import com.wzkris.usercenter.remote.api.operatelog.request.OperateLogEventRequest;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
+
+    private final AdminOperateLogMapper adminOperateLogMapper;
+
+    private final TenantOperateLogMapper tenantOperateLogMapper;
+
+    @Override
+    public Result<Void> save(List<OperateLogEventRequest> requestList) {
+        if (CollectionUtils.isEmpty(requestList)) {
+            return Result.ok();
+        }
+        Map<AuthTypeEnum, List<OperateLogEventRequest>> listMap =
+                requestList.stream()
+                        .collect(Collectors.groupingBy(OperateLogEventRequest::getAuthType));
+        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN, Collections.emptyList()));
+        saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT, Collections.emptyList()));
+        return Result.ok();
+    }
+
+    private void saveAdminLogs(List<OperateLogEventRequest> requestList) {
+        if (CollectionUtils.isEmpty(requestList)) {
+            return;
+        }
+        List<AdminOperateLogDO> operLogs = new ArrayList<>();
+        for (OperateLogEventRequest request : requestList) {
+            AdminOperateLogDO adminOperateLogDO = new AdminOperateLogDO();
+            adminOperateLogDO.setTitle(request.getTitle());
+            adminOperateLogDO.setSubTitle(request.getSubTitle());
+            adminOperateLogDO.setOperType(request.getOperType());
+            adminOperateLogDO.setMethod(request.getMethod());
+            adminOperateLogDO.setRequestMethod(request.getRequestMethod());
+            adminOperateLogDO.setAdminId(request.getOperatorId());
+            adminOperateLogDO.setUsername(request.getOperName());
+            adminOperateLogDO.setOperUrl(request.getOperUrl());
+            adminOperateLogDO.setOperIp(request.getOperIp());
+            adminOperateLogDO.setOperParam(request.getOperParam());
+            adminOperateLogDO.setJsonResult(request.getJsonResult());
+            adminOperateLogDO.setOperLocation(request.getOperLocation());
+            adminOperateLogDO.setSuccess(request.getSuccess());
+            adminOperateLogDO.setErrorMsg(request.getErrorMsg());
+            adminOperateLogDO.setOperTime(request.getOperTime());
+            operLogs.add(adminOperateLogDO);
+        }
+        adminOperateLogMapper.insert(operLogs, 1000);
+    }
+
+    private void saveTenantLogs(List<OperateLogEventRequest> requestList) {
+        if (CollectionUtils.isEmpty(requestList)) {
+            return;
+        }
+        List<TenantOperateLogDO> operLogs = new ArrayList<>();
+        for (OperateLogEventRequest request : requestList) {
+            TenantOperateLogDO tenantOperateLogDO = new TenantOperateLogDO();
+            tenantOperateLogDO.setTitle(request.getTitle());
+            tenantOperateLogDO.setSubTitle(request.getSubTitle());
+            tenantOperateLogDO.setOperType(request.getOperType());
+            tenantOperateLogDO.setMethod(request.getMethod());
+            tenantOperateLogDO.setRequestMethod(request.getRequestMethod());
+            tenantOperateLogDO.setMemberId(request.getOperatorId());
+            tenantOperateLogDO.setUsername(request.getOperName());
+            tenantOperateLogDO.setOperUrl(request.getOperUrl());
+            tenantOperateLogDO.setOperIp(request.getOperIp());
+            tenantOperateLogDO.setOperParam(request.getOperParam());
+            tenantOperateLogDO.setJsonResult(request.getJsonResult());
+            tenantOperateLogDO.setOperLocation(request.getOperLocation());
+            tenantOperateLogDO.setSuccess(request.getSuccess());
+            tenantOperateLogDO.setErrorMsg(request.getErrorMsg());
+            tenantOperateLogDO.setOperTime(request.getOperTime());
+            tenantOperateLogDO.setTenantId(request.getTenantId());
+            operLogs.add(tenantOperateLogDO);
+        }
+        tenantOperateLogMapper.insert(operLogs, 1000);
+    }
+
+}
+

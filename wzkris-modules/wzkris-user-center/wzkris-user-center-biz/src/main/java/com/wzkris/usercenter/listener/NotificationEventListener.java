@@ -5,8 +5,8 @@ import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.usercenter.event.CreateAdminEvent;
 import com.wzkris.usercenter.event.CreateMemberEvent;
 import com.wzkris.usercenter.event.CreateTenantEvent;
-import com.wzkris.usercenter.remote.interfaces.notification.INotificationInfoRemote;
-import com.wzkris.usercenter.remote.interfaces.notification.request.NotificationRequest;
+import com.wzkris.usercenter.remote.api.notification.NotificationInfoRemoteApi;
+import com.wzkris.usercenter.remote.api.notification.request.NotificationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -23,7 +23,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class NotificationEventListener {
 
-    private final INotificationInfoRemote notificationInfoRemote;
+    private final NotificationInfoRemoteApi notificationInfoRemote;
 
     @Async
     @EventListener

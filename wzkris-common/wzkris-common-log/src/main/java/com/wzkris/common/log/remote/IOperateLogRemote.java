@@ -18,8 +18,8 @@ import java.util.List;
  * @date : 2023/3/13 16:12
  */
 @RemoteInterface(
-        serviceId = ServiceIdConstant.SYSTEM,
-        path = ServiceContextPathConstant.SYSTEM
+        serviceId = ServiceIdConstant.USER_CENTER,
+        path = ServiceContextPathConstant.USER_CENTER
 )
 @HttpExchange(url = "/operate-log-remote")
 public interface IOperateLogRemote {

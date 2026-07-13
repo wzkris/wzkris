@@ -12,11 +12,11 @@ import com.wzkris.common.notifier.event.ErrorLogEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.OffsetDateTime;
 
 /**
  * 错误日志事件 Appender（Logback 实现）
@@ -60,7 +60,8 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
         }
 
         // 检查 Spring 上下文是否已初始化
-        if (SpringUtil.getContext() == null) {
+        ApplicationContext context = SpringUtil.getContext();
+        if (context == null) {
             return;
         }
 
@@ -80,8 +81,11 @@ public class ErrorLogEventAppender extends AppenderBase<ILoggingEvent> {
                 originalMessage
         );
 
-        // 发布 Spring 事件
-        SpringUtil.getContext().publishEvent(errorLogEvent);
+        // 尝试安全地发布事件，捕获未完全刷新时的异常
+        try {
+            context.publishEvent(errorLogEvent);
+        } catch (IllegalStateException ignored) {
+        }
     }
 
     /**
