@@ -59,6 +59,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
 
     private QueryWrapper<TenantInfoDO> buildQueryWrapper(TenantMngPageRequest request) {
         return new QueryWrapper<TenantInfoDO>()
+                .apply("t.deleted = false")
                 .like(StringUtil.isNotEmpty(request.getTenantName()), "tenant_name", request.getTenantName())
                 .eq(request.getStatus() != null, "t.status", request.getStatus())
                 .orderByDesc("t.tenant_id");

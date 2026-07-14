@@ -2,6 +2,7 @@ package com.wzkris.common.orm.model;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
@@ -46,5 +47,11 @@ public class BaseEntity implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT)
     private String hint;
+
+    /**
+     * 逻辑删除标志
+     */
+    @TableLogic
+    private Boolean deleted;
 
 }

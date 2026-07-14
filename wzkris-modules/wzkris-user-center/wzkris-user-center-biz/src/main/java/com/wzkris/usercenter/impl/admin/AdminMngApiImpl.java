@@ -60,6 +60,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     private QueryWrapper<AdminInfoDO> buildPageWrapper(AdminMngPageRequest request) {
         return new QueryWrapper<AdminInfoDO>()
+                .apply("u.deleted = false")
                 .like(ObjectUtils.isNotEmpty(request.getUsername()), "username", request.getUsername())
                 .like(ObjectUtils.isNotEmpty(request.getNickname()), "nickname", request.getNickname())
                 .like(ObjectUtils.isNotEmpty(request.getPhoneNumber()), "phone_number", request.getPhoneNumber())

@@ -28,7 +28,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param parentId 父ID
      * @return 部门列表
      */
-    @Select("SELECT * FROM biz.dept_info WHERE #{parentId} = ANY(ancestors) ORDER BY dept_sort, dept_id DESC")
+    @Select("SELECT * FROM biz.dept_info WHERE deleted = false AND #{parentId} = ANY(ancestors) ORDER BY dept_sort, dept_id DESC")
     List<DeptInfoDO> listSubsByParentId(Long parentId);
 
     /**
@@ -37,7 +37,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptId 部门ID
      * @return 部门列表
      */
-    @Select("SELECT dept_id FROM biz.dept_info WHERE #{deptId} = ANY(ancestors) OR dept_id = #{deptId}")
+    @Select("SELECT dept_id FROM biz.dept_info WHERE deleted = false AND (#{deptId} = ANY(ancestors) OR dept_id = #{deptId})")
     List<Long> listSubDeptIdById(Long deptId);
 
     /**
@@ -46,7 +46,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptId 部门ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz.dept_info WHERE parent_id = #{deptId})")
+    @Select("SELECT EXISTS(SELECT dept_id FROM biz.dept_info WHERE deleted = false AND parent_id = #{deptId})")
     boolean existChildren(Long deptId);
 
     /**
@@ -55,7 +55,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptId 部门 ID
      * @return 结果
      */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz.admin_info WHERE dept_id = #{deptId})")
+    @Select("SELECT EXISTS(SELECT dept_id FROM biz.admin_info WHERE deleted = false AND dept_id = #{deptId})")
     boolean existAdmin(Long deptId);
 
     /**
@@ -76,8 +76,8 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END
-                FROM biz.dept_info 
-                WHERE dept_id IN
+                FROM biz.dept_info
+                WHERE deleted = false AND dept_id IN
                 <foreach collection="collection" item="deptId" open="(" separator="," close=")">
                     #{deptId}
                 </foreach>

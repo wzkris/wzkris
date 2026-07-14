@@ -15,10 +15,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConfigInfoMapper extends BaseMapperPlus<ConfigInfoDO> {
 
-    @Select("SELECT * FROM biz.config_info WHERE config_key = #{configKey}")
+    @Select("SELECT * FROM biz.config_info WHERE deleted = false AND config_key = #{configKey}")
     ConfigInfoDO selectByKey(String configKey);
 
-    @Select("SELECT config_value FROM biz.config_info WHERE config_key = #{configKey}")
+    @Select("SELECT config_value FROM biz.config_info WHERE deleted = false AND config_key = #{configKey}")
     String selectValueByKey(String configKey);
 
 }

@@ -26,7 +26,7 @@ public interface MenuInfoMapper extends BaseMapperPlus<MenuInfoDO> {
     @Select("""
             <script>
                 SELECT * FROM biz.menu_info
-                WHERE menu_type IN ('D', 'M', 'I', 'O') AND status = '0'
+                WHERE deleted = false AND menu_type IN ('D', 'M', 'I', 'O') AND status = '0'
                     AND scope = #{scope}
                 <if test="menuIds != null and !menuIds.isEmpty()">
                     AND menu_id IN

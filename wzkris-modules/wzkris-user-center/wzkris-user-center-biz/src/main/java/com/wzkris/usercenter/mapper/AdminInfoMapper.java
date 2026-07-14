@@ -32,8 +32,8 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     @DataScope(value = {@DataColumn(alias = "d", column = "dept_id")})
     @Select("""
             SELECT u.*, d.dept_name, d.status AS deptStatus
-                    		FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
-                    ${ew.customSqlSegment}
+            FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
+            ${ew.customSqlSegment}
             """)
     List<AdminMngResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
 
@@ -48,7 +48,7 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT ai.admin_id) = ${adminIds.size()} THEN true ELSE false END
                 FROM biz.admin_info ai
-                WHERE ai.admin_id IN
+                WHERE ai.deleted = false AND ai.admin_id IN
                 <foreach collection="collection" item="adminId" open="(" separator="," close=")">
                     #{adminId}
                 </foreach>

@@ -2,16 +2,19 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.chat.MediaFormatEnum;
 import com.wzkris.usercenter.enums.chat.ResourceTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.OffsetDateTime;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "chat_persist_info")
-public class ChatPersistInfoDO {
+public class ChatPersistInfoDO extends BaseEntity {
 
     @TableId
     private Long chatId;

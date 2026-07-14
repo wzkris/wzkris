@@ -54,6 +54,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     private QueryWrapper<MemberInfoDO> buildPageWrapper(MemberMngPageRequest request) {
         return new QueryWrapper<MemberInfoDO>()
+                .apply("s.deleted = false")
                 .like(ObjectUtils.isNotEmpty(request.getUsername()), "username", request.getUsername())
                 .like(ObjectUtils.isNotEmpty(request.getPhoneNumber()), "phone_number", request.getPhoneNumber())
                 .eq(ObjectUtils.isNotEmpty(request.getStatus()), "s.status", request.getStatus())

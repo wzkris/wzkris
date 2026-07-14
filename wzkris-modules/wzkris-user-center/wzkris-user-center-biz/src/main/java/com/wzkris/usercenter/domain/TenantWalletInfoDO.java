@@ -2,9 +2,11 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.tenantwallet.TenantWalletStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
@@ -16,8 +18,9 @@ import java.math.BigDecimal;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "tenant_wallet_info")
-public class TenantWalletInfoDO {
+public class TenantWalletInfoDO extends BaseEntity {
 
     @TableId
     private Long tenantId;

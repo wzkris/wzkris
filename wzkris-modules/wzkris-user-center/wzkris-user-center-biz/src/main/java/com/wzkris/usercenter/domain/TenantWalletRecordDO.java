@@ -2,13 +2,14 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 
 /**
  * 租户钱包记录表
@@ -17,8 +18,9 @@ import java.time.OffsetDateTime;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "tenant_wallet_record")
-public class TenantWalletRecordDO {
+public class TenantWalletRecordDO extends BaseEntity {
 
     @TableId
     private Long recordId;
@@ -37,9 +39,6 @@ public class TenantWalletRecordDO {
 
     @Schema(description = "业务编号")
     private String bizNo;
-
-    @Schema(description = "创建时间")
-    private OffsetDateTime createAt;
 
     @Schema(description = "备注")
     private String remark;

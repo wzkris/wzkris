@@ -56,6 +56,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
 
     private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngPageRequest request) {
         return new LambdaQueryWrapper<RoleInfoDO>()
+                .apply("r.deleted = false")
                 .like(StringUtil.isNotEmpty(request.getRoleName()), RoleInfoDO::getRoleName, request.getRoleName())
                 .eq(request.getStatus() != null, RoleInfoDO::getStatus, request.getStatus())
                 .orderByDesc(RoleInfoDO::getRoleSort, RoleInfoDO::getRoleId);

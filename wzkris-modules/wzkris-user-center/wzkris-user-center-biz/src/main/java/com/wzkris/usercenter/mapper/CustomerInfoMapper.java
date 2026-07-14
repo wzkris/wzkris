@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomerInfoMapper extends BaseMapperPlus<CustomerInfoDO> {
 
-    @Select("SELECT * FROM biz.customer_info WHERE phone_number = #{phoneNumber}")
+    @Select("SELECT * FROM biz.customer_info WHERE deleted = false AND phone_number = #{phoneNumber}")
     CustomerInfoDO selectByPhoneNumber(String phoneNumber);
 
 }

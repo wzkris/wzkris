@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberSocialInfoMapper extends BaseMapperPlus<MemberSocialInfoDO> {
 
-    @Select("SELECT * FROM biz.member_social_info WHERE identifier = #{identifier}")
+    @Select("SELECT * FROM biz.member_social_info WHERE deleted = false AND identifier = #{identifier}")
     MemberSocialInfoDO selectByIdentifier(String identifier);
 
 }

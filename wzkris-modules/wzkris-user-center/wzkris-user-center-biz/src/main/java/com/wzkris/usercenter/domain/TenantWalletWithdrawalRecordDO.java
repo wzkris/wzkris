@@ -2,10 +2,12 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.tenantwallet.TenantWalletWithdrawalStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
@@ -19,8 +21,9 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "tenant_wallet_withdrawal_record")
-public class TenantWalletWithdrawalRecordDO {
+public class TenantWalletWithdrawalRecordDO extends BaseEntity {
 
     @TableId
     private Long withdrawalId;
@@ -42,12 +45,6 @@ public class TenantWalletWithdrawalRecordDO {
 
     @Schema(description = "错误信息")
     private String errorMsg;
-
-    @Schema(description = "创建者")
-    private Long creatorId;
-
-    @Schema(description = "创建时间")
-    private OffsetDateTime createAt;
 
     @Schema(description = "完成时间")
     private OffsetDateTime completeAt;

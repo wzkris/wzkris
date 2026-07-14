@@ -2,11 +2,12 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.notification.NotificationTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
-import java.time.OffsetDateTime;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 系统通知
@@ -14,8 +15,10 @@ import java.time.OffsetDateTime;
  * @author wzkris
  */
 @Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "notification_info")
-public class NotificationInfoDO {
+public class NotificationInfoDO extends BaseEntity {
 
     @TableId
     private Long notificationId;
@@ -28,15 +31,5 @@ public class NotificationInfoDO {
 
     @Schema(description = "内容")
     private String content;
-
-    @Schema(description = "创建者ID")
-    private Long creatorId;
-
-    @Schema(description = "创建时间")
-    private OffsetDateTime createAt;
-
-    public NotificationInfoDO() {
-        this.createAt = OffsetDateTime.now();
-    }
 
 }

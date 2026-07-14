@@ -44,9 +44,9 @@ public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END
-                FROM biz.role_info r 
-                LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id 
-                WHERE r.role_id IN
+                FROM biz.role_info r
+                LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id
+                WHERE r.deleted = false AND r.role_id IN
                 <foreach collection="collection" item="roleId" open="(" separator="," close=")">
                     #{roleId}
                 </foreach>

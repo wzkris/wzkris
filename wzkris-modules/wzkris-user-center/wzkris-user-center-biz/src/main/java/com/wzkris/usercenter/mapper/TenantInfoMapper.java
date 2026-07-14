@@ -22,7 +22,7 @@ import java.util.List;
 @Repository
 public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
 
-    @Select("SELECT oper_pwd FROM biz.tenant_info WHERE tenant_id = #{tenantId}")
+    @Select("SELECT oper_pwd FROM biz.tenant_info WHERE deleted = false AND tenant_id = #{tenantId}")
     String selectOperPwdById(Long tenantId);
 
     @Select("""
@@ -37,7 +37,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             FROM biz.tenant_info t
             LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
             LEFT JOIN biz.tenant_wallet_info w ON t.tenant_id = w.tenant_id
-            WHERE t.tenant_id = #{tenantId}
+            WHERE t.deleted = false AND t.tenant_id = #{tenantId}
             """)
     TenantMngResponse selectMngVOById(Long tenantId);
 
@@ -47,14 +47,14 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
      * @param memberId 用户ID
      * @return 套餐ID
      */
-    @Select("SELECT package_id FROM biz.tenant_info WHERE administrator = #{memberId}")
+    @Select("SELECT package_id FROM biz.tenant_info WHERE deleted = false AND administrator = #{memberId}")
     Long selectPackageIdByMemberId(Long memberId);
 
     @Select("""
             SELECT t.*, p.package_name
             FROM biz.tenant_info t
             LEFT JOIN biz.tenant_package_info p ON t.package_id = p.package_id
-            WHERE t.tenant_id = #{tenantId}
+            WHERE t.deleted = false AND t.tenant_id = #{tenantId}
             """)
     TenantInfoResponse selectVOById(Long tenantId);
 

@@ -64,7 +64,8 @@ CREATE TABLE biz.admin_info (
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -281,7 +282,8 @@ CREATE TABLE biz.customer_info (
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -403,7 +405,13 @@ COMMENT ON COLUMN biz.customer_info.hint IS '标签';
 CREATE TABLE biz.customer_social_info (
     customer_id bigint NOT NULL,
     identifier character varying(32) NOT NULL,
-    identifier_type character varying(10) NOT NULL
+    identifier_type character varying(10) NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -444,7 +452,13 @@ COMMENT ON COLUMN biz.customer_social_info.identifier_type IS '三方渠道';
 CREATE TABLE biz.customer_wallet_info (
     customer_id bigint NOT NULL,
     balance numeric(10,2) NOT NULL,
-    status character(1) NOT NULL
+    status character(1) NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -488,7 +502,12 @@ CREATE TABLE biz.customer_wallet_record (
     amount numeric(10,2) NOT NULL,
     record_type character(1) NOT NULL,
     create_at timestamp(0) with time zone NOT NULL,
-    remark character varying(100)
+    remark character varying(100),
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -566,7 +585,8 @@ CREATE TABLE biz.dept_info (
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -701,7 +721,8 @@ CREATE TABLE biz.member_info (
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -850,7 +871,13 @@ COMMENT ON COLUMN biz.member_info.hint IS '标签';
 CREATE TABLE biz.member_social_info (
     member_id bigint NOT NULL,
     identifier character varying(32) NOT NULL,
-    identifier_type character varying(10) NOT NULL
+    identifier_type character varying(10) NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -947,7 +974,8 @@ CREATE TABLE biz.menu_info (
     updater_id bigint,
     create_at timestamp(0) with time zone,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -1125,7 +1153,8 @@ CREATE TABLE biz.oauth2_client (
     creator_id bigint NOT NULL,
     update_at timestamp(0) with time zone,
     updater_id bigint,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -1236,7 +1265,8 @@ CREATE TABLE biz.post_info (
     creator_id bigint NOT NULL,
     update_at timestamp(0) with time zone,
     updater_id bigint,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -1360,7 +1390,8 @@ CREATE TABLE biz.role_info (
     creator_id bigint NOT NULL,
     update_at timestamp(0) with time zone,
     updater_id bigint,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -1561,7 +1592,8 @@ CREATE TABLE biz.tenant_info (
     create_at timestamp(0) with time zone NOT NULL,
     updater_id bigint,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -1737,7 +1769,8 @@ CREATE TABLE biz.tenant_package_info (
     update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL,
     member_num_limit smallint DEFAULT 5 NOT NULL,
-    post_num_limit smallint DEFAULT 5 NOT NULL
+    post_num_limit smallint DEFAULT 5 NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -1868,7 +1901,13 @@ COMMENT ON COLUMN biz.tenant_package_info.post_num_limit IS '租户职位数量�
 CREATE TABLE biz.tenant_wallet_info (
     tenant_id bigint NOT NULL,
     balance numeric(10,2) NOT NULL,
-    status character(1) NOT NULL
+    status character(1) NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -1914,7 +1953,12 @@ CREATE TABLE biz.tenant_wallet_record (
     biz_type character(1) NOT NULL,
     biz_no character varying(32) NOT NULL,
     create_at timestamp(0) with time zone NOT NULL,
-    remark character varying(100)
+    remark character varying(100),
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -2009,7 +2053,10 @@ CREATE TABLE biz.tenant_wallet_withdrawal_record (
     create_at timestamp(0) with time zone NOT NULL,
     complete_at timestamp(0) with time zone,
     remark character varying(100),
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    updater_id bigint,
+    update_at timestamp(0) with time zone,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -2141,8 +2188,8 @@ COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.hint IS '标签';
 -- Data for Name: admin_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.admin_info (admin_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
-100	\N	super	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 09:14:57+08	\N	1	0	2024-04-17 14:08:55+08	2026-04-14 09:14:58+08	
+COPY biz.admin_info (admin_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+100	\N	super	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 09:14:57+08	\N	1	0	2024-04-17 14:08:55+08	2026-04-14 09:14:58+08		f
 \.
 
 
@@ -2162,8 +2209,8 @@ COPY biz.admin_to_role (admin_id, role_id) FROM stdin;
 -- Data for Name: customer_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_info (customer_id, nickname, phone_number, status, gender, avatar, login_ip, login_date, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
-1988138628742279170	123	\N	0	0	http://tmp/f0iJwZfGvBx9bd2d939bf0fbdab283f01e98a4d9bc31.png	172.16.8.131	2025-11-20 10:16:17+08	0	0	2025-11-11 14:56:02+08	2025-11-20 10:16:17+08	
+COPY biz.customer_info (customer_id, nickname, phone_number, status, gender, avatar, login_ip, login_date, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1988138628742279170	123	\N	0	0	http://tmp/f0iJwZfGvBx9bd2d939bf0fbdab283f01e98a4d9bc31.png	172.16.8.131	2025-11-20 10:16:17+08	0	0	2025-11-11 14:56:02+08	2025-11-20 10:16:17+08		f
 \.
 
 
@@ -2173,8 +2220,8 @@ COPY biz.customer_info (customer_id, nickname, phone_number, status, gender, ava
 -- Data for Name: customer_social_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_social_info (customer_id, identifier, identifier_type) FROM stdin;
-1988138628742279170	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx
+COPY biz.customer_social_info (customer_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1988138628742279170	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx	0	\N	2025-11-11 14:56:02+08	\N		f
 \.
 
 
@@ -2184,8 +2231,8 @@ COPY biz.customer_social_info (customer_id, identifier, identifier_type) FROM st
 -- Data for Name: customer_wallet_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_wallet_info (customer_id, balance, status) FROM stdin;
-1988138628742279170	0.00	0
+COPY biz.customer_wallet_info (customer_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1988138628742279170	0.00	0	0	\N	2025-11-11 14:56:02+08	\N		f
 \.
 
 
@@ -2195,7 +2242,7 @@ COPY biz.customer_wallet_info (customer_id, balance, status) FROM stdin;
 -- Data for Name: customer_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_wallet_record (record_id, customer_id, amount, record_type, create_at, remark) FROM stdin;
+COPY biz.customer_wallet_record (record_id, customer_id, amount, record_type, create_at, remark, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -2205,7 +2252,7 @@ COPY biz.customer_wallet_record (record_id, customer_id, amount, record_type, cr
 -- Data for Name: dept_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort, contact, email, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
+COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort, contact, email, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -2215,8 +2262,8 @@ COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort,
 -- Data for Name: member_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.member_info (member_id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
-1910557183820165120	1910557183820165122	testadmin	\N	0	0	http://tmp/WK0iX8BuChGpbd2d939bf0fbdab283f01e98a4d9bc31.png	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 14:09:01+08	\N	1	0	2025-04-11 12:55:04+08	2026-04-14 14:09:01+08	
+COPY biz.member_info (member_id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1910557183820165120	1910557183820165122	testadmin	\N	0	0	http://tmp/WK0iX8BuChGpbd2d939bf0fbdab283f01e98a4d9bc31.png	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 14:09:01+08	\N	1	0	2025-04-11 12:55:04+08	2026-04-14 14:09:01+08		f
 \.
 
 
@@ -2226,8 +2273,8 @@ COPY biz.member_info (member_id, tenant_id, username, phone_number, status, gend
 -- Data for Name: member_social_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.member_social_info (member_id, identifier, identifier_type) FROM stdin;
-1910557183820165120	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx
+COPY biz.member_social_info (member_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1910557183820165120	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx	1	\N	2025-04-11 12:55:04+08	\N		f
 \.
 
 
@@ -2247,91 +2294,91 @@ COPY biz.member_to_post (member_id, post_id) FROM stdin;
 -- Data for Name: menu_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
-1980906033277222913	日志审计	0	0	audit-log	\N	\N	D	0	\N	carbon:catalog-publish	f	t	tenant	1	1	2025-10-22 15:56:16+08	2025-10-22 15:58:02+08	
-1906263415450001129	重置租户操作密码	1906263415450000601	11	#	\N	\N	B	0	user-mod:tenant-mng:reset-operpwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:24+08	
-1906263415450000104	日志审计	0	1	audit-log	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:59:16+08	
-1906263415450000001	消息管理	0	80	system-mng	\N	\N	D	0	\N	carbon:z-systems	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-30 11:35:27+08	
-1906263415450000302	Sentinel控制台	1906263415450000101	3	http://localhost:8718	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:06+08	
-1906263415450000301	系统接口	1906263415450000101	2	http://localhost:8080/doc.html	\N	\N	I	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:15+08	
-1906263415450000003	平台管理	0	60	platform-mng	\N	\N	D	0	\N	carbon:platforms	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-30 11:35:32+08	
-1983742775738974209	pv/uv统计	1983739365543329794	0	pageview	statistics/pageview/index	\N	M	0	\N	carbon:activity	f	t	system	1	1	2025-10-30 11:48:29+08	2025-10-31 09:23:35+08	
-1963871785836048386	平台配置	0	0	develop	\N	\N	D	0	\N	carbon:tool-kit	f	t	system	1	1	2025-09-05 15:48:15+08	2025-10-11 09:28:34+08	
-1906263415450001052	新增参数	1906263415450000103	2	#	\N	\N	B	0	system-mod:config-mng:add	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-10 09:11:56+08	
-1906263415450002207	权限授予	1906263415450000206	6	#	\N	\N	B	0	user-mod:role-mng:grant-user	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 15:40:20+08	
-1976223833424326657	修改角色	1906263415450000206	4	#	\N	\N	B	0	user-mod:role-mng:edit	#	f	t	system	1	1	2025-10-09 17:50:53+08	2025-10-09 17:50:53+08	
-1976565556872667137	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	tenant	1	1	2025-10-10 16:28:46+08	2025-10-22 15:56:23+08	
-1976455457936171010	修改参数	1906263415450000103	4	#	\N	\N	B	0	system-mod:config-mng:edit	#	f	t	system	1	1	2025-10-10 09:11:17+08	2025-10-10 09:11:17+08	
-1976455537858633730	删除参数	1906263415450000103	5	#	\N	\N	B	0	system-mod:config-mng:remove	#	f	t	system	1	1	2025-10-10 09:11:36+08	2025-10-10 09:11:36+08	
-1976455824778387458	添加字典	1906263415450000102	0	#	\N	\N	B	0	system-mod:dictionary-mng:add	#	f	t	system	1	1	2025-10-10 09:12:44+08	2025-10-10 09:12:44+08	
-1976455887881691138	修改字典	1906263415450000102	3	#	\N	\N	B	0	system-mod:dictionary-mng:edit	#	f	t	system	1	1	2025-10-10 09:12:59+08	2025-10-10 09:12:59+08	
-1976455969624481794	删除字典	1906263415450000102	4	#	\N	\N	B	0	system-mod:dictionary-mng:remove	#	f	t	system	1	1	2025-10-10 09:13:19+08	2025-10-10 09:13:19+08	
-1976456608446341121	添加草稿	1906263415450000100	0	#	\N	\N	B	0	system-mod:announcement-mng:add	#	f	t	system	1	1	2025-10-10 09:15:51+08	2025-10-10 09:15:51+08	
-1976456667900600322	修改草稿	1906263415450000100	0	#	\N	\N	B	0	system-mod:announcement-mng:edit	#	f	t	system	1	1	2025-10-10 09:16:05+08	2025-10-10 09:16:05+08	
-1976223921466961921	删除角色	1906263415450000206	0	#	\N	\N	B	0	user-mod:role-mng:remove	#	f	t	system	1	1	2025-10-09 17:51:14+08	2025-10-09 17:51:14+08	
-1976224202049122306	新增部门	1906263415450000205	0	#	\N	\N	B	0	user-mod:dept-mng:add	#	f	t	system	1	1	2025-10-09 17:52:21+08	2025-10-09 17:52:21+08	
-1906263415450002039	修改部门	1906263415450000205	3	#	\N	\N	B	0	user-mod:dept-mng:edit	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 17:52:34+08	
-1976224332491976706	删除部门	1906263415450000205	5	#	\N	\N	B	0	user-mod:dept-mng:remove	#	f	t	system	1	1	2025-10-09 17:52:52+08	2025-10-09 17:52:52+08	
-1976224466323828738	部门详细	1906263415450000205	7	#	\N	\N	B	0	user-mod:dept-mng:query	#	f	t	system	1	1	2025-10-09 17:53:24+08	2025-10-09 17:53:24+08	
-1976224939848167426	修改终端	1906263415450000700	7	#	\N	\N	B	0	user-mod:oauth2client-mng:edit	#	f	t	system	1	1	2025-10-09 17:55:17+08	2025-10-09 17:55:17+08	
-1976225090838917122	添加终端	1906263415450000700	0	#	\N	\N	B	0	user-mod:oauth2client-mng:add	#	f	t	system	1	1	2025-10-09 17:55:53+08	2025-10-09 17:55:53+08	
-1976225224402333698	删除终端	1906263415450000700	0	#	\N	\N	B	0	user-mod:oauth2client-mng:remove	#	f	t	system	1	1	2025-10-09 17:56:25+08	2025-10-09 17:56:25+08	
-1976225825756475393	新增菜单	1906263415450000207	0	#	\N	\N	B	0	user-mod:menu-mng:add	#	f	t	system	1	1	2025-10-09 17:58:48+08	2025-10-09 17:58:48+08	
-1910569625749024770	授权角色	1906263415450000203	0	#	\N	\N	B	0	user-mod:admin-mng:grant-role	#	f	t	system	1	100	2025-04-11 13:44:30+08	2025-11-07 13:58:46+08	
-1980906374936838146	登录日志	1980906033277222913	10	login	loginlog-tenant/mng/index	\N	M	0	system-mod:tenant-loginlog-mng:page	carbon:login	f	t	tenant	1	100	2025-10-22 15:57:38+08	2025-11-10 11:08:27+08	
-1906263415450000700	终端管理	1906263415450000003	3	oauth2client	oauth2client/mng/index	\N	M	0	user-mod:oauth2client-mng:page	carbon:application	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:48+08	
-1906263415450000103	配置管理	1963871785836048386	7	config	config/mng/index	\N	M	0	system-mod:config-mng:page	carbon:parameter	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:25+08	
-1906263415450000151	登录日志	1906263415450000104	2	login	loginlog-admin/mng/index	\N	M	0	system-mod:admin-loginlog-mng:page	carbon:login	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 15:00:45+08	
-1976585906620653569	职位管理	1976565556872667137	0	post	post/mng/index	\N	M	0	user-mod:post-mng:page	carbon:load-balancer-classic	f	t	tenant	1	1	2025-10-10 17:49:38+08	2025-10-15 14:55:02+08	
-1976570103963770881	成员管理	1976565556872667137	8	member	member/mng/index	\N	M	0	user-mod:member-mng:page	carbon:user-identification	f	t	tenant	1	100	2025-10-10 16:46:50+08	2025-11-10 11:11:21+08	
-1906263415450000100	公告管理	1906263415450000001	15	announcement	announcement/mng/index	\N	M	0	system-mod:announcement-mng:page	carbon:message-queue	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:06:06+08	
-1980906706949554177	操作日志	1980906033277222913	0	operate	operatelog-tenant/mng/index	\N	M	0	system-mod:tenant-operatelog-mng:page	carbon:touch-interaction	f	t	tenant	1	100	2025-10-22 15:58:57+08	2025-11-10 11:08:35+08	
-1976456851288154113	删除公告	1906263415450000100	0	#	\N	\N	B	0	system-mod:announcement-mng:remove	#	f	t	system	1	1	2025-10-10 09:16:49+08	2025-10-10 09:16:49+08	
-1906263415450001210	终端详情	1906263415450000700	1	#	\N	\N	B	0	user-mod:oauth2client-mng:query	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 12:42:07+08	
-1976220001646616577	新增租户套餐	1906263415450000602	1	#	\N	\N	B	0	user-mod:tenantpackage-mng:add	#	f	t	system	1	1	2025-10-09 17:35:39+08	2025-10-09 17:35:39+08	
-1976220107171110913	修改租户套餐	1906263415450000602	3	#	\N	\N	B	0	user-mod:tenantpackage-mng:edit	#	f	t	system	1	1	2025-10-09 17:36:05+08	2025-10-09 17:36:05+08	
-1976220234040418306	删除租户套餐	1906263415450000602	0	#	\N	\N	B	0	user-mod:tenantpackage-mng:remove	#	f	t	system	1	1	2025-10-09 17:36:35+08	2025-10-09 17:36:35+08	
-1915322746249367554	修改信息	1906272182215585793	0	#	\N	\N	B	0	user-mod:tenant-info:edit	#	f	t	tenant	1	1	2025-04-24 16:31:42+08	2025-10-09 17:38:05+08	
-1976225899114852354	修改菜单	1906263415450000207	0	#	\N	\N	B	0	user-mod:menu-mng:edit	#	f	t	system	1	1	2025-10-09 17:59:06+08	2025-10-09 17:59:06+08	
-1976226216250372098	新增租户	1906263415450000601	5	#	\N	\N	B	0	user-mod:tenant-mng:add	#	f	t	system	1	1	2025-10-09 18:00:21+08	2025-10-09 18:00:21+08	
-1906263415450001215	修改密钥	1906263415450000700	5	#	\N	\N	B	0	user-mod:oauth2client-mng:edit-secret	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:16:08+08	
-1983741300921024514	api分析	1983739365543329794	10	apicall	statistics/apicall/index	\N	M	0	\N	carbon:api-1	f	t	system	1	1	2025-10-30 11:42:37+08	2025-10-31 09:22:48+08	
-1983739365543329794	统计分析	0	100	statistics	\N	\N	D	0	gateway-mod:statistics:pvuv	carbon:chart-dual-y-axis	f	t	system	1	1	2025-10-30 11:34:55+08	2025-10-31 09:22:59+08	
-1906263415450000304	服务监控	1906263415450000101	5	http://localhost:9100/	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:53:38+08	
-1906263415450000101	控制台入口	1963871785836048386	0	controller	\N	\N	D	0	\N	carbon:dashboard	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 15:53:53+08	
-1906263415450000300	定时任务	1906263415450000101	20	http://localhost:9200/xxl-job-admin	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 16:16:22+08	
-1906263415450000303	Nacos控制台	1906263415450000101	4	http://localhost:8848/nacos	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 16:16:29+08	
-1906263415450000207	菜单管理	1906263415450000003	50	menu	menu/mng/index	\N	M	0	user-mod:menu-mng:list	carbon:menu	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:36:05+08	
-1906263415450000002	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:09:41+08	
-1976226385717030913	删除租户	1906263415450000601	8	#	\N	\N	B	0	user-mod:tenant-mng:remove	#	f	t	system	1	1	2025-10-09 18:01:02+08	2025-10-09 18:01:02+08	
-1976586082013863937	新增职位	1976585906620653569	0	#	\N	\N	B	0	user-mod:post-mng:add	#	f	t	tenant	1	1	2025-10-10 17:50:20+08	2025-10-10 17:50:20+08	
-1906263415450001126	商户提现	1906263415450001127	1	#	\N	\N	B	0	user-mod:tenant-wallet-info:withdrawal	#	f	t	tenant	1	1	2024-05-26 12:30:16+08	2025-10-09 17:38:23+08	
-1976223757310291969	新增角色	1906263415450000206	0	#	\N	\N	B	0	user-mod:role-mng:add	#	f	t	system	1	1	2025-10-09 17:50:35+08	2025-10-09 17:50:35+08	
-1906263415450002016	删除菜单	1906263415450000207	4	#	\N	\N	B	0	user-mod:menu-mng:remove	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 17:59:20+08	
-1906263415450001133	修改租户	1906263415450000601	2	#	\N	\N	B	0	user-mod:tenant-mng:edit	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 18:00:31+08	
-1976586292211408897	删除职位	1976585906620653569	5	#	\N	\N	B	0	user-mod:post-mng:remove	#	f	t	tenant	1	1	2025-10-10 17:51:10+08	2025-10-10 17:51:10+08	
-1976586196090544129	修改职位	1976585906620653569	3	#	\N	\N	B	0	user-mod:post-mng:edit	#	f	t	tenant	1	1	2025-10-10 17:50:47+08	2025-10-10 17:51:16+08	
-1906272182215585793	租户信息	0	100	tenant-info	tenant/info/index	\N	M	0	user-mod:tenant-info	carbon:information-filled	f	t	tenant	1	1	2025-03-30 17:08:00+08	2025-10-22 15:11:17+08	
-1906263415450000205	部门管理	1906263415450000002	70	dept	dept/mng/index	\N	M	0	user-mod:dept-mng:list	carbon:departure	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:19+08	
-1906263415450002062	重置密码	1906263415450000203	7	#	\N	\N	B	0	user-mod:admin-mng:resetPwd	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 13:57:48+08	
-1976586772002037762	删除	1976570103963770881	7	#	\N	\N	B	0	user-mod:member-mng:remove	#	f	t	tenant	1	100	2025-10-10 17:53:04+08	2025-11-10 11:06:54+08	
-1976586698882736130	授权职位	1976570103963770881	5	#	\N	\N	B	0	user-mod:member-mng:grant-post	#	f	t	tenant	1	100	2025-10-10 17:52:47+08	2025-11-10 11:07:04+08	
-1976586612681400321	修改	1976570103963770881	3	#	\N	\N	B	0	user-mod:member-mng:edit	#	f	t	tenant	1	100	2025-10-10 17:52:26+08	2025-11-10 11:07:13+08	
-1976586554187636737	新增	1976570103963770881	0	#	\N	\N	B	0	user-mod:member-mng:add	#	f	t	tenant	1	100	2025-10-10 17:52:12+08	2025-11-10 11:07:25+08	
-1906263415450000102	字典管理	1963871785836048386	6	dictionary	dictionary/mng/index	\N	M	0	system-mod:dictionary-mng:page	carbon:text-vertical-alignment	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:30+08	
-1906263415450000601	租户管理	1906263415450000003	100	tenant	tenant/mng/index	\N	M	0	user-mod:tenant-mng:page	carbon:id-management	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:31+08	
-1906263415450002064	修改账号	1906263415450000203	3	#	\N	\N	B	0	user-mod:admin-mng:edit	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:09+08	
-1906263415450002077	导出	1906263415450000203	1	#	\N	\N	B	0	user-mod:admin-mng:export	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:17+08	
-1906263415450002071	查询账号	1906263415450000203	0	#	\N	\N	B	0	user-mod:admin-mng:query	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:33+08	
-1906263415450002072	新增账号	1906263415450000203	1	#	\N	\N	B	0	user-mod:admin-mng:add	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:04:08+08	
-1906263415450000602	租户套餐管理	1906263415450000003	50	tenant-package	tenant-package/mng/index	\N	M	0	user-mod:tenantpackage-mng:page	carbon:package	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:37+08	
-1906263415450000206	角色管理	1906263415450000002	99	role	role/mng/index	\N	M	0	user-mod:role-mng:page	carbon:user-role	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:10+08	
-1906263415450000203	账号管理	1906263415450000002	100	admin	admin/mng/index	\N	M	0	user-mod:admin-mng:page	carbon:user-admin	t	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:01:25+08	
-1906263415450000201	顾客管理	1906263415450000003	1	customer	customer/mng/index	\N	M	0	user-mod:customer-mng:page	carbon:customer	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:53+08	
-1906263415450000150	操作日志	1906263415450000104	1	operate	operatelog-admin/mng/index	\N	M	0	system-mod:admin-operatelog-mng:page	carbon:touch-interaction	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 15:01:01+08	
-1906263415450001125	钱包记录	1906263415450000601	3	#	\N	\N	B	0	user-mod:tenant-wallet-mng:record-page	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:56+08	
-1906263415450001127	商户钱包	0	85	/tenant-wallet	tenant/wallet/index		M	0	user-mod:tenant-wallet-info	carbon:wallet	f	t	tenant	1	100	2024-05-26 12:30:16+08	2026-04-14 10:20:48+08	
-2043932492313976834	套餐信息	1906272182215585793	0	#	\N	\N	M	0	user-mod:tenant-package-info	carbon:package-node	f	t	tenant	100	100	2026-04-14 14:00:55+08	2026-04-14 14:00:55+08	
+COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1980906033277222913	日志审计	0	0	audit-log	\N	\N	D	0	\N	carbon:catalog-publish	f	t	tenant	1	1	2025-10-22 15:56:16+08	2025-10-22 15:58:02+08		f
+1906263415450001129	重置租户操作密码	1906263415450000601	11	#	\N	\N	B	0	user-mod:tenant-mng:reset-operpwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:24+08		f
+1906263415450000104	日志审计	0	1	audit-log	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:59:16+08		f
+1906263415450000001	消息管理	0	80	system-mng	\N	\N	D	0	\N	carbon:z-systems	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-30 11:35:27+08		f
+1906263415450000302	Sentinel控制台	1906263415450000101	3	http://localhost:8718	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:06+08		f
+1906263415450000301	系统接口	1906263415450000101	2	http://localhost:8080/doc.html	\N	\N	I	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:54:15+08		f
+1906263415450000003	平台管理	0	60	platform-mng	\N	\N	D	0	\N	carbon:platforms	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-30 11:35:32+08		f
+1983742775738974209	pv/uv统计	1983739365543329794	0	pageview	statistics/pageview/index	\N	M	0	\N	carbon:activity	f	t	system	1	1	2025-10-30 11:48:29+08	2025-10-31 09:23:35+08		f
+1963871785836048386	平台配置	0	0	develop	\N	\N	D	0	\N	carbon:tool-kit	f	t	system	1	1	2025-09-05 15:48:15+08	2025-10-11 09:28:34+08		f
+1906263415450001052	新增参数	1906263415450000103	2	#	\N	\N	B	0	system-mod:config-mng:add	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-10 09:11:56+08		f
+1906263415450002207	权限授予	1906263415450000206	6	#	\N	\N	B	0	user-mod:role-mng:grant-user	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 15:40:20+08		f
+1976223833424326657	修改角色	1906263415450000206	4	#	\N	\N	B	0	user-mod:role-mng:edit	#	f	t	system	1	1	2025-10-09 17:50:53+08	2025-10-09 17:50:53+08		f
+1976565556872667137	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	tenant	1	1	2025-10-10 16:28:46+08	2025-10-22 15:56:23+08		f
+1976455457936171010	修改参数	1906263415450000103	4	#	\N	\N	B	0	system-mod:config-mng:edit	#	f	t	system	1	1	2025-10-10 09:11:17+08	2025-10-10 09:11:17+08		f
+1976455537858633730	删除参数	1906263415450000103	5	#	\N	\N	B	0	system-mod:config-mng:remove	#	f	t	system	1	1	2025-10-10 09:11:36+08	2025-10-10 09:11:36+08		f
+1976455824778387458	添加字典	1906263415450000102	0	#	\N	\N	B	0	system-mod:dictionary-mng:add	#	f	t	system	1	1	2025-10-10 09:12:44+08	2025-10-10 09:12:44+08		f
+1976455887881691138	修改字典	1906263415450000102	3	#	\N	\N	B	0	system-mod:dictionary-mng:edit	#	f	t	system	1	1	2025-10-10 09:12:59+08	2025-10-10 09:12:59+08		f
+1976455969624481794	删除字典	1906263415450000102	4	#	\N	\N	B	0	system-mod:dictionary-mng:remove	#	f	t	system	1	1	2025-10-10 09:13:19+08	2025-10-10 09:13:19+08		f
+1976456608446341121	添加草稿	1906263415450000100	0	#	\N	\N	B	0	system-mod:announcement-mng:add	#	f	t	system	1	1	2025-10-10 09:15:51+08	2025-10-10 09:15:51+08		f
+1976456667900600322	修改草稿	1906263415450000100	0	#	\N	\N	B	0	system-mod:announcement-mng:edit	#	f	t	system	1	1	2025-10-10 09:16:05+08	2025-10-10 09:16:05+08		f
+1976223921466961921	删除角色	1906263415450000206	0	#	\N	\N	B	0	user-mod:role-mng:remove	#	f	t	system	1	1	2025-10-09 17:51:14+08	2025-10-09 17:51:14+08		f
+1976224202049122306	新增部门	1906263415450000205	0	#	\N	\N	B	0	user-mod:dept-mng:add	#	f	t	system	1	1	2025-10-09 17:52:21+08	2025-10-09 17:52:21+08		f
+1906263415450002039	修改部门	1906263415450000205	3	#	\N	\N	B	0	user-mod:dept-mng:edit	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 17:52:34+08		f
+1976224332491976706	删除部门	1906263415450000205	5	#	\N	\N	B	0	user-mod:dept-mng:remove	#	f	t	system	1	1	2025-10-09 17:52:52+08	2025-10-09 17:52:52+08		f
+1976224466323828738	部门详细	1906263415450000205	7	#	\N	\N	B	0	user-mod:dept-mng:query	#	f	t	system	1	1	2025-10-09 17:53:24+08	2025-10-09 17:53:24+08		f
+1976224939848167426	修改终端	1906263415450000700	7	#	\N	\N	B	0	user-mod:oauth2client-mng:edit	#	f	t	system	1	1	2025-10-09 17:55:17+08	2025-10-09 17:55:17+08		f
+1976225090838917122	添加终端	1906263415450000700	0	#	\N	\N	B	0	user-mod:oauth2client-mng:add	#	f	t	system	1	1	2025-10-09 17:55:53+08	2025-10-09 17:55:53+08		f
+1976225224402333698	删除终端	1906263415450000700	0	#	\N	\N	B	0	user-mod:oauth2client-mng:remove	#	f	t	system	1	1	2025-10-09 17:56:25+08	2025-10-09 17:56:25+08		f
+1976225825756475393	新增菜单	1906263415450000207	0	#	\N	\N	B	0	user-mod:menu-mng:add	#	f	t	system	1	1	2025-10-09 17:58:48+08	2025-10-09 17:58:48+08		f
+1910569625749024770	授权角色	1906263415450000203	0	#	\N	\N	B	0	user-mod:admin-mng:grant-role	#	f	t	system	1	100	2025-04-11 13:44:30+08	2025-11-07 13:58:46+08		f
+1980906374936838146	登录日志	1980906033277222913	10	login	loginlog-tenant/mng/index	\N	M	0	system-mod:tenant-loginlog-mng:page	carbon:login	f	t	tenant	1	100	2025-10-22 15:57:38+08	2025-11-10 11:08:27+08		f
+1906263415450000700	终端管理	1906263415450000003	3	oauth2client	oauth2client/mng/index	\N	M	0	user-mod:oauth2client-mng:page	carbon:application	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:48+08		f
+1906263415450000103	配置管理	1963871785836048386	7	config	config/mng/index	\N	M	0	system-mod:config-mng:page	carbon:parameter	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:25+08		f
+1906263415450000151	登录日志	1906263415450000104	2	login	loginlog-admin/mng/index	\N	M	0	system-mod:admin-loginlog-mng:page	carbon:login	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 15:00:45+08		f
+1976585906620653569	职位管理	1976565556872667137	0	post	post/mng/index	\N	M	0	user-mod:post-mng:page	carbon:load-balancer-classic	f	t	tenant	1	1	2025-10-10 17:49:38+08	2025-10-15 14:55:02+08		f
+1976570103963770881	成员管理	1976565556872667137	8	member	member/mng/index	\N	M	0	user-mod:member-mng:page	carbon:user-identification	f	t	tenant	1	100	2025-10-10 16:46:50+08	2025-11-10 11:11:21+08		f
+1906263415450000100	公告管理	1906263415450000001	15	announcement	announcement/mng/index	\N	M	0	system-mod:announcement-mng:page	carbon:message-queue	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:06:06+08		f
+1980906706949554177	操作日志	1980906033277222913	0	operate	operatelog-tenant/mng/index	\N	M	0	system-mod:tenant-operatelog-mng:page	carbon:touch-interaction	f	t	tenant	1	100	2025-10-22 15:58:57+08	2025-11-10 11:08:35+08		f
+1976456851288154113	删除公告	1906263415450000100	0	#	\N	\N	B	0	system-mod:announcement-mng:remove	#	f	t	system	1	1	2025-10-10 09:16:49+08	2025-10-10 09:16:49+08		f
+1906263415450001210	终端详情	1906263415450000700	1	#	\N	\N	B	0	user-mod:oauth2client-mng:query	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 12:42:07+08		f
+1976220001646616577	新增租户套餐	1906263415450000602	1	#	\N	\N	B	0	user-mod:tenantpackage-mng:add	#	f	t	system	1	1	2025-10-09 17:35:39+08	2025-10-09 17:35:39+08		f
+1976220107171110913	修改租户套餐	1906263415450000602	3	#	\N	\N	B	0	user-mod:tenantpackage-mng:edit	#	f	t	system	1	1	2025-10-09 17:36:05+08	2025-10-09 17:36:05+08		f
+1976220234040418306	删除租户套餐	1906263415450000602	0	#	\N	\N	B	0	user-mod:tenantpackage-mng:remove	#	f	t	system	1	1	2025-10-09 17:36:35+08	2025-10-09 17:36:35+08		f
+1915322746249367554	修改信息	1906272182215585793	0	#	\N	\N	B	0	user-mod:tenant-info:edit	#	f	t	tenant	1	1	2025-04-24 16:31:42+08	2025-10-09 17:38:05+08		f
+1976225899114852354	修改菜单	1906263415450000207	0	#	\N	\N	B	0	user-mod:menu-mng:edit	#	f	t	system	1	1	2025-10-09 17:59:06+08	2025-10-09 17:59:06+08		f
+1976226216250372098	新增租户	1906263415450000601	5	#	\N	\N	B	0	user-mod:tenant-mng:add	#	f	t	system	1	1	2025-10-09 18:00:21+08	2025-10-09 18:00:21+08		f
+1906263415450001215	修改密钥	1906263415450000700	5	#	\N	\N	B	0	user-mod:oauth2client-mng:edit-secret	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:16:08+08		f
+1983741300921024514	api分析	1983739365543329794	10	apicall	statistics/apicall/index	\N	M	0	\N	carbon:api-1	f	t	system	1	1	2025-10-30 11:42:37+08	2025-10-31 09:22:48+08		f
+1983739365543329794	统计分析	0	100	statistics	\N	\N	D	0	gateway-mod:statistics:pvuv	carbon:chart-dual-y-axis	f	t	system	1	1	2025-10-30 11:34:55+08	2025-10-31 09:22:59+08		f
+1906263415450000304	服务监控	1906263415450000101	5	http://localhost:9100/	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:53:38+08		f
+1906263415450000101	控制台入口	1963871785836048386	0	controller	\N	\N	D	0	\N	carbon:dashboard	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 15:53:53+08		f
+1906263415450000300	定时任务	1906263415450000101	20	http://localhost:9200/xxl-job-admin	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 16:16:22+08		f
+1906263415450000303	Nacos控制台	1906263415450000101	4	http://localhost:8848/nacos	\N	\N	O	0		carbon:link	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-05 16:16:29+08		f
+1906263415450000207	菜单管理	1906263415450000003	50	menu	menu/mng/index	\N	M	0	user-mod:menu-mng:list	carbon:menu	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 13:36:05+08		f
+1906263415450000002	组织管理	0	50	organization-mng	\N	\N	D	0	\N	carbon:user	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:09:41+08		f
+1976226385717030913	删除租户	1906263415450000601	8	#	\N	\N	B	0	user-mod:tenant-mng:remove	#	f	t	system	1	1	2025-10-09 18:01:02+08	2025-10-09 18:01:02+08		f
+1976586082013863937	新增职位	1976585906620653569	0	#	\N	\N	B	0	user-mod:post-mng:add	#	f	t	tenant	1	1	2025-10-10 17:50:20+08	2025-10-10 17:50:20+08		f
+1906263415450001126	商户提现	1906263415450001127	1	#	\N	\N	B	0	user-mod:tenant-wallet-info:withdrawal	#	f	t	tenant	1	1	2024-05-26 12:30:16+08	2025-10-09 17:38:23+08		f
+1976223757310291969	新增角色	1906263415450000206	0	#	\N	\N	B	0	user-mod:role-mng:add	#	f	t	system	1	1	2025-10-09 17:50:35+08	2025-10-09 17:50:35+08		f
+1906263415450002016	删除菜单	1906263415450000207	4	#	\N	\N	B	0	user-mod:menu-mng:remove	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 17:59:20+08		f
+1906263415450001133	修改租户	1906263415450000601	2	#	\N	\N	B	0	user-mod:tenant-mng:edit	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-09 18:00:31+08		f
+1976586292211408897	删除职位	1976585906620653569	5	#	\N	\N	B	0	user-mod:post-mng:remove	#	f	t	tenant	1	1	2025-10-10 17:51:10+08	2025-10-10 17:51:10+08		f
+1976586196090544129	修改职位	1976585906620653569	3	#	\N	\N	B	0	user-mod:post-mng:edit	#	f	t	tenant	1	1	2025-10-10 17:50:47+08	2025-10-10 17:51:16+08		f
+1906272182215585793	租户信息	0	100	tenant-info	tenant/info/index	\N	M	0	user-mod:tenant-info	carbon:information-filled	f	t	tenant	1	1	2025-03-30 17:08:00+08	2025-10-22 15:11:17+08		f
+1906263415450000205	部门管理	1906263415450000002	70	dept	dept/mng/index	\N	M	0	user-mod:dept-mng:list	carbon:departure	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:19+08		f
+1906263415450002062	重置密码	1906263415450000203	7	#	\N	\N	B	0	user-mod:admin-mng:resetPwd	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 13:57:48+08		f
+1976586772002037762	删除	1976570103963770881	7	#	\N	\N	B	0	user-mod:member-mng:remove	#	f	t	tenant	1	100	2025-10-10 17:53:04+08	2025-11-10 11:06:54+08		f
+1976586698882736130	授权职位	1976570103963770881	5	#	\N	\N	B	0	user-mod:member-mng:grant-post	#	f	t	tenant	1	100	2025-10-10 17:52:47+08	2025-11-10 11:07:04+08		f
+1976586612681400321	修改	1976570103963770881	3	#	\N	\N	B	0	user-mod:member-mng:edit	#	f	t	tenant	1	100	2025-10-10 17:52:26+08	2025-11-10 11:07:13+08		f
+1976586554187636737	新增	1976570103963770881	0	#	\N	\N	B	0	user-mod:member-mng:add	#	f	t	tenant	1	100	2025-10-10 17:52:12+08	2025-11-10 11:07:25+08		f
+1906263415450000102	字典管理	1963871785836048386	6	dictionary	dictionary/mng/index	\N	M	0	system-mod:dictionary-mng:page	carbon:text-vertical-alignment	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-14 10:09:30+08		f
+1906263415450000601	租户管理	1906263415450000003	100	tenant	tenant/mng/index	\N	M	0	user-mod:tenant-mng:page	carbon:id-management	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:31+08		f
+1906263415450002064	修改账号	1906263415450000203	3	#	\N	\N	B	0	user-mod:admin-mng:edit	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:09+08		f
+1906263415450002077	导出	1906263415450000203	1	#	\N	\N	B	0	user-mod:admin-mng:export	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:17+08		f
+1906263415450002071	查询账号	1906263415450000203	0	#	\N	\N	B	0	user-mod:admin-mng:query	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:03:33+08		f
+1906263415450002072	新增账号	1906263415450000203	1	#	\N	\N	B	0	user-mod:admin-mng:add	#	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:04:08+08		f
+1906263415450000602	租户套餐管理	1906263415450000003	50	tenant-package	tenant-package/mng/index	\N	M	0	user-mod:tenantpackage-mng:page	carbon:package	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:37+08		f
+1906263415450000206	角色管理	1906263415450000002	99	role	role/mng/index	\N	M	0	user-mod:role-mng:page	carbon:user-role	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-11 11:27:10+08		f
+1906263415450000203	账号管理	1906263415450000002	100	admin	admin/mng/index	\N	M	0	user-mod:admin-mng:page	carbon:user-admin	t	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 14:01:25+08		f
+1906263415450000201	顾客管理	1906263415450000003	1	customer	customer/mng/index	\N	M	0	user-mod:customer-mng:page	carbon:customer	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 17:29:53+08		f
+1906263415450000150	操作日志	1906263415450000104	1	operate	operatelog-admin/mng/index	\N	M	0	system-mod:admin-operatelog-mng:page	carbon:touch-interaction	f	t	system	1	100	2024-05-26 12:30:16+08	2025-11-07 15:01:01+08		f
+1906263415450001125	钱包记录	1906263415450000601	3	#	\N	\N	B	0	user-mod:tenant-wallet-mng:record-page	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:56+08		f
+1906263415450001127	商户钱包	0	85	/tenant-wallet	tenant/wallet/index		M	0	user-mod:tenant-wallet-info	carbon:wallet	f	t	tenant	1	100	2024-05-26 12:30:16+08	2026-04-14 10:20:48+08		f
+2043932492313976834	套餐信息	1906272182215585793	0	#	\N	\N	M	0	user-mod:tenant-package-info	carbon:package-node	f	t	tenant	100	100	2026-04-14 14:00:55+08	2026-04-14 14:00:55+08		f
 \.
 
 
@@ -2341,9 +2388,9 @@ COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, q
 -- Data for Name: oauth2_client; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.oauth2_client (id, client_name, client_id, client_secret, scopes, authorization_grant_types, redirect_uris, status, auto_approve, create_at, creator_id, update_at, updater_id, hint) FROM stdin;
-2	oauth2客户端demo	oauth_client_demo	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{read}	{authorization_code,client_credentials}	{http://127.0.0.1:3342/login/oauth2/code/auth-center}	0	f	2025-05-21 14:13:49+08	1	2025-09-01 15:53:53+08	1	
-1	系统	server	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{openid,read}	{authorization_code,urn:ietf:params:oauth:grant-type:device_code,refresh_token}	{http://localhost:9000/oauth2/authorization_code_callback}	0	f	2024-04-17 14:08:54+08	1	2025-09-03 11:28:18+08	1	
+COPY biz.oauth2_client (id, client_name, client_id, client_secret, scopes, authorization_grant_types, redirect_uris, status, auto_approve, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
+2	oauth2客户端demo	oauth_client_demo	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{read}	{authorization_code,client_credentials}	{http://127.0.0.1:3342/login/oauth2/code/auth-center}	0	f	2025-05-21 14:13:49+08	1	2025-09-01 15:53:53+08	1		f
+1	系统	server	{bcrypt}$2a$10$hK9Sv9kAvXE00fWtkWxzI.Ns4.5SuQteTJAnsFWXChlOWIUZSFYL2	{openid,read}	{authorization_code,urn:ietf:params:oauth:grant-type:device_code,refresh_token}	{http://localhost:9000/oauth2/authorization_code_callback}	0	f	2024-04-17 14:08:54+08	1	2025-09-03 11:28:18+08	1		f
 \.
 
 
@@ -2353,9 +2400,9 @@ COPY biz.oauth2_client (id, client_name, client_id, client_secret, scopes, autho
 -- Data for Name: post_info; Type: TABLE DATA; Schema: biz; Owner: root
 --
 
-COPY biz.post_info (post_id, tenant_id, post_name, status, post_sort, create_at, creator_id, update_at, updater_id, hint) FROM stdin;
-1978377271113371649	1910557183820165122	CEO	0	0	2025-10-15 16:27:53+08	1910557183820165120	2025-10-15 16:27:53+08	1910557183820165120	
-1978377302486765569	1910557183820165122	CFO	0	0	2025-10-15 16:28:00+08	1910557183820165120	2025-10-15 16:44:51+08	1910557183820165120	
+COPY biz.post_info (post_id, tenant_id, post_name, status, post_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
+1978377271113371649	1910557183820165122	CEO	0	0	2025-10-15 16:27:53+08	1910557183820165120	2025-10-15 16:27:53+08	1910557183820165120		f
+1978377302486765569	1910557183820165122	CFO	0	0	2025-10-15 16:28:00+08	1910557183820165120	2025-10-15 16:44:51+08	1910557183820165120		f
 \.
 
 
@@ -2385,7 +2432,7 @@ COPY biz.post_to_menu (post_id, menu_id) FROM stdin;
 -- Data for Name: role_info; Type: TABLE DATA; Schema: biz; Owner: root
 --
 
-COPY biz.role_info (role_id, data_scope, role_name, status, role_sort, create_at, creator_id, update_at, updater_id, hint) FROM stdin;
+COPY biz.role_info (role_id, data_scope, role_name, status, role_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
 \.
 
 
@@ -2425,8 +2472,8 @@ COPY biz.role_to_menu (role_id, menu_id) FROM stdin;
 -- Data for Name: tenant_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, creator_id, create_at, updater_id, update_at, hint) FROM stdin;
-1910557183820165122	1910557183820165120	0		test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0		\N	1773625804122202113	2026-05-01 00:00:00+08	1	2025-04-11 12:55:04+08	1910557183820165120	2025-11-18 15:02:28+08	
+COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, creator_id, create_at, updater_id, update_at, hint, deleted) FROM stdin;
+1910557183820165122	1910557183820165120	0		test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0		\N	1773625804122202113	2026-05-01 00:00:00+08	1	2025-04-11 12:55:04+08	1910557183820165120	2025-11-18 15:02:28+08		f
 \.
 
 
@@ -2436,8 +2483,8 @@ COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tena
 -- Data for Name: tenant_package_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at, hint, member_num_limit, post_num_limit) FROM stdin;
-1773625804122202113	默认套餐	0	{1906272182215585793,2043932492313976834,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1980906033277222913,1980906374936838146,1980906706949554177}	通用租户套餐	1	2024-04-17 14:08:54+08	100	2026-04-14 14:07:58+08		5	5
+COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at, hint, member_num_limit, post_num_limit, deleted) FROM stdin;
+1773625804122202113	默认套餐	0	{1906272182215585793,2043932492313976834,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1980906033277222913,1980906374936838146,1980906706949554177}	通用租户套餐	1	2024-04-17 14:08:54+08	100	2026-04-14 14:07:58+08		5	5	f
 \.
 
 
@@ -2447,8 +2494,8 @@ COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark
 -- Data for Name: tenant_wallet_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_wallet_info (tenant_id, balance, status) FROM stdin;
-1910557183820165122	0.00	0
+COPY biz.tenant_wallet_info (tenant_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1910557183820165122	0.00	0	1	\N	2025-04-11 12:55:04+08	\N		f
 \.
 
 
@@ -2458,7 +2505,7 @@ COPY biz.tenant_wallet_info (tenant_id, balance, status) FROM stdin;
 -- Data for Name: tenant_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_wallet_record (record_id, tenant_id, amount, record_type, biz_type, biz_no, create_at, remark) FROM stdin;
+COPY biz.tenant_wallet_record (record_id, tenant_id, amount, record_type, biz_type, biz_no, create_at, remark, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -2468,7 +2515,7 @@ COPY biz.tenant_wallet_record (record_id, tenant_id, amount, record_type, biz_ty
 -- Data for Name: tenant_wallet_withdrawal_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_wallet_withdrawal_record (withdrawal_id, order_no, status, tenant_id, request_params, amount, error_msg, creator_id, create_at, complete_at, remark, hint) FROM stdin;
+COPY biz.tenant_wallet_withdrawal_record (withdrawal_id, order_no, status, tenant_id, request_params, amount, error_msg, creator_id, create_at, complete_at, remark, hint, updater_id, update_at, deleted) FROM stdin;
 \.
 
 
@@ -2684,7 +2731,7 @@ ALTER TABLE ONLY biz.tenant_wallet_withdrawal_record
 -- Name: idx_customer_wallet_record_customer_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX idx_customer_wallet_record_customer_id ON biz.customer_wallet_record USING btree (customer_id);
+CREATE INDEX idx_customer_wallet_record_customer_id ON biz.customer_wallet_record USING btree (customer_id) WHERE deleted = false;
 
 
 --
@@ -2692,7 +2739,7 @@ CREATE INDEX idx_customer_wallet_record_customer_id ON biz.customer_wallet_recor
 -- Name: idx_dept_info_ancestors; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX idx_dept_info_ancestors ON biz.dept_info USING btree (ancestors);
+CREATE INDEX idx_dept_info_ancestors ON biz.dept_info USING btree (ancestors) WHERE deleted = false;
 
 
 --
@@ -2700,7 +2747,7 @@ CREATE INDEX idx_dept_info_ancestors ON biz.dept_info USING btree (ancestors);
 -- Name: idx_dept_info_parent_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX idx_dept_info_parent_id ON biz.dept_info USING btree (parent_id);
+CREATE INDEX idx_dept_info_parent_id ON biz.dept_info USING btree (parent_id) WHERE deleted = false;
 
 
 --
@@ -2708,7 +2755,7 @@ CREATE INDEX idx_dept_info_parent_id ON biz.dept_info USING btree (parent_id);
 -- Name: idx_menu_info_parent_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX idx_menu_info_parent_id ON biz.menu_info USING btree (parent_id);
+CREATE INDEX idx_menu_info_parent_id ON biz.menu_info USING btree (parent_id) WHERE deleted = false;
 
 
 --
@@ -2716,7 +2763,7 @@ CREATE INDEX idx_menu_info_parent_id ON biz.menu_info USING btree (parent_id);
 -- Name: idx_tenant_wallet_record_tenant_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX idx_tenant_wallet_record_tenant_id ON biz.tenant_wallet_record USING btree (tenant_id);
+CREATE INDEX idx_tenant_wallet_record_tenant_id ON biz.tenant_wallet_record USING btree (tenant_id) WHERE deleted = false;
 
 
 --
@@ -2724,7 +2771,7 @@ CREATE INDEX idx_tenant_wallet_record_tenant_id ON biz.tenant_wallet_record USIN
 -- Name: idx_tenant_wallet_withdrawal_record_order_no; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX idx_tenant_wallet_withdrawal_record_order_no ON biz.tenant_wallet_withdrawal_record USING btree (order_no);
+CREATE UNIQUE INDEX idx_tenant_wallet_withdrawal_record_order_no ON biz.tenant_wallet_withdrawal_record USING btree (order_no) WHERE deleted = false;
 
 
 --
@@ -2732,7 +2779,7 @@ CREATE UNIQUE INDEX idx_tenant_wallet_withdrawal_record_order_no ON biz.tenant_w
 -- Name: uk_admin_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_admin_info_phone_number ON biz.admin_info USING btree (phone_number);
+CREATE UNIQUE INDEX uk_admin_info_phone_number ON biz.admin_info USING btree (phone_number) WHERE deleted = false;
 
 
 --
@@ -2740,7 +2787,7 @@ CREATE UNIQUE INDEX uk_admin_info_phone_number ON biz.admin_info USING btree (ph
 -- Name: uk_admin_info_username; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_admin_info_username ON biz.admin_info USING btree (username);
+CREATE UNIQUE INDEX uk_admin_info_username ON biz.admin_info USING btree (username) WHERE deleted = false;
 
 
 --
@@ -2748,7 +2795,7 @@ CREATE UNIQUE INDEX uk_admin_info_username ON biz.admin_info USING btree (userna
 -- Name: uk_customer_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_customer_info_phone_number ON biz.customer_info USING btree (phone_number);
+CREATE UNIQUE INDEX uk_customer_info_phone_number ON biz.customer_info USING btree (phone_number) WHERE deleted = false;
 
 
 --
@@ -2756,7 +2803,7 @@ CREATE UNIQUE INDEX uk_customer_info_phone_number ON biz.customer_info USING btr
 -- Name: uk_customer_social_info_identifier; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_customer_social_info_identifier ON biz.customer_social_info USING btree (identifier);
+CREATE UNIQUE INDEX uk_customer_social_info_identifier ON biz.customer_social_info USING btree (identifier) WHERE deleted = false;
 
 
 --
@@ -2764,7 +2811,7 @@ CREATE UNIQUE INDEX uk_customer_social_info_identifier ON biz.customer_social_in
 -- Name: uk_member_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_member_info_phone_number ON biz.member_info USING btree (phone_number);
+CREATE UNIQUE INDEX uk_member_info_phone_number ON biz.member_info USING btree (phone_number) WHERE deleted = false;
 
 
 --
@@ -2772,7 +2819,7 @@ CREATE UNIQUE INDEX uk_member_info_phone_number ON biz.member_info USING btree (
 -- Name: uk_member_info_username; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_member_info_username ON biz.member_info USING btree (username);
+CREATE UNIQUE INDEX uk_member_info_username ON biz.member_info USING btree (username) WHERE deleted = false;
 
 
 --
@@ -2780,7 +2827,7 @@ CREATE UNIQUE INDEX uk_member_info_username ON biz.member_info USING btree (user
 -- Name: uk_member_social_info_identifier; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_member_social_info_identifier ON biz.member_social_info USING btree (identifier);
+CREATE UNIQUE INDEX uk_member_social_info_identifier ON biz.member_social_info USING btree (identifier) WHERE deleted = false;
 
 
 --
@@ -2788,7 +2835,7 @@ CREATE UNIQUE INDEX uk_member_social_info_identifier ON biz.member_social_info U
 -- Name: uk_oauth2_client_client_id; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_oauth2_client_client_id ON biz.oauth2_client USING btree (client_id);
+CREATE UNIQUE INDEX uk_oauth2_client_client_id ON biz.oauth2_client USING btree (client_id) WHERE deleted = false;
 
 
 --
@@ -2796,7 +2843,7 @@ CREATE UNIQUE INDEX uk_oauth2_client_client_id ON biz.oauth2_client USING btree 
 -- Name: uk_tenant_info_administrator; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_tenant_info_administrator ON biz.tenant_info USING btree (administrator);
+CREATE UNIQUE INDEX uk_tenant_info_administrator ON biz.tenant_info USING btree (administrator) WHERE deleted = false;
 
 
 -- Completed on 2026-04-14 14:09:27
@@ -3101,7 +3148,8 @@ CREATE TABLE biz.announcement_info (
     updater_id bigint,
     create_at timestamp(0) with time zone,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -3211,7 +3259,13 @@ CREATE TABLE biz.chat_persist_info (
     read boolean DEFAULT false NOT NULL,
     resource_type character varying(10) NOT NULL,
     content bytea NOT NULL,
-    media_format character varying(10) NOT NULL
+    media_format character varying(10) NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -3314,7 +3368,8 @@ CREATE TABLE biz.config_info (
     create_at timestamp(0) with time zone NOT NULL,
     updater_id bigint,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -3407,7 +3462,8 @@ CREATE TABLE biz.dictionary_info (
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
     update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -3514,7 +3570,11 @@ CREATE TABLE biz.notification_info (
     title character varying(32) NOT NULL,
     content text NOT NULL,
     create_at timestamp(0) with time zone NOT NULL,
-    creator_id bigint NOT NULL
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -4003,7 +4063,7 @@ COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, reques
 -- Data for Name: announcement_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.announcement_info (announcement_id, title, content, status, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
+COPY biz.announcement_info (announcement_id, title, content, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -4013,7 +4073,7 @@ COPY biz.announcement_info (announcement_id, title, content, status, creator_id,
 -- Data for Name: chat_persist_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.chat_persist_info (chat_id, receiver_id, sender_id, send_time, receive_time, read, resource_type, content, media_format) FROM stdin;
+COPY biz.chat_persist_info (chat_id, receiver_id, sender_id, send_time, receive_time, read, resource_type, content, media_format, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -4023,8 +4083,8 @@ COPY biz.chat_persist_info (chat_id, receiver_id, sender_id, send_time, receive_
 -- Data for Name: config_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.config_info (config_id, config_name, config_key, config_value, config_type, built_in, creator_id, create_at, updater_id, update_at, hint) FROM stdin;
-1	用户管理-账号初始密码	sys.user.initPassword	123456	Y	f	1	2025-09-17 17:31:01+08	1	2025-09-25 15:44:21+08	
+COPY biz.config_info (config_id, config_name, config_key, config_value, config_type, built_in, creator_id, create_at, updater_id, update_at, hint, deleted) FROM stdin;
+1	用户管理-账号初始密码	sys.user.initPassword	123456	Y	f	1	2025-09-17 17:31:01+08	1	2025-09-25 15:44:21+08		f
 \.
 
 
@@ -4034,23 +4094,23 @@ COPY biz.config_info (config_id, config_name, config_key, config_value, config_t
 -- Data for Name: dictionary_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.dictionary_info (dict_id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint) FROM stdin;
-1905175932909101057	user_sex	用户性别	[{"label": "男", "value": "0", "tableCls": ""}, {"label": "女", "value": "1", "tableCls": ""}, {"label": "未知", "value": "2", "tableCls": ""}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:29:21+08	
-1905175933034930178	menu_visible	菜单可见状态	[{"label": "显示", "value": "true", "tableCls": "primary"}, {"label": "隐藏", "value": "false", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:30:10+08	
-1905175933097844737	common_disable	是否禁用	[{"label": "正常", "value": "0", "tableCls": "primary"}, {"label": "停用", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:34:03+08	
-1905175933164953603	msg_type	消息类型	[{"label": "系统公告", "value": "1", "tableCls": "primary"}, {"label": "APP公告", "value": "2", "tableCls": "success"}]	\N	1	1	2024-04-17 14:08:55+08	2024-12-16 10:30:13+08	
-1905175933164953604	msg_status	消息状态	[{"label": "已发布", "value": "2", "tableCls": "primary"}, {"label": "草稿", "value": "0", "tableCls": "info"}, {"label": "关闭", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-12-16 10:30:17+08	
-1905175933227868164	online_status	设备连接状态	[{"label": "在线", "value": "true", "tableCls": "success"}, {"label": "离线", "value": "false", "tableCls": "info"}]	\N	1	1	2024-04-17 14:08:55+08	2024-12-09 11:28:08+08	
-1905175933290782723	data_scope	数据权限	[{"label": "全部数据权限", "value": "1", "tableCls": "default"}, {"label": "自定数据权限", "value": "2", "tableCls": "default"}, {"label": "本部门数据权限", "value": "3", "tableCls": "default"}, {"label": "本部门及以下数据权限", "value": "4", "tableCls": "default"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:27:20+08	
-1905175933425000451	wallet_record_type	钱包记录类型	[{"label": "收入", "value": "0", "tableCls": "primary"}, {"label": "支出", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-11-25 16:32:20+08	2024-11-25 16:32:20+08	
-1905175933357891585	pay_type	支付方式	[{"label": "钱包支付", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:55+08	2025-07-15 17:00:24+08	
-1905175933290782722	pay_certification_status	支付认证状态	[{"label": "未认证", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:55+08	2025-07-15 17:00:46+08	
-1905175933290782724	pay_status	支付状态	[{"label": "支付成功", "value": "1", "tableCls": "success"}, {"label": "订单关闭", "value": "2", "tableCls": "info"}, {"label": "未支付", "value": "0", "tableCls": "primary"}, {"label": "支付异常", "value": "3", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2025-07-15 17:01:14+08	
-1905175933227868163	authorization_grant_types	授权类型	[{"label": "刷新模式", "value": "refresh_token", "tableCls": "primary"}, {"label": "客户端模式", "value": "client_credentials", "tableCls": "primary"}, {"label": "授权码模式", "value": "authorization_code", "tableCls": "primary"}, {"label": "token交换模式", "value": "urn:ietf:params:oauth:grant-type:token-exchange", "tableCls": "primary"}, {"label": "设备码模式", "value": "urn:ietf:params:oauth:grant-type:device_code", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:55+08	2025-06-23 16:08:48+08	
-1905175933034930179	menu_type	菜单类型	[{"label": "目录", "value": "D", "tableCls": "info"}, {"label": "菜单", "value": "M", "tableCls": "primary"}, {"label": "按钮", "value": "B", "tableCls": "danger"}, {"label": "字段", "value": "F", "tableCls": "warning"}, {"label": "内链", "value": "I", "tableCls": ""}, {"label": "外链", "value": "O", "tableCls": ""}]	\N	1	1	2024-11-23 15:22:04+08	2025-09-05 16:08:01+08	
-1976213210015690754	menu_scope	菜单域	[{"label": "系统域", "value": "system", "tableCls": ""}, {"label": "租户域", "value": "tenant", "tableCls": ""}]	\N	1	1	2025-10-09 17:08:40+08	2025-10-09 17:08:40+08	
-1905175933227868161	operate_type	操作类型	[{"label": "其他", "value": "0", "tableCls": "info"}, {"label": "新增", "value": "1", "tableCls": "info"}, {"label": "修改", "value": "2", "tableCls": "info"}, {"label": "删除", "value": "3", "tableCls": "danger"}, {"label": "授权", "value": "4", "tableCls": "primary"}, {"label": "导出", "value": "5", "tableCls": "warning"}, {"label": "导入", "value": "6", "tableCls": "warning"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:26:30+08	
-1905175933227868162	operate_status	操作状态	[{"label": "成功", "value": "0", "tableCls": "primary"}, {"label": "失败", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:13:47+08	
+COPY biz.dictionary_info (dict_id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1905175932909101057	user_sex	用户性别	[{"label": "男", "value": "0", "tableCls": ""}, {"label": "女", "value": "1", "tableCls": ""}, {"label": "未知", "value": "2", "tableCls": ""}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:29:21+08		f
+1905175933034930178	menu_visible	菜单可见状态	[{"label": "显示", "value": "true", "tableCls": "primary"}, {"label": "隐藏", "value": "false", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:30:10+08		f
+1905175933097844737	common_disable	是否禁用	[{"label": "正常", "value": "0", "tableCls": "primary"}, {"label": "停用", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:34:03+08		f
+1905175933164953603	msg_type	消息类型	[{"label": "系统公告", "value": "1", "tableCls": "primary"}, {"label": "APP公告", "value": "2", "tableCls": "success"}]	\N	1	1	2024-04-17 14:08:55+08	2024-12-16 10:30:13+08		f
+1905175933164953604	msg_status	消息状态	[{"label": "已发布", "value": "2", "tableCls": "primary"}, {"label": "草稿", "value": "0", "tableCls": "info"}, {"label": "关闭", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-12-16 10:30:17+08		f
+1905175933227868164	online_status	设备连接状态	[{"label": "在线", "value": "true", "tableCls": "success"}, {"label": "离线", "value": "false", "tableCls": "info"}]	\N	1	1	2024-04-17 14:08:55+08	2024-12-09 11:28:08+08		f
+1905175933290782723	data_scope	数据权限	[{"label": "全部数据权限", "value": "1", "tableCls": "default"}, {"label": "自定数据权限", "value": "2", "tableCls": "default"}, {"label": "本部门数据权限", "value": "3", "tableCls": "default"}, {"label": "本部门及以下数据权限", "value": "4", "tableCls": "default"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:27:20+08		f
+1905175933425000451	wallet_record_type	钱包记录类型	[{"label": "收入", "value": "0", "tableCls": "primary"}, {"label": "支出", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-11-25 16:32:20+08	2024-11-25 16:32:20+08		f
+1905175933357891585	pay_type	支付方式	[{"label": "钱包支付", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:55+08	2025-07-15 17:00:24+08		f
+1905175933290782722	pay_certification_status	支付认证状态	[{"label": "未认证", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:55+08	2025-07-15 17:00:46+08		f
+1905175933290782724	pay_status	支付状态	[{"label": "支付成功", "value": "1", "tableCls": "success"}, {"label": "订单关闭", "value": "2", "tableCls": "info"}, {"label": "未支付", "value": "0", "tableCls": "primary"}, {"label": "支付异常", "value": "3", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2025-07-15 17:01:14+08		f
+1905175933227868163	authorization_grant_types	授权类型	[{"label": "刷新模式", "value": "refresh_token", "tableCls": "primary"}, {"label": "客户端模式", "value": "client_credentials", "tableCls": "primary"}, {"label": "授权码模式", "value": "authorization_code", "tableCls": "primary"}, {"label": "token交换模式", "value": "urn:ietf:params:oauth:grant-type:token-exchange", "tableCls": "primary"}, {"label": "设备码模式", "value": "urn:ietf:params:oauth:grant-type:device_code", "tableCls": "primary"}]	\N	1	1	2024-04-17 14:08:55+08	2025-06-23 16:08:48+08		f
+1905175933034930179	menu_type	菜单类型	[{"label": "目录", "value": "D", "tableCls": "info"}, {"label": "菜单", "value": "M", "tableCls": "primary"}, {"label": "按钮", "value": "B", "tableCls": "danger"}, {"label": "字段", "value": "F", "tableCls": "warning"}, {"label": "内链", "value": "I", "tableCls": ""}, {"label": "外链", "value": "O", "tableCls": ""}]	\N	1	1	2024-11-23 15:22:04+08	2025-09-05 16:08:01+08		f
+1976213210015690754	menu_scope	菜单域	[{"label": "系统域", "value": "system", "tableCls": ""}, {"label": "租户域", "value": "tenant", "tableCls": ""}]	\N	1	1	2025-10-09 17:08:40+08	2025-10-09 17:08:40+08		f
+1905175933227868161	operate_type	操作类型	[{"label": "其他", "value": "0", "tableCls": "info"}, {"label": "新增", "value": "1", "tableCls": "info"}, {"label": "修改", "value": "2", "tableCls": "info"}, {"label": "删除", "value": "3", "tableCls": "danger"}, {"label": "授权", "value": "4", "tableCls": "primary"}, {"label": "导出", "value": "5", "tableCls": "warning"}, {"label": "导入", "value": "6", "tableCls": "warning"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:26:30+08		f
+1905175933227868162	operate_status	操作状态	[{"label": "成功", "value": "0", "tableCls": "primary"}, {"label": "失败", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:13:47+08		f
 \.
 
 
@@ -4060,7 +4120,7 @@ COPY biz.dictionary_info (dict_id, dict_key, dict_name, dict_value, remark, crea
 -- Data for Name: notification_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.notification_info (notification_id, notification_type, title, content, create_at, creator_id) FROM stdin;
+COPY biz.notification_info (notification_id, notification_type, title, content, create_at, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -4254,7 +4314,7 @@ CREATE INDEX idx_tenant_operate_log_oper_time ON biz.tenant_operate_log USING br
 -- Name: uk_config_info_config_key; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_config_info_config_key ON biz.config_info USING btree (config_key);
+CREATE UNIQUE INDEX uk_config_info_config_key ON biz.config_info USING btree (config_key) WHERE deleted = false;
 
 
 --
@@ -4262,7 +4322,7 @@ CREATE UNIQUE INDEX uk_config_info_config_key ON biz.config_info USING btree (co
 -- Name: uk_dictionary_info_dict_key; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_dictionary_info_dict_key ON biz.dictionary_info USING btree (dict_key);
+CREATE UNIQUE INDEX uk_dictionary_info_dict_key ON biz.dictionary_info USING btree (dict_key) WHERE deleted = false;
 
 
 -- Completed on 2026-05-07 10:10:36
