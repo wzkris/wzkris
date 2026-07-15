@@ -53,7 +53,8 @@ public class ConfigInfoServiceImpl
         if (value instanceof String && StringUtil.isNotBlank((String) value)) {
             return (String) value;
         }
-        value = baseMapper.selectValueByKey(configkey);
+        value = baseMapper.selectOneFieldByField(
+                ConfigInfoDO::getConfigKey, configkey, ConfigInfoDO::getConfigValue);
         if (value != null) {
             redisTemplate.opsForHash().put(DICT_KEY, configkey, value);
         }

@@ -135,7 +135,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
         tenant.setStatus(tenantReq.getStatus());
         tenant.setAdministrator(null);
         tenant.setOperPwd(null);
-        return toRes(tenantInfoMapper.updateById(tenant));
+        return toRes(tenantInfoService.updateById(tenant));
     }
 
     @Override
@@ -145,7 +145,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
         }
         TenantInfoDO update = new TenantInfoDO(request.getId());
         update.setOperPwd(passwordEncoder.encode(request.getPassword()));
-        return toRes(tenantInfoMapper.updateById(update));
+        return toRes(tenantInfoService.updateById(update));
     }
 
     @Override

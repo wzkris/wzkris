@@ -8,6 +8,7 @@ import com.wzkris.usercenter.api.menu.response.MetaResponse;
 import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.MenuInfoDO;
+import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
@@ -171,7 +172,8 @@ public class MenuInfoServiceImpl
     @Override
     public List<SelectTreeResponse> listTenantSelectTree(Long memberId) {
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
+        Long tenantPackageId = tenantInfoMapper.selectOneFieldByField(
+                TenantInfoDO::getAdministrator, memberId, TenantInfoDO::getPackageId);
         if (tenantPackageId != null) {
             // 租户最高管理员，去查套餐绑定菜单
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
@@ -207,7 +209,7 @@ public class MenuInfoServiceImpl
                 return Collections.emptyList();
             }
         }
-        List<MenuInfoDO> list = baseMapper.listMenuRoutes(menuIds, MenuScopeEnum.SYSTEM.getValue());
+        List<MenuInfoDO> list = listVisibleMenus(menuIds, MenuScopeEnum.SYSTEM);
         return this.buildRouterTree(list);
     }
 
@@ -215,7 +217,8 @@ public class MenuInfoServiceImpl
     public List<RouterResponse> listTenantRoutes(Long memberId) {
         // 去关联表中查绑定的菜单ID
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
+        Long tenantPackageId = tenantInfoMapper.selectOneFieldByField(
+                TenantInfoDO::getAdministrator, memberId, TenantInfoDO::getPackageId);
         if (tenantPackageId != null) {
             // 户最高管理员，去查套餐绑定菜单租
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
@@ -225,8 +228,25 @@ public class MenuInfoServiceImpl
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
-        List<MenuInfoDO> list = baseMapper.listMenuRoutes(menuIds, MenuScopeEnum.TENANT.getValue());
+        List<MenuInfoDO> list = listVisibleMenus(menuIds, MenuScopeEnum.TENANT);
         return this.buildRouterTree(list);
+    }
+
+    /**
+     * 查询前端可见的菜单路由（按钮除外）
+     *
+     * @param menuIds 菜单ID列表，null表示不限制
+     * @param scope   菜单域
+     * @return 菜单列表
+     */
+    private List<MenuInfoDO> listVisibleMenus(List<Long> menuIds, MenuScopeEnum scope) {
+        return baseMapper.selectList(Wrappers.lambdaQuery(MenuInfoDO.class)
+                .in(MenuInfoDO::getMenuType, MenuTypeEnum.DIR, MenuTypeEnum.MENU, MenuTypeEnum.INNERLINK, MenuTypeEnum.OUTLINK)
+                .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
+                .eq(MenuInfoDO::getScope, scope)
+                .eq(MenuInfoDO::getVisible, true)
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId));
     }
 
     /**

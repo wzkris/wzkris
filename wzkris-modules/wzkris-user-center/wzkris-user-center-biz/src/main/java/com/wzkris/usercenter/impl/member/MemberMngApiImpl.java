@@ -127,7 +127,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
         }
         MemberInfoDO update = new MemberInfoDO(request.getId());
         update.setPassword(passwordEncoder.encode(request.getPassword()));
-        return toRes(memberInfoMapper.updateById(update));
+        return toRes(memberInfoService.updateById(update));
     }
 
     @Override

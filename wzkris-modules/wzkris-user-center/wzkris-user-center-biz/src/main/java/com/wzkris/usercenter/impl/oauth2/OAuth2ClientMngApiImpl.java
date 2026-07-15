@@ -27,11 +27,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientMngApi {
 
-    private final PasswordEncoder passwordEncoder;
-
     private final OAuth2ClientMapper oauth2ClientMapper;
 
     private final OAuth2ClientService oAuth2ClientService;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
@@ -55,7 +55,7 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     public Result<Void> update(OAuth2ClientMngUpdateRequest request) {
         OAuth2ClientDO oauth2ClientDO = BeanUtil.convert(request, OAuth2ClientDO.class);
         oauth2ClientDO.setStatus(request.getStatus());
-        return toRes(oauth2ClientMapper.updateById(oauth2ClientDO));
+        return toRes(oAuth2ClientService.updateById(oauth2ClientDO));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
         OAuth2ClientDO update = new OAuth2ClientDO();
         update.setId(request.getId());
         update.setClientSecret(passwordEncoder.encode(request.getSecret()));
-        return toRes(oauth2ClientMapper.updateById(update));
+        return toRes(oAuth2ClientService.updateById(update));
     }
 
     @Override
@@ -72,13 +72,13 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
         client.setStatus(request.getStatus());
         String secret = RandomStringUtils.secure().nextAlphabetic(16);
         client.setClientSecret(passwordEncoder.encode(secret));
-        oauth2ClientMapper.insert(client);
-        return ok(secret);
+        String result = oAuth2ClientService.saveAndGet(client, c -> secret);
+        return result != null ? ok(secret) : requestFail("操作失败");
     }
 
     @Override
     public Result<Void> remove(IdRequest request) {
-        return toRes(oauth2ClientMapper.deleteById(request.getId()));
+        return toRes(oAuth2ClientService.removeById(request.getId()));
     }
 
 }

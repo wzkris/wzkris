@@ -6,6 +6,7 @@ import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.RoleInfoDO;
+import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.enums.role.DataScopeEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
@@ -69,7 +70,8 @@ public class PermissionServiceImpl implements PermissionService {
         List<String> grantedAuthority;
         boolean administrator = false;
         // 租户最高管理员特殊处理
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
+        Long tenantPackageId = tenantInfoMapper.selectOneFieldByField(
+                TenantInfoDO::getAdministrator, memberId, TenantInfoDO::getPackageId);
         if (tenantPackageId != null) {
             // 租户最高管理员查出所有租户角色
             administrator = true;

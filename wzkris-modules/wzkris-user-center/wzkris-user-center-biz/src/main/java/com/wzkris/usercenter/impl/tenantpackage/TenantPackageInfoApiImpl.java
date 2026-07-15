@@ -13,6 +13,8 @@ import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
+import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
+import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
 import com.wzkris.usercenter.mapper.*;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
@@ -132,7 +134,12 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
         if (CollectionUtils.isEmpty(menuIds)) {
             return List.of();
         }
-        List<MenuInfoDO> menus = menuInfoMapper.listMenuRoutes(menuIds, MenuScopeEnum.TENANT.getValue());
+        List<MenuInfoDO> menus = menuInfoMapper.selectList(Wrappers.lambdaQuery(MenuInfoDO.class)
+                .in(MenuInfoDO::getMenuType, MenuTypeEnum.DIR, MenuTypeEnum.MENU, MenuTypeEnum.INNERLINK, MenuTypeEnum.OUTLINK)
+                .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
+                .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT)
+                .in(MenuInfoDO::getMenuId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId));
         if (CollectionUtils.isEmpty(menus)) {
             return List.of();
         }

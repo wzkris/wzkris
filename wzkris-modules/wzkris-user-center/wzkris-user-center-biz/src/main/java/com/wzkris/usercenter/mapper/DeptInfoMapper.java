@@ -41,15 +41,6 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
     List<Long> listSubDeptIdById(Long deptId);
 
     /**
-     * 是否存在子节点
-     *
-     * @param deptId 部门ID
-     * @return 结果
-     */
-    @Select("SELECT EXISTS(SELECT dept_id FROM biz.dept_info WHERE deleted = false AND parent_id = #{deptId})")
-    boolean existChildren(Long deptId);
-
-    /**
      * 查询部门是否存在用户
      *
      * @param deptId 部门 ID

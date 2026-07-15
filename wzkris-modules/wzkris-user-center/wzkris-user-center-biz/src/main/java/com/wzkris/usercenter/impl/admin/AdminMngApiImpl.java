@@ -47,9 +47,9 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     private final DeptInfoService deptInfoService;
 
-    private final PasswordEncoder passwordEncoder;
-
     private final RoleInfoMapper roleInfoMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request) {
@@ -163,7 +163,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
         }
         AdminInfoDO update = new AdminInfoDO(request.getId());
         update.setPassword(passwordEncoder.encode(request.getPassword()));
-        return toRes(adminInfoMapper.updateById(update));
+        return toRes(adminInfoService.updateById(update));
     }
 
     @Override

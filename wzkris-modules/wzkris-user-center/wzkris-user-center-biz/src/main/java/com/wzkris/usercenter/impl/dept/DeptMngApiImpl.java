@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.dept;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -94,7 +95,8 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         if (!deptInfoMapper.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
-        if (deptInfoMapper.existChildren(deptId)) {
+        if (deptInfoMapper.exists(Wrappers.lambdaQuery(DeptInfoDO.class)
+                .eq(DeptInfoDO::getParentId, deptId))) {
             return requestFail("存在下级部门，不允许删除");
         }
         if (deptInfoMapper.existAdmin(deptId)) {

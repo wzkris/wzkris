@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.remote.impl.customer;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.common.core.enums.BizCallCodeEnum;
 import com.wzkris.common.core.model.Result;
@@ -39,7 +40,8 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
 
     @Override
     public Result<CustomerResponse> queryByPhoneNumber(StringValueRequest request) {
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectByPhoneNumber(request.getValue());
+        CustomerInfoDO customerInfoDO = customerInfoMapper.selectOneByField(
+                CustomerInfoDO::getPhoneNumber, request.getValue());
         return Result.ok(this.toCustomerResponse(customerInfoDO));
     }
 
@@ -66,7 +68,8 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
         }
 
         Long customerId;
-        CustomerSocialInfoDO socialInfoDO = customerSocialInfoMapper.selectByIdentifier(identifier);
+        CustomerSocialInfoDO socialInfoDO = customerSocialInfoMapper.selectOneByField(
+                CustomerSocialInfoDO::getIdentifier, identifier);
         if (socialInfoDO == null) {
             CustomerInfoDO customerInfoDO = new CustomerInfoDO();
             customerInfoDO.setPhoneNumber(phoneNumber);

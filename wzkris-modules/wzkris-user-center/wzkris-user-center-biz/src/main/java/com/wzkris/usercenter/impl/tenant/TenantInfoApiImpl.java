@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.impl.tenant;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.security.model.LoginTenantUser;
@@ -11,6 +12,7 @@ import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
+import com.wzkris.usercenter.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
 
     private final TenantInfoMapper tenantInfoMapper;
+
+    private final TenantInfoService tenantInfoService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -33,13 +37,14 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
     public Result<Void> updateBasicInfo(TenantInfoBasicUpdateRequest request) {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
         TenantInfoDO tenantInfoDO = BeanUtil.convert(request, new TenantInfoDO(tenantUser.getTenantId()));
-        return toRes(tenantInfoMapper.updateById(tenantInfoDO));
+        return toRes(tenantInfoService.updateById(tenantInfoDO));
     }
 
     @Override
     public Result<Void> updateOperPwd(PasswordUpdateRequest request) {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        String operPwd = tenantInfoMapper.selectOperPwdById(tenantUser.getTenantId());
+        String operPwd = tenantInfoMapper.selectOneFieldByField(
+                TenantInfoDO::getTenantId, tenantUser.getTenantId(), TenantInfoDO::getOperPwd);
         if (!passwordEncoder.matches(request.getOldPassword(), operPwd)) {
             return requestFail("修改密码失败，旧密码错误");
         }
@@ -48,7 +53,7 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
         }
         TenantInfoDO update = new TenantInfoDO(tenantUser.getTenantId());
         update.setOperPwd(passwordEncoder.encode(request.getNewPassword()));
-        return toRes(tenantInfoMapper.updateById(update));
+        return toRes(tenantInfoService.updateById(update));
     }
 
 }

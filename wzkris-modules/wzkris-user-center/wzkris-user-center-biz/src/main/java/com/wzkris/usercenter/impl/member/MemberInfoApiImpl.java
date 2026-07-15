@@ -59,7 +59,7 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
         MemberInfoDO memberInfoDO = new MemberInfoDO(SecurityUtil.getUid());
         memberInfoDO.setGender(request.getGender());
         memberInfoDO.setAvatar(request.getAvatar());
-        return toRes(memberInfoMapper.updateById(memberInfoDO));
+        return toRes(memberInfoService.updateById(memberInfoDO));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
         }
         MemberInfoDO member = new MemberInfoDO(uid);
         member.setPhoneNumber(request.getPhoneNumber());
-        return toRes(memberInfoMapper.updateById(member));
+        return toRes(memberInfoService.updateById(member));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
         }
         MemberInfoDO update = new MemberInfoDO(uid);
         update.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        return toRes(memberInfoMapper.updateById(update));
+        return toRes(memberInfoService.updateById(update));
     }
 
 }

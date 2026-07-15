@@ -1,7 +1,10 @@
 package com.wzkris.common.orm.plus;
 
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
@@ -11,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -28,26 +32,68 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
 
     /**
      * 根据 entity 条件，查询一条记录
-     * <p>查询一条记录，例如 qw.last("limit 1") 限制取一条记录, 注意：多条数据只取第一条</p>
+     * <p>重写 BaseMapper.selectOne，统一附加 LIMIT 1，查不到返回 null</p>
      *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
+     * @param wrapper 实体对象封装操作类（可以为 null）
      */
-    default T selectOne(AbstractWrapper<T, ?, ?> queryWrapper) {
-        queryWrapper.last("LIMIT 1 OFFSET 0");
-        List<T> list = this.selectList(queryWrapper);
+    @Override
+    default T selectOne(Wrapper<T> wrapper) {
+        if (wrapper instanceof AbstractWrapper) {
+            ((AbstractWrapper<?, ?, ?>) wrapper).last("LIMIT 1 OFFSET 0");
+        }
+        List<T> list = this.selectList(wrapper);
         if (list.size() == 1) {
-            return list.get(0);
+            return list.getFirst();
         }
         return null;
     }
 
-    default T selectOneForUpdate(AbstractWrapper<T, ?, ?> queryWrapper) {
-        queryWrapper.last("LIMIT 1 OFFSET 0 FOR UPDATE");
-        List<T> list = this.selectList(queryWrapper);
+    default T selectOneForUpdate(Wrapper<T> wrapper) {
+        if (wrapper instanceof AbstractWrapper) {
+            ((AbstractWrapper<?, ?, ?>) wrapper).last("LIMIT 1 OFFSET 0 FOR UPDATE");
+        }
+        List<T> list = this.selectList(wrapper);
         if (list.size() == 1) {
-            return list.get(0);
+            return list.getFirst();
         }
         return null;
+    }
+
+    /**
+     * 提取指定字段
+     *
+     * @param wrapper 查询条件
+     * @param <R>     返回字段的类型
+     * @return 查找到的字段值，若未找到返回 null
+     */
+    default <R> R selectOneField(Wrapper<T> wrapper, Function<T, R> func) {
+        T t = selectOne(wrapper);
+        return t == null ? null : func.apply(t);
+    }
+
+    /**
+     * 根据单个字段值查询单条记录
+     *
+     * @param field 字段引用（如 Entity::getName）
+     * @param value 字段值
+     * @return 实体，未找到返回 null
+     */
+    default T selectOneByField(SFunction<T, ?> field, Object value) {
+        return this.selectOne(new LambdaQueryWrapper<T>().eq(field, value));
+    }
+
+    /**
+     * 根据单个字段值查询单条记录，并提取指定字段
+     *
+     * @param field 查询字段引用
+     * @param value 字段值
+     * @param func  提取字段的函数
+     * @param <R>   返回字段类型
+     * @return 提取的字段值，未找到返回 null
+     */
+    default <R> R selectOneFieldByField(SFunction<T, ?> field, Object value, Function<T, R> func) {
+        T t = this.selectOneByField(field, value);
+        return t == null ? null : func.apply(t);
     }
 
     /**
@@ -90,6 +136,31 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
                     return c;
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 插入记录后，通过 function 从实体中提取指定字段
+     * <p>典型场景：插入后获取自增回填的主键 ID</p>
+     *
+     * @param entity 实体
+     * @param func   插入后从实体中提取字段的函数
+     * @param <R>    返回字段类型
+     * @return 函数返回的值，插入失败返回 null
+     */
+    default <R> R insertAndGet(T entity, Function<T, R> func) {
+        return this.insert(entity) > 0 ? func.apply(entity) : null;
+    }
+
+    /**
+     * 根据 ID 更新后，通过 function 从实体中提取指定字段
+     *
+     * @param entity 实体（必须包含 ID）
+     * @param func   更新后从实体中提取字段的函数
+     * @param <R>    返回字段类型
+     * @return 函数返回的值，更新失败返回 null
+     */
+    default <R> R updateByIdAndGet(T entity, Function<T, R> func) {
+        return this.updateById(entity) > 0 ? func.apply(entity) : null;
     }
 
     private static <C> C getInstance(Class<C> voClass, Class<?>... parameterTypes) {

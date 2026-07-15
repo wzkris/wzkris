@@ -87,7 +87,8 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
             log.error("微信小程序换取openid失败", e);
             return Result.apiRequestFail(e.getError().getErrorMsg());
         }
-        MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectByIdentifier(identifier);
+        MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectOneByField(
+                MemberSocialInfoDO::getIdentifier, identifier);
         if (ObjectUtils.isEmpty(memberSocialInfoDO)) {
             return Result.ok(null);
         }
