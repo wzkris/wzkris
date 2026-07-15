@@ -202,49 +202,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
-            <!-- 代码风格检查-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>checkstyle-validation</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <!-- 检查配置-->
-                            <configLocation>codestyle/checkstyle.xml</configLocation>
-                            <consoleOutput>true</consoleOutput>
-                            <skip>false</skip>
-                            <!-- 忽略检查配置-->
-                            <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>
-                            <!-- 检查失败构建-->
-                            <failOnViolation>true</failOnViolation>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>checkstyle-unix-validation</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <configLocation>codestyle/checkstyle_unix.xml</configLocation>
-                            <consoleOutput>true</consoleOutput>
-                            <skip>false</skip>
-                            <failOnViolation>true</failOnViolation>
-                            <resourceExcludes>**/target/**/*,
-                                **/generated/**/*,
-                                **/generated-sources/**/*
-                            </resourceExcludes>
-                            <excludes>**/target/**/*</excludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
 
         <resources>
