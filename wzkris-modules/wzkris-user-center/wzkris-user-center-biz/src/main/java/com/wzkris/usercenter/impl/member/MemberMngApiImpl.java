@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.member;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -47,9 +48,8 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request) {
-        startPage(request);
-        List<MemberMngResponse> list = memberInfoMapper.selectVOList(this.buildPageWrapper(request));
-        return getPageResult(list);
+        IPage<MemberMngResponse> page = memberInfoMapper.selectVOPage(request.buildPage(), this.buildPageWrapper(request));
+        return ok(Page.of(page));
     }
 
     private QueryWrapper<MemberInfoDO> buildPageWrapper(MemberMngPageRequest request) {

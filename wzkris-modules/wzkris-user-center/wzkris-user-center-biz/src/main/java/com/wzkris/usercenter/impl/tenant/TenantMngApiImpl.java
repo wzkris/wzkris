@@ -2,6 +2,7 @@ package com.wzkris.usercenter.impl.tenant;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -52,9 +53,8 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
 
     @Override
     public Result<Page<TenantMngResponse>> queryPage(TenantMngPageRequest request) {
-        startPage(request);
-        List<TenantMngResponse> list = tenantInfoMapper.selectVOList(this.buildQueryWrapper(request));
-        return getPageResult(list);
+        IPage<TenantMngResponse> page = tenantInfoMapper.selectVOPage(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page));
     }
 
     private QueryWrapper<TenantInfoDO> buildQueryWrapper(TenantMngPageRequest request) {
@@ -77,14 +77,14 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
                 .select(TenantInfoDO::getTenantId, TenantInfoDO::getTenantName)
                 .like(StringUtil.isNotBlank(tenantName), TenantInfoDO::getTenantName, tenantName)
                 .orderByAsc(TenantInfoDO::getTenantId);
-        startPage(request);
-        List<SelectResponse> list = tenantInfoService.list(lqw).stream().map(tenantInfoDO -> {
+        IPage<TenantInfoDO> page = tenantInfoService.page(request.buildPage(), lqw);
+        List<SelectResponse> list = page.getRecords().stream().map(tenantInfoDO -> {
             SelectResponse SelectResponse = new SelectResponse();
             SelectResponse.setId(tenantInfoDO.getTenantId());
             SelectResponse.setLabel(tenantInfoDO.getTenantName());
             return SelectResponse;
         }).collect(Collectors.toList());
-        return getPageResult(list);
+        return ok(Page.of(page, list));
     }
 
     @Override

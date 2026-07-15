@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.api.notification.response.NotificationInfoResponse;
 import com.wzkris.usercenter.domain.NotificationInfoDO;
@@ -9,8 +10,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Mapper
 @Repository
@@ -28,10 +27,11 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             	    <if test="read != null">
             	        AND s.read = #{read}
             	    </if>
-                ORDER BY s.read ASC, s.notification_id DESC,
+                ORDER BY s.read ASC, s.notification_id DESC
             </script>
             """)
-    List<NotificationInfoResponse> listAdminNotice(
+    IPage<NotificationInfoResponse> pageAdminNotice(
+            IPage<NotificationInfoResponse> page,
             @Param("adminId") Long adminId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") Boolean read);
@@ -48,10 +48,11 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             	    <if test="read != null">
             	        AND s.read = #{read}
             	    </if>
-                ORDER BY s.read ASC, s.notification_id DESC,
+                ORDER BY s.read ASC, s.notification_id DESC
             </script>
             """)
-    List<NotificationInfoResponse> listTenantNotice(
+    IPage<NotificationInfoResponse> pageTenantNotice(
+            IPage<NotificationInfoResponse> page,
             @Param("memberId") Long memberId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") Boolean read);

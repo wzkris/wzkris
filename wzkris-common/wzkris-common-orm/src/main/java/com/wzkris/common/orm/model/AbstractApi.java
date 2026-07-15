@@ -1,10 +1,6 @@
 package com.wzkris.common.orm.model;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.request.PagingRequest;
-import com.wzkris.common.orm.utils.PageUtil;
-
-import java.util.List;
 
 /**
  * api层通用数据处理
@@ -12,23 +8,6 @@ import java.util.List;
  * @author wzkris
  */
 public abstract class AbstractApi {
-
-    /**
-     * 默认
-     */
-    protected void startPage(PagingRequest request) {
-        PageUtil.bind(request);
-    }
-
-    /**
-     * 响应请求分页数据
-     */
-    protected static <T> Result<Page<T>> getPageResult(List<T> list) {
-        try (Page<T> page = PageUtil.getPage()) {
-            page.setRows(list);
-            return Result.ok(page);
-        }
-    }
 
     /**
      * 自定义失败消息

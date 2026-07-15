@@ -3,6 +3,7 @@ package com.wzkris.usercenter.impl.oauth2;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
@@ -21,8 +22,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientMngApi {
@@ -35,9 +34,8 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
 
     @Override
     public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
-        startPage(request);
-        List<OAuth2ClientDO> list = oAuth2ClientService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, OAuth2ClientMngResponse.class));
+        IPage<OAuth2ClientDO> page = oAuth2ClientService.page(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), OAuth2ClientMngResponse.class)));
     }
 
     private LambdaQueryWrapper<OAuth2ClientDO> buildQueryWrapper(OAuth2ClientMngPageRequest request) {

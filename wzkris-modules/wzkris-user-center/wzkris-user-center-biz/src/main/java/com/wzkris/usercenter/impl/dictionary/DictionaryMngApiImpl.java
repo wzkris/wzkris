@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.dictionary;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -32,11 +33,10 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
 
     @Override
     public Result<Page<DictionaryMngResponse>> queryPage(DictionaryMngPageRequest request) {
-        startPage(request);
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(request);
-        List<DictionaryInfoDO> source = dictionaryInfoService.list(lqw);
-        List<DictionaryMngResponse> result = source.stream().map(this::toMngResponse).toList();
-        return getPageResult(result);
+        IPage<DictionaryInfoDO> page = dictionaryInfoService.page(request.buildPage(), lqw);
+        List<DictionaryMngResponse> result = page.getRecords().stream().map(this::toMngResponse).toList();
+        return ok(Page.of(page, result));
     }
 
     private LambdaQueryWrapper<DictionaryInfoDO> buildQueryWrapper(DictionaryMngPageRequest request) {

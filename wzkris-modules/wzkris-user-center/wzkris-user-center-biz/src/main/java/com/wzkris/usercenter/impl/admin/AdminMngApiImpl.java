@@ -5,6 +5,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
@@ -53,9 +54,8 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request) {
-        startPage(request);
-        List<AdminMngResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
-        return getPageResult(list);
+        IPage<AdminMngResponse> page = adminInfoMapper.selectVOPage(request.buildPage(), this.buildPageWrapper(request));
+        return ok(Page.of(page));
     }
 
     private QueryWrapper<AdminInfoDO> buildPageWrapper(AdminMngPageRequest request) {

@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.tenantwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
@@ -24,12 +25,9 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
 
     @Override
     public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngPageRequest request) {
-        startPage(request);
-        List<TenantWalletRecordResponse> list = tenantWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request))
-                .stream()
-                .map(this::toResponse)
-                .toList();
-        return getPageResult(list);
+        IPage<TenantWalletRecordDO> page = tenantWalletRecordMapper.selectPage(request.buildPage(), this.buildWalletQueryWrapper(request));
+        List<TenantWalletRecordResponse> list = page.getRecords().stream().map(this::toResponse).toList();
+        return ok(Page.of(page, list));
     }
 
     private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordMngPageRequest request) {

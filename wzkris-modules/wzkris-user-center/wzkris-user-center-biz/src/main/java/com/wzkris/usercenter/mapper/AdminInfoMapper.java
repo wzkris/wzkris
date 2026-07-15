@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
@@ -36,6 +37,17 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
             ${ew.customSqlSegment}
             """)
     List<AdminMngResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
+
+    /**
+     * 带权限查询分页数据（分页）
+     */
+    @DataScope(value = {@DataColumn(alias = "d", column = "dept_id")})
+    @Select("""
+            SELECT u.*, d.dept_name, d.status AS deptStatus
+            FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
+            ${ew.customSqlSegment}
+            """)
+    IPage<AdminMngResponse> selectVOPage(IPage<AdminMngResponse> page, @Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
 
     /**
      * 检验权限

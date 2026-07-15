@@ -6,10 +6,10 @@ import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.wzkris.common.orm.plus.extension.ExtenseSqlInjector;
 import com.wzkris.common.orm.plus.handler.BaseFieldFillHandler;
 import com.wzkris.common.orm.plus.interceptor.DataPermissionHandler;
-import com.wzkris.common.orm.plus.interceptor.PageInterceptor;
 import com.wzkris.common.orm.plus.interceptor.TenantLineHandlerImpl;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -42,12 +42,12 @@ public class MybatisPlusConfig {
         interceptor.addInnerInterceptor(new DataPermissionInterceptor(new DataPermissionHandler()));
         // 多租户
         interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandlerImpl(tenantProperties)));
-        // 自定义分页插件
-        PageInterceptor pageInterceptor = new PageInterceptor();
-        pageInterceptor.setMaxLimit(500L); // 单页限制条数
-        pageInterceptor.setOverflow(true); // 分页溢出
-        pageInterceptor.setOptimizeJoin(false); // 不优化join
-        interceptor.addInnerInterceptor(pageInterceptor);
+        // 分页插件
+        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
+        paginationInterceptor.setMaxLimit(500L); // 单页限制条数
+        paginationInterceptor.setOverflow(true); // 分页溢出
+        paginationInterceptor.setOptimizeJoin(false); // 不优化join
+        interceptor.addInnerInterceptor(paginationInterceptor);
         return interceptor;
     }
 

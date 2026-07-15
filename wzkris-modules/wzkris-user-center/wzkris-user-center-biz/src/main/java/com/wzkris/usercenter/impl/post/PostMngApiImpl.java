@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.post;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -37,9 +38,8 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
 
     @Override
     public Result<Page<PostMngResponse>> queryPage(PostMngPageRequest request) {
-        startPage(request);
-        List<PostInfoDO> list = postInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, PostMngResponse.class));
+        IPage<PostInfoDO> page = postInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), PostMngResponse.class)));
     }
 
     private LambdaQueryWrapper<PostInfoDO> buildQueryWrapper(PostMngPageRequest request) {

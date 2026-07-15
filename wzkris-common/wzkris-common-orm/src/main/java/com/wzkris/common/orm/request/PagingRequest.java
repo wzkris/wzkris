@@ -2,6 +2,7 @@ package com.wzkris.common.orm.request;
 
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzkris.common.core.model.QueryRequest;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.Data;
@@ -32,6 +33,15 @@ public abstract class PagingRequest extends QueryRequest {
 
     public long normalizedPageSize() {
         return pageSize != null && pageSize > 0 ? pageSize : DEFAULT_PAGE_SIZE;
+    }
+
+    /**
+     * 构造 MyBatis-Plus 原生分页参数
+     */
+    public <T> Page<T> buildPage() {
+        Page<T> page = new Page<>(normalizedPageNum(), normalizedPageSize());
+        page.setOrders(buildOrderItems());
+        return page;
     }
 
     public List<OrderItem> buildOrderItems() {

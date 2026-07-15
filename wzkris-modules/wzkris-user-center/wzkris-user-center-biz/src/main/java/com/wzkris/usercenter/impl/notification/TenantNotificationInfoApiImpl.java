@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.impl.notification;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
@@ -13,8 +14,6 @@ import com.wzkris.usercenter.mapper.NotificationInfoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class TenantNotificationInfoApiImpl extends AbstractApi implements TenantNotificationInfoApi {
@@ -23,10 +22,9 @@ public class TenantNotificationInfoApiImpl extends AbstractApi implements Tenant
 
     @Override
     public Result<Page<NotificationInfoResponse>> queryPage(NotificationInfoPageRequest request) {
-        startPage(request);
-        List<NotificationInfoResponse> list = notificationInfoMapper.listTenantNotice(
-                SecurityUtil.getUid(), request.getNotificationType(), request.getRead());
-        return getPageResult(list);
+        IPage<NotificationInfoResponse> page = notificationInfoMapper.pageTenantNotice(
+                request.buildPage(), SecurityUtil.getUid(), request.getNotificationType(), request.getRead());
+        return ok(Page.of(page));
     }
 
     @Override

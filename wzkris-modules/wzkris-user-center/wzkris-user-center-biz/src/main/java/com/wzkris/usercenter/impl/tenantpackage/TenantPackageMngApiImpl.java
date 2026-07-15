@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.tenantpackage;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -35,9 +36,8 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request) {
-        startPage(request);
-        List<TenantPackageInfoDO> list = tenantPackageInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, TenantPackageMngResponse.class));
+        IPage<TenantPackageInfoDO> page = tenantPackageInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), TenantPackageMngResponse.class)));
     }
 
     private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngPageRequest request) {

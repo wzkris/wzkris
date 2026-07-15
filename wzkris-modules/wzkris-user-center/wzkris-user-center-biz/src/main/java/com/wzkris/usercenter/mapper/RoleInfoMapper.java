@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.annotation.DataColumn;
 import com.wzkris.common.orm.annotation.DataScope;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * 角色表 数据层
@@ -32,7 +32,7 @@ public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
             SELECT DISTINCT r.* FROM biz.role_info r LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id
             ${ew.customSqlSegment}
             """)
-    List<RoleInfoDO> selectLists(@Param(Constants.WRAPPER) Wrapper<RoleInfoDO> queryWrapper);
+    IPage<RoleInfoDO> selectPageList(IPage<RoleInfoDO> page, @Param(Constants.WRAPPER) Wrapper<RoleInfoDO> queryWrapper);
 
     /**
      * 校验是否有该角色操作权限

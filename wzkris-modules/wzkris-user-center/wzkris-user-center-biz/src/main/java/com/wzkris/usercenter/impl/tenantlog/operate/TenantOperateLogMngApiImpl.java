@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.tenantlog.operate;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -15,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class TenantOperateLogMngApiImpl
@@ -27,9 +26,8 @@ public class TenantOperateLogMngApiImpl
 
     @Override
     public Result<Page<TenantOperateLogMngResponse>> queryPage(TenantOperateLogMngPageRequest request) {
-        startPage(request);
-        List<TenantOperateLogDO> list = tenantOperateLogService.list(buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, TenantOperateLogMngResponse.class));
+        IPage<TenantOperateLogDO> page = tenantOperateLogService.page(request.buildPage(), buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), TenantOperateLogMngResponse.class)));
     }
 
     private LambdaQueryWrapper<TenantOperateLogDO> buildQueryWrapper(TenantOperateLogMngPageRequest request) {

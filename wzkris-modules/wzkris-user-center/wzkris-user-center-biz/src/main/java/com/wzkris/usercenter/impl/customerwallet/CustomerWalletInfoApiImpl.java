@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.customerwallet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
@@ -16,7 +17,6 @@ import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -34,10 +34,8 @@ public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWa
 
     @Override
     public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(CustomerWalletRecordPageRequest request) {
-        startPage(request);
-        List<CustomerWalletRecordDO> recordList =
-                customerWalletRecordMapper.selectList(this.buildWalletQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(recordList, CustomerWalletRecordResponse.class));
+        IPage<CustomerWalletRecordDO> page = customerWalletRecordMapper.selectPage(request.buildPage(), this.buildWalletQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), CustomerWalletRecordResponse.class)));
     }
 
     private LambdaQueryWrapper<CustomerWalletRecordDO> buildWalletQueryWrapper(CustomerWalletRecordPageRequest request) {

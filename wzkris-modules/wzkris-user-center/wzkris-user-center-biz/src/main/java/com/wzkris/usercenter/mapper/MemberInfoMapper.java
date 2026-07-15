@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.api.member.response.MemberMngResponse;
@@ -9,8 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Mapper
 @Repository
@@ -22,7 +21,7 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
              LEFT JOIN biz.post_info p ON sp.post_id = p.post_id AND p.status = '0'
             ${ew.customSqlSegment} GROUP BY s.member_id ORDER BY s.member_id DESC
             """)
-    List<MemberMngResponse> selectVOList(@Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
+    IPage<MemberMngResponse> selectVOPage(IPage<MemberMngResponse> page, @Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
 
 }
 

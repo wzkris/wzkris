@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.announcement;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.AbstractApi;
@@ -18,8 +19,6 @@ import com.wzkris.usercenter.service.AnnouncementInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementMngApi {
@@ -28,9 +27,8 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
 
     @Override
     public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request) {
-        startPage(request);
-        List<AnnouncementInfoDO> list = announcementInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, AnnouncementMngResponse.class));
+        IPage<AnnouncementInfoDO> page = announcementInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), AnnouncementMngResponse.class)));
     }
 
     private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngPageRequest request) {

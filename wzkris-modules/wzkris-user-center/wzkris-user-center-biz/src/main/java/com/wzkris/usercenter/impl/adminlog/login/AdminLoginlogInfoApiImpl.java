@@ -3,6 +3,7 @@ package com.wzkris.usercenter.impl.adminlog.login;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -16,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class AdminLoginlogInfoApiImpl
@@ -28,9 +27,8 @@ public class AdminLoginlogInfoApiImpl
 
     @Override
     public Result<Page<AdminLoginLogInfoResponse>> queryPage(AdminLoginLogInfoPageRequest request) {
-        startPage(request);
-        List<AdminLoginLogDO> list = adminLoginLogService.list(buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, AdminLoginLogInfoResponse.class));
+        IPage<AdminLoginLogDO> page = adminLoginLogService.page(request.buildPage(), buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), AdminLoginLogInfoResponse.class)));
     }
 
     private LambdaQueryWrapper<AdminLoginLogDO> buildQueryWrapper(AdminLoginLogInfoPageRequest request) {

@@ -3,6 +3,7 @@ package com.wzkris.usercenter.impl.role;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
@@ -49,9 +50,8 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
 
     @Override
     public Result<Page<RoleMngResponse>> queryPage(RoleMngPageRequest request) {
-        startPage(request);
-        List<RoleInfoDO> list = roleInfoMapper.selectLists(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, RoleMngResponse.class));
+        IPage<RoleInfoDO> page = roleInfoMapper.selectPageList(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), RoleMngResponse.class)));
     }
 
     private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngPageRequest request) {

@@ -2,6 +2,7 @@ package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
 import com.wzkris.usercenter.api.tenant.response.TenantMngResponse;
@@ -10,8 +11,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * 租户表 数据层
@@ -27,7 +26,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             LEFT JOIN biz.tenant_wallet_info w ON t.tenant_id = w.tenant_id
             ${ew.customSqlSegment}
             """)
-    List<TenantMngResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
+    IPage<TenantMngResponse> selectVOPage(IPage<TenantMngResponse> page, @Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
 
     @Select("""
             SELECT t.*, p.package_name, p.member_num_limit, p.post_num_limit, w.balance

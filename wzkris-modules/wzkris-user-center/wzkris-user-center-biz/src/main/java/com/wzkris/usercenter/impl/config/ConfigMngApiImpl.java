@@ -3,6 +3,7 @@ package com.wzkris.usercenter.impl.config;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
@@ -18,8 +19,6 @@ import com.wzkris.usercenter.service.ConfigInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
@@ -30,9 +29,8 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
 
     @Override
     public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
-        startPage(request);
-        List<ConfigInfoDO> list = configInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, ConfigInfoResponse.class));
+        IPage<ConfigInfoDO> page = configInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), ConfigInfoResponse.class)));
     }
 
     private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigMngPageRequest request) {

@@ -3,6 +3,7 @@ package com.wzkris.usercenter.impl.adminlog.operate;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.utils.BeanUtil;
@@ -15,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class AdminOperateLogMngApiImpl
@@ -27,9 +26,8 @@ public class AdminOperateLogMngApiImpl
 
     @Override
     public Result<Page<AdminOperateLogMngResponse>> queryPage(AdminOperateLogMngPageRequest request) {
-        startPage(request);
-        List<AdminOperateLogDO> list = adminOperateLogService.list(buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, AdminOperateLogMngResponse.class));
+        IPage<AdminOperateLogDO> page = adminOperateLogService.page(request.buildPage(), buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), AdminOperateLogMngResponse.class)));
     }
 
     private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogMngPageRequest request) {

@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.impl.customer;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
@@ -28,9 +29,8 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
 
     @Override
     public Result<Page<CustomerMngResponse>> queryPage(CustomerMngPageRequest request) {
-        startPage(request);
-        List<CustomerInfoDO> list = customerInfoService.list(this.buildQueryWrapper(request));
-        return getPageResult(BeanUtil.convert(list, CustomerMngResponse.class));
+        IPage<CustomerInfoDO> page = customerInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
+        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), CustomerMngResponse.class)));
     }
 
     private LambdaQueryWrapper<CustomerInfoDO> buildQueryWrapper(CustomerMngPageRequest request) {
