@@ -2,7 +2,7 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.api.menu.response.MetaResponse;
 import com.wzkris.usercenter.api.menu.response.RouterResponse;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MenuInfoServiceImpl
-        extends ServiceImpl<MenuInfoMapper, MenuInfoDO>
+        extends ServiceImplPlus<MenuInfoMapper, MenuInfoDO>
         implements MenuInfoService {
 
     private final TenantInfoMapper tenantInfoMapper;

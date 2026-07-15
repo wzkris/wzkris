@@ -57,7 +57,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         if (!deptInfoMapper.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(deptInfoMapper.selectById(deptId), DeptMngResponse.class));
+        return ok(BeanUtil.convert(deptInfoService.getById(deptId), DeptMngResponse.class));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
             return accessDenied("数据权限不足");
         }
         if (ObjectUtils.isNotEmpty(request.getParentId()) && request.getParentId() != 0) {
-            DeptInfoDO info = deptInfoMapper.selectById(request.getParentId());
+            DeptInfoDO info = deptInfoService.getById(request.getParentId());
             if (DeptStatusEnum.DISABLE == info.getStatus()) {
                 return requestFail("无法在被禁用的部门下添加下级");
             }
@@ -95,7 +95,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         if (!deptInfoMapper.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
-        if (deptInfoMapper.exists(Wrappers.lambdaQuery(DeptInfoDO.class)
+        if (deptInfoService.exists(Wrappers.lambdaQuery(DeptInfoDO.class)
                 .eq(DeptInfoDO::getParentId, deptId))) {
             return requestFail("存在下级部门，不允许删除");
         }

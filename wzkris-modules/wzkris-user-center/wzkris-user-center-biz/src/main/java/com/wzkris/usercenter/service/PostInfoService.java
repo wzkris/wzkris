@@ -1,13 +1,13 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.response.SelectResponse;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
 
-public interface PostInfoService extends IService<PostInfoDO> {
+public interface PostInfoService extends IServicePlus<PostInfoDO> {
 
     /**
      * 根据租户成员ID查询关联职位(正常状态)

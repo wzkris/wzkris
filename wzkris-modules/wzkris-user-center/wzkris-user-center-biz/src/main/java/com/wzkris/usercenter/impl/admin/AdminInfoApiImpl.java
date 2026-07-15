@@ -11,12 +11,12 @@ import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.api.admin.response.ChatPersonResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.DeptInfoDO;
-import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.usercenter.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
 import com.wzkris.usercenter.service.AdminInfoService;
+import com.wzkris.usercenter.service.DeptInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +33,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
 
     private final RoleInfoService roleInfoService;
 
-    private final DeptInfoMapper deptInfoMapper;
+    private final DeptInfoService deptInfoService;
 
     private final ICaptchaRemote captchaRemote;
 
@@ -54,7 +54,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         adminInfoVO.setPhoneNumber(adminInfoDO.getPhoneNumber());
         adminInfoVO.setGender(adminInfoDO.getGender());
         adminInfoVO.setLoginDate(adminInfoDO.getLoginDate());
-        DeptInfoDO deptInfoDO = deptInfoMapper.selectById(adminInfoDO.getDeptId());
+        DeptInfoDO deptInfoDO = deptInfoService.getById(adminInfoDO.getDeptId());
         adminInfoVO.setDeptName(deptInfoDO == null ? "" : deptInfoDO.getDeptName());
         adminInfoVO.setRoleGroup(issuper ? SecurityConstants.SUPER_ADMIN_NAME : roleInfoService.getRoleGroup(uid));
         return ok(adminInfoVO);

@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.AdminLoginLogDO;
 
 /**
@@ -9,6 +9,6 @@ import com.wzkris.usercenter.domain.AdminLoginLogDO;
  * @description : 登录日志
  * @date : 2024/1/10 13:55
  */
-public interface AdminLoginLogService extends IService<AdminLoginLogDO> {
+public interface AdminLoginLogService extends IServicePlus<AdminLoginLogDO> {
 
 }

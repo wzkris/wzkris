@@ -31,7 +31,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     @Override
     public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
         startPage(request);
-        List<ConfigInfoDO> list = configInfoMapper.selectList(this.buildQueryWrapper(request));
+        List<ConfigInfoDO> list = configInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, ConfigInfoResponse.class));
     }
 
@@ -50,7 +50,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     @Override
     public Result<ConfigInfoResponse> queryInfo(IdRequest request) {
         Long configId = request.getId();
-        return ok(BeanUtil.convert(configInfoMapper.selectById(configId), ConfigInfoResponse.class));
+        return ok(BeanUtil.convert(configInfoService.getById(configId), ConfigInfoResponse.class));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     @Override
     public Result<Void> remove(IdRequest request) {
         Long configId = request.getId();
-        ConfigInfoDO config = configInfoMapper.selectById(configId);
+        ConfigInfoDO config = configInfoService.getById(configId);
         if (config.getBuiltIn()) {
             return requestFail(String.format("内置参数'%s'不能删除", config.getConfigKey()));
         }

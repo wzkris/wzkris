@@ -3,7 +3,7 @@ package com.wzkris.usercenter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.usercenter.domain.*;
@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TenantInfoServiceImpl
-        extends ServiceImpl<TenantInfoMapper, TenantInfoDO>
+        extends ServiceImplPlus<TenantInfoMapper, TenantInfoDO>
         implements TenantInfoService {
 
     private final MemberInfoMapper memberInfoMapper;

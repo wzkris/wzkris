@@ -14,7 +14,6 @@ import com.wzkris.usercenter.api.announcement.request.AnnouncementMngSaveRequest
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngUpdateRequest;
 import com.wzkris.usercenter.api.announcement.response.AnnouncementMngResponse;
 import com.wzkris.usercenter.domain.AnnouncementInfoDO;
-import com.wzkris.usercenter.mapper.AnnouncementInfoMapper;
 import com.wzkris.usercenter.service.AnnouncementInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,14 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementMngApi {
 
-    private final AnnouncementInfoMapper announcementInfoMapper;
-
     private final AnnouncementInfoService announcementInfoService;
 
     @Override
     public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request) {
         startPage(request);
-        List<AnnouncementInfoDO> list = announcementInfoMapper.selectList(this.buildQueryWrapper(request));
+        List<AnnouncementInfoDO> list = announcementInfoService.list(this.buildQueryWrapper(request));
         return getPageResult(BeanUtil.convert(list, AnnouncementMngResponse.class));
     }
 
@@ -46,26 +43,26 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     @Override
     public Result<AnnouncementMngResponse> queryInfo(IdRequest request) {
         Long announcementId = request.getId();
-        return ok(BeanUtil.convert(announcementInfoMapper.selectById(announcementId), AnnouncementMngResponse.class));
+        return ok(BeanUtil.convert(announcementInfoService.getById(announcementId), AnnouncementMngResponse.class));
     }
 
     @Override
     public Result<Void> save(AnnouncementMngSaveRequest request) {
         AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
         announcementInfoDO.setStatus(request.getStatus());
-        return toRes(announcementInfoMapper.insert(announcementInfoDO));
+        return toRes(announcementInfoService.save(announcementInfoDO));
     }
 
     @Override
     public Result<Void> update(AnnouncementMngUpdateRequest request) {
         AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
         announcementInfoDO.setStatus(request.getStatus());
-        return toRes(announcementInfoMapper.updateById(announcementInfoDO));
+        return toRes(announcementInfoService.updateById(announcementInfoDO));
     }
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        return toRes(announcementInfoMapper.deleteByIds(request.getIdList()));
+        return toRes(announcementInfoService.removeByIds(request.getIdList()));
     }
 
 }

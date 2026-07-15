@@ -1,12 +1,12 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.api.notification.request.SimpleMessageRequest;
 import com.wzkris.usercenter.domain.NotificationInfoDO;
 
 import java.util.List;
 
-public interface NotificationInfoService extends IService<NotificationInfoDO> {
+public interface NotificationInfoService extends IServicePlus<NotificationInfoDO> {
 
     void save2Admin(List<Long> adminIds, SimpleMessageRequest messageDTO);
 

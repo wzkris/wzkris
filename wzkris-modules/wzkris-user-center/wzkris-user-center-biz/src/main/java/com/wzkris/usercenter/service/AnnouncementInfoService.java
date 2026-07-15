@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.AnnouncementInfoDO;
 
 /**
@@ -8,6 +8,6 @@ import com.wzkris.usercenter.domain.AnnouncementInfoDO;
  *
  * @author wzkris
  */
-public interface AnnouncementInfoService extends IService<AnnouncementInfoDO> {
+public interface AnnouncementInfoService extends IServicePlus<AnnouncementInfoDO> {
 
 }

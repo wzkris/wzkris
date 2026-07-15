@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 
 import java.util.Collections;
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface TenantInfoService extends IService<TenantInfoDO> {
+public interface TenantInfoService extends IServicePlus<TenantInfoDO> {
 
     /**
      * 添加租户, 会创建租户管理员账号

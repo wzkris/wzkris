@@ -38,7 +38,7 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
     public Result<MemberInfoResponse> queryInfo() {
         Long uid = SecurityUtil.getUid();
         boolean issuper = SecurityUtil.isSuperTenant();
-        MemberInfoDO member = memberInfoMapper.selectById(uid);
+        MemberInfoDO member = memberInfoService.getById(uid);
         if (member == null) {
             member = new MemberInfoDO();
         }

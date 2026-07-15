@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.ConfigInfoDO;
 import com.wzkris.usercenter.mapper.ConfigInfoMapper;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ConfigInfoServiceImpl
-        extends ServiceImpl<ConfigInfoMapper, ConfigInfoDO>
+        extends ServiceImplPlus<ConfigInfoMapper, ConfigInfoDO>
         implements ConfigInfoService, SmartInitializingSingleton {
 
     private static final String DICT_KEY = "system-config";

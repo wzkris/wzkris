@@ -16,7 +16,11 @@ import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
-import com.wzkris.usercenter.mapper.*;
+import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
+import com.wzkris.usercenter.service.MemberInfoService;
+import com.wzkris.usercenter.service.MenuInfoService;
+import com.wzkris.usercenter.service.PostInfoService;
+import com.wzkris.usercenter.service.TenantInfoService;
 import com.wzkris.usercenter.service.TenantPackageInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -42,28 +46,28 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
 
     private static final long EXPIRING_SOON_MILLIS = 30L * 24 * 60 * 60 * 1000;
 
-    private final TenantInfoMapper tenantInfoMapper;
+    private final TenantInfoService tenantInfoService;
 
     private final TenantPackageInfoService tenantPackageInfoService;
 
     private final TenantPackageInfoMapper tenantPackageInfoMapper;
 
-    private final MemberInfoMapper memberInfoMapper;
+    private final MemberInfoService memberInfoService;
 
-    private final PostInfoMapper postInfoMapper;
+    private final PostInfoService postInfoService;
 
     // =============== 配额注册表 ===============
 
-    private final MenuInfoMapper menuInfoMapper;
+    private final MenuInfoService menuInfoService;
 
     private List<QuotaDefinition> getQuotaDefinitions() {
         return List.of(
                 new QuotaDefinition("account",
-                        tenantId -> Math.toIntExact(memberInfoMapper.selectCount(
+                        tenantId -> Math.toIntExact(memberInfoService.count(
                                 Wrappers.lambdaQuery(com.wzkris.usercenter.domain.MemberInfoDO.class)
                                         .eq(com.wzkris.usercenter.domain.MemberInfoDO::getTenantId, tenantId)))),
                 new QuotaDefinition("post",
-                        tenantId -> Math.toIntExact(postInfoMapper.selectCount(
+                        tenantId -> Math.toIntExact(postInfoService.count(
                                 Wrappers.lambdaQuery(com.wzkris.usercenter.domain.PostInfoDO.class)
                                         .eq(com.wzkris.usercenter.domain.PostInfoDO::getTenantId, tenantId))))
         );
@@ -80,7 +84,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
     @Override
     public Result<TenantPackageInfoResponse> queryInfo() {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        TenantInfoDO tenant = tenantInfoMapper.selectById(tenantUser.getTenantId());
+        TenantInfoDO tenant = tenantInfoService.getById(tenantUser.getTenantId());
         if (tenant == null) {
             return requestFail("租户不存在");
         }
@@ -134,7 +138,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
         if (CollectionUtils.isEmpty(menuIds)) {
             return List.of();
         }
-        List<MenuInfoDO> menus = menuInfoMapper.selectList(Wrappers.lambdaQuery(MenuInfoDO.class)
+        List<MenuInfoDO> menus = menuInfoService.list(Wrappers.lambdaQuery(MenuInfoDO.class)
                 .in(MenuInfoDO::getMenuType, MenuTypeEnum.DIR, MenuTypeEnum.MENU, MenuTypeEnum.INNERLINK, MenuTypeEnum.OUTLINK)
                 .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT)

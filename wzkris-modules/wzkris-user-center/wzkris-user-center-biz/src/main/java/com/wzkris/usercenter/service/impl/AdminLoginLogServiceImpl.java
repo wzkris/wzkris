@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.AdminLoginLogDO;
 import com.wzkris.usercenter.mapper.AdminLoginLogMapper;
 import com.wzkris.usercenter.service.AdminLoginLogService;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AdminLoginLogServiceImpl
-        extends ServiceImpl<AdminLoginLogMapper, AdminLoginLogDO>
+        extends ServiceImplPlus<AdminLoginLogMapper, AdminLoginLogDO>
         implements AdminLoginLogService {
 
 }

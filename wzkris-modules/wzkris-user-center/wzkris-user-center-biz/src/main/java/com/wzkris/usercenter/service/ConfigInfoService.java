@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.ConfigInfoDO;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -10,7 +10,7 @@ import jakarta.annotation.Nullable;
  *
  * @author wzkris
  */
-public interface ConfigInfoService extends IService<ConfigInfoDO> {
+public interface ConfigInfoService extends IServicePlus<ConfigInfoDO> {
 
     /**
      * 加载参数缓存数据

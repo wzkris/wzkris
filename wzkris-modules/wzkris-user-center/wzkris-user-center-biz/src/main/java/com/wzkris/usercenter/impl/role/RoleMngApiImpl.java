@@ -68,7 +68,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(roleInfoMapper.selectById(roleId), RoleMngResponse.class));
+        return ok(BeanUtil.convert(roleInfoService.getById(roleId), RoleMngResponse.class));
     }
 
     @Override

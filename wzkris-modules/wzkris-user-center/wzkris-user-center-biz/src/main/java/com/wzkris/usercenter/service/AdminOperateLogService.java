@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.AdminOperateLogDO;
 
 /**
@@ -8,6 +8,6 @@ import com.wzkris.usercenter.domain.AdminOperateLogDO;
  *
  * @author wzkris
  */
-public interface AdminOperateLogService extends IService<AdminOperateLogDO> {
+public interface AdminOperateLogService extends IServicePlus<AdminOperateLogDO> {
 
 }

@@ -34,7 +34,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     public Result<Page<DictionaryMngResponse>> queryPage(DictionaryMngPageRequest request) {
         startPage(request);
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(request);
-        List<DictionaryInfoDO> source = dictionaryInfoMapper.selectList(lqw);
+        List<DictionaryInfoDO> source = dictionaryInfoService.list(lqw);
         List<DictionaryMngResponse> result = source.stream().map(this::toMngResponse).toList();
         return getPageResult(result);
     }
@@ -49,7 +49,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     @Override
     public Result<DictionaryMngResponse> queryInfo(IdRequest request) {
         Long dictId = request.getId();
-        DictionaryInfoDO source = dictionaryInfoMapper.selectById(dictId);
+        DictionaryInfoDO source = dictionaryInfoService.getById(dictId);
         return ok(toMngResponse(source));
     }
 

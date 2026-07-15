@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.response.SelectResponse;
 import jakarta.annotation.Nullable;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface RoleInfoService extends IService<RoleInfoDO> {
+public interface RoleInfoService extends IServicePlus<RoleInfoDO> {
 
     /**
      * 根据管理员ID查询关联角色(正常状态)

@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.response.SelectTreeResponse;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface DeptInfoService extends IService<DeptInfoDO> {
+public interface DeptInfoService extends IServicePlus<DeptInfoDO> {
 
     /**
      * 新增保存部门信息

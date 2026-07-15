@@ -43,7 +43,7 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
     @Override
     public Result<Void> updateOperPwd(PasswordUpdateRequest request) {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        String operPwd = tenantInfoMapper.selectOneFieldByField(
+        String operPwd = tenantInfoService.getOneFieldByField(
                 TenantInfoDO::getTenantId, tenantUser.getTenantId(), TenantInfoDO::getOperPwd);
         if (!passwordEncoder.matches(request.getOldPassword(), operPwd)) {
             return requestFail("修改密码失败，旧密码错误");

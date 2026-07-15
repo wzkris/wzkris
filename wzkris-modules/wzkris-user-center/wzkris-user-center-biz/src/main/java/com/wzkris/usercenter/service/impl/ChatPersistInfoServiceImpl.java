@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.ChatPersistInfoDO;
 import com.wzkris.usercenter.enums.chat.MediaFormatEnum;
 import com.wzkris.usercenter.enums.chat.ResourceTypeEnum;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 
 @Service
-public class ChatPersistInfoServiceImpl extends ServiceImpl<ChatPersistInfoMapper, ChatPersistInfoDO>
+public class ChatPersistInfoServiceImpl extends ServiceImplPlus<ChatPersistInfoMapper, ChatPersistInfoDO>
         implements ChatPersistInfoService {
 
     @Override

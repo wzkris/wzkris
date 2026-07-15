@@ -1,12 +1,12 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
 
-public interface MemberInfoService extends IService<MemberInfoDO> {
+public interface MemberInfoService extends IServicePlus<MemberInfoDO> {
 
     /**
      * 新增信息

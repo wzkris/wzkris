@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.CustomerWalletInfoDO;
 import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
 import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 @Service
 @RequiredArgsConstructor
 public class CustomerWalletInfoServiceImpl
-        extends ServiceImpl<CustomerWalletInfoMapper, CustomerWalletInfoDO>
+        extends ServiceImplPlus<CustomerWalletInfoMapper, CustomerWalletInfoDO>
         implements CustomerWalletInfoService {
 
     private final CustomerWalletRecordMapper customerWalletRecordMapper;

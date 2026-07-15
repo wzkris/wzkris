@@ -2,7 +2,7 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DeptInfoServiceImpl
-        extends ServiceImpl<DeptInfoMapper, DeptInfoDO>
+        extends ServiceImplPlus<DeptInfoMapper, DeptInfoDO>
         implements DeptInfoService {
 
     private final RoleToDeptMapper roleToDeptMapper;

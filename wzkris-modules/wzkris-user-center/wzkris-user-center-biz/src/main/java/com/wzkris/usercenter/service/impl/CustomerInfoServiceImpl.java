@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
 import com.wzkris.usercenter.domain.CustomerWalletInfoDO;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CustomerInfoServiceImpl
-        extends ServiceImpl<CustomerInfoMapper, CustomerInfoDO>
+        extends ServiceImplPlus<CustomerInfoMapper, CustomerInfoDO>
         implements CustomerInfoService {
 
     private final CustomerWalletInfoMapper customerWalletInfoMapper;

@@ -13,9 +13,9 @@ import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoResponse;
 import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
-import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
+import com.wzkris.usercenter.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWalletInfoApi {
 
-    private final TenantInfoMapper tenantInfoMapper;
+    private final TenantInfoService tenantInfoService;
 
     private final TenantWalletInfoMapper tenantWalletInfoMapper;
 
@@ -54,7 +54,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
     @Override
     public Result<Void> withdrawal(WalletWithdrawalRequest request) {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        TenantInfoDO tenantInfoDO = tenantInfoMapper.selectById(tenantUser.getTenantId());
+        TenantInfoDO tenantInfoDO = tenantInfoService.getById(tenantUser.getTenantId());
         if (!passwordEncoder.matches(request.getOperPwd(), tenantInfoDO.getOperPwd())) {
             return Result.requestFail("密码错误");
         }

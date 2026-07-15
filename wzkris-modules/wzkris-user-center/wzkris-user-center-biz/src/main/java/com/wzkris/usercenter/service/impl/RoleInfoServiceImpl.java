@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.domain.RoleInheritanceDO;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RoleInfoServiceImpl
-        extends ServiceImpl<RoleInfoMapper, RoleInfoDO>
+        extends ServiceImplPlus<RoleInfoMapper, RoleInfoDO>
         implements RoleInfoService {
 
     private final RoleToMenuMapper roleToMenuMapper;

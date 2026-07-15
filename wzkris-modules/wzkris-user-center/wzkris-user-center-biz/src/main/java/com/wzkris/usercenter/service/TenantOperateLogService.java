@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.TenantOperateLogDO;
 
 /**
@@ -8,6 +8,6 @@ import com.wzkris.usercenter.domain.TenantOperateLogDO;
  *
  * @author wzkris
  */
-public interface TenantOperateLogService extends IService<TenantOperateLogDO> {
+public interface TenantOperateLogService extends IServicePlus<TenantOperateLogDO> {
 
 }

@@ -2,7 +2,7 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.DictionaryInfoDO;
 import com.wzkris.usercenter.mapper.DictionaryInfoMapper;
 import com.wzkris.usercenter.service.DictionaryInfoService;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DictionaryInfoServiceImpl
-        extends ServiceImpl<DictionaryInfoMapper, DictionaryInfoDO>
+        extends ServiceImplPlus<DictionaryInfoMapper, DictionaryInfoDO>
         implements DictionaryInfoService, SmartInitializingSingleton {
 
     private static final String DICT_KEY = "system-dictionary";

@@ -1,9 +1,9 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.DictionaryInfoDO;
 
-public interface DictionaryInfoService extends IService<DictionaryInfoDO> {
+public interface DictionaryInfoService extends IServicePlus<DictionaryInfoDO> {
 
     /**
      * 加载字典缓存数据

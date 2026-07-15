@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.response.SelectTreeResponse;
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface MenuInfoService extends IService<MenuInfoDO> {
+public interface MenuInfoService extends IServicePlus<MenuInfoDO> {
 
     /**
      * 根据角色ID集合查询权限

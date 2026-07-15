@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.notification.request.SimpleMessageRequest;
@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class NotificationInfoServiceImpl
-        extends ServiceImpl<NotificationInfoMapper, NotificationInfoDO>
+        extends ServiceImplPlus<NotificationInfoMapper, NotificationInfoDO>
         implements NotificationInfoService {
 
     private final NotificationToAdminMapper notificationToAdminMapper;

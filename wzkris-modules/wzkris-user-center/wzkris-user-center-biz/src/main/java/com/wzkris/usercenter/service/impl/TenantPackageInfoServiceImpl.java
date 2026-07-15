@@ -2,7 +2,7 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TenantPackageInfoServiceImpl
-        extends ServiceImpl<TenantPackageInfoMapper, TenantPackageInfoDO>
+        extends ServiceImplPlus<TenantPackageInfoMapper, TenantPackageInfoDO>
         implements TenantPackageInfoService {
 
     private final TenantInfoMapper tenantInfoMapper;

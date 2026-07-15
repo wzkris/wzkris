@@ -1,11 +1,11 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.TenantWalletInfoDO;
 
 import java.math.BigDecimal;
 
-public interface TenantWalletInfoService extends IService<TenantWalletInfoDO> {
+public interface TenantWalletInfoService extends IServicePlus<TenantWalletInfoDO> {
 
     /**
      * 增加余额

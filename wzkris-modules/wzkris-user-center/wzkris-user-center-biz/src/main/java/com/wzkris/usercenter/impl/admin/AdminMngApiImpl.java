@@ -97,7 +97,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
         if (!adminInfoMapper.checkDataScopes(adminId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(adminInfoMapper.selectById(adminId), AdminMngResponse.class));
+        return ok(BeanUtil.convert(adminInfoService.getById(adminId), AdminMngResponse.class));
     }
 
     @Override

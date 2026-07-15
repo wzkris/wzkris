@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface TenantPackageInfoService extends IService<TenantPackageInfoDO> {
+public interface TenantPackageInfoService extends IServicePlus<TenantPackageInfoDO> {
 
     /**
      * 校验套餐是否被使用

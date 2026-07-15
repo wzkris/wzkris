@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.AdminToRoleDO;
@@ -25,7 +25,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class AdminInfoServiceImpl
-        extends ServiceImpl<AdminInfoMapper, AdminInfoDO>
+        extends ServiceImplPlus<AdminInfoMapper, AdminInfoDO>
         implements AdminInfoService {
 
     private final AdminToRoleMapper adminToRoleMapper;

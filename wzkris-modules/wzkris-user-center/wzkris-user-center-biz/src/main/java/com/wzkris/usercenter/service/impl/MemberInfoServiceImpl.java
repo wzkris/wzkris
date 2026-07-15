@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.usercenter.domain.MemberInfoDO;
@@ -21,7 +21,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class MemberInfoServiceImpl
-        extends ServiceImpl<MemberInfoMapper, MemberInfoDO>
+        extends ServiceImplPlus<MemberInfoMapper, MemberInfoDO>
         implements MemberInfoService {
 
     private final MemberToPostMapper memberToPostMapper;
