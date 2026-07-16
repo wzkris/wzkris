@@ -13,7 +13,6 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.exception.CustomErrorCodes;
@@ -111,12 +110,10 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         LoginAdminUser adminUser = new LoginAdminUser();
         adminUser.setUid(adminInfoResponse.getAdminId());
         adminUser.setAuthType(AuthTypeEnum.ADMIN);
-        adminUser.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId())
-                ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NONE);
+        adminUser.setSuperUser(SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId()));
         adminUser.setPhoneNumber(adminInfoResponse.getPhoneNumber());
         adminUser.setUsername(adminInfoResponse.getUsername());
-        adminUser.setDeptScopes(permissions.getDeptScopes());
+        adminUser.setRoles(permissions.getRoles());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())
@@ -144,7 +141,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         LoginAdminUser adminUser = new LoginAdminUser();
         adminUser.setUid(userResp.getAdminId());
         adminUser.setAuthType(AuthTypeEnum.ADMIN);
-        adminUser.setIdentityType(IdentityTypeEnum.NONE);
+        adminUser.setSuperUser(false);
         adminUser.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()

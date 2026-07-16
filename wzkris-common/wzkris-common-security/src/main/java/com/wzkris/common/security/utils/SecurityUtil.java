@@ -1,7 +1,6 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;
@@ -129,30 +128,21 @@ public final class SecurityUtil {
     }
 
     /**
+     * 判断是否管理员用户
+     *
+     * @return 管理员用户
+     */
+    public static boolean isSuperUser() {
+        return getLoginUser().isSuperUser();
+    }
+
+    /**
      * 获取当前标签
      *
      * @return 标签
      */
     public static String getHint() {
         return StringUtil.defaultIfEmpty(getLoginUser().getHint(), StringUtil.EMPTY);
-    }
-
-    /**
-     * 获取当前身份类型
-     *
-     * @return 身份类型
-     */
-    @Nullable
-    public static IdentityTypeEnum getIdentityType() {
-        return getLoginUser().getIdentityType();
-    }
-
-    public static boolean isSuperAdmin() {
-        return isAuth(AuthTypeEnum.ADMIN) && getIdentityType() == IdentityTypeEnum.SUPER;
-    }
-
-    public static boolean isSuperTenant() {
-        return isAuth(AuthTypeEnum.TENANT) && getIdentityType() == IdentityTypeEnum.SUPER;
     }
 
 }

@@ -17,6 +17,7 @@ import com.wzkris.usercenter.api.admin.request.*;
 import com.wzkris.usercenter.api.admin.response.AdminInfoExportResponse;
 import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
+import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.event.CreateAdminEvent;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
@@ -86,7 +87,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
             return accessDenied("数据权限不足");
         }
         CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
-        checkedSelectResponse.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listIdByAdminId(adminId));
+        checkedSelectResponse.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listByAdminId(adminId, false).stream().map(RoleInfoDO::getRoleId).toList());
         checkedSelectResponse.setSelects(roleInfoService.listRoleSelect(request.getRoleName()));
         return ok(checkedSelectResponse);
     }

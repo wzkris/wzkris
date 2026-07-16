@@ -1,7 +1,8 @@
 package com.wzkris.usercenter.impl.member;
 
-import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
@@ -33,21 +36,18 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
 
     @Override
     public Result<MemberInfoResponse> queryInfo() {
-        Long uid = SecurityUtil.getUid();
-        boolean issuper = SecurityUtil.isSuperTenant();
-        MemberInfoDO member = memberInfoService.getById(uid);
-        if (member == null) {
-            member = new MemberInfoDO();
-        }
+        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        MemberInfoDO member = memberInfoService.getById(loginUser.getUid());
         MemberInfoResponse memberInfoVO = new MemberInfoResponse();
-        memberInfoVO.setAdmin(issuper);
+        memberInfoVO.setAdmin(loginUser.isSuperUser());
         memberInfoVO.setUsername(member.getUsername());
         memberInfoVO.setAuthorities(SecurityUtil.getPermission());
         memberInfoVO.setAvatar(member.getAvatar());
         memberInfoVO.setPhoneNumber(member.getPhoneNumber());
         memberInfoVO.setGender(member.getGender());
         memberInfoVO.setLoginDate(member.getLoginDate());
-        memberInfoVO.setPostGroup(issuper ? SecurityConstants.SUPER_ADMIN_NAME : postInfoService.getPostGroup(uid));
+        memberInfoVO.setPostGroup(loginUser.getRoles().stream()
+                .map(UserRole::getName).collect(Collectors.joining(",")));
         return ok(memberInfoVO);
     }
 

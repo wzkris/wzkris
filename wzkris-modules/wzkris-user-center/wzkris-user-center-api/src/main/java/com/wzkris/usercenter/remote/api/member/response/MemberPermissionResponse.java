@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.remote.api.member.response;
 
+import com.wzkris.common.core.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,9 +23,13 @@ public class MemberPermissionResponse implements Serializable {
      */
     private List<String> grantedAuthority;
 
+    /**
+     * 用户角色列表（租户体系为岗位）
+     */
+    private List<UserRole> roles;
+
     public boolean getAdmin() {
         return this.admin;
     }
 
 }
-

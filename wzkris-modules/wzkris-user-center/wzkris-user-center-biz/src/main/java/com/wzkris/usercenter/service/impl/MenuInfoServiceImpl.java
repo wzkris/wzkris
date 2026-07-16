@@ -8,6 +8,8 @@ import com.wzkris.usercenter.api.menu.response.MetaResponse;
 import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.MenuInfoDO;
+import com.wzkris.usercenter.domain.PostInfoDO;
+import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
@@ -24,6 +26,7 @@ import com.wzkris.usercenter.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -119,6 +122,9 @@ public class MenuInfoServiceImpl
             return Collections.emptyList();
         }
         List<Long> menuIds = roleToMenuMapper.listMenuIdByRoleIds(roleIds);
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
         return this.listPermsByMenuIds(menuIds);
     }
 
@@ -128,24 +134,21 @@ public class MenuInfoServiceImpl
             return Collections.emptyList();
         }
         List<Long> menuIds = postToMenuMapper.listMenuIdByPostIds(postIds);
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
         return this.listPermsByMenuIds(menuIds);
     }
 
     @Override
     public List<String> listPermsByMenuIds(@Nullable List<Long> menuIds) {
-        if (CollectionUtils.isEmpty(menuIds)) {
-            return Collections.emptyList();
-        }
-
-        return this.lambdaQuery()
-                .select(MenuInfoDO::getPerms)
-                .in(MenuInfoDO::getMenuId, menuIds)
-                .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
-                .list()
+        return this.listObjs(Wrappers.lambdaQuery(this.getEntityClass())
+                        .select(MenuInfoDO::getPerms)
+                        .in(ObjectUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
+                        .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE), Object::toString)
                 .stream()
-                .filter(Objects::nonNull)
-                .map(MenuInfoDO::getPerms)
                 .filter(StringUtil::isNotBlank)
+                .distinct()
                 .toList();
     }
 
@@ -153,6 +156,9 @@ public class MenuInfoServiceImpl
     public List<String> listPermsByTenantPackageId(Long tenantPackageId) {
         // 查出套餐绑定的所有菜单
         List<Long> menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
         return listPermsByMenuIds(menuIds);
     }
 
@@ -258,7 +264,8 @@ public class MenuInfoServiceImpl
      */
     @Override
     public List<Long> listMenuIdByAdminId(Long adminId) {
-        List<Long> roleIds = roleInfoService.listInheritedIdByAdminId(adminId);
+        List<Long> roleIds = roleInfoService.listByAdminId(adminId, true).stream()
+                .map(RoleInfoDO::getRoleId).toList();
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -267,7 +274,8 @@ public class MenuInfoServiceImpl
 
     @Override
     public List<Long> listMenuIdByMemberId(Long memberId) {
-        List<Long> postIds = postInfoService.listIdByMemberId(memberId);
+        List<Long> postIds = postInfoService.listByMemberId(memberId).stream()
+                .map(PostInfoDO::getPostId).toList();
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }

@@ -1,11 +1,10 @@
 package com.wzkris.common.security.model;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.AbsBaseLoginUser;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
-
-import java.util.Collection;
 
 /**
  * 管理员用户视图。
@@ -19,11 +18,14 @@ public class LoginAdminUser extends AbsBaseLoginUser {
     @Nullable
     private String phoneNumber;
 
-    private Collection deptScopes;
-
     @Override
     public String getName() {
         return this.username;
+    }
+
+    @Override
+    public final AuthTypeEnum getAuthType() {
+        return AuthTypeEnum.ADMIN;
     }
 
 }

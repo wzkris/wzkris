@@ -1,5 +1,6 @@
 package com.wzkris.auth.remote.interfaces.admin.response;
 
+import com.wzkris.common.core.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,8 @@ public class AdminPermissionResponse implements Serializable {
     private List<String> grantedAuthority;
 
     /**
-     * 部门数据权限
+     * 用户角色列表（携带数据权限信息）
      */
-    private List<Long> deptScopes;
+    private List<UserRole> roles;
 
 }
-

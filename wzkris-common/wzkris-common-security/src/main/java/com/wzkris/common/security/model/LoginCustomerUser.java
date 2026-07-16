@@ -1,5 +1,6 @@
 package com.wzkris.common.security.model;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.AbsBaseLoginUser;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,11 @@ public class LoginCustomerUser extends AbsBaseLoginUser {
     @Override
     public String getName() {
         return getUid() == null ? "" : String.valueOf(getUid());
+    }
+
+    @Override
+    public final AuthTypeEnum getAuthType() {
+        return AuthTypeEnum.CUSTOMER;
     }
 
 }

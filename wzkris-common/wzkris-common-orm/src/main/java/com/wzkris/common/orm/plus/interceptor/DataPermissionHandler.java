@@ -68,11 +68,6 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
             return null;
         }
 
-        // 超级管理员跳过所有数据权限
-        if (SecurityUtil.isSuperAdmin()) {
-            return null;
-        }
-
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         if (loginUser == null) {
             return null;

@@ -1,10 +1,11 @@
 package com.wzkris.usercenter.impl.admin;
 
-import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
@@ -41,11 +42,10 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
 
     @Override
     public Result<AdminInfoResponse> queryInfo() {
-        final Long uid = SecurityUtil.getUid();
-        boolean issuper = SecurityUtil.isSuperAdmin();
-        AdminInfoDO adminInfoDO = adminInfoService.getById(uid);
+        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        AdminInfoDO adminInfoDO = adminInfoService.getById(loginUser.getUid());
         AdminInfoResponse adminInfoVO = new AdminInfoResponse();
-        adminInfoVO.setAdmin(issuper);
+        adminInfoVO.setAdmin(loginUser.isSuperUser());
         adminInfoVO.setUsername(adminInfoDO.getUsername());
         adminInfoVO.setAuthorities(SecurityUtil.getPermission());
         adminInfoVO.setAvatar(adminInfoDO.getAvatar());
@@ -56,7 +56,8 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         adminInfoVO.setLoginDate(adminInfoDO.getLoginDate());
         DeptInfoDO deptInfoDO = deptInfoService.getById(adminInfoDO.getDeptId());
         adminInfoVO.setDeptName(deptInfoDO == null ? "" : deptInfoDO.getDeptName());
-        adminInfoVO.setRoleGroup(issuper ? SecurityConstants.SUPER_ADMIN_NAME : roleInfoService.getRoleGroup(uid));
+        adminInfoVO.setRoleGroup(loginUser.getRoles().stream()
+                .map(UserRole::getName).collect(Collectors.joining(",")));
         return ok(adminInfoVO);
     }
 

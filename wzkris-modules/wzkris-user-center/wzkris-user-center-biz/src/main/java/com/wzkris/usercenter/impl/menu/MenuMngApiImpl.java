@@ -12,6 +12,7 @@ import com.wzkris.usercenter.api.menu.request.MenuMngTreeRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngSaveRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngUpdateRequest;
 import com.wzkris.usercenter.api.menu.response.MenuMngResponse;
+import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import com.wzkris.usercenter.service.MenuInfoService;
@@ -37,7 +38,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngTreeRequest request) {
         List<Long> menuIds = new ArrayList<>();
-        if (!SecurityUtil.isSuperAdmin()) {
+        if (!SecurityUtil.isSuperUser()) {
             menuIds = menuInfoService.listMenuIdByAdminId(SecurityUtil.getUid());
         }
         return new LambdaQueryWrapper<MenuInfoDO>()

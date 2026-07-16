@@ -16,6 +16,7 @@ import com.wzkris.usercenter.api.member.MemberMngApi;
 import com.wzkris.usercenter.api.member.request.*;
 import com.wzkris.usercenter.api.member.response.MemberMngResponse;
 import com.wzkris.usercenter.domain.MemberInfoDO;
+import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.event.CreateMemberEvent;
 import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.request.PwdResetRequest;
@@ -76,7 +77,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     public Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request) {
         Long memberId = request.getMemberId();
         CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
-        checkedSelectResponse.setCheckedKeys(memberId == null ? Collections.emptyList() : postInfoService.listIdByMemberId(memberId));
+        checkedSelectResponse.setCheckedKeys(memberId == null ? Collections.emptyList() : postInfoService.listByMemberId(memberId).stream().map(PostInfoDO::getPostId).toList());
         checkedSelectResponse.setSelects(postInfoService.listSelect(request.getPostName()));
         return ok(checkedSelectResponse);
     }

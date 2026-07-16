@@ -12,7 +12,6 @@ import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.enums.IdentityTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.exception.CustomErrorCodes;
@@ -113,11 +112,10 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         LoginTenantUser tenantUser = new LoginTenantUser();
         tenantUser.setUid(memberInfoResponse.getMemberId());
         tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setIdentityType(permissions.getAdmin()
-                ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NONE);
+        tenantUser.setSuperUser(permissions.getAdmin());
         tenantUser.setUsername(memberInfoResponse.getUsername());
         tenantUser.setTenantId(memberInfoResponse.getTenantId());
+        tenantUser.setRoles(permissions.getRoles());
 
         Set<String> perms = permissions.getGrantedAuthority() != null
                 ? new HashSet<>(permissions.getGrantedAuthority())
@@ -155,7 +153,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         LoginTenantUser tenantUser = new LoginTenantUser();
         tenantUser.setUid(memberResp.getMemberId());
         tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setIdentityType(IdentityTypeEnum.NONE);
+        tenantUser.setSuperUser(false);
         tenantUser.setUsername(memberResp.getUsername());
         tenantUser.setTenantId(memberResp.getTenantId());
 
