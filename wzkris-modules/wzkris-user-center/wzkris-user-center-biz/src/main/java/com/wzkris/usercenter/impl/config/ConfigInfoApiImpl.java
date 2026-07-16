@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.impl.config;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.AbstractApi;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.config.ConfigInfoApi;
 import com.wzkris.usercenter.api.config.request.ConfigInfoQueryRequest;
 import com.wzkris.usercenter.service.ConfigInfoService;

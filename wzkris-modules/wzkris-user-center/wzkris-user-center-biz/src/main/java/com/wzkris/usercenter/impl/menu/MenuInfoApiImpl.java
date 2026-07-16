@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.impl.menu;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.AbstractApi;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.menu.MenuInfoApi;
 import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.service.MenuInfoService;

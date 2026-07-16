@@ -1,4 +1,4 @@
-package com.wzkris.common.orm.model;
+package com.wzkris.common.web.model;
 
 import com.wzkris.common.core.model.Result;
 

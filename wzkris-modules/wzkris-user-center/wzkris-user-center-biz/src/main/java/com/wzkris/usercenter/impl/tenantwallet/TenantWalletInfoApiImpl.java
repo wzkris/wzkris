@@ -3,7 +3,7 @@ package com.wzkris.usercenter.impl.tenantwallet;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.AbstractApi;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;

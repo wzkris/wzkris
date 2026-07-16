@@ -1,12 +1,12 @@
 package com.wzkris.usercenter.impl.oauth2;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.oauth2.OAuth2ClientMngApi;
 import com.wzkris.usercenter.api.oauth2.request.ClientSecretUpdateRequest;
@@ -15,7 +15,6 @@ import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngSaveRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngUpdateRequest;
 import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngResponse;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
-import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.service.OAuth2ClientService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -25,8 +24,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientMngApi {
-
-    private final OAuth2ClientMapper oauth2ClientMapper;
 
     private final OAuth2ClientService oAuth2ClientService;
 

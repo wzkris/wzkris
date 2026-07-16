@@ -3,13 +3,12 @@ package com.wzkris.usercenter.impl.member;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.member.MemberInfoApi;
 import com.wzkris.usercenter.api.member.request.MemberInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.domain.MemberInfoDO;
-import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.usercenter.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
-
-    private final MemberInfoMapper memberInfoMapper;
 
     private final MemberInfoService memberInfoService;
 

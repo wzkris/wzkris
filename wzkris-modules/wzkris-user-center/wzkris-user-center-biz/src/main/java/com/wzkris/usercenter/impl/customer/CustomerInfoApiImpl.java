@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.impl.customer;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.orm.model.AbstractApi;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.customer.CustomerInfoApi;
 import com.wzkris.usercenter.api.customer.request.CustomerInfoBasicUpdateRequest;

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.model.AbstractApi;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.dept.DeptMngApi;

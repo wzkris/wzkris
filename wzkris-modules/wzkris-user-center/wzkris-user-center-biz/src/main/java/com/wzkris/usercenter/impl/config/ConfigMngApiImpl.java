@@ -1,12 +1,12 @@
 package com.wzkris.usercenter.impl.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.config.ConfigMngApi;
 import com.wzkris.usercenter.api.config.request.ConfigMngPageRequest;
@@ -14,7 +14,6 @@ import com.wzkris.usercenter.api.config.request.ConfigMngSaveRequest;
 import com.wzkris.usercenter.api.config.request.ConfigMngUpdateRequest;
 import com.wzkris.usercenter.api.config.response.ConfigInfoResponse;
 import com.wzkris.usercenter.domain.ConfigInfoDO;
-import com.wzkris.usercenter.mapper.ConfigInfoMapper;
 import com.wzkris.usercenter.service.ConfigInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
-
-    private final ConfigInfoMapper configInfoMapper;
 
     private final ConfigInfoService configInfoService;
 
