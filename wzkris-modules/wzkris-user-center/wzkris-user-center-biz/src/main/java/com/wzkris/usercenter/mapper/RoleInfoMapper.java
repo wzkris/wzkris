@@ -2,7 +2,7 @@ package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.wzkris.common.orm.annotation.DataColumn;
+import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
@@ -27,7 +27,7 @@ public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
     /**
      * 带权限查询列表
      */
-    @DataScope(value = {@DataColumn(alias = "rd", column = "dept_id")})
+    @DataScope(@DataPermission(alias = "rd", column = "dept_id"))
     @Select("""
             SELECT DISTINCT r.* FROM biz.role_info r LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id
             ${ew.customSqlSegment}
@@ -40,7 +40,7 @@ public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
      * @param roleIds 待操作的角色 id
      * @return 是否
      */
-    @DataScope(value = {@DataColumn(column = "rd.dept_id")})
+    @DataScope(@DataPermission(alias = "rd", column = "dept_id"))
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END

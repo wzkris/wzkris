@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.wzkris.common.orm.annotation.DataColumn;
+import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.DeptInfoDO;
@@ -52,7 +52,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
     /**
      * 带权限查询列表
      */
-    @DataScope(value = {@DataColumn(column = "dept_id")})
+    @DataScope(@DataPermission(column = "dept_id"))
     default List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper) {
         return this.selectList(queryWrapper);
     }
@@ -63,7 +63,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptIds 待操作的部门 id
      * @return 是否
      */
-    @DataScope(value = {@DataColumn(column = "dept_id")})
+    @DataScope(@DataPermission(column = "dept_id"))
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END

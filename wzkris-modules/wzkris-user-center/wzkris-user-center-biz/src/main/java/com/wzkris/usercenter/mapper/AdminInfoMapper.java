@@ -2,7 +2,7 @@ package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.wzkris.common.orm.annotation.DataColumn;
+import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
@@ -21,7 +21,6 @@ import java.util.List;
  * 用户表 数据层
  *
  * @author wzkris
- * @description 该接口全部为单表查询
  */
 @Mapper
 @Repository
@@ -30,7 +29,7 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     /**
      * 带权限查询分页数据
      */
-    @DataScope(value = {@DataColumn(alias = "d", column = "dept_id")})
+    @DataScope(@DataPermission(alias = "d", column = "dept_id"))
     @Select("""
             SELECT u.*, d.dept_name, d.status AS deptStatus
             FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
@@ -41,7 +40,7 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     /**
      * 带权限查询分页数据（分页）
      */
-    @DataScope(value = {@DataColumn(alias = "d", column = "dept_id")})
+    @DataScope(@DataPermission(alias = "d", column = "dept_id"))
     @Select("""
             SELECT u.*, d.dept_name, d.status AS deptStatus
             FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
@@ -55,7 +54,7 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
      * @param adminIds 待操作管理员 id
      * @return 返回是否
      */
-    @DataScope(value = {@DataColumn(alias = "ai", column = "dept_id")})
+    @DataScope(@DataPermission(alias = "ai", column = "dept_id"))
     @Select("""
             <script>
                 SELECT CASE WHEN COUNT(DISTINCT ai.admin_id) = ${adminIds.size()} THEN true ELSE false END

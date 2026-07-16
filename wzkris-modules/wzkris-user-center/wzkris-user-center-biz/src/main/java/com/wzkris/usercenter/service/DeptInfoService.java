@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.wzkris.common.orm.annotation.DataColumn;
+import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.DeptInfoDO;
@@ -67,7 +67,7 @@ public interface DeptInfoService extends IServicePlus<DeptInfoDO> {
      * @param queryWrapper 查询条件
      * @return 部门列表
      */
-    @DataScope(value = {@DataColumn(column = "dept_id")})
+    @DataScope(@DataPermission(column = "dept_id"))
     List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper);
 
 }

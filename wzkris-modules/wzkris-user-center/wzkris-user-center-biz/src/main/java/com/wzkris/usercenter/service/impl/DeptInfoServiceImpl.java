@@ -145,7 +145,7 @@ public class DeptInfoServiceImpl
 
     @Override
     public List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper) {
-        return baseMapper.selectList(queryWrapper);
+        return baseMapper.selectLists(queryWrapper);
     }
 
     private SelectTreeResponse convertToSelectTreeResp(DeptInfoDO dept) {
