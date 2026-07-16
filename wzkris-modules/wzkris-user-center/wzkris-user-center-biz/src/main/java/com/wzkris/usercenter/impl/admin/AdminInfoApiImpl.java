@@ -45,7 +45,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         AdminInfoDO adminInfoDO = adminInfoService.getById(loginUser.getUid());
         AdminInfoResponse adminInfoVO = new AdminInfoResponse();
-        adminInfoVO.setAdmin(loginUser.isSuperUser());
+        adminInfoVO.setAdmin(SecurityUtil.getRoleContext().isSuperUser());
         adminInfoVO.setUsername(adminInfoDO.getUsername());
         adminInfoVO.setAuthorities(SecurityUtil.getPermission());
         adminInfoVO.setAvatar(adminInfoDO.getAvatar());
@@ -56,7 +56,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         adminInfoVO.setLoginDate(adminInfoDO.getLoginDate());
         DeptInfoDO deptInfoDO = deptInfoService.getById(adminInfoDO.getDeptId());
         adminInfoVO.setDeptName(deptInfoDO == null ? "" : deptInfoDO.getDeptName());
-        adminInfoVO.setRoleGroup(loginUser.getRoles().stream()
+        adminInfoVO.setRoleGroup(SecurityUtil.getRoleContext().getRoles().stream()
                 .map(UserRole::getName).collect(Collectors.joining(",")));
         return ok(adminInfoVO);
     }

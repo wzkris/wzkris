@@ -20,11 +20,6 @@ import java.util.List;
 public class AdminPermissionResponse implements Serializable {
 
     /**
-     * 已授权限
-     */
-    private List<String> grantedAuthority;
-
-    /**
      * 用户角色列表（携带数据权限信息）
      */
     private List<UserRole> roles;

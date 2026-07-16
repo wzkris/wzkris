@@ -10,10 +10,13 @@ import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
 import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.*;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -21,7 +24,6 @@ import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -30,9 +32,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -112,17 +111,16 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         LoginTenantUser tenantUser = new LoginTenantUser();
         tenantUser.setUid(memberInfoResponse.getMemberId());
         tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setSuperUser(permissions.getAdmin());
         tenantUser.setUsername(memberInfoResponse.getUsername());
         tenantUser.setTenantId(memberInfoResponse.getTenantId());
-        tenantUser.setRoles(permissions.getRoles());
 
-        Set<String> perms = permissions.getGrantedAuthority() != null
-                ? new HashSet<>(permissions.getGrantedAuthority())
-                : Collections.emptySet();
+        // 租户管理员通过角色名判断
+        boolean isSuperUser = permissions.getRoles() != null && permissions.getRoles().stream()
+                .anyMatch(r -> SecurityConstants.SUPER_ADMIN_NAME.equals(r.getName()));
 
-        return UsernamePasswordAuthenticationToken.authenticated(
-                tenantUser, null, AuthorityUtils.createAuthorityList(perms));
+        RoleContext roleContext = new RoleContext(permissions.getRoles(), isSuperUser);
+
+        return RoleContextAuthenticationToken.authenticated(tenantUser, null, roleContext);
     }
 
     /**
@@ -153,7 +151,6 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         LoginTenantUser tenantUser = new LoginTenantUser();
         tenantUser.setUid(memberResp.getMemberId());
         tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setSuperUser(false);
         tenantUser.setUsername(memberResp.getUsername());
         tenantUser.setTenantId(memberResp.getTenantId());
 
@@ -169,4 +166,3 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     }
 
 }
-

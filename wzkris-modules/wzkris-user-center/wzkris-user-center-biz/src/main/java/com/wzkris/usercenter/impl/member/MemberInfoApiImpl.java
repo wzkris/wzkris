@@ -39,14 +39,14 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
         MemberInfoDO member = memberInfoService.getById(loginUser.getUid());
         MemberInfoResponse memberInfoVO = new MemberInfoResponse();
-        memberInfoVO.setAdmin(loginUser.isSuperUser());
+        memberInfoVO.setAdmin(SecurityUtil.getRoleContext().isSuperUser());
         memberInfoVO.setUsername(member.getUsername());
         memberInfoVO.setAuthorities(SecurityUtil.getPermission());
         memberInfoVO.setAvatar(member.getAvatar());
         memberInfoVO.setPhoneNumber(member.getPhoneNumber());
         memberInfoVO.setGender(member.getGender());
         memberInfoVO.setLoginDate(member.getLoginDate());
-        memberInfoVO.setPostGroup(loginUser.getRoles().stream()
+        memberInfoVO.setPostGroup(SecurityUtil.getRoleContext().getRoles().stream()
                 .map(UserRole::getName).collect(Collectors.joining(",")));
         return ok(memberInfoVO);
     }

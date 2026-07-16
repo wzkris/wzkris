@@ -2,10 +2,12 @@ package com.wzkris.gateway.service.impl;
 
 import com.wzkris.common.core.constant.JwtClaimConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.model.LoginClientUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
@@ -17,19 +19,16 @@ import com.wzkris.gateway.service.TokenValidateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author : wzkris
@@ -75,8 +74,9 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         String sid = jwt.getClaimAsString(JwtClaimConstants.SID);
         if (StringUtil.isBlank(sid)) {
             return introspectOAuth2(token);
+        } else {
+            return introspectCustom(authTypeEnum, Long.valueOf(jwt.getSubject()), token, sid);
         }
-        return introspectCustom(authTypeEnum, Long.valueOf(jwt.getSubject()), token, sid);
     }
 
     private String extractToken(HttpServletRequest request) {
@@ -95,7 +95,9 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         LoginClientUser clientUser = new LoginClientUser();
         clientUser.setClientId(jwt.getSubject());
         List<String> scope = jwt.getClaimAsStringList(OAuth2ParameterNames.SCOPE);
-        return buildAuthentication(clientUser, token, new HashSet<>(scope));
+        RoleContext roleContext = new RoleContext(
+                List.of(new UserRole(0L, "client", null, null, new ArrayList<>(scope))));
+        return RoleContextAuthenticationToken.authenticated(clientUser, token, roleContext);
     }
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {
@@ -106,7 +108,7 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         }
 
         LoginUserResponse LoginUserResponse = r.getData();
-        return buildAuthentication(LoginUserResponse.getLoginUser(), token, LoginUserResponse.getPermissions());
+        return RoleContextAuthenticationToken.authenticated(LoginUserResponse.getLoginUser(), token, LoginUserResponse.getRoleContext());
     }
 
     /**
@@ -122,16 +124,7 @@ public class TokenValidateServiceImpl implements TokenValidateService {
 
         LoginUserResponse LoginUserResponse = r.getData();
 
-        return buildAuthentication(LoginUserResponse.getLoginUser(), token, LoginUserResponse.getPermissions());
-    }
-
-    private Authentication buildAuthentication(BaseLoginUser baseLoginUser, String token, Set<String> permissions) {
-        return UsernamePasswordAuthenticationToken.authenticated(
-                baseLoginUser, token,
-                CollectionUtils.isNotEmpty(permissions)
-                        ? AuthorityUtils.createAuthorityList(permissions)
-                        : AuthorityUtils.NO_AUTHORITIES);
+        return RoleContextAuthenticationToken.authenticated(LoginUserResponse.getLoginUser(), token, LoginUserResponse.getRoleContext());
     }
 
 }
-

@@ -11,7 +11,9 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.ActorInfo;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
 import com.wzkris.common.security.model.LoginAdminUser;
 import com.wzkris.common.security.model.LoginTenantUser;
@@ -20,7 +22,6 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
@@ -29,7 +30,7 @@ import org.springframework.security.web.context.NullSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 /**
- * 登录态切换：ADMIN → 租户最高管理员；TENANT（含 actor）→ ADMIN。
+ * 登录态切换：ADMIN -> 租户最高管理员；TENANT（含 actor）-> ADMIN。
  */
 @Component
 public final class CustomSwitchUserFilter extends SwitchUserFilter {
@@ -92,10 +93,9 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
                     "switch target user not found");
         }
         BaseLoginUser adminUser = (BaseLoginUser) authenticated.getPrincipal();
-        authenticated.setDetails(tokenService.loginReuse(
-                adminUser,
-                AuthorityUtils.authorityListToSet(authenticated.getAuthorities()),
-                actor.getSid()));
+        RoleContext roleContext = authenticated instanceof RoleContextAuthenticationToken rcToken
+                ? rcToken.getRoleContext() : null;
+        authenticated.setDetails(tokenService.loginReuse(adminUser, roleContext, actor.getSid()));
 
         TokenClaims claims = jwtTokenHelper.parse(SecurityUtil.getTokenValue());
         tokenService.revoke(tenantUser, claims.getSid());
@@ -108,9 +108,10 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
                     BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST,
                     "switch target user not found");
         }
+        RoleContext roleContext = authenticated instanceof RoleContextAuthenticationToken rcToken
+                ? rcToken.getRoleContext() : null;
         authenticated.setDetails(tokenService.loginCreate(
-                (BaseLoginUser) authenticated.getPrincipal(),
-                AuthorityUtils.authorityListToSet(authenticated.getAuthorities())));
+                (BaseLoginUser) authenticated.getPrincipal(), roleContext));
         return authenticated;
     }
 

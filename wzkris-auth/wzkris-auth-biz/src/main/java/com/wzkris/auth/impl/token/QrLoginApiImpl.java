@@ -9,6 +9,7 @@ import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -67,8 +68,8 @@ public class QrLoginApiImpl implements QrLoginApi {
         }
 
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
-        Set<String> permission = SecurityUtil.getPermission();
-        TokenPair tokenPair = tokenService.loginCreate(loginUser, permission);
+        RoleContext roleContext = SecurityUtil.getRoleContext();
+        TokenPair tokenPair = tokenService.loginCreate(loginUser, roleContext);
 
         qrTokenResponse.setStatus(QrCodeStatusEnum.CONFIRM.getValue());
         qrTokenResponse.setAccessToken(tokenPair.accessToken());

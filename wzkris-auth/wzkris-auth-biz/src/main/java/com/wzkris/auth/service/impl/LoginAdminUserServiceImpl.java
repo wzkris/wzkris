@@ -14,7 +14,9 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.*;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.model.LoginAdminUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -22,17 +24,12 @@ import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -110,17 +107,13 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         LoginAdminUser adminUser = new LoginAdminUser();
         adminUser.setUid(adminInfoResponse.getAdminId());
         adminUser.setAuthType(AuthTypeEnum.ADMIN);
-        adminUser.setSuperUser(SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId()));
         adminUser.setPhoneNumber(adminInfoResponse.getPhoneNumber());
         adminUser.setUsername(adminInfoResponse.getUsername());
-        adminUser.setRoles(permissions.getRoles());
 
-        Set<String> perms = permissions.getGrantedAuthority() != null
-                ? new HashSet<>(permissions.getGrantedAuthority())
-                : Collections.emptySet();
+        RoleContext roleContext = new RoleContext(permissions.getRoles(),
+                SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId()));
 
-        return UsernamePasswordAuthenticationToken.authenticated(
-                adminUser, null, AuthorityUtils.createAuthorityList(perms));
+        return RoleContextAuthenticationToken.authenticated(adminUser, null, roleContext);
     }
 
     /**
@@ -141,7 +134,6 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         LoginAdminUser adminUser = new LoginAdminUser();
         adminUser.setUid(userResp.getAdminId());
         adminUser.setAuthType(AuthTypeEnum.ADMIN);
-        adminUser.setSuperUser(false);
         adminUser.setUsername(userResp.getUsername());
 
         SpringUtil.getContext()
@@ -156,4 +148,3 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     }
 
 }
-

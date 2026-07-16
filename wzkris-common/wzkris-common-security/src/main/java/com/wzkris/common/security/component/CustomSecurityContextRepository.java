@@ -2,25 +2,21 @@ package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -34,8 +30,6 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
 
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
             .getContextHolderStrategy();
-
-    private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
@@ -51,15 +45,6 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
     private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
         SecurityContext ctx = securityContextHolderStrategy.createEmptyContext();
 
-        // 从请求头读取权限信息
-        Set<String> permissions;
-        final String permissionsHeader = request.getHeader(CustomHeaderConstants.X_PERMISSIONS);
-        if (StringUtil.isNotBlank(permissionsHeader)) {
-            permissions = JsonUtil.toColl(permissionsHeader, java.util.Set.class, String.class);
-        } else {
-            permissions = Collections.emptySet();
-        }
-
         // 从统一身份头读取主体（X_USER_CONTEXT）
         final String loginUserHeader = request.getHeader(CustomHeaderConstants.X_USER_CONTEXT);
         if (StringUtil.isBlank(loginUserHeader)) {
@@ -67,11 +52,18 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
         }
 
         BaseLoginUser baseLoginUser = JsonUtil.parseObject(loginUserHeader, BaseLoginUser.class);
-        UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(
+
+        // 从角色上下文头读取权限信息（X_ROLE_CONTEXT）
+        RoleContext roleContext = null;
+        final String roleContextHeader = request.getHeader(CustomHeaderConstants.X_ROLE_CONTEXT);
+        if (StringUtil.isNotBlank(roleContextHeader)) {
+            roleContext = JsonUtil.parseObject(roleContextHeader, RoleContext.class);
+        }
+
+        RoleContextAuthenticationToken authenticationToken = RoleContextAuthenticationToken.authenticated(
                 baseLoginUser,
                 BearerTokenUtil.extractHeaderToken(request),
-                AuthorityUtils.createAuthorityList(permissions));
-        authenticationToken.setDetails(this.authenticationDetailsSource.buildDetails(request));
+                roleContext);
         ctx.setAuthentication(authenticationToken);
         return ctx;
     }

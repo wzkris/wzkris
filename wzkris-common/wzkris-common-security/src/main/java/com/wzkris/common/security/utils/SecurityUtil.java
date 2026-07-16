@@ -3,16 +3,16 @@ package com.wzkris.common.security.utils;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author : wzkris
@@ -63,17 +63,48 @@ public final class SecurityUtil {
     }
 
     /**
+     * 获取当前登录用户的角色上下文
+     *
+     * @return 角色上下文
+     */
+    @Nullable
+    public static RoleContext getRoleContext() {
+        try {
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            if (authentication instanceof RoleContextAuthenticationToken token) {
+                return token.getRoleContext();
+            }
+            return null;
+        } catch (Exception e) {
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        }
+    }
+
+    /**
      * 获取当前登录用户权限,未登录抛出异常
      *
      * @return 当前用户
      */
     public static Set<String> getPermission() {
-        try {
-            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-            return AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        } catch (Exception e) {
-            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        RoleContext roleContext = getRoleContext();
+        if (roleContext == null) {
+            return Collections.emptySet();
         }
+        List<String> authorities = roleContext.getGrantedAuthority();
+        return authorities != null ? new LinkedHashSet<>(authorities) : Collections.emptySet();
+    }
+
+    /**
+     * 判断是否管理员用户
+     *
+     * @return 管理员用户
+     */
+    public static boolean isSuperUser() {
+        RoleContext roleContext = getRoleContext();
+        if (roleContext == null) {
+            return false;
+        }
+        return roleContext.isSuperUser();
     }
 
     /**
@@ -125,15 +156,6 @@ public final class SecurityUtil {
      */
     public static AuthTypeEnum getAuthType() {
         return getLoginUser().getAuthType();
-    }
-
-    /**
-     * 判断是否管理员用户
-     *
-     * @return 管理员用户
-     */
-    public static boolean isSuperUser() {
-        return getLoginUser().isSuperUser();
     }
 
     /**

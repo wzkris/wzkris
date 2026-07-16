@@ -7,16 +7,14 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * 刷新模式核心处理
@@ -52,16 +50,10 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        // 从存储中加载权限信息
-        Set<String> perms = tokenService.loadPermissionsByUid(authType.getValue(), uid);
+        // 从存储中加载角色上下文
+        RoleContext roleContext = tokenService.loadRoleContextByUid(authType.getValue(), uid);
 
-        // 如果权限不存在，使用空集合
-        if (perms == null) {
-            perms = Collections.emptySet();
-        }
-
-        return UsernamePasswordAuthenticationToken.authenticated(
-                loginUser, null, AuthorityUtils.createAuthorityList(perms));
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
     private Long checkParameter(String refreshToken, AuthTypeEnum authType) {

@@ -6,7 +6,6 @@ import org.springframework.lang.Nullable;
 
 import java.security.Principal;
 import java.time.Instant;
-import java.util.List;
 
 /**
  * 统一用户抽象视图，用于承载各类用户（管理员、租户、C 端等）的公共能力。
@@ -17,11 +16,6 @@ public interface BaseLoginUser extends Principal {
     Long getUid();
 
     AuthTypeEnum getAuthType();
-
-    /**
-     * 是否为超级用户（bootstrap 账号或租户管理员）
-     */
-    boolean isSuperUser();
 
     /**
      * 标签
@@ -46,11 +40,5 @@ public interface BaseLoginUser extends Principal {
      */
     @Nullable
     ActorInfo getActor();
-
-    /**
-     * 用户角色列表（携带数据权限信息）
-     */
-    @Nullable
-    List<UserRole> getRoles();
 
 }

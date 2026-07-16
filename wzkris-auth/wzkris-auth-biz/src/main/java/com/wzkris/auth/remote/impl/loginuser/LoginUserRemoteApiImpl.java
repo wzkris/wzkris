@@ -8,6 +8,8 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -16,7 +18,8 @@ import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -44,8 +47,8 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
             return Result.unauth("Token has been expired");
         }
 
-        Set<String> permissions = tokenService.loadPermissionsByUid(authType.getValue(), uid);
-        return Result.ok(new LoginUserResponse(loginUser, permissions));
+        RoleContext roleContext = tokenService.loadRoleContextByUid(authType.getValue(), uid);
+        return Result.ok(new LoginUserResponse(loginUser, roleContext));
     }
 
     @Override
@@ -63,9 +66,9 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
         }
 
         // 提取权限信息（从authorizedScopes）
-        Set<String> permissions = authorization.getAuthorizedScopes() != null
-                ? authorization.getAuthorizedScopes()
-                : Set.of();
+        List<String> permissions = authorization.getAuthorizedScopes() != null
+                ? new ArrayList<>(authorization.getAuthorizedScopes())
+                : new ArrayList<>();
 
         // 从OAuth2Authorization中提取Principal
         Principal principal = authorization.getAttribute(Principal.class.getName());
@@ -74,7 +77,9 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
         }
 
         if (principal instanceof BaseLoginUser loginUser) {
-            return Result.ok(new LoginUserResponse(loginUser, permissions));
+            RoleContext roleContext = new RoleContext(
+                    List.of(new UserRole(0L, "oauth2_client", null, null, permissions)));
+            return Result.ok(new LoginUserResponse(loginUser, roleContext));
         } else {
             // 尝试从Principal中提取信息构造LoginUser
             // 这里可以根据实际需求扩展，比如从UserDetails转换

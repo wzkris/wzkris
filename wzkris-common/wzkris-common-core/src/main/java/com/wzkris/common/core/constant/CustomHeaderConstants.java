@@ -43,8 +43,8 @@ public class CustomHeaderConstants {
     public static final String X_USER_CONTEXT = "X-User-Context";
 
     /**
-     * 权限信息
+     * 角色上下文信息
      */
-    public static final String X_PERMISSIONS = "X-Permissions";
+    public static final String X_ROLE_CONTEXT = "X-Role-Context";
 
 }

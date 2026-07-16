@@ -8,6 +8,7 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.auth.utils.TokenKeyBuilder;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class TokenServiceImpl implements TokenService {
 
     private static final String HASH_FIELD_USER = "loginUser";
 
-    private static final String HASH_FIELD_PERMISSIONS = "permissions";
+    private static final String HASH_FIELD_ROLES = "roles";
 
     private final TokenProperties tokenProperties;
 
@@ -50,17 +51,17 @@ public class TokenServiceImpl implements TokenService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public TokenPair loginCreate(BaseLoginUser loginUser, Set<String> permissions) {
-        return issue(loginUser, permissions, UUID.randomUUID().toString(), SessionWriteOp.CREATE);
+    public TokenPair loginCreate(BaseLoginUser loginUser, RoleContext roleContext) {
+        return issue(loginUser, roleContext, UUID.randomUUID().toString(), SessionWriteOp.CREATE);
     }
 
     @Override
-    public TokenPair loginReuse(BaseLoginUser loginUser, Set<String> permissions, String sid) {
-        return issue(loginUser, permissions, sid, SessionWriteOp.REUSE);
+    public TokenPair loginReuse(BaseLoginUser loginUser, RoleContext roleContext, String sid) {
+        return issue(loginUser, roleContext, sid, SessionWriteOp.REUSE);
     }
 
     @Override
-    public TokenPair loginRefresh(BaseLoginUser loginUser, Set<String> permissions, String oldRefreshToken) {
+    public TokenPair loginRefresh(BaseLoginUser loginUser, RoleContext roleContext, String oldRefreshToken) {
         TokenClaims claims = jwtTokenHelper.parse(oldRefreshToken);
         String oldSid = claims.getSid();
 
@@ -69,16 +70,16 @@ public class TokenServiceImpl implements TokenService {
             String refreshToken = ChronoUnit.HOURS.between(Instant.now(), exp) < 2
                     ? generateRefreshToken(loginUser, oldSid)
                     : oldRefreshToken;
-            TokenPair pair = loginReuse(loginUser, permissions, oldSid);
+            TokenPair pair = loginReuse(loginUser, roleContext, oldSid);
             return new TokenPair(pair.accessToken(), refreshToken);
         }
 
         revoke(loginUser.getAuthType().getValue(), loginUser.getUid(), oldSid);
-        return loginCreate(loginUser, permissions);
+        return loginCreate(loginUser, roleContext);
     }
 
-    private TokenPair issue(BaseLoginUser loginUser, Set<String> permissions, String sid, SessionWriteOp op) {
-        persist(loginUser, sid, permissions, op);
+    private TokenPair issue(BaseLoginUser loginUser, RoleContext roleContext, String sid, SessionWriteOp op) {
+        persist(loginUser, sid, roleContext, op);
         return new TokenPair(generateAccessToken(loginUser, sid), generateRefreshToken(loginUser, sid));
     }
 
@@ -98,7 +99,7 @@ public class TokenServiceImpl implements TokenService {
                 loginUser.getAuthType());
     }
 
-    private void persist(BaseLoginUser loginUser, String sid, Set<String> permissions, SessionWriteOp op) {
+    private void persist(BaseLoginUser loginUser, String sid, RoleContext roleContext, SessionWriteOp op) {
         Serializable uid = loginUser.getUid();
         String type = loginUser.getAuthType().getValue();
         long refreshTTL = tokenProperties.getRefreshTokenTimeOut();
@@ -113,7 +114,7 @@ public class TokenServiceImpl implements TokenService {
             public Void execute(RedisOperations ops) {
                 Map<String, Object> userinfoMap = new HashMap<>();
                 userinfoMap.put(HASH_FIELD_USER, loginUser);
-                userinfoMap.put(HASH_FIELD_PERMISSIONS, permissions);
+                userinfoMap.put(HASH_FIELD_ROLES, roleContext);
 
                 ops.multi();
                 ops.opsForHash().putAll(userInfoKey, userinfoMap);
@@ -142,10 +143,9 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Set<String> loadPermissionsByUid(String type, Serializable uid) {
+    public RoleContext loadRoleContextByUid(String type, Serializable uid) {
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
-        return (Set<String>) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_PERMISSIONS);
+        return (RoleContext) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_ROLES);
     }
 
     @Override

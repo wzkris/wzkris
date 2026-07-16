@@ -14,22 +14,8 @@ import java.util.List;
 public class MemberPermissionResponse implements Serializable {
 
     /**
-     * 租户管理员
-     */
-    private boolean admin;
-
-    /**
-     * 已授权限
-     */
-    private List<String> grantedAuthority;
-
-    /**
      * 用户角色列表（租户体系为岗位）
      */
     private List<UserRole> roles;
-
-    public boolean getAdmin() {
-        return this.admin;
-    }
 
 }

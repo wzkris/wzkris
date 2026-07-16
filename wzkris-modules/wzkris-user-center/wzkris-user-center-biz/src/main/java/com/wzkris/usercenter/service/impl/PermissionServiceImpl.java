@@ -45,49 +45,45 @@ public class PermissionServiceImpl implements PermissionService {
         // 超管：加载全部真实权限码 + 虚拟 ALL 角色跳过数据权限
         if (AdminInfoDO.isSuperAdmin(adminId)) {
             List<UserRole> roles = List.of(
-                    new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, DataScopeEnum.ALL.getValue(), Collections.emptyList())
+                    new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, DataScopeEnum.ALL.getValue(),
+                            Collections.emptyList(), menuInfoService.listPermsByMenuIds(null))
             );
-            return new AdminPermissionResponse(menuInfoService.listPermsByMenuIds(null), roles);
+            return new AdminPermissionResponse(roles);
         }
 
         // 普通用户：查角色 -> 查菜单权限 -> 构建角色数据权限
         List<RoleInfoDO> roleList = roleInfoService.listByAdminId(adminId, true);
-        List<Long> roleIds = roleList.stream().map(RoleInfoDO::getRoleId).collect(Collectors.toList());
-        List<String> grantedAuthority = menuInfoService.listPermsByRoleIds(roleIds);
 
         List<UserRole> roles = roleList.stream()
                 .map(role -> new UserRole(
                         role.getRoleId(),
                         role.getRoleName(),
                         role.getDataScope().getValue(),
-                        computeDataIdentities(role, deptId)
+                        computeDataIdentities(role, deptId),
+                        menuInfoService.listPermsByRoleIds(List.of(role.getRoleId()))
                 ))
                 .collect(Collectors.toList());
 
-        return new AdminPermissionResponse(grantedAuthority, roles);
+        return new AdminPermissionResponse(roles);
     }
 
     @Override
     public MemberPermissionResponse getTenantPermission(Long memberId, Long tenantId) {
-        List<String> grantedAuthority;
         List<UserRole> roles;
-        boolean administrator = false;
         // 租户最高管理员特殊处理
         Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
                 TenantInfoDO::getAdministrator, memberId);
         if (tenantPackageId != null) {
-            administrator = true;
-            grantedAuthority = menuInfoService.listPermsByTenantPackageId(tenantPackageId);
-            roles = List.of(new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, null, null));
+            roles = List.of(new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, null, null,
+                    menuInfoService.listPermsByTenantPackageId(tenantPackageId)));
         } else {
             List<PostInfoDO> posts = postInfoService.listByMemberId(memberId);
-            List<Long> postIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
-            grantedAuthority = menuInfoService.listPermsByPostIds(postIds);
             roles = posts.stream()
-                    .map(post -> new UserRole(post.getPostId(), post.getPostName(), null, null))
+                    .map(post -> new UserRole(post.getPostId(), post.getPostName(), null, null,
+                            menuInfoService.listPermsByPostIds(List.of(post.getPostId()))))
                     .collect(Collectors.toList());
         }
-        return new MemberPermissionResponse(administrator, grantedAuthority, roles);
+        return new MemberPermissionResponse(roles);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.rule.DataColumnConfig;
@@ -68,16 +68,12 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
             return null;
         }
 
-        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
-        if (loginUser == null) {
-            return null;
-        }
+        RoleContext roleContext = SecurityUtil.getRoleContext();
 
         Expression result = null;
         boolean hasMatchedRule = false;
 
         for (DataPermission dp : dataScope.value()) {
-            // 多表感知：alias 不为空时，只处理别名匹配的表
             if (!matchesTable(dp, table)) {
                 continue;
             }
@@ -88,13 +84,13 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
                 continue;
             }
 
-            if (!rule.isApplicable(loginUser)) {
+            if (!rule.isApplicable(roleContext)) {
                 continue;
             }
 
             hasMatchedRule = true;
             DataColumnConfig config = DataColumnConfig.of(dp);
-            Expression expr = rule.getExpression(table, where, config, loginUser);
+            Expression expr = rule.getExpression(table, where, config, roleContext);
             if (expr == null) {
                 continue;
             }

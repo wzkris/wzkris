@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.rule;
 
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.DataIdentity;
+import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.model.UserRole;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
@@ -34,8 +34,11 @@ public class DeptDataPermissionRule implements DataPermissionRule {
     }
 
     @Override
-    public boolean isApplicable(BaseLoginUser loginUser) {
-        List<UserRole> roles = loginUser.getRoles();
+    public boolean isApplicable(RoleContext roleContext) {
+        if (roleContext.isSuperUser()) {
+            return false;
+        }
+        List<UserRole> roles = roleContext.getRoles();
         if (CollectionUtils.isEmpty(roles)) {
             return true;
         }
@@ -44,8 +47,8 @@ public class DeptDataPermissionRule implements DataPermissionRule {
 
     @Override
     public Expression getExpression(Table table, Expression where,
-                                     DataColumnConfig config, BaseLoginUser loginUser) {
-        List<UserRole> roles = loginUser.getRoles();
+                                    DataColumnConfig config, RoleContext roleContext) {
+        List<UserRole> roles = roleContext.getRoles();
         if (CollectionUtils.isEmpty(roles)) {
             return null;
         }
