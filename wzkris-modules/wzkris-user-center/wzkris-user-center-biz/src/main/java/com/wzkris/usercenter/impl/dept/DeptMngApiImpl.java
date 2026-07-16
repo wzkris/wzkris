@@ -14,7 +14,6 @@ import com.wzkris.usercenter.api.dept.request.DeptMngUpdateRequest;
 import com.wzkris.usercenter.api.dept.response.DeptMngResponse;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
-import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.service.DeptInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,13 +26,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
 
-    private final DeptInfoMapper deptInfoMapper;
-
     private final DeptInfoService deptInfoService;
 
     @Override
     public Result<List<DeptMngResponse>> queryList(DeptMngTreeRequest request) {
-        List<DeptInfoDO> depts = deptInfoMapper.selectLists(buildQueryWrapper(request));
+        List<DeptInfoDO> depts = deptInfoService.selectLists(buildQueryWrapper(request));
         return ok(BeanUtil.convert(depts, DeptMngResponse.class));
     }
 
@@ -54,7 +51,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     @Override
     public Result<DeptMngResponse> queryInfo(IdRequest request) {
         Long deptId = request.getId();
-        if (!deptInfoMapper.checkDataScopes(deptId)) {
+        if (!deptInfoService.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
         return ok(BeanUtil.convert(deptInfoService.getById(deptId), DeptMngResponse.class));
@@ -62,7 +59,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
 
     @Override
     public Result<?> save(DeptMngSaveRequest request) {
-        if (!deptInfoMapper.checkDataScopes(request.getParentId())) {
+        if (!deptInfoService.checkDataScopes(request.getParentId())) {
             return accessDenied("数据权限不足");
         }
         if (ObjectUtils.isNotEmpty(request.getParentId()) && request.getParentId() != 0) {
@@ -78,7 +75,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
 
     @Override
     public Result<?> update(DeptMngUpdateRequest request) {
-        if (!deptInfoMapper.checkDataScopes(request.getDeptId())) {
+        if (!deptInfoService.checkDataScopes(request.getDeptId())) {
             return accessDenied("数据权限不足");
         }
         if (Objects.equals(request.getParentId(), request.getDeptId())) {
@@ -92,14 +89,14 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     @Override
     public Result<?> remove(IdRequest request) {
         Long deptId = request.getId();
-        if (!deptInfoMapper.checkDataScopes(deptId)) {
+        if (!deptInfoService.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
         if (deptInfoService.exists(Wrappers.lambdaQuery(DeptInfoDO.class)
                 .eq(DeptInfoDO::getParentId, deptId))) {
             return requestFail("存在下级部门，不允许删除");
         }
-        if (deptInfoMapper.existAdmin(deptId)) {
+        if (deptInfoService.existAdmin(deptId)) {
             return requestFail("部门存在用户，不允许删除");
         }
         return toRes(deptInfoService.removeDept(deptId));

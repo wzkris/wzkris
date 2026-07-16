@@ -9,10 +9,7 @@ import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.MemberSocialInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
-import com.wzkris.usercenter.mapper.MemberInfoMapper;
 import com.wzkris.usercenter.mapper.MemberSocialInfoMapper;
-import com.wzkris.usercenter.mapper.TenantInfoMapper;
-import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.member.MemberInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.member.request.MemberPermsQueryRequest;
@@ -21,7 +18,10 @@ import com.wzkris.usercenter.remote.api.member.request.TenantIdRequest;
 import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import com.wzkris.usercenter.request.StringValueRequest;
+import com.wzkris.usercenter.service.MemberInfoService;
 import com.wzkris.usercenter.service.PermissionService;
+import com.wzkris.usercenter.service.TenantInfoService;
+import com.wzkris.usercenter.service.TenantPackageInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -35,13 +35,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
 
-    private final MemberInfoMapper memberInfoMapper;
+    private final MemberInfoService memberInfoService;
 
     private final MemberSocialInfoMapper memberSocialInfoMapper;
 
-    private final TenantInfoMapper tenantInfoMapper;
+    private final TenantInfoService tenantInfoService;
 
-    private final TenantPackageInfoMapper tenantPackageInfoMapper;
+    private final TenantPackageInfoService tenantPackageInfoService;
 
     private final PermissionService permissionService;
 
@@ -54,7 +54,7 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
         LambdaQueryWrapper<MemberInfoDO> eq = Wrappers.lambdaQuery(MemberInfoDO.class)
                 .eq(StringUtil.isNotBlank(request.getPhoneNumber()), MemberInfoDO::getPhoneNumber, request.getPhoneNumber())
                 .eq(StringUtil.isNotBlank(request.getUsername()), MemberInfoDO::getUsername, request.getUsername());
-        MemberInfoDO member = memberInfoMapper.selectOne(eq);
+        MemberInfoDO member = memberInfoService.getOne(eq);
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
         return Result.ok(response);
@@ -62,11 +62,11 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
 
     @Override
     public Result<MemberInfoResponse> queryAdministratorByTenantId(TenantIdRequest request) {
-        TenantInfoDO tenant = tenantInfoMapper.selectById(request.getTenantId());
+        TenantInfoDO tenant = tenantInfoService.getById(request.getTenantId());
         if (tenant == null || tenant.getAdministrator() == null) {
             return Result.ok(null);
         }
-        MemberInfoDO member = memberInfoMapper.selectById(tenant.getAdministrator());
+        MemberInfoDO member = memberInfoService.getById(tenant.getAdministrator());
         if (member == null || !request.getTenantId().equals(member.getTenantId())) {
             return Result.ok(null);
         }
@@ -87,12 +87,12 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
             log.error("微信小程序换取openid失败", e);
             return Result.apiRequestFail(e.getError().getErrorMsg());
         }
-        MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectOneByField(
+        MemberSocialInfoDO memberSocialInfoDO = memberSocialInfoMapper.selectOneByObj(
                 MemberSocialInfoDO::getIdentifier, identifier);
         if (ObjectUtils.isEmpty(memberSocialInfoDO)) {
             return Result.ok(null);
         }
-        MemberInfoDO member = memberInfoMapper.selectById(memberSocialInfoDO.getMemberId());
+        MemberInfoDO member = memberInfoService.getById(memberSocialInfoDO.getMemberId());
         MemberInfoResponse response = this.toMemberInfoResponse(member);
         this.retrieveAllStatus(response);
         return Result.ok(response);
@@ -109,7 +109,7 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
         MemberInfoDO memberInfoDO = new MemberInfoDO(request.getId());
         memberInfoDO.setLoginIp(request.getLoginIp());
         memberInfoDO.setLoginDate(request.getLoginDate());
-        memberInfoMapper.updateById(memberInfoDO);
+        memberInfoService.updateById(memberInfoDO);
         return Result.ok();
     }
 
@@ -117,10 +117,10 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
         if (memberInfoResponse == null) {
             return;
         }
-        TenantInfoDO tenantInfoDO = tenantInfoMapper.selectById(memberInfoResponse.getTenantId());
+        TenantInfoDO tenantInfoDO = tenantInfoService.getById(memberInfoResponse.getTenantId());
         memberInfoResponse.setTenantStatus(tenantInfoDO.getStatus());
         memberInfoResponse.setTenantExpired(tenantInfoDO.getExpireTime());
-        TenantPackageInfoDO tenantPackageInfoDO = tenantPackageInfoMapper.selectById(tenantInfoDO.getPackageId());
+        TenantPackageInfoDO tenantPackageInfoDO = tenantPackageInfoService.getById(tenantInfoDO.getPackageId());
         memberInfoResponse.setPackageStatus(tenantPackageInfoDO.getStatus());
     }
 

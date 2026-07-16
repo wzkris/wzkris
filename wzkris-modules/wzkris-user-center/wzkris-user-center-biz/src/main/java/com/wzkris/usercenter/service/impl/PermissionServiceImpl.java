@@ -2,21 +2,13 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.usercenter.domain.AdminInfoDO;
-import com.wzkris.usercenter.domain.DeptInfoDO;
-import com.wzkris.usercenter.domain.PostInfoDO;
-import com.wzkris.usercenter.domain.RoleInfoDO;
-import com.wzkris.usercenter.domain.TenantInfoDO;
+import com.wzkris.usercenter.domain.*;
 import com.wzkris.usercenter.enums.role.DataScopeEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
-import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
 import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
-import com.wzkris.usercenter.service.MenuInfoService;
-import com.wzkris.usercenter.service.PermissionService;
-import com.wzkris.usercenter.service.PostInfoService;
-import com.wzkris.usercenter.service.RoleInfoService;
+import com.wzkris.usercenter.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -43,7 +35,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     private final PostInfoService postInfoService;
 
-    private final TenantInfoMapper tenantInfoMapper;
+    private final TenantInfoService tenantInfoService;
 
     @Override
     public AdminPermissionResponse getAdminPermission(Long adminId, Long deptId) {
@@ -70,8 +62,8 @@ public class PermissionServiceImpl implements PermissionService {
         List<String> grantedAuthority;
         boolean administrator = false;
         // 租户最高管理员特殊处理
-        Long tenantPackageId = tenantInfoMapper.selectOneFieldByField(
-                TenantInfoDO::getAdministrator, memberId, TenantInfoDO::getPackageId);
+        Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
+                TenantInfoDO::getAdministrator, memberId);
         if (tenantPackageId != null) {
             // 租户最高管理员查出所有租户角色
             administrator = true;

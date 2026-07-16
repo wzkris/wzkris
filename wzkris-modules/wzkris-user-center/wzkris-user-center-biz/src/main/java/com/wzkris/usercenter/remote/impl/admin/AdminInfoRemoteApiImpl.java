@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
-import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.AdminInfoRemoteApi;
 import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.AdminQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
+import com.wzkris.usercenter.service.AdminInfoService;
 import com.wzkris.usercenter.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
 
-    private final AdminInfoMapper adminInfoMapper;
+    private final AdminInfoService adminInfoService;
 
     private final PermissionService permissionService;
 
@@ -29,7 +29,7 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
         LambdaQueryWrapper<AdminInfoDO> eq = Wrappers.lambdaQuery(AdminInfoDO.class)
                 .eq(StringUtil.isNotBlank(request.getPhoneNumber()), AdminInfoDO::getPhoneNumber, request.getPhoneNumber())
                 .eq(StringUtil.isNotBlank(request.getUsername()), AdminInfoDO::getUsername, request.getUsername());
-        AdminInfoDO adminInfoDO = adminInfoMapper.selectOne(eq);
+        AdminInfoDO adminInfoDO = adminInfoService.getOne(eq);
         return Result.ok(this.toAdminInfoResponse(adminInfoDO));
     }
 
@@ -44,7 +44,7 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
         AdminInfoDO adminInfoDO = new AdminInfoDO(request.getId());
         adminInfoDO.setLoginIp(request.getLoginIp());
         adminInfoDO.setLoginDate(request.getLoginDate());
-        adminInfoMapper.updateById(adminInfoDO);
+        adminInfoService.updateById(adminInfoDO);
         return Result.ok();
     }
 

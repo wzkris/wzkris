@@ -5,17 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import org.springframework.beans.BeanUtils;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author : wzkris
@@ -60,82 +55,65 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
     }
 
     /**
-     * 提取指定字段
-     *
-     * @param wrapper 查询条件
-     * @param <R>     返回字段的类型
-     * @return 查找到的字段值，若未找到返回 null
-     */
-    default <R> R selectOneField(Wrapper<T> wrapper, Function<T, R> func) {
-        T t = selectOne(wrapper);
-        return t == null ? null : func.apply(t);
-    }
-
-    /**
      * 根据单个字段值查询单条记录
      *
      * @param field 字段引用（如 Entity::getName）
      * @param value 字段值
      * @return 实体，未找到返回 null
      */
-    default T selectOneByField(SFunction<T, ?> field, Object value) {
+    default T selectOneByObj(SFunction<T, ?> field, Object value) {
         return this.selectOne(new LambdaQueryWrapper<T>().eq(field, value));
+    }
+
+    /**
+     * 提取一条指定字段
+     *
+     * @param wrapper 查询条件
+     * @param <R>     返回字段的类型
+     * @return 查找到的字段值，若未找到返回 null
+     */
+    default <R> R selectObj(Wrapper<T> wrapper, Function<Object, R> func) {
+        T t = selectOne(wrapper);
+        return t == null ? null : func.apply(t);
     }
 
     /**
      * 根据单个字段值查询单条记录，并提取指定字段
      *
-     * @param field 查询字段引用
-     * @param value 字段值
-     * @param func  提取字段的函数
-     * @param <R>   返回字段类型
+     * @param condition  查询字段引用
+     * @param value      字段值
+     * @param queryField 目标字段引用
+     * @param <R>        返回字段类型
      * @return 提取的字段值，未找到返回 null
      */
-    default <R> R selectOneFieldByField(SFunction<T, ?> field, Object value, Function<T, R> func) {
-        T t = this.selectOneByField(field, value);
-        return t == null ? null : func.apply(t);
+    default <R> R selectObjByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object value) {
+        List<Object> objs = this.selectObjs(
+                new LambdaQueryWrapper<T>().select(queryField).eq(condition, value).last("LIMIT 1 OFFSET 0"));
+        if (CollectionUtils.isEmpty(objs)) {
+            return null;
+        }
+        return (R) objs.getFirst();
     }
 
     /**
-     * 根据 ID 查询
+     * 根据 ID 查询并转换为 VO
      */
     default <C> C selectById2VO(Serializable id, Class<C> voClass) {
-        T obj = this.selectById(id);
-        if (Objects.isNull(obj)) return null;
-
-        C c = getInstance(voClass);
-        BeanUtils.copyProperties(obj, c);
-        return c;
+        return BeanCopierUtil.copy(this.selectById(id), voClass);
     }
 
     /**
-     * 根据 entity 条件,查询一条记录
+     * 根据 entity 条件,查询一条记录并转换为 VO
      */
-    default <C> C selectOne2VO(AbstractWrapper<T, ?, ?> wrapper, Class<C> voClass) {
-        T obj = this.selectOne(wrapper);
-        if (Objects.isNull(obj)) return null;
-
-        C c = getInstance(voClass);
-        BeanUtils.copyProperties(obj, c);
-        return c;
+    default <C> C selectOne2VO(Wrapper<T> wrapper, Class<C> voClass) {
+        return BeanCopierUtil.copy(this.selectOne(wrapper), voClass);
     }
 
     /**
-     * 基于反射实现，或许存在性能问题，谨慎使用
+     * 查询列表并转换为 VO
      */
-    default <C> List<C> selectList2VO(AbstractWrapper<T, ?, ?> wrapper, Class<C> voClass) {
-        List<T> list = this.selectList(wrapper);
-        if (CollectionUtils.isEmpty(list)) {
-            return new ArrayList<>();
-        }
-
-        return list.stream()
-                .map(obj -> {
-                    C c = getInstance(voClass);
-                    BeanUtils.copyProperties(obj, c);
-                    return c;
-                })
-                .collect(Collectors.toList());
+    default <C> List<C> selectList2VO(Wrapper<T> wrapper, Class<C> voClass) {
+        return BeanCopierUtil.copyList(this.selectList(wrapper), voClass);
     }
 
     /**
@@ -161,19 +139,6 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      */
     default <R> R updateByIdAndGet(T entity, Function<T, R> func) {
         return this.updateById(entity) > 0 ? func.apply(entity) : null;
-    }
-
-    private static <C> C getInstance(Class<C> voClass, Class<?>... parameterTypes) {
-        C c;
-        try {
-            c = ReflectionUtils.accessibleConstructor(voClass, parameterTypes).newInstance();
-        } catch (InstantiationException
-                 | IllegalAccessException
-                 | InvocationTargetException
-                 | NoSuchMethodException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return c;
     }
 
 }

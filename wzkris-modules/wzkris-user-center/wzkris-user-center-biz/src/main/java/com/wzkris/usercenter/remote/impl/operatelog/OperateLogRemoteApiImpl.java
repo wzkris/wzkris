@@ -4,9 +4,9 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.domain.AdminOperateLogDO;
 import com.wzkris.usercenter.domain.TenantOperateLogDO;
-import com.wzkris.usercenter.mapper.AdminOperateLogMapper;
-import com.wzkris.usercenter.mapper.TenantOperateLogMapper;
 import com.wzkris.usercenter.remote.api.operatelog.OperateLogRemoteApi;
+import com.wzkris.usercenter.service.AdminOperateLogService;
+import com.wzkris.usercenter.service.TenantOperateLogService;
 import com.wzkris.usercenter.remote.api.operatelog.request.OperateLogEventRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
 
-    private final AdminOperateLogMapper adminOperateLogMapper;
+    private final AdminOperateLogService adminOperateLogService;
 
-    private final TenantOperateLogMapper tenantOperateLogMapper;
+    private final TenantOperateLogService tenantOperateLogService;
 
     @Override
     public Result<Void> save(List<OperateLogEventRequest> requestList) {
@@ -63,7 +63,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             adminOperateLogDO.setOperTime(request.getOperTime());
             operLogs.add(adminOperateLogDO);
         }
-        adminOperateLogMapper.insert(operLogs, 1000);
+        adminOperateLogService.saveBatch(operLogs, 1000);
     }
 
     private void saveTenantLogs(List<OperateLogEventRequest> requestList) {
@@ -91,7 +91,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             tenantOperateLogDO.setTenantId(request.getTenantId());
             operLogs.add(tenantOperateLogDO);
         }
-        tenantOperateLogMapper.insert(operLogs, 1000);
+        tenantOperateLogService.saveBatch(operLogs, 1000);
     }
 
 }

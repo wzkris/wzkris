@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.ConfigInfoDO;
 import com.wzkris.usercenter.mapper.ConfigInfoMapper;
 import com.wzkris.usercenter.service.ConfigInfoService;
@@ -53,8 +53,8 @@ public class ConfigInfoServiceImpl
         if (value instanceof String && StringUtil.isNotBlank((String) value)) {
             return (String) value;
         }
-        value = baseMapper.selectOneFieldByField(
-                ConfigInfoDO::getConfigKey, configkey, ConfigInfoDO::getConfigValue);
+        value = this.getObjByObj(ConfigInfoDO::getConfigValue,
+                ConfigInfoDO::getConfigKey, configkey);
         if (value != null) {
             redisTemplate.opsForHash().put(DICT_KEY, configkey, value);
         }

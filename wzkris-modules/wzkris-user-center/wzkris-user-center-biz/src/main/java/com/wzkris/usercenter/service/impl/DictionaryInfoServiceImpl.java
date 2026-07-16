@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.DictionaryInfoDO;
 import com.wzkris.usercenter.mapper.DictionaryInfoMapper;
@@ -46,7 +45,7 @@ public class DictionaryInfoServiceImpl
         if (value instanceof DictionaryInfoDO.DictData[]) {
             return (DictionaryInfoDO.DictData[]) value;
         }
-        DictionaryInfoDO dict = baseMapper.selectOneByField(
+        DictionaryInfoDO dict = this.getOneByObj(
                 DictionaryInfoDO::getDictKey, dictKey);
         if (dict == null) {
             return new DictionaryInfoDO.DictData[0];

@@ -1,9 +1,9 @@
 package com.wzkris.usercenter.impl.tenant;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.web.utils.BeanUtil;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.api.tenant.request.TenantInfoBasicUpdateRequest;
@@ -42,8 +42,8 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
     @Override
     public Result<Void> updateOperPwd(PasswordUpdateRequest request) {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        String operPwd = tenantInfoService.getOneFieldByField(
-                TenantInfoDO::getTenantId, tenantUser.getTenantId(), TenantInfoDO::getOperPwd);
+        String operPwd = tenantInfoService.getObjByObj(TenantInfoDO::getOperPwd,
+                TenantInfoDO::getTenantId, tenantUser.getTenantId());
         if (!passwordEncoder.matches(request.getOldPassword(), operPwd)) {
             return requestFail("修改密码失败，旧密码错误");
         }

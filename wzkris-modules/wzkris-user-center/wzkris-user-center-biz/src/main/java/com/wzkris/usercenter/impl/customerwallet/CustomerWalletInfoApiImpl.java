@@ -12,8 +12,8 @@ import com.wzkris.usercenter.api.customerwallet.request.CustomerWalletRecordPage
 import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletInfoResponse;
 import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletRecordResponse;
 import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
-import com.wzkris.usercenter.mapper.CustomerWalletInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;
+import com.wzkris.usercenter.service.CustomerWalletInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +23,13 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWalletInfoApi {
 
-    private final CustomerWalletInfoMapper customerWalletInfoMapper;
+    private final CustomerWalletInfoService customerWalletInfoService;
 
     private final CustomerWalletRecordMapper customerWalletRecordMapper;
 
     @Override
     public Result<CustomerWalletInfoResponse> queryInfo() {
-        return ok(customerWalletInfoMapper.selectById2VO(SecurityUtil.getUid(), CustomerWalletInfoResponse.class));
+        return ok(customerWalletInfoService.getById2VO(SecurityUtil.getUid(), CustomerWalletInfoResponse.class));
     }
 
     @Override

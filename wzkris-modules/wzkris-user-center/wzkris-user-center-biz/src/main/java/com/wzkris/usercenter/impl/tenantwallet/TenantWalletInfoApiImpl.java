@@ -14,9 +14,9 @@ import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoResponse;
 import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
-import com.wzkris.usercenter.mapper.TenantWalletInfoMapper;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
 import com.wzkris.usercenter.service.TenantInfoService;
+import com.wzkris.usercenter.service.TenantWalletInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     private final TenantInfoService tenantInfoService;
 
-    private final TenantWalletInfoMapper tenantWalletInfoMapper;
+    private final TenantWalletInfoService tenantWalletInfoService;
 
     private final TenantWalletRecordMapper tenantWalletRecordMapper;
 
@@ -39,7 +39,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
     @Override
     public Result<TenantWalletInfoResponse> queryInfo() {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        return ok(tenantWalletInfoMapper.selectById2VO(tenantUser.getTenantId(), TenantWalletInfoResponse.class));
+        return ok(tenantWalletInfoService.getById2VO(tenantUser.getTenantId(), TenantWalletInfoResponse.class));
     }
 
     @Override

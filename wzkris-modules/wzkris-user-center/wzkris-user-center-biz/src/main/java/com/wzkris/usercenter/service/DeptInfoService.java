@@ -1,5 +1,8 @@
 package com.wzkris.usercenter.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.wzkris.common.orm.annotation.DataColumn;
+import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.response.SelectTreeResponse;
@@ -41,6 +44,31 @@ public interface DeptInfoService extends IServicePlus<DeptInfoDO> {
      * @return 选择树结构列表
      */
     List<SelectTreeResponse> listSelectTree(String deptName);
+
+    /**
+     * 查看当前部门是否有待操作部门的操作权限
+     *
+     * @param deptId 待操作的部门 id
+     * @return 是否
+     */
+    boolean checkDataScopes(Long deptId);
+
+    /**
+     * 查询部门是否存在用户
+     *
+     * @param deptId 部门 ID
+     * @return 结果
+     */
+    boolean existAdmin(Long deptId);
+
+    /**
+     * 带数据权限查询列表
+     *
+     * @param queryWrapper 查询条件
+     * @return 部门列表
+     */
+    @DataScope(value = {@DataColumn(column = "dept_id")})
+    List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper);
 
 }
 

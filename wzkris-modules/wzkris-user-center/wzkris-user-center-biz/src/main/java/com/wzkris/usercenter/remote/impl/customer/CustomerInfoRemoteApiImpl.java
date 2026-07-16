@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.remote.impl.customer;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.common.core.enums.BizCallCodeEnum;
 import com.wzkris.common.core.model.Result;
@@ -8,7 +7,6 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
 import com.wzkris.usercenter.enums.social.IdentifierTypeEnum;
-import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerSocialInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerInfoRemoteApi;
@@ -28,8 +26,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
 
-    private final CustomerInfoMapper customerInfoMapper;
-
     private final CustomerInfoService customerInfoService;
 
     private final CustomerSocialInfoMapper customerSocialInfoMapper;
@@ -40,7 +36,7 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
 
     @Override
     public Result<CustomerResponse> queryByPhoneNumber(StringValueRequest request) {
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectOneByField(
+        CustomerInfoDO customerInfoDO = customerInfoService.getOneByObj(
                 CustomerInfoDO::getPhoneNumber, request.getValue());
         return Result.ok(this.toCustomerResponse(customerInfoDO));
     }
@@ -68,7 +64,7 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
         }
 
         Long customerId;
-        CustomerSocialInfoDO socialInfoDO = customerSocialInfoMapper.selectOneByField(
+        CustomerSocialInfoDO socialInfoDO = customerSocialInfoMapper.selectOneByObj(
                 CustomerSocialInfoDO::getIdentifier, identifier);
         if (socialInfoDO == null) {
             CustomerInfoDO customerInfoDO = new CustomerInfoDO();
@@ -84,10 +80,10 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
             if (StringUtil.isNotBlank(phoneNumber)) {
                 CustomerInfoDO customerInfoDO = new CustomerInfoDO(customerId);
                 customerInfoDO.setPhoneNumber(phoneNumber);
-                customerInfoMapper.updateById(customerInfoDO);
+                customerInfoService.updateById(customerInfoDO);
             }
         }
-        CustomerInfoDO customerInfoDO = customerInfoMapper.selectById(customerId);
+        CustomerInfoDO customerInfoDO = customerInfoService.getById(customerId);
         return Result.ok(this.toCustomerResponse(customerInfoDO));
     }
 
@@ -96,7 +92,7 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
         CustomerInfoDO customerInfoDO = new CustomerInfoDO(request.getId());
         customerInfoDO.setLoginIp(request.getLoginIp());
         customerInfoDO.setLoginDate(request.getLoginDate());
-        customerInfoMapper.updateById(customerInfoDO);
+        customerInfoService.updateById(customerInfoDO);
         return Result.ok();
     }
 

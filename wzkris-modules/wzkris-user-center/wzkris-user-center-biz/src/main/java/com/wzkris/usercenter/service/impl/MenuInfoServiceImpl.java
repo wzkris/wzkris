@@ -2,8 +2,8 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.api.menu.response.MetaResponse;
 import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
@@ -12,11 +12,15 @@ import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
-import com.wzkris.usercenter.mapper.*;
+import com.wzkris.usercenter.mapper.MenuInfoMapper;
+import com.wzkris.usercenter.mapper.PostToMenuMapper;
+import com.wzkris.usercenter.mapper.RoleToMenuMapper;
+import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.response.SelectTreeResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
 import com.wzkris.usercenter.service.PostInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
+import com.wzkris.usercenter.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -40,7 +44,7 @@ public class MenuInfoServiceImpl
         extends ServiceImplPlus<MenuInfoMapper, MenuInfoDO>
         implements MenuInfoService {
 
-    private final TenantInfoMapper tenantInfoMapper;
+    private final TenantInfoService tenantInfoService;
 
     private final TenantPackageInfoMapper tenantPackageInfoMapper;
 
@@ -172,8 +176,8 @@ public class MenuInfoServiceImpl
     @Override
     public List<SelectTreeResponse> listTenantSelectTree(Long memberId) {
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectOneFieldByField(
-                TenantInfoDO::getAdministrator, memberId, TenantInfoDO::getPackageId);
+        Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
+                TenantInfoDO::getAdministrator, memberId);
         if (tenantPackageId != null) {
             // 租户最高管理员，去查套餐绑定菜单
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
@@ -217,8 +221,8 @@ public class MenuInfoServiceImpl
     public List<RouterResponse> listTenantRoutes(Long memberId) {
         // 去关联表中查绑定的菜单ID
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectOneFieldByField(
-                TenantInfoDO::getAdministrator, memberId, TenantInfoDO::getPackageId);
+        Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
+                TenantInfoDO::getAdministrator, memberId);
         if (tenantPackageId != null) {
             // 户最高管理员，去查套餐绑定菜单租
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);

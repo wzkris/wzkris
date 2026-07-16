@@ -1,5 +1,6 @@
 package com.wzkris.usercenter.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
@@ -130,6 +131,21 @@ public class DeptInfoServiceImpl
 
         List<DeptInfoDO> deptTrees = this.buildDeptTree(allDepts);
         return deptTrees.stream().map(this::convertToSelectTreeResp).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean checkDataScopes(Long deptId) {
+        return baseMapper.checkDataScopes(deptId);
+    }
+
+    @Override
+    public boolean existAdmin(Long deptId) {
+        return baseMapper.existAdmin(deptId);
+    }
+
+    @Override
+    public List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper) {
+        return baseMapper.selectList(queryWrapper);
     }
 
     private SelectTreeResponse convertToSelectTreeResp(DeptInfoDO dept) {
