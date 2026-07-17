@@ -27,11 +27,6 @@ public class ServiceImplPlus<M extends BaseMapperPlus<T>, T> extends ServiceImpl
     }
 
     @Override
-    public <V> V getObj(Wrapper<T> wrapper, Function<? super Object, V> mapper) {
-        return baseMapper.selectObj(wrapper, mapper);
-    }
-
-    @Override
     public T getOneByObj(SFunction<T, ?> field, Object value) {
         return baseMapper.selectOneByObj(field, value);
     }
@@ -44,6 +39,11 @@ public class ServiceImplPlus<M extends BaseMapperPlus<T>, T> extends ServiceImpl
     @Override
     public <R> R getObjByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object value) {
         return baseMapper.selectObjByObj(queryField, condition, value);
+    }
+
+    @Override
+    public <R> List<R> listObjsByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object conditionValue) {
+        return baseMapper.selectObjsByObj(queryField, condition, conditionValue);
     }
 
     @Override

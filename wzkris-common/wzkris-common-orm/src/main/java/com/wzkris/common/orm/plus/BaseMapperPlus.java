@@ -77,18 +77,6 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
     }
 
     /**
-     * 提取一条指定字段
-     *
-     * @param wrapper 查询条件
-     * @param <R>     返回字段的类型
-     * @return 查找到的字段值，若未找到返回 null
-     */
-    default <R> R selectObj(Wrapper<T> wrapper, Function<Object, R> mapper) {
-        T t = selectOne(wrapper);
-        return t == null ? null : mapper.apply(t);
-    }
-
-    /**
      * 根据单个字段值查询单条记录，并提取指定字段
      *
      * @param queryField     查询字段
@@ -104,6 +92,20 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
             return null;
         }
         return (R) objs.getFirst();
+    }
+
+    /**
+     * 根据单个字段值查询列表记录，并提取指定字段
+     *
+     * @param queryField     查询字段
+     * @param condition      条件字段
+     * @param conditionValue 条件字段值
+     * @param <R>            返回字段类型
+     * @return 提取的字段值，未找到返回 null
+     */
+    default <R> List<R> selectObjsByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object conditionValue) {
+        return this.selectObjs(
+                new LambdaQueryWrapper<T>().select(queryField).eq(condition, conditionValue));
     }
 
     /**

@@ -38,17 +38,6 @@ public interface IServicePlus<T> extends IService<T> {
     <R> R updateByIdAndGet(T entity, Function<T, R> mapper);
 
     /**
-     * 查询一条记录并提取指定字段
-     *
-     * @param wrapper 查询条件
-     * @param mapper  目标处理
-     * @param <R>     返回字段类型
-     * @return 字段值，未查到返回 null
-     */
-    @Override
-    <R> R getObj(Wrapper<T> wrapper, Function<? super Object, R> mapper);
-
-    /**
      * 根据单个字段值查询单条记录
      *
      * @param condition      条件字段
@@ -69,13 +58,24 @@ public interface IServicePlus<T> extends IService<T> {
     /**
      * 根据单个字段值查询单条记录，并提取指定字段
      *
-     * @param queryField 查询字段引用
-     * @param condition  条件字段引用
-     * @param value      字段值
-     * @param <R>        返回字段类型
+     * @param queryField     查询字段引用
+     * @param condition      条件字段引用
+     * @param conditionValue 条件字段值
+     * @param <R>            返回字段类型
      * @return 提取的字段值，未找到返回 null
      */
-    <R> R getObjByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object value);
+    <R> R getObjByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object conditionValue);
+
+    /**
+     * 根据单个字段值查询列表记录，并提取指定字段
+     *
+     * @param queryField     查询字段
+     * @param condition      条件字段
+     * @param conditionValue 条件字段值
+     * @param <R>            返回字段类型
+     * @return 提取的字段值，未找到返回 null
+     */
+    <R> List<R> listObjsByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object conditionValue);
 
     /**
      * 根据 ID 查询并转换为 VO
